@@ -1,0 +1,187 @@
+/* Basic Reset & Body */
+body {
+    font-family: sans-serif;
+    line-height: 1.6;
+    margin: 0 auto; /* Center content */
+    max-width: 800px; /* Limit content width */
+    padding: 20px;
+    color: #333;
+    background-color: #f8f8f8;
+}
+
+h1, h2, h3 {
+    line-height: 1.2;
+    margin-bottom: 0.5em;
+}
+
+a {
+    color: #007bff;
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
+}
+
+hr {
+    border: 0;
+    height: 1px;
+    background: #ddd;
+    margin: 2em 0;
+}
+
+/* Navigation */
+nav {
+    background-color: #eee;
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+}
+nav a, nav span {
+    margin-right: 15px;
+}
+
+/* Forms */
+form p {
+    margin-bottom: 1em;
+}
+label {
+    display: block;
+    margin-bottom: 0.2em;
+    font-weight: bold;
+}
+input[type="text"],
+input[type="email"],
+input[type="password"],
+textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box; /* Include padding and border in element's total width and height */
+}
+textarea {
+    min-height: 150px;
+    resize: vertical;
+}
+input[type="submit"],
+.button { /* Style links like buttons */
+    background-color: #007bff;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1em;
+    text-decoration: none; /* For .button links */
+    display: inline-block; /* For .button links */
+}
+input[type="submit"]:hover,
+.button:hover {
+    background-color: #0056b3;
+}
+input[type="submit"][value="Delete"] { /* Specific style for delete */
+    background-color: #dc3545;
+}
+input[type="submit"][value="Delete"]:hover {
+    background-color: #c82333;
+}
+
+/* Flash Messages */
+.alert {
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+}
+.alert-success {
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+}
+.alert-info {
+    color: #0c5460;
+    background-color: #d1ecf1;
+    border-color: #bee5eb;
+}
+.alert-warning {
+    color: #856404;
+    background-color: #fff3cd;
+    border-color: #ffeeba;
+}
+.alert-danger {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+
+/* Entry List */
+ul {
+    list-style: none;
+    padding: 0;
+}
+ul li {
+    margin-bottom: 1.5em;
+    padding-bottom: 1em;
+    /* border-bottom: 1px solid #eee; */ /* Use hr instead */
+}
+ul li h3 {
+    margin-bottom: 0.2em;
+}
+ul li p {
+    margin-top: 0.5em;
+}
+
+/* Pagination */
+.pagination {
+    display: flex;
+    padding-left: 0;
+    list-style: none;
+    border-radius: .25rem;
+    margin-top: 2rem;
+}
+.page-item {
+    margin: 0 2px;
+}
+.page-item.disabled .page-link {
+    color: #6c757d;
+    pointer-events: none;
+    cursor: auto;
+    background-color: #fff;
+    border-color: #dee2e6;
+}
+.page-item.active .page-link {
+    z-index: 1;
+    color: #fff;
+    background-color: #007bff;
+    border-color: #007bff;
+}
+.page-link {
+    position: relative;
+    display: block;
+    padding: .5rem .75rem;
+    margin-left: -1px;
+    line-height: 1.25;
+    color: #007bff;
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+}
+.page-link:hover {
+    z-index: 2;
+    color: #0056b3;
+    text-decoration: none;
+    background-color: #e9ecef;
+    border-color: #dee2e6;
+}
+
+/* Entry Detail */
+/* Add specific styles if needed */
+
+/* Footer */
+footer {
+    margin-top: 3em;
+    padding-top: 1em;
+    border-top: 1px solid #ddd;
+    text-align: center;
+    font-size: 0.9em;
+    color: #666;
+}

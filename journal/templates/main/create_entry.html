@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{# {% from "_formhelpers.html" import render_field %} # Removed unused import #}
+
+{% block title %}New Entry - Flask Journal{% endblock %}
+
+{% block content %}
+    <h1>Create New Journal Entry</h1>
+    <form action="{{ url_for('main.new_entry') }}" method="post" novalidate>
+        {{ form.hidden_tag() }} {# CSRF token #}
+        <p>
+            {{ form.title.label }}<br>
+            {{ form.title(size=60) }}<br>
+            {% for error in form.title.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.body.label }}<br>
+            {{ form.body(rows=10, cols=60) }}<br>
+            {% for error in form.body.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>{{ form.submit() }}</p>
+    </form>
+    <p><a href="{{ url_for('main.index') }}">Cancel</a></p>
+{% endblock %}

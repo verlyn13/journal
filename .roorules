@@ -1,0 +1,14 @@
+# Workspace-Wide Custom Instructions for Flask Journal MVP
+
+## Core Principles
+- **MVP Scope Adherence:** Strictly adhere to the defined MVP features. Do not add extra functionality, columns, relationships, or configurations beyond what is explicitly required for the current MVP step. Prioritize simplicity and core functionality.
+- **Lean & Mean Philosophy:** Generate concise, clean, and essential code. Avoid unnecessary complexity or over-engineering.
+- **Verification Focus:** Remember that all generated code, diffs, and command outputs will be critically reviewed and verified by the Lead Developer. Aim for correctness and clarity.
+- **Incremental Steps:** Work in small, verifiable steps as defined by the Lead Developer's prompts.
+- **Clarity in Communication:** When proposing actions (tool calls), be clear about the intent and the expected outcome. If unsure, use `ask_followup_question`.
+
+## Coding Standards (Example - Adapt as needed)
+- Follow PEP 8 guidelines for Python code.
+- Use clear variable and function names.
+- Add basic docstrings for new functions and classes.
+- Keep functions focused on a single responsibility.

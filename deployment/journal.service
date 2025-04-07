@@ -1,0 +1,30 @@
+[Unit]
+Description=Gunicorn instance to serve Flask Journal
+After=network.target
+
+[Service]
+User=verlyn13 # Ensure this user exists and has permissions
+Group=verlyn13 # Ensure this group exists
+WorkingDirectory=/home/verlyn13/Projects/journal # Absolute path to project root
+Environment="PATH=/home/verlyn13/Projects/journal/.venv/bin" # Add venv bin to PATH
+Environment="FLASK_APP=run.py"
+# Consider setting FLASK_ENV=production for actual deployment
+# Environment="FLASK_ENV=production"
+# Ensure SECRET_KEY is set securely, e.g., via .env or systemd's Environment=
+# EnvironmentFile=/home/verlyn13/Projects/journal/.env # Optional: Load from .env
+
+# Use Unix socket (preferred if using Nginx/Apache proxy)
+ExecStart=/home/verlyn13/Projects/journal/.venv/bin/gunicorn --workers 3 --bind unix:/tmp/journal.sock -m 007 run:app
+
+# Alternative: Bind to TCP port (simpler for direct access)
+# ExecStart=/home/verlyn13/Projects/journal/.venv/bin/gunicorn --workers 3 --bind 0.0.0.0:8000 run:app
+
+Restart=always
+RestartSec=5s
+
+StandardOutput=journal # Log stdout to journald
+StandardError=journal  # Log stderr to journald
+SyslogIdentifier=flask-journal
+
+[Install]
+WantedBy=multi-user.target
