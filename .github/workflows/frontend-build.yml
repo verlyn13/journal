@@ -43,5 +43,5 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: frontend-assets
-        path: journal/static/dist/
+        path: journal/static/gen/
         if-no-files-found: error

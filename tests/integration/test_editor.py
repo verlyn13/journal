@@ -22,12 +22,12 @@ A list:
 EXPECTED_HTML_SUBSTRING_MATHJAX = 'class="MathJax"' # Check if MathJax processed it
 EXPECTED_HTML_SUBSTRING_MARKDOWN = '<h1>Test Header</h1>' # Check basic Markdown
 
-def test_markdown_preview_api(client, auth):
+def test_markdown_preview_api(auth_client, auth):
     """
     Test the /api/v1/markdown endpoint for rendering Markdown and MathJax.
     """
     auth.login() # Assume login is required or doesn't hurt
-    response = client.post(
+    response = auth_client.post(
         url_for('api.render_markdown'),
         json={'text': SAMPLE_MARKDOWN},
         headers={'Content-Type': 'application/json', 'Accept': 'application/json'}
@@ -43,10 +43,10 @@ def test_markdown_preview_api(client, auth):
     assert EXPECTED_HTML_SUBSTRING_MATHJAX in data['html']
     print(f"Preview HTML: {data['html'][:200]}...") # Print start of HTML for debugging
 
-def test_markdown_preview_api_empty(client, auth):
+def test_markdown_preview_api_empty(auth_client, auth):
     """ Test the preview API with empty input """
     auth.login()
-    response = client.post(
+    response = auth_client.post(
         url_for('api.render_markdown'),
         json={'text': ''},
         headers={'Content-Type': 'application/json', 'Accept': 'application/json'}
@@ -56,22 +56,22 @@ def test_markdown_preview_api_empty(client, auth):
     assert 'html' in data
     assert data['html'] == '' # Expect empty string for empty input
 
-def test_markdown_preview_api_no_text(client, auth):
+def test_markdown_preview_api_no_text(auth_client, auth):
     """ Test the preview API with missing 'text' field """
     auth.login()
-    response = client.post(
+    response = auth_client.post(
         url_for('api.render_markdown'),
         json={'other_field': 'value'},
         headers={'Content-Type': 'application/json', 'Accept': 'application/json'}
     )
     assert response.status_code == 400 # Bad Request expected
 
-def test_markdown_preview_api_unauthenticated(client):
+def test_markdown_preview_api_unauthenticated(test_client):
     """ Test the preview API without authentication (if required) """
     # This test depends on whether the API requires authentication.
     # If it does, expect 401/403. If not, expect 200.
     # Assuming it requires auth based on `auth.login()` in other tests.
-    response = client.post(
+    response = test_client.post(
         url_for('api.render_markdown'),
         json={'text': 'test'},
         headers={'Content-Type': 'application/json', 'Accept': 'application/json'}
@@ -79,10 +79,10 @@ def test_markdown_preview_api_unauthenticated(client):
     # Adjust assertion based on actual auth requirement (e.g., 401 Unauthorized)
     assert response.status_code in [401, 403] # Or 200 if public
 
-def test_editor_present_on_create_page(client, auth):
+def test_editor_present_on_create_page(auth_client, auth):
     """ Test if the editor component is present on the create entry page. """
     auth.login()
-    response = client.get(url_for('main.create_entry'))
+    response = auth_client.get(url_for('main.create_entry'))
     assert response.status_code == 200
     html_content = response.get_data(as_text=True)
     # Check for the Alpine component initialization attribute
@@ -90,10 +90,10 @@ def test_editor_present_on_create_page(client, auth):
     assert 'x-ref="editorElement"' in html_content
     assert 'x-ref="previewContent"' in html_content # Check for preview area ref
 
-def test_editor_present_on_edit_page(client, auth, entry):
+def test_editor_present_on_edit_page(auth_client, auth, entry):
     """ Test if the editor component is present on the edit entry page. """
     auth.login()
-    response = client.get(url_for('main.edit_entry', entry_id=entry.id))
+    response = auth_client.get(url_for('main.edit_entry', entry_id=entry.id))
     assert response.status_code == 200
     html_content = response.get_data(as_text=True)
     # Check for the Alpine component initialization attribute, potentially with entryId
