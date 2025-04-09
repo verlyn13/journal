@@ -1,5 +1,5 @@
 import pytest
-from flask import url_for, json
+from flask import url_for
 
 # Sample Markdown with MathJax
 SAMPLE_MARKDOWN = """
@@ -23,16 +23,17 @@ EXPECTED_HTML_SUBSTRING_MATHJAX = 'class="MathJax"'  # Check if MathJax processe
 EXPECTED_HTML_SUBSTRING_MARKDOWN = "<h1>Test Header</h1>"  # Check basic Markdown
 
 
-def test_markdown_preview_api(auth_client):  # Removed auth fixture
+def test_markdown_preview_api(auth_client, test_app):  # Added test_app fixture
     """
     Test the /api/v1/markdown endpoint for rendering Markdown and MathJax.
     """
     client, _ = auth_client  # Unpack client, auth_client fixture handles login
-    response = client.post(
-        url_for("api.render_markdown"),
-        json={"text": SAMPLE_MARKDOWN},
-        headers={"Content-Type": "application/json", "Accept": "application/json"},
-    )
+    with test_app.app_context(): # Added app context
+        response = client.post(
+            url_for("api.preview_markdown"), # Corrected endpoint name
+            json={"text": SAMPLE_MARKDOWN},
+            headers={"Content-Type": "application/json", "Accept": "application/json"},
+        )
     assert response.status_code == 200
     assert response.content_type == "application/json"
 
@@ -45,13 +46,14 @@ def test_markdown_preview_api(auth_client):  # Removed auth fixture
     print(f"Preview HTML: {data['html'][:200]}...")  # Print start of HTML for debugging
 
 
-def test_markdown_preview_api_empty(auth_client):  # Removed auth fixture
+def test_markdown_preview_api_empty(auth_client, test_app):  # Added test_app fixture
     """Test the preview API with empty input"""
     client, _ = auth_client  # Unpack client, auth_client fixture handles login
-    response = client.post(
-        url_for("api.render_markdown"),
-        json={"text": ""},
-        headers={"Content-Type": "application/json", "Accept": "application/json"},
+    with test_app.app_context(): # Added app context
+        response = client.post(
+            url_for("api.preview_markdown"), # Corrected endpoint name
+            json={"text": ""},
+            headers={"Content-Type": "application/json", "Accept": "application/json"},
     )
     assert response.status_code == 200
     data = response.get_json()
@@ -59,13 +61,14 @@ def test_markdown_preview_api_empty(auth_client):  # Removed auth fixture
     assert data["html"] == ""  # Expect empty string for empty input
 
 
-def test_markdown_preview_api_no_text(auth_client):  # Removed auth fixture
+def test_markdown_preview_api_no_text(auth_client, test_app):  # Added test_app fixture
     """Test the preview API with missing 'text' field"""
     client, _ = auth_client  # Unpack client, auth_client fixture handles login
-    response = client.post(
-        url_for("api.render_markdown"),
-        json={"other_field": "value"},
-        headers={"Content-Type": "application/json", "Accept": "application/json"},
+    with test_app.app_context(): # Added app context
+        response = client.post(
+            url_for("api.preview_markdown"), # Corrected endpoint name
+            json={"other_field": "value"},
+            headers={"Content-Type": "application/json", "Accept": "application/json"},
     )
     assert response.status_code == 400  # Bad Request expected
 
@@ -78,8 +81,9 @@ def test_markdown_preview_api_unauthenticated(
     # If it does, expect 401/403. If not, expect 200.
     # Assuming it requires auth based on `auth.login()` in other tests.
     with test_app.app_context():  # Added app context for url_for
+        # Corrected endpoint name in previous step, ensure context is applied
         response = test_client.post(
-            url_for("api.render_markdown"),
+            url_for("api.preview_markdown"), # Corrected endpoint name
             json={"text": "test"},
             headers={"Content-Type": "application/json", "Accept": "application/json"},
         )
@@ -87,10 +91,11 @@ def test_markdown_preview_api_unauthenticated(
         assert response.status_code in [401, 403]  # Or 200 if public
 
 
-def test_editor_present_on_create_page(auth_client):  # Removed auth fixture
+def test_editor_present_on_create_page(auth_client, test_app):  # Added test_app fixture
     """Test if the editor component is present on the create entry page."""
-    client, _ = auth_client  # Unpack client, auth_client fixture handles login
-    response = client.get(url_for("main.create_entry"))
+    client, _ = auth_client  # Unpack client
+    with test_app.app_context(): # Added app context
+        response = client.get(url_for("main.create_entry"))
     assert response.status_code == 200
     html_content = response.get_data(as_text=True)
     # Check for the Alpine component initialization attribute
@@ -99,7 +104,7 @@ def test_editor_present_on_create_page(auth_client):  # Removed auth fixture
     assert 'x-ref="previewContent"' in html_content  # Check for preview area ref
 
 
-def test_editor_present_on_edit_page(auth_client, entry):  # Removed auth fixture
+def test_editor_present_on_edit_page(auth_client, entry, test_app): # Added test_app fixture
     """Test if the editor component is present on the edit entry page."""
     client, user_id = auth_client  # Unpack client and user_id
     # Ensure the entry belongs to the logged-in user for this test

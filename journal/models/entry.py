@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import datetime
 from journal import db
 from .tag import entry_tags
 

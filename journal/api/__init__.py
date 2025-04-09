@@ -5,4 +5,4 @@ from flask import Blueprint
 api_bp = Blueprint("api", __name__)
 
 # Import routes after blueprint definition to avoid circular imports
-from . import routes
+# from . import routes  # Commented out as it's currently unused (F401)

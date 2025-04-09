@@ -1,5 +1,4 @@
-import pytest
-from flask import session, url_for
+from flask import url_for
 from journal.models import User
 from journal import db  # Import the db instance
 

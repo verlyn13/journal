@@ -1,4 +1,3 @@
-import pytest
 
 
 def test_app_exists(test_app):

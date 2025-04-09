@@ -3,7 +3,7 @@ from flask_login import current_user, login_required
 from journal import db
 from journal.models import (
     Entry,
-    User,
+    # User, # Commented out as current_user handles most cases (F401)
     Tag,
 )  # Ensure User is imported if needed, though current_user handles most cases
 from . import main

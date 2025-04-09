@@ -1,4 +1,3 @@
-import pytest
 from journal.models import User, Entry, Tag
 from datetime import datetime, timezone, timedelta
 
@@ -31,10 +30,10 @@ def test_entry_creation(
     db_session.commit()  # Commit user so Entry can reference it
 
     # Use naive UTC now
-    entry_time_before = datetime.now(timezone.utc)
+    # entry_time_before = datetime.now(timezone.utc)  # Unused, removed to fix F841
     e = Entry(title="Test Entry", body="This is the body.", author=u)
     db_session.add(e)  # Add immediately after creation
-    entry_time_after = datetime.now(timezone.utc)
+    # entry_time_after = datetime.now(timezone.utc)  # Unused, removed to fix F841
 
     assert e.title == "Test Entry"
     assert e.body == "This is the body."
@@ -64,9 +63,9 @@ def test_entry_repr(db_session):
 def test_tag_creation(db_session):
     """Test basic Tag model creation."""
     # Use naive UTC now
-    tag_time_before = datetime.now(timezone.utc)
+    # tag_time_before = datetime.now(timezone.utc)  # Unused, removed to fix F841
     t = Tag(name="testing")
-    tag_time_after = datetime.now(timezone.utc)
+    # tag_time_after = datetime.now(timezone.utc)  # Unused, removed to fix F841
 
     assert t.name == "testing"
     db_session.add(t)

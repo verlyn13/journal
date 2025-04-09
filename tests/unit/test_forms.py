@@ -1,4 +1,3 @@
-import pytest
 from journal.auth.forms import RegistrationForm, LoginForm
 from journal.main.forms import EntryForm
 

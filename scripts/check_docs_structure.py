@@ -6,7 +6,6 @@ This script validates the structure of the documentation directory,
 ensuring that the expected directories exist and contain required files.
 """
 
-import os
 import sys
 from pathlib import Path
 
