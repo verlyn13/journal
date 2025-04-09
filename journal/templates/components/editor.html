@@ -1,0 +1,63 @@
+{# journal/templates/components/editor.html #}
+{#
+    Expects the following context variables:
+    - form: The WTForm instance (specifically form.body for the hidden textarea)
+    - entry: The entry object (optional, used for entry.id and initial content)
+#}
+
+{% set entry_id = entry.id if entry else '' %}
+{% set initial_content = form.body.data if form.body.data else (entry.body if entry else '') %}
+
+{#
+   The main Alpine component container.
+   - Initializes the editor component with entry ID and initial content.
+   - Binds the 'mode' state to a data attribute for CSS styling.
+   - Includes @submit logic to clear draft on successful form submission.
+#}
+<div
+    x-data="editor('{{ entry_id }}')" {# Removed initialContent from here #}
+    {# Removed data-initial-content, using script tag below instead #}
+    :data-mode="mode" {# Bind mode for CSS: [data-mode="edit|split|preview"] #}
+    class="editor-container"
+    @submit.document="if ($event.target.tagName === 'FORM' && $event.target.contains($el)) { clearDraftOnSubmit() }" {# Clear draft on form submit containing this editor #}
+>
+    {# Include the toolbar component #}
+    {% include 'components/toolbar.html' %} {# KEEP THIS COMMENTED FOR NOW #}
+
+    {# Container for the editor and preview panes #}
+    <div class="editor-panes">
+        {# CodeMirror Editor Pane #}
+        {# Removed x-show from here; visibility is handled by CSS via [data-mode] on parent #}
+        {# Removed x-init from here; initialization moved back to Alpine component's init #}
+        <div class="edit-pane" x-ref="editorElement">
+            {# CodeMirror will attach here #}
+        </div>
+
+        {# Markdown Preview Pane - RESTORED #}
+        <div
+            class="preview-pane"
+            x-ref="previewContent" {# Reference for MathJax targeting #}
+            x-show="mode === 'preview' || mode === 'split'"
+            :class="{ 'loading': isLoadingPreview }" {# Add loading class #}
+            x-html="previewHtml" {# Render backend-generated HTML #}
+        >
+            {# Preview content will be injected here #}
+        </div>
+    </div>
+
+    {# Hidden textarea to hold the editor content for form submission #}
+    {# Use x-model to keep it synced with the Alpine 'content' state #}
+    <textarea
+        name="{{ form.body.name }}" {# Use name from WTForm field #}
+        id="{{ form.body.id }}"     {# Use id from WTForm field #}
+        x-model="content"           {# Bind to Alpine state #}
+        style="display: none;"      {# Hide the textarea visually #}
+        aria-hidden="true"          {# Hide from assistive tech #}
+    ></textarea>
+
+    {# Embed initial content safely within a template tag #}
+    <script type="text/template" id="initial-content-{{ entry_id or 'new' }}">
+        {{- initial_content -}} {# Rely on Jinja's default HTML escaping #}
+    </script>
+
+</div>

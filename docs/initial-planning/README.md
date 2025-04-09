@@ -12,5 +12,6 @@ This directory contains the initial planning and design documents created before
 *   **[Error Handling Guide](./error-handling.md)**: Strategy for handling errors.
 *   **[State Management Guide](./state-management-guide.md)**: Approach to managing application state.
 *   **[Testing Strategy Guide](./testing.md)**: Plan for testing the application.
+*   **[Structural and Procedural Recommendations](./structure-update.md)**: Recommendations for project structure, testing, and error handling.
 
 Refer to the main [Documentation Index](../README.md) for other documentation sections.

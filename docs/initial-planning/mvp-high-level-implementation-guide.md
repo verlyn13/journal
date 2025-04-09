@@ -120,6 +120,7 @@ The core goal of the MVP is to have a functional, secure, single-user journal sy
         *   `flask db upgrade` - Creates the `instance/journal.db` file and the tables.
     7.  **Verify Database:** Use a tool like DB Browser for SQLite to inspect `instance/journal.db` and confirm tables exist.
     8.  **Commit Changes:** `git add . && git commit -m "Implement core User and Entry models; set up migrations"`
+    9.  **Architectural Note (Timestamps):** Due to limitations and potential inconsistencies with timezone handling in SQLite (especially during testing), all timestamp columns (`created_at`, `updated_at`, `timestamp`) in the MVP will store **naive UTC** values (using `datetime.utcnow` as the default). Tests should verify these timestamps using a time delta comparison rather than exact matching to account for minor timing variations.
 
 ---
 

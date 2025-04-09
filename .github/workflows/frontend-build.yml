@@ -1,0 +1,47 @@
+# .github/workflows/frontend-build.yml
+name: Frontend Build
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'src/**'
+      - 'rollup.config.js'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/frontend-build.yml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'src/**'
+      - 'rollup.config.js'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/frontend-build.yml'
+
+jobs:
+  build:
+    name: Build Frontend Assets
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Build assets
+      run: npm run build
+    
+    - name: Upload built assets
+      uses: actions/upload-artifact@v3
+      with:
+        name: frontend-assets
+        path: journal/static/dist/
+        if-no-files-found: error

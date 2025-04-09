@@ -87,7 +87,7 @@ This section maps the workflow's tool recommendations to specific Roo documentat
 ## Configuration Strategy with Roo
 
 -   **[Custom Instructions](./custom-instructions.md):** Define project-wide standards (via `.roorules`) or mode-specific guidelines (via `.roorules-[mode]` or Prompts Tab) to enforce coding styles, MVP constraints, and the "lean" philosophy.
--   **[Custom Modes](./custom-modes.md):** Define the specialized modes (`flask-mvp-architect`, `db-designer-mode`, etc.) via `.roomodes` file in the project root. Configure each mode with:
+-   **[Custom Modes](./custom-modes.md):** Define the specialized modes (`flask-lead-architect`, `db-designer-mode`, etc.) via `.roomodes` file in the project root. Configure each mode with:
     -   A clear `roleDefinition`.
     -   Appropriate `customInstructions`.
     -   Restricted `groups` (tool access) – e.g., `db-designer-mode` might only need Read and Edit tools, not Command execution.

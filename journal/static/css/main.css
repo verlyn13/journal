@@ -93,22 +93,22 @@ input[type="submit"][value="Delete"]:hover {
     border: 1px solid transparent;
     border-radius: 4px;
 }
-.alert-success {
+.flash-success {
     color: #155724;
     background-color: #d4edda;
     border-color: #c3e6cb;
 }
-.alert-info {
+.flash-info {
     color: #0c5460;
     background-color: #d1ecf1;
     border-color: #bee5eb;
 }
-.alert-warning {
+.flash-warning {
     color: #856404;
     background-color: #fff3cd;
     border-color: #ffeeba;
 }
-.alert-danger {
+.flash-danger {
     color: #721c24;
     background-color: #f8d7da;
     border-color: #f5c6cb;
@@ -185,3 +185,83 @@ footer {
     font-size: 0.9em;
     color: #666;
 }
+
+
+/* --- Phase 7 UI Improvements --- */
+
+/* General Layout Refinements */
+body {
+    background-color: #fff; /* Lighter background */
+    color: #212529; /* Darker text */
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+main {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+/* Improved Navigation */
+nav {
+    background-color: #f8f9fa; /* Lighter nav */
+    border: 1px solid #dee2e6;
+    padding: 15px 20px;
+    display: flex; /* Use flexbox for alignment */
+    justify-content: space-between; /* Space out logo/links and user info */
+    align-items: center;
+}
+
+nav .nav-links a,
+nav .user-info span,
+nav .user-info a {
+    margin-right: 15px;
+    color: #007bff;
+}
+
+nav .user-info span {
+    color: #6c757d; /* Grey for welcome message */
+}
+
+/* Form Error Styling */
+.form-error {
+    color: #dc3545; /* Red for errors */
+    font-size: 0.875em;
+    margin-top: 0.25rem;
+}
+
+/* Tag Styling */
+.tag-link {
+    display: inline-block;
+    background-color: #e9ecef; /* Light grey background */
+    color: #495057; /* Darker grey text */
+    padding: 0.25em 0.6em;
+    margin: 0 0.2em 0.3em 0;
+    border-radius: 0.25rem; /* Rounded corners */
+    font-size: 0.85em;
+    text-decoration: none;
+    border: 1px solid #ced4da;
+}
+
+.tag-link:hover {
+    background-color: #ced4da; /* Darker on hover */
+    color: #212529;
+    text-decoration: none;
+}
+
+.tags-section {
+    margin-top: 0.5em; /* Space above tags */
+    margin-bottom: 1em;
+}
+
+.tags-section strong {
+    margin-right: 0.5em;
+}
+
+/* Minor adjustments */
+input[type="submit"],
+.button {
+    transition: background-color 0.15s ease-in-out;
+}
+

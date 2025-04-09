@@ -10,6 +10,15 @@
         {# Render body content - consider adding safe filter or markdown processing later #}
         {{ entry.body | markdown | safe }} {# Apply markdown filter and mark as safe HTML #}
     </div>
+    {% if entry.tags %}
+    <div class="tags-section" style="margin-top: 1em;">
+        <strong>Tags:</strong>
+        {% for tag in entry.tags %}
+            <a href="{{ url_for('main.entries_by_tag', tag_name=tag.name) }}" class="tag-link">{{ tag.name }}</a>{% if not loop.last %}, {% endif %}
+        {% endfor %}
+    </div>
+    {% endif %}
+
     <hr>
     <a href="{{ url_for('main.edit_entry', entry_id=entry.id) }}" class="button">Edit Entry</a>
     {# Use a form for delete to ensure POST method #}

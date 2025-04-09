@@ -7,7 +7,30 @@ from ..models.user import User # Import the User model
 
 @auth.route('/register', methods=['GET', 'POST'])
 def register():
-    """Handle requests to the /register route."""
+    """
+    Handles user registration process.
+    
+    This route manages both the display of the registration form (GET) and the
+    processing of form submissions (POST). It performs validation including checking
+    for duplicate usernames/emails before creating a new user account.
+    
+    Request:
+        - GET: Displays the registration form
+        - POST: Processes the submitted form data
+          - username: Unique username for the new account
+          - email: Unique email address
+          - password: User's password (will be hashed)
+          - password2: Password confirmation (must match password)
+    
+    Response:
+        - GET: Renders register.html template with registration form
+        - POST (success): Redirects to login page with success message
+        - POST (failure): Redirects back to registration form with error message
+    
+    Notes:
+        - Already authenticated users are redirected to the main page
+        - Passwords are securely hashed before storage
+    """
     # If user is already logged in, redirect to the main page
     if current_user.is_authenticated:
         return redirect(url_for('main.index'))
@@ -39,7 +62,30 @@ def register():
 
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
-    """Handle requests to the /login route."""
+    """
+    Handles user authentication and login process.
+    
+    This route manages both the display of the login form (GET) and the
+    processing of form submissions (POST). It authenticates users against the database
+    and creates a session using Flask-Login if credentials are valid.
+    
+    Request:
+        - GET: Displays the login form
+        - POST: Processes the submitted form data
+          - username: User's registered username
+          - password: User's password
+          - remember_me: Boolean field for persistent session
+    
+    Response:
+        - GET: Renders login.html template with login form
+        - POST (success): Redirects to main page or next URL parameter with welcome message
+        - POST (failure): Redirects back to login form with error message
+    
+    Notes:
+        - Already authenticated users are redirected to the main page
+        - Supports 'next' URL parameter for redirecting to protected pages after login
+        - Performs security checks on the 'next' parameter to prevent open redirects
+    """
     # If user is already logged in, redirect to the main page
     if current_user.is_authenticated:
         return redirect(url_for('main.index'))
@@ -67,7 +113,22 @@ def login():
 @auth.route('/logout')
 @login_required # Ensure only logged-in users can logout
 def logout():
-    """Handle requests to the /logout route."""
+    """
+    Handles user logout process.
+    
+    This route terminates the user's session using Flask-Login's logout_user() function.
+    It requires the user to be authenticated before access (login_required decorator).
+    
+    Request:
+        - GET: Processes logout request
+    
+    Response:
+        - Redirects to the main page with a logout confirmation message
+    
+    Security:
+        - Protected by login_required decorator
+        - Only accessible to authenticated users
+    """
     logout_user()
     flash('You have been logged out.', 'info')
     return redirect(url_for('main.index'))

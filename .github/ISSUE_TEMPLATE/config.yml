@@ -1,0 +1,12 @@
+# Configuration for GitHub Issue Forms
+# See docs at https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/configuring-issue-templates-for-your-repository
+
+blank_issues_enabled: false
+
+contact_links:
+  - name: GitHub Discussions
+    url: https://github.com/verlyn13/journal/discussions
+    about: Please ask and answer questions here.
+  - name: Documentation
+    url: https://verlyn13.github.io/journal/
+    about: Check out the project documentation for help and guides.

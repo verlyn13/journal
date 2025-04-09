@@ -1,0 +1,52 @@
+{# journal/templates/components/toolbar.html #}
+<div class="editor-toolbar">
+    {# Basic Formatting Buttons #}
+    <button @click="insertCodeBlock()" title="Insert Code Block (```)" aria-label="Insert Code Block">
+        Code Block
+    </button>
+    <button @click="insertImage()" title="Insert Image (![alt](url))" aria-label="Insert Image">
+        Image
+    </button>
+    <button @click="insertTable()" title="Insert Table" aria-label="Insert Table">
+        Table
+    </button>
+
+    {# Formatting Controls Group - Added in Phase 11 #}
+    <button type="button" @click="insertMarkdown('bold')" title="Bold" aria-label="Bold">
+        Bold
+    </button>
+    <button type="button" @click="insertMarkdown('italic')" title="Italic" aria-label="Italic">
+        Italic
+    </button>
+    <button type="button" @click="insertMarkdown('link')" title="Insert Link" aria-label="Insert Link">
+        Link
+    </button>
+    <button type="button" @click="insertMarkdown('ul')" title="Bulleted List" aria-label="Bulleted List">
+        UL
+    </button>
+    <button type="button" @click="insertMarkdown('ol')" title="Numbered List" aria-label="Numbered List">
+        OL
+    </button>
+    <button type="button" @click="insertMarkdown('blockquote')" title="Blockquote" aria-label="Blockquote">
+        Quote
+    </button>
+    {# End Formatting Controls Group #}
+
+    {# Mode Switcher - Pushed to the right via CSS #}
+    <div class="mode-switcher">
+        <button type="button" @click="setMode('edit')" :class="{ 'active': mode === 'edit' }" title="Editor Only" aria-label="Switch to Editor View">
+            Edit
+        </button>
+        <button type="button" @click="setMode('split')" :class="{ 'active': mode === 'split' }" title="Split View (Editor/Preview)" aria-label="Switch to Split View">
+            Split
+        </button>
+        <button type="button" @click="setMode('preview')" :class="{ 'active': mode === 'preview' }" title="Preview Only" aria-label="Switch to Preview View">
+            Preview
+        </button>
+    </div>
+
+    {# Export Button (Placeholder) #}
+    {# <button @click="exportPDF()" title="Export as PDF (Not Implemented)" aria-label="Export as PDF">
+        Export PDF
+    </button> #}
+</div>

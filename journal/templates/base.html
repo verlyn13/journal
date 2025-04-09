@@ -3,8 +3,12 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <!-- Add link to CSS framework or custom CSS later -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    {# Use asset_url function from context processor for cache-busting #}
+    <link rel="stylesheet" href="{{ asset_url('main.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
+
     <title>{% block title %}{{ title | default('Flask Journal') }}{% endblock %}</title>
 </head>
 <body>
@@ -23,9 +27,10 @@
         {# Display flashed messages #}
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
-                <div>
+                <div class="flash-messages-container"> {# Added container class #}
                 {% for category, message in messages %}
-                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                    {# Use flash-{{ category }} as planned for CSS targeting #}
+                    <div class="alert flash-{{ category }}">{{ message }}</div>
                 {% endfor %}
                 </div>
             {% endif %}
@@ -40,6 +45,31 @@
     </footer>
 
     <!-- Add JS scripts later if needed -->
+    <!-- Add JS scripts later if needed -->
     <!-- <script src="{{ url_for('static', filename='js/script.js') }}"></script> -->
+    {# --- MathJax Configuration and Loading --- #}
+    <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true
+      },
+      svg: {
+        fontCache: 'global'
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+        ignoreHtmlClass: 'tex2jax_ignore',
+        processHtmlClass: 'tex2jax_process'
+      }
+    };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+    {# --------------------------------------- #}
+
+
+    {# Use asset_url function and specify type="module" for ES modules #}
+    <script type="module" src="{{ asset_url('main.js') }}"></script>
 </body>
 </html>

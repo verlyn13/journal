@@ -48,7 +48,7 @@ This workflow follows the **Staged MVP Implementation Guide**, applying Roo Code
 1.  **Task Definition (Lead Dev):**
     *   Identify the *precise* goal for the current micro-task from the Architect's detailed breakdown (e.g., "Define the `User` model class structure in `app/models/user.py`").
     *   Determine the best Roo tools (`write_to_file` for new file, `apply_diff` for modification, `execute_command`, etc.).
-    *   Select the appropriate Roo **[Custom Mode](../roo-code/custom-modes.md)** (e.g., `flask-mvp-architect`, `db-designer-mode`).
+    *   Select the appropriate Roo **[Custom Mode](../roo-code/custom-modes.md)** (e.g., `flask-lead-architect`, `db-designer-mode`).
 
 2.  **Prompt Crafting (Lead Dev -> Roo):**
     *   Provide clear, concise instructions to Roo in the selected mode. See [Prompt Engineering Tips](../roo-code/prompt-engineering-tips.md).
@@ -108,7 +108,7 @@ This workflow follows the **Staged MVP Implementation Guide**, applying Roo Code
     *   Load the recommended custom instructions globally or for the workspace.
     *   Emphasize MVP scope constraints, coding standards, verification needs, and the "lean" philosophy.
 2.  **[Custom Modes](../roo-code/custom-modes.md):**
-    *   Implement the suggested modes (`flask-mvp-architect`, `db-designer-mode`, `auth-specialist-mode`, `test-writer-mode`) with appropriate `roleDefinition`, restricted tool `groups` (e.g., testing mode might not need `execute_command`), and tailored `customInstructions`.
+    *   Implement the suggested modes (`flask-lead-architect`, `db-designer-mode`, `auth-specialist-mode`, `test-writer-mode`) with appropriate `roleDefinition`, restricted tool `groups` (e.g., testing mode might not need `execute_command`), and tailored `customInstructions`.
     *   The Lead Dev explicitly selects the relevant mode when prompting Roo for specific tasks using [Mode Switching](../roo-code/using-modes.md).
 
 ### Verification & Quality Assurance

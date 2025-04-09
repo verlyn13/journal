@@ -1,0 +1,56 @@
+/* src/css/main.css */
+
+/* Import editor styles */
+@import url('./editor.css');
+
+/* Import existing styles (if any - assuming base styles might exist elsewhere or be minimal for now) */
+/* @import url('./base.css'); */
+
+/* Basic body styling to set context for CSS variables */
+body {
+    font-family: sans-serif; /* Or your preferred base font */
+    margin: 0;
+    padding: 20px; /* Example padding */
+    background-color: #f4f4f4; /* Example light background */
+    color: #333;
+}
+
+/* Ensure CSS variables defined in editor.css (:root) are available */
+
+/* Add any other global styles below */
+
+.flash-messages-container {
+    padding: 1em;
+    margin-bottom: 1em;
+}
+
+.alert {
+    padding: 0.75rem 1.25rem;
+    margin-bottom: 1rem;
+    border: 1px solid transparent;
+    border-radius: 0.25rem;
+}
+
+.flash-success {
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+}
+
+.flash-error {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+
+.flash-info {
+    color: #0c5460;
+    background-color: #d1ecf1;
+    border-color: #bee5eb;
+}
+
+.flash-warning {
+    color: #856404;
+    background-color: #fff3cd;
+    border-color: #ffeeba;
+}
