@@ -1,3 +1,13 @@
+---
+title: CodeMirror Basic Example
+description: "A basic example demonstrating how to set up a simple CodeMirror editor instance with default functionality."
+category: "CodeMirror Examples"
+status: active
+tags: ["codemirror", "example", "basic", "setup", "javascript"]
+version: "6.0"
+---
+
+
 # Setting Up a Basic CodeMirror Editor
 
 ## Getting Started

@@ -9,6 +9,7 @@ related_topics:
   - "Documentation Testing Process"
 version: "1.0"
 tags: ["documentation", "checklist", "maintenance", "developer-guide", "best-practices"]
+status: active
 ---
 
 # Documentation Update Checklist

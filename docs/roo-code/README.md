@@ -1,3 +1,12 @@
+---
+title: Roo Code Documentation Index
+description: "Index page for documentation related to Roo Code features, tools, concepts, and usage within the Flask Journal project."
+category: "Roo Code"
+status: active
+tags: ["documentation", "index", "roo-code", "tools", "guides"]
+---
+
+
 # Roo Code Documentation Index
 
 This directory contains detailed documentation for Roo Code's features, tools, and concepts.

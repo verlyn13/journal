@@ -9,6 +9,7 @@ related_topics:
   - "Documentation Testing Process"
 version: "1.0"
 tags: ["documentation", "metrics", "quality", "coverage", "monitoring", "maintenance"]
+status: active
 ---
 
 # Documentation Health Metrics

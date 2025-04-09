@@ -127,6 +127,10 @@ To maintain code quality, configure branch protection rules for the `main` branc
    - Require pull request reviews before merging
    - Require status checks to pass before merging
    - Require branches to be up to date before merging
+
+### 5.4. Using the GitHub CLI (`gh`)
+
+Many CI/CD tasks, such as triggering workflows, viewing run logs, or managing releases, can be performed using the [GitHub CLI Developer Guide](gh-cli.md). Familiarizing yourself with `gh` can significantly streamline your development workflow.
 4. Add the CI workflow status checks as required
 
 ### 5.2. Conventional Commits

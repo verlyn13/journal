@@ -1,3 +1,23 @@
+---
+title: CodeMirror Reference Manual - Part 1 (State)
+description: "Part 1 of the CodeMirror 6 reference manual, covering the state layer, including EditorState, Text model, Changes and Transactions, State Effects, Extensions, State Fields, Facets, Compartments, and Range Sets."
+category: "CodeMirror Reference"
+status: active
+tags: ["codemirror", "reference", "manual", "state", "text", "transaction", "extensions"]
+version: "6.0"
+---
+
+
+---
+title: CodeMirror Reference Manual - Part 1 (State)
+description: "Part 1 of the CodeMirror 6 reference manual, covering the state layer, including EditorState, Text model, Changes and Transactions, State Effects, Extensions, State Fields, Facets, Compartments, and Range Sets."
+category: "CodeMirror Reference"
+status: active
+tags: ["codemirror", "reference", "manual", "state", "text", "transaction", "extensions"]
+version: "6.0"
+---
+
+
 # CodeMirror Reference Manual
 
 ## Table of Contents

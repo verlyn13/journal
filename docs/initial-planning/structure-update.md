@@ -1,6 +1,7 @@
 ---
 title: "Structural and Procedural Recommendations for Flask Journal"
 category: "Architectural Guidance"
+description: "Recommendations for project structure, development practices, testing, and error handling for the Flask Journal application."
 related_topics:
   - Backend Architecture
   - Frontend Architecture
@@ -9,7 +10,7 @@ related_topics:
   - Error Handling
   - Alpine.js
   - CodeMirror
-status: "Recommended"
+status: active
 document_id: initial-planning-structure-update
 ---
 

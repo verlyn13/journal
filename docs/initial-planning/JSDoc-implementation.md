@@ -1,7 +1,8 @@
 ---
 title: JSDoc Implementation Guide
 category: Tooling
-status: Recommended
+description: "Guide on setting up and using JSDoc for JavaScript code documentation within the project."
+status: active
 related_topics:
   - JavaScript
   - Documentation

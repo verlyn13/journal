@@ -9,6 +9,7 @@ related_topics:
   - "Documentation Specialist Role"
 version: "1.0"
 tags: ["documentation", "review", "process", "pull-request", "quality-control"]
+status: active
 ---
 
 # Documentation Review Process

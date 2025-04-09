@@ -5,7 +5,7 @@ category: "API Reference"
 date_created: "2025-04-08"
 last_updated: "2025-04-08"
 version: "1.0"
-status: "stable"
+status: active
 related_topics:
   - "Authentication"
   - "Data Model"

@@ -5,7 +5,7 @@ category: "Guides"
 date_created: "2025-04-08"
 last_updated: "2025-04-08" # Updated to reflect initialization fix documentation
 version: "1.0"
-status: "stable"
+status: active
 related_topics:
   - "Architecture Overview"
   - "JavaScript API Documentation"

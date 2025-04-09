@@ -1,3 +1,13 @@
+---
+title: CodeMirror Bundling Example (Rollup)
+description: "Explains why bundling is necessary for CodeMirror and provides an example of how to bundle it using Rollup, including optimization strategies."
+category: "CodeMirror Examples"
+status: active
+tags: ["codemirror", "example", "bundling", "rollup", "javascript", "optimization"]
+version: "6.0"
+---
+
+
 # CodeMirror Bundling Guide: Using Rollup
 
 ## Introduction

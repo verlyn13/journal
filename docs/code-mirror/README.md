@@ -4,6 +4,7 @@ category: reference
 topics: ["codemirror", "editor", "javascript"]
 version: "6.0"
 last_updated: "2025-04-08"
+description: "Index page for the CodeMirror 6 documentation, providing links to reference manuals, system guides, examples, and extension references relevant to the Journal project."
 ---
 
 # CodeMirror Documentation Index

@@ -4,7 +4,7 @@ description: "Brief description of this concept"
 category: "Concepts"
 date_created: "YYYY-MM-DD"
 last_updated: "YYYY-MM-DD"
-status: "draft|published|archived"
+status: draft
 related_topics:
   - "Related Topic 1"
   - "Related Topic 2"

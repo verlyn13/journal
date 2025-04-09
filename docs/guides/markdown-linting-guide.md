@@ -8,6 +8,7 @@ related_topics:
   - "Documentation Specialist Role"
 version: "1.0"
 tags: ["documentation", "quality-assurance", "linting", "markdown", "tools"]
+status: active
 ---
 
 # Markdown Linting and Link Validation Guide

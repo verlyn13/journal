@@ -1,7 +1,8 @@
 ---
 title: Phase 13 - Structural Refactoring
 phase: 13
-status: in-progress
+description: "Outlines the tasks and plan for implementing structural refactoring and best practices based on initial planning recommendations."
+status: active
 related_docs:
   - ../initial-planning/structure-update.md
 ---

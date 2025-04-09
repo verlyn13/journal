@@ -2,8 +2,8 @@
 title: "Status Update: Phase 12 Complete"
 date: 2025-04-08
 phase: 12
-status: Complete
-summary: "Phase 12, focusing on editor bug fixes, layout correction, and implementing asset cache busting, is now complete."
+status: active
+description: "Phase 12, focusing on editor bug fixes, layout correction, and implementing asset cache busting, is now complete."
 link: ../implementation/12-phase-twelve-summary.md
 tags:
   - status

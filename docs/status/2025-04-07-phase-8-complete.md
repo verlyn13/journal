@@ -2,8 +2,8 @@
 title: "Status Update: Phase 8 Complete - CodeMirror Editor Integration"
 date: 2025-04-07
 phase: 8
-status: Complete
-summary: "Phase 8, focusing on the integration of the CodeMirror 6 editor, is complete. This involved setting up frontend bundling (Rollup, Flask-Assets), integrating CodeMirror with Alpine.js, adding Markdown/LaTeX preview via a backend API and MathJax, implementing toolbar actions, basic persistence, and styling."
+status: active
+description: "Phase 8, focusing on the integration of the CodeMirror 6 editor, is complete. This involved setting up frontend bundling (Rollup, Flask-Assets), integrating CodeMirror with Alpine.js, adding Markdown/LaTeX preview via a backend API and MathJax, implementing toolbar actions, basic persistence, and styling."
 tags:
   - status
   - phase 8

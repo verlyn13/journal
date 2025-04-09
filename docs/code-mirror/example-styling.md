@@ -1,3 +1,13 @@
+---
+title: CodeMirror Styling Example
+description: "Explains how to style CodeMirror editors using custom CSS, themes, base themes, and syntax highlighting, including examples for common styling tasks."
+category: "CodeMirror Examples"
+status: active
+tags: ["codemirror", "example", "styling", "css", "theme", "highlighting"]
+version: "6.0"
+---
+
+
 # CodeMirror Styling Guide
 
 ## Introduction to CodeMirror Styling

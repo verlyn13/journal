@@ -1,3 +1,12 @@
+---
+title: Project Status Index
+description: "Index page for documents tracking the overall progress and status of the Flask Journal MVP development, including phase completion updates."
+category: "Status"
+status: active
+tags: ["documentation", "index", "status", "progress", "mvp"]
+---
+
+
 # Project Status
 
 This directory tracks the overall progress and status of the Flask Journal MVP development. It provides a high-level overview of completed features, ongoing work, and potential blockers.

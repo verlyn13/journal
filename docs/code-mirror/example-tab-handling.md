@@ -1,3 +1,13 @@
+---
+title: CodeMirror Tab Handling Example
+description: "Explains CodeMirror's default Tab key behavior, accessibility considerations, and how to configure Tab for indentation while maintaining keyboard navigation."
+category: "CodeMirror Examples"
+status: active
+tags: ["codemirror", "example", "tab", "indentation", "accessibility", "keyboard"]
+version: "6.0"
+---
+
+
 # CodeMirror Tab Handling Guide
 
 ## Introduction

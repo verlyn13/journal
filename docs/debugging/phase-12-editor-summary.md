@@ -2,7 +2,8 @@
 title: Debugging Summary - Phase 12 Editor Issues
 category: Debugging
 phase: 12
-status: resolved
+description: "Summary of debugging efforts during Phase 12, focusing on resolving CodeMirror initialization errors ('editorElement not found'), cache-busting issues, and editor rendering problems."
+status: active
 related_docs:
   - ../implementation/12-phase-twelve-editor-bugfix-layout.md
 ---

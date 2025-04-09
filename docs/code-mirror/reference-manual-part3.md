@@ -1,3 +1,13 @@
+---
+title: CodeMirror Reference Manual - Part 3
+description: "Part 3 of the CodeMirror 6 reference manual, covering extensions, key bindings, decorations, gutters, tooltips, panels, layers, language integration, highlighting, folding, indentation, bracket matching, and stream parsing."
+category: "CodeMirror Reference"
+status: active
+tags: ["codemirror", "reference", "manual", "extensions", "language", "highlighting"]
+version: "6.0"
+---
+
+
 # CodeMirror Extensions Reference
 
 ## Table of Contents

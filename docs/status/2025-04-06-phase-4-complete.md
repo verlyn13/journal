@@ -14,6 +14,7 @@ tags:
   - "testing"
   - "pytest"
   - "mvp"
+description: "Status update announcing the completion of Phase 4, which focused on setting up deployment (Gunicorn, systemd) and the testing framework (Pytest)."
 ---
 
 # Status Update: Phase 4 Complete (April 6, 2025)

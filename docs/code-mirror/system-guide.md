@@ -1,3 +1,13 @@
+---
+title: CodeMirror System Guide
+description: "The official CodeMirror 6 system guide, explaining the core architecture, modularity, state management, update cycle, view layer, commands, and extension system."
+category: "CodeMirror Reference"
+status: active
+tags: ["codemirror", "reference", "guide", "architecture", "state", "view", "extensions"]
+version: "6.0"
+---
+
+
 # CodeMirror Reference Guide
 
 ## Table of Contents

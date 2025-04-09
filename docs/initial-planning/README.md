@@ -1,3 +1,12 @@
+---
+title: Initial Planning Documentation Index
+description: "Index page for the initial planning and design documents created before the main implementation phase of the Flask Journal MVP."
+category: "Initial Planning"
+status: active
+tags: ["documentation", "index", "planning", "design", "mvp"]
+---
+
+
 # Initial Planning Documentation
 
 This directory contains the initial planning and design documents created before the main implementation phase of the Flask Journal MVP. These documents define the project's scope, architecture, and foundational strategies.

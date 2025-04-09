@@ -5,7 +5,7 @@ category: "CodeMirror Examples"
 date_created: "2025-04-08"
 last_updated: "2025-04-08"
 version: "1.0"
-status: "stable"
+status: active
 tags: ["codemirror", "configuration", "example", "setup", "flask-journal"]
 related_topics:
   - "CodeMirror Integration Guide"

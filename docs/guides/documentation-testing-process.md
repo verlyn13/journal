@@ -8,6 +8,7 @@ related_topics:
   - "Documentation Templates"
 version: "1.0"
 tags: ["documentation", "quality-assurance", "testing", "markdown", "linting"]
+status: active
 ---
 
 # Documentation Testing Process

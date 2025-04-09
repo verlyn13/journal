@@ -4,7 +4,7 @@ description: "Brief description of what this component does"
 category: "Components"
 date_created: "YYYY-MM-DD"
 last_updated: "YYYY-MM-DD"
-status: "stable|experimental|deprecated"
+status: draft
 component_type: "ui|service|utility|model"
 dependencies:
   - "Dependency 1"

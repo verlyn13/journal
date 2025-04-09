@@ -1,3 +1,13 @@
+---
+title: CodeMirror Reference Manual - Part 4 (Packages)
+description: "Part 4 of the CodeMirror 6 reference manual, covering packages like @codemirror/commands, @codemirror/search, @codemirror/autocomplete, @codemirror/lint, and @codemirror/collab."
+category: "CodeMirror Reference"
+status: active
+tags: ["codemirror", "reference", "manual", "commands", "search", "autocomplete", "lint", "collab"]
+version: "6.0"
+---
+
+
 # CodeMirror Packages Reference
 
 ## Table of Contents

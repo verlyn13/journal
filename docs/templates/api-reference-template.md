@@ -4,7 +4,7 @@ description: "Brief description of what this API endpoint does"
 category: "API Reference"
 date_created: "YYYY-MM-DD"
 last_updated: "YYYY-MM-DD"
-status: "active|deprecated|planned"
+status: draft
 api_version: "v1"
 related_endpoints:
   - "Related Endpoint 1"

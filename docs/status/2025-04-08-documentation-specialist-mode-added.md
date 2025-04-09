@@ -3,6 +3,7 @@ title: "Documentation Specialist Mode Added"
 date: "2025-04-08"
 category: "Status Update"
 tags: ["documentation", "specialist", "mode", "AI-consumable", "JSDoc"]
+description: "Status update announcing the addition of the Documentation Specialist mode to the project, outlining its purpose, strategy, and next steps."
 ---
 
 # Documentation Specialist Mode Added

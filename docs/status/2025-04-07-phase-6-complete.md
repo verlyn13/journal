@@ -2,8 +2,8 @@
 title: "Status Update: Phase 6 Completion"
 date: 2025-04-07
 phase: 6
-status: Complete
-summary: "Phase 6 (Tags Functionality) successfully implemented, including models, routes, templates, and tests. Addressed timestamp testing issues by standardizing on naive UTC."
+status: active
+description: "Phase 6 (Tags Functionality) successfully implemented, including models, routes, templates, and tests. Addressed timestamp testing issues by standardizing on naive UTC."
 tags: ["status", "phase-6", "complete", "tags", "timestamp", "testing"]
 ---
 

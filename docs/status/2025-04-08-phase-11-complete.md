@@ -2,8 +2,8 @@
 title: "Status Update: Phase 11 Complete - Editor MVP Feature Completion"
 date: 2025-04-08
 phase: 11
-status: Complete
-summary: "Phase 11, implementing the remaining MVP editor features, is complete. Toolbar buttons for common Markdown formatting were added, and draft clearing on successful submission was implemented."
+status: active
+description: "Phase 11, implementing the remaining MVP editor features, is complete. Toolbar buttons for common Markdown formatting were added, and draft clearing on successful submission was implemented."
 tags:
   - status
   - phase 11

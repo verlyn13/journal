@@ -2,7 +2,8 @@
 title: Debugging Summary - Phase 13 Rollup Manifest Issue
 category: Debugging
 phase: 13
-status: resolved
+description: "Summary of debugging efforts to resolve issues with Rollup manifest generation, specifically capturing both JS and CSS hashed filenames."
+status: active
 related_docs:
   - ../implementation/13-phase-thirteen-structure-refactor.md
   - ../../rollup.config.js

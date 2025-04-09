@@ -1,3 +1,13 @@
+---
+title: CodeMirror Core Extensions Reference
+description: "A reference guide listing and categorizing core CodeMirror 6 extensions for editing, presentation, input handling, language support, and more."
+category: "CodeMirror Reference"
+status: active
+tags: ["codemirror", "reference", "extensions", "configuration", "api"]
+version: "6.0"
+---
+
+
 # CodeMirror Core Extensions Reference
 
 ## Table of Contents

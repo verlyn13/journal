@@ -5,7 +5,7 @@ category: "Documentation"
 created_date: "2025-04-08"
 updated_date: "2025-04-08"
 version: "1.0"
-status: "stable"
+status: active
 related_topics:
   - "Documentation Standards"
   - "Architecture Overview"

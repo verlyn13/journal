@@ -1,3 +1,12 @@
+---
+title: Implementation Plans Index
+description: "Index page for detailed, step-by-step implementation plans for specific features or components of the Flask Journal MVP."
+category: "Implementation"
+status: active
+tags: ["documentation", "index", "implementation", "planning", "mvp"]
+---
+
+
 # Implementation Plans
 
 This directory contains detailed, step-by-step implementation plans for specific features or components of the Flask Journal MVP. These plans break down the high-level architecture and requirements defined in `docs/initial-planning/` into actionable tasks for development.

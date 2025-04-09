@@ -2,8 +2,8 @@
 title: "Status Update: Phase 9 Complete - Editor Refinement & Completion"
 date: 2025-04-08
 phase: 9
-status: Complete
-summary: "Phase 9, focusing on refining the CodeMirror editor, is complete. Bugs related to view mode switching were fixed, live preview and toolbar actions were implemented, and basic tests were added."
+status: active
+description: "Phase 9, focusing on refining the CodeMirror editor, is complete. Bugs related to view mode switching were fixed, live preview and toolbar actions were implemented, and basic tests were added."
 tags:
   - status
   - phase 9

@@ -1,3 +1,13 @@
+---
+title: CodeMirror Reference Manual - Part 2 (View)
+description: "Part 2 of the CodeMirror 6 reference manual, covering the view layer, including EditorView, event handling, extending the view, visual features like selection drawing, drop cursor, line highlighting, special characters, whitespace, placeholders, and scrolling."
+category: "CodeMirror Reference"
+status: active
+tags: ["codemirror", "reference", "manual", "view", "dom", "events", "extensions"]
+version: "6.0"
+---
+
+
 # CodeMirror View Reference
 
 ## Table of Contents

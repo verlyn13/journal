@@ -1,3 +1,12 @@
+---
+title: Rollup Configuration Recommendation (Single Config)
+description: "Recommendation for using a single Rollup config with multiple named entries (JS and CSS) to simplify the build process and manifest generation."
+category: "Initial Planning"
+status: active
+tags: ["rollup", "build", "configuration", "javascript", "css", "manifest"]
+---
+
+
 Below is a **practical recommendation** that fits your project setup and avoids the “no related origin name” or “could not resolve” pitfalls. **Short version**: **Use a single Rollup config with two named entries**—one for your JS (`main.js`), one for your CSS (`main.css`). That way, Rollup and the manifest plugin see everything in one pass, and you get a single, consistent `manifest.json` containing both hashed JS and CSS.
 
 ---
