@@ -15,6 +15,7 @@ Thank you for your interest in contributing to the Journal project! This documen
     - [JavaScript](#javascript)
   - [Documentation Guidelines](#documentation-guidelines)
   - [Testing](#testing)
+    - [Local Workflow Testing with `act`](#local-workflow-testing-with-act)
 
 ## Code of Conduct
 
@@ -101,5 +102,39 @@ We expect all contributors to follow our [Code of Conduct](CODE_OF_CONDUCT.md). 
 - Run tests locally before submitting: `pytest`
 - Aim for high test coverage
 - Include both unit and integration tests where appropriate
+
+### Local Workflow Testing with `act`
+
+Before submitting a Pull Request, especially if your changes affect GitHub Actions workflows (`.github/workflows/`), you should test the workflows locally using [`act`](https://github.com/nektos/act). This helps catch errors early and reduces CI failures.
+
+1.  **Install `act`**: Follow the installation instructions in the [`act` documentation](https://github.com/nektos/act#installation).
+2.  **Install Docker**: Ensure Docker (or a compatible engine like Podman) is installed and running.
+3.  **Run Workflows Locally**:
+    *   Navigate to the project root directory (`/home/verlyn13/Projects/journal`).
+    *   Simulate a `push` event (runs workflows triggered by push):
+        ```bash
+        gh act push
+        ```
+    *   Simulate a `pull_request` event:
+        ```bash
+        gh act pull_request
+        ```
+    *   Run a specific workflow file:
+        ```bash
+        gh act -W .github/workflows/python-tests.yml
+        ```
+    *   Run a specific job within workflows:
+        ```bash
+        gh act -j build-frontend
+        ```
+4.  **Provide Secrets (If Needed)**: If workflows require secrets (like `GITHUB_TOKEN`), provide them securely using the `-s` flag or a `.secrets` file. Refer to the [act Reference Guide](docs/guides/act-reference.md) for details.
+    ```bash
+    # Example: Prompt securely for GITHUB_TOKEN
+    gh act -s GITHUB_TOKEN
+    ```
+5.  **Review Output**: Check the `act` output for any errors or unexpected behavior in your workflows.
+
+Consult the full [act Reference Guide](docs/guides/act-reference.md) for advanced usage, including custom runner images, event payloads, and matrix testing.
+
 
 Thank you for contributing to Journal!

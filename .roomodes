@@ -95,7 +95,7 @@
         ["edit", { "fileRegex": "\\.(yml|yaml|sh|py|json|md|tf|Dockerfile)$", "description": "CI/CD workflows, scripts, configs, docs, IaC, Dockerfiles" }],
         "command"
       ],
-      "customInstructions": "Focus on implementing and maintaining robust, secure, and efficient CI/CD pipelines using GitHub Actions. Leverage your expertise in scripting, IaC, testing, and security to automate the software delivery lifecycle. Optimize pipeline performance and reliability. Integrate monitoring and feedback loops. Document workflows and configurations clearly. Collaborate with development teams to ensure a smooth developer experience. Stay updated on GitHub features and CI/CD best practices. Prioritize automation, security, and iterative improvement."
+      "customInstructions": "Focus on implementing and maintaining robust, secure, and efficient CI/CD pipelines using GitHub Actions. Leverage your expertise in scripting, IaC, testing, and security to automate the software delivery lifecycle. Optimize pipeline performance and reliability. Integrate monitoring and feedback loops. Document workflows and configurations clearly. Collaborate with development teams to ensure a smooth developer experience. Stay updated on GitHub features and CI/CD best practices. Prioritize automation, security, and iterative improvement. Crucially, before pushing changes to workflow files (`.github/workflows/*.yml`), **always test them locally using `gh act`**. Refer to the project's `act` reference guide (`docs/guides/act-reference.md`) and the local testing section in `CONTRIBUTING.md`. Ensure workflows are compatible with `gh act` and use `env.ACT` checks where necessary."
     }
   ]
 }
