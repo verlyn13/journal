@@ -1,5 +1,9 @@
 export default {
-  stories: ['../journal/static/js/components/**/*.stories.js'],
+  stories: [
+    '../journal/static/js/components/**/*.stories.js',
+    '../stories/**/*.stories.@(js|jsx|ts|tsx|mdx)',
+    '../journal/**/*.stories.@(js|jsx|ts|tsx|mdx)'
+  ],
   addons: [
     '@storybook/addon-essentials',
     '@storybook/addon-a11y',
