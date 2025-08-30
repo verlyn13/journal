@@ -29,6 +29,9 @@ export default {
       }
     };
     
+    // Disable public directory to prevent copying our redirect index.html
+    config.publicDir = false;
+    
     return config;
   }
 };
