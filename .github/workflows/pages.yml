@@ -1,0 +1,67 @@
+name: Deploy Storybook to Pages
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  CUSTOM_DOMAIN: ${{ vars.PAGES_CUSTOM_DOMAIN }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: '1.2.21'
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Build Storybook static
+        run: bun run build-storybook
+
+      - name: Prepare Pages artifact
+        run: |
+          mkdir -p public
+          # Include Storybook under /storybook
+          mv storybook-static public/storybook
+          # Optionally include docs HTML if present
+          if [ -d docs-html ]; then
+            mv docs-html public/docs
+          fi
+          # Set custom domain if provided via repository variables
+          if [ -n "${CUSTOM_DOMAIN}" ]; then
+            echo "${CUSTOM_DOMAIN}" > public/CNAME
+          fi
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: public
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
