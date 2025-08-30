@@ -2,7 +2,7 @@
 from flask import Blueprint
 
 # Define the blueprint for API routes
-api_bp = Blueprint("api", __name__)
+api_bp = Blueprint('api', __name__)
 
 # Import routes after blueprint definition to avoid circular imports
-# from . import routes  # Commented out as it's currently unused (F401)
+from . import routes  # Ensure routes are registered on blueprint import

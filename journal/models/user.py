@@ -1,6 +1,7 @@
 from flask_login import UserMixin
-from werkzeug.security import generate_password_hash, check_password_hash
-from .. import db  # Import db instance from the main package (__init__.py)
+from werkzeug.security import check_password_hash, generate_password_hash
+
+from journal import db  # Import db instance from the main package (__init__.py)
 
 
 class User(UserMixin, db.Model):
@@ -18,7 +19,7 @@ class User(UserMixin, db.Model):
         entries (relationship): Relationship to user's journal entries.
     """
 
-    __tablename__ = "users"  # Optional: Define table name explicitly
+    __tablename__ = 'users'  # Optional: Define table name explicitly
 
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), index=True, unique=True, nullable=False)
@@ -27,7 +28,7 @@ class User(UserMixin, db.Model):
         db.String(256)
     )  # Increased length for potentially longer hashes (e.g., Argon2)
     entries = db.relationship(
-        "Entry", backref="author", lazy="dynamic", cascade="all, delete-orphan"
+        'Entry', backref='author', lazy='dynamic', cascade='all, delete-orphan'
     )  # Added relationship to Entry
 
     def set_password(self, password):
@@ -59,7 +60,7 @@ class User(UserMixin, db.Model):
         Returns:
             str: String representation of the user in the format '<User username>'.
         """
-        return f"<User {self.username}>"
+        return f'<User {self.username}>'
 
 
 # Note: The @login_manager.user_loader callback is defined in journal/__init__.py

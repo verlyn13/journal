@@ -1,7 +1,8 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField
-from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
-from ..models.user import User  # Import User model to check for existing users
+from wtforms import BooleanField, PasswordField, StringField, SubmitField
+from wtforms.validators import DataRequired, Email, EqualTo, Length, ValidationError
+
+from journal.models.user import User  # Import User model to check for existing users
 
 """
 Authentication related forms.
@@ -23,12 +24,10 @@ class LoginForm(FlaskForm):
         submit (SubmitField): Button to submit the form.
     """
 
-    username = StringField(
-        "Username", validators=[DataRequired(), Length(min=3, max=64)]
-    )
-    password = PasswordField("Password", validators=[DataRequired()])
-    remember_me = BooleanField("Keep me logged in")
-    submit = SubmitField("Log In")
+    username = StringField('Username', validators=[DataRequired(), Length(min=3, max=64)])
+    password = PasswordField('Password', validators=[DataRequired()])
+    remember_me = BooleanField('Keep me logged in')
+    submit = SubmitField('Log In')
 
 
 class RegistrationForm(FlaskForm):
@@ -44,19 +43,17 @@ class RegistrationForm(FlaskForm):
         submit (SubmitField): Button to submit the form.
     """
 
-    username = StringField(
-        "Username", validators=[DataRequired(), Length(min=3, max=64)]
-    )
-    email = StringField("Email", validators=[DataRequired(), Email(), Length(max=120)])
-    password = PasswordField("Password", validators=[DataRequired(), Length(min=8)])
+    username = StringField('Username', validators=[DataRequired(), Length(min=3, max=64)])
+    email = StringField('Email', validators=[DataRequired(), Email(), Length(max=120)])
+    password = PasswordField('Password', validators=[DataRequired(), Length(min=8)])
     confirm_password = PasswordField(
-        "Confirm Password",
+        'Confirm Password',
         validators=[
             DataRequired(),
-            EqualTo("password", message="Passwords must match."),
+            EqualTo('password', message='Passwords must match.'),
         ],
     )
-    submit = SubmitField("Register")
+    submit = SubmitField('Register')
 
     # Custom validators to check if username or email already exist
     def validate_username(self, username):
@@ -70,9 +67,7 @@ class RegistrationForm(FlaskForm):
         """
         user = User.query.filter_by(username=username.data).first()
         if user is not None:
-            raise ValidationError(
-                "Username already taken. Please choose a different one."
-            )
+            raise ValidationError('Username already taken. Please choose a different one.')
 
     def validate_email(self, email):
         """Validate that the email is not already registered.
@@ -86,5 +81,5 @@ class RegistrationForm(FlaskForm):
         user = User.query.filter_by(email=email.data).first()
         if user is not None:
             raise ValidationError(
-                "Email address already registered. Please use a different one or log in."
+                'Email address already registered. Please use a different one or log in.'
             )

@@ -6,11 +6,24 @@
  */
 
 import { EditorState } from "@codemirror/state";
-import { EditorView, placeholder, lineNumbers, highlightActiveLineGutter, highlightSpecialChars, drawSelection, highlightActiveLine, keymap } from "@codemirror/view"; // Added keymap import
+import {
+	EditorView,
+	placeholder,
+	lineNumbers,
+	highlightActiveLineGutter,
+	highlightSpecialChars,
+	drawSelection,
+	highlightActiveLine,
+	keymap,
+} from "@codemirror/view"; // Added keymap import
 import { history, defaultKeymap, historyKeymap } from "@codemirror/commands";
 import { markdown, markdownLanguage } from "@codemirror/lang-markdown";
 import { languages } from "@codemirror/language-data";
-import { syntaxHighlighting, defaultHighlightStyle, bracketMatching } from "@codemirror/language";
+import {
+	syntaxHighlighting,
+	defaultHighlightStyle,
+	bracketMatching,
+} from "@codemirror/language";
 import { closeBrackets, closeBracketsKeymap } from "@codemirror/autocomplete"; // Needed for bracket handling
 import { journalEditorTheme } from "./theme";
 
@@ -18,16 +31,17 @@ import { journalEditorTheme } from "./theme";
 
 /**
  * Creates an update listener extension that calls the onChange callback when document content changes.
- * 
+ *
  * @private
  * @param {function(string)} onChange - Callback function to call with the new content
  * @returns {Extension} CodeMirror extension for handling content changes
  */
-const contentChangeCallback = (onChange) => EditorView.updateListener.of((update) => {
-    if (update.docChanged) {
-        onChange(update.state.doc.toString());
-    }
-});
+const contentChangeCallback = (onChange) =>
+	EditorView.updateListener.of((update) => {
+		if (update.docChanged) {
+			onChange(update.state.doc.toString());
+		}
+	});
 
 /**
  * Creates a CodeMirror editor instance in the given parent element.
@@ -45,58 +59,58 @@ const contentChangeCallback = (onChange) => EditorView.updateListener.of((update
  * @example
  * // Create a basic editor with default settings
  * const editor = createEditor(document.getElementById('editor-container'), '# Hello World');
- * 
+ *
  * // Create an editor with content change notification
  * const editor = createEditor(
  *   document.getElementById('editor-container'),
  *   'Initial content',
- *   { 
- *     onChange: (newContent) => console.log('Content changed:', newContent) 
+ *   {
+ *     onChange: (newContent) => console.log('Content changed:', newContent)
  *   }
  * );
  */
 export function createEditor(parentElement, initialDoc = "", options = {}) {
-    const { onChange = () => {}, additionalExtensions = [] } = options;
-    const state = EditorState.create({
-        doc: initialDoc,
-        extensions: [
-            // Minimal setup - replacing basicSetup
-            lineNumbers(),
-            highlightActiveLineGutter(),
-            highlightSpecialChars(),
-            history(),
-            drawSelection(),
-            syntaxHighlighting(defaultHighlightStyle, { fallback: true }), // Basic syntax highlighting
-            bracketMatching(),
-            closeBrackets(),
-            highlightActiveLine(),
-            EditorState.allowMultipleSelections.of(true), // Often part of basic setup
-            EditorView.lineWrapping, // Enable line wrapping
+	const { onChange = () => {}, additionalExtensions = [] } = options;
+	const state = EditorState.create({
+		doc: initialDoc,
+		extensions: [
+			// Minimal setup - replacing basicSetup
+			lineNumbers(),
+			highlightActiveLineGutter(),
+			highlightSpecialChars(),
+			history(),
+			drawSelection(),
+			syntaxHighlighting(defaultHighlightStyle, { fallback: true }), // Basic syntax highlighting
+			bracketMatching(),
+			closeBrackets(),
+			highlightActiveLine(),
+			EditorState.allowMultipleSelections.of(true), // Often part of basic setup
+			EditorView.lineWrapping, // Enable line wrapping
 
-            // Keymaps (order might matter)
-            keymap.of([
-                ...closeBracketsKeymap,
-                ...defaultKeymap,
-                ...historyKeymap,
-                // ...searchKeymap, // Add if search is needed
-                // ...lintKeymap // Add if linting is needed
-            ]),
+			// Keymaps (order might matter)
+			keymap.of([
+				...closeBracketsKeymap,
+				...defaultKeymap,
+				...historyKeymap,
+				// ...searchKeymap, // Add if search is needed
+				// ...lintKeymap // Add if linting is needed
+			]),
 
-            // Original extensions
-            markdown({ base: markdownLanguage, codeLanguages: languages }), // Add Markdown support
-            journalEditorTheme, // Add custom theme
-            placeholder("Start writing your journal entry..."), // Add placeholder text
-            contentChangeCallback(onChange), // Add our change listener
-            ...additionalExtensions // Spread any additional extensions provided
-        ],
-    });
+			// Original extensions
+			markdown({ base: markdownLanguage, codeLanguages: languages }), // Add Markdown support
+			journalEditorTheme, // Add custom theme
+			placeholder("Start writing your journal entry..."), // Add placeholder text
+			contentChangeCallback(onChange), // Add our change listener
+			...additionalExtensions, // Spread any additional extensions provided
+		],
+	});
 
-    const view = new EditorView({
-        state,
-        parent: parentElement,
-    });
+	const view = new EditorView({
+		state,
+		parent: parentElement,
+	});
 
-    return view;
+	return view;
 }
 
 // Mode state is managed by the Alpine component (alpine-component.js)

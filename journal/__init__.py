@@ -1,16 +1,25 @@
-import os
 import json
-import re  # Import the regex module
 import logging
+import os
+import re  # Import the regex module
+from datetime import UTC, datetime, timezone
 from logging import StreamHandler
-from datetime import datetime, timezone
-from flask import Flask, url_for, current_app
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
-from flask_login import LoginManager
-from dotenv import load_dotenv
-from flask_wtf.csrf import CSRFProtect
+
 import markdown
+from dotenv import load_dotenv
+from flask import Flask, current_app, url_for
+from flask_login import LoginManager
+from flask_migrate import Migrate
+from flask_sqlalchemy import SQLAlchemy
+from flask_wtf.csrf import CSRFProtect
+
+# Observability (structured logging, error handlers)
+from .observability import (
+    _get_environment as _obs_get_environment,
+    register_error_handlers,
+    register_request_context,
+    setup_logging,
+)
 
 # Removed Flask-Assets import as Rollup handles bundling now
 
@@ -31,13 +40,13 @@ db = SQLAlchemy()
 migrate = Migrate()
 login_manager = LoginManager()
 # Set the login view for Flask-Login (route name for the login page)
-login_manager.login_view = "auth.login"
+login_manager.login_view = 'auth.login'
 # Set the message category for login_required messages
-login_manager.login_message_category = "info"
+login_manager.login_message_category = 'info'
 csrf = CSRFProtect()
 
 
-def create_app(config_class_name="config.Config"):
+def create_app(config_class_name='config.Config'):
     """Application factory function.
 
     Creates and configures a Flask application instance based on the
@@ -62,28 +71,29 @@ def create_app(config_class_name="config.Config"):
 
     csrf.init_app(app)
 
-    # --- Logging Configuration ---
-    if not app.debug and not app.testing:
-        # In production or non-debug mode, add a handler.
-        # Flask's default handler might be added if logger has no handlers,
-        # but configuring explicitly gives more control.
-        handler = StreamHandler()  # Log to stderr
-        formatter = logging.Formatter(
-            "%(asctime)s %(levelname)s: %(message)s " "[in %(pathname)s:%(lineno)d]"
-        )
-        handler.setFormatter(formatter)
-        app.logger.addHandler(handler)
-        app.logger.setLevel(logging.INFO)
-        app.logger.info("Journal startup")
-    elif app.debug:
-        # Debug mode specific logging level if needed
-        # Flask automatically sets level to DEBUG if app.debug is True
-        # We can still add formatters or handlers if desired
-        # For now, let Flask's default debug behavior manage it,
-        # but we could customize here.
-        app.logger.setLevel(logging.DEBUG)
-        app.logger.info("Journal startup in DEBUG mode")
-    # -----------------------------
+    # --- Logging & Observability ---
+    env = _obs_get_environment(app)
+    setup_logging(env)
+    app.logger.info(f'Journal startup ({env})')
+    register_request_context(app)
+    register_error_handlers(app)
+    # Optional: if enabled via env, initialize OTLP exporters for traces + logs
+    try:
+        from .observability import setup_otel
+
+        setup_otel(app)
+    except Exception:  # Best-effort; don't crash app on observability init
+        app.logger.exception('Observability (OTEL) setup failed')
+
+    # Optional HTTP request/response logging
+    if os.getenv('LOG_HTTP', 'false').lower() in {'1', 'true', 'yes'}:
+        try:
+            from .observability import register_http_logging
+
+            register_http_logging(app)
+        except Exception:
+            app.logger.exception('HTTP logging setup failed')
+    # -------------------------------
 
     # Removed Flask-Assets initialization
 
@@ -91,7 +101,7 @@ def create_app(config_class_name="config.Config"):
     # Authentication blueprint
     from .auth import auth as auth_blueprint
 
-    app.register_blueprint(auth_blueprint, url_prefix="/auth")
+    app.register_blueprint(auth_blueprint, url_prefix='/auth')
 
     # Main application blueprint (for non-auth features)
     from .main import main as main_blueprint
@@ -101,7 +111,7 @@ def create_app(config_class_name="config.Config"):
     # API blueprint
     from .api import api_bp
 
-    app.register_blueprint(api_bp, url_prefix="/api")
+    app.register_blueprint(api_bp, url_prefix='/api')
 
     # --- User Loader for Flask-Login ---
     # Moved here to avoid circular imports if defined within models/user.py
@@ -127,13 +137,13 @@ def create_app(config_class_name="config.Config"):
             dict: Dictionary containing the 'now' function.
         """
         return {
-            "now": lambda: datetime.now(timezone.utc)
+            'now': lambda: datetime.now(UTC)
         }  # Use recommended timezone-aware UTC time, wrapped in lambda for lazy evaluation
 
     # ---------------------------------
 
     # --- Markdown Filter ---
-    @app.template_filter("markdown")
+    @app.template_filter('markdown')
     def markdown_filter(s):
         """Convert markdown text to HTML.
 
@@ -168,28 +178,26 @@ def create_app(config_class_name="config.Config"):
             JSONDecodeError: If manifest.json cannot be parsed.
         """
         nonlocal manifest, hashed_css_file  # Declare both here
-        manifest_path = os.path.join(app.static_folder, "gen", "manifest.json")
-        css_dir = os.path.join(app.static_folder, "gen")
+        manifest_path = os.path.join(app.static_folder, 'gen', 'manifest.json')
+        css_dir = os.path.join(app.static_folder, 'gen')
         manifest = {}  # Reset on load
         hashed_css_file = None  # Reset on load
 
         # Load Manifest
         try:
-            with open(manifest_path, "r") as f:
+            with open(manifest_path, encoding='utf-8') as f:
                 manifest = json.load(f)
-            current_app.logger.info(f"Loaded asset manifest from {manifest_path}")
+            current_app.logger.info(f'Loaded asset manifest from {manifest_path}')
         except FileNotFoundError:
-            current_app.logger.error(
+            current_app.logger.exception(
                 f"Asset manifest not found at {manifest_path}. Run 'npm run build'."
             )
         except json.JSONDecodeError:
-            current_app.logger.error(
-                f"Error decoding asset manifest at {manifest_path}."
-            )
+            current_app.logger.exception(f'Error decoding asset manifest at {manifest_path}.')
 
         # Find Hashed CSS File
         # Define pattern string outside f-string to avoid SyntaxWarning
-        css_pattern_str = r"^(main|styles)\.[a-zA-Z0-9]+\.css$"
+        css_pattern_str = r'^(main|styles)\.[a-zA-Z0-9]+\.css$'
         try:
             files = os.listdir(css_dir)
             # Find the file matching the pattern Rollup generates (e.g., main.[hash].css or styles.[hash].css)
@@ -199,17 +207,17 @@ def create_app(config_class_name="config.Config"):
             found_css = [f for f in files if css_pattern.match(f)]
             if found_css:
                 hashed_css_file = os.path.join(
-                    "gen", found_css[0]
+                    'gen', found_css[0]
                 )  # Store relative path like 'gen/main.xyz.css'
-                current_app.logger.info(f"Found hashed CSS file: {hashed_css_file}")
+                current_app.logger.info(f'Found hashed CSS file: {hashed_css_file}')
             else:
                 current_app.logger.error(
                     f"Could not find hashed CSS file in {css_dir}. Looked for pattern '{css_pattern_str}'. Run 'npm run build'."
                 )
         except FileNotFoundError:
-            current_app.logger.error(f"Static asset directory not found at {css_dir}.")
-        except Exception as e:
-            current_app.logger.error(f"Error finding hashed CSS file: {e}")
+            current_app.logger.exception(f'Static asset directory not found at {css_dir}.')
+        except Exception:
+            current_app.logger.exception('Error finding hashed CSS file')
 
     @app.context_processor
     def inject_manifest():
@@ -234,41 +242,38 @@ def create_app(config_class_name="config.Config"):
             Returns:
                 str: URL to the hashed version of the asset.
             """
-            if logical_name.endswith(".js"):
+            if logical_name.endswith('.js'):
                 # Use manifest for JS files (key should match logical name)
                 hashed_path = manifest.get(logical_name)
                 if hashed_path:
                     # Manifest value already includes 'gen/' prefix from Rollup config
-                    return url_for("static", filename=hashed_path)
-                else:
-                    current_app.logger.warning(
-                        f"JS asset '{logical_name}' not found in manifest. Falling back."
-                    )
-                    # Fallback to non-hashed path (might be incorrect)
-                    return url_for("static", filename=f"gen/{logical_name}")
+                    return url_for('static', filename=hashed_path)
+                current_app.logger.warning(
+                    f"JS asset '{logical_name}' not found in manifest. Falling back."
+                )
+                # Fallback to non-hashed path (might be incorrect)
+                return url_for('static', filename=f'gen/{logical_name}')
 
-            elif logical_name.endswith(".css"):
+            if logical_name.endswith('.css'):
                 # Use the pre-found hashed CSS file path
                 if hashed_css_file:
-                    return url_for("static", filename=hashed_css_file)
-                else:
-                    current_app.logger.warning(
-                        f"Hashed CSS file for '{logical_name}' not found. Falling back."
-                    )
-                    # Fallback to non-hashed path (might be incorrect)
-                    return url_for("static", filename=f"gen/{logical_name}")
-            else:
-                # Handle other types or return original name if needed
+                    return url_for('static', filename=hashed_css_file)
                 current_app.logger.warning(
-                    f"Asset type for '{logical_name}' not handled. Falling back."
+                    f"Hashed CSS file for '{logical_name}' not found. Falling back."
                 )
-                return url_for("static", filename=f"gen/{logical_name}")
+                # Fallback to non-hashed path (might be incorrect)
+                return url_for('static', filename=f'gen/{logical_name}')
+            # Handle other types or return original name if needed
+            current_app.logger.warning(
+                f"Asset type for '{logical_name}' not handled. Falling back."
+            )
+            return url_for('static', filename=f'gen/{logical_name}')
 
         # Reload manifest/CSS in debug mode on each request for easier development
         if current_app.debug:
             load_manifest()
 
-        return dict(asset_url=get_asset_url)
+        return {'asset_url': get_asset_url}
 
     # -------------------------
 

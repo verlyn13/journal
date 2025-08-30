@@ -1,26 +1,26 @@
 {
-  "tags": {
-    "allowUnknownTags": true,
-    "dictionaries": ["jsdoc", "closure"]
-  },
-  "source": {
-    "include": ["src/js"],
-    "exclude": ["node_modules"]
-  },
-  "opts": {
-    "destination": "docs/js-api",
-    "recurse": true,
-    "template": "node_modules/minami"
-  },
-  "templates": {
-    "systemName": "Flask Journal JS Documentation",
-    "footer": "Flask Journal Project",
-    "copyright": "2025",
-    "includeDate": true,
-    "navType": "vertical",
-    "theme": "cosmo",
-    "linenums": true,
-    "collapseSymbols": false,
-    "inverseNav": false
-  }
+	"tags": {
+		"allowUnknownTags": true,
+		"dictionaries": ["jsdoc", "closure"]
+	},
+	"source": {
+		"include": ["src/js"],
+		"exclude": ["node_modules"]
+	},
+	"opts": {
+		"destination": "docs/js-api",
+		"recurse": true,
+		"template": "node_modules/minami"
+	},
+	"templates": {
+		"systemName": "Flask Journal JS Documentation",
+		"footer": "Flask Journal Project",
+		"copyright": "2025",
+		"includeDate": true,
+		"navType": "vertical",
+		"theme": "cosmo",
+		"linenums": true,
+		"collapseSymbols": false,
+		"inverseNav": false
+	}
 }

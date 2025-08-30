@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "build-tools": {
+      "command": "node",
+      "args": ["./scripts/mcp-build-server.js"],
+      "env": {
+        "TOOL_CHAIN": "bun,uv,ruff,biome,pytest,mypy"
+      }
+    },
+    "ci-cd": {
+      "command": "npx",
+      "args": ["github-actions-mcp"],
+      "env": {}
+    }
+  }
+}

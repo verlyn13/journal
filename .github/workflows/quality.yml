@@ -1,0 +1,50 @@
+# Runs Biome checks and TypeScript type checking on PRs and pushes
+name: Quality
+
+on:
+  pull_request:
+    branches: [ main ]
+    paths:
+      - '**/*.ts'
+      - '**/*.js'
+      - '**/*.mjs'
+      - '**/*.cjs'
+      - '.biome.json'
+      - 'tsconfig.json'
+      - 'package.json'
+      - '.github/workflows/quality.yml'
+  push:
+    branches: [ main ]
+    paths:
+      - '**/*.ts'
+      - '**/*.js'
+      - '**/*.mjs'
+      - '**/*.cjs'
+      - '.biome.json'
+      - 'tsconfig.json'
+      - 'package.json'
+      - '.github/workflows/quality.yml'
+
+jobs:
+  biome-and-types:
+    name: Biome and TypeScript
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Biome check
+        run: npx biome ci --reporter=github .
+
+      - name: TypeScript typecheck
+        run: npx tsc --noEmit
+

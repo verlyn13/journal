@@ -1,4 +1,5 @@
 import os
+
 from dotenv import load_dotenv
 
 # Load environment variables from .env file
@@ -14,13 +15,13 @@ class Config:
 
     # Secret key for session management, CSRF protection, etc.
     # Loaded from environment variable for security.
-    SECRET_KEY = os.environ.get("SECRET_KEY") or "you-should-really-change-this"
+    SECRET_KEY = os.environ.get('SECRET_KEY') or 'you-should-really-change-this'
 
     # Database configuration
     # Use SQLite for simplicity in this MVP
-    SQLALCHEMY_DATABASE_URI = os.environ.get(
-        "DATABASE_URL"
-    ) or "sqlite:///" + os.path.join(basedir, "journal.db")
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///' + os.path.join(
+        basedir, 'journal.db'
+    )
     # Disable modification tracking to save resources, as it's not needed
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
@@ -41,8 +42,13 @@ class Config:
 #     DEBUG = True
 #
 class TestingConfig(Config):
+    """Configuration for running tests.
+
+    Uses in-memory SQLite and disables CSRF for simpler form testing.
+    """
+
     TESTING = True
-    SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"  # Use in-memory DB for tests
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'  # Use in-memory DB for tests
     WTF_CSRF_ENABLED = False  # Disable CSRF for easier testing
 
 

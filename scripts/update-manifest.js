@@ -33,4 +33,4 @@ try {
 }
 */
 
-console.log('Post-build script finished (no action taken).');
+console.log("Post-build script finished (no action taken).");

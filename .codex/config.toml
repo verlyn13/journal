@@ -1,0 +1,28 @@
+[general]
+# Prefer the coding-optimized model; falls back to global if not available
+model = "codex-1"
+auto_mode = true
+
+[tools]
+# Prevent destructive or off-policy commands; project prefers uv + bun
+restricted_commands = [
+  "rm -rf",
+  "git push --force",
+  "pip",
+  "pip3",
+  "poetry",
+  "conda",
+  "pip install",
+  "poetry add",
+  "npm install"
+]
+
+[mcp_servers]
+# Define optional project-scoped MCP servers; tokens and endpoints come from global config/env
+# These entries will be ignored if the binaries aren't present; safe to keep in repo
+# Example GitHub integration for PR/issue ops
+github = { command = "npx", args = ["github-mcp-server" ] }
+# Example CI/CD helper
+ci = { command = "npx", args = ["github-actions-mcp" ] }
+# Example Postgres access (DATABASE_URL from env)
+postgres = { command = "npx", args = ["postgres-mcp-server" ] }

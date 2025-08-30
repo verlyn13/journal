@@ -1,0 +1,41 @@
+# Bun configuration for tasks and install behavior
+
+[install]
+# Prefer exact versions recorded in lockfiles
+exact = true
+saveTextLockfile = true
+production = false
+
+[tasks]
+# Code quality
+"format" = "npx biome format --write ."
+"lint" = "npx biome lint ."
+"check" = "npx biome ci --reporter=github ."
+"typecheck" = "npx tsc --noEmit"
+
+# Python via uv (kept simple; requires uv installed)
+"py:sync" = "uv sync"
+"py:lint" = "uv run ruff check ."
+"py:fix" = "uv run ruff check . --fix --unsafe-fixes && uv run ruff format ."
+"py:format" = "uv run ruff format ."
+"py:typecheck" = "uv run mypy ."
+"py:test" = "uv run pytest -q"
+
+# Combined tasks
+"lint:all" = "bun run lint && bun run py:lint"
+"format:all" = "bun run format && bun run py:format"
+"check:all" = "bun run check && bun run py:lint && bun run py:typecheck && bun run py:test"
+
+# Documentation
+"docs:fetch" = "bun run fetch-docs.ts"
+"docs:fetch:enhanced" = "bun run fetch-docs-enhanced.ts --force"
+"docs:update" = "bash ./docs.sh update"
+"docs:serve" = "bash ./docs.sh serve"
+
+# UI/UX workflows (HX/AX)
+"storybook" = "bun run storybook"
+"storybook:build" = "bun run build-storybook"
+"test:e2e" = "bun run test"
+"test:ui" = "bun run test:ui"
+"test:visual" = "bun run test:visual"
+"test:a11y" = "bun run test:a11y"

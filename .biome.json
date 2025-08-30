@@ -1,0 +1,53 @@
+{
+	"$schema": "https://biomejs.dev/schemas/2.0.0/schema.json",
+	"formatter": {
+		"enabled": true,
+		"formatWithErrors": false,
+		"indentStyle": "space",
+		"indentWidth": 2,
+		"lineWidth": 100
+	},
+	"organizeImports": {
+		"enabled": true
+	},
+	"linter": {
+		"enabled": true,
+		"rules": {
+			"recommended": true
+		}
+	},
+	"overrides": [
+		{
+			"include": ["**/*.md"],
+			"linter": { "enabled": false },
+			"formatter": { "enabled": true }
+		},
+		{
+			"include": ["**/*.json", "**/*.jsonc"],
+			"linter": { "enabled": false },
+			"formatter": { "enabled": true }
+		},
+		{
+			"include": ["docs/**"],
+			"linter": { "enabled": false },
+			"formatter": { "enabled": true }
+		}
+	],
+	"files": {
+		"ignore": [
+			"node_modules",
+			".venv",
+			"coverage",
+			"dist",
+			"build",
+			"journal.db",
+			".docs-cache",
+			"docs-backup",
+			"docs-html",
+			"_site",
+			"journal/static/gen",
+			"journal/static/dist"
+		],
+		"maxSize": 2097152
+	}
+}

@@ -1,23 +1,22 @@
-from flask import request, jsonify, current_app
-from flask_login import login_required
 import markdown  # Using the markdown library already imported in main __init__
+from flask import current_app, jsonify, request
+from flask_login import login_required
 
 from . import api_bp  # Import the blueprint from __init__.py
 
 # Configure Markdown extensions (can be customized)
 # Example: Enable tables and fenced code blocks
 md_extensions = [
-    "markdown.extensions.tables",
-    "markdown.extensions.fenced_code",
-    "markdown.extensions.extra",  # Includes tables, fenced_code, footnotes, etc.
+    'markdown.extensions.tables',
+    'markdown.extensions.fenced_code',
+    'markdown.extensions.extra',  # Includes tables, fenced_code, footnotes, etc.
 ]
 
 
-@api_bp.route("/v1/markdown/preview", methods=["POST"])
+@api_bp.route('/v1/markdown/preview', methods=['POST'])
 @login_required  # Ensure only logged-in users can access
 def preview_markdown():
-    """
-    API endpoint to preview Markdown text rendered as HTML.
+    """API endpoint to preview Markdown text rendered as HTML.
 
     This endpoint renders the provided Markdown content as HTML using the configured
     Markdown extensions. It requires authentication via Flask-Login.
@@ -36,21 +35,21 @@ def preview_markdown():
         - Uses session-based CSRF protection
     """
     if not request.is_json:
-        return jsonify({"error": "Request must be JSON"}), 400
+        return jsonify({'error': 'Request must be JSON'}), 400
 
     data = request.get_json()
-    markdown_text = data.get("text", "")
+    markdown_text = data.get('text', '')
 
     if markdown_text is None:  # Handle explicit null value
-        markdown_text = ""
+        markdown_text = ''
 
     try:
         # Render Markdown to HTML using the configured extensions
         html_content = markdown.markdown(markdown_text, extensions=md_extensions)
-        return jsonify({"html": html_content})
+        return jsonify({'html': html_content})
     except Exception as e:
-        current_app.logger.error(f"Markdown rendering failed: {e}", exc_info=True)
-        return jsonify({"error": "Failed to render Markdown"}), 500
+        current_app.logger.error(f'Markdown rendering failed: {e}', exc_info=True)
+        return jsonify({'error': 'Failed to render Markdown'}), 500
 
 
 # Note: CSRF protection is typically handled globally by Flask-WTF for POST requests.

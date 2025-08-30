@@ -5,8 +5,8 @@
  * @author Flask Journal Team
  */
 
-import Alpine from 'alpinejs';
-import editorComponent from './editor/alpine-component';
+import Alpine from "alpinejs";
+import editorComponent from "./editor/alpine-component";
 
 /**
  * Make Alpine available globally for debugging and extension.
@@ -26,36 +26,35 @@ window.Alpine = Alpine;
  * // In a component: x-on:click="nonExistentFunction()"
  */
 Alpine.onerror = (error, component, el) => {
-    console.error('[Alpine Error] Unhandled error occurred:');
-    console.error(' > Error:', error);
-    console.error(' > Component:', component.$data); // Log component's data
-    console.error(' > Element:', el);
+	console.error("[Alpine Error] Unhandled error occurred:");
+	console.error(" > Error:", error);
+	console.error(" > Component:", component.$data); // Log component's data
+	console.error(" > Element:", el);
 
-    // In a production environment, you might send this error to a logging service
-    // Example: if (process.env.NODE_ENV === 'production') { sendErrorToServer(error, component, el); }
+	// In a production environment, you might send this error to a logging service
+	// Example: if (process.env.NODE_ENV === 'production') { sendErrorToServer(error, component, el); }
 };
-
 
 /**
  * Event listener for Alpine's initialization event.
  * Registers custom components after Alpine has initialized.
- * 
+ *
  * @listens alpine:init
  * @example
  * // This registers the editor component to be used with x-data:
  * // <div x-data="editor"></div>
  */
-document.addEventListener('alpine:init', () => {
-    console.log("Alpine initialized, registering components...");
-    
-    /**
-     * Register the editor component with Alpine.
-     * This makes the editor available as an Alpine component throughout the application.
-     * 
-     * @see module:editor/alpine-component
-     */
-    Alpine.data('editor', editorComponent);
-    console.log("Editor component registered.");
+document.addEventListener("alpine:init", () => {
+	console.log("Alpine initialized, registering components...");
+
+	/**
+	 * Register the editor component with Alpine.
+	 * This makes the editor available as an Alpine component throughout the application.
+	 *
+	 * @see module:editor/alpine-component
+	 */
+	Alpine.data("editor", editorComponent);
+	console.log("Editor component registered.");
 });
 
 /**

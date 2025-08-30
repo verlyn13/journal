@@ -1,18 +1,19 @@
-from flask import render_template, flash, redirect, url_for, request, abort, current_app
+from flask import abort, current_app, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
+
 from journal import db
 from journal.models import (
     Entry,
     # User, # Commented out as current_user handles most cases (F401)
     Tag,
 )  # Ensure User is imported if needed, though current_user handles most cases
+
 from . import main
 from .forms import EntryForm
 
 
 def process_tags(tag_string):
-    """
-    Processes a comma-separated string of tags into Tag objects.
+    """Processes a comma-separated string of tags into Tag objects.
 
     This helper function parses a comma-separated tag string, normalizes the tag names,
     removes duplicates, and then either retrieves existing Tag objects from the database
@@ -34,8 +35,8 @@ def process_tags(tag_string):
         return []
 
     # Normalize, remove duplicates and empty strings
-    raw_names = [name.strip().lower() for name in tag_string.split(",") if name.strip()]
-    unique_names = sorted(list(set(raw_names)))
+    raw_names = [name.strip().lower() for name in tag_string.split(',') if name.strip()]
+    unique_names = sorted(set(raw_names))
 
     tags = []
     existing_tags = Tag.query.filter(Tag.name.in_(unique_names)).all()
@@ -52,12 +53,11 @@ def process_tags(tag_string):
     return tags
 
 
-@main.route("/")
-@main.route("/index")
+@main.route('/')
+@main.route('/index')
 @login_required  # Protect the index page
 def index():
-    """
-    Displays the paginated list of journal entries for the logged-in user.
+    """Displays the paginated list of journal entries for the logged-in user.
 
     This is the main landing page after authentication. It shows all journal entries
     belonging to the current user, sorted by timestamp in descending order (newest first)
@@ -80,25 +80,22 @@ def index():
     Security:
         - Requires authentication via login_required decorator
     """
-    page = request.args.get("page", 1, type=int)
+    page = request.args.get('page', 1, type=int)
     entries_pagination = (
         Entry.query.filter_by(author=current_user)
         .order_by(Entry.timestamp.desc())
-        .paginate(
-            page=page, per_page=current_app.config["ENTRIES_PER_PAGE"], error_out=False
-        )
+        .paginate(page=page, per_page=current_app.config['ENTRIES_PER_PAGE'], error_out=False)
     )
     entries = entries_pagination.items
     return render_template(
-        "index.html", title="Home", entries=entries, pagination=entries_pagination
+        'index.html', title='Home', entries=entries, pagination=entries_pagination
     )  # Pass pagination object
 
 
-@main.route("/new_entry", methods=["GET", "POST"])
+@main.route('/new_entry', methods=['GET', 'POST'])
 @login_required
 def new_entry():
-    """
-    Handles creation of a new journal entry.
+    """Handles creation of a new journal entry.
 
     This route displays the entry creation form on GET requests and processes
     form submissions on POST requests. It associates the new entry with the
@@ -127,18 +124,17 @@ def new_entry():
         tags = process_tags(form.tags.data)
         entry.tags = tags  # Assign the list of Tag objects
         db.session.commit()  # This commit saves the entry and the tag relationships
-        flash("Your entry has been saved.", "success")
-        return redirect(url_for("main.index"))
+        flash('Your entry has been saved.', 'success')
+        return redirect(url_for('main.index'))
     return render_template(
-        "main/create_entry.html", title="New Entry", form=form
+        'main/create_entry.html', title='New Entry', form=form
     )  # Changed template path
 
 
-@main.route("/entry/<int:entry_id>")
+@main.route('/entry/<int:entry_id>')
 @login_required
 def entry_detail(entry_id):
-    """
-    Displays a detailed view of a single journal entry.
+    """Displays a detailed view of a single journal entry.
 
     This route retrieves a specific entry by ID and displays its details,
     including title, content, timestamp, and associated tags. It ensures
@@ -163,15 +159,14 @@ def entry_detail(entry_id):
     if entry.author != current_user:
         abort(403)  # Forbidden access if not the owner
     return render_template(
-        "main/entry_detail.html", title=entry.title, entry=entry
+        'main/entry_detail.html', title=entry.title, entry=entry
     )  # Changed template path
 
 
-@main.route("/edit_entry/<int:entry_id>", methods=["GET", "POST"])
+@main.route('/edit_entry/<int:entry_id>', methods=['GET', 'POST'])
 @login_required
 def edit_entry(entry_id):
-    """
-    Handles editing of an existing journal entry.
+    """Handles editing of an existing journal entry.
 
     This route manages both the display of the edit form (GET) and processing of
     form submissions (POST). It retrieves an existing entry, verifies ownership,
@@ -213,23 +208,22 @@ def edit_entry(entry_id):
         entry.tags.clear()  # Remove old tags
         entry.tags = tags  # Add new tags
         db.session.commit()  # Commit all changes
-        flash("Your entry has been updated.", "success")
-        return redirect(url_for("main.entry_detail", entry_id=entry.id))
-    elif request.method == "GET":
+        flash('Your entry has been updated.', 'success')
+        return redirect(url_for('main.entry_detail', entry_id=entry.id))
+    if request.method == 'GET':
         form.title.data = entry.title
         form.body.data = entry.body
         # Pre-populate tags field
-        form.tags.data = ", ".join(tag.name for tag in entry.tags)
+        form.tags.data = ', '.join(tag.name for tag in entry.tags)
     return render_template(
-        "main/edit_entry.html", title="Edit Entry", form=form, entry=entry
+        'main/edit_entry.html', title='Edit Entry', form=form, entry=entry
     )  # Changed template path
 
 
-@main.route("/delete_entry/<int:entry_id>", methods=["POST"])  # Use POST for deletion
+@main.route('/delete_entry/<int:entry_id>', methods=['POST'])  # Use POST for deletion
 @login_required
 def delete_entry(entry_id):
-    """
-    Handles deletion of a journal entry.
+    """Handles deletion of a journal entry.
 
     This route processes POST requests to delete a specific entry. It enforces that
     the deletion operation must be performed via POST (not GET) for security reasons,
@@ -256,15 +250,14 @@ def delete_entry(entry_id):
         abort(403)
     db.session.delete(entry)
     db.session.commit()
-    flash("Your entry has been deleted.", "success")
-    return redirect(url_for("main.index"))
+    flash('Your entry has been deleted.', 'success')
+    return redirect(url_for('main.index'))
 
 
-@main.route("/tag/<string:tag_name>")
+@main.route('/tag/<string:tag_name>')
 @login_required
 def entries_by_tag(tag_name):
-    """
-    Displays all journal entries associated with a specific tag.
+    """Displays all journal entries associated with a specific tag.
 
     This route filters entries by tag name and displays only those that belong to
     the currently authenticated user. The resulting entries are paginated and sorted
@@ -287,7 +280,7 @@ def entries_by_tag(tag_name):
         - Automatically filters entries to show only those belonging to the current user
     """
     tag = Tag.query.filter_by(name=tag_name).first_or_404()
-    page = request.args.get("page", 1, type=int)
+    page = request.args.get('page', 1, type=int)
 
     # Query entries associated with the tag and the current user
     entries_query = (
@@ -298,12 +291,12 @@ def entries_by_tag(tag_name):
     )
 
     entries_pagination = entries_query.paginate(
-        page=page, per_page=current_app.config["ENTRIES_PER_PAGE"], error_out=False
+        page=page, per_page=current_app.config['ENTRIES_PER_PAGE'], error_out=False
     )
     entries = entries_pagination.items
 
     return render_template(
-        "index.html",
+        'index.html',
         title=f"Entries tagged '{tag_name}'",
         entries=entries,
         pagination=entries_pagination,
