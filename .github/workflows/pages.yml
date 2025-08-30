@@ -40,13 +40,13 @@ jobs:
           # Create the deployment directory
           mkdir -p deploy
           
-          # Copy any static files from public directory if it exists
-          if [ -d public ]; then
-            cp -r public/* deploy/
-          fi
-          
           # Include Storybook under /storybook
           mv storybook-static deploy/storybook
+          
+          # Copy ONLY index.html from public to root (not recursively)
+          if [ -f public/index.html ]; then
+            cp public/index.html deploy/
+          fi
           
           # Optionally include docs HTML if present
           if [ -d docs-html ]; then
