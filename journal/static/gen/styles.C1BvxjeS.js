@@ -1,4 +1,3 @@
-
 /*
  * Journal Application Bundle
  * Built: 4/9/2025, 4:26:26 PM
@@ -8,4 +7,5 @@
  * Do not edit directly.
  */
 
-var a=void 0;export{a as default};
+var a = void 0;
+export { a as default };

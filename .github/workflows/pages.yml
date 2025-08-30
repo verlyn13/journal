@@ -37,22 +37,31 @@ jobs:
 
       - name: Prepare Pages artifact
         run: |
-          mkdir -p public
+          # Create the deployment directory
+          mkdir -p deploy
+          
+          # Copy any static files from public directory if it exists
+          if [ -d public ]; then
+            cp -r public/* deploy/
+          fi
+          
           # Include Storybook under /storybook
-          mv storybook-static public/storybook
+          mv storybook-static deploy/storybook
+          
           # Optionally include docs HTML if present
           if [ -d docs-html ]; then
-            mv docs-html public/docs
+            mv docs-html deploy/docs
           fi
+          
           # Set custom domain if provided via repository variables
           if [ -n "${CUSTOM_DOMAIN}" ]; then
-            echo "${CUSTOM_DOMAIN}" > public/CNAME
+            echo "${CUSTOM_DOMAIN}" > deploy/CNAME
           fi
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: public
+          path: deploy
 
   deploy:
     needs: build
