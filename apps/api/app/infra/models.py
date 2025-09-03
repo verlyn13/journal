@@ -58,3 +58,14 @@ class Event(SQLModel, table=True):
     event_data: dict = Field(sa_column=Column(JSON, nullable=False))
     occurred_at: datetime = Field(default_factory=datetime.utcnow, index=True)
     published_at: datetime | None = Field(default=None, index=True)
+
+
+class ProcessedEvent(SQLModel, table=True):
+    """Idempotency ledger for processed events."""
+
+    __tablename__ = "processed_events"
+
+    event_id: UUID = Field(primary_key=True)
+    processed_at: datetime = Field(default_factory=datetime.utcnow, index=True)
+    outcome: str = Field(default="ok")
+    attempts: int = Field(default=1)

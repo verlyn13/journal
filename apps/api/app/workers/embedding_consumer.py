@@ -4,6 +4,8 @@ Embedding consumer worker that processes entry events and updates embeddings.
 import asyncio
 import json
 import logging
+import os
+import random
 
 from typing import Any
 
@@ -29,19 +31,41 @@ class EmbeddingConsumer:
         self.running = False
 
     async def connect(self):
-        """Connect to NATS and JetStream."""
-        try:
-            self.nc = await nats.connect(settings.nats_url)
-            self.js = self.nc.jetstream()
-            logger.info("Connected to NATS")
-        except Exception as e:
-            logger.error(f"Failed to connect to NATS: {e}")
-            raise
+        """Connect to NATS and JetStream with bounded retry and jitter."""
+        base = float(os.getenv("RETRY_NATS_BASE_SECS", "0.25"))
+        factor = float(os.getenv("RETRY_NATS_FACTOR", "2.0"))
+        cap = float(os.getenv("RETRY_NATS_MAX_BACKOFF_SECS", "15"))
+        max_attempts = int(os.getenv("RETRY_NATS_MAX_ATTEMPTS", "6"))
+
+        attempt = 0
+        last_err = None
+        while attempt < max_attempts:
+            try:
+                self.nc = await nats.connect(settings.nats_url)
+                js = self.nc.jetstream()
+                if asyncio.iscoroutine(js):  # support mocked async jetstream in tests
+                    js = await js
+                self.js = js
+                logger.info("Connected to NATS")
+                return
+            except Exception as e:
+                last_err = e
+                attempt += 1
+                # Exponential backoff with full jitter
+                delay = min(cap, base * (factor ** (attempt - 1)))
+                jitter = random.random() * delay
+                logger.warning(f"NATS connect failed (attempt {attempt}/{max_attempts}): {e}; retrying in {jitter:.2f}s")
+                await asyncio.sleep(jitter)
+        logger.error(f"Failed to connect to NATS after {max_attempts} attempts: {last_err}")
+        raise last_err
 
     async def disconnect(self):
         """Disconnect from NATS."""
-        if self.nc:
-            await self.nc.close()
+        if self.nc and hasattr(self.nc, "close"):
+            try:
+                await self.nc.close()
+            except Exception:
+                logger.debug("NC close failed (mock or already closed)")
             logger.info("Disconnected from NATS")
 
     async def process_entry_event(self, msg):
@@ -51,8 +75,17 @@ class EmbeddingConsumer:
             data = json.loads(msg.data.decode())
             event_type = data.get('event_type')
             event_data = data.get('event_data', {})
+            event_id = data.get('id')
 
             logger.info(f"Processing {event_type} event for entry {event_data.get('entry_id')}")
+
+            # Idempotency: skip if already processed
+            if event_id:
+                async for session in get_session():
+                    exists = (await session.execute(text("SELECT 1 FROM processed_events WHERE event_id = :e"), {"e": event_id})).first()
+                    if exists:
+                        await msg.ack()
+                        return
 
             # Handle different event types
             if event_type in ['entry.created', 'entry.updated']:
@@ -66,12 +99,25 @@ class EmbeddingConsumer:
 
             # Acknowledge the message
             await msg.ack()
+            # Record processed outcome
+            if event_id:
+                async for session in get_session():
+                    try:
+                        await session.execute(text("INSERT INTO processed_events(event_id, outcome) VALUES (:e, :o) ON CONFLICT (event_id) DO NOTHING"),
+                                              {"e": event_id, "o": event_type})
+                        await session.commit()
+                    except Exception:
+                        await session.rollback()
             logger.debug(f"Processed and acked {event_type} event")
 
         except Exception as e:
             logger.error(f"Error processing message: {e}")
             # Don't ack on error - let NATS retry
-            await msg.nak()
+            try:
+                await msg.nak()
+            except Exception:
+                # If NAK fails (non-JS), swallow to avoid crash
+                logger.exception("Failed to NAK message")
 
     async def _handle_entry_upsert(self, event_data: dict[str, Any]):
         """Handle entry creation/update by generating and storing embedding."""
@@ -167,7 +213,8 @@ class EmbeddingConsumer:
                 queue="embedding_workers",
                 cb=self.process_entry_event,
                 manual_ack=True,
-                max_deliver=3,  # Retry failed messages up to 3 times
+                max_deliver=int(os.getenv("JS_MAX_DELIVER", "6")),
+                ack_wait=float(os.getenv("JS_ACK_WAIT_SECS", "30")),
             )
 
             # Subscribe to reindex events

@@ -14,7 +14,6 @@ from app.infra.models import Entry
 
 @pytest.mark.integration
 @pytest.mark.asyncio
-@pytest.mark.skip(reason="Worker doesn't have retry logic yet")
 async def test_worker_connection_retry(monkeypatch):
     """Test worker connection retry logic."""
     # Mock NATS connection to fail initially then succeed
