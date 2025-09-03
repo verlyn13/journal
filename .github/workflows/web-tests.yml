@@ -1,0 +1,72 @@
+name: Web Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  vitest:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: '1.2.21'
+      - name: Install deps
+        run: bun install --frozen-lockfile
+      - name: Run vitest with coverage
+        run: bun run test:coverage || bun run test:run
+      - name: Upload vitest coverage artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-vitest-coverage
+          path: |
+            apps/web/coverage
+            apps/web/coverage/**
+
+  playwright:
+    name: Playwright E2E
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: '1.2.21'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+      - name: Install API deps
+        working-directory: apps/api
+        run: uv sync --all-extras --dev
+      - name: Start API server
+        working-directory: apps/api
+        run: nohup uv run fastapi run app/main.py --host 0.0.0.0 --port 5000 >/tmp/api.log 2>&1 &
+      - name: Wait for API
+        run: |
+          for i in {1..30}; do curl -sf http://localhost:5000/health && break || sleep 2; done
+      - name: Install root deps
+        run: npm ci
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+      - name: Run Playwright
+        env:
+          BASE_URL: http://localhost:5000
+        run: npm test
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: |
+            playwright-report
+            test-results

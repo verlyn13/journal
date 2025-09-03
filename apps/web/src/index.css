@@ -1,0 +1,225 @@
+/* biome-ignore lint/suspicious/noUnknownAtRules: Tailwind at-rules */
+@tailwind base;
+/* biome-ignore lint/suspicious/noUnknownAtRules: Tailwind at-rules */
+@tailwind components;
+/* biome-ignore lint/suspicious/noUnknownAtRules: Tailwind at-rules */
+@tailwind utilities;
+
+/* Sanctuary Theme Custom CSS Variables */
+:root {
+	/* Dawn Mode (Light) */
+	--sanctuary-bg-primary: #f5f3f0;
+	--sanctuary-bg-secondary: #eae8e3;
+	--sanctuary-bg-tertiary: #dde3ea;
+	--sanctuary-text-primary: #41454c;
+	--sanctuary-text-secondary: #6b7280;
+	--sanctuary-accent: #a8b5c5;
+	--sanctuary-accent-hover: #8fa5b8;
+	--sanctuary-border: #dde3ea;
+
+	/* Design system accents */
+	--evergreen-aqua: #00b894;
+	--warm-sand: #ffd166;
+
+	/* RGB values for alpha transparency */
+	--sanctuary-accent-rgb: 168, 181, 197;
+	--evergreen-aqua-rgb: 0, 184, 148;
+}
+
+.dark,
+[data-theme="dark"] {
+	/* Dusk Mode (Dark) */
+	--sanctuary-bg-primary: #2c303a;
+	--sanctuary-bg-secondary: #383d4a;
+	--sanctuary-bg-tertiary: #505668;
+	--sanctuary-text-primary: #d4d6d9;
+	--sanctuary-text-secondary: #9ca3af;
+	--sanctuary-accent: #d4af8b;
+	--sanctuary-accent-hover: #c19b76;
+	--sanctuary-border: #505668;
+
+	/* RGB values for dark mode */
+	--sanctuary-accent-rgb: 212, 175, 139;
+}
+
+/* Base typography following Sanctuary theme */
+body {
+	font-family: "Lora", serif;
+	background-color: var(--sanctuary-bg-primary);
+	color: var(--sanctuary-text-primary);
+	line-height: 1.7;
+	transition:
+		background-color 240ms cubic-bezier(0.4, 0, 0.2, 1),
+		color 240ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* UI elements use Inter */
+button,
+.btn,
+nav,
+header,
+.ui-element {
+	font-family: "Inter", sans-serif;
+}
+
+/* Code blocks use JetBrains Mono */
+code,
+pre,
+.code-block {
+	font-family: "JetBrains Mono", monospace;
+}
+
+/* Focus mode calm background animation */
+@keyframes calm-pulse {
+	0%,
+	100% {
+		opacity: 0.12;
+	}
+	50% {
+		opacity: 0.18;
+	}
+}
+
+.calm-bg-animated {
+	animation: calm-pulse 8s ease-in-out infinite;
+}
+
+/* Smooth focus indicators */
+*:focus {
+	outline: 2px solid var(--sanctuary-accent);
+	outline-offset: 2px;
+	border-radius: 4px;
+}
+
+/* Custom scrollbar for Sanctuary theme */
+::-webkit-scrollbar {
+	width: 8px;
+	height: 8px;
+}
+
+::-webkit-scrollbar-track {
+	background: var(--sanctuary-bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+	background: var(--sanctuary-accent);
+	border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+	background: var(--sanctuary-accent-hover);
+}
+
+/* Sanctuary Theme Background Classes */
+.bg-sanctuary-bg-primary {
+	background-color: var(--sanctuary-bg-primary);
+}
+
+.bg-sanctuary-bg-secondary {
+	background-color: var(--sanctuary-bg-secondary);
+}
+
+.bg-sanctuary-bg-tertiary {
+	background-color: var(--sanctuary-bg-tertiary);
+}
+
+/* Sanctuary Theme Text Classes */
+.text-sanctuary-text-primary {
+	color: var(--sanctuary-text-primary);
+}
+
+.text-sanctuary-text-secondary {
+	color: var(--sanctuary-text-secondary);
+}
+
+/* Sanctuary Theme Accent Classes */
+.bg-sanctuary-accent {
+	background-color: var(--sanctuary-accent);
+}
+
+.text-sanctuary-accent {
+	color: var(--sanctuary-accent);
+}
+
+.text-sanctuary-accent-hover:hover {
+	color: var(--sanctuary-accent-hover);
+}
+
+.hover\:text-sanctuary-accent-hover:hover {
+	color: var(--sanctuary-accent-hover);
+}
+
+.hover\:text-sanctuary-text-primary:hover {
+	color: var(--sanctuary-text-primary);
+}
+
+.hover\:bg-sanctuary-bg-primary\/50:hover {
+	background-color: rgb(from var(--sanctuary-bg-primary) r g b / 0.5);
+}
+
+/* Border Classes */
+.border-sanctuary-border {
+	border-color: var(--sanctuary-border);
+}
+
+/* Ring Classes */
+.ring-sanctuary-accent {
+	--tw-ring-color: var(--sanctuary-accent);
+}
+
+.focus\:ring-sanctuary-accent:focus {
+	--tw-ring-color: var(--sanctuary-accent);
+}
+
+/* Opacity variations */
+.bg-sanctuary-accent\/20 {
+	background-color: rgb(from var(--sanctuary-accent) r g b / 0.2);
+}
+
+.bg-sanctuary-bg-primary\/20 {
+	background-color: rgb(from var(--sanctuary-bg-primary) r g b / 0.2);
+}
+
+.text-sanctuary-bg-primary {
+	color: var(--sanctuary-bg-primary);
+}
+
+.text-sanctuary-bg-primary\/80 {
+	color: rgb(from var(--sanctuary-bg-primary) r g b / 0.8);
+}
+
+.text-sanctuary-bg-primary\/90 {
+	color: rgb(from var(--sanctuary-bg-primary) r g b / 0.9);
+}
+
+/* Group hover states */
+.group:hover .group-hover\:text-sanctuary-text-primary {
+	color: var(--sanctuary-text-primary);
+}
+
+/* Easy sanctuary transition */
+.ease-sanctuary {
+	transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Gradient from evergreen-aqua */
+.from-evergreen-aqua\/8 {
+	--tw-gradient-from: rgb(0 184 148 / 0.08);
+	--tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+}
+
+.bg-gradient-radial {
+	background-image: radial-gradient(var(--tw-gradient-stops));
+}
+
+.bg-warm-sand\/30 {
+	background-color: rgb(255 209 102 / 0.3);
+}
+
+.bg-yellow-500 {
+	background-color: rgb(234 179 8);
+}
+
+.bg-evergreen-aqua {
+	background-color: #00b894;
+}

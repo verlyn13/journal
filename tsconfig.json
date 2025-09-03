@@ -1,19 +1,19 @@
 {
-	"$schema": "https://json.schemastore.org/tsconfig",
-	"compilerOptions": {
-		"target": "ES2022",
-		"module": "ESNext",
-		"moduleResolution": "Bundler",
-		"allowImportingTsExtensions": true,
-		"resolveJsonModule": true,
-		"strict": true,
-		"noUncheckedIndexedAccess": true,
-		"noImplicitOverride": true,
-		"noFallthroughCasesInSwitch": true,
-		"forceConsistentCasingInFileNames": true,
-		"isolatedModules": true,
-		"skipLibCheck": true,
-		"types": ["bun-types"]
-	},
-	"include": ["fetch-docs.ts", "fetch-docs-enhanced.ts", "scripts/**/*.ts"]
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "noFallthroughCasesInSwitch": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+    "skipLibCheck": true,
+    "types": ["bun-types"]
+  },
+  "include": ["fetch-docs.ts", "fetch-docs-enhanced.ts", "scripts/**/*.ts"]
 }

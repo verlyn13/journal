@@ -1,91 +1,78 @@
-# Running the Journal Application
+# Running the Journal (Local Development)
 
-The Journal is a full-stack Flask web application for personal journaling. It's not just a static site - it requires a backend server to run.
+This project runs a React frontend (`apps/web`) against a FastAPI backend (`apps/api`).
 
-## Quick Start
+## Prerequisites
 
-### 1. Install Dependencies
+- Python 3.11+ (3.13 OK)
+- uv 0.8+ (recommended): `pip install uv`
+- Docker & Docker Compose
+- Bun (and Node 18+) for the frontend
+- jq (optional) for curl examples
+
+## Backend (FastAPI)
 
 ```bash
-# Install JavaScript dependencies
+cd apps/api
+
+# Start infra (Postgres 5433, Redis 6380, NATS 4222) and run migrations
+make setup
+
+# Start the API with hot reload
+make dev   # -> http://127.0.0.1:8000
+
+# Optional: start the embedding worker in a new terminal
+make worker
+
+# Useful commands
+make db-upgrade      # apply migrations
+make db-downgrade    # rollback one
+make db-revision m="add_feature"  # create migration
+make test            # run API tests
+make lint            # lint and format
+make reset           # drop and recreate DB volume (dev only)
+```
+
+Auth (dev/demo):
+```bash
+curl -s -X POST http://127.0.0.1:8000/api/v1/auth/demo | jq
+TOKEN=$(curl -s -X POST http://127.0.0.1:8000/api/v1/auth/demo | jq -r .access_token)
+curl -H "Authorization: Bearer $TOKEN" http://127.0.0.1:8000/api/v1/auth/me | jq
+```
+
+Docs:
+- OpenAPI: http://127.0.0.1:8000/docs
+- ReDoc: http://127.0.0.1:8000/redoc
+- GraphQL: http://127.0.0.1:8000/graphql
+
+## Frontend (Web)
+
+```bash
+cd apps/web
+
+# Configure API URL
+cat > .env <<'ENV'
+VITE_API_URL=http://127.0.0.1:8000/api
+ENV
+
+# Install and run
 bun install
-
-# Install Python dependencies  
-uv sync
+bun run dev   # -> http://localhost:5173
 ```
 
-### 2. Build Frontend Assets
+Login in development:
+- Use demo credentials `demo` / `demo123` in the web app, or
+- Use `/api/v1/auth/demo` and set tokens in localStorage.
 
-```bash
-bun run build
-```
+## Ports
 
-### 3. Initialize the Database
-
-```bash
-uv run python -c "from journal import create_app, db; app = create_app(); app.app_context().push(); db.create_all()"
-```
-
-### 4. Run the Application
-
-```bash
-# Option 1: Using Python directly
-uv run python run.py
-
-# Option 2: Using npm script
-npm run py:dev
-```
-
-### 5. Access the Application
-
-Open your browser and navigate to: **http://localhost:5000**
-
-## What You'll See
-
-- **Login Page**: Create a new account or log in
-- **Journal Dashboard**: View all your journal entries
-- **Create Entry**: Write new journal entries with Markdown support
-- **Edit/Delete**: Manage your existing entries
-- **Tags**: Organize entries with tags
-- **Search**: Find entries by content or tags
-
-## Development Mode
-
-For development with hot-reload:
-
-```bash
-# Terminal 1: Run Flask backend
-npm run py:dev
-
-# Terminal 2: Watch and rebuild frontend assets
-npm run dev
-
-# Terminal 3 (optional): Run Storybook for component development
-npm run storybook
-```
-
-## Storybook (Component Documentation)
-
-The Storybook at https://journal.jefahnierocks.com/storybook/ shows the UI components used in the application, but to actually use the journaling features, you need to run the Flask application locally.
-
-## Tech Stack
-
-- **Backend**: Python Flask, SQLAlchemy, Flask-Login
-- **Frontend**: HTMX, Alpine.js, Bootstrap 5
-- **Editor**: CodeMirror 6 with Markdown support
-- **Build**: Bun/Rollup for asset bundling
+- API: `127.0.0.1:8000`
+- Postgres: `localhost:5433` (container port 5432)
+- Redis: `localhost:6380`
+- NATS: `localhost:4222`
 
 ## Troubleshooting
 
-If you get a database error:
-```bash
-# Remove old database and recreate
-rm journal.db
-uv run python -c "from journal import create_app, db; app = create_app(); app.app_context().push(); db.create_all()"
-```
-
-If you get a port already in use error:
-```bash
-# Change the port in run.py or use environment variable
-FLASK_RUN_PORT=5001 uv run python run.py
-```
+- “No such file or directory: fastapi”: ensure `uv` is installed; Makefile runs via `uv run ...`.
+- Alembic revision missing: `make reset` to reset volume or `uv run alembic -c alembic.ini stamp base && make db-upgrade`.
+- Frontend 401s: verify you have a valid `access_token` set; use the demo endpoints above.

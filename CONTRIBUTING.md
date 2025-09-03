@@ -98,10 +98,15 @@ We expect all contributors to follow our [Code of Conduct](CODE_OF_CONDUCT.md). 
 
 ## Testing
 
-- Write tests for all new features and bug fixes
-- Run tests locally before submitting: `pytest`
-- Aim for high test coverage
-- Include both unit and integration tests where appropriate
+- Policy: Write tests for all new features and bug fixes; keep them deterministic. Prefer unit/component tests; add integration only when needed.
+- API (FastAPI, uv):
+  - Services: `cd apps/api && docker compose up -d db nats`
+  - Unit: `cd apps/api && uv run pytest -m unit -q`
+  - Component: `cd apps/api && uv run pytest -m component -q`
+  - Integration: `cd apps/api && uv run alembic -c alembic.ini upgrade head && uv run pytest -m integration -q`
+- Web (Vitest): `cd apps/web && bun install && bun run test:coverage`
+- E2E (Playwright): from repo root run `make e2e` (starts API, waits for health, runs tests, cleans up)
+- References: see `docs/TESTING_STATUS.md` (status/plan/CI) and `apps/api/docs/testing.md` (detailed guide).
 
 ### Local Workflow Testing with `act`
 

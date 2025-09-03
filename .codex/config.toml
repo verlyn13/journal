@@ -1,28 +1,64 @@
-[general]
-# Prefer the coding-optimized model; falls back to global if not available
-model = "codex-1"
-auto_mode = true
+# ─────────────────────────────────────────────────────────────────────────────
+# Journal Project - Codex CLI Configuration (v0.23.0)  
+# Modern TypeScript/Python monorepo with comprehensive testing infrastructure
+# ─────────────────────────────────────────────────────────────────────────────
 
-[tools]
-# Prevent destructive or off-policy commands; project prefers uv + bun
-restricted_commands = [
-  "rm -rf",
-  "git push --force",
-  "pip",
-  "pip3",
-  "poetry",
-  "conda",
-  "pip install",
-  "poetry add",
-  "npm install"
-]
+# Default model and execution settings for this project
+model = "gpt-5-mini"  # Fast, cost-effective default
+approval = "never"
+sandbox_permissions = ["danger-full-access"]
 
-[mcp_servers]
-# Define optional project-scoped MCP servers; tokens and endpoints come from global config/env
-# These entries will be ignored if the binaries aren't present; safe to keep in repo
-# Example GitHub integration for PR/issue ops
-github = { command = "npx", args = ["github-mcp-server" ] }
-# Example CI/CD helper
-ci = { command = "npx", args = ["github-actions-mcp" ] }
-# Example Postgres access (DATABASE_URL from env)
-postgres = { command = "npx", args = ["postgres-mcp-server" ] }
+# Extended timeout for long-running operations (Playwright installs, etc.)  
+timeout_seconds = 900
+
+# Model aliases for intelligent switching
+[models]
+fast = "gpt-5-mini"      # Default for most operations
+reasoning = "gpt-5"      # For complex analysis and architecture
+fallback = "gpt-4o"      # If gpt-5 unavailable
+
+# Profiles for different scenarios
+[profiles.fast]
+model = "gpt-5-mini"
+temperature = 0.3
+max_output_tokens = 4096
+description = "Fast execution for routine tasks"
+
+[profiles.reasoning] 
+model = "gpt-5"
+temperature = 0.4
+max_output_tokens = 8192
+description = "Deep reasoning for complex problems, architecture, debugging"
+
+[profiles.architecture]
+model = "gpt-5"
+temperature = 0.5
+max_output_tokens = 8192
+approval = "on-request"
+description = "System design and architectural decisions"
+
+# Shell environment policy to inherit PATH and virtual env variables
+[shell_environment_policy]
+inherit = "all"  # Inherit all environment variables including PATH, VIRTUAL_ENV, UV_PROJECT_ENVIRONMENT
+
+# Ensure access to development tools and virtual environments
+[execution_policy]
+allow_network = true
+allow_subprocess = true
+inherit_environment = true
+
+# Project-specific MCP servers following correct TOML format
+[mcp_servers.github]
+command = "npx"
+args = ["-y", "@modelcontextprotocol/server-github"]
+env = { GITHUB_TOKEN = "dummy-token-will-use-global" }
+
+[mcp_servers.postgres]
+command = "npx"
+args = ["-y", "@modelcontextprotocol/server-postgres"] 
+env = { DATABASE_URL = "postgresql://journal:journal@localhost:5433/journal" }
+
+[mcp_servers.filesystem]
+command = "npx"
+args = ["-y", "@modelcontextprotocol/server-filesystem"]
+env = { ALLOWED_PATHS = "/home/verlyn13/Projects/verlyn13/journal" }

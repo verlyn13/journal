@@ -1,0 +1,25 @@
+services:
+  api-dev:
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+    volumes:
+      - ..:/workspace:cached
+      - /workspace/.uv
+      - ~/.gitconfig:/home/vscode/.gitconfig:ro
+      - ~/.ssh:/home/vscode/.ssh:ro
+    working_dir: /workspace
+    command: sleep infinity
+    environment:
+      - JOURNAL_DB_URL=postgresql+asyncpg://journal:journal@postgres:5432/journal
+      - JOURNAL_REDIS_URL=redis://redis:6379/0
+      - JOURNAL_NATS_URL=nats://nats:4222
+      - JOURNAL_JWT_SECRET=dev-secret-key-change-in-production
+      - JOURNAL_LOG_LEVEL=DEBUG
+      - PYTHONPATH=/workspace
+    depends_on:
+      - postgres
+      - redis
+      - nats
+    networks:
+      - journal-network

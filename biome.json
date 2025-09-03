@@ -1,0 +1,178 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.2.2/schema.json",
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true,
+    "defaultBranch": "main"
+  },
+  "formatter": {
+    "enabled": true,
+    "formatWithErrors": false,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineWidth": 100,
+    "lineEnding": "lf",
+    "attributePosition": "auto"
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true,
+      "complexity": {
+        "noForEach": "off",
+        "noBannedTypes": "error",
+        "noUselessFragments": "warn",
+        "useArrowFunction": "off"
+      },
+      "correctness": {
+        "noUnusedVariables": "error",
+        "noUnusedImports": "error",
+        "useExhaustiveDependencies": "warn",
+        "useHookAtTopLevel": "error"
+      },
+      "style": {
+        "noNonNullAssertion": "off",
+        "useConst": "error",
+        "useTemplate": "warn",
+        "useImportType": "warn",
+        "useNodejsImportProtocol": "off"
+      },
+      "suspicious": {
+        "noExplicitAny": "warn",
+        "noArrayIndexKey": "warn",
+        "noConsole": "warn"
+      },
+      "performance": {
+        "noAccumulatingSpread": "warn",
+        "noReExportAll": "off"
+      },
+      "a11y": {
+        "useKeyWithClickEvents": "warn",
+        "useValidAnchor": "warn"
+      }
+    }
+  },
+  "javascript": {
+    "formatter": {
+      "jsxQuoteStyle": "double",
+      "quoteProperties": "asNeeded",
+      "trailingCommas": "all",
+      "semicolons": "always",
+      "arrowParentheses": "always",
+      "bracketSpacing": true,
+      "bracketSameLine": false,
+      "quoteStyle": "single",
+      "attributePosition": "auto"
+    },
+    "parser": {
+      "unsafeParameterDecoratorsEnabled": false
+    }
+  },
+  "json": {
+    "formatter": {
+      "trailingCommas": "none",
+      "indentWidth": 2
+    },
+    "parser": {
+      "allowComments": true,
+      "allowTrailingCommas": false
+    }
+  },
+  "overrides": [
+    {
+      "includes": ["*.md", "**/*.md"],
+      "linter": {
+        "enabled": false
+      },
+      "formatter": {
+        "enabled": false
+      }
+    },
+    {
+      "includes": ["*.json", "*.jsonc", "**/*.json", "**/*.jsonc"],
+      "linter": {
+        "enabled": false
+      },
+      "formatter": {
+        "enabled": true,
+        "indentWidth": 2
+      }
+    },
+    {
+      "includes": ["docs/**"],
+      "linter": {
+        "enabled": false
+      }
+    },
+    {
+      "includes": ["*.test.ts", "*.test.tsx", "*.spec.ts", "*.spec.tsx"],
+      "linter": {
+        "rules": {
+          "suspicious": {
+            "noConsole": "off"
+          }
+        }
+      }
+    },
+    {
+      "includes": ["*.stories.tsx"],
+      "linter": {
+        "rules": {
+          "correctness": {
+            "noUnusedVariables": "off",
+            "noUnusedImports": "off"
+          }
+        }
+      }
+    }
+  ],
+  "files": {
+    "includes": [
+      "apps/web/src/**/*.ts",
+      "apps/web/src/**/*.tsx",
+      "apps/web/src/**/*.js",
+      "apps/web/src/**/*.jsx",
+      "scripts/**/*.js",
+      "scripts/**/*.ts",
+      "*.json",
+      "*.config.ts",
+      "*.config.js"
+    ],
+    "experimentalScannerIgnores": [
+      "**/node_modules",
+      "**/.venv",
+      "**/coverage",
+      "**/dist",
+      "**/build",
+      "**/.next",
+      "**/storybook-static",
+      "*.db",
+      "**/.docs-cache",
+      "**/docs-backup",
+      "**/docs-html",
+      "**/_site",
+      "**/journal/static/gen",
+      "**/journal/static/dist",
+      "**/*.min.js",
+      "**/*.min.css",
+      "**/vendor/**",
+      "**/.git",
+      "**/.idea",
+      "**/.vscode",
+      "**/tmp",
+      "**/temp",
+      "**/*.log",
+      "**/.DS_Store",
+      "**/Thumbs.db",
+      "apps/api/**",
+      "journal/**",
+      "*.md",
+      "docs/**",
+      ".biome.json",
+      ".gitignore",
+      "bun.lockb"
+    ],
+    "maxSize": 2097152
+  }
+}

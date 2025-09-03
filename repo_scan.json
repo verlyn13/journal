@@ -1,0 +1,166 @@
+{
+  "_schema": {
+    "name": "repo_scan",
+    "version": "1.0.0"
+  },
+  "_provenance": {
+    "generated_at_utc": "2025-09-02T19:51:41.719344+00:00",
+    "tool_record_counts": {
+      "scc": 19
+    }
+  },
+  "files": [
+    {
+      "path": "Markdown",
+      "size_bytes": 2616194,
+      "language": "Unknown",
+      "loc": 66361,
+      "comment_loc": 0,
+      "complexity": 0
+    },
+    {
+      "path": "Python",
+      "size_bytes": 265103,
+      "language": "Unknown",
+      "loc": 7875,
+      "comment_loc": 859,
+      "complexity": 534
+    },
+    {
+      "path": "TypeScript",
+      "size_bytes": 381981,
+      "language": "Unknown",
+      "loc": 12524,
+      "comment_loc": 595,
+      "complexity": 725
+    },
+    {
+      "path": "JavaScript",
+      "size_bytes": 93570,
+      "language": "Unknown",
+      "loc": 3114,
+      "comment_loc": 571,
+      "complexity": 201
+    },
+    {
+      "path": "YAML",
+      "size_bytes": 31681,
+      "language": "Unknown",
+      "loc": 1268,
+      "comment_loc": 32,
+      "complexity": 0
+    },
+    {
+      "path": "HTML",
+      "size_bytes": 1082330,
+      "language": "Unknown",
+      "loc": 5571,
+      "comment_loc": 43,
+      "complexity": 0
+    },
+    {
+      "path": "JSON",
+      "size_bytes": 96821,
+      "language": "Unknown",
+      "loc": 1642,
+      "comment_loc": 0,
+      "complexity": 0
+    },
+    {
+      "path": "CSS",
+      "size_bytes": 36039,
+      "language": "Unknown",
+      "loc": 2062,
+      "comment_loc": 128,
+      "complexity": 0
+    },
+    {
+      "path": "SVG",
+      "size_bytes": 962458,
+      "language": "Unknown",
+      "loc": 14647,
+      "comment_loc": 0,
+      "complexity": 0
+    },
+    {
+      "path": "Shell",
+      "size_bytes": 15514,
+      "language": "Unknown",
+      "loc": 574,
+      "comment_loc": 67,
+      "complexity": 43
+    },
+    {
+      "path": "TOML",
+      "size_bytes": 15147,
+      "language": "Unknown",
+      "loc": 546,
+      "comment_loc": 39,
+      "complexity": 12
+    },
+    {
+      "path": "TypeScript Typings",
+      "size_bytes": 2375,
+      "language": "Unknown",
+      "loc": 87,
+      "comment_loc": 8,
+      "complexity": 21
+    },
+    {
+      "path": "Dockerfile",
+      "size_bytes": 2437,
+      "language": "Unknown",
+      "loc": 94,
+      "comment_loc": 17,
+      "complexity": 12
+    },
+    {
+      "path": "Makefile",
+      "size_bytes": 10878,
+      "language": "Unknown",
+      "loc": 408,
+      "comment_loc": 33,
+      "complexity": 43
+    },
+    {
+      "path": "INI",
+      "size_bytes": 862,
+      "language": "Unknown",
+      "loc": 44,
+      "comment_loc": 2,
+      "complexity": 0
+    },
+    {
+      "path": "JSX",
+      "size_bytes": 10497,
+      "language": "Unknown",
+      "loc": 272,
+      "comment_loc": 26,
+      "complexity": 20
+    },
+    {
+      "path": "Mako",
+      "size_bytes": 509,
+      "language": "Unknown",
+      "loc": 24,
+      "comment_loc": 0,
+      "complexity": 0
+    },
+    {
+      "path": "Plain Text",
+      "size_bytes": 11358,
+      "language": "Unknown",
+      "loc": 202,
+      "comment_loc": 0,
+      "complexity": 0
+    },
+    {
+      "path": "Systemd",
+      "size_bytes": 1185,
+      "language": "Unknown",
+      "loc": 30,
+      "comment_loc": 0,
+      "complexity": 0
+    }
+  ]
+}

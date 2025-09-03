@@ -1,0 +1,141 @@
+{
+  "name": "Journal API Development",
+  "dockerComposeFile": [
+    "../docker-compose.yml",
+    "docker-compose.override.yml"
+  ],
+  "service": "api-dev",
+  "workspaceFolder": "/workspace",
+  "shutdownAction": "stopCompose",
+
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "installZsh": true,
+      "configureZshAsDefaultShell": true,
+      "installOhMyZsh": true,
+      "username": "vscode",
+      "userUid": "1000",
+      "userGid": "1000"
+    },
+    "ghcr.io/devcontainers/features/git:1": {
+      "ppa": true,
+      "version": "latest"
+    },
+    "ghcr.io/devcontainers/features/github-cli:1": {
+      "installDirectlyFromGitHubRelease": true,
+      "version": "latest"
+    },
+    "ghcr.io/devcontainers/features/node:1": {
+      "nodeGypDependencies": true,
+      "version": "lts",
+      "nvmVersion": "latest"
+    }
+  },
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.black-formatter",
+        "ms-python.isort",
+        "ms-python.mypy-type-checker",
+        "charliermarsh.ruff",
+        "ms-python.debugpy",
+        "ms-toolsai.jupyter",
+        "tamasfe.even-better-toml",
+        "redhat.vscode-yaml",
+        "ms-vscode.vscode-json",
+        "GitHub.copilot",
+        "GitHub.copilot-chat",
+        "ms-vscode.test-adapter-converter",
+        "littlefoxteam.vscode-python-test-adapter",
+        "streetsidesoftware.code-spell-checker",
+        "bradlc.vscode-tailwindcss",
+        "GraphQL.vscode-graphql",
+        "GraphQL.vscode-graphql-syntax"
+      ],
+      "settings": {
+        "python.defaultInterpreterPath": "/usr/local/bin/python",
+        "python.terminal.activateEnvironment": false,
+        "python.testing.pytestEnabled": true,
+        "python.testing.unittestEnabled": false,
+        "python.testing.pytestArgs": [
+          "tests/"
+        ],
+        "python.linting.enabled": true,
+        "python.linting.pylintEnabled": false,
+        "python.linting.flake8Enabled": false,
+        "python.formatting.provider": "none",
+        "python.linting.mypyEnabled": true,
+        "python.linting.banditEnabled": true,
+        "[python]": {
+          "editor.formatOnSave": true,
+          "editor.codeActionsOnSave": {
+            "source.organizeImports": "explicit",
+            "source.fixAll": "explicit"
+          },
+          "editor.defaultFormatter": "charliermarsh.ruff"
+        },
+        "ruff.organizeImports": true,
+        "ruff.fixAll": true,
+        "mypy-type-checker.args": [
+          "--config-file=pyproject.toml"
+        ],
+        "files.exclude": {
+          "**/__pycache__": true,
+          "**/*.pyc": true,
+          ".coverage": true,
+          "htmlcov/": true,
+          ".pytest_cache": true,
+          ".mypy_cache": true,
+          ".ruff_cache": true,
+          "*.egg-info": true
+        },
+        "search.exclude": {
+          "**/__pycache__": true,
+          "**/*.pyc": true,
+          ".coverage": true,
+          "htmlcov/": true,
+          ".pytest_cache": true,
+          ".mypy_cache": true,
+          ".ruff_cache": true,
+          "*.egg-info": true
+        },
+        "terminal.integrated.defaultProfile.linux": "zsh"
+      }
+    }
+  },
+
+  "forwardPorts": [8000, 5432, 6379, 4222, 8080],
+  "portsAttributes": {
+    "8000": {
+      "label": "FastAPI Server",
+      "onAutoForward": "notify"
+    },
+    "5432": {
+      "label": "PostgreSQL"
+    },
+    "6379": {
+      "label": "Redis"
+    },
+    "4222": {
+      "label": "NATS"
+    },
+    "8080": {
+      "label": "NATS Management"
+    }
+  },
+
+  "postCreateCommand": "bash .devcontainer/postCreateCommand.sh",
+  "postStartCommand": "bash .devcontainer/postStartCommand.sh",
+
+  "remoteUser": "vscode",
+  "containerEnv": {
+    "JOURNAL_DB_URL": "postgresql+asyncpg://journal:journal@postgres:5432/journal",
+    "JOURNAL_REDIS_URL": "redis://redis:6379/0",
+    "JOURNAL_NATS_URL": "nats://nats:4222",
+    "JOURNAL_JWT_SECRET": "dev-secret-key-change-in-production",
+    "JOURNAL_LOG_LEVEL": "DEBUG",
+    "PYTHONPATH": "/workspace/apps/api"
+  }
+}

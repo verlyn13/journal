@@ -1,0 +1,50 @@
+@import "tailwindcss";
+
+/* Sanctuary theme tokens mapped to Tailwind via CSS variables */
+@layer theme, base, components, utilities;
+
+@layer theme {
+	:root {
+		/* Dusk (dark) defaults */
+		--bg-primary: #2c303a;
+		--bg-secondary: #383d4a;
+		--text-primary: #d4d6d9;
+		--accent: #d4af8b;
+		--highlight: #505668;
+	}
+	[data-theme="light"] {
+		--bg-primary: #f5f3f0;
+		--bg-secondary: #eae8e3;
+		--text-primary: #41454c;
+		--accent: #a8b5c5;
+		--highlight: #dde3ea;
+	}
+}
+
+@layer base {
+	html,
+	body {
+		height: 100%;
+	}
+	body {
+		/* biome-ignore lint/suspicious/noUnknownAtRules: Tailwind apply */
+		@apply antialiased;
+		background: var(--bg-primary);
+		color: var(--text-primary);
+	}
+}
+
+@layer utilities {
+	.bg-sanctuary {
+		background-color: var(--bg-primary);
+	}
+	.bg-sanctuary-2 {
+		background-color: var(--bg-secondary);
+	}
+	.text-sanctuary {
+		color: var(--text-primary);
+	}
+	.ring-sanctuary {
+		box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent), transparent 70%);
+	}
+}

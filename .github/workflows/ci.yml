@@ -38,6 +38,16 @@ jobs:
       - name: Install JS deps
         run: bun install --frozen-lockfile
 
+      - name: Install web app deps
+        run: bun --cwd apps/web install --frozen-lockfile
+
+      - name: Build and publish web bundle
+        run: bun run web:publish
+
+      - name: Verify Vite manifest exists
+        run: |
+          test -f journal/static/gen/web/manifest.json || (echo "Missing Vite manifest" && exit 1)
+
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
 

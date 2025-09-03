@@ -1,0 +1,101 @@
+name: API Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  unit_component:
+    name: Unit + Component
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_USER: journal
+          POSTGRES_PASSWORD: journal
+          POSTGRES_DB: journal
+        ports:
+          - 5433:5432
+        options: >-
+          --health-cmd "pg_isready -U journal" \
+          --health-interval 10s \
+          --health-timeout 5s \
+          --health-retries 5
+    defaults:
+      run:
+        working-directory: apps/api
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+      - name: Install deps
+        run: uv sync --all-extras --dev
+      - name: Run unit+component tests (strict)
+        env:
+          TEST_DB_URL: postgresql+asyncpg://journal:journal@localhost:5433/journal
+        run: |
+          uv run pytest -m "unit or component" \
+            --cov=app/api --cov=app/services --cov=app/infra/auth --cov=app/infra/conversion \
+            --cov-report=term-missing --cov-report=xml --cov-report=html:htmlcov
+      - name: Upload API unit+component coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-unit-component-coverage
+          path: |
+            apps/api/htmlcov
+            apps/api/coverage.xml
+
+  integration:
+    name: Integration
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_USER: journal
+          POSTGRES_PASSWORD: journal
+          POSTGRES_DB: journal
+        ports:
+          - 5433:5432
+        options: >-
+          --health-cmd "pg_isready -U journal" \
+          --health-interval 10s \
+          --health-timeout 5s \
+          --health-retries 5
+      nats:
+        image: nats:2-alpine
+        ports:
+          - 4222:4222
+          - 8222:8222
+    defaults:
+      run:
+        working-directory: apps/api
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+      - name: Install deps
+        run: uv sync --all-extras --dev
+      - name: Run integration tests
+        env:
+          TEST_DB_URL: postgresql+asyncpg://journal:journal@localhost:5433/journal
+          JOURNAL_DB_URL: postgresql+asyncpg://journal:journal@localhost:5433/journal
+          RUN_REAL_NATS: '1'
+        run: |
+          uv run alembic -c alembic.ini upgrade head
+          uv run pytest -m integration --cov=app/infra --cov=app/workers --cov=app/api/v1/search --cov-report=term-missing --cov-report=xml --cov-report=html:htmlcov
+      - name: Upload API integration coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-integration-coverage
+          path: |
+            apps/api/htmlcov
+            apps/api/coverage.xml

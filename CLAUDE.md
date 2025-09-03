@@ -1,40 +1,206 @@
-# Project Development Configuration
+# Journal Project - Claude Code Configuration
+## September 2025 - Modern Monorepo Architecture
 
-This repository is configured for a dual-language stack (Python + TypeScript) using uv, Ruff, Bun, and Biome. These conventions ensure fast, reproducible workflows and prevent tool drift.
+This configuration optimizes Claude Code CLI (v2025.9) for a modern TypeScript/Python monorepo with separate API and web applications.
 
-## CRITICAL: Python Package Management with uv
-NEVER use pip, pip-tools, poetry, or conda directly in this project.
+## Project Structure
 
-Required commands:
-- Install deps: `uv add <package>`
-- Remove deps: `uv remove <package>`
-- Sync deps: `uv sync --frozen`
-- Run tools: `uv run ruff …`, `uv run pytest …`, `uv run mypy …`
+```
+journal/
+├── apps/
+│   ├── api/         # FastAPI backend (Python 3.11+, uv, SQLModel, pgvector)
+│   └── web/         # Vite + React frontend (TypeScript, Tailwind, Shadcn)
+├── docs/            # Documentation (Markdown, technical specs)
+├── scripts/         # Automation and deployment scripts
+└── tests/           # E2E tests (Playwright)
+```
 
-Shortcuts (Bun/NPM):
-- Lint all: `bun run lint:all`
-- Format all: `bun run format:all`
-- Check all (CI parity): `bun run check:all`
-- Python autofix: `bun run py:fix` (ruff fix + format)
+## Critical Package Management Rules
 
-## Linting and Formatting
-- Python: `uv run ruff check --fix .` and `uv run ruff format .`
-- TypeScript/JS/CSS/JSON: `bun run check` (Biome GitHub reporter), `bun run format`
-- Pre-commit: `uv run pre-commit run --all-files`
+### Python (API)
+**NEVER use pip, pip-tools, poetry, or conda directly**
 
-## Build and Runtime
-- TypeScript: Bun 1.2.21 exclusively (no npm/yarn for scripts)
-- Python: uv 0.8.14 with Python 3.13.7 (pinned in `.python-version`)
-- Observability: structured logs (structlog), optional OTLP via env (`OTEL_ENABLED=true`)
+All Python operations in `apps/api/`:
+- Install: `cd apps/api && uv add <package>`
+- Remove: `cd apps/api && uv remove <package>`
+- Sync: `cd apps/api && uv sync --frozen`
+- Run: `cd apps/api && uv run <command>`
 
-## Testing
-- Python unit/integration tests: `uv run pytest --cov` (live logs enabled via pytest.ini)
-- Frontend tests (if added): `bun test`
+### TypeScript/JavaScript (Web & Root)
+**Use Bun exclusively for all JavaScript operations**
 
-## Agent Usage
-- Claude Code: prefer running with `--profile agent` and use this CLAUDE.md as authoritative rules
-- Codex CLI: prefer project-level config in `.codex/config.toml`; avoid destructive commands; follow uv-only policy
+- Root level: `bun install`, `bun run <script>`
+- Web app: `cd apps/web && bun install`, `bun run dev`
+- Never use npm or yarn for package management
+
+## Development Commands
+
+### Quick Actions (from root)
+```bash
+# API Development
+bun run api:dev         # Start FastAPI with hot reload
+bun run api:test        # Run pytest with coverage
+bun run api:lint        # Run ruff checks
+
+# Web Development  
+bun run web:dev         # Start Vite dev server
+bun run web:build       # Production build
+bun run web:preview     # Preview production build
+
+# Full Stack
+bun run lint:all        # Lint everything
+bun run format:all      # Format all code
+bun run check:all       # CI-equivalent checks
+```
+
+### Database Operations (API)
+```bash
+bun run api:migrate              # Apply migrations
+bun run api:db:revision m="msg"  # Create new migration
+```
+
+## Code Standards
+
+### Python (apps/api/)
+- Style: PEP 8 via Ruff
+- Types: Full type hints, SQLModel for ORM
+- Testing: pytest with 80%+ coverage
+- Docs: Docstrings for public APIs
+
+### TypeScript (apps/web/)
+- Style: Biome for formatting and linting
+- Types: Strict mode, no implicit any
+- Components: Functional React with hooks
+- State: Zustand for client state
+
+## Claude Code Optimizations
+
+### Task Management
+Use TodoWrite tool for:
+- Multi-step implementations
+- Complex refactoring
+- Bug fix workflows
+- Feature development
+
+### Search Strategy
+1. Use `Grep` for code searches across the monorepo
+2. Use `Glob` for finding files by pattern
+3. Use `Task` tool for complex multi-file analysis
+
+### Testing Workflow
+1. Write tests alongside implementation
+2. Run `bun run api:test` or `bun run web:test`
+3. Check coverage with `--cov` flag
+4. Use `bun run check:all` before marking complete
+
+### Git Workflow
+1. Never commit directly unless asked
+2. Use atomic commits with clear messages
+3. Run linting/formatting before commits
+4. Create feature branches for new work
+
+## Architecture Decisions
+
+### Backend (apps/api/)
+- **Framework**: FastAPI with async/await
+- **Database**: PostgreSQL 16+ with pgvector
+- **ORM**: SQLModel (SQLAlchemy + Pydantic)
+- **Auth**: JWT with refresh tokens
+- **Queue**: Redis for sessions, NATS for events
+- **Search**: pgvector for semantic search
+
+### Frontend (apps/web/)
+- **Framework**: React 19 with TypeScript
+- **Build**: Vite for fast HMR
+- **Styling**: Tailwind CSS + Shadcn/ui
+- **State**: Zustand for global state
+- **Forms**: React Hook Form + Zod
+- **Testing**: Vitest + React Testing Library
+
+## Security Guidelines
+
+1. Never commit secrets or API keys
+2. Use environment variables for configuration
+3. Validate all user input
+4. Use parameterized queries
+5. Implement rate limiting
+6. Follow OWASP best practices
+
+## Performance Targets
+
+- API response time: < 200ms p95
+- Frontend TTI: < 2s on 3G
+- Test execution: < 30s for unit tests
+- Build time: < 60s for production builds
+
+## Agent Usage Guidelines
+
+### When to Use Plan Mode
+- Analyzing complex architectural changes
+- Reviewing security-sensitive code
+- Understanding cross-service interactions
+- Planning large refactors
+
+### When to Use Subagents
+- Database schema migrations
+- Complex search operations
+- Multi-file refactoring
+- Test generation
+
+### Proactive Actions
+- Auto-format on file changes
+- Run type checking after TypeScript edits
+- Update imports when moving files
+- Generate missing test files
+
+## Common Workflows
+
+### Adding a New API Endpoint
+1. Define SQLModel schema in `apps/api/app/models/`
+2. Create service layer in `apps/api/app/services/`
+3. Add FastAPI route in `apps/api/app/api/`
+4. Write tests in `apps/api/tests/`
+5. Update OpenAPI schema
+
+### Adding a New React Component
+1. Create component in `apps/web/src/components/`
+2. Add Storybook story if UI component
+3. Write unit tests alongside
+4. Update barrel exports
+
+### Database Changes
+1. Modify SQLModel in `apps/api/app/models/`
+2. Create migration: `bun run api:db:revision m="description"`
+3. Review generated migration
+4. Apply: `bun run api:migrate`
+
+## Monitoring & Observability
+
+- Structured logging with context
+- OpenTelemetry instrumentation
+- Error tracking with proper grouping
+- Performance metrics collection
 
 ## Do Not
-- Do not run `pip install`, `pip3`, `poetry`, or `conda`
-- Do not run `npm install` for project scripts (use `bun install`)
+
+- Run `pip install` or `npm install` directly
+- Create files without checking existing patterns
+- Ignore type errors or linting warnings
+- Commit without running tests
+- Use synchronous code in async contexts
+- Mix concerns between services
+
+## Environment Variables
+
+Required for development:
+- `DATABASE_URL`: PostgreSQL connection
+- `REDIS_URL`: Redis connection
+- `JWT_SECRET`: Authentication secret
+- `OPENAI_API_KEY`: For embeddings (optional)
+
+## Getting Help
+
+- Check `docs/` for architecture decisions
+- Review `BACKEND_ARCHITECTURE.md` for API design
+- See `apps/web/EDITOR_GUIDE.md` for frontend patterns
+- Use `bun run docs:search <term>` for documentation search

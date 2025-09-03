@@ -1,29 +1,29 @@
 {
-	"ignorePatterns": [
-		{
-			"pattern": "^http://localhost"
-		},
-		{
-			"pattern": "^#"
-		}
-	],
-	"replacementPatterns": [
-		{
-			"pattern": "^/docs/",
-			"replacement": "{{BASEURL}}/docs/"
-		}
-	],
-	"httpHeaders": [
-		{
-			"urls": ["https://github.com/"],
-			"headers": {
-				"User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:120.0) Gecko/20100101 Firefox/120.0"
-			}
-		}
-	],
-	"timeout": "10s",
-	"retryOn429": true,
-	"retryCount": 3,
-	"fallbackRetryDelay": "30s",
-	"aliveStatusCodes": [200, 206, 403, 429]
+  "ignorePatterns": [
+    {
+      "pattern": "^http://localhost"
+    },
+    {
+      "pattern": "^#"
+    }
+  ],
+  "replacementPatterns": [
+    {
+      "pattern": "^/docs/",
+      "replacement": "{{BASEURL}}/docs/"
+    }
+  ],
+  "httpHeaders": [
+    {
+      "urls": ["https://github.com/"],
+      "headers": {
+        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:120.0) Gecko/20100101 Firefox/120.0"
+      }
+    }
+  ],
+  "timeout": "10s",
+  "retryOn429": true,
+  "retryCount": 3,
+  "fallbackRetryDelay": "30s",
+  "aliveStatusCodes": [200, 206, 403, 429]
 }

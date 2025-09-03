@@ -1,0 +1,125 @@
+.bubble-toolbar {
+	display: inline-flex;
+	gap: 8px;
+	background: rgba(30, 30, 30, 0.92);
+	padding: 6px 8px;
+	border-radius: 12px;
+	box-shadow: 0 8px 28px rgba(0, 0, 0, 0.28);
+}
+.bubble-toolbar-group {
+	display: inline-flex;
+	gap: 6px;
+}
+.bubble-toolbar-button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 28px;
+	height: 28px;
+	border-radius: 8px;
+	background: transparent;
+	color: #edeff5;
+	border: 1px solid rgba(255, 255, 255, 0.12);
+}
+.bubble-toolbar-button:hover {
+	background: rgba(255, 255, 255, 0.08);
+}
+.bubble-toolbar-button.is-active {
+	border-color: #d4af8b;
+}
+.heading-button {
+	width: 36px;
+	font-weight: 600;
+}
+
+.bubble-link-editor {
+	display: inline-flex;
+	gap: 8px;
+	align-items: flex-start;
+	background: rgba(30, 30, 30, 0.92);
+	padding: 8px;
+	border-radius: 12px;
+	box-shadow: 0 8px 28px rgba(0, 0, 0, 0.28);
+}
+.bubble-link-input-container {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+.bubble-link-input {
+	width: 260px;
+	background: transparent;
+	color: #edeff5;
+	border: 1px solid rgba(255, 255, 255, 0.12);
+	border-radius: 10px;
+	padding: 6px 8px;
+	outline: none;
+}
+.bubble-link-input.invalid {
+	border-color: #e74c3c;
+}
+.bubble-link-preview {
+	font-size: 11px;
+	color: rgba(237, 239, 245, 0.7);
+	padding: 0 8px;
+}
+.bubble-link-error {
+	font-size: 11px;
+	color: #e74c3c;
+	padding: 0 8px;
+}
+.bubble-link-actions {
+	display: inline-flex;
+	gap: 6px;
+	align-self: flex-end;
+}
+.bubble-link-save {
+	background: rgba(212, 175, 139, 0.18);
+	color: #edeff5;
+	border: 1px solid rgba(212, 175, 139, 0.5);
+	padding: 6px 10px;
+	border-radius: 10px;
+}
+.bubble-link-save:disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+.bubble-link-cancel {
+	background: transparent;
+	color: #edeff5;
+	border: 1px solid rgba(255, 255, 255, 0.12);
+	padding: 6px 10px;
+	border-radius: 10px;
+}
+
+.bubble-toolbar-dropdown {
+	position: relative;
+}
+.bubble-highlight-colors {
+	position: absolute;
+	top: 100%;
+	left: 0;
+	display: inline-flex;
+	gap: 6px;
+	background: rgba(30, 30, 30, 0.92);
+	padding: 8px;
+	border-radius: 12px;
+	margin-top: 6px;
+	border: 1px solid rgba(255, 255, 255, 0.12);
+}
+.bubble-highlight-color {
+	width: 22px;
+	height: 22px;
+	border-radius: 6px;
+	border: 1px solid rgba(255, 255, 255, 0.2);
+}
+.bubble-highlight-color.is-active {
+	outline: 2px solid rgba(212, 175, 139, 0.66);
+}
+.bubble-highlight-remove {
+	background: transparent;
+	color: #edeff5;
+	border: 1px dashed rgba(255, 255, 255, 0.2);
+	padding: 6px 8px;
+	border-radius: 8px;
+}

@@ -1,0 +1,793 @@
+{
+  "config": {
+    "configFile": "/home/verlyn13/Projects/verlyn13/journal/playwright.config.js",
+    "rootDir": "/home/verlyn13/Projects/verlyn13/journal/tests",
+    "forbidOnly": false,
+    "fullyParallel": true,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 8
+    },
+    "preserveOutput": "always",
+    "reporter": [
+      [
+        "html",
+        {
+          "outputFolder": "playwright-report"
+        }
+      ],
+      [
+        "json",
+        {
+          "outputFile": "test-results.json"
+        }
+      ],
+      ["list", null]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "quiet": false,
+    "projects": [
+      {
+        "outputDir": "/home/verlyn13/Projects/verlyn13/journal/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 8
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "/home/verlyn13/Projects/verlyn13/journal/tests",
+        "testIgnore": [],
+        "testMatch": ["**/*.spec.js", "**/*.test.js", "**/*.spec.ts", "**/*.test.ts"],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/home/verlyn13/Projects/verlyn13/journal/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 8
+        },
+        "id": "firefox",
+        "name": "firefox",
+        "testDir": "/home/verlyn13/Projects/verlyn13/journal/tests",
+        "testIgnore": [],
+        "testMatch": ["**/*.spec.js", "**/*.test.js", "**/*.spec.ts", "**/*.test.ts"],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/home/verlyn13/Projects/verlyn13/journal/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 8
+        },
+        "id": "webkit",
+        "name": "webkit",
+        "testDir": "/home/verlyn13/Projects/verlyn13/journal/tests",
+        "testIgnore": [],
+        "testMatch": ["**/*.spec.js", "**/*.test.js", "**/*.spec.ts", "**/*.test.ts"],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/home/verlyn13/Projects/verlyn13/journal/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 8
+        },
+        "id": "Mobile Chrome",
+        "name": "Mobile Chrome",
+        "testDir": "/home/verlyn13/Projects/verlyn13/journal/tests",
+        "testIgnore": [],
+        "testMatch": ["**/*.spec.js", "**/*.test.js", "**/*.spec.ts", "**/*.test.ts"],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/home/verlyn13/Projects/verlyn13/journal/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 8
+        },
+        "id": "Mobile Safari",
+        "name": "Mobile Safari",
+        "testDir": "/home/verlyn13/Projects/verlyn13/journal/tests",
+        "testIgnore": [],
+        "testMatch": ["**/*.spec.js", "**/*.test.js", "**/*.spec.ts", "**/*.test.ts"],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/home/verlyn13/Projects/verlyn13/journal/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 8
+        },
+        "id": "iPad",
+        "name": "iPad",
+        "testDir": "/home/verlyn13/Projects/verlyn13/journal/tests",
+        "testIgnore": [],
+        "testMatch": ["**/*.spec.js", "**/*.test.js", "**/*.spec.ts", "**/*.test.ts"],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/home/verlyn13/Projects/verlyn13/journal/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 8
+        },
+        "id": "visual",
+        "name": "visual",
+        "testDir": "/home/verlyn13/Projects/verlyn13/journal/tests/visual",
+        "testIgnore": [],
+        "testMatch": ["**/*.spec.js"],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/home/verlyn13/Projects/verlyn13/journal/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 8
+        },
+        "id": "a11y",
+        "name": "a11y",
+        "testDir": "/home/verlyn13/Projects/verlyn13/journal/tests/a11y",
+        "testIgnore": [],
+        "testMatch": ["**/*.test.js"],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/home/verlyn13/Projects/verlyn13/journal/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 8
+        },
+        "id": "web-editor",
+        "name": "web-editor",
+        "testDir": "/home/verlyn13/Projects/verlyn13/journal/tests/web",
+        "testIgnore": [],
+        "testMatch": ["**/*.spec.ts"],
+        "timeout": 30000
+      }
+    ],
+    "shard": null,
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.55.0",
+    "workers": 8,
+    "webServer": {
+      "command": "REACT_EDITOR=true make dev-py",
+      "port": 5000,
+      "timeout": 120000,
+      "reuseExistingServer": true
+    }
+  },
+  "suites": [
+    {
+      "title": "web/editor.spec.ts",
+      "file": "web/editor.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "React Editor (Vite)",
+          "file": "web/editor.spec.ts",
+          "line": 3,
+          "column": 6,
+          "specs": [
+            {
+              "title": "loads and renders inline math after typing $$...$$",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 20,
+                      "error": {
+                        "message": "Error: browserType.launch: Executable doesn't exist at /home/verlyn13/.cache/ms-playwright/chromium_headless_shell-1187/chrome-linux/headless_shell\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝",
+                        "stack": "Error: browserType.launch: Executable doesn't exist at /home/verlyn13/.cache/ms-playwright/chromium_headless_shell-1187/chrome-linux/headless_shell\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
+                      },
+                      "errors": [
+                        {
+                          "message": "Error: browserType.launch: Executable doesn't exist at /home/verlyn13/.cache/ms-playwright/chromium_headless_shell-1187/chrome-linux/headless_shell\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-31T19:13:08.268Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "6463ae24bf88d4f26f34-4c9f791d6d6ad8761b83",
+              "file": "web/editor.spec.ts",
+              "line": 4,
+              "column": 3
+            },
+            {
+              "title": "lazy-loads Monaco when requested",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "failed",
+                      "duration": 24,
+                      "error": {
+                        "message": "Error: browserType.launch: Executable doesn't exist at /home/verlyn13/.cache/ms-playwright/chromium_headless_shell-1187/chrome-linux/headless_shell\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝",
+                        "stack": "Error: browserType.launch: Executable doesn't exist at /home/verlyn13/.cache/ms-playwright/chromium_headless_shell-1187/chrome-linux/headless_shell\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
+                      },
+                      "errors": [
+                        {
+                          "message": "Error: browserType.launch: Executable doesn't exist at /home/verlyn13/.cache/ms-playwright/chromium_headless_shell-1187/chrome-linux/headless_shell\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-31T19:13:08.087Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "6463ae24bf88d4f26f34-b39991bd0ec0aeb56c7a",
+              "file": "web/editor.spec.ts",
+              "line": 13,
+              "column": 3
+            },
+            {
+              "title": "loads and renders inline math after typing $$...$$",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 2,
+                      "status": "failed",
+                      "duration": 22,
+                      "error": {
+                        "message": "Error: browserType.launch: Executable doesn't exist at /home/verlyn13/.cache/ms-playwright/firefox-1490/firefox/firefox\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝",
+                        "stack": "Error: browserType.launch: Executable doesn't exist at /home/verlyn13/.cache/ms-playwright/firefox-1490/firefox/firefox\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
+                      },
+                      "errors": [
+                        {
+                          "message": "Error: browserType.launch: Executable doesn't exist at /home/verlyn13/.cache/ms-playwright/firefox-1490/firefox/firefox\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-31T19:13:07.962Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "6463ae24bf88d4f26f34-1b8e996908f37d566593",
+              "file": "web/editor.spec.ts",
+              "line": 4,
+              "column": 3
+            },
+            {
+              "title": "lazy-loads Monaco when requested",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 3,
+                      "status": "failed",
+                      "duration": 26,
+                      "error": {
+                        "message": "Error: browserType.launch: Executable doesn't exist at /home/verlyn13/.cache/ms-playwright/firefox-1490/firefox/firefox\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝",
+                        "stack": "Error: browserType.launch: Executable doesn't exist at /home/verlyn13/.cache/ms-playwright/firefox-1490/firefox/firefox\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
+                      },
+                      "errors": [
+                        {
+                          "message": "Error: browserType.launch: Executable doesn't exist at /home/verlyn13/.cache/ms-playwright/firefox-1490/firefox/firefox\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-31T19:13:08.280Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "6463ae24bf88d4f26f34-1def0a47af299114a62a",
+              "file": "web/editor.spec.ts",
+              "line": 13,
+              "column": 3
+            },
+            {
+              "title": "loads and renders inline math after typing $$...$$",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 4,
+                      "status": "failed",
+                      "duration": 17,
+                      "error": {
+                        "message": "Error: browserType.launch: Executable doesn't exist at /home/verlyn13/.cache/ms-playwright/webkit_ubuntu20.04_x64_special-2092/pw_run.sh\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝",
+                        "stack": "Error: browserType.launch: Executable doesn't exist at /home/verlyn13/.cache/ms-playwright/webkit_ubuntu20.04_x64_special-2092/pw_run.sh\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
+                      },
+                      "errors": [
+                        {
+                          "message": "Error: browserType.launch: Executable doesn't exist at /home/verlyn13/.cache/ms-playwright/webkit_ubuntu20.04_x64_special-2092/pw_run.sh\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-31T19:13:08.367Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "6463ae24bf88d4f26f34-be0f4bdfd51528747f68",
+              "file": "web/editor.spec.ts",
+              "line": 4,
+              "column": 3
+            },
+            {
+              "title": "lazy-loads Monaco when requested",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 5,
+                      "status": "failed",
+                      "duration": 24,
+                      "error": {
+                        "message": "Error: browserType.launch: Executable doesn't exist at /home/verlyn13/.cache/ms-playwright/webkit_ubuntu20.04_x64_special-2092/pw_run.sh\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝",
+                        "stack": "Error: browserType.launch: Executable doesn't exist at /home/verlyn13/.cache/ms-playwright/webkit_ubuntu20.04_x64_special-2092/pw_run.sh\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
+                      },
+                      "errors": [
+                        {
+                          "message": "Error: browserType.launch: Executable doesn't exist at /home/verlyn13/.cache/ms-playwright/webkit_ubuntu20.04_x64_special-2092/pw_run.sh\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-31T19:13:08.238Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "6463ae24bf88d4f26f34-30dda7251a7157ec9d27",
+              "file": "web/editor.spec.ts",
+              "line": 13,
+              "column": 3
+            },
+            {
+              "title": "loads and renders inline math after typing $$...$$",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 6,
+                      "status": "failed",
+                      "duration": 18,
+                      "error": {
+                        "message": "Error: browserType.launch: Executable doesn't exist at /home/verlyn13/.cache/ms-playwright/chromium_headless_shell-1187/chrome-linux/headless_shell\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝",
+                        "stack": "Error: browserType.launch: Executable doesn't exist at /home/verlyn13/.cache/ms-playwright/chromium_headless_shell-1187/chrome-linux/headless_shell\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
+                      },
+                      "errors": [
+                        {
+                          "message": "Error: browserType.launch: Executable doesn't exist at /home/verlyn13/.cache/ms-playwright/chromium_headless_shell-1187/chrome-linux/headless_shell\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-31T19:13:08.157Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "6463ae24bf88d4f26f34-9674492d4acb86174cbd",
+              "file": "web/editor.spec.ts",
+              "line": 4,
+              "column": 3
+            },
+            {
+              "title": "lazy-loads Monaco when requested",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 7,
+                      "status": "failed",
+                      "duration": 23,
+                      "error": {
+                        "message": "Error: browserType.launch: Executable doesn't exist at /home/verlyn13/.cache/ms-playwright/chromium_headless_shell-1187/chrome-linux/headless_shell\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝",
+                        "stack": "Error: browserType.launch: Executable doesn't exist at /home/verlyn13/.cache/ms-playwright/chromium_headless_shell-1187/chrome-linux/headless_shell\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
+                      },
+                      "errors": [
+                        {
+                          "message": "Error: browserType.launch: Executable doesn't exist at /home/verlyn13/.cache/ms-playwright/chromium_headless_shell-1187/chrome-linux/headless_shell\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-31T19:13:08.064Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "6463ae24bf88d4f26f34-d32e256c9f6c2be6fe47",
+              "file": "web/editor.spec.ts",
+              "line": 13,
+              "column": 3
+            },
+            {
+              "title": "loads and renders inline math after typing $$...$$",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Safari",
+                  "projectName": "Mobile Safari",
+                  "results": [
+                    {
+                      "workerIndex": 8,
+                      "parallelIndex": 2,
+                      "status": "failed",
+                      "duration": 16,
+                      "error": {
+                        "message": "Error: browserType.launch: Executable doesn't exist at /home/verlyn13/.cache/ms-playwright/webkit_ubuntu20.04_x64_special-2092/pw_run.sh\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝",
+                        "stack": "Error: browserType.launch: Executable doesn't exist at /home/verlyn13/.cache/ms-playwright/webkit_ubuntu20.04_x64_special-2092/pw_run.sh\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
+                      },
+                      "errors": [
+                        {
+                          "message": "Error: browserType.launch: Executable doesn't exist at /home/verlyn13/.cache/ms-playwright/webkit_ubuntu20.04_x64_special-2092/pw_run.sh\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-31T19:13:10.425Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "6463ae24bf88d4f26f34-d6a24cddbb5c4f6a9f56",
+              "file": "web/editor.spec.ts",
+              "line": 4,
+              "column": 3
+            },
+            {
+              "title": "lazy-loads Monaco when requested",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Safari",
+                  "projectName": "Mobile Safari",
+                  "results": [
+                    {
+                      "workerIndex": 9,
+                      "parallelIndex": 7,
+                      "status": "failed",
+                      "duration": 12,
+                      "error": {
+                        "message": "Error: browserType.launch: Executable doesn't exist at /home/verlyn13/.cache/ms-playwright/webkit_ubuntu20.04_x64_special-2092/pw_run.sh\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝",
+                        "stack": "Error: browserType.launch: Executable doesn't exist at /home/verlyn13/.cache/ms-playwright/webkit_ubuntu20.04_x64_special-2092/pw_run.sh\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
+                      },
+                      "errors": [
+                        {
+                          "message": "Error: browserType.launch: Executable doesn't exist at /home/verlyn13/.cache/ms-playwright/webkit_ubuntu20.04_x64_special-2092/pw_run.sh\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-31T19:13:10.277Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "6463ae24bf88d4f26f34-f90b963d131f2c5aee8c",
+              "file": "web/editor.spec.ts",
+              "line": 13,
+              "column": 3
+            },
+            {
+              "title": "loads and renders inline math after typing $$...$$",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "iPad",
+                  "projectName": "iPad",
+                  "results": [
+                    {
+                      "workerIndex": 10,
+                      "parallelIndex": 1,
+                      "status": "failed",
+                      "duration": 18,
+                      "error": {
+                        "message": "Error: browserType.launch: Executable doesn't exist at /home/verlyn13/.cache/ms-playwright/webkit_ubuntu20.04_x64_special-2092/pw_run.sh\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝",
+                        "stack": "Error: browserType.launch: Executable doesn't exist at /home/verlyn13/.cache/ms-playwright/webkit_ubuntu20.04_x64_special-2092/pw_run.sh\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
+                      },
+                      "errors": [
+                        {
+                          "message": "Error: browserType.launch: Executable doesn't exist at /home/verlyn13/.cache/ms-playwright/webkit_ubuntu20.04_x64_special-2092/pw_run.sh\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-31T19:13:10.566Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "6463ae24bf88d4f26f34-4c4637e75a8fe431436c",
+              "file": "web/editor.spec.ts",
+              "line": 4,
+              "column": 3
+            },
+            {
+              "title": "lazy-loads Monaco when requested",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "iPad",
+                  "projectName": "iPad",
+                  "results": [
+                    {
+                      "workerIndex": 11,
+                      "parallelIndex": 6,
+                      "status": "failed",
+                      "duration": 19,
+                      "error": {
+                        "message": "Error: browserType.launch: Executable doesn't exist at /home/verlyn13/.cache/ms-playwright/webkit_ubuntu20.04_x64_special-2092/pw_run.sh\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝",
+                        "stack": "Error: browserType.launch: Executable doesn't exist at /home/verlyn13/.cache/ms-playwright/webkit_ubuntu20.04_x64_special-2092/pw_run.sh\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
+                      },
+                      "errors": [
+                        {
+                          "message": "Error: browserType.launch: Executable doesn't exist at /home/verlyn13/.cache/ms-playwright/webkit_ubuntu20.04_x64_special-2092/pw_run.sh\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-31T19:13:10.470Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "6463ae24bf88d4f26f34-ca962b1cb031f17738b3",
+              "file": "web/editor.spec.ts",
+              "line": 13,
+              "column": 3
+            },
+            {
+              "title": "loads and renders inline math after typing $$...$$",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "web-editor",
+                  "projectName": "web-editor",
+                  "results": [
+                    {
+                      "workerIndex": 12,
+                      "parallelIndex": 5,
+                      "status": "failed",
+                      "duration": 28,
+                      "error": {
+                        "message": "Error: browserType.launch: Executable doesn't exist at /home/verlyn13/.cache/ms-playwright/chromium_headless_shell-1187/chrome-linux/headless_shell\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝",
+                        "stack": "Error: browserType.launch: Executable doesn't exist at /home/verlyn13/.cache/ms-playwright/chromium_headless_shell-1187/chrome-linux/headless_shell\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
+                      },
+                      "errors": [
+                        {
+                          "message": "Error: browserType.launch: Executable doesn't exist at /home/verlyn13/.cache/ms-playwright/chromium_headless_shell-1187/chrome-linux/headless_shell\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-31T19:13:10.582Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "d2f56d7d370f0ba02e91-422c36d43f1c604f6080",
+              "file": "web/editor.spec.ts",
+              "line": 4,
+              "column": 3
+            },
+            {
+              "title": "lazy-loads Monaco when requested",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "web-editor",
+                  "projectName": "web-editor",
+                  "results": [
+                    {
+                      "workerIndex": 13,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 17,
+                      "error": {
+                        "message": "Error: browserType.launch: Executable doesn't exist at /home/verlyn13/.cache/ms-playwright/chromium_headless_shell-1187/chrome-linux/headless_shell\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝",
+                        "stack": "Error: browserType.launch: Executable doesn't exist at /home/verlyn13/.cache/ms-playwright/chromium_headless_shell-1187/chrome-linux/headless_shell\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
+                      },
+                      "errors": [
+                        {
+                          "message": "Error: browserType.launch: Executable doesn't exist at /home/verlyn13/.cache/ms-playwright/chromium_headless_shell-1187/chrome-linux/headless_shell\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-31T19:13:10.150Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "d2f56d7d370f0ba02e91-82a0a8fb8b9b871c7bbc",
+              "file": "web/editor.spec.ts",
+              "line": 13,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2025-08-31T19:13:05.800Z",
+    "duration": 4950.1269999999995,
+    "expected": 0,
+    "skipped": 0,
+    "unexpected": 14,
+    "flaky": 0
+  }
+}

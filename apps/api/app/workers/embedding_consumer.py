@@ -1,0 +1,220 @@
+"""
+Embedding consumer worker that processes entry events and updates embeddings.
+"""
+import asyncio
+import json
+import logging
+
+from typing import Any
+
+import nats
+
+from sqlalchemy import select, text
+
+from app.infra.db import get_session
+from app.infra.models import Entry
+from app.infra.search_pgvector import upsert_entry_embedding
+from app.settings import settings
+
+
+logger = logging.getLogger(__name__)
+
+
+class EmbeddingConsumer:
+    """Consumer that processes entry events and updates embeddings."""
+
+    def __init__(self):
+        self.nc = None
+        self.js = None
+        self.running = False
+
+    async def connect(self):
+        """Connect to NATS and JetStream."""
+        try:
+            self.nc = await nats.connect(settings.nats_url)
+            self.js = self.nc.jetstream()
+            logger.info("Connected to NATS")
+        except Exception as e:
+            logger.error(f"Failed to connect to NATS: {e}")
+            raise
+
+    async def disconnect(self):
+        """Disconnect from NATS."""
+        if self.nc:
+            await self.nc.close()
+            logger.info("Disconnected from NATS")
+
+    async def process_entry_event(self, msg):
+        """Process an entry event and update embeddings."""
+        try:
+            # Parse the event data
+            data = json.loads(msg.data.decode())
+            event_type = data.get('event_type')
+            event_data = data.get('event_data', {})
+
+            logger.info(f"Processing {event_type} event for entry {event_data.get('entry_id')}")
+
+            # Handle different event types
+            if event_type in ['entry.created', 'entry.updated']:
+                await self._handle_entry_upsert(event_data)
+            elif event_type == 'entry.deleted':
+                await self._handle_entry_deletion(event_data)
+            elif event_type == 'embedding.reindex':
+                await self._handle_reindex_request(event_data)
+            else:
+                logger.warning(f"Unknown event type: {event_type}")
+
+            # Acknowledge the message
+            await msg.ack()
+            logger.debug(f"Processed and acked {event_type} event")
+
+        except Exception as e:
+            logger.error(f"Error processing message: {e}")
+            # Don't ack on error - let NATS retry
+            await msg.nak()
+
+    async def _handle_entry_upsert(self, event_data: dict[str, Any]):
+        """Handle entry creation/update by generating and storing embedding."""
+        entry_id = event_data.get('entry_id')
+        if not entry_id:
+            logger.error("No entry_id in event data")
+            return
+
+        async for session in get_session():
+            try:
+                row = (
+                    (await session.execute(select(Entry).where(Entry.id == entry_id)))
+                    .scalars()
+                    .first()
+                )
+                if not row:
+                    logger.error(f"Entry not found for embedding: {entry_id}")
+                    return
+                text_source = (row.title or "") + " " + (row.content or "")
+                await upsert_entry_embedding(session, entry_id, text_source)
+                await session.commit()
+                logger.info(f"Updated embedding for entry {entry_id}")
+            except Exception as e:
+                logger.error(f"Failed to update embedding for entry {entry_id}: {e}")
+                await session.rollback()
+                raise
+
+    async def _handle_entry_deletion(self, event_data: dict[str, Any]):
+        """Handle entry deletion by removing embedding."""
+        entry_id = event_data.get('entry_id')
+        if not entry_id:
+            logger.error("No entry_id in event data")
+            return
+
+        async for session in get_session():
+            try:
+                # Delete embedding record
+                await session.execute(
+                    text("DELETE FROM entry_embeddings WHERE entry_id = :entry_id"),
+                    {"entry_id": entry_id}
+                )
+                await session.commit()
+                logger.info(f"Deleted embedding for entry {entry_id}")
+            except Exception as e:
+                logger.error(f"Failed to delete embedding for entry {entry_id}: {e}")
+                await session.rollback()
+                raise
+
+    async def _handle_reindex_request(self, event_data: dict[str, Any]):
+        """Handle bulk reindexing request."""
+        logger.info("Starting bulk reindex of embeddings")
+
+        async for session in get_session():
+            try:
+                # Get all entries that need reindexing
+                result = await session.execute(
+                    select(Entry.id, Entry.title, Entry.content).where(Entry.is_deleted == False)  # noqa: E712
+                )
+                rows = result.fetchall()
+
+                logger.info(f"Reindexing {len(rows)} entries")
+
+                # Process each entry
+                for i, (entry_id, title, content) in enumerate(rows, 1):
+                    try:
+                        text_source = (title or "") + " " + (content or "")
+                        await upsert_entry_embedding(session, entry_id, text_source)
+                        if i % 100 == 0:
+                            logger.info(f"Processed {i}/{len(rows)} entries")
+                    except Exception as e:
+                        logger.error(f"Failed to reindex entry {entry_id}: {e}")
+                        # Continue with next entry
+
+                await session.commit()
+                logger.info(f"Completed bulk reindex of {len(rows)} entries")
+
+            except Exception as e:
+                logger.error(f"Bulk reindex failed: {e}")
+                await session.rollback()
+                raise
+
+    async def start_consuming(self):
+        """Start consuming messages from NATS."""
+        if not self.nc or not self.js:
+            await self.connect()
+
+        self.running = True
+
+        try:
+            # Subscribe to entry events
+            await self.js.subscribe(
+                subject="journal.entry.*",
+                queue="embedding_workers",
+                cb=self.process_entry_event,
+                manual_ack=True,
+                max_deliver=3,  # Retry failed messages up to 3 times
+            )
+
+            # Subscribe to reindex events
+            await self.js.subscribe(
+                subject="journal.reindex.*",
+                queue="embedding_workers",
+                cb=self.process_entry_event,
+                manual_ack=True,
+                max_deliver=1,  # Don't retry reindex requests
+            )
+
+            logger.info("Started consuming messages")
+
+            # Keep running until stopped
+            while self.running:
+                await asyncio.sleep(1)
+
+        except Exception as e:
+            logger.error(f"Error in message consumption: {e}")
+            raise
+        finally:
+            await self.disconnect()
+
+    async def stop(self):
+        """Stop consuming messages."""
+        self.running = False
+        logger.info("Stopping message consumption")
+
+
+async def main():
+    """Main entry point for the embedding consumer worker."""
+    logging.basicConfig(
+        level=logging.INFO,
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    )
+
+    consumer = EmbeddingConsumer()
+
+    try:
+        await consumer.start_consuming()
+    except KeyboardInterrupt:
+        logger.info("Received interrupt signal")
+        await consumer.stop()
+    except Exception as e:
+        logger.error(f"Worker failed: {e}")
+        raise
+
+
+if __name__ == "__main__":
+    asyncio.run(main())

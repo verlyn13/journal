@@ -1,0 +1,132 @@
+# Journal Project - mise Configuration
+# Modern TypeScript/Python Monorepo Tool Management
+
+[tools]
+python = "3.13.7"  # Latest Python version
+node = "22"        # Modern JS features for frontend
+bun = "latest"     # Primary JS package manager
+uv = "latest"      # Python package/venv manager
+
+[tasks]
+# === Full Stack Development ===
+dev = { depends = ["api:dev", "web:dev"], description = "Start both API and web dev servers" }
+test = { depends = ["api:test", "web:test"], description = "Run all tests" }
+lint = { depends = ["api:lint", "web:lint"], description = "Lint all code" }
+format = { depends = ["api:format", "web:format"], description = "Format all code" }
+
+# === API/Backend Tasks ===
+"api:dev" = "cd apps/api && uv run fastapi run app/main.py --host 0.0.0.0 --port 5000 --reload"
+"api:test" = "cd apps/api && uv run pytest -m 'unit or component' -v"
+"api:test:integration" = "cd apps/api && uv run pytest -m integration -v"
+"api:test:all" = "cd apps/api && uv run pytest -v --cov=app --cov-report=term-missing"
+"api:lint" = "cd apps/api && uv run ruff check ."
+"api:format" = "cd apps/api && uv run ruff format ."
+"api:typecheck" = "cd apps/api && uv run mypy app"
+"api:migrate" = "cd apps/api && uv run alembic upgrade head"
+"api:migration" = "cd apps/api && uv run alembic revision --autogenerate -m"
+"api:sync" = "cd apps/api && uv sync --all-extras --dev"
+
+# === Web/Frontend Tasks ===
+"web:dev" = "cd apps/web && bun run dev"
+"web:build" = "cd apps/web && bun run build"
+"web:preview" = "cd apps/web && bun run preview"
+"web:test" = "cd apps/web && bun run test"
+"web:test:coverage" = "cd apps/web && bun run test:coverage"
+"web:lint" = "cd apps/web && bun run lint"
+"web:format" = "cd apps/web && bun run format"
+"web:typecheck" = "cd apps/web && bun run typecheck"
+"web:storybook" = "cd apps/web && bun run storybook"
+
+# === E2E Testing ===
+"e2e:install" = "npm ci && npx playwright install"
+"e2e:test" = "npm test"
+"e2e:test:headed" = "npm run test:headed"
+
+# === Database Management ===
+"db:start" = "cd apps/api && docker compose up -d db"
+"db:stop" = "cd apps/api && docker compose stop db"
+"db:reset" = "cd apps/api && docker compose down db && docker compose up -d db && sleep 3 && mise run api:migrate"
+"db:console" = "cd apps/api && docker compose exec db psql -U journal -d journal"
+
+# === Service Management ===
+"services:up" = "cd apps/api && docker compose up -d"
+"services:down" = "cd apps/api && docker compose down"
+"services:logs" = "cd apps/api && docker compose logs -f"
+"services:status" = "cd apps/api && docker compose ps"
+
+# === Development Setup ===
+setup = { depends = ["setup:api", "setup:web", "setup:e2e", "services:up"], description = "Complete project setup" }
+"setup:api" = "cd apps/api && uv venv --python 3.13 && uv sync --all-extras --dev"
+"setup:web" = "cd apps/web && bun install"
+"setup:e2e" = "npm ci && npx playwright install"
+
+# === CI/CD Simulation ===
+ci = { depends = ["lint", "typecheck", "test", "build"], description = "Run CI checks locally" }
+typecheck = { depends = ["api:typecheck", "web:typecheck"], description = "Type check all code" }
+build = "cd apps/web && bun run build"
+
+# === Utility Tasks ===
+clean = """
+  rm -rf apps/api/.venv apps/api/__pycache__ apps/api/.pytest_cache apps/api/.coverage
+  rm -rf apps/web/node_modules apps/web/dist apps/web/coverage
+  rm -rf node_modules
+  echo "Cleaned all build artifacts and dependencies"
+"""
+
+deps = """
+  echo "📦 Installing all dependencies..."
+  cd apps/api && uv sync --all-extras --dev
+  cd apps/web && bun install
+  npm ci
+  echo "✅ All dependencies installed"
+"""
+
+check = """
+  echo "🔍 Checking project health..."
+  python3 --version
+  uv --version
+  node --version
+  bun --version
+  cd apps/api && uv run python --version || echo "Virtual env not set up yet"
+  echo "✅ Tools check complete"
+"""
+
+# === Codex Integration Tasks ===
+"codex:fast" = "codex --profile speed"
+"codex:deep" = "codex --profile depth"
+"codex:permissive" = "codex --profile permissive"
+
+[env]
+# Development environment variables
+JOURNAL_ENV = "development"
+JOURNAL_DEBUG = "true"
+
+# API Configuration
+JOURNAL_API_HOST = "0.0.0.0"
+JOURNAL_API_PORT = "5000"
+JOURNAL_API_RELOAD = "true"
+
+# Database Configuration
+JOURNAL_DB_HOST = "localhost"
+JOURNAL_DB_PORT = "5433"
+JOURNAL_DB_NAME = "journal"
+JOURNAL_DB_USER = "journal"
+JOURNAL_DB_PASSWORD = "journal"
+JOURNAL_DB_URL = "postgresql+asyncpg://journal:journal@localhost:5433/journal"
+TEST_DB_URL = "postgresql+asyncpg://journal:journal@localhost:5433/journal_test"
+
+# Frontend Configuration
+VITE_API_URL = "http://localhost:5000"
+VITE_APP_NAME = "Journal"
+
+# Service Ports (for reference)
+POSTGRES_PORT = "5433"
+REDIS_PORT = "6379"
+NATS_PORT = "4222"
+
+# Python Settings
+PYTHONDONTWRITEBYTECODE = "1"
+PYTHONUNBUFFERED = "1"
+
+# Node Settings
+NODE_ENV = "development"

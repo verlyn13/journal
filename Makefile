@@ -74,25 +74,29 @@ dev-web:
 	@npm run dev
 
 dev-py:
-	@echo "🐍 Starting Flask app via uv..."
-	@if command -v uv >/dev/null 2>&1; then \
-		uv run python run.py; \
-	else \
-		echo "❌ uv not found. Install uv: https://docs.astral.sh/uv/"; \
-		exit 1; \
-	fi
+	@echo "🐍 Starting FastAPI backend..."
+	@cd apps/api && make dev
 
 # Run tests
 test:
-	@echo "🧪 Running tests..."
+	@echo "🧪 Running frontend tests..."
 	@npm test || true
-	@echo "🧪 Running Python tests (pytest)..."
-	@if command -v uv >/dev/null 2>&1; then \
-		uv run pytest -q; \
-	else \
-		echo "⚠️  uv not found. Install uv from https://docs.astral.sh/uv/ then run 'make py-sync'"; \
-		exit 1; \
-	fi
+	@echo "🧪 Running API tests..."
+	@cd apps/api && make test
+
+test-unit:
+	@echo "🧪 Running API unit tests..."
+	@cd apps/api && make test-unit
+	@echo "🧪 Running Web unit tests (Vitest)..."
+	@cd apps/web && bun run test:run
+
+test-component:
+	@echo "🧪 Running API component tests..."
+	@cd apps/api && make test-component
+
+test-integration:
+	@echo "🧪 Running API integration tests..."
+	@cd apps/api && make test-integration
 
 # Clean build artifacts
 clean:
@@ -119,8 +123,20 @@ storybook-build:
 
 # Playwright tests
 e2e:
+	@echo "🧪 Orchestrating E2E tests (API + Playwright)..."
+	@echo "📦 Ensuring API deps are synced (uv)..."
+	@cd apps/api && uv sync --all-extras --dev >/dev/null
+	@echo "🚀 Starting API on :5000..."
+	@cd apps/api && nohup uv run fastapi run app/main.py --host 0.0.0.0 --port 5000 >/tmp/journal_api_e2e.log 2>&1 & echo $$! > /tmp/journal_api_e2e.pid
+	@echo "⏳ Waiting for API health..."
+	@for i in $$(seq 1 30); do curl -sf http://localhost:5000/health >/dev/null 2>&1 && break || sleep 2; done
+	@echo "🎭 Installing Playwright browsers (if needed)..."
+	@npm ci >/dev/null
+	@npx playwright install --with-deps >/dev/null
 	@echo "🧪 Running Playwright tests..."
-	@bun run test
+	@set -e; status=0; npm test || status=$$?; \
+	  if [ -f /tmp/journal_api_e2e.pid ]; then kill $$(cat /tmp/journal_api_e2e.pid) >/dev/null 2>&1 || true; rm -f /tmp/journal_api_e2e.pid; fi; \
+	  exit $$status
 
 a11y:
 	@echo "♿ Running accessibility tests..."
@@ -235,58 +251,64 @@ format:
 check-all: lint docs-check test
 	@echo "✅ All checks passed!"
 
-# Python/uv shortcuts
-py-sync:
-	@echo "📦 Syncing Python deps with uv..."
-	@if command -v uv >/dev/null 2>&1; then \
-		uv sync; \
-	else \
-		echo "❌ uv not found. Install uv: https://docs.astral.sh/uv/"; \
-		exit 1; \
-	fi
+# Quality gates (unit+component + vitest, optional E2E if RUN_E2E=1)
+.PHONY: quality
+quality:
+	@echo "🔎 Running quality checks..."
+	@$(MAKE) lint
+	@$(MAKE) test-unit
+	@if [ "$$RUN_E2E" = "1" ]; then echo "🌐 Running Playwright E2E"; npm test || true; else echo "(Skipping Playwright E2E)"; fi
 
-py-lint:
-	@echo "🔍 Ruff lint..."
-	@if command -v uv >/dev/null 2>&1; then \
-		uv run ruff check .; \
-	else \
-		echo "❌ uv not found. Install uv: https://docs.astral.sh/uv/"; \
-		exit 1; \
-	fi
+# Backend API commands
+api-setup:
+	@echo "🚀 Setting up FastAPI backend infrastructure..."
+	@cd apps/api && make setup
 
-py-format:
-	@echo "🎨 Ruff format..."
-	@if command -v uv >/dev/null 2>&1; then \
-		uv run ruff format .; \
-	else \
-		echo "❌ uv not found. Install uv: https://docs.astral.sh/uv/"; \
-		exit 1; \
-	fi
+api-test:
+	@echo "🧪 Running API tests..."
+	@cd apps/api && make test
 
-py-typecheck:
-	@echo "🧠 mypy type-check..."
-	@if command -v uv >/dev/null 2>&1; then \
-		uv run mypy .; \
-	else \
-		echo "❌ uv not found. Install uv: https://docs.astral.sh/uv/"; \
-		exit 1; \
-	fi
+api-worker:
+	@echo "⚙️ Starting embedding worker..."
+	@cd apps/api && make worker
 
-py-test:
-	@echo "🧪 pytest..."
-	@if command -v uv >/dev/null 2>&1; then \
-		uv run pytest -q; \
-	else \
-		echo "❌ uv not found. Install uv: https://docs.astral.sh/uv/"; \
-		exit 1; \
-	fi
+api-upgrade:
+	@echo "📈 Running database migrations..."
+	@cd apps/api && make upgrade
 
-py-fix:
-	@echo "🛠️  Ruff autofix + format (unsafe) ..."
-	@if command -v uv >/dev/null 2>&1; then \
-		uv run ruff check . --fix --unsafe-fixes; \
-		uv run ruff format .; \
-	else \
-		echo "❌ uv not found. Install uv: https://docs.astral.sh/uv/"; \
-		exit 1; \
-	fi
+api-down:
+	@echo "🛑 Stopping backend services..."
+	@cd apps/api && make down
+
+# API shortcuts (delegated to apps/api)
+api-lint:
+	@cd apps/api && make lint
+
+api-format:
+	@cd apps/api && make lint
+
+
+# --- Repository scanner (MVP: scc + merge) ---
+.PHONY: scan-prepare scan-run scan scan-clean scan-logs
+
+scan-prepare:
+	@mkdir -p .scanner/scripts .scanner/rules/semgrep .scanner/rules/treesitter
+	@echo "🧰 Scanner directories prepared in .scanner/"
+
+scan-run:
+	@echo "🔎 Running repository scan (scc + merge)..."
+	@docker compose -f .scanner/compose.yml --profile scan run --rm scc && docker compose -f .scanner/compose.yml --profile scan run --rm merge-results
+	@echo "✅ Scan complete. Output: repo_scan.json"
+
+scan:
+	@$(MAKE) scan-prepare
+	@$(MAKE) scan-run
+
+scan-clean:
+	@echo "🧹 Cleaning scanner outputs..."
+	@rm -f .scanner/*.json repo_scan.json 2>/dev/null || true
+	@echo "✅ Scanner outputs removed"
+
+scan-logs:
+	@echo "📄 Scanner logs:"
+	@tail -n 200 .scanner/scan.log 2>/dev/null || echo "No logs yet. Run: make scan"

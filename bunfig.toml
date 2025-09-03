@@ -32,6 +32,12 @@ production = false
 "docs:update" = "bash ./docs.sh update"
 "docs:serve" = "bash ./docs.sh serve"
 
+# New web app (Vite + React)
+"web:dev" = "bun --cwd apps/web run dev"
+"web:build" = "bun --cwd apps/web run build"
+"web:publish" = "bun --cwd apps/web run build && mkdir -p journal/static/gen/web && cp -r apps/web/dist/assets journal/static/gen/web/ && cp apps/web/dist/manifest.json journal/static/gen/web/"
+"web:clean" = "rm -rf apps/web/dist journal/static/gen/web"
+
 # UI/UX workflows (HX/AX)
 "storybook" = "bun run storybook"
 "storybook:build" = "bun run build-storybook"

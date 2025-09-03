@@ -1,0 +1,21 @@
+services:
+  scc:
+    image: ghcr.io/boyter/scc:latest
+    profiles: ["scan"]
+    working_dir: /repo
+    command: /bin/sh -lc 'scc --format json . > .scanner/scc.json'
+    volumes:
+      - ../:/repo:ro,Z
+      - ../.scanner:/repo/.scanner:Z
+
+  merge-results:
+    image: python:3.11-slim
+    profiles: ["scan"]
+    working_dir: /repo
+    environment:
+      - SCAN_LOG_LEVEL=INFO
+    command: python .scanner/scripts/merge_scans.py
+    volumes:
+      - ../:/repo:Z
+    depends_on:
+      - scc
