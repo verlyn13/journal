@@ -14,6 +14,7 @@ from sqlalchemy import select, update
 # Local imports
 from app.infra.models import Event
 from app.infra.nats_bus import nats_conn
+from app.telemetry.metrics_runtime import inc as metrics_inc
 
 
 SUBJECT_MAP = {
@@ -71,6 +72,7 @@ async def relay_outbox(session_factory, poll_seconds: float = 1.0):
                             }
                         ).encode("utf-8")
                         try:
+                            metrics_inc("outbox_publish_attempts_total", {"stage": "attempt"})
                             if js:
                                 # De-dupe via message id if supported
                                 await js.publish(subject, payload, msg_id=str(ev.id))
@@ -83,12 +85,14 @@ async def relay_outbox(session_factory, poll_seconds: float = 1.0):
                                 .where(Event.id == ev.id)
                                 .values(published_at=datetime.utcnow(), **_pub_state_fields())
                             )
+                            metrics_inc("outbox_publish_attempts_total", {"result": "ok"})
                         except Exception as e:
                             # Compute backoff and schedule retry if enabled; otherwise, best-effort log
                             if retry_enabled:
                                 await _schedule_retry_or_dead(s, ev, e, nc)
                             else:
                                 _log_only(e)
+                            metrics_inc("outbox_publish_attempts_total", {"result": "error"})
                 await s.commit()
         except Exception:
             # Back off briefly and try again; non-fatal in dev
@@ -125,6 +129,7 @@ async def process_outbox_batch(session_factory) -> int:
                     }
                 ).encode("utf-8")
                 try:
+                    metrics_inc("outbox_publish_attempts_total", {"stage": "attempt"})
                     if js:
                         await js.publish(subject, payload, msg_id=str(ev.id))
                     else:
@@ -135,11 +140,13 @@ async def process_outbox_batch(session_factory) -> int:
                         .values(published_at=datetime.utcnow(), **_pub_state_fields())
                     )
                     published += 1
+                    metrics_inc("outbox_publish_attempts_total", {"result": "ok"})
                 except Exception as e:
                     if os.getenv("OUTBOX_RETRY_ENABLED", "0") == "1":
                         await _schedule_retry_or_dead(s, ev, e, nc)
                     else:
                         _log_only(e)
+                    metrics_inc("outbox_publish_attempts_total", {"result": "error"})
         await s.commit()
     return published
 
@@ -233,6 +240,7 @@ async def _schedule_retry_or_dead(session, ev: Event, error: Exception, nc) -> N
                         await js.publish("journal.dlq", data, msg_id=str(ev.id))
                     else:
                         await nc.publish("journal.dlq", data)
+                    metrics_inc("outbox_dlq_total")
                 except Exception:
                     pass
     except Exception:

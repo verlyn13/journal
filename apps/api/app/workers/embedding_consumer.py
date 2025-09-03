@@ -15,6 +15,7 @@ from sqlalchemy import select, text
 
 from app.infra.db import get_session
 from app.infra.embeddings import RateLimited
+from app.telemetry.metrics_runtime import inc as metrics_inc
 from app.infra.models import Entry
 from app.infra.search_pgvector import upsert_entry_embedding
 from app.settings import settings
@@ -110,6 +111,7 @@ class EmbeddingConsumer:
                     except Exception:
                         await session.rollback()
             logger.debug(f"Processed and acked {event_type} event")
+            metrics_inc("worker_process_total", {"result": "ok", "type": event_type})
 
         except json.JSONDecodeError as e:
             logger.error(f"JSON decode error: {e}")
@@ -118,12 +120,15 @@ class EmbeddingConsumer:
                 await self._publish_dlq({"error": "json_decode", "raw": msg.data.decode(errors='ignore')}, reason=str(e))
                 if hasattr(msg, "term"):
                     await msg.term()
+                    metrics_inc("worker_process_total", {"result": "term", "reason": "poison"})
                     return
             # Default: NAK for redelivery
             await msg.nak()
+            metrics_inc("worker_process_total", {"result": "retry", "reason": "json"})
         except RateLimited as e:
             logger.warning("Embedding provider rate-limited or circuit open; NAK for redelivery")
             await msg.nak()
+            metrics_inc("worker_process_total", {"result": "retry", "reason": "ratelimited"})
         except Exception as e:
             logger.error(f"Error processing message: {e}")
             # Don't ack on error - let NATS retry
@@ -132,6 +137,7 @@ class EmbeddingConsumer:
             except Exception:
                 # If NAK fails (non-JS), swallow to avoid crash
                 logger.exception("Failed to NAK message")
+            metrics_inc("worker_process_total", {"result": "retry", "reason": "error"})
 
     async def _handle_entry_upsert(self, event_data: dict[str, Any]):
         """Handle entry creation/update by generating and storing embedding."""

@@ -6,6 +6,7 @@ import os
 import random
 import time
 from collections import deque
+from app.telemetry.metrics_runtime import inc as metrics_inc
 
 
 class RateLimited(Exception):
@@ -90,9 +91,15 @@ def get_embedding(text: str) -> list[float]:
     _cb_before_call()
     try:
         if PROVIDER == "openai":
-            return _openai_embed(text, EMBED_DIM)
-        return _fake_embed(text, EMBED_DIM)
+            vec = _openai_embed(text, EMBED_DIM)
+            metrics_inc("provider_calls_total", {"provider": "openai", "result": "ok"})
+            return vec
+        vec = _fake_embed(text, EMBED_DIM)
+        metrics_inc("provider_calls_total", {"provider": "fake", "result": "ok"})
+        return vec
     except Exception as e:
         # Track error for breaker and re-raise
         _cb_on_failure()
+        prov = "openai" if PROVIDER == "openai" else "fake"
+        metrics_inc("provider_errors_total", {"provider": prov})
         raise
