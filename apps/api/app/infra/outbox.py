@@ -29,8 +29,25 @@ async def relay_outbox(session_factory, poll_seconds: float = 1.0):
     while True:
         try:
             async with session_factory() as s:  # type: AsyncSession
-                # Basic scan; if retry columns exist, the batch update below will honor them.
-                stmt = select(Event).where(Event.published_at.is_(None)).limit(50)
+                # Flag-gated retry pipeline
+                retry_enabled = os.getenv("OUTBOX_RETRY_ENABLED", "0") == "1"
+                if retry_enabled:
+                    # Pending and due; use SKIP LOCKED to avoid double-claim
+                    stmt = (
+                        select(Event)
+                        .where(
+                            Event.published_at.is_(None),
+                            # text filters allow columns even if model doesn't expose them
+                            text("state = 'pending'"),
+                            text("COALESCE(next_attempt_at, now()) <= now()"),
+                        )
+                        .order_by(Event.id)
+                        .limit(50)
+                        .with_for_update(skip_locked=True)
+                    )
+                else:
+                    # Legacy behavior: any unpublished
+                    stmt = select(Event).where(Event.published_at.is_(None)).limit(50)
                 rows = (await s.execute(stmt)).scalars().all()
                 if not rows:
                     await asyncio.sleep(poll_seconds)
@@ -64,11 +81,14 @@ async def relay_outbox(session_factory, poll_seconds: float = 1.0):
                             await s.execute(
                                 update(Event)
                                 .where(Event.id == ev.id)
-                                .values(published_at=datetime.utcnow())
+                                .values(published_at=datetime.utcnow(), **_pub_state_fields())
                             )
                         except Exception as e:
-                            # Compute backoff and schedule retry if columns exist; otherwise, best-effort log
-                            _schedule_retry_or_dead(s, ev.id, e)
+                            # Compute backoff and schedule retry if enabled; otherwise, best-effort log
+                            if retry_enabled:
+                                await _schedule_retry_or_dead(s, ev, e, nc)
+                            else:
+                                _log_only(e)
                 await s.commit()
         except Exception:
             # Back off briefly and try again; non-fatal in dev
@@ -112,11 +132,14 @@ async def process_outbox_batch(session_factory) -> int:
                     await s.execute(
                         update(Event)
                         .where(Event.id == ev.id)
-                        .values(published_at=datetime.utcnow())
+                        .values(published_at=datetime.utcnow(), **_pub_state_fields())
                     )
                     published += 1
                 except Exception as e:
-                    _schedule_retry_or_dead(s, ev.id, e)
+                    if os.getenv("OUTBOX_RETRY_ENABLED", "0") == "1":
+                        await _schedule_retry_or_dead(s, ev, e, nc)
+                    else:
+                        _log_only(e)
         await s.commit()
     return published
 
@@ -125,7 +148,21 @@ async def process_outbox_batch(session_factory) -> int:
 # Internal helpers
 # ------------------------------
 
-def _schedule_retry_or_dead(session, event_id, error: Exception) -> None:
+def _pub_state_fields():
+    # When columns are present, set state to published; tolerate missing columns
+    return {"state": "published"}
+
+
+def _log_only(error: Exception) -> None:
+    try:
+        import logging
+
+        logging.warning(f"outbox publish failed: {error!r}")
+    except Exception:
+        pass
+
+
+async def _schedule_retry_or_dead(session, ev: Event, error: Exception, nc) -> None:
     """Best-effort update of retry bookkeeping; tolerant if columns are missing.
 
     Columns: attempts (int), next_attempt_at (timestamptz), last_error (text), state (text)
@@ -146,7 +183,7 @@ def _schedule_retry_or_dead(session, event_id, error: Exception) -> None:
         # Fetch attempts if column exists
         attempts = 0
         try:
-            row = session.execute(_text("SELECT attempts FROM events WHERE id = :id"), {"id": event_id}).scalar_one()
+            row = session.execute(_text("SELECT attempts FROM events WHERE id = :id"), {"id": ev.id}).scalar_one()
             attempts = int(row or 0)
         except Exception:
             attempts = 0
@@ -165,17 +202,39 @@ def _schedule_retry_or_dead(session, event_id, error: Exception) -> None:
             _text(
                 "UPDATE events SET attempts = COALESCE(attempts, 0) + 1, next_attempt_at = :next_at, last_error = :err WHERE id = :id"
             ),
-            {"id": event_id, "next_at": next_at, "err": err_str},
+            {"id": ev.id, "next_at": next_at, "err": err_str},
         )
 
         # If exceeded threshold, best-effort mark dead and publish to DLQ via separate process
         if attempts + 1 >= max_attempts:
             try:
                 session.execute(
-                    _text("UPDATE events SET state = 'dead' WHERE id = :id"), {"id": event_id}
+                    _text("UPDATE events SET state = 'dead' WHERE id = :id"), {"id": ev.id}
                 )
             except Exception:
                 pass
+            # DLQ if enabled
+            if os.getenv("OUTBOX_DLQ_ENABLED", "0") == "1":
+                try:
+                    js = None
+                    try:
+                        js = nc.jetstream()
+                    except Exception:
+                        js = None
+                    envelope = {
+                        "original_subject": SUBJECT_MAP.get(ev.aggregate_type, "journal.events"),
+                        "payload": ev.event_data,
+                        "reason": err_str,
+                        "attempts": attempts + 1,
+                        "event_id": str(ev.id),
+                    }
+                    data = json.dumps(envelope).encode("utf-8")
+                    if js:
+                        await js.publish("journal.dlq", data, msg_id=str(ev.id))
+                    else:
+                        await nc.publish("journal.dlq", data)
+                except Exception:
+                    pass
     except Exception:
         # swallow to avoid crashing outbox relay
         pass
