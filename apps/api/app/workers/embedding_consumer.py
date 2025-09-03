@@ -14,6 +14,7 @@ import nats
 from sqlalchemy import select, text
 
 from app.infra.db import get_session
+from app.infra.embeddings import RateLimited
 from app.infra.models import Entry
 from app.infra.search_pgvector import upsert_entry_embedding
 from app.settings import settings
@@ -110,6 +111,19 @@ class EmbeddingConsumer:
                         await session.rollback()
             logger.debug(f"Processed and acked {event_type} event")
 
+        except json.JSONDecodeError as e:
+            logger.error(f"JSON decode error: {e}")
+            # Poison message: DLQ + TERM if enabled
+            if os.getenv("OUTBOX_DLQ_ENABLED", "0") == "1":
+                await self._publish_dlq({"error": "json_decode", "raw": msg.data.decode(errors='ignore')}, reason=str(e))
+                if hasattr(msg, "term"):
+                    await msg.term()
+                    return
+            # Default: NAK for redelivery
+            await msg.nak()
+        except RateLimited as e:
+            logger.warning("Embedding provider rate-limited or circuit open; NAK for redelivery")
+            await msg.nak()
         except Exception as e:
             logger.error(f"Error processing message: {e}")
             # Don't ack on error - let NATS retry
@@ -242,6 +256,36 @@ class EmbeddingConsumer:
         """Stop consuming messages."""
         self.running = False
         logger.info("Stopping message consumption")
+
+    async def _publish_dlq(self, envelope: dict, reason: str = ""):
+        """Publish DLQ message with fallback to nats_conn if needed."""
+        try:
+            payload = json.dumps({**envelope, "reason": reason}).encode("utf-8")
+            if self.nc:
+                js = None
+                try:
+                    js = self.nc.jetstream()
+                except Exception:
+                    js = None
+                if js:
+                    await js.publish("journal.dlq", payload)
+                else:
+                    await self.nc.publish("journal.dlq", payload)
+            else:
+                from app.infra.nats_bus import nats_conn
+
+                async with nats_conn() as nc:
+                    js = None
+                    try:
+                        js = nc.jetstream()
+                    except Exception:
+                        js = None
+                    if js:
+                        await js.publish("journal.dlq", payload)
+                    else:
+                        await nc.publish("journal.dlq", payload)
+        except Exception:
+            logger.exception("Failed to publish to DLQ")
 
 
 async def main():

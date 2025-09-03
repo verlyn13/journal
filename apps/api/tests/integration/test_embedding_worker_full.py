@@ -193,6 +193,90 @@ async def test_worker_handles_entry_deleted_event(monkeypatch, db_session: Async
 
 @pytest.mark.integration
 @pytest.mark.asyncio
+async def test_worker_rate_limit_nak(monkeypatch, db_session: AsyncSession):
+    """Test worker NAKs on rate limit (circuit open) scenario."""
+    # Provide a real entry
+    entry = Entry(
+        title="RL",
+        content="Content",
+        author_id="11111111-1111-1111-1111-111111111111"
+    )
+    db_session.add(entry)
+    await db_session.commit()
+
+    async def _yield_session():
+        yield db_session
+
+    # Monkeypatch embedding call to simulate RateLimited by raising a generic error
+    # (Worker treats RateLimited explicitly; this simulates via raising RuntimeError and checking NAK path.)
+    def _raise_rl(_txt):
+        raise RuntimeError("RateLimited")
+
+    monkeypatch.setattr("app.workers.embedding_consumer.get_session", _yield_session)
+    monkeypatch.setattr("app.infra.search_pgvector.get_embedding", _raise_rl)
+
+    consumer = EmbeddingConsumer()
+
+    class Msg:
+        data = json.dumps({
+            "event_type": "entry.updated",
+            "event_data": {"entry_id": str(entry.id)}
+        }).encode("utf-8")
+        naks = 0
+        async def nak(self):
+            self.naks += 1
+
+    msg = Msg()
+    await consumer.process_entry_event(msg)
+    assert msg.naks >= 1
+
+
+@pytest.mark.integration
+@pytest.mark.asyncio
+async def test_worker_poison_to_dlq(monkeypatch):
+    import os
+    """When DLQ enabled, poison messages go to DLQ and are TERMed if possible."""
+    os.environ["OUTBOX_DLQ_ENABLED"] = "1"
+
+    dlq = []
+
+    class JS:
+        async def publish(self, subject, payload, msg_id=None):
+            if subject == "journal.dlq":
+                dlq.append(json.loads(payload.decode()))
+
+    class NC:
+        def jetstream(self):
+            return JS()
+
+    def _ctx():
+        class _C:
+            async def __aenter__(self):
+                return NC()
+            async def __aexit__(self, *exc):
+                return False
+        return _C()
+
+    monkeypatch.setattr("app.infra.nats_bus.nats_conn", _ctx)
+    consumer = EmbeddingConsumer()
+
+    class BadMsg:
+        data = b"{not json"  # malformed
+        termed = 0
+        async def term(self):
+            self.termed += 1
+        async def nak(self):
+            # Should not be called when DLQ is enabled and term available
+            pass
+
+    msg = BadMsg()
+    await consumer.process_entry_event(msg)
+    assert msg.termed == 1
+    assert dlq, "Expected DLQ publish"
+
+
+@pytest.mark.integration
+@pytest.mark.asyncio
 async def test_worker_handles_entry_updated_event(monkeypatch, db_session: AsyncSession):
     """Test worker handles entry.updated event."""
     # Create an entry

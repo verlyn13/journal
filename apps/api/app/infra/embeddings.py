@@ -4,12 +4,56 @@ import hashlib
 import math
 import os
 import random
+import time
+from collections import deque
+
+
+class RateLimited(Exception):
+    """Raised when the embedding provider is rate-limited or circuit is open."""
+    pass
 
 
 PROVIDER = os.getenv("JOURNAL_EMBED_PROVIDER", "fake").lower()
 EMBED_DIM = int(os.getenv("JOURNAL_EMBED_DIM", "1536"))
 OPENAI_MODEL = os.getenv("JOURNAL_EMBED_MODEL", "text-embedding-3-small")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+
+# Simple in-process circuit breaker (optional)
+_CB_ENABLED = os.getenv("EMBED_CB_ENABLED", "0") == "1"
+_CB_OPEN_SECS = float(os.getenv("EMBED_CB_OPEN_SECS", "60"))
+_CB_BUDGET_PER_MIN = int(os.getenv("EMBED_CB_ERROR_BUDGET_PER_MIN", "50"))
+_CB_ERRORS = deque()  # timestamps of recent failures (seconds)
+_CB_OPEN_UNTIL = 0.0
+
+
+def _cb_now() -> float:
+    return time.time()
+
+
+def _cb_maybe_open() -> None:
+    """Open CB if error budget exceeded within last minute."""
+    global _CB_OPEN_UNTIL
+    now = _cb_now()
+    # purge older than 60s
+    while _CB_ERRORS and now - _CB_ERRORS[0] > 60.0:
+        _CB_ERRORS.popleft()
+    if len(_CB_ERRORS) >= _CB_BUDGET_PER_MIN:
+        _CB_OPEN_UNTIL = max(_CB_OPEN_UNTIL, now + _CB_OPEN_SECS)
+
+
+def _cb_before_call() -> None:
+    if not _CB_ENABLED:
+        return
+    now = _cb_now()
+    if now < _CB_OPEN_UNTIL:
+        raise RateLimited("circuit open")
+
+
+def _cb_on_failure() -> None:
+    if not _CB_ENABLED:
+        return
+    _CB_ERRORS.append(_cb_now())
+    _cb_maybe_open()
 
 
 def _fake_embed(text: str, dim: int) -> list[float]:
@@ -42,6 +86,13 @@ def _openai_embed(text: str, dim: int) -> list[float]:
 
 
 def get_embedding(text: str) -> list[float]:
-    if PROVIDER == "openai":
-        return _openai_embed(text, EMBED_DIM)
-    return _fake_embed(text, EMBED_DIM)
+    # Circuit breaker fast-fail
+    _cb_before_call()
+    try:
+        if PROVIDER == "openai":
+            return _openai_embed(text, EMBED_DIM)
+        return _fake_embed(text, EMBED_DIM)
+    except Exception as e:
+        # Track error for breaker and re-raise
+        _cb_on_failure()
+        raise
