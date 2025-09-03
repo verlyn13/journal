@@ -9,6 +9,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 # Local imports
 from app.infra.embeddings import get_embedding
+import asyncio
+import os
+import random
 
 
 def _vec_literal(vec: list[float]) -> str:
@@ -105,7 +108,24 @@ async def keyword_search(s: AsyncSession, q: str, k: int = 10):
 async def upsert_entry_embedding(s: AsyncSession, entry_id: Any, text_source: str):
     """Generate embedding for text and upsert into entry_embeddings."""
     try:
-        emb = get_embedding(text_source)
+        # Retry embedding fetch with bounded exponential backoff and full jitter
+        attempts = int(os.getenv("RETRY_EMBED_ATTEMPTS", "4"))
+        base = float(os.getenv("RETRY_EMBED_BASE_SECS", "0.25"))
+        factor = float(os.getenv("RETRY_EMBED_FACTOR", "2.0"))
+        cap = float(os.getenv("RETRY_EMBED_MAX_BACKOFF_SECS", "15"))
+
+        last_exc = None
+        for i in range(attempts):
+            try:
+                emb = get_embedding(text_source)
+                break
+            except Exception as e:
+                last_exc = e
+                if i == attempts - 1:
+                    raise
+                delay = min(cap, base * (factor ** i))
+                delay = random.random() * delay
+                await asyncio.sleep(delay)
         # Convert list to pgvector string format: '[0.1, 0.2, ...]'
         if isinstance(emb, list):
             embedding_str = f"[{','.join(str(x) for x in emb)}]"
