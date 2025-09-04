@@ -296,9 +296,9 @@ class TestSearchQuality:
                 params={"q": "test", "alpha": alpha},
                 headers=auth_headers
             )
-            # Should either reject or clamp to valid range
-            assert response.status_code in [200, 400]
-
+            # Should reject invalid values with 422 validation error
+            assert response.status_code == 422
+        
         # Test valid alpha values
         valid_alphas = [0.0, 0.5, 1.0]
         for alpha in valid_alphas:
