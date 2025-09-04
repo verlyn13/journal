@@ -8,11 +8,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.infra.models import Entry
 
 
-@pytest.mark.component
+@pytest.mark.component()
 class TestSearchAPI:
     """Test cases for search functionality."""
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_search_without_query(
         self,
         client: AsyncClient
@@ -21,7 +21,7 @@ class TestSearchAPI:
         response = await client.get("/api/v1/search")
         assert response.status_code == 422  # Missing required query param
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_search_empty_results(
         self,
         client: AsyncClient
@@ -34,7 +34,7 @@ class TestSearchAPI:
         assert response.status_code == 200
         assert response.json() == []
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_search_with_results(
         self,
         client: AsyncClient,
@@ -74,7 +74,7 @@ class TestSearchAPI:
         assert "Python Tutorial" in titles
         assert "JavaScript Guide" in titles
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_search_semantic_endpoint(
         self,
         client: AsyncClient,
@@ -102,7 +102,7 @@ class TestSearchAPI:
         assert len(results) == 1
         assert results[0]["title"] == "Test"
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_search_hybrid_with_alpha(
         self,
         client: AsyncClient,
@@ -129,7 +129,7 @@ class TestSearchAPI:
         assert len(results) == 1
         assert results[0]["title"] == "Hybrid Result"
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_search_invalid_alpha(
         self,
         client: AsyncClient

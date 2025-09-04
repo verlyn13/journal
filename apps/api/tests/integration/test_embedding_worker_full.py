@@ -12,8 +12,8 @@ from app.workers.embedding_consumer import EmbeddingConsumer
 from app.infra.models import Entry
 
 
-@pytest.mark.integration
-@pytest.mark.asyncio
+@pytest.mark.integration()
+@pytest.mark.asyncio()
 async def test_worker_connection_retry(monkeypatch):
     """Test worker connection retry logic."""
     # Mock NATS connection to fail initially then succeed
@@ -62,8 +62,8 @@ async def test_worker_connection_retry(monkeypatch):
     assert len(connect_attempts) >= 2
 
 
-@pytest.mark.integration
-@pytest.mark.asyncio
+@pytest.mark.integration()
+@pytest.mark.asyncio()
 async def test_worker_handles_malformed_message(monkeypatch, db_session: AsyncSession):
     """Test worker handles malformed messages gracefully."""
     # Patch get_session
@@ -95,8 +95,8 @@ async def test_worker_handles_malformed_message(monkeypatch, db_session: AsyncSe
     assert not msg.acked
 
 
-@pytest.mark.integration
-@pytest.mark.asyncio
+@pytest.mark.integration()
+@pytest.mark.asyncio()
 async def test_worker_handles_missing_entry(monkeypatch, db_session: AsyncSession):
     """Test worker handles missing entry gracefully."""
     async def _yield_session():
@@ -129,8 +129,8 @@ async def test_worker_handles_missing_entry(monkeypatch, db_session: AsyncSessio
     assert not msg.naked
 
 
-@pytest.mark.integration
-@pytest.mark.asyncio
+@pytest.mark.integration()
+@pytest.mark.asyncio()
 async def test_worker_handles_entry_deleted_event(monkeypatch, db_session: AsyncSession):
     """Test worker handles entry.deleted event."""
     # Create an entry with embedding
@@ -191,8 +191,8 @@ async def test_worker_handles_entry_deleted_event(monkeypatch, db_session: Async
     assert result.scalar() == 0
 
 
-@pytest.mark.integration
-@pytest.mark.asyncio
+@pytest.mark.integration()
+@pytest.mark.asyncio()
 async def test_worker_rate_limit_nak(monkeypatch, db_session: AsyncSession):
     """Test worker NAKs on rate limit (circuit open) scenario."""
     # Provide a real entry
@@ -231,8 +231,8 @@ async def test_worker_rate_limit_nak(monkeypatch, db_session: AsyncSession):
     assert msg.naks >= 1
 
 
-@pytest.mark.integration
-@pytest.mark.asyncio
+@pytest.mark.integration()
+@pytest.mark.asyncio()
 async def test_worker_poison_to_dlq(monkeypatch):
     import os
     """When DLQ enabled, poison messages go to DLQ and are TERMed if possible."""
@@ -275,8 +275,8 @@ async def test_worker_poison_to_dlq(monkeypatch):
     assert dlq, "Expected DLQ publish"
 
 
-@pytest.mark.integration
-@pytest.mark.asyncio
+@pytest.mark.integration()
+@pytest.mark.asyncio()
 async def test_worker_handles_entry_updated_event(monkeypatch, db_session: AsyncSession):
     """Test worker handles entry.updated event."""
     # Create an entry
@@ -319,8 +319,8 @@ async def test_worker_handles_entry_updated_event(monkeypatch, db_session: Async
     assert result.scalar() == 1
 
 
-@pytest.mark.integration
-@pytest.mark.asyncio
+@pytest.mark.integration()
+@pytest.mark.asyncio()
 async def test_worker_batch_processing(monkeypatch, db_session: AsyncSession):
     """Test worker can process multiple messages in sequence."""
     # Create multiple entries

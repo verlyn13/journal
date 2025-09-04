@@ -12,11 +12,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.infra.models import Entry
 
 
-@pytest.mark.component
+@pytest.mark.component()
 class TestAdminAPI:
     """Test cases for admin endpoints."""
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_admin_ping(
         self,
         client: AsyncClient,
@@ -27,7 +27,7 @@ class TestAdminAPI:
         assert response.status_code == 200
         assert response.json() == {"status": "pong"}
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_admin_health(
         self,
         client: AsyncClient,
@@ -41,7 +41,7 @@ class TestAdminAPI:
         assert "database" in data
         assert data["status"] == "healthy"
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_admin_endpoints_unauthorized(
         self,
         client: AsyncClient
@@ -53,7 +53,7 @@ class TestAdminAPI:
         response = await client.get("/api/v1/admin/health")
         assert response.status_code == 401
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_health_check_with_db_failure(
         self,
         client: AsyncClient,
@@ -86,7 +86,7 @@ class TestAdminAPI:
         assert data["status"] == "degraded"
         assert data["database"] == "unhealthy"
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_reindex_embeddings_endpoint(
         self,
         client: AsyncClient,
@@ -127,7 +127,7 @@ class TestAdminAPI:
         assert len(published_messages) == 1
         assert published_messages[0][0] == "journal.reindex.bulk"
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_reindex_embeddings_with_parameters(
         self,
         client: AsyncClient,
@@ -173,7 +173,7 @@ class TestAdminAPI:
         assert message_data["event_data"]["batch_size"] == 100
         assert message_data["event_data"]["start_date"] == "2024-01-01"
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_reindex_does_not_require_authentication(
         self,
         client: AsyncClient,

@@ -5,7 +5,7 @@ import pytest
 from app.infra.conversion import markdown_to_html, html_to_markdown
 
 
-@pytest.mark.unit
+@pytest.mark.unit()
 class TestConversionExtended:
     """Extended tests for conversion functions."""
 

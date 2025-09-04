@@ -16,7 +16,7 @@ from app.infra.outbox import relay_outbox
 class TestWorkflowsQuality:
     """High-quality tests for complete user workflows and system integration."""
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_complete_journal_workflow(
         self, client: AsyncClient, auth_headers: dict[str, str], db_session: AsyncSession
     ):
@@ -99,7 +99,7 @@ class TestWorkflowsQuality:
         deleted_id = entries_created[2]['id']
         assert not any(e['id'] == deleted_id for e in current_entries)
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_concurrent_user_operations(
         self, client: AsyncClient, auth_headers: dict[str, str]
     ):
@@ -159,7 +159,7 @@ class TestWorkflowsQuality:
         stats_results = results[8:]
         assert all(r.status_code == 200 for r in stats_results)
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_error_recovery_workflow(
         self, client: AsyncClient, auth_headers: dict[str, str]
     ):
@@ -214,7 +214,7 @@ class TestWorkflowsQuality:
         )
         assert delete_response2.status_code in [204, 404]  # Idempotent or not found
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_data_consistency_across_operations(
         self, client: AsyncClient, auth_headers: dict[str, str], db_session: AsyncSession
     ):
@@ -274,7 +274,7 @@ class TestWorkflowsQuality:
         assert db_entry.title == original_data["title"]
         assert db_entry.markdown_content == original_data["markdown_content"]
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_pagination_workflow(
         self, client: AsyncClient, auth_headers: dict[str, str]
     ):
@@ -334,7 +334,7 @@ class TestWorkflowsQuality:
         # Verify total count
         assert len(all_entries) >= len(created_ids)
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_markdown_migration_workflow(
         self, client: AsyncClient, auth_headers: dict[str, str]
     ):
@@ -393,7 +393,7 @@ class TestWorkflowsQuality:
             if md_data.get("markdown_content"):
                 assert "# Migrated" in md_data["markdown_content"]
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_auth_expiry_workflow(
         self, client: AsyncClient
     ):

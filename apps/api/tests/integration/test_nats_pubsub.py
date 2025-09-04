@@ -6,7 +6,7 @@ import pytest
 pytestmark = pytest.mark.integration
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_nats_pubsub_roundtrip():
     if os.getenv("RUN_REAL_NATS") != "1":
         pytest.skip("Set RUN_REAL_NATS=1 to enable real NATS test")

@@ -3,7 +3,7 @@ import pytest
 from app.infra import auth as auth_mod
 
 
-@pytest.mark.unit
+@pytest.mark.unit()
 def test_jwt_encode_decode_roundtrip(monkeypatch):
     # Freeze time for deterministic claims
     fixed_epoch = 1_700_000_000
@@ -25,7 +25,7 @@ def test_jwt_encode_decode_roundtrip(monkeypatch):
     assert user_id == "user-123"
 
 
-@pytest.mark.unit
+@pytest.mark.unit()
 def test_refresh_token_type(monkeypatch):
     fixed_epoch = 1_700_000_000
 
