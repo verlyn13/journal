@@ -5,7 +5,9 @@ import math
 import os
 import random
 import time
+
 from collections import deque
+
 from app.telemetry.metrics_runtime import inc as metrics_inc
 
 

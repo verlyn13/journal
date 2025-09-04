@@ -3,10 +3,11 @@
 from __future__ import annotations
 
 import re
-from typing import Tuple, Dict, Any
+
+from typing import Any, Dict, Tuple
 
 
-def count_words_chars(text: str | None) -> Tuple[int, int]:
+def count_words_chars(text: str | None) -> tuple[int, int]:
     """Count words and characters in text.
     
     Args:
@@ -17,15 +18,15 @@ def count_words_chars(text: str | None) -> Tuple[int, int]:
     """
     if not text:
         return 0, 0
-    
+
     # Use regex to count words (naive but deterministic for tests)
     words = len(re.findall(r'\b\w+\b', text))
     chars = len(text)
-    
+
     return words, chars
 
 
-def extract_text_for_metrics(content: Dict[str, Any] | str | None, markdown: str | None) -> str:
+def extract_text_for_metrics(content: dict[str, Any] | str | None, markdown: str | None) -> str:
     """Extract plain text for metrics calculation.
     
     Args:
@@ -38,14 +39,14 @@ def extract_text_for_metrics(content: Dict[str, Any] | str | None, markdown: str
     # Prefer markdown for metrics as it's closer to user input
     if markdown:
         return markdown
-    
+
     # Handle content field based on type
     if content is None:
         return ""
-    
+
     if isinstance(content, str):
         return content
-    
+
     if isinstance(content, dict):
         # Try common content structures
         if "text" in content:
@@ -54,6 +55,6 @@ def extract_text_for_metrics(content: Dict[str, Any] | str | None, markdown: str
             return str(content["content"])
         # Fallback to string representation
         return str(content)
-    
+
     # Fallback for other types
     return str(content)

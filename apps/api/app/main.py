@@ -3,8 +3,8 @@ from __future__ import annotations
 import asyncio
 
 from fastapi import FastAPI
-from fastapi.responses import PlainTextResponse
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import PlainTextResponse
 from strawberry.fastapi import GraphQLRouter
 
 from app.api.v1 import (
@@ -18,8 +18,8 @@ from app.graphql.schema import schema
 from app.infra.db import build_engine, sessionmaker_for
 from app.infra.outbox import relay_outbox
 from app.settings import settings
-from app.telemetry.otel import setup_otel
 from app.telemetry.metrics_runtime import render_prom
+from app.telemetry.otel import setup_otel
 
 
 app = FastAPI(title="Journal API", version="1.0.0")

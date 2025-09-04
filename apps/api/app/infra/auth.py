@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from datetime import UTC, datetime, timedelta
-from typing import Any
+from typing import Annotated, Any
 
 import jwt
 
@@ -47,7 +47,7 @@ def create_refresh_token(sub: str) -> str:
     return jwt.encode(payload, settings.jwt_secret, algorithm="HS256")
 
 
-def require_user(creds: HTTPAuthorizationCredentials = Depends(bearer_scheme)) -> str:
+def require_user(creds: Annotated[HTTPAuthorizationCredentials, Depends(bearer_scheme)]) -> str:
     if not creds:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Missing auth")
     try:

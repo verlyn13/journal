@@ -139,5 +139,7 @@ class TestSearchAPI:
             "/api/v1/search",
             params={"q": "test", "alpha": 1.5}
         )
-        assert response.status_code == 400
-        assert "alpha must be" in response.json()["detail"]
+        assert response.status_code == 422
+        detail = response.json()["detail"][0]
+        assert detail["loc"] == ["query", "alpha"]
+        assert "less than or equal to 1" in detail["msg"]

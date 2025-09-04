@@ -1,9 +1,9 @@
 from __future__ import annotations
 
+from typing import Annotated, Any, Dict, List
 from uuid import UUID
-from typing import Any, Dict, List
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -16,7 +16,12 @@ router = APIRouter(prefix="", tags=["search"])
 
 
 @router.get("/search")
-async def search_hybrid(q: str, k: int = 10, alpha: float = 0.6, s: AsyncSession = Depends(get_session)) -> List[Dict[str, Any]]:
+async def search_hybrid(
+    q: Annotated[str, Query(min_length=1, description="Search query")],
+    s: Annotated[AsyncSession, Depends(get_session)],
+    k: Annotated[int, Query(ge=1, le=100, description="Number of results")] = 10,
+    alpha: Annotated[float, Query(ge=0.0, le=1.0, description="Semantic weight")] = 0.6
+) -> list[dict[str, Any]]:
     """Perform hybrid search combining keyword and semantic search.
     
     Args:
@@ -37,7 +42,10 @@ async def search_hybrid(q: str, k: int = 10, alpha: float = 0.6, s: AsyncSession
 
 
 @router.post("/search/semantic")
-async def search_semantic(body: dict, s: AsyncSession = Depends(get_session)) -> List[Dict[str, Any]]:
+async def search_semantic(
+    body: dict,
+    s: Annotated[AsyncSession, Depends(get_session)]
+) -> list[dict[str, Any]]:
     """Perform semantic search using embeddings.
     
     Args:
@@ -58,7 +66,10 @@ async def search_semantic(body: dict, s: AsyncSession = Depends(get_session)) ->
 
 
 @router.post("/search/entries/{entry_id}/embed")
-async def embed_entry(entry_id: str, s: AsyncSession = Depends(get_session)) -> Dict[str, str]:
+async def embed_entry(
+    entry_id: str,
+    s: Annotated[AsyncSession, Depends(get_session)]
+) -> dict[str, str]:
     """Generate and store embedding for an entry.
     
     Args:

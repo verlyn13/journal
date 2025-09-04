@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime, timedelta
+from typing import Annotated
 
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel
@@ -31,8 +32,8 @@ class StatsResponse(BaseModel):
 
 @router.get("/stats")
 async def get_stats(
-    user_id: str = Depends(require_user),  # noqa: ARG001
-    s: AsyncSession = Depends(get_session),
+    user_id: Annotated[str, Depends(require_user)],
+    s: Annotated[AsyncSession, Depends(get_session)],
 ) -> StatsResponse:
     """Get statistics about user's journal entries.
     

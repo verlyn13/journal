@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Annotated
+
 # Third-party imports
 import jwt
 
@@ -91,7 +93,7 @@ async def refresh(body: RefreshRequest) -> dict[str, str]:
 
 
 @router.get("/me")
-async def get_me(user_id: str = Depends(get_current_user)) -> dict[str, str]:
+async def get_me(user_id: Annotated[str, Depends(get_current_user)]) -> dict[str, str]:
     """Get current user information.
     
     Returns:
@@ -106,7 +108,7 @@ async def get_me(user_id: str = Depends(get_current_user)) -> dict[str, str]:
 
 
 @router.post("/logout")
-async def logout(user_id: str = Depends(get_current_user)) -> dict[str, str]:
+async def logout(user_id: Annotated[str, Depends(get_current_user)]) -> dict[str, str]:
     """Log out the current user.
     
     Returns:

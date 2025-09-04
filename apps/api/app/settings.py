@@ -15,7 +15,7 @@ class Settings(BaseSettings):
     jwt_aud: str = "journal-clients"
     access_token_minutes: int = 15
     refresh_token_days: int = 30
-    
+
     testing: bool = False
     auto_embed_mode: str = "event"  # "event" | "inline" | "off"
 

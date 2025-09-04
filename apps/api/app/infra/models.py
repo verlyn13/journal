@@ -2,12 +2,12 @@ from __future__ import annotations
 
 # Standard library imports
 from datetime import datetime
+from typing import Optional
 from uuid import UUID, uuid4
 
 # Third-party imports
 from sqlalchemy import JSON, Column, Integer
 from sqlalchemy.orm import declarative_mixin
-from typing import Optional
 from sqlmodel import Field, SQLModel
 
 
@@ -32,7 +32,7 @@ class Entry(SQLModel, table=True):
     author_id: UUID = Field(index=True)
     title: str = Field(default="")
     content: str = Field(default="")
-    markdown_content: Optional[str] = Field(default=None)
+    markdown_content: str | None = Field(default=None)
     content_version: int = Field(default=1)
     created_at: datetime = Field(default_factory=datetime.utcnow, index=True)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
