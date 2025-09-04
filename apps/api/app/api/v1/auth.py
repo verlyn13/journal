@@ -24,8 +24,15 @@ class RefreshRequest(BaseModel):
 
 
 @router.post("/login")
-async def login(body: LoginRequest):
-    """Password login (demo only accepts demo/demo123)."""
+async def login(body: LoginRequest) -> dict[str, str]:
+    """Password login (demo only accepts demo/demo123).
+    
+    Returns:
+        Dictionary with access_token, refresh_token, and token_type.
+        
+    Raises:
+        HTTPException: If invalid credentials.
+    """
     if body.username == "demo" and body.password == "demo123":
         user_id = "123e4567-e89b-12d3-a456-426614174000"
     else:
@@ -41,7 +48,7 @@ async def login(body: LoginRequest):
 
 
 @router.post("/demo")
-async def demo_login():
+async def demo_login() -> dict[str, str]:
     """Return tokens for a fixed demo user (no credentials)."""
     user_id = "123e4567-e89b-12d3-a456-426614174000"
     return {
@@ -52,8 +59,15 @@ async def demo_login():
 
 
 @router.post("/refresh")
-async def refresh(body: RefreshRequest):
-    """Exchange a valid refresh token for a new access token."""
+async def refresh(body: RefreshRequest) -> dict[str, str]:
+    """Exchange a valid refresh token for a new access token.
+    
+    Returns:
+        Dictionary with new access_token and token_type.
+        
+    Raises:
+        HTTPException: If refresh token is invalid or expired.
+    """
     try:
         decoded = jwt.decode(
             body.refresh_token,
@@ -77,7 +91,12 @@ async def refresh(body: RefreshRequest):
 
 
 @router.get("/me")
-async def get_me(user_id: str = Depends(get_current_user)):
+async def get_me(user_id: str = Depends(get_current_user)) -> dict[str, str]:
+    """Get current user information.
+    
+    Returns:
+        User information including id, username, and email.
+    """
     demo_uuid = "123e4567-e89b-12d3-a456-426614174000"
     return {
         "id": user_id,
@@ -87,6 +106,14 @@ async def get_me(user_id: str = Depends(get_current_user)):
 
 
 @router.post("/logout")
-async def logout(user_id: str = Depends(get_current_user)):
+async def logout(user_id: str = Depends(get_current_user)) -> dict[str, str]:
+    """Log out the current user.
+    
+    Returns:
+        Success message.
+    
+    Note:
+        In production, this would invalidate the token in Redis/cache.
+    """
     # In a real app, you might invalidate the token in Redis
     return {"message": "Logged out successfully"}

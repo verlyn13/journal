@@ -34,7 +34,9 @@ async def hybrid_search(s: AsyncSession, q: str, k: int = 10, alpha: float = 0.6
     try:
         q_emb = get_embedding(q)
         q_vec = _vec_literal(q_emb)
-    except Exception:
+    except Exception as e:
+        import logging
+        logging.warning(f"Embedding generation failed, falling back to keyword search: {e}")
         # Fall back to keyword-only search if embedding fails
         return await keyword_search(s, q, k)
 
@@ -69,7 +71,9 @@ async def semantic_search(s: AsyncSession, q: str, k: int = 10):
     try:
         q_emb = get_embedding(q)
         q_vec = _vec_literal(q_emb)
-    except Exception:
+    except Exception as e:
+        import logging
+        logging.warning(f"Embedding generation failed for similarity search: {e}")
         # Return empty if embedding generation fails
         return []
 
