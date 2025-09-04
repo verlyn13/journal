@@ -17,6 +17,8 @@ jobs:
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: '1.2.21'
+      - name: Install root deps (toolchain)
+        run: bun install --frozen-lockfile
       - name: Install deps
         working-directory: apps/web
         run: bun install --frozen-lockfile
@@ -50,11 +52,3 @@ jobs:
         run: uv run mypy app
       - name: Pytest unit+component
         run: uv run pytest -m "unit or component" -v
-          if-no-files-found: warn
-
-      - name: Upload coverage artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-xml
-          path: coverage.xml
-          if-no-files-found: warn
