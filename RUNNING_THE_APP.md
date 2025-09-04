@@ -12,10 +12,13 @@ This project runs a React frontend (`apps/web`) against a FastAPI backend (`apps
 
 ## One‑Command Dev (API + Web + Services)
 
-Use either Make or Mise:
+Use the development script, Make, or Mise:
 
 ```bash
-# Using Make (recommended)
+# Using the dev script (simplest)
+./scripts/dev.sh
+
+# Using Make
 make dev-full
 
 # Or using Mise

@@ -14,6 +14,10 @@ A modern web application for journaling with a rich text editor, code highlighti
 ### Setup & Run (One‑Command Dev)
 
 ```bash
+# Using the new dev script
+./scripts/dev.sh
+
+# Or with Make
 make dev-full
 
 # Or with Mise
@@ -27,11 +31,12 @@ mise run dev:full
 
 ### Frontend (React + TypeScript)
 - **Location**: `apps/web/`
-- **Tech Stack**: React 18, TypeScript, Vite, Tiptap Editor
+- **Tech Stack**: React 18, TypeScript, Vite, CodeMirror
 - **Features**: 
-  - Rich text editor with math (KaTeX) and code blocks (Monaco)
-  - Real-time markdown shortcuts
-  - Focus mode for distraction-free writing
+  - Markdown editor with live preview (CodeMirror)
+  - Math rendering with KaTeX
+  - Code syntax highlighting (rehype-highlight)
+  - Split-pane view for editing and preview
   - Hybrid search (keyword + semantic)
 
 ### Backend (FastAPI + PostgreSQL)
@@ -226,12 +231,12 @@ For VS Code users:
 ## 📋 Features
 
 ### Editor Features
-- **Rich Text Editing**: Full WYSIWYG experience
-- **Math Rendering**: LaTeX math with KaTeX (inline: `$$x^2$$`, block: `$$$`)
-- **Code Blocks**: Syntax highlighting with Monaco Editor
-- **Markdown Shortcuts**: Type markdown, get formatted text
-- **Slash Commands**: `/` for quick formatting
-- **Focus Mode**: Distraction-free writing
+- **Markdown Editing**: Native markdown editing with CodeMirror
+- **Live Preview**: Real-time markdown-to-HTML preview
+- **Math Rendering**: LaTeX math with KaTeX (inline: `$x^2$`, block: `$$...$$`)
+- **Code Blocks**: Syntax highlighting with language support
+- **Split-Pane View**: Side-by-side editor and preview
+- **Dark Mode**: Built-in OneDark theme
 
 ### Search & Discovery
 - **Hybrid Search**: Combines keyword and semantic search
@@ -260,10 +265,3 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for development guidelines.
 - [API Documentation](http://localhost:8000/docs)
 - [Editor Guide](apps/web/EDITOR_GUIDE.md)
 - [Initial Planning](docs/initial-planning/)
-## Editor Upgrade — Implementation Bundle
-
-- Primary plan: `FINAL-IMPLEMENTATION-WORKFLOW.md`
-- Reference:
-  - `reference/security-and-corrections.md` — sanitation, allowlists, and security notes
-  - `reference/example-implementation.jsx` — minimal example of paste sanitation + editor
-- Archive: place older exploratory docs here for history (optional)

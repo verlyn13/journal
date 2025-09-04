@@ -1,110 +1,162 @@
 # Journal Editor Guide
 
-## How Math & Code Work
+## Markdown Editor with Live Preview
 
-### Math Rendering (Automatic)
+The journal now uses a powerful markdown editor with side-by-side preview, combining the simplicity of plain text with rich formatting capabilities.
 
-The editor automatically renders math using KaTeX when you type:
+### Editor Features
 
-- **Inline Math**: Type `$$x^2 + y^2 = z^2$$` and it renders immediately as math
-- **Block Math**: Type `$$$` on a new line to create a math block, then type your LaTeX
+#### Writing in Markdown
+- **Native Markdown**: Write in standard markdown syntax
+- **Syntax Highlighting**: Code mirror provides syntax highlighting for markdown
+- **Dark Theme**: Built-in OneDark theme for comfortable editing
+- **Live Preview**: See your formatted content in real-time
 
-Examples:
+#### Math Support (KaTeX)
+Write mathematical expressions using LaTeX syntax:
+- **Inline Math**: Use single dollar signs `$x^2 + y^2 = z^2$`
+- **Block Math**: Use double dollar signs for display math
+  ```
+  $$
+  \int_0^1 x^2 dx = \frac{1}{3}
+  $$
+  ```
+
+#### Code Blocks
+Full syntax highlighting for code blocks:
+````markdown
+```javascript
+function hello() {
+  console.log("Hello, World!");
+}
 ```
-$$E = mc^2$$                    → Renders inline
-$$\int_0^1 x^2 dx$$            → Renders inline
+````
 
-$$$
-\begin{bmatrix}
-a & b \\
-c & d
-\end{bmatrix}
-$$$                             → Renders as block
+Supports all major programming languages with automatic syntax detection.
+
+### Markdown Syntax Quick Reference
+
+#### Headers
+```markdown
+# H1 Header
+## H2 Header
+### H3 Header
 ```
 
-### Code Blocks (Monaco Editor)
+#### Emphasis
+```markdown
+**bold text**
+*italic text*
+~~strikethrough~~
+```
 
-Three ways to create code blocks:
+#### Lists
+```markdown
+- Bullet point
+- Another point
+  - Nested point
 
-1. **Slash Command**: Type `/code` and select "Code Block"
-2. **Keyboard Shortcut**: Press `Ctrl+Alt+C`
-3. **Markdown Style**: Type ` ``` ` on a new line
+1. Numbered list
+2. Second item
+   1. Nested number
+```
 
-The code block uses Monaco Editor (VS Code's editor) with:
-- Syntax highlighting for 50+ languages
-- Auto-detection of language based on content
-- Full IDE features (autocomplete, etc.)
+#### Links and Images
+```markdown
+[Link text](https://example.com)
+![Alt text](image-url.jpg)
+```
 
-### Markdown-Style Input
+#### Tables
+```markdown
+| Header 1 | Header 2 |
+|----------|----------|
+| Cell 1   | Cell 2   |
+| Cell 3   | Cell 4   |
+```
 
-The editor supports these markdown patterns that convert automatically:
+#### Blockquotes
+```markdown
+> This is a blockquote
+> It can span multiple lines
+```
 
-- `# ` → Heading 1
-- `## ` → Heading 2
-- `### ` → Heading 3
-- `**text**` → Bold
-- `*text*` → Italic
-- `` `code` `` → Inline code
-- `- ` or `* ` → Bullet list
-- `1. ` → Numbered list
-- `> ` → Blockquote
-- `---` → Horizontal rule
+#### Horizontal Rule
+```markdown
+---
+```
 
-### Slash Commands
+### Split Pane View
 
-Type `/` to see all available commands:
-- `/daily` → Daily reflection template
-- `/meeting` → Meeting notes template
-- `/h1`, `/h2`, `/h3` → Headings
-- `/bullet` → Bullet list
-- `/code` → Code block
-- `/math` → Math block
-- And more...
+The editor provides a split-pane interface:
+- **Left Pane**: Markdown editor with syntax highlighting
+- **Right Pane**: Live preview with formatted output
+- **Resizable**: Drag the divider to adjust pane sizes
+- **Responsive**: Automatically adjusts to screen size
 
 ### Keyboard Shortcuts
 
-**Text Formatting:**
-- `Ctrl+B` → Bold
-- `Ctrl+I` → Italic
-- `Ctrl+E` → Inline code
-- `Ctrl+Shift+S` → Strikethrough
-- `Ctrl+K` → Create link
-
-**Headings:**
-- `Ctrl+Alt+1` → Heading 1
-- `Ctrl+Alt+2` → Heading 2
-- `Ctrl+Alt+3` → Heading 3
-
-**Lists:**
-- `Ctrl+Shift+8` → Bullet list
-- `Ctrl+Shift+7` → Numbered list
-- `Tab` → Indent list item
-- `Shift+Tab` → Outdent list item
-
-**Other:**
-- `Ctrl+Alt+C` → Code block
+**Editor Navigation:**
+- Standard text editing shortcuts work as expected
 - `Ctrl+Z` → Undo
 - `Ctrl+Shift+Z` → Redo
-- `F` → Toggle Focus Mode (when not editing)
+- `Ctrl+S` → Save (when applicable)
 
-### Editor Modes
+### Tips for Effective Writing
 
-Currently, the editor works in **WYSIWYG mode** (What You See Is What You Get):
-- Math renders automatically as you type
-- Markdown patterns convert automatically
-- No separate preview mode needed
-- All formatting is visual
+1. **Structure First**: Start with headers to outline your content
+2. **Use Lists**: Break down complex ideas into bullet points
+3. **Code Examples**: Include code snippets with proper language tags
+4. **Math Notation**: Use LaTeX for mathematical expressions
+5. **Preview Check**: Regularly check the preview pane to ensure formatting
 
-The content is stored as HTML but you can write using markdown patterns for speed.
+### Advantages of Markdown
 
-### Tips
+- **Portable**: Your content is stored as plain text
+- **Version Control**: Works perfectly with Git
+- **Fast**: No toolbar clicking, just type
+- **Consistent**: Same syntax everywhere
+- **Future-Proof**: Plain text files last forever
 
-1. **For heavy math work**: Just type LaTeX between `$$` markers
-2. **For code**: Use `/code` or ` ``` ` for syntax-highlighted blocks
-3. **For structure**: Use markdown shortcuts (# for headings, - for lists)
-4. **For quick formatting**: Select text and use bubble toolbar or keyboard shortcuts
+### Common Patterns
 
-The editor combines the best of both worlds:
-- Markdown input patterns for speed
-- Visual editing for clarity
-- No mode switching needed
+#### Daily Journal Entry
+```markdown
+# Daily Entry - January 4, 2025
+
+## Morning Thoughts
+- [ ] Task 1
+- [ ] Task 2
+
+## Work Log
+### Project A
+Progress on feature implementation...
+
+### Code Review
+```python
+def improved_function():
+    # Better implementation
+    pass
+```
+
+## Evening Reflection
+Today was productive because...
+```
+
+#### Technical Notes
+```markdown
+# Technical Investigation: Performance Issue
+
+## Problem
+The application experiences slowdown when...
+
+## Analysis
+$$
+O(n^2) \text{ complexity in the sorting algorithm}
+$$
+
+## Solution
+Implement a more efficient algorithm...
+```
+
+The markdown editor provides a perfect balance between simplicity and power, allowing you to focus on content while maintaining rich formatting capabilities.
