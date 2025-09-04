@@ -30,13 +30,11 @@ jobs:
 
   playwright:
     name: Playwright E2E
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: '1.2.21'
@@ -55,13 +53,13 @@ jobs:
         run: |
           for i in {1..30}; do curl -sf http://localhost:5000/health && break || sleep 2; done
       - name: Install root deps
-        run: npm ci
+        run: bun install --frozen-lockfile
       - name: Install Playwright browsers
-        run: npx playwright install --with-deps
+        run: bun x playwright install --with-deps
       - name: Run Playwright
         env:
           BASE_URL: http://localhost:5000
-        run: npm test
+        run: bun test
       - name: Upload Playwright report
         if: always()
         uses: actions/upload-artifact@v4

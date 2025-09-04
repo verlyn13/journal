@@ -22,18 +22,14 @@ jobs:
         with:
           bun-version: '1.2.21'
 
-      - name: Install Node deps (for tooling)
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-      - run: npm ci
+      - name: Install root deps
+        run: bun install --frozen-lockfile
 
       - name: Fetch docs with enhanced script
         run: bun run fetch-docs-enhanced.ts --force --clear-cache
 
       - name: Biome format markdown
-        run: npx biome format --write docs
+        run: bun x biome format --write docs
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v6
@@ -46,4 +42,3 @@ jobs:
             - Formats markdown with Biome
           branch: chore/auto-refresh-docs
           delete-branch: true
-
