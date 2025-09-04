@@ -79,7 +79,11 @@ def _prefer_markdown(request: Request) -> bool:
 
 
 def _entry_response(row: Entry, prefer_md: bool = False) -> dict:
-    """Create stable entry response with backward compatibility."""
+    """Create stable entry response with backward compatibility.
+    
+    Returns:
+        Dictionary with entry data including content block and legacy fields.
+    """
     editor_mode: Literal['html','markdown'] = 'markdown' if prefer_md else 'html'
     
     # Create structured content block
@@ -128,10 +132,13 @@ async def get_entries(
     offset: Optional[int] = Query(None, ge=0, description="Legacy offset parameter"),
     user_id: str = Depends(require_user),
     s: AsyncSession = Depends(get_session)
-):
+) -> list[dict[str, Any]]:
     """List entries with pagination support.
     
     Supports both 'skip' (preferred) and 'offset' (legacy) parameters.
+    
+    Returns:
+        List of entry dictionaries with content and metrics.
     """
     # Use offset if provided (legacy support), otherwise use skip
     start = offset if offset is not None else skip
@@ -147,8 +154,12 @@ async def post_entry(
     request: Request, 
     user_id: str = Depends(require_user), 
     s: AsyncSession = Depends(get_session)
-):
-    """Create a new entry with automatic embedding generation."""
+) -> dict[str, Any]:
+    """Create a new entry with automatic embedding generation.
+    
+    Returns:
+        Created entry dictionary with generated ID and metrics.
+    """
     html_content = body.content or ""
     md_content = body.markdown_content
     # Default to 2 when markdown is provided without explicit version
@@ -189,12 +200,19 @@ async def get_entry(
     request: Request, 
     user_id: str = Depends(require_user), 
     s: AsyncSession = Depends(get_session)
-):
-    """Get a single entry by ID."""
+) -> dict[str, Any]:
+    """Get a single entry by ID.
+    
+    Returns:
+        Entry dictionary with content and metadata.
+        
+    Raises:
+        HTTPException: If entry not found or invalid ID.
+    """
     try:
         eid = UUID(entry_id)
-    except ValueError:
-        raise HTTPException(status_code=404, detail="Entry not found")
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail="Entry not found") from e
     
     repo = EntryRepository(s)
     entry = await repo.get_by_id(eid)
@@ -212,12 +230,19 @@ async def update_entry(
     request: Request,
     user_id: str = Depends(require_user),
     s: AsyncSession = Depends(get_session)
-):
-    """Update entry with optimistic locking."""
+) -> dict[str, Any]:
+    """Update entry with optimistic locking.
+    
+    Returns:
+        Updated entry dictionary with new version.
+        
+    Raises:
+        HTTPException: If entry not found or version conflict.
+    """
     try:
         eid = UUID(entry_id)
-    except ValueError:
-        raise HTTPException(status_code=404, detail="Entry not found")
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail="Entry not found") from e
     
     repo = EntryRepository(s)
     
@@ -251,8 +276,8 @@ async def update_entry(
         
         return _entry_response(entry, _prefer_markdown(request))
         
-    except NotFound:
-        raise HTTPException(status_code=404, detail="Entry not found")
+    except NotFound as e:
+        raise HTTPException(status_code=404, detail="Entry not found") from e
     except Conflict as c:
         raise HTTPException(
             status_code=409,
@@ -261,7 +286,7 @@ async def update_entry(
                 "expected_version": c.expected,
                 "actual_version": c.actual
             }
-        )
+        ) from c
 
 
 @router.delete("/{entry_id}", status_code=204)
@@ -274,11 +299,17 @@ async def delete_entry(
     """Soft delete entry with optimistic locking.
 
     Returns 204 No Content on success to match API expectations.
+    
+    Returns:
+        None (204 No Content).
+        
+    Raises:
+        HTTPException: If entry not found or version conflict.
     """
     try:
         eid = UUID(entry_id)
-    except ValueError:
-        raise HTTPException(status_code=404, detail="Entry not found")
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail="Entry not found") from e
 
     repo = EntryRepository(s)
 
@@ -288,8 +319,8 @@ async def delete_entry(
         # No response body for 204
         return None
 
-    except NotFound:
-        raise HTTPException(status_code=404, detail="Entry not found")
+    except NotFound as e:
+        raise HTTPException(status_code=404, detail="Entry not found") from e
     except Conflict as c:
         raise HTTPException(
             status_code=409,
@@ -298,7 +329,7 @@ async def delete_entry(
                 "expected_version": c.expected,
                 "actual_version": c.actual,
             },
-        )
+        ) from c
 
 
 # Removed duplicate PUT and DELETE routes in favor of optimistic-locking variants above.

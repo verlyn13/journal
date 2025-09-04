@@ -15,8 +15,12 @@ router = APIRouter(prefix="/admin", tags=["admin"])
 
 
 @router.get("/ping")
-async def admin_ping(user_id: str = Depends(require_user)):
-    """Simple ping endpoint for admin health check."""
+async def admin_ping(user_id: str = Depends(require_user)) -> dict[str, str]:
+    """Simple ping endpoint for admin health check.
+    
+    Returns:
+        Status response.
+    """
     return {"status": "pong"}
 
 
@@ -24,8 +28,12 @@ async def admin_ping(user_id: str = Depends(require_user)):
 async def admin_health(
     user_id: str = Depends(require_user),
     db: AsyncSession = Depends(get_session)
-):
-    """Health check endpoint that verifies database connectivity."""
+) -> dict[str, str]:
+    """Health check endpoint that verifies database connectivity.
+    
+    Returns:
+        Health status including database connectivity state.
+    """
     try:
         # Check database connection
         result = await db.execute(text("SELECT 1"))
@@ -40,8 +48,15 @@ async def admin_health(
 
 
 @router.post("/reindex-embeddings")
-async def reindex_embeddings(body: dict | None = None):
-    """Trigger a bulk reindexing of all entry embeddings."""
+async def reindex_embeddings(body: dict | None = None) -> dict[str, str]:
+    """Trigger a bulk reindexing of all entry embeddings.
+    
+    Args:
+        body: Optional configuration for reindexing.
+        
+    Returns:
+        Status message indicating the reindex has been queued.
+    """
     event_data = {
         "event_type": "embedding.reindex",
         "event_data": body or {},

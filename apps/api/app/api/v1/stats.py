@@ -34,7 +34,11 @@ async def get_stats(
     user_id: str = Depends(require_user),  # noqa: ARG001
     s: AsyncSession = Depends(get_session),
 ) -> StatsResponse:
-    """Get statistics about user's journal entries."""
+    """Get statistics about user's journal entries.
+    
+    Returns:
+        StatsResponse with entry counts and statistics.
+    """
 
     # Deterministic tests can monkeypatch _utcnow()
     now = _utcnow()  # Use timezone-naive datetime

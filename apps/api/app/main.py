@@ -53,18 +53,32 @@ app.include_router(GraphQLRouter(schema), prefix="/graphql")
 
 
 @app.get("/health")
-async def health():
+async def health() -> dict[str, str]:
+    """Health check endpoint.
+    
+    Returns:
+        Status dictionary indicating service health.
+    """
     return {"status": "ok"}
 
 
 @app.get("/metrics")
-async def metrics():
+async def metrics() -> PlainTextResponse:
+    """Prometheus metrics endpoint.
+    
+    Returns:
+        Metrics in Prometheus exposition format.
+    """
     # Minimal Prometheus exposition format
     return PlainTextResponse(render_prom(), media_type="text/plain; version=0.0.4")
 
 
 @app.on_event("startup")
-async def _startup():
+async def _startup() -> None:
+    """Application startup handler.
+    
+    Initializes background tasks including outbox relay publisher.
+    """
     # Background outbox relay publisher (skip in tests)
     if not settings.testing:
         session_maker = sessionmaker_for(build_engine())
