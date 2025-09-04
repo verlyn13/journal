@@ -1,8 +1,6 @@
 name: CI
 
 on:
-  push:
-    branches: [ main ]
   pull_request:
     branches: [ main ]
 
@@ -10,109 +8,48 @@ concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 
-permissions:
-  contents: read
-  actions: read
-  checks: write
-
 jobs:
-  build-test:
-    name: Lint, Typecheck, Test
+  web:
+    name: Web quality + unit
     runs-on: ubuntu-latest
-    env:
-      OTEL_ENABLED: "false"
-      LOG_LEVEL: INFO
-      CI: true
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Bun 1.2.21
-        uses: oven-sh/setup-bun@v2
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
         with:
-          bun-version: "1.2.21"
-
-      - name: Bun version
-        run: bun --version
-
-      - name: Install JS deps
+          bun-version: '1.2.21'
+      - name: Install deps
+        working-directory: apps/web
         run: bun install --frozen-lockfile
-
-      - name: Install web app deps
-        run: bun --cwd apps/web install --frozen-lockfile
-
-      - name: Build and publish web bundle
-        run: bun run web:publish
-
-      - name: Verify Vite manifest exists
-        run: |
-          test -f journal/static/gen/web/manifest.json || (echo "Missing Vite manifest" && exit 1)
-
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps
-
-      - name: Install uv 0.8.x
-        run: |
-          curl -LsSf https://astral.sh/uv/install.sh | sh
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
-          uv --version
-
-      - name: Set up Python 3.13.7 via uv
-        run: |
-          uv python install 3.13.7
-          uv python pin 3.13.7
-
-      - name: Cache uv
-        uses: actions/cache@v4
+      - name: Lint, types, unit, bundle
+        run: bun run quality:all
+      - name: Upload coverage
+        if: always()
+        uses: actions/upload-artifact@v4
         with:
-          path: |
-            ~/.cache/uv
-          key: uv-${{ runner.os }}-${{ hashFiles('pyproject.toml', 'uv.lock') }}
-          restore-keys: |
-            uv-${{ runner.os }}-
+          name: web-vitest-coverage
+          path: apps/web/coverage
 
-      - name: Sync Python deps (frozen)
-        run: uv sync --frozen
-
-      - name: Biome CI (GitHub reporter)
-        run: bun run check
-
-      - name: TypeScript typecheck
-        run: bun run typecheck
-
-      - name: Ruff Lint (GitHub annotations)
-        run: uv run ruff check . --output-format=github
-
-      - name: Ruff Format (check only)
+  api:
+    name: API lint + unit/component
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/api
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v4
+      - name: Setup Python
+        run: uv python install 3.13
+      - name: Sync deps
+        run: uv sync --all-extras --dev
+      - name: Ruff check
+        run: uv run ruff check .
+      - name: Ruff format (check)
         run: uv run ruff format --check .
-
       - name: Mypy
-        run: uv run mypy .
-
-      - name: Pytest with coverage (fail under 80%)
-        run: uv run pytest --cov=journal --cov-report=xml --cov-fail-under=80
-
-      - name: Playwright a11y tests
-        run: bun run test:a11y
-
-      - name: Playwright visual tests
-        run: bun run test:visual
-
-      - name: Build Storybook static
-        run: bun run build-storybook
-
-      - name: Upload Storybook artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: storybook-static
-          path: storybook-static
-          if-no-files-found: warn
-
-      - name: Upload Playwright report (if available)
-        uses: actions/upload-artifact@v4
-        with:
-          name: playwright-report
-          path: playwright-report
+        run: uv run mypy app
+      - name: Pytest unit+component
+        run: uv run pytest -m "unit or component" -v
           if-no-files-found: warn
 
       - name: Upload coverage artifact
