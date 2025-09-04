@@ -18,7 +18,7 @@ from app.infra.conversion import markdown_to_html
 from app.infra.db import get_session
 from app.infra.metrics import count_words_chars, extract_text_for_metrics
 from app.infra.models import Entry
-from app.infra.repository import Conflict, EntryRepository, NotFound
+from app.infra.repository import ConflictError, EntryRepository, NotFoundError
 from app.services.entry_service import create_entry, get_entry_by_id, list_entries
 
 
@@ -277,9 +277,9 @@ async def update_entry(
 
         return _entry_response(entry, _prefer_markdown(request))
 
-    except NotFound as e:
+    except NotFoundError as e:
         raise HTTPException(status_code=404, detail="Entry not found") from e
-    except Conflict as c:
+    except ConflictError as c:
         raise HTTPException(
             status_code=409,
             detail={
@@ -320,9 +320,9 @@ async def delete_entry(
         # No response body for 204
         return
 
-    except NotFound as e:
+    except NotFoundError as e:
         raise HTTPException(status_code=404, detail="Entry not found") from e
-    except Conflict as c:
+    except ConflictError as c:
         raise HTTPException(
             status_code=409,
             detail={

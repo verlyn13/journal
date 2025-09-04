@@ -14,7 +14,7 @@ import nats
 from sqlalchemy import select, text
 
 from app.infra.db import get_session
-from app.infra.embeddings import RateLimited
+from app.infra.embeddings import RateLimitedError
 from app.infra.models import Entry
 from app.infra.search_pgvector import upsert_entry_embedding
 from app.settings import settings
@@ -114,7 +114,7 @@ class EmbeddingConsumer:
             metrics_inc("worker_process_total", {"result": "ok", "type": event_type})
 
         except json.JSONDecodeError as e:
-            logger.error(f"JSON decode error: {e}")
+            logger.exception("JSON decode error")
             # Poison message: DLQ + TERM if enabled
             if os.getenv("OUTBOX_DLQ_ENABLED", "0") == "1":
                 await self._publish_dlq({"error": "json_decode", "raw": msg.data.decode(errors='ignore')}, reason=str(e))
@@ -125,12 +125,12 @@ class EmbeddingConsumer:
             # Default: NAK for redelivery
             await msg.nak()
             metrics_inc("worker_process_total", {"result": "retry", "reason": "json"})
-        except RateLimited as e:
+        except RateLimitedError as e:
             logger.warning("Embedding provider rate-limited or circuit open; NAK for redelivery")
             await msg.nak()
             metrics_inc("worker_process_total", {"result": "retry", "reason": "ratelimited"})
         except Exception as e:
-            logger.error(f"Error processing message: {e}")
+            logger.exception("Error processing message")
             # Don't ack on error - let NATS retry
             try:
                 await msg.nak()
@@ -161,7 +161,7 @@ class EmbeddingConsumer:
                 await session.commit()
                 logger.info(f"Updated embedding for entry {entry_id}")
             except Exception as e:
-                logger.error(f"Failed to update embedding for entry {entry_id}: {e}")
+                logger.exception("Failed to update embedding for entry %s", entry_id)
                 await session.rollback()
                 raise
 
@@ -182,7 +182,7 @@ class EmbeddingConsumer:
                 await session.commit()
                 logger.info(f"Deleted embedding for entry {entry_id}")
             except Exception as e:
-                logger.error(f"Failed to delete embedding for entry {entry_id}: {e}")
+                logger.exception("Failed to delete embedding for entry %s", entry_id)
                 await session.rollback()
                 raise
 
@@ -208,14 +208,14 @@ class EmbeddingConsumer:
                         if i % 100 == 0:
                             logger.info(f"Processed {i}/{len(rows)} entries")
                     except Exception as e:
-                        logger.error(f"Failed to reindex entry {entry_id}: {e}")
+                        logger.exception("Failed to reindex entry %s", entry_id)
                         # Continue with next entry
 
                 await session.commit()
                 logger.info(f"Completed bulk reindex of {len(rows)} entries")
 
             except Exception as e:
-                logger.error(f"Bulk reindex failed: {e}")
+                logger.exception("Bulk reindex failed")
                 await session.rollback()
                 raise
 
@@ -253,7 +253,7 @@ class EmbeddingConsumer:
                 await asyncio.sleep(1)
 
         except Exception as e:
-            logger.error(f"Error in message consumption: {e}")
+            logger.exception("Error in message consumption")
             raise
         finally:
             await self.disconnect()
@@ -309,7 +309,7 @@ async def main():
         logger.info("Received interrupt signal")
         await consumer.stop()
     except Exception as e:
-        logger.error(f"Worker failed: {e}")
+        logger.exception("Worker failed")
         raise
 
 
