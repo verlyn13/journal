@@ -164,8 +164,8 @@ PR Checklist
 ---
 
 ## Phase 1.5 — Concrete Tasks (Shortlist)
-- [ ] Entries rail collapse/hover/keyboard toggle (Cmd/Ctrl+B); hover peek.
-- [ ] SplitPane layout toggle (↔/↕) + persist; golden ratio snap.
+- [x] Entries rail collapse/hover/keyboard toggle (Cmd/Ctrl+B); hover peek.
+- [x] SplitPane layout toggle (↔/↕) + persist; golden ratio snap.
 - [ ] Breadcrumb + scroll‑spy; heading palette (Cmd/Ctrl+G).
 - [ ] Folding: heading subtree + code fences; `Shift+Tab` to fold.
 - [ ] Footnote hover cards; callouts styling.
@@ -183,4 +183,3 @@ Each task: 1 short branch → PR → CI → merge.
 - Roadmap updates: PRs to this doc; reviewers: design + lead dev.
 - Weekly cadence: short planning check‑in; status updates inline here.
 - Docs: RUNNING_THE_APP.md and README kept current; changelog per milestone.
-

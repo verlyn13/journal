@@ -91,6 +91,11 @@ Login in development:
 - Use demo credentials `demo` / `demo123` in the web app, or
 - Use `/api/v1/auth/demo` and set tokens in localStorage.
 
+## Keyboard Shortcuts & UI Toggles
+
+- Sidebar: `Cmd/Ctrl + B` toggles the left sidebar (collapsible). When collapsed, a thin tab appears at the left edge — hover to peek the sidebar; click to re‑open.
+- SplitPane: Click the ↔/↕ button in the SplitPane header to toggle side‑by‑side vs top/bottom. Hold `Alt` and scroll to adjust the split; layout and ratio persist between sessions.
+
 ## Ports
 
 - API: `127.0.0.1:8000`
