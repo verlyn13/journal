@@ -97,24 +97,29 @@ def merge() -> int:
 
     # SCC
     scc_json = load_json(SCANNER_DIR / 'scc.json')
+    logger.info(f'scc.json content: {scc_json}')
     if isinstance(scc_json, list):
-        tool_counts['scc'] = len(scc_json)
-        for item in scc_json:
-            path = item.get('Name')
-            if not path:
-                continue
-            merged[path] = {
-                'path': path,
-                'size_bytes': item.get('Bytes', 0),
-                'language': item.get('Language', 'Unknown'),
-                'loc': item.get('Lines', 0),
-                'comment_loc': item.get('Comment', 0),
-                'complexity': item.get('Complexity', 0),
-            }
+        tool_counts['scc'] = 0
+        for lang_summary in scc_json:
+            if 'Files' in lang_summary and isinstance(lang_summary['Files'], list):
+                tool_counts['scc'] += len(lang_summary['Files'])
+                for file_details in lang_summary['Files']:
+                    path = file_details.get('Location')
+                    if not path:
+                        continue
+                    merged[path] = {
+                        'path': path,
+                        'size_bytes': file_details.get('Bytes', 0),
+                        'language': lang_summary.get('Name', 'Unknown'),
+                        'loc': file_details.get('Lines', 0),
+                        'comment_loc': file_details.get('Comment', 0),
+                        'complexity': file_details.get('Complexity', 0),
+                    }
     else:
         logger.warning('SCC results missing or invalid; continuing without SCC data')
         tool_counts['scc'] = 0
 
+    logger.info(f'Merged dictionary: {merged}')
     files_list = list(merged.values())
     summary = summarize_counts(files_list)
     logger.info(f'Merged files: {len(files_list)}; by language: {summary}')

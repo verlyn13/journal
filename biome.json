@@ -81,6 +81,11 @@
   },
   "overrides": [
     {
+      "includes": ["repo_scan.json"],
+      "linter": { "enabled": false },
+      "formatter": { "enabled": false }
+    },
+    {
       "includes": ["*.md", "**/*.md"],
       "linter": {
         "enabled": false
@@ -148,6 +153,7 @@
       "**/.next",
       "**/storybook-static",
       "*.db",
+      "repo_scan.json",
       "**/.docs-cache",
       "**/docs-backup",
       "**/docs-html",

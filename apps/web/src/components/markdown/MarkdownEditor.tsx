@@ -16,12 +16,14 @@ export default function MarkdownEditor({
   height = '60vh',
 }: Props) {
   const extensions = useMemo(() => [markdown()], []);
+  const isDark = typeof document !== 'undefined' && document.documentElement.classList.contains('dark');
   return (
     <CodeMirror
       value={value}
       height={height}
       readOnly={readOnly}
       extensions={extensions}
+      theme={isDark ? 'dark' : 'light'}
       onChange={onChange}
     />
   );

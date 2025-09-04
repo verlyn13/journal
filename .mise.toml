@@ -9,7 +9,9 @@ uv = "latest"      # Python package/venv manager
 
 [tasks]
 # === Full Stack Development ===
-dev = { depends = ["api:dev", "web:dev"], description = "Start both API and web dev servers" }
+# Single source of truth for starting everything in dev
+dev = { run = "bash scripts/dev.sh", description = "Start API + Web + services (single command)" }
+"dev:full" = { run = "bash scripts/dev.sh", description = "Alias for dev" }
 test = { depends = ["api:test", "web:test"], description = "Run all tests" }
 lint = { depends = ["api:lint", "web:lint"], description = "Lint all code" }
 format = { depends = ["api:format", "web:format"], description = "Format all code" }

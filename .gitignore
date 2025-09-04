@@ -168,3 +168,4 @@ _site/
 # Bun
 bun.lockb
 storybook-static/
+repo_scan.json

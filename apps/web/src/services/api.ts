@@ -3,12 +3,25 @@
  * Handles all API calls to the FastAPI backend
  */
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
+function normalizeApiBase(raw?: string) {
+  // Remove trailing slashes first
+  const trimmed = (raw ?? '/api').trim().replace(/\/+$/, '');
+  // If it already ends with /api, return as-is (no double /api)
+  if (trimmed.endsWith('/api')) return trimmed;
+  // Otherwise append /api
+  return `${trimmed}/api`;
+}
+
+const API_BASE_URL = normalizeApiBase(import.meta.env?.VITE_API_URL);
+if (typeof window !== 'undefined') {
+  (window as Window & { __API_BASE__?: string }).__API_BASE__ = API_BASE_URL;
+}
 
 export interface JournalEntry {
   id: string;
   title: string;
   content: string;
+  markdown_content?: string;
   date: string;
   time: string;
   preview: string;

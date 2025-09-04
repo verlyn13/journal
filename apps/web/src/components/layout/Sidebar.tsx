@@ -5,9 +5,10 @@ import api from '../../services/api';
 interface SidebarProps {
   onCreateEntry?: () => void;
   onSelectView?: (view: string) => void;
+  authenticated?: boolean;
 }
 
-export function Sidebar({ onCreateEntry, onSelectView }: SidebarProps) {
+export function Sidebar({ onCreateEntry, onSelectView, authenticated = false }: SidebarProps) {
   // Theme state sync with localStorage and documentElement class
   const THEME_STORAGE_KEY = 'journal:theme';
   const [theme, setTheme] = useState<'dawn' | 'dusk'>(() => {
@@ -65,11 +66,12 @@ export function Sidebar({ onCreateEntry, onSelectView }: SidebarProps) {
       }
     };
 
+    if (!authenticated) return; // avoid 401 spam before auth
     fetchData();
-    // Refresh data every 30 seconds
+    // Refresh data every 30 seconds when authenticated
     const interval = setInterval(fetchData, 30000);
     return () => clearInterval(interval);
-  }, []);
+  }, [authenticated]);
 
   const handleViewClick = (view: string) => {
     setSelectedView(view);
@@ -250,6 +252,8 @@ export function Sidebar({ onCreateEntry, onSelectView }: SidebarProps) {
             value={theme}
             onChange={(e) => setTheme(e.target.value === 'dusk' ? 'dusk' : 'dawn')}
             aria-label="Theme selector"
+            id="theme-select"
+            name="theme"
           >
             <option value="dawn">Dawn</option>
             <option value="dusk">Dusk</option>

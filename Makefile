@@ -12,6 +12,7 @@ help:
 	@echo "  make install       - Install project dependencies"
 	@echo "  make build         - Build the project"
 	@echo "  make dev           - Start development server"
+	@echo "  make dev-full      - Start API+web and services (single command)"
 	@echo "  make test          - Run tests"
 	@echo "  make clean         - Clean build artifacts"
 	@echo "  make assets-clean  - Remove generated static assets (journal/static/gen)"
@@ -68,6 +69,10 @@ build:
 dev:
 	@echo "🚀 Starting development server..."
 	@npm run dev
+
+dev-full:
+	@echo "🚀 Starting API + Web + Services (one-shot)"
+	@bash scripts/dev.sh
 
 dev-web:
 	@echo "🌐 Starting frontend watch (Rollup)..."

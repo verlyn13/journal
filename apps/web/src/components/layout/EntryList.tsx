@@ -87,6 +87,9 @@ export function EntryList({
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full pl-9 pr-4 py-2 bg-sanctuary-bg-tertiary border border-sanctuary-border rounded-lg text-sm text-sanctuary-text-primary placeholder-sanctuary-text-secondary focus:outline-none focus:ring-2 focus:ring-sanctuary-accent focus:border-transparent"
+            id="search-input"
+            name="q"
+            aria-label="Search entries"
           />
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
             <svg

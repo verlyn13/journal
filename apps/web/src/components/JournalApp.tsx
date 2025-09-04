@@ -1,9 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useCreateEntry, useEntriesList } from '../hooks/useEntryQueries';
-import { mdToHtml } from '../lib/mdToHtml';
 import api, { type AuthStatus } from '../services/api';
-import FocusMode from './editor/FocusMode';
-import Editor from './editor/JournalEditor';
 import EntryList from './layout/EntryList';
 import Sidebar from './layout/Sidebar';
 import MarkdownSplitPane from './markdown/MarkdownSplitPane';
@@ -72,9 +69,20 @@ export function JournalApp() {
 
     try {
       const entry = await api.getEntry(entryId);
+      // Prefer markdown_content for the markdown editor; convert HTML if needed
+      let contentForEditor = entry.markdown_content as unknown as string | undefined;
+      if (!contentForEditor && entry.content) {
+        try {
+          const mod = await import('../utils/markdown-converter');
+          const res = mod.convertHtmlToMarkdown(entry.content as unknown as string);
+          contentForEditor = res.markdown || entry.content;
+        } catch {
+          contentForEditor = (entry.content as unknown as string) || '';
+        }
+      }
       setState((prev) => ({
         ...prev,
-        selectedEntry: { id: entry.id, title: entry.title, content: entry.content },
+        selectedEntry: { id: entry.id, title: entry.title, content: contentForEditor || '' },
       }));
     } catch (_error) {
       // Reset selection on error
@@ -86,31 +94,7 @@ export function JournalApp() {
     }
   }, []);
 
-  // Handle entry save
-  const handleSaveEntry = useCallback(
-    async (content: string, title: string) => {
-      if (!state.selectedEntryId || !state.selectedEntry) return;
-
-      try {
-        setState((prev) => ({ ...prev, saving: true }));
-
-        const updatedEntry = await api.updateEntry(state.selectedEntryId, {
-          content,
-          title,
-        });
-
-        // Update entry in state
-        setState((prev) => ({
-          ...prev,
-          selectedEntry: { ...updatedEntry, title, content },
-          saving: false,
-        }));
-      } catch (_error) {
-        setState((prev) => ({ ...prev, saving: false }));
-      }
-    },
-    [state.selectedEntryId, state.selectedEntry],
-  );
+  // Removed legacy save callback (replaced by MarkdownSplitPane onSave)
 
   // Handle new entry creation
   const createEntryMut = useCreateEntry();
@@ -121,7 +105,8 @@ export function JournalApp() {
         const entryTitle = title || `New Entry - ${new Date().toLocaleDateString()}`;
         const created = await createEntryMut.mutateAsync({
           title: entryTitle,
-          content: '<p>Start writing your thoughts...</p>',
+          markdown_content: '# Start writing your thoughts...\n',
+          content_version: 2,
         });
         setState((prev) => ({
           ...prev,
@@ -129,7 +114,7 @@ export function JournalApp() {
           selectedEntry: {
             id: created.id,
             title: created.title || entryTitle,
-            content: created.content || '<p>Start writing your thoughts...</p>',
+            content: created.markdown_content || '# Start writing your thoughts...\n',
           },
         }));
       } catch (_error) {}
@@ -138,9 +123,7 @@ export function JournalApp() {
   );
 
   // Handle focus mode toggle
-  const handleFocusChange = useCallback((focused: boolean) => {
-    setState((prev) => ({ ...prev, isFocusMode: focused }));
-  }, []);
+  // Focus mode toggle (not used in current layout)
 
   // Show loading state
   if (state.loading) {
@@ -196,7 +179,7 @@ export function JournalApp() {
             ${state.isFocusMode ? 'hidden' : 'block'}
           `}
         >
-          <Sidebar onCreateEntry={() => handleCreateEntry()} />
+          <Sidebar onCreateEntry={() => handleCreateEntry()} authenticated={state.authenticated} />
         </aside>
 
         {/* Center - Entry List */}
@@ -223,45 +206,34 @@ export function JournalApp() {
           ${state.isFocusMode ? 'max-w-prose mx-auto' : ''}
         `}
         >
-          {import.meta.env.VITE_EDITOR === 'markdown' ? (
-            <MarkdownSplitPane
-              entry={
-                state.selectedEntry
-                  ? {
-                      id: state.selectedEntry.id,
-                      title: state.selectedEntry.title,
-                      content: state.selectedEntry.content,
-                    }
-                  : null
+          <MarkdownSplitPane
+            entry={
+              state.selectedEntry
+                ? {
+                    id: state.selectedEntry.id,
+                    title: state.selectedEntry.title,
+                    content: state.selectedEntry.content,
+                  }
+                : null
+            }
+            onSave={async ({ markdown }) => {
+              if (!state.selectedEntryId) return;
+              try {
+                const updated = await api.updateEntry(state.selectedEntryId, {
+                  title: state.selectedEntry?.title,
+                  content: markdown,
+                  markdown_content: markdown,
+                  content_version: 2,
+                });
+                setState((prev) => ({
+                  ...prev,
+                  selectedEntry: { id: updated.id, title: updated.title, content: markdown },
+                }));
+              } catch (_e) {
+                // TODO: Add proper error handling/notification
               }
-              onSave={async ({ markdown }) => {
-                if (!state.selectedEntryId) return;
-                const html = mdToHtml(markdown);
-                try {
-                  const updated = await api.updateEntry(state.selectedEntryId, {
-                    title: state.selectedEntry?.title,
-                    content: html,
-                    markdown_content: markdown,
-                    content_version: 2,
-                  });
-                  setState((prev) => ({
-                    ...prev,
-                    selectedEntry: { id: updated.id, title: updated.title, content: markdown },
-                  }));
-                } catch (_e) {
-                  // TODO: Add proper error handling/notification
-                }
-              }}
-            />
-          ) : (
-            <FocusMode onFocusChange={handleFocusChange} showToggle={true}>
-              <Editor
-                selectedEntry={state.selectedEntry || undefined}
-                onSave={handleSaveEntry}
-                saving={state.saving}
-              />
-            </FocusMode>
-          )}
+            }}
+          />
         </section>
 
         {/* Focus Mode Background */}

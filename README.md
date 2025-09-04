@@ -11,25 +11,16 @@ A modern web application for journaling with a rich text editor, code highlighti
 - Docker & Docker Compose
 - PostgreSQL 16+ (via Docker)
 
-### Setup & Run
+### Setup & Run (One‑Command Dev)
 
 ```bash
-# 1. Install frontend dependencies
-bun install
+make dev-full
 
-# 2. Setup backend infrastructure
-cd apps/api
-make setup  # Starts PostgreSQL, Redis, NATS and runs migrations
+# Or with Mise
+mise run dev:full
 
-# 3. Start both frontend and backend
-# Terminal 1: Frontend
-bun run web:dev
-
-# Terminal 2: Backend API
-cd apps/api
-make dev
-
-# Access the app at http://localhost:5173
+# API: http://localhost:5000 (health: /health, metrics: /metrics)
+# Web: http://localhost:5173
 ```
 
 ## 🏗 Architecture
@@ -97,9 +88,8 @@ make worker      # Start embedding worker
 ### Full Stack Commands (from root)
 
 ```bash
-# Start everything
-make dev-web     # Frontend
-make dev-py      # Backend
+# Start everything (single command)
+make dev-full
 
 # API management
 make api-setup   # Setup infrastructure
@@ -136,7 +126,7 @@ Run with Bun from the repo root (use Node/npm if preferred):
 ### Frontend Environment
 Create `apps/web/.env`:
 ```env
-VITE_API_URL=http://127.0.0.1:8000/api
+VITE_API_URL=http://127.0.0.1:5000/api
 VITE_GRAPHQL_URL=http://127.0.0.1:8000/graphql
 ```
 

@@ -1,6 +1,6 @@
 # Running the Journal (Local Development)
 
-This project runs a React frontend (`apps/web`) against a FastAPI backend (`apps/api`).
+This project runs a React frontend (`apps/web`) against a FastAPI backend (`apps/api`). For a full-stack experience as a user, we now provide a one‑command developer runner.
 
 ## Prerequisites
 
@@ -9,6 +9,30 @@ This project runs a React frontend (`apps/web`) against a FastAPI backend (`apps
 - Docker & Docker Compose
 - Bun (and Node 18+) for the frontend
 - jq (optional) for curl examples
+
+## One‑Command Dev (API + Web + Services)
+
+Use either Make or Mise:
+
+```bash
+# Using Make (recommended)
+make dev-full
+
+# Or using Mise
+mise run dev:full
+```
+
+What this does:
+- Starts Postgres (5433), Redis (6380), and NATS (4222) in Docker
+- Applies Alembic migrations using IPv4 (to avoid localhost/::1 auth issues)
+- Starts the API at `http://localhost:5000` (health: `/health`, metrics: `/metrics`)
+- Starts the Web at `http://localhost:5173`
+
+Environment overrides:
+- `JOURNAL_API_PORT` (default 5000)
+- `WEB_PORT` (default 5173)
+- `VITE_API_URL` (default `http://localhost:${JOURNAL_API_PORT}/api`)
+
 
 ## Backend (FastAPI)
 
@@ -51,9 +75,9 @@ Docs:
 cd apps/web
 
 # Configure API URL
-cat > .env <<'ENV'
-VITE_API_URL=http://127.0.0.1:8000/api
-ENV
+# Default dev script points web to http://localhost:5000/api
+# To override manually:
+# echo "VITE_API_URL=http://127.0.0.1:8000/api" > apps/web/.env
 
 # Install and run
 bun install
