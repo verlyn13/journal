@@ -2,8 +2,10 @@
 Consolidated test cases for stats API endpoint.
 Moved from test_api_admin_extended.py to proper location.
 """
-import pytest
 from datetime import datetime, timedelta
+
+import pytest
+
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -25,12 +27,12 @@ class TestStatsAPI:
         """Test stats calculation with entries across different time periods."""
         # Mock current time for deterministic testing
         mock_now = datetime(2024, 6, 15, 14, 30, 0)  # Friday, June 15, 2024
-        
+
         def mock_utcnow():
             return mock_now
-        
+
         monkeypatch.setattr("app.api.v1.stats._utcnow", mock_utcnow)
-        
+
         # Create entries at different times
         entries = [
             # Today (June 15)
@@ -90,20 +92,20 @@ class TestStatsAPI:
                 is_deleted=True
             ),
         ]
-        
+
         for entry in entries:
             db_session.add(entry)
         await db_session.commit()
-        
+
         # Get stats
         response = await client.get(
             "/api/v1/stats",
             headers=auth_headers
         )
-        
+
         assert response.status_code == 200
         data = response.json()
-        
+
         # Verify counts
         assert data["total_entries"] == 6  # All non-deleted entries
         assert data["entries_today"] == 2  # Today 1 and Today 2
@@ -123,10 +125,10 @@ class TestStatsAPI:
             "/api/v1/stats",
             headers=auth_headers
         )
-        
+
         assert response.status_code == 200
         data = response.json()
-        
+
         # All counts should be zero
         assert data["total_entries"] == 0
         assert data["entries_today"] == 0
@@ -146,12 +148,12 @@ class TestStatsAPI:
         """Test stats calculation at week boundaries."""
         # Mock current time to be Monday morning
         mock_now = datetime(2024, 6, 10, 0, 30, 0)  # Monday, June 10, 2024
-        
+
         def mock_utcnow():
             return mock_now
-        
+
         monkeypatch.setattr("app.api.v1.stats._utcnow", mock_utcnow)
-        
+
         # Create entries
         entries = [
             # This week (Monday morning)
@@ -171,19 +173,19 @@ class TestStatsAPI:
                 updated_at=mock_now - timedelta(hours=1)
             ),
         ]
-        
+
         for entry in entries:
             db_session.add(entry)
         await db_session.commit()
-        
+
         response = await client.get(
             "/api/v1/stats",
             headers=auth_headers
         )
-        
+
         assert response.status_code == 200
         data = response.json()
-        
+
         # Monday entry is in this week, Sunday is not
         assert data["entries_this_week"] == 1
         assert data["total_entries"] == 2
@@ -199,12 +201,12 @@ class TestStatsAPI:
         """Test stats calculation at month boundaries."""
         # Mock current time to be first day of month
         mock_now = datetime(2024, 6, 1, 0, 30, 0)  # June 1, 2024
-        
+
         def mock_utcnow():
             return mock_now
-        
+
         monkeypatch.setattr("app.api.v1.stats._utcnow", mock_utcnow)
-        
+
         # Create entries
         entries = [
             # This month (June 1)
@@ -224,19 +226,19 @@ class TestStatsAPI:
                 updated_at=mock_now - timedelta(hours=1)
             ),
         ]
-        
+
         for entry in entries:
             db_session.add(entry)
         await db_session.commit()
-        
+
         response = await client.get(
             "/api/v1/stats",
             headers=auth_headers
         )
-        
+
         assert response.status_code == 200
         data = response.json()
-        
+
         # June entry is in this month, May is not
         assert data["entries_this_month"] == 1
         assert data["total_entries"] == 2
@@ -260,12 +262,12 @@ class TestStatsAPI:
     ):
         """Test recent entries calculation based on updated_at."""
         mock_now = datetime(2024, 6, 15, 14, 30, 0)
-        
+
         def mock_utcnow():
             return mock_now
-        
+
         monkeypatch.setattr("app.api.v1.stats._utcnow", mock_utcnow)
-        
+
         # Create entries with different update times
         entries = [
             # Updated 3 days ago (should be included)
@@ -293,19 +295,19 @@ class TestStatsAPI:
                 updated_at=mock_now - timedelta(days=8)
             ),
         ]
-        
+
         for entry in entries:
             db_session.add(entry)
         await db_session.commit()
-        
+
         response = await client.get(
             "/api/v1/stats",
             headers=auth_headers
         )
-        
+
         assert response.status_code == 200
         data = response.json()
-        
+
         # Only entries updated within last 7 days
         assert data["recent_entries"] == 2
         assert data["total_entries"] == 3

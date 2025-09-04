@@ -2,6 +2,7 @@
 Test cases for search API endpoints.
 """
 import pytest
+
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -68,7 +69,7 @@ class TestSearchAPI:
         assert response.status_code == 200
         results = response.json()
         assert len(results) >= 2  # Should find Python and JavaScript entries
-        
+
         # Verify results contain expected entries
         titles = [r["title"] for r in results]
         assert "Python Tutorial" in titles
@@ -86,13 +87,13 @@ class TestSearchAPI:
             return [
                 {"id": "test-id", "title": "Test", "content": "Test content"}
             ]
-        
+
         # Patch in the search module where it's imported
         monkeypatch.setattr(
             "app.api.v1.search.semantic_search",
             mock_semantic_search
         )
-        
+
         response = await client.post(
             "/api/v1/search/semantic",
             json={"q": "test query"}
@@ -114,12 +115,12 @@ class TestSearchAPI:
             return [
                 {"id": "test-id", "title": "Hybrid Result", "content": "Content"}
             ]
-        
+
         monkeypatch.setattr(
             "app.api.v1.search.hybrid_search",
             mock_hybrid_search
         )
-        
+
         response = await client.get(
             "/api/v1/search",
             params={"q": "test", "alpha": 0.7}

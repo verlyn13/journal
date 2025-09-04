@@ -1,6 +1,7 @@
-import os
 import asyncio
 import json
+import os
+
 import pytest
 
 
@@ -13,6 +14,7 @@ async def test_nats_request_reply_contract():
         pytest.skip("Set RUN_REAL_NATS=1 to enable real NATS tests")
 
     import nats
+
     from app.settings import settings
 
     subject = "journal.test.rpc"
@@ -31,4 +33,3 @@ async def test_nats_request_reply_contract():
     finally:
         await nc.drain()
         await nc.close()
-

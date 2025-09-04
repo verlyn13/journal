@@ -2,6 +2,7 @@
 Test cases for entry API error paths and edge cases.
 """
 import pytest
+
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -81,10 +82,10 @@ class TestEntriesAPIErrors:
             "markdown_content": "# Heading\n\nSome **bold** text",
             "expected_version": sample_entry.version,
         }
-        
+
         # Add header to indicate markdown preference
         headers = {**auth_headers, "X-Editor-Mode": "markdown"}
-        
+
         response = await client.put(
             f"/api/v1/entries/{sample_entry.id}",
             json=update_data,
@@ -110,7 +111,7 @@ class TestEntriesAPIErrors:
             "content": "<h1>Title</h1><p>Paragraph</p>",
             "expected_version": sample_entry.version,
         }
-        
+
         response = await client.put(
             f"/api/v1/entries/{sample_entry.id}",
             json=update_data,
@@ -160,7 +161,7 @@ class TestEntriesAPIErrors:
             "content": "Content",
             "tags": ["python", "testing", "api"]
         }
-        
+
         response = await client.post(
             "/api/v1/entries",
             json=entry_data,

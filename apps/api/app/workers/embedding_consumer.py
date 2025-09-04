@@ -15,10 +15,10 @@ from sqlalchemy import select, text
 
 from app.infra.db import get_session
 from app.infra.embeddings import RateLimited
-from app.telemetry.metrics_runtime import inc as metrics_inc
 from app.infra.models import Entry
 from app.infra.search_pgvector import upsert_entry_embedding
 from app.settings import settings
+from app.telemetry.metrics_runtime import inc as metrics_inc
 
 
 logger = logging.getLogger(__name__)

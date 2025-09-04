@@ -2,18 +2,18 @@
 
 from __future__ import annotations
 
+from typing import Any, Dict, Optional
 from uuid import UUID
-from typing import Optional, Dict, Any
+
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm.exc import StaleDataError
-from sqlalchemy import select
 
 from app.infra.models import Entry
 
 
 class RepositoryError(Exception):
     """Base exception for repository operations."""
-    pass
 
 
 class NotFound(RepositoryError):
@@ -34,22 +34,22 @@ class Conflict(RepositoryError):
 
 class EntryRepository:
     """Repository for Entry operations with optimistic locking support."""
-    
+
     def __init__(self, session: AsyncSession):
         self.session = session
-    
-    async def get_by_id(self, entry_id: UUID) -> Optional[Entry]:
+
+    async def get_by_id(self, entry_id: UUID) -> Entry | None:
         """Get entry by ID."""
         return await self.session.get(Entry, entry_id)
-    
-    async def create(self, data: Dict[str, Any]) -> Entry:
+
+    async def create(self, data: dict[str, Any]) -> Entry:
         """Create a new entry."""
         entry = Entry(**data)
         self.session.add(entry)
         await self.session.flush()
         return entry
-    
-    async def update_entry(self, entry_id: UUID, data: Dict[str, Any], expected_version: int) -> Entry:
+
+    async def update_entry(self, entry_id: UUID, data: dict[str, Any], expected_version: int) -> Entry:
         """Update entry with optimistic locking.
         
         Args:
@@ -68,10 +68,10 @@ class EntryRepository:
         stmt = select(Entry).where(Entry.id == entry_id).with_for_update()
         result = await self.session.execute(stmt)
         entry = result.scalar_one_or_none()
-        
+
         if not entry:
             raise NotFound("entry", entry_id)
-        
+
         # Check version for optimistic locking
         if entry.version != expected_version:
             raise Conflict(
@@ -79,18 +79,18 @@ class EntryRepository:
                 expected=expected_version,
                 actual=entry.version
             )
-        
+
         # Apply updates
         for key, value in data.items():
             if key != 'version':  # Don't allow manual version setting
                 setattr(entry, key, value)
-        
+
         # Increment version
         entry.version += 1
-        
+
         await self.session.flush()
         return entry
-    
+
     async def soft_delete(self, entry_id: UUID, expected_version: int) -> Entry:
         """Soft delete entry with optimistic locking.
 

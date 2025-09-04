@@ -1,4 +1,5 @@
 import pytest
+
 from httpx import AsyncClient
 
 
@@ -54,12 +55,12 @@ async def test_backfill_preserves_content(client: AsyncClient, auth_headers: dic
     )
     assert r.status_code == 201
     print(f"Created entry: {r.json()}")
-    
+
     # Invoke backfill function directly with the same session
     from app.scripts.backfill_markdown import backfill_markdown_content
     count = await backfill_markdown_content(session=db_session, batch_size=10)
     print(f"Backfill processed: {count} entries")
-    
+
     # Verify markdown now present
     r2 = await client.get("/api/v1/entries", headers={**auth_headers, "X-Content-Format": "markdown"})
     assert r2.status_code == 200

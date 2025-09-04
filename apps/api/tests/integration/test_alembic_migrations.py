@@ -1,5 +1,7 @@
 import os
+
 import pytest
+
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -20,4 +22,3 @@ async def test_alembic_applied_schema(db_session: AsyncSession):
     res = await db_session.execute(text("SELECT indexname FROM pg_indexes WHERE tablename='entries' OR tablename='entry_embeddings'"))
     have = {row[0] for row in res.fetchall()}
     assert idx_names.issubset(have)
-

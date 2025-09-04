@@ -1,16 +1,18 @@
 from __future__ import annotations
 
+from typing import Optional
+
 # Standard library imports
 from uuid import UUID
-from typing import Optional
 
 # Third-party imports
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlmodel import select
 
+from app.infra.conversion import markdown_to_html
+
 # Local imports
 from app.infra.models import Entry, Event
-from app.infra.conversion import markdown_to_html
 
 
 async def create_entry(
@@ -18,7 +20,7 @@ async def create_entry(
     author_id: UUID,
     title: str,
     content: str,
-    markdown_content: Optional[str] = None,
+    markdown_content: str | None = None,
     content_version: int = 1,
 ) -> Entry:
     """Create a new entry and enqueue an 'entry.created' event.

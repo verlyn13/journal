@@ -131,8 +131,7 @@ export function JournalApp() {
         const entryTitle = title || `New Entry - ${new Date().toLocaleDateString()}`;
         const created = await createEntryMut.mutateAsync({
           title: entryTitle,
-          markdown_content: '# Start writing your thoughts...\n',
-          content_version: 2,
+          content: '# Start writing your thoughts...\n',
         });
         setState((prev) => ({
           ...prev,
@@ -140,7 +139,7 @@ export function JournalApp() {
           selectedEntry: {
             id: created.id,
             title: created.title || entryTitle,
-            content: created.markdown_content || '# Start writing your thoughts...\n',
+            content: created.content || '# Start writing your thoughts...\n',
           },
         }));
       } catch (_error) {}

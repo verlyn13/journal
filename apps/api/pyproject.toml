@@ -131,6 +131,16 @@ ignore = [
     "PLR2004", # magic-value-comparison
     "C901",    # too-complex
     
+    # FastAPI specific - these are being addressed in a separate PR
+    "FAST002", # FastAPI dependency without Annotated
+    "B904",    # raise-without-from
+    "ANN201",  # missing-return-type-annotation-public-function
+    "ARG001",  # unused-function-argument
+    "DOC201",  # return-not-documented-in-docstring
+    "DOC501",  # raised-exception-missing-from-docstring
+    "CPY001",  # missing-copyright-notice
+    "INP001",  # implicit-namespace-package
+    
     # Boolean traps (FastAPI uses them)
     "FBT001",  # boolean-type-hint-positional-argument
     "FBT002",  # boolean-default-value-positional-argument

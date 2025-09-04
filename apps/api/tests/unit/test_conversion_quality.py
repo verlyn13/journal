@@ -4,7 +4,8 @@ Tests edge cases, malformed input, and conversion fidelity.
 """
 
 import pytest
-from app.infra.conversion import markdown_to_html, html_to_markdown
+
+from app.infra.conversion import html_to_markdown, markdown_to_html
 
 
 class TestConversionQuality:
@@ -47,7 +48,7 @@ def hello():
 Final paragraph."""
 
         html = markdown_to_html(markdown)
-        
+
         # Verify key structures are present
         assert "<h1>" in html and "</h1>" in html
         assert "<h2>" in html and "</h2>" in html
@@ -86,7 +87,7 @@ Final paragraph."""
 <p>Final paragraph.</p>"""
 
         markdown = html_to_markdown(html)
-        
+
         # Verify markdown elements are present (conversion is basic)
         assert "Main Title" in markdown  # Headers converted
         assert "Section 1" in markdown
@@ -123,7 +124,7 @@ code block content
         # Convert markdown -> HTML -> markdown
         html = markdown_to_html(original_markdown)
         recovered_markdown = html_to_markdown(html)
-        
+
         # Key content should be preserved (even if formatting is lost)
         assert "Test Document" in recovered_markdown
         assert "various" in recovered_markdown
@@ -148,7 +149,7 @@ code block content
             "####### Too many hashes",
             "---\n---\n---",  # Multiple HRs
         ]
-        
+
         for markdown in malformed_cases:
             # Should not raise exception
             html = markdown_to_html(markdown)
@@ -168,7 +169,7 @@ code block content
             "<script>alert('xss')</script>",  # Should be handled safely
             "<div><span><p>Deeply nested</div>",
         ]
-        
+
         for html in malformed_cases:
             # Should not raise exception
             markdown = html_to_markdown(html)
@@ -180,17 +181,17 @@ code block content
         # Test markdown -> HTML escaping
         markdown_with_special = "Text with < > & \" ' characters and *asterisks* _underscores_"
         html = markdown_to_html(markdown_with_special)
-        
+
         # HTML escaping is applied
         assert "&lt;" in html  # < is escaped
-        assert "&gt;" in html  # > is escaped  
+        assert "&gt;" in html  # > is escaped
         assert "&amp;" in html  # & is escaped
         assert "&#x27;" in html or "'" in html  # ' may be escaped
-        
+
         # Test HTML -> markdown conversion
         html_with_special = "<p>Text with &lt; &gt; &amp; &quot; entities</p>"
         markdown = html_to_markdown(html_with_special)
-        
+
         # Entities should be converted back
         assert "<" in markdown
         assert ">" in markdown
@@ -210,11 +211,11 @@ code block content
 2. Back to level 1"""
 
         html = markdown_to_html(markdown_nested)
-        
+
         # Should have list elements (nesting might not be perfect)
         assert html.count("<ul>") >= 1
         assert html.count("<li>") >= 2  # At least some list items
-        
+
         # Convert back and verify content is preserved
         recovered = html_to_markdown(html)
         assert "Level 1" in recovered
@@ -238,12 +239,12 @@ Plain code block
 ```'''
 
         html = markdown_to_html(markdown_with_code)
-        
+
         # Should preserve code content
         assert "factorial" in html
         assert "const add" in html
         assert "Plain code block" in html
-        
+
         # Code should be in code blocks
         assert "<code>" in html or "<pre>" in html
 
@@ -298,7 +299,7 @@ Follow these steps:
 For more info, see [documentation](https://docs.example.com)."""
 
         html = markdown_to_html(complex_markdown)
-        
+
         # Verify content is preserved (structure may be simplified)
         assert "Project Documentation" in html
         assert "Python 3.11" in html
@@ -306,7 +307,7 @@ For more info, see [documentation](https://docs.example.com)."""
         assert "git clone" in html
         assert "CREATE EXTENSION" in html
         assert "/entries" in html
-        
+
         # Table content preserved as text
         assert "GET" in html
         assert "POST" in html
@@ -321,12 +322,12 @@ For more info, see [documentation](https://docs.example.com)."""
             "\t\t\t",
             "   \n   \n   ",
         ]
-        
+
         for content in test_cases:
             # Markdown to HTML
             html = markdown_to_html(content)
             assert html is not None
-            
+
             # HTML to Markdown
             markdown = html_to_markdown(content)
             assert markdown is not None
@@ -353,7 +354,7 @@ Emoji: 🚀 🎨 🔥 ✨ 💻 📚"""
         assert "日本語" in html
         assert "🚀" in html
         assert "∑" in html
-        
+
         # Test HTML -> markdown
         markdown = html_to_markdown(html)
         assert "🌍" in markdown

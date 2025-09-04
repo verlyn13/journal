@@ -5,13 +5,14 @@ import math
 import os
 import random
 import time
+
 from collections import deque
+
 from app.telemetry.metrics_runtime import inc as metrics_inc
 
 
 class RateLimited(Exception):
     """Raised when the embedding provider is rate-limited or circuit is open."""
-    pass
 
 
 PROVIDER = os.getenv("JOURNAL_EMBED_PROVIDER", "fake").lower()

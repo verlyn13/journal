@@ -1,9 +1,11 @@
 """
 Test cases for authentication API endpoints.
 """
-import pytest
-from httpx import AsyncClient
 from unittest.mock import patch
+
+import pytest
+
+from httpx import AsyncClient
 
 from app.infra.auth import create_access_token, create_refresh_token
 
@@ -61,7 +63,7 @@ class TestAuthAPI:
         """Test refreshing access token with valid refresh token."""
         # Create a valid refresh token
         refresh_token = create_refresh_token("user-123")
-        
+
         response = await client.post(
             "/api/v1/auth/refresh",
             json={"refresh_token": refresh_token}
@@ -91,7 +93,7 @@ class TestAuthAPI:
         """Test refreshing with access token instead of refresh token."""
         # Create an access token (wrong type)
         access_token = create_access_token("user-123")
-        
+
         response = await client.post(
             "/api/v1/auth/refresh",
             json={"refresh_token": access_token}

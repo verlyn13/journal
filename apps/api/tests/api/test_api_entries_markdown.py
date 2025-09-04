@@ -2,6 +2,7 @@
 Test cases for entry API markdown content handling.
 """
 import pytest
+
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -25,24 +26,24 @@ class TestEntriesMarkdownAPI:
             "markdown_content": "# Updated Title\n\nThis is **bold** text with a [link](https://example.com)",
             "expected_version": sample_entry.version,
         }
-        
+
         response = await client.put(
             f"/api/v1/entries/{sample_entry.id}",
             json=update_data,
             headers=auth_headers
         )
-        
+
         assert response.status_code == 200
         data = response.json()
-        
+
         # Should have markdown content
         assert data["markdown_content"] == update_data["markdown_content"]
-        
+
         # Should have generated HTML
         assert "<h1>" in data["content"] or "Updated Title" in data["content"]
         assert "<strong>" in data["content"] or "<b>" in data["content"] or "bold" in data["content"]
         assert "<a" in data["content"] or "https://example.com" in data["content"]
-        
+
         # Should set content_version to 2 (markdown)
         assert data.get("content_version") == 2
 
@@ -59,13 +60,13 @@ class TestEntriesMarkdownAPI:
             "content_version": 3,  # Custom version
             "expected_version": sample_entry.version,
         }
-        
+
         response = await client.put(
             f"/api/v1/entries/{sample_entry.id}",
             json=update_data,
             headers=auth_headers
         )
-        
+
         assert response.status_code == 200
         data = response.json()
         assert data["content_version"] == 3  # Should use provided version
@@ -90,7 +91,7 @@ class TestEntriesMarkdownAPI:
             headers=auth_headers,
         )
         assert response.status_code == 200
-        
+
         # Now update with HTML only
         update2 = {
             "content": "<p>New HTML content</p>",
@@ -101,7 +102,7 @@ class TestEntriesMarkdownAPI:
             json=update2,
             headers=auth_headers,
         )
-        
+
         assert response.status_code == 200
         data = response.json()
         assert data["content"] == update2["content"]
@@ -133,17 +134,17 @@ console.log("Hello");
 ```
 """
         }
-        
+
         update_data["expected_version"] = sample_entry.version
         response = await client.put(
             f"/api/v1/entries/{sample_entry.id}",
             json=update_data,
             headers=auth_headers,
         )
-        
+
         assert response.status_code == 200
         data = response.json()
-        
+
         # Should have code blocks in HTML
         assert "<pre>" in data["content"] or "<code>" in data["content"]
         assert "def hello():" in data["content"]
@@ -172,17 +173,17 @@ Ordered:
 3. Third
 """
         }
-        
+
         update_data["expected_version"] = sample_entry.version
         response = await client.put(
             f"/api/v1/entries/{sample_entry.id}",
             json=update_data,
             headers=auth_headers,
         )
-        
+
         assert response.status_code == 200
         data = response.json()
-        
+
         # Should have list elements
         assert "<ul>" in data["content"] or "Item 1" in data["content"]
         assert "<ol>" in data["content"] or "First" in data["content"]
@@ -206,17 +207,17 @@ Some text here.
 ![Another image](https://example.com/photo.png "With title")
 """
         }
-        
+
         update_data["expected_version"] = sample_entry.version
         response = await client.put(
             f"/api/v1/entries/{sample_entry.id}",
             json=update_data,
             headers=auth_headers,
         )
-        
+
         assert response.status_code == 200
         data = response.json()
-        
+
         # Should have image tags
         assert "<img" in data["content"] or "https://example.com/image.jpg" in data["content"]
         assert "Alt text" in data["content"] or "alt=" in data["content"]
@@ -233,13 +234,13 @@ Some text here.
             "markdown_content": "",
             "expected_version": sample_entry.version,
         }
-        
+
         response = await client.put(
             f"/api/v1/entries/{sample_entry.id}",
             json=update_data,
             headers=auth_headers
         )
-        
+
         assert response.status_code == 200
         data = response.json()
         assert data["markdown_content"] == ""
@@ -263,17 +264,17 @@ Also "quotes" and 'apostrophes'.
 Math: 5 < 10 && 10 > 5
 """
         }
-        
+
         update_data["expected_version"] = sample_entry.version
         response = await client.put(
             f"/api/v1/entries/{sample_entry.id}",
             json=update_data,
             headers=auth_headers,
         )
-        
+
         assert response.status_code == 200
         data = response.json()
-        
+
         # Should escape HTML entities
         assert "&amp;" in data["content"] or "ampersands" in data["content"]
         assert "&lt;" in data["content"] or "&gt;" in data["content"] or "brackets" in data["content"]
@@ -291,27 +292,27 @@ Math: 5 < 10 && 10 > 5
             "markdown_content": "# Markdown Title\n\nContent here.",
             "expected_version": sample_entry.version,
         }
-        
+
         # With markdown preference header
         headers = {**auth_headers, "X-Editor-Mode": "markdown"}
-        
+
         response = await client.put(
             f"/api/v1/entries/{sample_entry.id}",
             json=update_data,
             headers=headers,
         )
-        
+
         assert response.status_code == 200
         data = response.json()
         assert data["editor_mode"] == "markdown"
         assert "markdown_content" in data
-        
+
         # Get with markdown preference
         response = await client.get(
             f"/api/v1/entries/{sample_entry.id}",
             headers=headers
         )
-        
+
         assert response.status_code == 200
         data = response.json()
         assert data["editor_mode"] == "markdown"
@@ -330,22 +331,22 @@ Math: 5 < 10 && 10 > 5
             "content": "<p>HTML loses</p>",  # This should be ignored
             "expected_version": sample_entry.version,
         }
-        
+
         response = await client.put(
             f"/api/v1/entries/{sample_entry.id}",
             json=update_data,
             headers=auth_headers
         )
-        
+
         assert response.status_code == 200
         data = response.json()
-        
+
         # Markdown should win
         assert data["markdown_content"] == "# Markdown wins"
         assert "Markdown wins" in data["content"]
         assert "HTML loses" not in data["content"]
 
-    @pytest.mark.asyncio 
+    @pytest.mark.asyncio
     async def test_update_entry_null_markdown_allowed(
         self,
         client: AsyncClient,
@@ -361,7 +362,7 @@ Math: 5 < 10 && 10 > 5
             headers=auth_headers,
         )
         assert response.status_code == 200
-        
+
         # Now clear it with null
         update2 = {"markdown_content": None, "content": "<p>HTML only</p>", "expected_version": response.json()["version"]}
         response = await client.put(
@@ -369,7 +370,7 @@ Math: 5 < 10 && 10 > 5
             json=update2,
             headers=auth_headers,
         )
-        
+
         assert response.status_code == 200
         data = response.json()
         # When markdown_content is None, it should not update markdown

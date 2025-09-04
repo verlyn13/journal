@@ -3,12 +3,12 @@ from __future__ import annotations
 import json
 
 from fastapi import APIRouter, Depends
-from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.infra.nats_bus import nats_conn
-from app.infra.db import get_session
 from app.infra.auth import require_user
+from app.infra.db import get_session
+from app.infra.nats_bus import nats_conn
 
 
 router = APIRouter(prefix="/admin", tags=["admin"])
@@ -32,7 +32,7 @@ async def admin_health(
         db_status = "healthy" if result.scalar() == 1 else "unhealthy"
     except Exception:
         db_status = "unhealthy"
-    
+
     return {
         "status": "healthy" if db_status == "healthy" else "degraded",
         "database": db_status,

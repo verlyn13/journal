@@ -1,6 +1,8 @@
-import os
 import logging
+import os
+
 from logging.config import fileConfig
+
 
 # Suppress duplicate logging
 logging.getLogger('alembic.runtime.migration').setLevel(logging.WARNING)
@@ -83,18 +85,18 @@ def run_migrations_offline() -> None:
 
 def run_migrations_online() -> None:
     """Run migrations in 'online' mode using sync engine."""
-    
+
     # --- begin probe ---
     from sqlalchemy.engine.url import make_url
-    
+
     url_str = config.get_main_option("sqlalchemy.url")
     url = make_url(url_str)
     print(f"[alembic] sqlalchemy.url={url!s}")
     print(f"[alembic] driver={url.drivername}, host={url.host}, database={url.database}")
-    
+
     # Create sync engine
     connectable = create_engine(url_str, poolclass=pool.NullPool)
-    
+
     with connectable.connect() as connection:
         # Probe the actual connection
         row = connection.execute(text("select current_database(), version(), current_setting('application_name', true)")).first()
@@ -102,7 +104,7 @@ def run_migrations_online() -> None:
         print(f"[alembic] postgres_version={row[1][:20]}...")
         print(f"[alembic] application_name={row[2]}")
         # --- end probe ---
-        
+
         context.configure(
             connection=connection,
             target_metadata=target_metadata,
@@ -112,7 +114,7 @@ def run_migrations_online() -> None:
         with context.begin_transaction():
             context.run_migrations()
             connection.commit()  # Explicitly commit
-    
+
     connectable.dispose()
 
 

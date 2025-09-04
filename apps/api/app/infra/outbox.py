@@ -3,10 +3,10 @@ from __future__ import annotations
 # Standard library imports
 import asyncio
 import json
-
-from datetime import datetime, timedelta
 import os
 import random
+
+from datetime import datetime, timedelta
 
 # Third-party imports
 from sqlalchemy import select, update

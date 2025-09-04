@@ -1,4 +1,5 @@
 import pytest
+
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.infra.models import Entry
@@ -39,4 +40,3 @@ async def test_search_excludes_soft_deleted(db_session: AsyncSession):
 
     rows = await semantic_search(db_session, q="deleted", k=5)
     assert all(r["title"] != "gone" for r in rows)
-

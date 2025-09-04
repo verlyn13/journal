@@ -1,11 +1,14 @@
 """Integration tests for outbox retry scheduling and DLQ (flag-gated)."""
-import os
-import json
 import asyncio
-import pytest
+import json
+import os
+
 from datetime import datetime
-from sqlalchemy.ext.asyncio import AsyncSession
+
+import pytest
+
 from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.infra.models import Event
 from app.infra.outbox import process_outbox_batch
@@ -20,7 +23,7 @@ class MockJS:
     self.calls += 1
     if self.calls <= self.fail_times:
       raise RuntimeError("simulated publish failure")
-    return None
+    return
 
 
 class MockNC:
@@ -63,6 +66,7 @@ async def test_outbox_retry_schedules_next_attempt(monkeypatch, db_session: Asyn
     class _C:
       async def __aenter__(self):
         return nc
+
       async def __aexit__(self, *exc):
         return False
     return _C()
@@ -107,6 +111,7 @@ async def test_outbox_dead_letter_on_exhaustion(monkeypatch, db_session: AsyncSe
     class _C:
       async def __aenter__(self):
         return nc
+
       async def __aexit__(self, *exc):
         return False
     return _C()
@@ -134,4 +139,3 @@ async def test_outbox_dead_letter_on_exhaustion(monkeypatch, db_session: AsyncSe
   assert state == "dead"
   assert dlq_messages, "expected DLQ message"
   assert dlq_messages[0]["event_id"] == str(ev.id)
-

@@ -6,25 +6,26 @@ import uuid
 
 from collections.abc import AsyncGenerator, Generator
 
+# Alembic for proper schema and extensions
+from pathlib import Path
+
 import pytest
 import pytest_asyncio
 
+from alembic.config import Config
 from fastapi.testclient import TestClient
 from httpx import ASGITransport, AsyncClient
-from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, AsyncConnection, create_async_engine
-from sqlalchemy.orm import sessionmaker
 from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncConnection, AsyncEngine, AsyncSession, create_async_engine
+from sqlalchemy.orm import sessionmaker
 from sqlmodel import SQLModel
 
-# Alembic for proper schema and extensions
-from pathlib import Path
 from alembic import command
-from alembic.config import Config
-
 from app.infra.db import get_session
 from app.infra.models import Entry
 from app.main import app
 from app.settings import settings
+
 
 # Set testing mode before importing app
 settings.testing = True
@@ -78,12 +79,12 @@ async def bootstrap_schema(async_engine: AsyncEngine):
         # Run Alembic in a thread to avoid event loop issues
         import asyncio
         import threading
-        
+
         def run_alembic():
             cfg = Config(str(Path(__file__).resolve().parents[1] / "alembic.ini"))
             cfg.set_main_option("sqlalchemy.url", TEST_DB_URL)
             command.upgrade(cfg, "head")
-        
+
         await asyncio.get_event_loop().run_in_executor(None, run_alembic)
 
     yield
@@ -94,12 +95,12 @@ async def db_connection(async_engine: AsyncEngine, bootstrap_schema) -> AsyncCon
     """One dedicated connection for the test, with an OUTER transaction."""
     conn = await async_engine.connect()
     trans = await conn.begin()              # <-- external transaction
-    
+
     # Add timeout settings to prevent infinite hangs
     await conn.execute(text("SET LOCAL statement_timeout = '5s'"))
     await conn.execute(text("SET LOCAL lock_timeout = '1s'"))
     await conn.execute(text("SET LOCAL idle_in_transaction_session_timeout = '5s'"))
-    
+
     try:
         yield conn
     finally:
@@ -210,7 +211,7 @@ async def sample_entry(db_session: AsyncSession) -> Entry:
     # Generate unique IDs for each test run to avoid constraint violations
     entry_id = str(uuid.uuid4())
     author_id = str(uuid.uuid4())
-    
+
     entry = Entry(
         id=entry_id,
         title="Test Entry",
@@ -271,6 +272,7 @@ def nats_capture(monkeypatch):
     class _ctx:
         async def __aenter__(self):
             return conn
+
         async def __aexit__(self, exc_type, exc, tb):
             return False
 

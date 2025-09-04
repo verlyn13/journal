@@ -1,12 +1,14 @@
 from __future__ import annotations
+
 import asyncio
-from sqlalchemy.ext.asyncio import AsyncSession
 import logging
+
+from sqlalchemy.ext.asyncio import AsyncSession
 from sqlmodel import select
 
+from app.infra.conversion import html_to_markdown
 from app.infra.db import AsyncSessionLocal
 from app.infra.models import Entry
-from app.infra.conversion import html_to_markdown
 
 
 logger = logging.getLogger(__name__)

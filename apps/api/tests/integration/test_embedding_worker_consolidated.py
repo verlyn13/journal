@@ -4,14 +4,17 @@ Combines tests from test_embedding_worker.py and test_embedding_worker_extended.
 """
 import asyncio
 import json
-import pytest
+
 from contextlib import asynccontextmanager
 from unittest.mock import AsyncMock, MagicMock, patch
+
+import pytest
+
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.workers.embedding_consumer import EmbeddingConsumer
 from app.infra.models import Entry
+from app.workers.embedding_consumer import EmbeddingConsumer
 
 
 class FakeMsg:
@@ -114,20 +117,20 @@ class TestEmbeddingWorker:
         mock_js = MagicMock()
         mock_nc.jetstream = MagicMock(return_value=mock_js)
         mock_nc.is_closed = False
-        
+
         async def mock_connect(servers):
             return mock_nc
-        
+
         monkeypatch.setattr("app.workers.embedding_consumer.nats.connect", mock_connect)
-        
+
         consumer = EmbeddingConsumer()
-        
+
         # Test connection
         await consumer.connect()
         assert consumer.nc is not None
         assert consumer.js is not None
         mock_nc.jetstream.assert_called_once()
-        
+
         # Test disconnection
         await consumer.disconnect()
         mock_nc.close.assert_called_once()
@@ -138,11 +141,11 @@ class TestEmbeddingWorker:
         # Mock NATS to fail connection
         async def mock_connect_fail(servers):
             raise Exception("Connection refused")
-        
+
         monkeypatch.setattr("app.workers.embedding_consumer.nats.connect", mock_connect_fail)
-        
+
         consumer = EmbeddingConsumer()
-        
+
         # Should raise the connection error
         with pytest.raises(Exception, match="Connection refused"):
             await consumer.connect()
@@ -151,15 +154,15 @@ class TestEmbeddingWorker:
     async def test_worker_handles_unknown_event_type(self, monkeypatch):
         """Test worker handles unknown event types gracefully."""
         consumer = EmbeddingConsumer()
-        
+
         # Create message with unknown event type
         msg = FakeMsg({
             "event_type": "unknown.event",
             "event_data": {"some": "data"}
         })
-        
+
         await consumer.process_entry_event(msg)
-        
+
         # Should still ACK unknown events (not retry them)
         assert msg.acked
 
@@ -167,10 +170,10 @@ class TestEmbeddingWorker:
     async def test_worker_subscription_configuration(self, monkeypatch):
         """Test worker subscribes with correct configuration."""
         subscriptions = []
-        
+
         mock_nc = AsyncMock()
         mock_js = MagicMock()
-        
+
         async def mock_subscribe(subject, queue, cb, manual_ack, max_deliver):
             subscriptions.append({
                 "subject": subject,
@@ -179,39 +182,39 @@ class TestEmbeddingWorker:
                 "max_deliver": max_deliver
             })
             return AsyncMock()
-        
+
         mock_js.subscribe = mock_subscribe
         mock_nc.jetstream = MagicMock(return_value=mock_js)
-        
+
         async def mock_connect(servers):
             return mock_nc
-        
+
         monkeypatch.setattr("app.workers.embedding_consumer.nats.connect", mock_connect)
-        
+
         consumer = EmbeddingConsumer()
-        
+
         # Start consuming (briefly)
         task = asyncio.create_task(consumer.start_consuming())
         await asyncio.sleep(0.1)
         consumer.running = False
         await asyncio.sleep(0.1)
         task.cancel()
-        
+
         try:
             await task
         except asyncio.CancelledError:
             pass
-        
+
         # Check subscriptions
         assert len(subscriptions) == 2
-        
+
         # Entry events subscription
         entry_sub = next(s for s in subscriptions if "entry" in s["subject"])
         assert entry_sub["subject"] == "journal.entry.*"
         assert entry_sub["queue"] == "embedding_workers"
         assert entry_sub["manual_ack"] is True
         assert entry_sub["max_deliver"] == 3
-        
+
         # Reindex events subscription
         reindex_sub = next(s for s in subscriptions if "reindex" in s["subject"])
         assert reindex_sub["subject"] == "journal.reindex.*"
@@ -230,28 +233,28 @@ class TestEmbeddingWorker:
         )
         db_session.add(entry)
         await db_session.commit()
-        
+
         async def _yield_session():
             yield db_session
-        
+
         embeddings_created = []
-        
+
         async def mock_upsert_embedding(session, entry_id, text):
             embeddings_created.append((entry_id, text))
-        
+
         monkeypatch.setattr("app.workers.embedding_consumer.get_session", _yield_session)
         monkeypatch.setattr("app.workers.embedding_consumer.upsert_entry_embedding", mock_upsert_embedding)
-        
+
         consumer = EmbeddingConsumer()
-        
+
         # Send created event
         msg = FakeMsg({
             "event_type": "entry.created",
             "event_data": {"entry_id": str(entry.id)}
         })
-        
+
         await consumer.process_entry_event(msg)
-        
+
         assert msg.acked
         assert len(embeddings_created) == 1
         # Should create embedding even for empty content
@@ -268,26 +271,26 @@ class TestEmbeddingWorker:
         )
         db_session.add(entry)
         await db_session.commit()
-        
+
         async def _yield_session():
             yield db_session
-        
+
         async def mock_upsert_error(session, entry_id, text):
             raise Exception("Database error")
-        
+
         monkeypatch.setattr("app.workers.embedding_consumer.get_session", _yield_session)
         monkeypatch.setattr("app.workers.embedding_consumer.upsert_entry_embedding", mock_upsert_error)
-        
+
         consumer = EmbeddingConsumer()
-        
+
         # Send created event
         msg = FakeMsg({
             "event_type": "entry.created",
             "event_data": {"entry_id": str(entry.id)}
         })
-        
+
         await consumer.process_entry_event(msg)
-        
+
         # Should NAK on database error (for retry)
         assert msg.naked
         assert not msg.acked
@@ -297,9 +300,9 @@ class TestEmbeddingWorker:
         """Test worker stop method sets running flag."""
         consumer = EmbeddingConsumer()
         consumer.running = True
-        
+
         await consumer.stop()
-        
+
         assert consumer.running is False
 
     @pytest.mark.asyncio
@@ -316,34 +319,34 @@ class TestEmbeddingWorker:
             db_session.add(entry)
             entries.append(entry)
         await db_session.commit()
-        
+
         async def _yield_session():
             yield db_session
-        
+
         embeddings_created = []
         fail_on_second = True
         call_count = 0
-        
+
         async def mock_upsert_embedding(session, entry_id, text):
             nonlocal call_count
             call_count += 1
             if call_count == 2 and fail_on_second:
                 raise Exception("Embedding creation failed")
             embeddings_created.append((entry_id, text))
-        
+
         monkeypatch.setattr("app.workers.embedding_consumer.get_session", _yield_session)
         monkeypatch.setattr("app.workers.embedding_consumer.upsert_entry_embedding", mock_upsert_embedding)
-        
+
         consumer = EmbeddingConsumer()
-        
+
         # Send reindex event
         msg = FakeMsg({
             "event_type": "embedding.reindex",
             "event_data": {}
         })
-        
+
         await consumer.process_entry_event(msg)
-        
+
         # Should still ACK and process other entries
         assert msg.acked
         assert len(embeddings_created) == 2  # 2 succeeded, 1 failed

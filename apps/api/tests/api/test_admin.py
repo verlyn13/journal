@@ -3,9 +3,12 @@ Consolidated test cases for admin API endpoints.
 Combines tests from test_api_admin.py and test_api_admin_extended.py
 """
 import json
-import pytest
+
 from datetime import datetime, timedelta
 from unittest.mock import AsyncMock, patch
+
+import pytest
+
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -49,7 +52,7 @@ class TestAdminAPI:
         """Test admin endpoints without authentication."""
         response = await client.get("/api/v1/admin/ping")
         assert response.status_code == 401
-        
+
         response = await client.get("/api/v1/admin/health")
         assert response.status_code == 401
 
@@ -62,25 +65,25 @@ class TestAdminAPI:
     ):
         """Test health check when database is unavailable."""
         # Mock the database session to fail
-        from app.main import app
         from app.infra.db import get_session
-        
+        from app.main import app
+
         async def mock_get_session():
             mock_session = AsyncMock()
             mock_session.execute = AsyncMock(side_effect=Exception("Database connection failed"))
             yield mock_session
-        
+
         # Override the dependency in the FastAPI app
         app.dependency_overrides[get_session] = mock_get_session
-        
+
         response = await client.get(
             "/api/v1/admin/health",
             headers=auth_headers
         )
-        
+
         # Clean up the override
         app.dependency_overrides.clear()
-        
+
         assert response.status_code == 200
         data = response.json()
         assert data["status"] == "degraded"
@@ -96,33 +99,33 @@ class TestAdminAPI:
         """Test triggering bulk embedding reindex."""
         # Mock NATS connection
         published_messages = []
-        
+
         class MockNC:
             async def __aenter__(self):
                 return self
-            
+
             async def __aexit__(self, *args):
                 pass
-            
+
             async def publish(self, subject, payload):
                 published_messages.append((subject, payload))
-        
+
         def mock_nats_conn():
             return MockNC()
-        
+
         monkeypatch.setattr("app.api.v1.admin.nats_conn", mock_nats_conn)
-        
+
         # Test without body
         response = await client.post(
             "/api/v1/admin/reindex-embeddings",
             headers=auth_headers
         )
-        
+
         assert response.status_code == 200
         data = response.json()
         assert data["status"] == "queued"
         assert "queued" in data["message"].lower()
-        
+
         # Check NATS message was published
         assert len(published_messages) == 1
         assert published_messages[0][0] == "journal.reindex.bulk"
@@ -136,36 +139,36 @@ class TestAdminAPI:
     ):
         """Test reindex with custom parameters."""
         published_messages = []
-        
+
         class MockNC:
             async def __aenter__(self):
                 return self
-            
+
             async def __aexit__(self, *args):
                 pass
-            
+
             async def publish(self, subject, payload):
                 published_messages.append((subject, json.loads(payload)))
-        
+
         def mock_nats_conn():
             return MockNC()
-        
+
         monkeypatch.setattr("app.api.v1.admin.nats_conn", mock_nats_conn)
-        
+
         # Test with custom body
         request_body = {
             "batch_size": 100,
             "start_date": "2024-01-01"
         }
-        
+
         response = await client.post(
             "/api/v1/admin/reindex-embeddings",
             json=request_body,
             headers=auth_headers
         )
-        
+
         assert response.status_code == 200
-        
+
         # Check message contains custom parameters
         assert len(published_messages) == 1
         message_data = published_messages[0][1]
@@ -184,18 +187,18 @@ class TestAdminAPI:
         class MockNC:
             async def __aenter__(self):
                 return self
-            
+
             async def __aexit__(self, *args):
                 pass
-            
+
             async def publish(self, subject, payload):
                 pass
-        
+
         def mock_nats_conn():
             return MockNC()
-        
+
         monkeypatch.setattr("app.api.v1.admin.nats_conn", mock_nats_conn)
-        
+
         # Should work without auth headers
         response = await client.post("/api/v1/admin/reindex-embeddings")
         assert response.status_code == 200

@@ -1,5 +1,10 @@
 from __future__ import annotations
 
+import asyncio
+import os
+import random
+
+
 # Standard library imports
 from typing import Any
 
@@ -9,9 +14,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 # Local imports
 from app.infra.embeddings import get_embedding
-import asyncio
-import os
-import random
 
 
 def _vec_literal(vec: list[float]) -> str:
@@ -27,7 +29,7 @@ async def hybrid_search(s: AsyncSession, q: str, k: int = 10, alpha: float = 0.6
     """
     if not q.strip():
         return []
-    
+
     # Get query embedding (with error handling)
     try:
         q_emb = get_embedding(q)
@@ -35,7 +37,7 @@ async def hybrid_search(s: AsyncSession, q: str, k: int = 10, alpha: float = 0.6
     except Exception:
         # Fall back to keyword-only search if embedding fails
         return await keyword_search(s, q, k)
-    
+
     sql = text(
         f"""
         SELECT e.*,
@@ -63,14 +65,14 @@ async def semantic_search(s: AsyncSession, q: str, k: int = 10):
     """
     if not q.strip():
         return []
-    
+
     try:
         q_emb = get_embedding(q)
         q_vec = _vec_literal(q_emb)
     except Exception:
         # Return empty if embedding generation fails
         return []
-    
+
     sql = text(
         f"""
         SELECT e.*, (1 - (ee.embedding <=> '{q_vec}'::vector(1536))) AS vec_sim
@@ -89,7 +91,7 @@ async def keyword_search(s: AsyncSession, q: str, k: int = 10):
     """Keyword-only search fallback."""
     if not q.strip():
         return []
-    
+
     sql = text(
         """
         SELECT e.*,
@@ -131,7 +133,7 @@ async def upsert_entry_embedding(s: AsyncSession, entry_id: Any, text_source: st
             embedding_str = f"[{','.join(str(x) for x in emb)}]"
         else:
             embedding_str = emb
-        
+
         sql = text(
             """
             INSERT INTO entry_embeddings(entry_id, embedding)

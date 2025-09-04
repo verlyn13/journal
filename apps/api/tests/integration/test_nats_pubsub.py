@@ -1,5 +1,6 @@
-import os
 import asyncio
+import os
+
 import pytest
 
 
@@ -12,6 +13,7 @@ async def test_nats_pubsub_roundtrip():
         pytest.skip("Set RUN_REAL_NATS=1 to enable real NATS test")
 
     import nats
+
     from app.settings import settings
 
     subject = "journal.test.roundtrip"
@@ -32,4 +34,3 @@ async def test_nats_pubsub_roundtrip():
     finally:
         await nc.drain()
         await nc.close()
-
