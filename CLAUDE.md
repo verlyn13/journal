@@ -3,6 +3,16 @@
 
 This configuration optimizes Claude Code CLI (v2025.9) for a modern TypeScript/Python monorepo with separate API and web applications.
 
+## 📍 Project Roadmap
+**IMPORTANT**: Always consult `docs/ROADMAP.md` for current development priorities, phases, and acceptance criteria. The roadmap is the source of truth for:
+- Current phase objectives (Phase 1: Foundations & Polish)
+- Parallel workstreams and task ownership
+- PR process and quality gates
+- Performance budgets and testing requirements
+- Security and privacy guidelines
+
+When implementing features, reference the specific roadmap phase in commits and PRs.
+
 ## Project Structure
 
 ```
@@ -95,9 +105,11 @@ Use TodoWrite tool for:
 
 ### Git Workflow
 1. Never commit directly unless asked
-2. Use atomic commits with clear messages
-3. Run linting/formatting before commits
-4. Create feature branches for new work
+2. Follow branching strategy from `docs/ROADMAP.md#branching-pr--merge-management`
+3. Use conventional commits: `feat:`, `fix:`, `chore:`
+4. Reference roadmap items in PR descriptions
+5. Run linting/formatting before commits
+6. Squash merge to maintain linear history
 
 ## Architecture Decisions
 
@@ -154,6 +166,14 @@ Use TodoWrite tool for:
 - Generate missing test files
 
 ## Common Workflows
+
+### Implementing Roadmap Features
+1. Check `docs/ROADMAP.md` for current phase priorities
+2. Pick a task from Phase 1.5 concrete tasks
+3. Create feature branch: `feature/[area]-[description]`
+4. Implement with tests and documentation
+5. Submit PR referencing roadmap item
+6. Update roadmap completion status after merge
 
 ### Adding a New API Endpoint
 1. Define SQLModel schema in `apps/api/app/models/`

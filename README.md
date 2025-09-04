@@ -265,3 +265,6 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for development guidelines.
 - [API Documentation](http://localhost:8000/docs)
 - [Editor Guide](apps/web/EDITOR_GUIDE.md)
 - [Initial Planning](docs/initial-planning/)
+### Roadmap
+
+See `docs/ROADMAP.md` for the live roadmap, branching strategy, testing strategy, and CI/CD.
