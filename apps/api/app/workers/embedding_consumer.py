@@ -139,7 +139,8 @@ class EmbeddingConsumer:
                 logger.exception("Failed to NAK message")
             metrics_inc("worker_process_total", {"result": "retry", "reason": "error"})
 
-    async def _handle_entry_upsert(self, event_data: dict[str, Any]):
+    @staticmethod
+    async def _handle_entry_upsert(event_data: dict[str, Any]):
         """Handle entry creation/update by generating and storing embedding."""
         entry_id = event_data.get('entry_id')
         if not entry_id:
@@ -165,7 +166,8 @@ class EmbeddingConsumer:
                 await session.rollback()
                 raise
 
-    async def _handle_entry_deletion(self, event_data: dict[str, Any]):
+    @staticmethod
+    async def _handle_entry_deletion(event_data: dict[str, Any]):
         """Handle entry deletion by removing embedding."""
         entry_id = event_data.get('entry_id')
         if not entry_id:
@@ -186,7 +188,8 @@ class EmbeddingConsumer:
                 await session.rollback()
                 raise
 
-    async def _handle_reindex_request(self, event_data: dict[str, Any]):
+    @staticmethod
+    async def _handle_reindex_request(event_data: dict[str, Any]):
         """Handle bulk reindexing request."""
         logger.info("Starting bulk reindex of embeddings")
 
