@@ -2,7 +2,7 @@
 title: "Plan: Integrating Local GitHub Actions Testing with `act`"
 description: "Implementation plan for adopting `act` for local workflow testing to improve CI stability."
 category: "CI/CD"
-status: "Proposed"
+status: "draft"
 date: 2025-04-09 # Update with current date
 assignee: "CI/CD Specialist"
 related_docs:
