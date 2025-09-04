@@ -39,8 +39,8 @@ class MockNC:
     self.published.append((subject, payload))
 
 
-@pytest.mark.integration
-@pytest.mark.asyncio
+@pytest.mark.integration()
+@pytest.mark.asyncio()
 async def test_outbox_retry_schedules_next_attempt(monkeypatch, db_session: AsyncSession):
   os.environ["OUTBOX_RETRY_ENABLED"] = "1"
   os.environ["OUTBOX_DLQ_ENABLED"] = "0"
@@ -85,8 +85,8 @@ async def test_outbox_retry_schedules_next_attempt(monkeypatch, db_session: Asyn
   assert state == "pending"
 
 
-@pytest.mark.integration
-@pytest.mark.asyncio
+@pytest.mark.integration()
+@pytest.mark.asyncio()
 async def test_outbox_dead_letter_on_exhaustion(monkeypatch, db_session: AsyncSession):
   os.environ["OUTBOX_RETRY_ENABLED"] = "1"
   os.environ["OUTBOX_DLQ_ENABLED"] = "1"

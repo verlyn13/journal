@@ -18,11 +18,11 @@ from app.infra.models import Event
 from app.infra.outbox import SUBJECT_MAP, process_outbox_batch, relay_outbox
 
 
-@pytest.mark.integration
+@pytest.mark.integration()
 class TestOutboxPatternExtended:
     """Extended test coverage for outbox pattern."""
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_process_outbox_batch_publishes_events(
         self,
         db_session: AsyncSession,
@@ -88,7 +88,7 @@ class TestOutboxPatternExtended:
         published_events = result.scalars().all()
         assert len(published_events) == 3
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_process_outbox_batch_with_no_events(
         self,
         db_session: AsyncSession,
@@ -124,7 +124,7 @@ class TestOutboxPatternExtended:
         assert count == 0
         assert len(published_messages) == 0
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_process_outbox_batch_respects_limit(
         self,
         db_session: AsyncSession,
@@ -174,7 +174,7 @@ class TestOutboxPatternExtended:
         assert count == 100
         assert len(published_messages) == 100
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_subject_mapping_for_different_aggregates(
         self,
         db_session: AsyncSession,
@@ -230,7 +230,7 @@ class TestOutboxPatternExtended:
         assert "journal.entry" in subjects  # Entry type
         assert "journal.events" in subjects  # Default for unknown type
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_event_payload_structure(
         self,
         db_session: AsyncSession,
@@ -289,7 +289,7 @@ class TestOutboxPatternExtended:
         assert payload["event_data"] == event_data
         assert payload["ts"] == "2024-06-15T14:30:00"
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_relay_outbox_continuous_processing(
         self,
         db_session: AsyncSession,
@@ -346,7 +346,7 @@ class TestOutboxPatternExtended:
         # Verify event was published
         assert len(published_messages) == 1
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_process_outbox_batch_idempotency(
         self,
         db_session: AsyncSession,
@@ -404,7 +404,7 @@ class TestOutboxPatternExtended:
         assert len(published_messages) == 1
         assert published_messages[0]["event_type"] == "entry.unpublished"
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_process_outbox_batch_transaction_commit(
         self,
         db_session: AsyncSession,
@@ -454,7 +454,7 @@ class TestOutboxPatternExtended:
         updated_event = result.scalar_one()
         assert updated_event.published_at is not None
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_relay_outbox_error_handling(
         self,
         db_session: AsyncSession,

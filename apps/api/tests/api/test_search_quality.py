@@ -16,7 +16,7 @@ from app.infra.models import Entry
 class TestSearchQuality:
     """High-quality tests for search and embedding functionality."""
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_semantic_search_relevance(
         self, client: AsyncClient, auth_headers: dict[str, str], db_session: AsyncSession
     ):
@@ -65,7 +65,7 @@ class TestSearchQuality:
             assert "title" in results[0]
             assert "id" in results[0]
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_hybrid_search_combines_keyword_and_semantic(
         self, client: AsyncClient, auth_headers: dict[str, str]
     ):
@@ -116,7 +116,7 @@ class TestSearchQuality:
         assert len(results) > 0
         assert all("title" in r for r in results)
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_embedding_generation_for_existing_entry(
         self, client: AsyncClient, auth_headers: dict[str, str], sample_entry: Entry
     ):
@@ -147,7 +147,7 @@ class TestSearchQuality:
         entry_ids = [r["id"] for r in results]
         assert entry_id in entry_ids
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_embedding_generation_with_invalid_entry(
         self, client: AsyncClient, auth_headers: dict[str, str]
     ):
@@ -168,7 +168,7 @@ class TestSearchQuality:
         assert response.status_code == 404
         assert "not found" in response.json()["detail"].lower()
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_search_with_empty_database(
         self, client: AsyncClient, auth_headers: dict[str, str]
     ):
@@ -196,7 +196,7 @@ class TestSearchQuality:
             assert semantic_response.status_code == 200
             assert semantic_response.json() == []
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_search_result_limit_parameter(
         self, client: AsyncClient, auth_headers: dict[str, str]
     ):
@@ -234,7 +234,7 @@ class TestSearchQuality:
             # Results should be limited by k or available entries with embeddings
             assert len(results) <= min(k, len(created_ids))
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_search_with_special_characters_in_query(
         self, client: AsyncClient, auth_headers: dict[str, str]
     ):
@@ -276,7 +276,7 @@ class TestSearchQuality:
             )
             assert semantic_response.status_code in [200, 400]
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_search_alpha_parameter_validation(
         self, client: AsyncClient, auth_headers: dict[str, str]
     ):
@@ -309,7 +309,7 @@ class TestSearchQuality:
             )
             assert response.status_code == 200
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_search_excludes_deleted_entries_consistently(
         self, client: AsyncClient, auth_headers: dict[str, str]
     ):

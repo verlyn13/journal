@@ -12,11 +12,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.infra.models import Entry
 
 
-@pytest.mark.component
+@pytest.mark.component()
 class TestEntriesDeleteAPI:
     """Test entry deletion functionality."""
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_delete_entry_success(
         self,
         client: AsyncClient,
@@ -39,7 +39,7 @@ class TestEntriesDeleteAPI:
         )
         assert response.status_code == 404
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_delete_entry_not_found(
         self,
         client: AsyncClient,
@@ -55,7 +55,7 @@ class TestEntriesDeleteAPI:
         assert response.status_code == 404
         assert response.json()["detail"] == "Entry not found"
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_delete_entry_invalid_uuid(
         self,
         client: AsyncClient,
@@ -70,7 +70,7 @@ class TestEntriesDeleteAPI:
         assert response.status_code == 404
         assert response.json()["detail"] == "Entry not found"
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_delete_entry_soft_delete(
         self,
         client: AsyncClient,
@@ -97,7 +97,7 @@ class TestEntriesDeleteAPI:
         assert row is not None
         assert row[0] is True  # is_deleted should be True
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_delete_entry_with_embedding(
         self,
         client: AsyncClient,
@@ -136,7 +136,7 @@ class TestEntriesDeleteAPI:
         # Note: Embedding deletion would typically be handled by the worker
         # via an event, not directly in the API
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_delete_entry_idempotent(
         self,
         client: AsyncClient,
@@ -160,7 +160,7 @@ class TestEntriesDeleteAPI:
         )
         assert response.status_code == 404
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_delete_entry_requires_auth(
         self,
         client: AsyncClient,
@@ -173,7 +173,7 @@ class TestEntriesDeleteAPI:
 
         assert response.status_code == 401
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_delete_entry_different_user_allowed(
         self,
         client: AsyncClient,
@@ -199,7 +199,7 @@ class TestEntriesDeleteAPI:
         # This should succeed in current implementation
         assert response.status_code == 204
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_delete_entry_updates_is_deleted_flag(
         self,
         client: AsyncClient,
@@ -236,7 +236,7 @@ class TestEntriesDeleteAPI:
         # updated_at should be same or newer (may be too fast to detect change)
         assert row[1] >= initial_updated_at
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_deleted_entry_not_in_list(
         self,
         client: AsyncClient,

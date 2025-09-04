@@ -10,11 +10,11 @@ from httpx import AsyncClient
 from app.infra.auth import create_access_token, create_refresh_token
 
 
-@pytest.mark.component
+@pytest.mark.component()
 class TestAuthAPI:
     """Test cases for authentication endpoints."""
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_login_success(
         self,
         client: AsyncClient
@@ -30,7 +30,7 @@ class TestAuthAPI:
         assert "refresh_token" in data
         assert data["token_type"] == "bearer"
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_login_invalid_credentials(
         self,
         client: AsyncClient
@@ -43,7 +43,7 @@ class TestAuthAPI:
         assert response.status_code == 401
         assert "Invalid credentials" in response.json()["detail"]
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_login_wrong_password(
         self,
         client: AsyncClient
@@ -55,7 +55,7 @@ class TestAuthAPI:
         )
         assert response.status_code == 401
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_refresh_token_success(
         self,
         client: AsyncClient
@@ -73,7 +73,7 @@ class TestAuthAPI:
         assert "access_token" in data
         assert data["token_type"] == "bearer"
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_refresh_token_invalid(
         self,
         client: AsyncClient
@@ -85,7 +85,7 @@ class TestAuthAPI:
         )
         assert response.status_code == 401
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_refresh_token_wrong_type(
         self,
         client: AsyncClient
@@ -100,7 +100,7 @@ class TestAuthAPI:
         )
         assert response.status_code == 401
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_demo_login(
         self,
         client: AsyncClient
@@ -113,7 +113,7 @@ class TestAuthAPI:
         assert "refresh_token" in data
         assert data["token_type"] == "bearer"
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_get_me(
         self,
         client: AsyncClient,
@@ -130,7 +130,7 @@ class TestAuthAPI:
         assert "username" in data
         assert "email" in data
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_logout(
         self,
         client: AsyncClient,

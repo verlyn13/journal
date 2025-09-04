@@ -11,11 +11,11 @@ import pytest
 import app.infra.embeddings
 
 
-@pytest.mark.unit
+@pytest.mark.unit()
 class TestEmbeddings:
     """Test embedding functions with mocked OpenAI."""
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_get_embedding_with_openai(self, monkeypatch):
         """Test getting embedding from OpenAI API."""
         # Set API key and provider
@@ -50,7 +50,7 @@ class TestEmbeddings:
             magnitude = sum(x * x for x in result) ** 0.5
             assert abs(magnitude - 1.0) < 0.01
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_get_embedding_fallback_without_key(self, monkeypatch):
         """Test fallback to deterministic embedding without API key."""
         # Remove API key and set provider to fake
@@ -75,7 +75,7 @@ class TestEmbeddings:
         result3 = get_embedding("different text")
         assert result != result3
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_get_embedding_handles_openai_error(self, monkeypatch):
         """Test handling of OpenAI API errors."""
         # Set API key and provider
@@ -95,7 +95,7 @@ class TestEmbeddings:
             with pytest.raises(Exception, match="API Error"):
                 result = get_embedding("test text")
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_embedding_caching(self, monkeypatch):
         """Test that embeddings can be cached (future optimization)."""
         # Set API key and provider

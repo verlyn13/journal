@@ -6,8 +6,8 @@ from app.infra.models import Entry
 from app.infra.search_pgvector import hybrid_search, semantic_search, upsert_entry_embedding
 
 
-@pytest.mark.integration
-@pytest.mark.asyncio
+@pytest.mark.integration()
+@pytest.mark.asyncio()
 async def test_vector_search_ranking(db_session: AsyncSession):
     # Seed three entries
     e1 = Entry(title="alpha", content="alpha only", author_id="11111111-1111-1111-1111-111111111111")
@@ -28,8 +28,8 @@ async def test_vector_search_ranking(db_session: AsyncSession):
     assert "beta" in titles[-1]
 
 
-@pytest.mark.integration
-@pytest.mark.asyncio
+@pytest.mark.integration()
+@pytest.mark.asyncio()
 async def test_search_excludes_soft_deleted(db_session: AsyncSession):
     e1 = Entry(title="keep", content="live", author_id="11111111-1111-1111-1111-111111111111")
     e2 = Entry(title="gone", content="deleted", is_deleted=True, author_id="11111111-1111-1111-1111-111111111111")

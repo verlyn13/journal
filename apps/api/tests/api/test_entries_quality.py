@@ -16,7 +16,7 @@ from app.infra.models import Entry
 class TestEntriesQuality:
     """High-quality tests for entry endpoints focusing on real scenarios."""
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_update_entry_preserves_data_integrity_with_partial_updates(
         self, client: AsyncClient, auth_headers: dict[str, str],
         sample_entry: Entry, db_session: AsyncSession
@@ -58,7 +58,7 @@ class TestEntriesQuality:
         assert "<h1>" in markdown_data["content"]
         assert markdown_data["content_version"] == 2
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_sequential_updates_maintain_consistency(
         self, client: AsyncClient, auth_headers: dict[str, str], sample_entry: Entry
     ):
@@ -95,7 +95,7 @@ class TestEntriesQuality:
         assert final_data["title"] == "Updated Title"
         assert "<p>Updated Content</p>" in final_data["content"]
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_markdown_html_dual_format_consistency(
         self, client: AsyncClient, auth_headers: dict[str, str]
     ):
@@ -136,7 +136,7 @@ class TestEntriesQuality:
         assert "<ul>" in html_data["content"]
         assert "<strong>" in html_data["content"] or "<b>" in html_data["content"]
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_content_length_tracking(
         self, client: AsyncClient, auth_headers: dict[str, str]
     ):
@@ -169,7 +169,7 @@ class TestEntriesQuality:
             assert "content" in data
             assert len(data["content"]) >= case["min_length"]
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_malformed_markdown_handled_gracefully(
         self, client: AsyncClient, auth_headers: dict[str, str]
     ):
@@ -198,7 +198,7 @@ class TestEntriesQuality:
             assert data["content"] is not None  # HTML was generated
             assert len(data["content"]) > 0
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_entry_lifecycle_with_soft_delete(
         self, client: AsyncClient, auth_headers: dict[str, str]
     ):
@@ -247,7 +247,7 @@ class TestEntriesQuality:
         # Should be 404 after soft delete
         assert get_response.status_code == 404
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_large_content_handling(
         self, client: AsyncClient, auth_headers: dict[str, str]
     ):
@@ -284,7 +284,7 @@ class TestEntriesQuality:
         assert len(retrieved["content"]) > len(large_markdown)  # HTML is longer
         assert retrieved["word_count"] > 1000
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_special_characters_in_content(
         self, client: AsyncClient, auth_headers: dict[str, str]
     ):
