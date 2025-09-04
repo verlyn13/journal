@@ -11,9 +11,8 @@ from collections import deque
 from app.telemetry.metrics_runtime import inc as metrics_inc
 
 
-class RateLimited(Exception):
+class RateLimitedError(Exception):
     """Raised when the embedding provider is rate-limited or circuit is open."""
-    pass
 
 
 PROVIDER = os.getenv("JOURNAL_EMBED_PROVIDER", "fake").lower()
@@ -49,7 +48,7 @@ def _cb_before_call() -> None:
         return
     now = _cb_now()
     if now < _CB_OPEN_UNTIL:
-        raise RateLimited("circuit open")
+        raise RateLimitedError("circuit open")
 
 
 def _cb_on_failure() -> None:
