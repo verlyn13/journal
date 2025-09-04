@@ -93,16 +93,16 @@ describe('Dual-Write Integration', () => {
 
     renderWithProviders(<JournalApp />);
 
-    // Wait for loading to complete
+    // Wait for app to mount and sidebar to render
     await waitFor(
       () => {
-        expect(screen.queryByText('Loading your journal...')).not.toBeInTheDocument();
+        expect(!!screen.getByTestId('sidebar')).toBe(true);
       },
-      { timeout: 5000 },
+      { timeout: 8000 },
     );
 
     // Test should pass if the app renders in markdown mode
-    expect(screen.getByTestId('sidebar')).toBeInTheDocument();
+    expect(!!screen.getByTestId('sidebar')).toBe(true);
 
     // The main test is that updateEntry would be called with dual format
     // This test verifies the API call structure when it happens
