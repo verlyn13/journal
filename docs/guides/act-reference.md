@@ -2,6 +2,7 @@
 title: "act Reference Guide: Run GitHub Actions Locally"
 description: "A guide to using 'act', a tool for running GitHub Actions workflows locally for faster feedback and testing."
 category: "Tooling"
+status: "active"
 related_topics:
   - "GitHub Actions"
   - "CI/CD"
