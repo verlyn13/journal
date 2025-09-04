@@ -32,6 +32,9 @@ jobs:
         with:
           bun-version: '1.2.21'
 
+      - name: Install root deps (toolchain)
+        run: bun install --frozen-lockfile
+
       - name: Install web deps
         working-directory: apps/web
         run: bun install --frozen-lockfile
