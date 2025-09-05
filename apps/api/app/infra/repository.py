@@ -19,7 +19,7 @@ class RepositoryError(Exception):
 class NotFoundError(RepositoryError):
     """Entity not found."""
 
-    def __init__(self, entity_type: str, entity_id: str | UUID | None = None):
+    def __init__(self, entity_type: str, entity_id: str | UUID | None = None) -> None:
         self.entity_type = entity_type
         self.entity_id = entity_id
         super().__init__(f"{entity_type} not found" + (f": {entity_id}" if entity_id else ""))
@@ -28,7 +28,7 @@ class NotFoundError(RepositoryError):
 class ConflictError(RepositoryError):
     """Optimistic lock conflict."""
 
-    def __init__(self, message: str, expected: int | None = None, actual: int | None = None):
+    def __init__(self, message: str, expected: int | None = None, actual: int | None = None) -> None:
         self.expected = expected
         self.actual = actual
         super().__init__(message)
@@ -37,7 +37,7 @@ class ConflictError(RepositoryError):
 class EntryRepository:
     """Repository for Entry operations with optimistic locking support."""
 
-    def __init__(self, session: AsyncSession):
+    def __init__(self, session: AsyncSession) -> None:
         self.session = session
 
     async def get_by_id(self, entry_id: UUID) -> Entry | None:

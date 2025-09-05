@@ -28,7 +28,7 @@ logger = logging.getLogger(__name__)
 class EmbeddingConsumer:
     """Consumer that processes entry events and updates embeddings."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.nc = None
         self.js = None
         self.running = False
@@ -77,7 +77,7 @@ class EmbeddingConsumer:
                 logger.debug("NC close failed (mock or already closed)")
             logger.info("Disconnected from NATS")
 
-    async def process_entry_event(self, msg) -> None:
+    async def process_entry_event(self, msg: object) -> None:
         """Process an entry event and update embeddings."""
         try:
             # Parse the event data
@@ -158,7 +158,7 @@ class EmbeddingConsumer:
             metrics_inc("worker_process_total", {"result": "retry", "reason": "error"})
 
     @staticmethod
-    async def _handle_entry_upsert(event_data: dict[str, Any]):
+    async def _handle_entry_upsert(event_data: dict[str, Any]) -> None:
         """Handle entry creation/update by generating and storing embedding."""
         entry_id = event_data.get("entry_id")
         if not entry_id:
@@ -185,7 +185,7 @@ class EmbeddingConsumer:
                 raise
 
     @staticmethod
-    async def _handle_entry_deletion(event_data: dict[str, Any]):
+    async def _handle_entry_deletion(event_data: dict[str, Any]) -> None:
         """Handle entry deletion by removing embedding."""
         entry_id = event_data.get("entry_id")
         if not entry_id:
@@ -207,7 +207,7 @@ class EmbeddingConsumer:
                 raise
 
     @staticmethod
-    async def _handle_reindex_request(event_data: dict[str, Any]):
+    async def _handle_reindex_request(event_data: dict[str, Any]) -> None:
         """Handle bulk reindexing request."""
         logger.info("Starting bulk reindex of embeddings")
 
