@@ -66,11 +66,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Node for Playwright runner
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      # Bun for Playwright runner and root dependencies
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
         with:
-          node-version: "22.x"
+          bun-version: latest
 
       # Python/uv for API + Alembic
       - name: Setup Python
@@ -155,15 +155,17 @@ jobs:
           cat /tmp/api.log || true
           exit 1
 
-      - name: Install Playwright
-        run: npx --yes playwright@latest install --with-deps
+      - name: Install root dependencies
+        run: bun install
+
+      - name: Install Playwright browsers
+        run: bunx playwright install --with-deps
 
       - name: Run Playwright (debug logs)
         env:
           DEBUG: pw:*
           BASE_URL: http://127.0.0.1:5000
-        working-directory: apps/web
-        run: npx --yes playwright@latest test --reporter=line
+        run: bun test
 
       - name: Upload API log
         if: always()
