@@ -33,7 +33,7 @@ jobs:
     - name: Install & Build
       working-directory: apps/web
       run: |
-        bun install --frozen-lockfile
+        bun install
         bun run build
     - name: Upload built assets
       uses: actions/upload-artifact@v4

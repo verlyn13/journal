@@ -1,5 +1,7 @@
 import react from "@vitejs/plugin-react";
 import { defineConfig, UserConfig } from "vite";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 // https://vitejs.dev/config/
 const API_PORT = Number(process.env.JOURNAL_API_PORT || 5000);
@@ -7,16 +9,10 @@ const WEB_PORT = Number(process.env.WEB_PORT || 5173);
 
 export default defineConfig({
 	plugins: [react()],
-	server: {
-		port: WEB_PORT,
-		proxy: {
-			"/api": {
-				target: `http://localhost:${API_PORT}`,
-				changeOrigin: true,
-			},
-		},
-	},
 	resolve: {
+		alias: {
+			"@": path.resolve(fileURLToPath(new URL('.', import.meta.url)), "./src"),
+		},
 		dedupe: [
 			'@codemirror/state',
 			'@codemirror/view',
@@ -25,6 +21,15 @@ export default defineConfig({
 			'@codemirror/autocomplete',
 			'@codemirror/search',
 		],
+	},
+	server: {
+		port: WEB_PORT,
+		proxy: {
+			"/api": {
+				target: `http://localhost:${API_PORT}`,
+				changeOrigin: true,
+			},
+		},
 	},
 	build: {
 		outDir: "dist",

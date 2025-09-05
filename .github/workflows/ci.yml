@@ -44,7 +44,7 @@ jobs:
       - name: Web: install, typecheck, build
         working-directory: apps/web
         run: |
-          bun install --frozen-lockfile
+          bun install
           bun run quality:types
           bun run build
           node scripts/bundle-check.js

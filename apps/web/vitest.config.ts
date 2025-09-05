@@ -1,6 +1,6 @@
 import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
-import path from 'path';
+import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 // Ensure __dirname works in ESM for reliable path resolution in CI
@@ -39,8 +39,6 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
-      // Explicit mapping to avoid CI alias edge-cases
-      '@/lib/entryMapper': path.resolve(__dirname, './src/lib/entryMapper.ts'),
       '@/types': path.resolve(__dirname, './src/types'),
       '@/components': path.resolve(__dirname, './src/components'),
       '@/lib': path.resolve(__dirname, './src/lib'),
