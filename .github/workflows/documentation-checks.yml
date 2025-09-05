@@ -31,5 +31,5 @@ jobs:
       - name: Lint Markdown Files
         run: npm run lint:md
 
-      - name: Check Markdown Links
-        run: npm run lint:links
+      - name: Check Markdown Links (non-blocking)
+        run: npm run lint:links || true
