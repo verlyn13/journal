@@ -2,8 +2,6 @@ from __future__ import annotations
 
 import threading
 
-from typing import Dict, Tuple
-
 
 _lock = threading.Lock()
 _counters: dict[tuple[str, tuple[tuple[str, str], ...]], float] = {}

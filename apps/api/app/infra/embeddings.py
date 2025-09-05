@@ -72,7 +72,7 @@ def _fake_embed(text: str, dim: int) -> list[float]:
 
 
 def _openai_embed(text: str, dim: int) -> list[float]:
-    from openai import OpenAI
+    from openai import OpenAI  # noqa: PLC0415
 
     if not OPENAI_API_KEY:
         raise RuntimeError("Set OPENAI_API_KEY for JOURNAL_EMBED_PROVIDER=openai")
@@ -98,7 +98,7 @@ def get_embedding(text: str) -> list[float]:
         vec = _fake_embed(text, EMBED_DIM)
         metrics_inc("provider_calls_total", {"provider": "fake", "result": "ok"})
         return vec
-    except Exception as e:
+    except Exception:
         # Track error for breaker and re-raise
         _cb_on_failure()
         prov = "openai" if PROVIDER == "openai" else "fake"

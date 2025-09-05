@@ -2,14 +2,12 @@ from __future__ import annotations
 
 # Standard library imports
 from datetime import datetime
-from typing import Optional
 from uuid import UUID, uuid4
 
 from pydantic import field_validator
 
 # Third-party imports
-from sqlalchemy import JSON, Column, Integer, event
-from sqlalchemy.orm import declarative_mixin
+from sqlalchemy import JSON, Column, event
 from sqlmodel import Field, SQLModel
 
 

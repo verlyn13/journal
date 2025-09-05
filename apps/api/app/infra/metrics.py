@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import re
 
-from typing import Any, Dict, Tuple
+from typing import Any
 
 
 def count_words_chars(text: str | None) -> tuple[int, int]:

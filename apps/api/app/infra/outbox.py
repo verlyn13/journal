@@ -10,12 +10,12 @@ import os
 import random
 
 from datetime import datetime, timedelta
+from typing import Any, AsyncIterator, Callable
 
 # Third-party imports
-from sqlalchemy import select, text, update
+from sqlalchemy import select, text, text as _text, update
 
 from app.infra.models import Event
-from typing import Any, Callable, AsyncIterator
 from app.infra.nats_bus import nats_conn
 from app.telemetry.metrics_runtime import inc as metrics_inc
 
@@ -185,19 +185,17 @@ async def _schedule_retry_or_dead(session: Any, ev: Event, error: Exception, nc:
     try:
         # Ensure retry bookkeeping columns exist (best-effort, tolerant if DDL fails)
         try:
-            from sqlalchemy import text as _ddl
-
             await session.execute(
-                _ddl("ALTER TABLE events ADD COLUMN IF NOT EXISTS attempts integer")
+                _text("ALTER TABLE events ADD COLUMN IF NOT EXISTS attempts integer")
             )
             await session.execute(
-                _ddl("ALTER TABLE events ADD COLUMN IF NOT EXISTS next_attempt_at timestamptz")
+                _text("ALTER TABLE events ADD COLUMN IF NOT EXISTS next_attempt_at timestamptz")
             )
             await session.execute(
-                _ddl("ALTER TABLE events ADD COLUMN IF NOT EXISTS last_error text")
+                _text("ALTER TABLE events ADD COLUMN IF NOT EXISTS last_error text")
             )
             await session.execute(
-                _ddl("ALTER TABLE events ADD COLUMN IF NOT EXISTS state text")
+                _text("ALTER TABLE events ADD COLUMN IF NOT EXISTS state text")
             )
         except Exception:
             pass
@@ -211,8 +209,6 @@ async def _schedule_retry_or_dead(session: Any, ev: Event, error: Exception, nc:
         # single UPDATE with computed next_attempt from attempts+1
         # We approximate backoff by using attempts stored; if missing, first failure uses base.
         # Note: use COALESCE for missing attempts.
-        from sqlalchemy import text as _text
-
         # Fetch attempts if column exists
         attempts = 0
         try:

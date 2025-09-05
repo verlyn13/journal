@@ -17,6 +17,7 @@ from sqlalchemy import select, text
 from app.infra.db import get_session
 from app.infra.embeddings import RateLimitedError
 from app.infra.models import Entry
+from app.infra.nats_bus import nats_conn
 from app.infra.search_pgvector import upsert_entry_embedding
 from app.settings import settings
 from app.telemetry.metrics_runtime import inc as metrics_inc
@@ -143,11 +144,11 @@ class EmbeddingConsumer:
             # Default: NAK for redelivery
             await msg.nak()
             metrics_inc("worker_process_total", {"result": "retry", "reason": "json"})
-        except RateLimitedError as e:
+        except RateLimitedError:
             logger.warning("Embedding provider rate-limited or circuit open; NAK for redelivery")
             await msg.nak()
             metrics_inc("worker_process_total", {"result": "retry", "reason": "ratelimited"})
-        except Exception as e:
+        except Exception:
             logger.exception("Error processing message")
             # Don't ack on error - let NATS retry
             try:
@@ -179,7 +180,7 @@ class EmbeddingConsumer:
                 await upsert_entry_embedding(session, entry_id, text_source)
                 await session.commit()
                 logger.info("Updated embedding for entry %s", entry_id)
-            except Exception as e:
+            except Exception:
                 logger.exception("Failed to update embedding for entry %s", entry_id)
                 await session.rollback()
                 raise
@@ -201,7 +202,7 @@ class EmbeddingConsumer:
                 )
                 await session.commit()
                 logger.info("Deleted embedding for entry %s", entry_id)
-            except Exception as e:
+            except Exception:
                 logger.exception("Failed to delete embedding for entry %s", entry_id)
                 await session.rollback()
                 raise
@@ -228,14 +229,14 @@ class EmbeddingConsumer:
                         await upsert_entry_embedding(session, entry_id, text_source)
                         if i % 100 == 0:
                             logger.info("Processed %s/%s entries", i, len(rows))
-                    except Exception as e:
+                    except Exception:
                         logger.exception("Failed to reindex entry %s", entry_id)
                         # Continue with next entry
 
                 await session.commit()
                 logger.info("Completed bulk reindex of %s entries", len(rows))
 
-            except Exception as e:
+            except Exception:
                 logger.exception("Bulk reindex failed")
                 await session.rollback()
                 raise
@@ -273,7 +274,7 @@ class EmbeddingConsumer:
             while self.running:
                 await asyncio.sleep(1)
 
-        except Exception as e:
+        except Exception:
             logger.exception("Error in message consumption")
             raise
         finally:
@@ -299,8 +300,6 @@ class EmbeddingConsumer:
                 else:
                     await self.nc.publish("journal.dlq", payload)
             else:
-                from app.infra.nats_bus import nats_conn
-
                 async with nats_conn() as nc:
                     js = None
                     try:
@@ -328,7 +327,7 @@ async def main() -> None:
     except KeyboardInterrupt:
         logger.info("Received interrupt signal")
         await consumer.stop()
-    except Exception as e:
+    except Exception:
         logger.exception("Worker failed")
         raise
 

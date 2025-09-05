@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import Optional
-
 # Standard library imports
 from uuid import UUID
 
