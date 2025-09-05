@@ -10,7 +10,7 @@ export default defineConfig({
   plugins: [react()],
   test: {
     globals: true,
-    environment: 'happy-dom',
+    environment: process.env.CI ? 'jsdom' : 'happy-dom',
     setupFiles: ['./src/test-setup.ts'],
     include: ['src/**/*.{test,spec}.{ts,tsx}'],
     coverage: {
@@ -26,6 +26,8 @@ export default defineConfig({
       ]
     },
     css: true,
+    threads: process.env.CI ? false : undefined,
+    isolate: true,
     pool: 'threads',
     poolOptions: {
       threads: {
@@ -39,10 +41,6 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
-      '@/types': path.resolve(__dirname, './src/types'),
-      '@/components': path.resolve(__dirname, './src/components'),
-      '@/lib': path.resolve(__dirname, './src/lib'),
-      '@/utils': path.resolve(__dirname, './src/utils'),
       'monaco-editor': path.resolve(__dirname, './src/test-mocks/monaco-editor.ts')
     }
   }

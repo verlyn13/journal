@@ -1,43 +1,51 @@
-# .github/workflows/frontend-build.yml
 name: Frontend Build
 
 on:
   push:
     branches: [ main ]
-    paths:
-      - 'apps/web/src/**'
-      - 'apps/web/vite.config.ts'
-      - 'apps/web/package.json'
-      - 'apps/web/bun.lock'
-      - '.github/workflows/frontend-build.yml'
   pull_request:
-    branches: [ main ]
-    paths:
-      - 'apps/web/src/**'
-      - 'apps/web/vite.config.ts'
-      - 'apps/web/package.json'
-      - 'apps/web/bun.lock'
-      - '.github/workflows/frontend-build.yml'
-  workflow_dispatch: {}
 
 jobs:
   build:
-    name: Build Frontend Assets
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/web
     steps:
-    - uses: actions/checkout@v4
-    - name: Setup Bun
-      uses: oven-sh/setup-bun@v2
-      with:
-        bun-version: '1.2.21'
-    - name: Install & Build
-      working-directory: apps/web
-      run: |
-        bun install
-        bun run build
-    - name: Upload built assets
-      uses: actions/upload-artifact@v4
-      with:
-        name: web-dist
-        path: apps/web/dist
-        if-no-files-found: error
+      - uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.2.x
+
+      - name: Cache bun store
+        uses: actions/cache@v4
+        with:
+          path: ~/.bun/install/cache
+          key: bun-${{ runner.os }}-${{ hashFiles('**/bun.lock') }}
+
+      - name: Install deps
+        run: bun install
+
+      - name: Env sanity (no secrets)
+        run: |
+          echo "MODE=$MODE"
+          echo "VITE_BASE=${VITE_BASE:-/}"
+          echo "CI=$CI"
+
+      - name: Vite debug build
+        env:
+          CI: "true"
+          VITE_LOG_LEVEL: debug
+        run: bun x vite build --debug || (echo "==== Vite config dump ====" && node -e "import('./vite.config.ts').then(v=>console.log(v.default))" && exit 1)
+
+      - name: Upload dist (on failure too)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-dist-or-logs
+          path: |
+            apps/web/dist
+            apps/web/.vite/deps
+          if-no-files-found: ignore

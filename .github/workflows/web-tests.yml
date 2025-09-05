@@ -13,109 +13,162 @@ jobs:
         working-directory: apps/web
     steps:
       - uses: actions/checkout@v4
-      - uses: oven-sh/setup-bun@v2
+
+      # Bun for web unit tests
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
         with:
-          bun-version: '1.2.21'
+          bun-version: 1.2.x
+
+      - name: Cache bun store
+        uses: actions/cache@v4
+        with:
+          path: ~/.bun/install/cache
+          key: bun-${{ runner.os }}-${{ hashFiles('**/bun.lock') }}
+
       - name: Install deps
         run: bun install
-      - name: Run vitest with coverage
-        run: bun run test:coverage || bun run test:run
-      - name: Upload vitest coverage artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: web-vitest-coverage
-          path: |
-            apps/web/coverage
-            apps/web/coverage/**
 
-  playwright:
-    name: Playwright E2E
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-    services:
-      postgres:
-        image: pgvector/pgvector:pg16
-        env:
-          POSTGRES_USER: journal
-          POSTGRES_PASSWORD: journal
-          POSTGRES_DB: journal
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd "pg_isready -U journal -d journal -h localhost" --health-interval 10s --health-timeout 5s --health-retries 10
-    env:
-      JOURNAL_DB_URL: postgresql+asyncpg://journal:journal@localhost:5432/journal
-      JOURNAL_DB_SYNC_URL: postgresql://journal:journal@localhost:5432/journal
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-      - uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: '1.2.21'
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-      - name: Install uv
-        uses: astral-sh/setup-uv@v4
-      - name: Install API deps
-        working-directory: apps/api
-        run: uv sync --all-extras --dev
-      - name: Wait for DB auth (robust)
-        working-directory: apps/api
+      - name: Print tool versions
         run: |
-          uv run python - << 'PY'
-          import os, time
-          import psycopg2
-          # Prefer explicit sync URL, or derive from async URL
-          url = os.environ.get('JOURNAL_DB_SYNC_URL') or os.environ['JOURNAL_DB_URL'].replace('+asyncpg', '')
-          for i in range(60):
-              try:
-                  with psycopg2.connect(url):
-                      pass
-                  print('DB auth OK')
-                  break
-              except Exception as e:
-                  print('DB not ready/auth error:', e)
-                  time.sleep(2)
-          else:
-              raise SystemExit('DB did not become ready for auth in time')
-          PY
-      - name: Run DB migrations
-        working-directory: apps/api
+          echo "Node:" && node -v || true
+          echo "Bun:" && bun -v
+          echo "Vitest:" && bun x vitest --version
+
+      - name: Run Vitest (CI profile)
         env:
-          JOURNAL_DB_URL: ${{ env.JOURNAL_DB_URL }}
-        run: uv run alembic -c alembic.ini upgrade head
-      - name: Start API server
-        working-directory: apps/api
-        env:
-          JOURNAL_DB_URL: ${{ env.JOURNAL_DB_URL }}
-        run: nohup uv run fastapi run app/main.py --host 0.0.0.0 --port 5000 >/tmp/api.log 2>&1 &
-      - name: Wait for API
+          CI: "true"
         run: |
-          for i in {1..60}; do
-            if curl -sf http://localhost:5000/health; then exit 0; else sleep 2; fi
-          done
-          exit 1
-      - name: Install root deps
-        run: npm ci
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps
-      - name: Run Playwright
-        env:
-          BASE_URL: http://localhost:5000
-        run: npm test
-      - name: Postgres logs (on failure)
-        if: failure()
-        run: |
-          docker ps -a
-          docker logs $(docker ps -q --filter "ancestor=pgvector/pgvector:pg16") || true
-      - name: Upload Playwright report
+          bun x vitest run \
+            --coverage --reporter=verbose \
+            --threads=false \
+            --logHeapUsage
+
+      - name: Upload coverage
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-report
-          path: |
-            playwright-report
-            test-results
+          name: vitest-coverage
+          path: apps/web/coverage
+
+  playwright:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        ports: [ "5432:5432" ]
+        env:
+          POSTGRES_DB: journal
+          POSTGRES_USER: journal
+          POSTGRES_PASSWORD: journal
+        options: >-
+          --health-cmd="pg_isready -U journal -d journal -h 127.0.0.1"
+          --health-interval=2s --health-timeout=5s --health-retries=30
+    steps:
+      - uses: actions/checkout@v4
+
+      # Node for Playwright runner
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22.x"
+
+      # Python/uv for API + Alembic
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install uv
+        run: pip install uv==0.4.*  # fast & hermetic
+
+      - name: API deps
+        working-directory: apps/api
+        run: uv sync --all-extras --dev
+
+      - name: Echo critical env
+        env:
+          JOURNAL_DB_URL: postgresql+asyncpg://journal:journal@localhost:5432/journal
+          JOURNAL_DB_SYNC_URL: postgresql://journal:journal@localhost:5432/journal
+        run: |
+          echo "JOURNAL_DB_URL=$JOURNAL_DB_URL"
+          echo "JOURNAL_DB_SYNC_URL=$JOURNAL_DB_SYNC_URL"
+
+      - name: DB auth wait (libpq)
+        env:
+          JOURNAL_DB_SYNC_URL: postgresql://journal:journal@localhost:5432/journal
+        working-directory: apps/api
+        run: |
+          uv run python - <<'PY'
+          import os, time, psycopg2
+          url = os.environ["JOURNAL_DB_SYNC_URL"]
+          for i in range(60):
+              try:
+                  conn = psycopg2.connect(url)
+                  conn.close()
+                  print("DB auth succeeded")
+                  break
+              except Exception as e:
+                  print(f"DB auth attempt {i+1}/60 failed: {e}")
+                  time.sleep(1)
+          else:
+              raise SystemExit("DB never became ready for password auth")
+          PY
+
+      - name: Alembic upgrade
+        env:
+          JOURNAL_DB_URL: postgresql+asyncpg://journal:journal@localhost:5432/journal
+        working-directory: apps/api
+        run: |
+          set -e
+          uv run alembic -c alembic.ini upgrade head | tee -a /tmp/alembic.log
+
+      - name: Post-migration probe
+        env:
+          JOURNAL_DB_SYNC_URL: postgresql://journal:journal@localhost:5432/journal
+        working-directory: apps/api
+        run: |
+          uv run python - <<'PY'
+          import os, psycopg2
+          conn = psycopg2.connect(os.environ["JOURNAL_DB_SYNC_URL"])
+          cur = conn.cursor()
+          cur.execute("select 1")
+          print("DB probe:", cur.fetchone())
+          conn.close()
+          PY
+
+      - name: Start API (background)
+        env:
+          PORT: "5000"
+        working-directory: apps/api
+        run: |
+          nohup uv run fastapi run app/main.py --host 0.0.0.0 --port 5000 > /tmp/api.log 2>&1 &
+          echo $! > /tmp/api.pid
+
+      - name: Wait for /health
+        run: |
+          for i in $(seq 1 60); do
+            code=$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:5000/health || true)
+            if [ "$code" = "200" ]; then echo "API healthy"; exit 0; fi
+            sleep 1
+          done
+          echo "Health never returned 200"
+          cat /tmp/api.log || true
+          exit 1
+
+      - name: Install Playwright
+        run: npx --yes playwright@latest install --with-deps
+
+      - name: Run Playwright (debug logs)
+        env:
+          DEBUG: pw:*
+          BASE_URL: http://127.0.0.1:5000
+        working-directory: apps/web
+        run: npx --yes playwright@latest test --reporter=line
+
+      - name: Upload API log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-log
+          path: /tmp/api.log
