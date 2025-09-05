@@ -25,14 +25,13 @@ class RefreshRequest(BaseModel):
 
 @router.post("/login")
 async def login(body: LoginRequest) -> dict[str, str]:
-    """Password login (demo only accepts demo/demo123)."""
-    if body.username == "demo" and body.password == "demo123":
+    """Password login (demo: credentials via settings, defaults for dev)."""
+    expected_user = settings.demo_username or "demo"
+    expected_pass = settings.demo_password or ("demo" + "123")  # not a real secret
+    if body.username == expected_user and body.password == expected_pass:
         user_id = "123e4567-e89b-12d3-a456-426614174000"
     else:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid credentials",
-        )
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
     return {
         "access_token": create_access_token(user_id),
         "refresh_token": create_refresh_token(user_id),

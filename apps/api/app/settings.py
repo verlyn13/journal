@@ -10,7 +10,7 @@ class Settings(BaseSettings):
     nats_url: str = "nats://localhost:4222"
     otlp_endpoint: str = "http://localhost:4317"
 
-    jwt_secret: str = "change_me"
+    jwt_secret: str = "change_me"  # noqa: S105 - dev default; override via env in production
     jwt_iss: str = "journal-api"
     jwt_aud: str = "journal-clients"
     access_token_minutes: int = 15
@@ -18,6 +18,10 @@ class Settings(BaseSettings):
 
     testing: bool = False
     auto_embed_mode: str = "event"  # "event" | "inline" | "off"
+
+    # Demo credentials for development/testing (override via env in real deployments)
+    demo_username: str = "demo"
+    demo_password: str = ""  # Set JOURNAL_DEMO_PASSWORD in env for non-empty
 
 
 settings = Settings()

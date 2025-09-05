@@ -171,10 +171,11 @@ def _pub_state_fields() -> dict[str, str]:
 
 
 def _log_only(error: Exception) -> None:
+    logger = logging.getLogger(__name__)
     try:
-        logging.getLogger(__name__).warning("outbox publish failed: %r", error)
-    except Exception:
-        pass
+        logger.warning("outbox publish failed: %r", error)
+    except Exception as exc:
+        logger.debug("logging failed: %s", exc)
 
 
 async def _schedule_retry_or_dead(session: Any, ev: Event, error: Exception, nc: Any) -> None:
@@ -197,8 +198,8 @@ async def _schedule_retry_or_dead(session: Any, ev: Event, error: Exception, nc:
             await session.execute(
                 _text("ALTER TABLE events ADD COLUMN IF NOT EXISTS state text")
             )
-        except Exception:
-            pass
+        except Exception as exc:
+            logging.getLogger(__name__).debug("DDL ensure columns failed or not needed: %s", exc)
         # Read current attempts; if column missing this will fail and we fall back silently
         now = datetime.utcnow()
         base = float(os.getenv("OUTBOX_RETRY_BASE_SECS", "0.25"))
@@ -218,12 +219,13 @@ async def _schedule_retry_or_dead(session: Any, ev: Event, error: Exception, nc:
                 )
             ).scalar_one()
             attempts = int(row or 0)
-        except Exception:
+        except Exception as exc:
+            logging.getLogger(__name__).debug("attempts fetch failed (assuming 0): %s", exc)
             attempts = 0
 
         next_delay = min(cap, base * (factor ** max(attempts, 0)))
         # Full jitter
-        next_delay = random.random() * next_delay
+        next_delay = random.random() * next_delay  # noqa: S311 - jitter backoff, non-crypto
         next_at = now + timedelta(seconds=next_delay)
         # Truncate error message to reasonable length
         err_str = repr(error)
@@ -244,8 +246,8 @@ async def _schedule_retry_or_dead(session: Any, ev: Event, error: Exception, nc:
                 await session.execute(
                     _text("UPDATE events SET state = 'dead' WHERE id = :id"), {"id": ev.id}
                 )
-            except Exception:
-                pass
+            except Exception as exc:
+                logging.getLogger(__name__).debug("mark dead state failed (optional column): %s", exc)
             # DLQ if enabled
             if os.getenv("OUTBOX_DLQ_ENABLED", "0") == "1":
                 try:
@@ -267,8 +269,8 @@ async def _schedule_retry_or_dead(session: Any, ev: Event, error: Exception, nc:
                     else:
                         await nc.publish("journal.dlq", data)
                     metrics_inc("outbox_dlq_total")
-                except Exception:
-                    pass
-    except Exception:
+                except Exception as exc:
+                    logging.getLogger(__name__).debug("DLQ publish best-effort failed: %s", exc)
+    except Exception as exc:
         # swallow to avoid crashing outbox relay
-        pass
+        logging.getLogger(__name__).debug("schedule retry failed: %s", exc)

@@ -65,7 +65,7 @@ def _fake_embed(text: str, dim: int) -> list[float]:
     then L2-normalizes the vector.
     """
     seed = int.from_bytes(hashlib.sha256(text.encode("utf-8")).digest(), "big")
-    rng = random.Random(seed)
+    rng = random.Random(seed)  # noqa: S311 - non-crypto PRNG for test/deterministic embeddings
     vals = [(rng.random() * 2.0 - 1.0) for _ in range(dim)]
     norm = math.sqrt(sum(v * v for v in vals)) or 1.0
     return [v / norm for v in vals]

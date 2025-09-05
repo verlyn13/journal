@@ -57,7 +57,7 @@ class EmbeddingConsumer:
                 attempt += 1
                 # Exponential backoff with full jitter
                 delay = min(cap, base * (factor ** (attempt - 1)))
-                jitter = random.random() * delay
+                jitter = random.random() * delay  # noqa: S311 - jitter, not crypto
                 logger.warning(
                     "NATS connect failed (attempt %s/%s): %s; retrying in %.2fs",
                     attempt,

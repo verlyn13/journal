@@ -42,11 +42,11 @@ async def hybrid_search(
         return await keyword_search(s, q, k)
 
     sql = text(
-        f"""
+        """
         SELECT e.*,
                ts_rank_cd(e.search_vector, plainto_tsquery('english', :q)) AS fts_rank,
-               COALESCE(1 - (ee.embedding <=> '{q_vec}'::vector(1536)), 0.0) AS vec_sim,
-               ((:alpha) * COALESCE(1 - (ee.embedding <=> '{q_vec}'::vector(1536)), 0.0)
+               COALESCE(1 - (ee.embedding <=> CAST(:qvec AS vector(1536))), 0.0) AS vec_sim,
+               ((:alpha) * COALESCE(1 - (ee.embedding <=> CAST(:qvec AS vector(1536))), 0.0)
                  + (1-:alpha) * ts_rank_cd(e.search_vector, plainto_tsquery('english', :q))) AS score
         FROM entries e
         LEFT JOIN entry_embeddings ee ON ee.entry_id = e.id
@@ -56,7 +56,7 @@ async def hybrid_search(
         LIMIT :k
         """
     )
-    res = await s.execute(sql, {"q": q, "k": k, "alpha": alpha})
+    res = await s.execute(sql, {"q": q, "k": k, "alpha": alpha, "qvec": q_vec})
     rows = res.mappings().all()
     return [dict(r) for r in rows]
 
@@ -77,8 +77,8 @@ async def semantic_search(s: AsyncSession, q: str, k: int = 10) -> list[dict[str
         return []
 
     sql = text(
-        f"""
-        SELECT e.*, (1 - (ee.embedding <=> '{q_vec}'::vector(1536))) AS vec_sim
+        """
+        SELECT e.*, (1 - (ee.embedding <=> CAST(:qvec AS vector(1536)))) AS vec_sim
         FROM entries e
         INNER JOIN entry_embeddings ee ON ee.entry_id = e.id
         WHERE e.is_deleted = FALSE
@@ -86,7 +86,7 @@ async def semantic_search(s: AsyncSession, q: str, k: int = 10) -> list[dict[str
         LIMIT :k
         """
     )
-    res = await s.execute(sql, {"k": k})
+    res = await s.execute(sql, {"k": k, "qvec": q_vec})
     return [dict(r) for r in res.mappings().all()]
 
 
@@ -128,7 +128,7 @@ async def upsert_entry_embedding(s: AsyncSession, entry_id: Any, text_source: st
                 if i == attempts - 1:
                     raise
                 delay = min(cap, base * (factor**i))
-                delay = random.random() * delay
+                delay = random.random() * delay  # noqa: S311 - jitter backoff
                 await asyncio.sleep(delay)
         # Convert list to pgvector string format: '[0.1, 0.2, ...]'
         if isinstance(emb, list):
