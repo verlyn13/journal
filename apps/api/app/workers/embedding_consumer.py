@@ -33,7 +33,7 @@ class EmbeddingConsumer:
         self.js = None
         self.running = False
 
-    async def connect(self):
+    async def connect(self) -> None:
         """Connect to NATS and JetStream with bounded retry and jitter."""
         base = float(os.getenv("RETRY_NATS_BASE_SECS", "0.25"))
         factor = float(os.getenv("RETRY_NATS_FACTOR", "2.0"))
@@ -51,29 +51,33 @@ class EmbeddingConsumer:
                 self.js = js
                 logger.info("Connected to NATS")
                 return
-            except Exception as e:  # noqa: BLE001
+            except Exception as e:
                 last_err = e
                 attempt += 1
                 # Exponential backoff with full jitter
                 delay = min(cap, base * (factor ** (attempt - 1)))
                 jitter = random.random() * delay
                 logger.warning(
-                    f"NATS connect failed (attempt {attempt}/{max_attempts}): {e}; retrying in {jitter:.2f}s"
+                    "NATS connect failed (attempt %s/%s): %s; retrying in %.2fs",
+                    attempt,
+                    max_attempts,
+                    e,
+                    jitter,
                 )
                 await asyncio.sleep(jitter)
-        logger.error(f"Failed to connect to NATS after {max_attempts} attempts: {last_err}")
+        logger.error("Failed to connect to NATS after %s attempts: %s", max_attempts, last_err)
         raise last_err
 
-    async def disconnect(self):
+    async def disconnect(self) -> None:
         """Disconnect from NATS."""
         if self.nc and hasattr(self.nc, "close"):
             try:
                 await self.nc.close()
-            except Exception:  # noqa: BLE001
+            except Exception:
                 logger.debug("NC close failed (mock or already closed)")
             logger.info("Disconnected from NATS")
 
-    async def process_entry_event(self, msg):
+    async def process_entry_event(self, msg) -> None:
         """Process an entry event and update embeddings."""
         try:
             # Parse the event data
@@ -82,7 +86,7 @@ class EmbeddingConsumer:
             event_data = data.get("event_data", {})
             event_id = data.get("id")
 
-            logger.info(f"Processing {event_type} event for entry {event_data.get('entry_id')}")
+            logger.info("Processing %s event for entry %s", event_type, event_data.get('entry_id'))
 
             # Idempotency: skip if already processed
             if event_id:
@@ -105,7 +109,7 @@ class EmbeddingConsumer:
             elif event_type == "embedding.reindex":
                 await self._handle_reindex_request(event_data)
             else:
-                logger.warning(f"Unknown event type: {event_type}")
+                logger.warning("Unknown event type: %s", event_type)
 
             # Acknowledge the message
             await msg.ack()
@@ -120,9 +124,9 @@ class EmbeddingConsumer:
                             {"e": event_id, "o": event_type},
                         )
                         await session.commit()
-                    except Exception:  # noqa: BLE001
+                    except Exception:
                         await session.rollback()
-            logger.debug(f"Processed and acked {event_type} event")
+            logger.debug("Processed and acked %s event", event_type)
             metrics_inc("worker_process_total", {"result": "ok", "type": event_type})
 
         except json.JSONDecodeError as e:
@@ -169,12 +173,12 @@ class EmbeddingConsumer:
                     .first()
                 )
                 if not row:
-                    logger.error(f"Entry not found for embedding: {entry_id}")
+                    logger.error("Entry not found for embedding: %s", entry_id)
                     return
                 text_source = (row.title or "") + " " + (row.content or "")
                 await upsert_entry_embedding(session, entry_id, text_source)
                 await session.commit()
-                logger.info(f"Updated embedding for entry {entry_id}")
+                logger.info("Updated embedding for entry %s", entry_id)
             except Exception as e:
                 logger.exception("Failed to update embedding for entry %s", entry_id)
                 await session.rollback()
@@ -196,7 +200,7 @@ class EmbeddingConsumer:
                     {"entry_id": entry_id},
                 )
                 await session.commit()
-                logger.info(f"Deleted embedding for entry {entry_id}")
+                logger.info("Deleted embedding for entry %s", entry_id)
             except Exception as e:
                 logger.exception("Failed to delete embedding for entry %s", entry_id)
                 await session.rollback()
@@ -211,11 +215,11 @@ class EmbeddingConsumer:
             try:
                 # Get all entries that need reindexing
                 result = await session.execute(
-                    select(Entry.id, Entry.title, Entry.content).where(Entry.is_deleted == False)  # noqa: E712
+                    select(Entry.id, Entry.title, Entry.content).where(Entry.is_deleted == False)
                 )
                 rows = result.fetchall()
 
-                logger.info(f"Reindexing {len(rows)} entries")
+                logger.info("Reindexing %s entries", len(rows))
 
                 # Process each entry
                 for i, (entry_id, title, content) in enumerate(rows, 1):
@@ -223,20 +227,20 @@ class EmbeddingConsumer:
                         text_source = (title or "") + " " + (content or "")
                         await upsert_entry_embedding(session, entry_id, text_source)
                         if i % 100 == 0:
-                            logger.info(f"Processed {i}/{len(rows)} entries")
+                            logger.info("Processed %s/%s entries", i, len(rows))
                     except Exception as e:
                         logger.exception("Failed to reindex entry %s", entry_id)
                         # Continue with next entry
 
                 await session.commit()
-                logger.info(f"Completed bulk reindex of {len(rows)} entries")
+                logger.info("Completed bulk reindex of %s entries", len(rows))
 
             except Exception as e:
                 logger.exception("Bulk reindex failed")
                 await session.rollback()
                 raise
 
-    async def start_consuming(self):
+    async def start_consuming(self) -> None:
         """Start consuming messages from NATS."""
         if not self.nc or not self.js:
             await self.connect()
@@ -275,12 +279,12 @@ class EmbeddingConsumer:
         finally:
             await self.disconnect()
 
-    async def stop(self):
+    async def stop(self) -> None:
         """Stop consuming messages."""
         self.running = False
         logger.info("Stopping message consumption")
 
-    async def _publish_dlq(self, envelope: dict, reason: str = ""):
+    async def _publish_dlq(self, envelope: dict, reason: str = "") -> None:
         """Publish DLQ message with fallback to nats_conn if needed."""
         try:
             payload = json.dumps({**envelope, "reason": reason}).encode("utf-8")
@@ -288,7 +292,7 @@ class EmbeddingConsumer:
                 js = None
                 try:
                     js = self.nc.jetstream()
-                except Exception:  # noqa: BLE001
+                except Exception:
                     js = None
                 if js:
                     await js.publish("journal.dlq", payload)
@@ -301,7 +305,7 @@ class EmbeddingConsumer:
                     js = None
                     try:
                         js = nc.jetstream()
-                    except Exception:  # noqa: BLE001
+                    except Exception:
                         js = None
                     if js:
                         await js.publish("journal.dlq", payload)
@@ -311,7 +315,7 @@ class EmbeddingConsumer:
             logger.exception("Failed to publish to DLQ")
 
 
-async def main():
+async def main() -> None:
     """Main entry point for the embedding consumer worker."""
     logging.basicConfig(
         level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"

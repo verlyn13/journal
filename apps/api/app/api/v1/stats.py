@@ -46,7 +46,7 @@ async def get_stats(
 
     # Total entries
     total_result = await s.execute(
-        select(func.count(Entry.id)).where(Entry.is_deleted == False)  # noqa: E712
+        select(func.count(Entry.id)).where(Entry.is_deleted == False)
     )
     total_entries = total_result.scalar() or 0
 
@@ -54,7 +54,7 @@ async def get_stats(
     today_result = await s.execute(
         select(func.count(Entry.id)).where(
             Entry.created_at >= today_start,
-            Entry.is_deleted == False,  # noqa: E712
+            Entry.is_deleted == False,
         )
     )
     entries_today = today_result.scalar() or 0
@@ -63,7 +63,7 @@ async def get_stats(
     week_result = await s.execute(
         select(func.count(Entry.id)).where(
             Entry.created_at >= week_start,
-            Entry.is_deleted == False,  # noqa: E712
+            Entry.is_deleted == False,
         )
     )
     entries_this_week = week_result.scalar() or 0
@@ -72,7 +72,7 @@ async def get_stats(
     month_result = await s.execute(
         select(func.count(Entry.id)).where(
             Entry.created_at >= month_start,
-            Entry.is_deleted == False,  # noqa: E712
+            Entry.is_deleted == False,
         )
     )
     entries_this_month = month_result.scalar() or 0
@@ -81,7 +81,7 @@ async def get_stats(
     recent_result = await s.execute(
         select(func.count(Entry.id)).where(
             Entry.updated_at >= recent_cutoff,
-            Entry.is_deleted == False,  # noqa: E712
+            Entry.is_deleted == False,
         )
     )
     recent_entries = recent_result.scalar() or 0

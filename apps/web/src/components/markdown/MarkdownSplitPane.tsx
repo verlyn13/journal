@@ -1,6 +1,7 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
-import MarkdownEditor from './MarkdownEditor';
-import MarkdownPreview from './MarkdownPreview';
+import { Suspense, useEffect, useMemo, useRef, useState } from 'react';
+import React from 'react';
+const MarkdownEditor = React.lazy(() => import('./MarkdownEditor'));
+const MarkdownPreview = React.lazy(() => import('./MarkdownPreview'));
 
 type EntryLike = {
   id: string;
@@ -163,7 +164,9 @@ export default function MarkdownSplitPane({ entry, onSave }: Props) {
       <div className="border border-sanctuary-border rounded-md">
         <div className="px-3 py-2 text-xs text-sanctuary-text-secondary border-b border-sanctuary-border">Markdown Editor</div>
         <div className="p-2">
-          <MarkdownEditor value={md} onChange={setMd} height="70vh" />
+          <Suspense fallback={<div className="text-xs text-sanctuary-text-tertiary">Loading editor…</div>}>
+            <MarkdownEditor value={md} onChange={setMd} height="70vh" />
+          </Suspense>
           {/* Autosave enabled; manual save not shown */}
         </div>
       </div>
@@ -172,7 +175,9 @@ export default function MarkdownSplitPane({ entry, onSave }: Props) {
           Preview (sanitized)
         </div>
         <div className="p-4">
-          <MarkdownPreview markdown={md} />
+          <Suspense fallback={<div className="text-xs text-sanctuary-text-tertiary">Rendering preview…</div>}>
+            <MarkdownPreview markdown={md} />
+          </Suspense>
         </div>
       </div>
     </div>

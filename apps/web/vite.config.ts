@@ -30,6 +30,10 @@ export default defineConfig({
 		outDir: "dist",
 		sourcemap: true,
 		manifest: true,
+    // Increase warning threshold to account for editor/markdown lazy chunks
+    // The heavy Markdown editor/preview are code-split and loaded on demand.
+    // Raising this limit avoids noisy warnings while keeping core bundle small.
+    chunkSizeWarningLimit: 1200,
 		rollupOptions: {
 			input: {
 				app: "index.html",

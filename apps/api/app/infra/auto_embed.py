@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import logging
+
 from uuid import UUID
 
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -10,6 +12,9 @@ from app.infra.embeddings import get_embedding
 from app.infra.models import Entry
 from app.infra.search_pgvector import upsert_entry_embedding
 from app.settings import settings
+
+
+logger = logging.getLogger(__name__)
 
 
 async def ensure_embedding_for_entry(entry: Entry, session: AsyncSession) -> None:
@@ -33,33 +38,27 @@ async def ensure_embedding_for_entry(entry: Entry, session: AsyncSession) -> Non
             await upsert_entry_embedding(session, entry.id, text)
         except Exception as e:
             # Log error but don't fail the request
-            import logging
-
-            logging.warning(f"Failed to generate embedding for entry {entry.id}: {e}")
+            logger.warning("Failed to generate embedding for entry %s: %s", entry.id, e)
 
     elif mode == "event":
         # Publish event for async processing (production)
         try:
-            await publish_embedding_event(entry.id, text)
+            publish_embedding_event(entry.id, text)
         except Exception as e:
             # Log error but don't fail the request
-            import logging
-
-            logging.warning(f"Failed to publish embedding event for entry {entry.id}: {e}")
+            logger.warning("Failed to publish embedding event for entry %s: %s", entry.id, e)
 
     # mode == "off" - do nothing
 
 
-async def publish_embedding_event(entry_id: UUID, text: str) -> None:
+def publish_embedding_event(entry_id: UUID, text: str) -> None:
     """Publish event for async embedding generation.
 
     This is a placeholder - replace with your actual event bus/NATS publishing.
     """
     # TODO: Replace with actual event publishing
     # For now, just log that we would publish
-    import logging
-
-    logging.info(f"Would publish embedding event for entry {entry_id}")
+    logger.info("Would publish embedding event for entry %s", entry_id)
 
     # Example of what this might look like:
     # await event_bus.publish("journal.entry.embedding_needed", {

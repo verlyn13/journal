@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import html as html_module
+import logging
 import re
 
 import bleach
@@ -82,9 +83,7 @@ def markdown_to_html(md: str) -> str:
 
     except Exception as e:
         # Fallback to escaped plain text if parsing fails
-        import logging
-
-        logging.warning(f"Markdown parsing failed: {e}")
+        logging.getLogger(__name__).warning("Markdown parsing failed: %s", e)
         return html_module.escape(md).replace("\n", "<br/>")
 
 
@@ -167,7 +166,5 @@ def html_to_markdown(html: str) -> str:
 
     except Exception as e:
         # Fallback - return original HTML if conversion fails
-        import logging
-
-        logging.warning(f"HTML to markdown conversion failed: {e}")
+        logging.getLogger(__name__).warning("HTML to markdown conversion failed: %s", e)
         return html

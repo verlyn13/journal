@@ -24,9 +24,9 @@ class RefreshRequest(BaseModel):
 
 
 @router.post("/login")
-async def login(body: LoginRequest):
+async def login(body: LoginRequest) -> dict[str, str]:
     """Password login (demo only accepts demo/demo123)."""
-    if body.username == "demo" and body.password == "demo123":  # noqa: S105
+    if body.username == "demo" and body.password == "demo123":
         user_id = "123e4567-e89b-12d3-a456-426614174000"
     else:
         raise HTTPException(
@@ -41,7 +41,7 @@ async def login(body: LoginRequest):
 
 
 @router.post("/demo")
-async def demo_login():
+async def demo_login() -> dict[str, str]:
     """Return tokens for a fixed demo user (no credentials)."""
     user_id = "123e4567-e89b-12d3-a456-426614174000"
     return {
@@ -52,7 +52,7 @@ async def demo_login():
 
 
 @router.post("/refresh")
-async def refresh(body: RefreshRequest):
+async def refresh(body: RefreshRequest) -> dict[str, str]:
     """Exchange a valid refresh token for a new access token."""
     try:
         decoded = jwt.decode(
@@ -77,7 +77,7 @@ async def refresh(body: RefreshRequest):
 
 
 @router.get("/me")
-async def get_me(user_id: str = Depends(get_current_user)):
+async def get_me(user_id: str = Depends(get_current_user)) -> dict[str, str]:
     demo_uuid = "123e4567-e89b-12d3-a456-426614174000"
     return {
         "id": user_id,
@@ -87,6 +87,6 @@ async def get_me(user_id: str = Depends(get_current_user)):
 
 
 @router.post("/logout")
-async def logout(user_id: str = Depends(get_current_user)):
+async def logout(user_id: str = Depends(get_current_user)) -> dict[str, str]:
     # In a real app, you might invalidate the token in Redis
     return {"message": "Logged out successfully"}
