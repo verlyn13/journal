@@ -125,7 +125,7 @@ def _entry_response(row: Entry, prefer_md: bool = False) -> dict:
 @router.get("")
 async def get_entries(
     request: Request,
-    user_id: Annotated[str, Depends(require_user)],
+    user_id: Annotated[str, Depends(require_user)],  # noqa: ARG001
     s: Annotated[AsyncSession, Depends(get_session)],
     # Support both skip and offset for pagination
     skip: Annotated[int, Query(ge=0, description="Number of entries to skip")] = 0,
@@ -151,7 +151,7 @@ async def get_entries(
 async def post_entry(
     body: EntryCreate,
     request: Request,
-    user_id: Annotated[str, Depends(require_user)],
+    user_id: Annotated[str, Depends(require_user)],  # noqa: ARG001
     s: Annotated[AsyncSession, Depends(get_session)],
 ) -> dict[str, Any]:
     """Create a new entry with automatic embedding generation.
@@ -201,7 +201,7 @@ async def post_entry(
 async def get_entry(
     entry_id: str,
     request: Request,
-    user_id: Annotated[str, Depends(require_user)],
+    user_id: Annotated[str, Depends(require_user)],  # noqa: ARG001
     s: Annotated[AsyncSession, Depends(get_session)],
 ) -> dict[str, Any]:
     """Get a single entry by ID.
@@ -231,7 +231,7 @@ async def update_entry(
     entry_id: str,
     body: EntryUpdate,
     request: Request,
-    user_id: Annotated[str, Depends(require_user)],
+    user_id: Annotated[str, Depends(require_user)],  # noqa: ARG001
     s: Annotated[AsyncSession, Depends(get_session)],
 ) -> dict[str, Any]:
     """Update entry with optimistic locking.
@@ -291,7 +291,7 @@ async def update_entry(
 async def delete_entry(
     entry_id: str,
     expected_version: Annotated[int, Query(description="Expected version for optimistic locking")],
-    user_id: Annotated[str, Depends(require_user)],
+    user_id: Annotated[str, Depends(require_user)],  # noqa: ARG001
     s: Annotated[AsyncSession, Depends(get_session)],
 ):
     """Soft delete entry with optimistic locking.

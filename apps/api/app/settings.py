@@ -10,7 +10,7 @@ class Settings(BaseSettings):
     nats_url: str = "nats://localhost:4222"
     otlp_endpoint: str = "http://localhost:4317"
 
-    jwt_secret: str = "change_me"
+    jwt_secret: str = "change_me"  # noqa: S105
     jwt_iss: str = "journal-api"
     jwt_aud: str = "journal-clients"
     access_token_minutes: int = 15

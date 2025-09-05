@@ -16,7 +16,7 @@ router = APIRouter(prefix="/admin", tags=["admin"])
 
 
 @router.get("/ping")
-async def admin_ping(user_id: Annotated[str, Depends(require_user)]) -> dict[str, str]:
+async def admin_ping(user_id: Annotated[str, Depends(require_user)]) -> dict[str, str]:  # noqa: ARG001
     """Simple ping endpoint for admin health check.
 
     Returns:
@@ -27,7 +27,7 @@ async def admin_ping(user_id: Annotated[str, Depends(require_user)]) -> dict[str
 
 @router.get("/health")
 async def admin_health(
-    user_id: Annotated[str, Depends(require_user)],
+    user_id: Annotated[str, Depends(require_user)],  # noqa: ARG001
     db: Annotated[AsyncSession, Depends(get_session)],
 ) -> dict[str, str]:
     """Health check endpoint that verifies database connectivity.
