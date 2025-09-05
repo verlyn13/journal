@@ -25,7 +25,7 @@ class SearchHit:
     fts_rank: float | None = None
 
 
-async def _hybrid(s: AsyncSession, q: str, k: int, alpha: float):
+async def _hybrid(s: AsyncSession, q: str, k: int, alpha: float) -> list[SearchHit]:
     rows = await hybrid_search(s, q=q, k=k, alpha=alpha)
     hits: list[SearchHit] = []
     for r in rows:

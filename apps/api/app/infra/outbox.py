@@ -15,6 +15,7 @@ from datetime import datetime, timedelta
 from sqlalchemy import select, text, update
 
 from app.infra.models import Event
+from typing import Any, Callable, AsyncIterator
 from app.infra.nats_bus import nats_conn
 from app.telemetry.metrics_runtime import inc as metrics_inc
 
@@ -24,7 +25,10 @@ SUBJECT_MAP = {
 }
 
 
-async def relay_outbox(session_factory, poll_seconds: float = 1.0) -> None:
+SessionFactory = Callable[[], AsyncIterator[Any]]
+
+
+async def relay_outbox(session_factory: SessionFactory, poll_seconds: float = 1.0) -> None:
     """Continuously publish unpublished events to NATS and mark them as published.
 
     Selects events where `published_at IS NULL`, publishes, then sets `published_at`.
@@ -103,7 +107,7 @@ async def relay_outbox(session_factory, poll_seconds: float = 1.0) -> None:
             await asyncio.sleep(poll_seconds)
 
 
-async def process_outbox_batch(session_factory) -> int:
+async def process_outbox_batch(session_factory: SessionFactory) -> int:
     """Process a single batch of unpublished events.
 
     Publishes each event to NATS and marks it as published.
@@ -173,7 +177,7 @@ def _log_only(error: Exception) -> None:
         pass
 
 
-async def _schedule_retry_or_dead(session, ev: Event, error: Exception, nc) -> None:
+async def _schedule_retry_or_dead(session: Any, ev: Event, error: Exception, nc: Any) -> None:
     """Best-effort update of retry bookkeeping; tolerant if columns are missing.
 
     Columns: attempts (int), next_attempt_at (timestamptz), last_error (text), state (text)
