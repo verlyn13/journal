@@ -39,6 +39,8 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
+      // Explicit mapping to avoid CI alias edge-cases
+      '@/lib/entryMapper': path.resolve(__dirname, './src/lib/entryMapper.ts'),
       '@/types': path.resolve(__dirname, './src/types'),
       '@/components': path.resolve(__dirname, './src/components'),
       '@/lib': path.resolve(__dirname, './src/lib'),

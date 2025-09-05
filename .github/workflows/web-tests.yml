@@ -64,6 +64,27 @@ jobs:
         env:
           JOURNAL_DB_URL: postgresql+asyncpg://journal:journal@localhost:5432/journal
         run: uv run alembic -c alembic.ini upgrade head
+      - name: Wait for DB auth (robust)
+        working-directory: apps/api
+        env:
+          DB_SYNC_URL: postgresql+psycopg2://journal:journal@localhost:5432/journal
+        run: |
+          uv run python - << 'PY'
+          import os, time
+          import psycopg2
+          url = os.environ['DB_SYNC_URL']
+          for i in range(30):
+              try:
+                  conn = psycopg2.connect(url)
+                  conn.close()
+                  print('DB auth OK')
+                  break
+              except Exception as e:
+                  print('DB not ready/auth error:', e)
+                  time.sleep(2)
+          else:
+              raise SystemExit('DB did not become ready for auth in time')
+          PY
       - name: Start API server
         working-directory: apps/api
         env:
