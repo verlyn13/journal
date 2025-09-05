@@ -68,7 +68,4 @@ jobs:
         working-directory: apps/api
         run: uv run mypy .
 
-      - name: API: pytest
-        working-directory: apps/api
-        run: |
-          if [ -n "${{ inputs.subset }}" ]; then uv run pytest -q -k "${{ inputs.subset }}"; else uv run pytest -q; fi
+      # API tests run in dedicated workflows with DB/NATS services
