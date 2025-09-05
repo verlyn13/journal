@@ -80,7 +80,7 @@ def markdown_to_html(md: str) -> str:
 
         return clean_html
 
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001
         # Fallback to escaped plain text if parsing fails
         import logging
 
@@ -165,7 +165,7 @@ def html_to_markdown(html: str) -> str:
 
         return out.strip()
 
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001
         # Fallback - return original HTML if conversion fails
         import logging
 

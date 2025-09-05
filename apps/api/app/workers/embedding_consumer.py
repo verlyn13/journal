@@ -51,7 +51,7 @@ class EmbeddingConsumer:
                 self.js = js
                 logger.info("Connected to NATS")
                 return
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001
                 last_err = e
                 attempt += 1
                 # Exponential backoff with full jitter
@@ -69,7 +69,7 @@ class EmbeddingConsumer:
         if self.nc and hasattr(self.nc, "close"):
             try:
                 await self.nc.close()
-            except Exception:
+            except Exception:  # noqa: BLE001
                 logger.debug("NC close failed (mock or already closed)")
             logger.info("Disconnected from NATS")
 
@@ -120,7 +120,7 @@ class EmbeddingConsumer:
                             {"e": event_id, "o": event_type},
                         )
                         await session.commit()
-                    except Exception:
+                    except Exception:  # noqa: BLE001
                         await session.rollback()
             logger.debug(f"Processed and acked {event_type} event")
             metrics_inc("worker_process_total", {"result": "ok", "type": event_type})
@@ -224,14 +224,14 @@ class EmbeddingConsumer:
                         await upsert_entry_embedding(session, entry_id, text_source)
                         if i % 100 == 0:
                             logger.info(f"Processed {i}/{len(rows)} entries")
-                    except Exception as e:
+                    except Exception as e:  # noqa: BLE001
                         logger.exception("Failed to reindex entry %s", entry_id)
                         # Continue with next entry
 
                 await session.commit()
                 logger.info(f"Completed bulk reindex of {len(rows)} entries")
 
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001
                 logger.exception("Bulk reindex failed")
                 await session.rollback()
                 raise
@@ -269,7 +269,7 @@ class EmbeddingConsumer:
             while self.running:
                 await asyncio.sleep(1)
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.exception("Error in message consumption")
             raise
         finally:
@@ -288,7 +288,7 @@ class EmbeddingConsumer:
                 js = None
                 try:
                     js = self.nc.jetstream()
-                except Exception:
+                except Exception:  # noqa: BLE001
                     js = None
                 if js:
                     await js.publish("journal.dlq", payload)
@@ -301,13 +301,13 @@ class EmbeddingConsumer:
                     js = None
                     try:
                         js = nc.jetstream()
-                    except Exception:
+                    except Exception:  # noqa: BLE001
                         js = None
                     if js:
                         await js.publish("journal.dlq", payload)
                     else:
                         await nc.publish("journal.dlq", payload)
-        except Exception:
+        except Exception:  # noqa: BLE001
             logger.exception("Failed to publish to DLQ")
 
 
@@ -324,7 +324,7 @@ async def main():
     except KeyboardInterrupt:
         logger.info("Received interrupt signal")
         await consumer.stop()
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001
         logger.exception("Worker failed")
         raise
 

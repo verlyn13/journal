@@ -113,7 +113,7 @@ def transform_file(path: pathlib.Path):
         if tx.modified:
             path.write_text(new_mod.code, encoding="utf-8")
             print(f"UPDATED  {path}")
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001
         print(f"SKIPPED  {path} ({e})")
 
 

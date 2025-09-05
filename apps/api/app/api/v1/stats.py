@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Annotated
 
 from fastapi import APIRouter, Depends
@@ -18,7 +18,8 @@ router = APIRouter(tags=["stats"])
 
 
 def _utcnow() -> datetime:
-    return datetime.utcnow()
+    # Use timezone-aware UTC for consistency
+    return datetime.now(timezone.utc)
 
 
 class StatsResponse(BaseModel):

@@ -34,7 +34,7 @@ async def hybrid_search(s: AsyncSession, q: str, k: int = 10, alpha: float = 0.6
     try:
         q_emb = get_embedding(q)
         q_vec = _vec_literal(q_emb)
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001
         import logging
 
         logging.warning(f"Embedding generation failed, falling back to keyword search: {e}")
@@ -72,7 +72,7 @@ async def semantic_search(s: AsyncSession, q: str, k: int = 10):
     try:
         q_emb = get_embedding(q)
         q_vec = _vec_literal(q_emb)
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001
         import logging
 
         logging.warning(f"Embedding generation failed for similarity search: {e}")
@@ -149,7 +149,7 @@ async def upsert_entry_embedding(s: AsyncSession, entry_id: Any, text_source: st
         )
         await s.execute(sql, {"entry_id": entry_id, "embedding": embedding_str})
         await s.commit()
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001
         # Log error but don't fail
         import logging
 
