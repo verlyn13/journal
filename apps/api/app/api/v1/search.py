@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Annotated, Any, Dict, List
+from typing import Annotated, Any
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Query
@@ -20,19 +20,19 @@ async def search_hybrid(
     q: Annotated[str, Query(min_length=1, description="Search query")],
     s: Annotated[AsyncSession, Depends(get_session)],
     k: Annotated[int, Query(ge=1, le=100, description="Number of results")] = 10,
-    alpha: Annotated[float, Query(ge=0.0, le=1.0, description="Semantic weight")] = 0.6
+    alpha: Annotated[float, Query(ge=0.0, le=1.0, description="Semantic weight")] = 0.6,
 ) -> list[dict[str, Any]]:
     """Perform hybrid search combining keyword and semantic search.
-    
+
     Args:
         q: Query string.
         k: Number of results to return.
         alpha: Weight for semantic search (0-1).
         s: Database session.
-        
+
     Returns:
         List of search results with scores.
-        
+
     Raises:
         HTTPException: If alpha is out of range.
     """
@@ -43,18 +43,17 @@ async def search_hybrid(
 
 @router.post("/search/semantic")
 async def search_semantic(
-    body: dict,
-    s: Annotated[AsyncSession, Depends(get_session)]
+    body: dict, s: Annotated[AsyncSession, Depends(get_session)]
 ) -> list[dict[str, Any]]:
     """Perform semantic search using embeddings.
-    
+
     Args:
         body: Request body with 'q' or 'query' and optional 'k'.
         s: Database session.
-        
+
     Returns:
         List of semantically similar entries.
-        
+
     Raises:
         HTTPException: If query is missing.
     """
@@ -67,18 +66,17 @@ async def search_semantic(
 
 @router.post("/search/entries/{entry_id}/embed")
 async def embed_entry(
-    entry_id: str,
-    s: Annotated[AsyncSession, Depends(get_session)]
+    entry_id: str, s: Annotated[AsyncSession, Depends(get_session)]
 ) -> dict[str, str]:
     """Generate and store embedding for an entry.
-    
+
     Args:
         entry_id: ID of the entry to embed.
         s: Database session.
-        
+
     Returns:
         Status and entry ID confirmation.
-        
+
     Raises:
         HTTPException: If entry not found or invalid ID.
     """

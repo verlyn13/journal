@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Annotated, Any, Dict, Literal, Optional
+from typing import Annotated, Any, Literal
 
 # Standard library imports
 from uuid import UUID
@@ -9,7 +9,6 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from pydantic import BaseModel, Field
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlmodel import select
 
 # Local imports
 from app.infra.auth import require_user
@@ -19,7 +18,7 @@ from app.infra.db import get_session
 from app.infra.metrics import count_words_chars, extract_text_for_metrics
 from app.infra.models import Entry
 from app.infra.repository import ConflictError, EntryRepository, NotFoundError
-from app.services.entry_service import create_entry, get_entry_by_id, list_entries
+from app.services.entry_service import list_entries
 
 
 router = APIRouter(prefix="/entries", tags=["entries"])
@@ -28,6 +27,7 @@ router = APIRouter(prefix="/entries", tags=["entries"])
 # ==============================
 # Request Models
 # ==============================
+
 
 class EntryCreate(BaseModel):
     title: str = Field(min_length=1)
@@ -72,27 +72,27 @@ class EntryResponse(BaseModel):
 
 def _prefer_markdown(request: Request) -> bool:
     fmt = (
-        request.headers.get('X-Editor-Mode')
-        or request.headers.get('X-Content-Format')
-        or request.headers.get('X-Client-Editor')
+        request.headers.get("X-Editor-Mode")
+        or request.headers.get("X-Content-Format")
+        or request.headers.get("X-Client-Editor")
     )
-    return (fmt or '').lower() == 'markdown'
+    return (fmt or "").lower() == "markdown"
 
 
 def _entry_response(row: Entry, prefer_md: bool = False) -> dict:
     """Create stable entry response with backward compatibility.
-    
+
     Returns:
         Dictionary with entry data including content block and legacy fields.
     """
-    editor_mode: Literal['html', 'markdown'] = 'markdown' if prefer_md else 'html'
+    editor_mode: Literal["html", "markdown"] = "markdown" if prefer_md else "html"
 
     # Create structured content block
     content_block = ContentBlock(
         html=row.content,
         markdown=row.markdown_content,
         format_preference="markdown" if prefer_md and row.markdown_content else "html",
-        version=row.content_version
+        version=row.content_version,
     )
 
     # Legacy content field for backward compatibility
@@ -103,10 +103,7 @@ def _entry_response(row: Entry, prefer_md: bool = False) -> dict:
         id=row.id,
         title=row.title,
         content_block=content_block,
-        metrics={
-            "word_count": row.word_count or 0,
-            "char_count": row.char_count or 0
-        },
+        metrics={"word_count": row.word_count or 0, "char_count": row.char_count or 0},
         # Legacy fields
         content=legacy_content,
         markdown_content=row.markdown_content,
@@ -118,7 +115,7 @@ def _entry_response(row: Entry, prefer_md: bool = False) -> dict:
         updated_at=row.updated_at,
         is_deleted=row.is_deleted,
         content_version=row.content_version,
-        editor_mode=editor_mode
+        editor_mode=editor_mode,
     )
 
     return response.model_dump()
@@ -132,12 +129,12 @@ async def get_entries(
     # Support both skip and offset for pagination
     skip: Annotated[int, Query(ge=0, description="Number of entries to skip")] = 0,
     limit: Annotated[int, Query(ge=1, le=100, description="Maximum entries to return")] = 20,
-    offset: Annotated[int | None, Query(ge=0, description="Legacy offset parameter")] = None
+    offset: Annotated[int | None, Query(ge=0, description="Legacy offset parameter")] = None,
 ) -> list[dict[str, Any]]:
     """List entries with pagination support.
-    
+
     Supports both 'skip' (preferred) and 'offset' (legacy) parameters.
-    
+
     Returns:
         List of entry dictionaries with content and metrics.
     """
@@ -154,17 +151,21 @@ async def post_entry(
     body: EntryCreate,
     request: Request,
     user_id: Annotated[str, Depends(require_user)],
-    s: Annotated[AsyncSession, Depends(get_session)]
+    s: Annotated[AsyncSession, Depends(get_session)],
 ) -> dict[str, Any]:
     """Create a new entry with automatic embedding generation.
-    
+
     Returns:
         Created entry dictionary with generated ID and metrics.
     """
     html_content = body.content or ""
     md_content = body.markdown_content
     # Default to 2 when markdown is provided without explicit version
-    version = body.content_version if body.content_version is not None else (2 if md_content is not None else 1)
+    version = (
+        body.content_version
+        if body.content_version is not None
+        else (2 if md_content is not None else 1)
+    )
 
     # Generate HTML from markdown when markdown is provided
     if md_content is not None:
@@ -183,7 +184,7 @@ async def post_entry(
         "markdown_content": md_content,
         "content_version": version,
         "word_count": word_count,
-        "char_count": char_count
+        "char_count": char_count,
     }
 
     entry = await repo.create(entry_data)
@@ -200,13 +201,13 @@ async def get_entry(
     entry_id: str,
     request: Request,
     user_id: Annotated[str, Depends(require_user)],
-    s: Annotated[AsyncSession, Depends(get_session)]
+    s: Annotated[AsyncSession, Depends(get_session)],
 ) -> dict[str, Any]:
     """Get a single entry by ID.
-    
+
     Returns:
         Entry dictionary with content and metadata.
-        
+
     Raises:
         HTTPException: If entry not found or invalid ID.
     """
@@ -230,13 +231,13 @@ async def update_entry(
     body: EntryUpdate,
     request: Request,
     user_id: Annotated[str, Depends(require_user)],
-    s: Annotated[AsyncSession, Depends(get_session)]
+    s: Annotated[AsyncSession, Depends(get_session)],
 ) -> dict[str, Any]:
     """Update entry with optimistic locking.
-    
+
     Returns:
         Updated entry dictionary with new version.
-        
+
     Raises:
         HTTPException: If entry not found or version conflict.
     """
@@ -260,8 +261,7 @@ async def update_entry(
     # Update metrics if content changed (HTML and/or markdown)
     if "content" in update_data or "markdown_content" in update_data:
         text_for_metrics = extract_text_for_metrics(
-            update_data.get("content"),
-            update_data.get("markdown_content")
+            update_data.get("content"), update_data.get("markdown_content")
         )
         word_count, char_count = count_words_chars(text_for_metrics)
         update_data["word_count"] = word_count
@@ -282,11 +282,7 @@ async def update_entry(
     except ConflictError as c:
         raise HTTPException(
             status_code=409,
-            detail={
-                "message": str(c),
-                "expected_version": c.expected,
-                "actual_version": c.actual
-            }
+            detail={"message": str(c), "expected_version": c.expected, "actual_version": c.actual},
         ) from c
 
 
@@ -295,15 +291,15 @@ async def delete_entry(
     entry_id: str,
     expected_version: Annotated[int, Query(description="Expected version for optimistic locking")],
     user_id: Annotated[str, Depends(require_user)],
-    s: Annotated[AsyncSession, Depends(get_session)]
+    s: Annotated[AsyncSession, Depends(get_session)],
 ):
     """Soft delete entry with optimistic locking.
 
     Returns 204 No Content on success to match API expectations.
-    
+
     Returns:
         None (204 No Content).
-        
+
     Raises:
         HTTPException: If entry not found or version conflict.
     """

@@ -1,7 +1,9 @@
 """
 Integration tests for embedding worker functionality.
 """
+
 import asyncio
+import contextlib
 import json
 
 from unittest.mock import AsyncMock, MagicMock
@@ -56,10 +58,8 @@ async def test_worker_connection_retry(monkeypatch):
     await asyncio.sleep(2.0)  # Allow time for retry
     task.cancel()
 
-    try:
+    with contextlib.suppress(asyncio.CancelledError):
         await task
-    except asyncio.CancelledError:
-        pass
 
     # Should have attempted connection at least twice (initial + retry)
     assert len(connect_attempts) >= 2
@@ -69,6 +69,7 @@ async def test_worker_connection_retry(monkeypatch):
 @pytest.mark.asyncio()
 async def test_worker_handles_malformed_message(monkeypatch, db_session: AsyncSession):
     """Test worker handles malformed messages gracefully."""
+
     # Patch get_session
     async def _yield_session():
         yield db_session
@@ -102,6 +103,7 @@ async def test_worker_handles_malformed_message(monkeypatch, db_session: AsyncSe
 @pytest.mark.asyncio()
 async def test_worker_handles_missing_entry(monkeypatch, db_session: AsyncSession):
     """Test worker handles missing entry gracefully."""
+
     async def _yield_session():
         yield db_session
 
@@ -113,7 +115,7 @@ async def test_worker_handles_missing_entry(monkeypatch, db_session: AsyncSessio
     class MissingMsg:
         data = json.dumps({
             "event_type": "entry.created",
-            "event_data": {"entry_id": "99999999-9999-9999-9999-999999999999"}
+            "event_data": {"entry_id": "99999999-9999-9999-9999-999999999999"},
         }).encode("utf-8")
         acked = False
         naked = False
@@ -138,9 +140,7 @@ async def test_worker_handles_entry_deleted_event(monkeypatch, db_session: Async
     """Test worker handles entry.deleted event."""
     # Create an entry with embedding
     entry = Entry(
-        title="To Delete",
-        content="Content",
-        author_id="11111111-1111-1111-1111-111111111111"
+        title="To Delete", content="Content", author_id="11111111-1111-1111-1111-111111111111"
     )
     db_session.add(entry)
     await db_session.commit()
@@ -153,14 +153,13 @@ async def test_worker_handles_entry_deleted_event(monkeypatch, db_session: Async
             INSERT INTO entry_embeddings(entry_id, embedding)
             VALUES (:id, '{embedding_str}'::vector)
         """),
-        {"id": str(entry.id)}
+        {"id": str(entry.id)},
     )
     await db_session.commit()
 
     # Verify embedding exists
     result = await db_session.execute(
-        text("SELECT COUNT(*) FROM entry_embeddings WHERE entry_id = :id"),
-        {"id": str(entry.id)}
+        text("SELECT COUNT(*) FROM entry_embeddings WHERE entry_id = :id"), {"id": str(entry.id)}
     )
     assert result.scalar() == 1
 
@@ -175,7 +174,7 @@ async def test_worker_handles_entry_deleted_event(monkeypatch, db_session: Async
     class DeleteMsg:
         data = json.dumps({
             "event_type": "entry.deleted",
-            "event_data": {"entry_id": str(entry.id)}
+            "event_data": {"entry_id": str(entry.id)},
         }).encode("utf-8")
         acked = False
 
@@ -188,8 +187,7 @@ async def test_worker_handles_entry_deleted_event(monkeypatch, db_session: Async
 
     # Embedding should be removed
     result = await db_session.execute(
-        text("SELECT COUNT(*) FROM entry_embeddings WHERE entry_id = :id"),
-        {"id": str(entry.id)}
+        text("SELECT COUNT(*) FROM entry_embeddings WHERE entry_id = :id"), {"id": str(entry.id)}
     )
     assert result.scalar() == 0
 
@@ -199,11 +197,7 @@ async def test_worker_handles_entry_deleted_event(monkeypatch, db_session: Async
 async def test_worker_rate_limit_nak(monkeypatch, db_session: AsyncSession):
     """Test worker NAKs on rate limit (circuit open) scenario."""
     # Provide a real entry
-    entry = Entry(
-        title="RL",
-        content="Content",
-        author_id="11111111-1111-1111-1111-111111111111"
-    )
+    entry = Entry(title="RL", content="Content", author_id="11111111-1111-1111-1111-111111111111")
     db_session.add(entry)
     await db_session.commit()
 
@@ -223,7 +217,7 @@ async def test_worker_rate_limit_nak(monkeypatch, db_session: AsyncSession):
     class Msg:
         data = json.dumps({
             "event_type": "entry.updated",
-            "event_data": {"entry_id": str(entry.id)}
+            "event_data": {"entry_id": str(entry.id)},
         }).encode("utf-8")
         naks = 0
 
@@ -239,6 +233,7 @@ async def test_worker_rate_limit_nak(monkeypatch, db_session: AsyncSession):
 @pytest.mark.asyncio()
 async def test_worker_poison_to_dlq(monkeypatch):
     import os
+
     """When DLQ enabled, poison messages go to DLQ and are TERMed if possible."""
     os.environ["OUTBOX_DLQ_ENABLED"] = "1"
 
@@ -260,6 +255,7 @@ async def test_worker_poison_to_dlq(monkeypatch):
 
             async def __aexit__(self, *exc):
                 return False
+
         return _C()
 
     monkeypatch.setattr("app.infra.nats_bus.nats_conn", _ctx)
@@ -290,7 +286,7 @@ async def test_worker_handles_entry_updated_event(monkeypatch, db_session: Async
     entry = Entry(
         title="Original",
         content="Original content",
-        author_id="11111111-1111-1111-1111-111111111111"
+        author_id="11111111-1111-1111-1111-111111111111",
     )
     db_session.add(entry)
     await db_session.commit()
@@ -307,7 +303,7 @@ async def test_worker_handles_entry_updated_event(monkeypatch, db_session: Async
     class UpdateMsg:
         data = json.dumps({
             "event_type": "entry.updated",
-            "event_data": {"entry_id": str(entry.id)}
+            "event_data": {"entry_id": str(entry.id)},
         }).encode("utf-8")
         acked = False
 
@@ -320,8 +316,7 @@ async def test_worker_handles_entry_updated_event(monkeypatch, db_session: Async
 
     # Embedding should exist
     result = await db_session.execute(
-        text("SELECT COUNT(*) FROM entry_embeddings WHERE entry_id = :id"),
-        {"id": str(entry.id)}
+        text("SELECT COUNT(*) FROM entry_embeddings WHERE entry_id = :id"), {"id": str(entry.id)}
     )
     assert result.scalar() == 1
 
@@ -336,7 +331,7 @@ async def test_worker_batch_processing(monkeypatch, db_session: AsyncSession):
         entry = Entry(
             title=f"Entry {i}",
             content=f"Content {i}",
-            author_id="11111111-1111-1111-1111-111111111111"
+            author_id="11111111-1111-1111-1111-111111111111",
         )
         db_session.add(entry)
         entries.append(entry)
@@ -352,10 +347,11 @@ async def test_worker_batch_processing(monkeypatch, db_session: AsyncSession):
 
     # Process events for all entries
     for entry in entries:
+
         class Msg:
             data = json.dumps({
                 "event_type": "entry.created",
-                "event_data": {"entry_id": str(entry.id)}
+                "event_data": {"entry_id": str(entry.id)},
             }).encode("utf-8")
             acked = False
 
@@ -367,7 +363,5 @@ async def test_worker_batch_processing(monkeypatch, db_session: AsyncSession):
         assert msg.acked
 
     # All entries should have embeddings
-    result = await db_session.execute(
-        text("SELECT COUNT(*) FROM entry_embeddings")
-    )
+    result = await db_session.execute(text("SELECT COUNT(*) FROM entry_embeddings"))
     assert result.scalar() >= 3

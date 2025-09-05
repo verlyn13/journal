@@ -16,7 +16,7 @@ async def test_dual_write_saves_both_formats(client: AsyncClient, auth_headers: 
     data = r.json()
     assert data["content_version"] >= 2
     assert data["markdown_content"] is not None
-    assert '<h1>' in data["content"]  # html derived from markdown
+    assert "<h1>" in data["content"]  # html derived from markdown
 
 
 @pytest.mark.asyncio()
@@ -46,7 +46,9 @@ async def test_new_clients_get_markdown(client: AsyncClient, auth_headers: dict[
 
 @pytest.mark.asyncio()
 @pytest.mark.integration()
-async def test_backfill_preserves_content(client: AsyncClient, auth_headers: dict[str, str], db_session):
+async def test_backfill_preserves_content(
+    client: AsyncClient, auth_headers: dict[str, str], db_session
+):
     # Create legacy HTML entry
     r = await client.post(
         "/api/v1/entries",
@@ -58,11 +60,14 @@ async def test_backfill_preserves_content(client: AsyncClient, auth_headers: dic
 
     # Invoke backfill function directly with the same session
     from app.scripts.backfill_markdown import backfill_markdown_content
+
     count = await backfill_markdown_content(session=db_session, batch_size=10)
     print(f"Backfill processed: {count} entries")
 
     # Verify markdown now present
-    r2 = await client.get("/api/v1/entries", headers={**auth_headers, "X-Content-Format": "markdown"})
+    r2 = await client.get(
+        "/api/v1/entries", headers={**auth_headers, "X-Content-Format": "markdown"}
+    )
     assert r2.status_code == 200
     items = r2.json()
     print(f"Final entries: {items}")

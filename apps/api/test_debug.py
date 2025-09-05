@@ -12,10 +12,7 @@ async def test_update():
         headers = await get_test_auth_headers(client)
 
         # Create an entry first
-        entry_data = {
-            "title": "Test Entry",
-            "content": "Test content"
-        }
+        entry_data = {"title": "Test Entry", "content": "Test content"}
 
         create_resp = await client.post("/api/v1/entries", json=entry_data, headers=headers)
         print(f"Create status: {create_resp.status_code}")
@@ -24,12 +21,11 @@ async def test_update():
             entry_id = create_resp.json()["id"]
 
             # Now try to update
-            update_data = {
-                "title": "Updated Title",
-                "content": "Updated content"
-            }
+            update_data = {"title": "Updated Title", "content": "Updated content"}
 
-            update_resp = await client.put(f"/api/v1/entries/{entry_id}", json=update_data, headers=headers)
+            update_resp = await client.put(
+                f"/api/v1/entries/{entry_id}", json=update_data, headers=headers
+            )
             print(f"Update status: {update_resp.status_code}")
 
             if update_resp.status_code == 422:

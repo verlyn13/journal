@@ -28,10 +28,10 @@ class RefreshRequest(BaseModel):
 @router.post("/login")
 async def login(body: LoginRequest) -> dict[str, str]:
     """Password login (demo only accepts demo/demo123).
-    
+
     Returns:
         Dictionary with access_token, refresh_token, and token_type.
-        
+
     Raises:
         HTTPException: If invalid credentials.
     """
@@ -63,10 +63,10 @@ async def demo_login() -> dict[str, str]:
 @router.post("/refresh")
 async def refresh(body: RefreshRequest) -> dict[str, str]:
     """Exchange a valid refresh token for a new access token.
-    
+
     Returns:
         Dictionary with new access_token and token_type.
-        
+
     Raises:
         HTTPException: If refresh token is invalid or expired.
     """
@@ -95,7 +95,7 @@ async def refresh(body: RefreshRequest) -> dict[str, str]:
 @router.get("/me")
 async def get_me(user_id: Annotated[str, Depends(get_current_user)]) -> dict[str, str]:
     """Get current user information.
-    
+
     Returns:
         User information including id, username, and email.
     """
@@ -110,10 +110,10 @@ async def get_me(user_id: Annotated[str, Depends(get_current_user)]) -> dict[str
 @router.post("/logout")
 async def logout(user_id: Annotated[str, Depends(get_current_user)]) -> dict[str, str]:
     """Log out the current user.
-    
+
     Returns:
         Success message.
-    
+
     Note:
         In production, this would invalidate the token in Redis/cache.
     """

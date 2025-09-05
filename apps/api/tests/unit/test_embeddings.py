@@ -1,6 +1,7 @@
 """
 Unit tests for embedding functionality with mocked OpenAI API.
 """
+
 import importlib
 import os
 
@@ -40,8 +41,7 @@ class TestEmbeddings:
 
             # Should call OpenAI API
             mock_client.embeddings.create.assert_called_once_with(
-                model="text-embedding-3-small",
-                input="test text"
+                model="text-embedding-3-small", input="test text"
             )
 
             # Should return embedding (normalized)

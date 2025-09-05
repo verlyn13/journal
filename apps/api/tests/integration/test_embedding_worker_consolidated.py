@@ -2,10 +2,11 @@
 Consolidated test cases for embedding worker functionality.
 Combines tests from test_embedding_worker.py and test_embedding_worker_extended.py
 """
+
 import asyncio
 import json
 
-from contextlib import asynccontextmanager
+from contextlib import asynccontextmanager, suppress
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -19,6 +20,7 @@ from app.workers.embedding_consumer import EmbeddingConsumer
 
 class FakeMsg:
     """Mock message for testing."""
+
     def __init__(self, payload: dict):
         self.data = json.dumps(payload).encode("utf-8")
         self.acked = False
@@ -39,7 +41,9 @@ class TestEmbeddingWorker:
     async def test_embedding_written_on_entry_event(self, monkeypatch, db_session: AsyncSession):
         """Test that embedding is created when entry.created event is received."""
         # Create an entry without embeddings
-        e = Entry(title="Embed Me", content="Some text", author_id="11111111-1111-1111-1111-111111111111")
+        e = Entry(
+            title="Embed Me", content="Some text", author_id="11111111-1111-1111-1111-111111111111"
+        )
         db_session.add(e)
         await db_session.commit()
 
@@ -62,7 +66,9 @@ class TestEmbeddingWorker:
         assert msg.acked and not msg.naked
 
         # Verify embedding upsert occurred
-        res = await db_session.execute(text("SELECT COUNT(*) FROM entry_embeddings WHERE entry_id = :id"), {"id": str(e.id)})
+        res = await db_session.execute(
+            text("SELECT COUNT(*) FROM entry_embeddings WHERE entry_id = :id"), {"id": str(e.id)}
+        )
         assert (res.scalar() or 0) == 1
 
         # Send again: idempotent upsert keeps single row
@@ -71,7 +77,9 @@ class TestEmbeddingWorker:
             "event_data": {"entry_id": str(e.id)},
         })
         await consumer.process_entry_event(msg2)
-        res2 = await db_session.execute(text("SELECT COUNT(*) FROM entry_embeddings WHERE entry_id = :id"), {"id": str(e.id)})
+        res2 = await db_session.execute(
+            text("SELECT COUNT(*) FROM entry_embeddings WHERE entry_id = :id"), {"id": str(e.id)}
+        )
         assert (res2.scalar() or 0) == 1
 
     @pytest.mark.asyncio()
@@ -100,13 +108,17 @@ class TestEmbeddingWorker:
         assert reindex.acked
 
         # Check embeddings exist
-        cnt = (await db_session.execute(text("SELECT COUNT(*) FROM entry_embeddings"))).scalar() or 0
+        cnt = (
+            await db_session.execute(text("SELECT COUNT(*) FROM entry_embeddings"))
+        ).scalar() or 0
         assert cnt >= 2
 
         # Run reindex again: state should be the same, no error
         reindex2 = FakeMsg({"event_type": "embedding.reindex", "event_data": {}})
         await consumer.process_entry_event(reindex2)
-        cnt2 = (await db_session.execute(text("SELECT COUNT(*) FROM entry_embeddings"))).scalar() or 0
+        cnt2 = (
+            await db_session.execute(text("SELECT COUNT(*) FROM entry_embeddings"))
+        ).scalar() or 0
         assert cnt2 == cnt
 
     @pytest.mark.asyncio()
@@ -138,6 +150,7 @@ class TestEmbeddingWorker:
     @pytest.mark.asyncio()
     async def test_worker_connection_failure_handling(self, monkeypatch):
         """Test worker handles connection failures gracefully."""
+
         # Mock NATS to fail connection
         async def mock_connect_fail(servers):
             raise Exception("Connection refused")
@@ -156,10 +169,7 @@ class TestEmbeddingWorker:
         consumer = EmbeddingConsumer()
 
         # Create message with unknown event type
-        msg = FakeMsg({
-            "event_type": "unknown.event",
-            "event_data": {"some": "data"}
-        })
+        msg = FakeMsg({"event_type": "unknown.event", "event_data": {"some": "data"}})
 
         await consumer.process_entry_event(msg)
 
@@ -179,7 +189,7 @@ class TestEmbeddingWorker:
                 "subject": subject,
                 "queue": queue,
                 "manual_ack": manual_ack,
-                "max_deliver": max_deliver
+                "max_deliver": max_deliver,
             })
             return AsyncMock()
 
@@ -200,10 +210,8 @@ class TestEmbeddingWorker:
         await asyncio.sleep(0.1)
         task.cancel()
 
-        try:
+        with suppress(asyncio.CancelledError):
             await task
-        except asyncio.CancelledError:
-            pass
 
         # Check subscriptions
         assert len(subscriptions) == 2
@@ -223,14 +231,12 @@ class TestEmbeddingWorker:
         assert reindex_sub["max_deliver"] == 1
 
     @pytest.mark.asyncio()
-    async def test_worker_handles_entry_with_no_content(self, monkeypatch, db_session: AsyncSession):
+    async def test_worker_handles_entry_with_no_content(
+        self, monkeypatch, db_session: AsyncSession
+    ):
         """Test worker handles entries with empty content."""
         # Create entry with no content
-        entry = Entry(
-            title="",
-            content="",
-            author_id="11111111-1111-1111-1111-111111111111"
-        )
+        entry = Entry(title="", content="", author_id="11111111-1111-1111-1111-111111111111")
         db_session.add(entry)
         await db_session.commit()
 
@@ -243,15 +249,14 @@ class TestEmbeddingWorker:
             embeddings_created.append((entry_id, text))
 
         monkeypatch.setattr("app.workers.embedding_consumer.get_session", _yield_session)
-        monkeypatch.setattr("app.workers.embedding_consumer.upsert_entry_embedding", mock_upsert_embedding)
+        monkeypatch.setattr(
+            "app.workers.embedding_consumer.upsert_entry_embedding", mock_upsert_embedding
+        )
 
         consumer = EmbeddingConsumer()
 
         # Send created event
-        msg = FakeMsg({
-            "event_type": "entry.created",
-            "event_data": {"entry_id": str(entry.id)}
-        })
+        msg = FakeMsg({"event_type": "entry.created", "event_data": {"entry_id": str(entry.id)}})
 
         await consumer.process_entry_event(msg)
 
@@ -261,13 +266,13 @@ class TestEmbeddingWorker:
         assert embeddings_created[0][1] == " "  # title + " " + content
 
     @pytest.mark.asyncio()
-    async def test_worker_handles_database_error_during_upsert(self, monkeypatch, db_session: AsyncSession):
+    async def test_worker_handles_database_error_during_upsert(
+        self, monkeypatch, db_session: AsyncSession
+    ):
         """Test worker handles database errors during embedding upsert."""
         # Create entry
         entry = Entry(
-            title="Test",
-            content="Content",
-            author_id="11111111-1111-1111-1111-111111111111"
+            title="Test", content="Content", author_id="11111111-1111-1111-1111-111111111111"
         )
         db_session.add(entry)
         await db_session.commit()
@@ -279,15 +284,14 @@ class TestEmbeddingWorker:
             raise Exception("Database error")
 
         monkeypatch.setattr("app.workers.embedding_consumer.get_session", _yield_session)
-        monkeypatch.setattr("app.workers.embedding_consumer.upsert_entry_embedding", mock_upsert_error)
+        monkeypatch.setattr(
+            "app.workers.embedding_consumer.upsert_entry_embedding", mock_upsert_error
+        )
 
         consumer = EmbeddingConsumer()
 
         # Send created event
-        msg = FakeMsg({
-            "event_type": "entry.created",
-            "event_data": {"entry_id": str(entry.id)}
-        })
+        msg = FakeMsg({"event_type": "entry.created", "event_data": {"entry_id": str(entry.id)}})
 
         await consumer.process_entry_event(msg)
 
@@ -306,7 +310,9 @@ class TestEmbeddingWorker:
         assert consumer.running is False
 
     @pytest.mark.asyncio()
-    async def test_worker_handles_partial_reindex_failure(self, monkeypatch, db_session: AsyncSession):
+    async def test_worker_handles_partial_reindex_failure(
+        self, monkeypatch, db_session: AsyncSession
+    ):
         """Test worker continues reindexing even if some entries fail."""
         # Create test entries
         entries = []
@@ -314,7 +320,7 @@ class TestEmbeddingWorker:
             entry = Entry(
                 title=f"Entry {i}",
                 content=f"Content {i}",
-                author_id="11111111-1111-1111-1111-111111111111"
+                author_id="11111111-1111-1111-1111-111111111111",
             )
             db_session.add(entry)
             entries.append(entry)
@@ -335,15 +341,14 @@ class TestEmbeddingWorker:
             embeddings_created.append((entry_id, text))
 
         monkeypatch.setattr("app.workers.embedding_consumer.get_session", _yield_session)
-        monkeypatch.setattr("app.workers.embedding_consumer.upsert_entry_embedding", mock_upsert_embedding)
+        monkeypatch.setattr(
+            "app.workers.embedding_consumer.upsert_entry_embedding", mock_upsert_embedding
+        )
 
         consumer = EmbeddingConsumer()
 
         # Send reindex event
-        msg = FakeMsg({
-            "event_type": "embedding.reindex",
-            "event_data": {}
-        })
+        msg = FakeMsg({"event_type": "embedding.reindex", "event_data": {}})
 
         await consumer.process_entry_event(msg)
 

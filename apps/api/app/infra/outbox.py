@@ -2,6 +2,7 @@ from __future__ import annotations
 
 # Standard library imports
 import asyncio
+import contextlib
 import json
 import os
 import random
@@ -9,7 +10,7 @@ import random
 from datetime import datetime, timedelta
 
 # Third-party imports
-from sqlalchemy import select, update
+from sqlalchemy import select, text, update
 
 # Local imports
 from app.infra.models import Event
@@ -63,14 +64,12 @@ async def relay_outbox(session_factory, poll_seconds: float = 1.0):
                         js = None
                     for ev in rows:
                         subject = SUBJECT_MAP.get(ev.aggregate_type, "journal.events")
-                        payload = json.dumps(
-                            {
-                                "id": str(ev.id),
-                                "event_type": ev.event_type,
-                                "event_data": ev.event_data,
-                                "ts": ev.occurred_at.isoformat(),
-                            }
-                        ).encode("utf-8")
+                        payload = json.dumps({
+                            "id": str(ev.id),
+                            "event_type": ev.event_type,
+                            "event_data": ev.event_data,
+                            "ts": ev.occurred_at.isoformat(),
+                        }).encode("utf-8")
                         try:
                             metrics_inc("outbox_publish_attempts_total", {"stage": "attempt"})
                             if js:
@@ -120,14 +119,12 @@ async def process_outbox_batch(session_factory) -> int:
                 js = None
             for ev in rows:
                 subject = SUBJECT_MAP.get(ev.aggregate_type, "journal.events")
-                payload = json.dumps(
-                    {
-                        "id": str(ev.id),
-                        "event_type": ev.event_type,
-                        "event_data": ev.event_data,
-                        "ts": ev.occurred_at.isoformat(),
-                    }
-                ).encode("utf-8")
+                payload = json.dumps({
+                    "id": str(ev.id),
+                    "event_type": ev.event_type,
+                    "event_data": ev.event_data,
+                    "ts": ev.occurred_at.isoformat(),
+                }).encode("utf-8")
                 try:
                     metrics_inc("outbox_publish_attempts_total", {"stage": "attempt"})
                     if js:
@@ -154,6 +151,7 @@ async def process_outbox_batch(session_factory) -> int:
 # ------------------------------
 # Internal helpers
 # ------------------------------
+
 
 def _pub_state_fields():
     # When columns are present, set state to published; tolerate missing columns
@@ -190,7 +188,9 @@ async def _schedule_retry_or_dead(session, ev: Event, error: Exception, nc) -> N
         # Fetch attempts if column exists
         attempts = 0
         try:
-            row = session.execute(_text("SELECT attempts FROM events WHERE id = :id"), {"id": ev.id}).scalar_one()
+            row = session.execute(
+                _text("SELECT attempts FROM events WHERE id = :id"), {"id": ev.id}
+            ).scalar_one()
             attempts = int(row or 0)
         except Exception:
             attempts = 0
@@ -214,12 +214,10 @@ async def _schedule_retry_or_dead(session, ev: Event, error: Exception, nc) -> N
 
         # If exceeded threshold, best-effort mark dead and publish to DLQ via separate process
         if attempts + 1 >= max_attempts:
-            try:
+            with contextlib.suppress(Exception):
                 session.execute(
                     _text("UPDATE events SET state = 'dead' WHERE id = :id"), {"id": ev.id}
                 )
-            except Exception:
-                pass
             # DLQ if enabled
             if os.getenv("OUTBOX_DLQ_ENABLED", "0") == "1":
                 try:

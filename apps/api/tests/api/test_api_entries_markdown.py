@@ -1,6 +1,7 @@
 """
 Test cases for entry API markdown content handling.
 """
+
 import pytest
 
 from httpx import AsyncClient
@@ -19,7 +20,7 @@ class TestEntriesMarkdownAPI:
         client: AsyncClient,
         auth_headers: dict[str, str],
         sample_entry: Entry,
-        db_session: AsyncSession
+        db_session: AsyncSession,
     ):
         """Test that updating with markdown_content sets content_version to 2."""
         update_data = {
@@ -28,9 +29,7 @@ class TestEntriesMarkdownAPI:
         }
 
         response = await client.put(
-            f"/api/v1/entries/{sample_entry.id}",
-            json=update_data,
-            headers=auth_headers
+            f"/api/v1/entries/{sample_entry.id}", json=update_data, headers=auth_headers
         )
 
         assert response.status_code == 200
@@ -41,7 +40,9 @@ class TestEntriesMarkdownAPI:
 
         # Should have generated HTML
         assert "<h1>" in data["content"] or "Updated Title" in data["content"]
-        assert "<strong>" in data["content"] or "<b>" in data["content"] or "bold" in data["content"]
+        assert (
+            "<strong>" in data["content"] or "<b>" in data["content"] or "bold" in data["content"]
+        )
         assert "<a" in data["content"] or "https://example.com" in data["content"]
 
         # Should set content_version to 2 (markdown)
@@ -49,10 +50,7 @@ class TestEntriesMarkdownAPI:
 
     @pytest.mark.asyncio()
     async def test_update_entry_markdown_with_explicit_version(
-        self,
-        client: AsyncClient,
-        auth_headers: dict[str, str],
-        sample_entry: Entry
+        self, client: AsyncClient, auth_headers: dict[str, str], sample_entry: Entry
     ):
         """Test updating markdown with explicit content_version."""
         update_data = {
@@ -62,9 +60,7 @@ class TestEntriesMarkdownAPI:
         }
 
         response = await client.put(
-            f"/api/v1/entries/{sample_entry.id}",
-            json=update_data,
-            headers=auth_headers
+            f"/api/v1/entries/{sample_entry.id}", json=update_data, headers=auth_headers
         )
 
         assert response.status_code == 200
@@ -73,10 +69,7 @@ class TestEntriesMarkdownAPI:
 
     @pytest.mark.asyncio()
     async def test_update_entry_html_preserves_version(
-        self,
-        client: AsyncClient,
-        auth_headers: dict[str, str],
-        sample_entry: Entry
+        self, client: AsyncClient, auth_headers: dict[str, str], sample_entry: Entry
     ):
         """Test that updating HTML content preserves existing version."""
         # First set to markdown version
@@ -111,10 +104,7 @@ class TestEntriesMarkdownAPI:
 
     @pytest.mark.asyncio()
     async def test_update_entry_markdown_with_code_blocks(
-        self,
-        client: AsyncClient,
-        auth_headers: dict[str, str],
-        sample_entry: Entry
+        self, client: AsyncClient, auth_headers: dict[str, str], sample_entry: Entry
     ):
         """Test markdown with code blocks converts properly."""
         update_data = {
@@ -152,10 +142,7 @@ console.log("Hello");
 
     @pytest.mark.asyncio()
     async def test_update_entry_markdown_with_lists(
-        self,
-        client: AsyncClient,
-        auth_headers: dict[str, str],
-        sample_entry: Entry
+        self, client: AsyncClient, auth_headers: dict[str, str], sample_entry: Entry
     ):
         """Test markdown with lists converts properly."""
         update_data = {
@@ -191,10 +178,7 @@ Ordered:
 
     @pytest.mark.asyncio()
     async def test_update_entry_markdown_with_images(
-        self,
-        client: AsyncClient,
-        auth_headers: dict[str, str],
-        sample_entry: Entry
+        self, client: AsyncClient, auth_headers: dict[str, str], sample_entry: Entry
     ):
         """Test markdown with images converts properly."""
         update_data = {
@@ -224,10 +208,7 @@ Some text here.
 
     @pytest.mark.asyncio()
     async def test_update_entry_empty_markdown(
-        self,
-        client: AsyncClient,
-        auth_headers: dict[str, str],
-        sample_entry: Entry
+        self, client: AsyncClient, auth_headers: dict[str, str], sample_entry: Entry
     ):
         """Test updating with empty markdown content."""
         update_data = {
@@ -236,9 +217,7 @@ Some text here.
         }
 
         response = await client.put(
-            f"/api/v1/entries/{sample_entry.id}",
-            json=update_data,
-            headers=auth_headers
+            f"/api/v1/entries/{sample_entry.id}", json=update_data, headers=auth_headers
         )
 
         assert response.status_code == 200
@@ -248,10 +227,7 @@ Some text here.
 
     @pytest.mark.asyncio()
     async def test_update_entry_markdown_special_characters(
-        self,
-        client: AsyncClient,
-        auth_headers: dict[str, str],
-        sample_entry: Entry
+        self, client: AsyncClient, auth_headers: dict[str, str], sample_entry: Entry
     ):
         """Test markdown with special characters and escaping."""
         update_data = {
@@ -277,14 +253,13 @@ Math: 5 < 10 && 10 > 5
 
         # Should escape HTML entities
         assert "&amp;" in data["content"] or "ampersands" in data["content"]
-        assert "&lt;" in data["content"] or "&gt;" in data["content"] or "brackets" in data["content"]
+        assert (
+            "&lt;" in data["content"] or "&gt;" in data["content"] or "brackets" in data["content"]
+        )
 
     @pytest.mark.asyncio()
     async def test_update_entry_prefer_markdown_header(
-        self,
-        client: AsyncClient,
-        auth_headers: dict[str, str],
-        sample_entry: Entry
+        self, client: AsyncClient, auth_headers: dict[str, str], sample_entry: Entry
     ):
         """Test X-Editor-Mode header for markdown preference."""
         # Update with markdown
@@ -308,10 +283,7 @@ Math: 5 < 10 && 10 > 5
         assert "markdown_content" in data
 
         # Get with markdown preference
-        response = await client.get(
-            f"/api/v1/entries/{sample_entry.id}",
-            headers=headers
-        )
+        response = await client.get(f"/api/v1/entries/{sample_entry.id}", headers=headers)
 
         assert response.status_code == 200
         data = response.json()
@@ -320,10 +292,7 @@ Math: 5 < 10 && 10 > 5
 
     @pytest.mark.asyncio()
     async def test_update_entry_mixed_content_priority(
-        self,
-        client: AsyncClient,
-        auth_headers: dict[str, str],
-        sample_entry: Entry
+        self, client: AsyncClient, auth_headers: dict[str, str], sample_entry: Entry
     ):
         """Test that markdown_content takes priority over content."""
         update_data = {
@@ -333,9 +302,7 @@ Math: 5 < 10 && 10 > 5
         }
 
         response = await client.put(
-            f"/api/v1/entries/{sample_entry.id}",
-            json=update_data,
-            headers=auth_headers
+            f"/api/v1/entries/{sample_entry.id}", json=update_data, headers=auth_headers
         )
 
         assert response.status_code == 200
@@ -348,10 +315,7 @@ Math: 5 < 10 && 10 > 5
 
     @pytest.mark.asyncio()
     async def test_update_entry_null_markdown_allowed(
-        self,
-        client: AsyncClient,
-        auth_headers: dict[str, str],
-        sample_entry: Entry
+        self, client: AsyncClient, auth_headers: dict[str, str], sample_entry: Entry
     ):
         """Test that null markdown_content is allowed."""
         # First set markdown content
@@ -364,7 +328,11 @@ Math: 5 < 10 && 10 > 5
         assert response.status_code == 200
 
         # Now clear it with null
-        update2 = {"markdown_content": None, "content": "<p>HTML only</p>", "expected_version": response.json()["version"]}
+        update2 = {
+            "markdown_content": None,
+            "content": "<p>HTML only</p>",
+            "expected_version": response.json()["version"],
+        }
         response = await client.put(
             f"/api/v1/entries/{sample_entry.id}",
             json=update2,

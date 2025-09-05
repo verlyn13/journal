@@ -1,6 +1,7 @@
 """
 Test cases for entry API error paths and edge cases.
 """
+
 import pytest
 
 from httpx import AsyncClient
@@ -15,10 +16,7 @@ class TestEntriesAPIErrors:
 
     @pytest.mark.asyncio()
     async def test_get_entries_with_pagination(
-        self,
-        client: AsyncClient,
-        auth_headers: dict[str, str],
-        db_session: AsyncSession
+        self, client: AsyncClient, auth_headers: dict[str, str], db_session: AsyncSession
     ):
         """Test getting entries with pagination parameters."""
         # Create multiple entries
@@ -26,26 +24,20 @@ class TestEntriesAPIErrors:
             entry = Entry(
                 title=f"Entry {i}",
                 content=f"Content {i}",
-                author_id="11111111-1111-1111-1111-111111111111"
+                author_id="11111111-1111-1111-1111-111111111111",
             )
             db_session.add(entry)
         await db_session.flush()
 
         # Test with limit
-        response = await client.get(
-            "/api/v1/entries",
-            params={"limit": 5},
-            headers=auth_headers
-        )
+        response = await client.get("/api/v1/entries", params={"limit": 5}, headers=auth_headers)
         assert response.status_code == 200
         entries = response.json()
         assert len(entries) == 5
 
         # Test with offset
         response = await client.get(
-            "/api/v1/entries",
-            params={"offset": 10, "limit": 10},
-            headers=auth_headers
+            "/api/v1/entries", params={"offset": 10, "limit": 10}, headers=auth_headers
         )
         assert response.status_code == 200
         entries = response.json()
@@ -53,10 +45,7 @@ class TestEntriesAPIErrors:
 
     @pytest.mark.asyncio()
     async def test_update_entry_empty_data(
-        self,
-        client: AsyncClient,
-        auth_headers: dict[str, str],
-        sample_entry: Entry
+        self, client: AsyncClient, auth_headers: dict[str, str], sample_entry: Entry
     ):
         """Test updating entry with empty data."""
         response = await client.put(
@@ -72,10 +61,7 @@ class TestEntriesAPIErrors:
 
     @pytest.mark.asyncio()
     async def test_update_entry_markdown_conversion(
-        self,
-        client: AsyncClient,
-        auth_headers: dict[str, str],
-        sample_entry: Entry
+        self, client: AsyncClient, auth_headers: dict[str, str], sample_entry: Entry
     ):
         """Test updating entry with markdown content."""
         update_data = {
@@ -87,9 +73,7 @@ class TestEntriesAPIErrors:
         headers = {**auth_headers, "X-Editor-Mode": "markdown"}
 
         response = await client.put(
-            f"/api/v1/entries/{sample_entry.id}",
-            json=update_data,
-            headers=headers
+            f"/api/v1/entries/{sample_entry.id}", json=update_data, headers=headers
         )
         assert response.status_code == 200
         data = response.json()
@@ -101,10 +85,7 @@ class TestEntriesAPIErrors:
 
     @pytest.mark.asyncio()
     async def test_update_entry_html_conversion(
-        self,
-        client: AsyncClient,
-        auth_headers: dict[str, str],
-        sample_entry: Entry
+        self, client: AsyncClient, auth_headers: dict[str, str], sample_entry: Entry
     ):
         """Test updating entry with HTML content."""
         update_data = {
@@ -113,9 +94,7 @@ class TestEntriesAPIErrors:
         }
 
         response = await client.put(
-            f"/api/v1/entries/{sample_entry.id}",
-            json=update_data,
-            headers=auth_headers
+            f"/api/v1/entries/{sample_entry.id}", json=update_data, headers=auth_headers
         )
         assert response.status_code == 200
         data = response.json()
@@ -124,9 +103,7 @@ class TestEntriesAPIErrors:
 
     @pytest.mark.asyncio()
     async def test_update_entry_invalid_uuid(
-        self,
-        client: AsyncClient,
-        auth_headers: dict[str, str]
+        self, client: AsyncClient, auth_headers: dict[str, str]
     ):
         """Test updating entry with invalid UUID format."""
         response = await client.put(
@@ -138,9 +115,7 @@ class TestEntriesAPIErrors:
 
     @pytest.mark.asyncio()
     async def test_delete_entry_invalid_uuid(
-        self,
-        client: AsyncClient,
-        auth_headers: dict[str, str]
+        self, client: AsyncClient, auth_headers: dict[str, str]
     ):
         """Test deleting entry with invalid UUID format."""
         response = await client.delete(
@@ -150,23 +125,15 @@ class TestEntriesAPIErrors:
         assert response.status_code == 404  # Invalid UUID treated as not found
 
     @pytest.mark.asyncio()
-    async def test_create_entry_with_tags(
-        self,
-        client: AsyncClient,
-        auth_headers: dict[str, str]
-    ):
+    async def test_create_entry_with_tags(self, client: AsyncClient, auth_headers: dict[str, str]):
         """Test creating entry with tags."""
         entry_data = {
             "title": "Entry with tags",
             "content": "Content",
-            "tags": ["python", "testing", "api"]
+            "tags": ["python", "testing", "api"],
         }
 
-        response = await client.post(
-            "/api/v1/entries",
-            json=entry_data,
-            headers=auth_headers
-        )
+        response = await client.post("/api/v1/entries", json=entry_data, headers=auth_headers)
         assert response.status_code == 201
         data = response.json()
         assert data["title"] == entry_data["title"]
@@ -174,32 +141,25 @@ class TestEntriesAPIErrors:
 
     @pytest.mark.asyncio()
     async def test_get_entries_with_search_query(
-        self,
-        client: AsyncClient,
-        auth_headers: dict[str, str],
-        db_session: AsyncSession
+        self, client: AsyncClient, auth_headers: dict[str, str], db_session: AsyncSession
     ):
         """Test getting entries with search query parameter."""
         # Create test entries
         entry1 = Entry(
             title="Python Guide",
             content="Learn Python",
-            author_id="11111111-1111-1111-1111-111111111111"
+            author_id="11111111-1111-1111-1111-111111111111",
         )
         entry2 = Entry(
             title="Java Tutorial",
             content="Learn Java",
-            author_id="11111111-1111-1111-1111-111111111111"
+            author_id="11111111-1111-1111-1111-111111111111",
         )
         db_session.add_all([entry1, entry2])
         await db_session.flush()
 
         # Search for Python
-        response = await client.get(
-            "/api/v1/entries",
-            params={"q": "Python"},
-            headers=auth_headers
-        )
+        response = await client.get("/api/v1/entries", params={"q": "Python"}, headers=auth_headers)
         assert response.status_code == 200
         entries = response.json()
         # Should return Python entry

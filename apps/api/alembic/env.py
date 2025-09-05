@@ -5,7 +5,7 @@ from logging.config import fileConfig
 
 
 # Suppress duplicate logging
-logging.getLogger('alembic.runtime.migration').setLevel(logging.WARNING)
+logging.getLogger("alembic.runtime.migration").setLevel(logging.WARNING)
 
 from sqlalchemy import create_engine, pool, text
 from sqlalchemy.engine import Connection
@@ -99,16 +99,16 @@ def run_migrations_online() -> None:
 
     with connectable.connect() as connection:
         # Probe the actual connection
-        row = connection.execute(text("select current_database(), version(), current_setting('application_name', true)")).first()
+        row = connection.execute(
+            text("select current_database(), version(), current_setting('application_name', true)")
+        ).first()
         print(f"[alembic] current_database={row[0]}")
         print(f"[alembic] postgres_version={row[1][:20]}...")
         print(f"[alembic] application_name={row[2]}")
         # --- end probe ---
 
         context.configure(
-            connection=connection,
-            target_metadata=target_metadata,
-            transactional_ddl=True
+            connection=connection, target_metadata=target_metadata, transactional_ddl=True
         )
 
         with context.begin_transaction():

@@ -223,7 +223,7 @@ code block content
 
     def test_code_block_with_language_hint(self):
         """Test code blocks with language specifications."""
-        markdown_with_code = '''```python
+        markdown_with_code = """```python
 def factorial(n):
     if n <= 1:
         return 1
@@ -236,7 +236,7 @@ const add = (a, b) => a + b;
 
 ```
 Plain code block
-```'''
+```"""
 
         html = markdown_to_html(markdown_with_code)
 

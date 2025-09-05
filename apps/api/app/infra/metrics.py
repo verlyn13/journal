@@ -4,15 +4,15 @@ from __future__ import annotations
 
 import re
 
-from typing import Any, Dict, Tuple
+from typing import Any
 
 
 def count_words_chars(text: str | None) -> tuple[int, int]:
     """Count words and characters in text.
-    
+
     Args:
         text: Text to analyze (can be None)
-        
+
     Returns:
         Tuple of (word_count, char_count)
     """
@@ -20,7 +20,7 @@ def count_words_chars(text: str | None) -> tuple[int, int]:
         return 0, 0
 
     # Use regex to count words (naive but deterministic for tests)
-    words = len(re.findall(r'\b\w+\b', text))
+    words = len(re.findall(r"\b\w+\b", text))
     chars = len(text)
 
     return words, chars
@@ -28,11 +28,11 @@ def count_words_chars(text: str | None) -> tuple[int, int]:
 
 def extract_text_for_metrics(content: dict[str, Any] | str | None, markdown: str | None) -> str:
     """Extract plain text for metrics calculation.
-    
+
     Args:
         content: Content field (can be dict, string, or None)
         markdown: Markdown content (preferred for metrics)
-        
+
     Returns:
         Plain text string for analysis
     """

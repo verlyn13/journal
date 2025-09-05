@@ -40,25 +40,20 @@ class TestWorkflowsQuality:
                 json={
                     "title": f"Day {i + 1} Entry",
                     "markdown_content": f"# Day {i + 1}\n\nToday I learned about **testing**.",
-                    "content_version": 2
+                    "content_version": 2,
                 },
-                headers=auth_headers
+                headers=auth_headers,
             )
             assert create_response.status_code == 201
             entries_created.append(create_response.json())
 
         # Generate embeddings for search (if needed)
         for entry in entries_created:
-            await client.post(
-                f"/api/v1/search/entries/{entry['id']}/embed",
-                headers=auth_headers
-            )
+            await client.post(f"/api/v1/search/entries/{entry['id']}/embed", headers=auth_headers)
 
         # Step 4: Search for entries
         search_response = await client.get(
-            "/api/v1/search",
-            params={"q": "testing"},
-            headers=auth_headers
+            "/api/v1/search", params={"q": "testing"}, headers=auth_headers
         )
         assert search_response.status_code == 200
         search_results = search_response.json()
@@ -76,7 +71,7 @@ class TestWorkflowsQuality:
                 "markdown_content": "# Updated\n\nNew content with **more details**.",
                 "expected_version": cur.json()["version"],
             },
-            headers=auth_headers
+            headers=auth_headers,
         )
         assert update_response.status_code == 200
 
@@ -92,15 +87,15 @@ class TestWorkflowsQuality:
         delete_response = await client.delete(
             f"/api/v1/entries/{entries_created[2]['id']}",
             headers=auth_headers,
-            params={"expected_version": cur2.json()["version"]}
+            params={"expected_version": cur2.json()["version"]},
         )
         assert delete_response.status_code == 204
 
         # Step 8: Verify deletion in list
         list_response = await client.get("/api/v1/entries", headers=auth_headers)
         current_entries = list_response.json()
-        deleted_id = entries_created[2]['id']
-        assert not any(e['id'] == deleted_id for e in current_entries)
+        deleted_id = entries_created[2]["id"]
+        assert not any(e["id"] == deleted_id for e in current_entries)
 
     @pytest.mark.asyncio()
     async def test_concurrent_user_operations(
@@ -113,35 +108,27 @@ class TestWorkflowsQuality:
                 "/api/v1/entries",
                 json={
                     "title": f"Concurrent Entry {index}",
-                    "content": f"<p>Content for entry {index}</p>"
+                    "content": f"<p>Content for entry {index}</p>",
                 },
-                headers=auth_headers
+                headers=auth_headers,
             )
 
         async def search_entries(query: str):
-            return await client.get(
-                "/api/v1/search",
-                params={"q": query},
-                headers=auth_headers
-            )
+            return await client.get("/api/v1/search", params={"q": query}, headers=auth_headers)
 
         async def get_stats():
             return await client.get("/api/v1/stats", headers=auth_headers)
 
         # Run multiple operations concurrently
-        tasks = []
 
         # Create 5 entries
-        for i in range(5):
-            tasks.append(create_entry(i))
+        tasks = [create_entry(i) for i in range(5)]
 
         # Perform 3 searches
-        for query in ["Concurrent", "Entry", "Content"]:
-            tasks.append(search_entries(query))
+        tasks.extend(search_entries(query) for query in ["Concurrent", "Entry", "Content"])
 
         # Get stats 3 times
-        for _ in range(3):
-            tasks.append(get_stats())
+        tasks.extend(get_stats() for _ in range(3))
 
         # Execute all tasks concurrently
         results = await asyncio.gather(*tasks, return_exceptions=True)
@@ -163,16 +150,14 @@ class TestWorkflowsQuality:
         assert all(r.status_code == 200 for r in stats_results)
 
     @pytest.mark.asyncio()
-    async def test_error_recovery_workflow(
-        self, client: AsyncClient, auth_headers: dict[str, str]
-    ):
+    async def test_error_recovery_workflow(self, client: AsyncClient, auth_headers: dict[str, str]):
         """Test system recovery from various error conditions."""
 
         # Test 1: Invalid data recovery
         invalid_response = await client.post(
             "/api/v1/entries",
             json={"title": None, "content": None},  # Invalid data
-            headers=auth_headers
+            headers=auth_headers,
         )
         assert invalid_response.status_code == 422
 
@@ -180,24 +165,18 @@ class TestWorkflowsQuality:
         valid_response = await client.post(
             "/api/v1/entries",
             json={"title": "Valid Entry", "content": "Valid content"},
-            headers=auth_headers
+            headers=auth_headers,
         )
         assert valid_response.status_code == 201
         entry_id = valid_response.json()["id"]
 
         # Test 2: Not found recovery
         fake_id = "550e8400-e29b-41d4-a716-446655440000"
-        not_found_response = await client.get(
-            f"/api/v1/entries/{fake_id}",
-            headers=auth_headers
-        )
+        not_found_response = await client.get(f"/api/v1/entries/{fake_id}", headers=auth_headers)
         assert not_found_response.status_code == 404
 
         # System should still find real entries
-        real_response = await client.get(
-            f"/api/v1/entries/{entry_id}",
-            headers=auth_headers
-        )
+        real_response = await client.get(f"/api/v1/entries/{entry_id}", headers=auth_headers)
         assert real_response.status_code == 200
 
         # Test 3: Duplicate operation handling
@@ -205,7 +184,7 @@ class TestWorkflowsQuality:
         delete_response1 = await client.delete(
             f"/api/v1/entries/{entry_id}",
             headers=auth_headers,
-            params={"expected_version": cur3.json()["version"]}
+            params={"expected_version": cur3.json()["version"]},
         )
         assert delete_response1.status_code == 204
 
@@ -213,7 +192,7 @@ class TestWorkflowsQuality:
         delete_response2 = await client.delete(
             f"/api/v1/entries/{entry_id}",
             headers=auth_headers,
-            params={"expected_version": cur3.json()["version"]}
+            params={"expected_version": cur3.json()["version"]},
         )
         assert delete_response2.status_code in [204, 404]  # Idempotent or not found
 
@@ -227,13 +206,11 @@ class TestWorkflowsQuality:
         original_data = {
             "title": "Consistency Test",
             "markdown_content": "# Test\n\nThis is **important** data.",
-            "content_version": 2
+            "content_version": 2,
         }
 
         create_response = await client.post(
-            "/api/v1/entries",
-            json=original_data,
-            headers=auth_headers
+            "/api/v1/entries", json=original_data, headers=auth_headers
         )
         assert create_response.status_code == 201
         entry = create_response.json()
@@ -242,10 +219,7 @@ class TestWorkflowsQuality:
         # Verify via different endpoints
 
         # 1. Direct GET
-        get_response = await client.get(
-            f"/api/v1/entries/{entry_id}",
-            headers=auth_headers
-        )
+        get_response = await client.get(f"/api/v1/entries/{entry_id}", headers=auth_headers)
         assert get_response.status_code == 200
         get_data = get_response.json()
         assert get_data["title"] == original_data["title"]
@@ -259,9 +233,7 @@ class TestWorkflowsQuality:
 
         # 3. Search endpoint
         search_response = await client.get(
-            "/api/v1/search",
-            params={"q": "Consistency Test"},
-            headers=auth_headers
+            "/api/v1/search", params={"q": "Consistency Test"}, headers=auth_headers
         )
         search_results = search_response.json()
         search_entry = next((e for e in search_results if e["id"] == entry_id), None)
@@ -270,6 +242,7 @@ class TestWorkflowsQuality:
 
         # 4. Database direct check
         from sqlalchemy import select
+
         stmt = select(Entry).where(Entry.id == entry_id)
         result = await db_session.execute(stmt)
         db_entry = result.scalar_one_or_none()
@@ -278,9 +251,7 @@ class TestWorkflowsQuality:
         assert db_entry.markdown_content == original_data["markdown_content"]
 
     @pytest.mark.asyncio()
-    async def test_pagination_workflow(
-        self, client: AsyncClient, auth_headers: dict[str, str]
-    ):
+    async def test_pagination_workflow(self, client: AsyncClient, auth_headers: dict[str, str]):
         """Test pagination across multiple pages of entries."""
 
         # Create enough entries to require pagination
@@ -290,11 +261,8 @@ class TestWorkflowsQuality:
         for i in range(num_entries):
             response = await client.post(
                 "/api/v1/entries",
-                json={
-                    "title": f"Page Test {i:02d}",
-                    "content": f"Entry number {i}"
-                },
-                headers=auth_headers
+                json={"title": f"Page Test {i:02d}", "content": f"Entry number {i}"},
+                headers=auth_headers,
             )
             if response.status_code == 201:
                 created_ids.append(response.json()["id"])
@@ -304,9 +272,7 @@ class TestWorkflowsQuality:
 
         # Get first page (API uses offset, not skip)
         page1_response = await client.get(
-            "/api/v1/entries",
-            params={"offset": 0, "limit": page_size},
-            headers=auth_headers
+            "/api/v1/entries", params={"offset": 0, "limit": page_size}, headers=auth_headers
         )
         assert page1_response.status_code == 200
         page1_entries = page1_response.json()
@@ -316,7 +282,7 @@ class TestWorkflowsQuality:
         page2_response = await client.get(
             "/api/v1/entries",
             params={"offset": page_size, "limit": page_size},
-            headers=auth_headers
+            headers=auth_headers,
         )
         assert page2_response.status_code == 200
         page2_entries = page2_response.json()
@@ -328,9 +294,7 @@ class TestWorkflowsQuality:
 
         # Get all entries at once
         all_response = await client.get(
-            "/api/v1/entries",
-            params={"offset": 0, "limit": 100},
-            headers=auth_headers
+            "/api/v1/entries", params={"offset": 0, "limit": 100}, headers=auth_headers
         )
         all_entries = all_response.json()
 
@@ -350,9 +314,9 @@ class TestWorkflowsQuality:
                 "/api/v1/entries",
                 json={
                     "title": f"Legacy HTML {i}",
-                    "content": f"<h1>Title {i}</h1><p>Legacy <strong>HTML</strong> content</p>"
+                    "content": f"<h1>Title {i}</h1><p>Legacy <strong>HTML</strong> content</p>",
                 },
-                headers=auth_headers
+                headers=auth_headers,
             )
             assert response.status_code == 201
             html_entries.append(response.json())
@@ -367,7 +331,7 @@ class TestWorkflowsQuality:
                     "content_version": 2,
                     "expected_version": curv.json()["version"],
                 },
-                headers=auth_headers
+                headers=auth_headers,
             )
             assert update_response.status_code == 200
             updated = update_response.json()
@@ -377,29 +341,21 @@ class TestWorkflowsQuality:
         # Step 3: Verify backward compatibility
         for entry in html_entries:
             # Get without markdown header - should return HTML
-            html_response = await client.get(
-                f"/api/v1/entries/{entry['id']}",
-                headers=auth_headers
-            )
+            html_response = await client.get(f"/api/v1/entries/{entry['id']}", headers=auth_headers)
             assert html_response.status_code == 200
             html_data = html_response.json()
             assert "<h1>" in html_data["content"] or "Migrated" in html_data["content"]
 
             # Get with markdown header - should return markdown
             md_headers = {**auth_headers, "X-Editor-Mode": "markdown"}
-            md_response = await client.get(
-                f"/api/v1/entries/{entry['id']}",
-                headers=md_headers
-            )
+            md_response = await client.get(f"/api/v1/entries/{entry['id']}", headers=md_headers)
             assert md_response.status_code == 200
             md_data = md_response.json()
             if md_data.get("markdown_content"):
                 assert "# Migrated" in md_data["markdown_content"]
 
     @pytest.mark.asyncio()
-    async def test_auth_expiry_workflow(
-        self, client: AsyncClient
-    ):
+    async def test_auth_expiry_workflow(self, client: AsyncClient):
         """Test workflow when authentication expires or is invalid."""
 
         # Test with no auth headers

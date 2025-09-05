@@ -2,12 +2,10 @@ from __future__ import annotations
 
 # Standard library imports
 from datetime import datetime
-from typing import Optional
 from uuid import UUID, uuid4
 
 # Third-party imports
-from sqlalchemy import JSON, Column, Integer
-from sqlalchemy.orm import declarative_mixin
+from sqlalchemy import JSON, Column
 from sqlmodel import Field, SQLModel
 
 

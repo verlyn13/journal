@@ -27,7 +27,7 @@ async def test_nats_pubsub_roundtrip():
     nc = await nats.connect(settings.nats_url)
     try:
         sid = await nc.subscribe(subject, cb=handler)
-        await nc.publish(subject, b"{\"id\":\"example\"}")
+        await nc.publish(subject, b'{"id":"example"}')
 
         await asyncio.wait_for(got.wait(), timeout=1.0)
         assert messages and messages[0].startswith(b"{")

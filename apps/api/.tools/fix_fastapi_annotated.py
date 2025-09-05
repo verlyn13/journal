@@ -5,10 +5,17 @@
 #
 # Idempotent: running twice makes no further changes.
 
-import sys, pathlib, libcst as cst, libcst.matchers as m
+import pathlib
+import sys
+
+import libcst as cst
+import libcst.matchers as m
+
 from libcst.metadata import PositionProvider
 
+
 FASTAPI_CALLS = {"Depends", "Query", "Path", "Header", "Cookie", "Body", "Security"}
+
 
 class AnnotateTransformer(cst.CSTTransformer):
     METADATA_DEPENDENCIES = (PositionProvider,)
@@ -27,12 +34,16 @@ class AnnotateTransformer(cst.CSTTransformer):
             return updated
 
         callee = call.func.value if isinstance(call.func, cst.Attribute) else call.func.value
-        callee_name = call.func.attr.value if isinstance(call.func, cst.Attribute) else call.func.value
+        callee_name = (
+            call.func.attr.value if isinstance(call.func, cst.Attribute) else call.func.value
+        )
         if callee_name not in FASTAPI_CALLS:
             return updated
 
         # Skip if already Annotated[...] (i.e., annotation already `Subscript` with value "Annotated")
-        if isinstance(updated.annotation, cst.Annotation) and isinstance(updated.annotation.annotation, cst.Subscript):
+        if isinstance(updated.annotation, cst.Annotation) and isinstance(
+            updated.annotation.annotation, cst.Subscript
+        ):
             sub = updated.annotation.annotation
             if isinstance(sub.value, cst.Name) and sub.value.value == "Annotated":
                 return updated  # already good
@@ -69,11 +80,14 @@ class AnnotateTransformer(cst.CSTTransformer):
         new_body = []
         for stmt in updated.body:
             new_body.append(stmt)
-            if (m.matches(stmt, m.SimpleStatementLine(body=[m.ImportFrom(module=m.Name("typing"))])) and
-               isinstance(stmt.body[0], cst.ImportFrom)):
+            if m.matches(
+                stmt, m.SimpleStatementLine(body=[m.ImportFrom(module=m.Name("typing"))])
+            ) and isinstance(stmt.body[0], cst.ImportFrom):
                 imp: cst.ImportFrom = stmt.body[0]
                 names = imp.names
-                items = [n.name.value for n in (names if isinstance(names, cst.ImportStar) else [*names])]
+                items = [
+                    n.name.value for n in (names if isinstance(names, cst.ImportStar) else [*names])
+                ]
                 if isinstance(names, cst.ImportStar):
                     has_annotated = True
                 else:
@@ -94,6 +108,7 @@ class AnnotateTransformer(cst.CSTTransformer):
         new_body.insert(insert_at, import_line)
         return updated.with_changes(body=new_body)
 
+
 def transform_file(path: pathlib.Path):
     code = path.read_text(encoding="utf-8")
     try:
@@ -106,6 +121,7 @@ def transform_file(path: pathlib.Path):
             print(f"UPDATED  {path}")
     except Exception as e:
         print(f"SKIPPED  {path} ({e})")
+
 
 if __name__ == "__main__":
     root = pathlib.Path(sys.argv[1] if len(sys.argv) > 1 else ".")

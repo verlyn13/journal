@@ -3,7 +3,6 @@ from __future__ import annotations
 import asyncio
 import logging
 
- 
 from sqlmodel import select
 
 from app.infra.conversion import html_to_markdown
@@ -20,10 +19,14 @@ async def backfill_markdown_content(batch_size: int = 100, dry_run: bool = False
     async with AsyncSessionLocal() as s:
         while True:
             rows = (
-                await s.execute(
-                    select(Entry).where(Entry.markdown_content.is_(None)).limit(batch_size)
+                (
+                    await s.execute(
+                        select(Entry).where(Entry.markdown_content.is_(None)).limit(batch_size)
+                    )
                 )
-            ).scalars().all()
+                .scalars()
+                .all()
+            )
             if not rows:
                 break
             for e in rows:

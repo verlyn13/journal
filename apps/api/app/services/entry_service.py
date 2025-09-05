@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import Optional
-
 # Standard library imports
 from uuid import UUID
 
@@ -38,7 +36,9 @@ async def create_entry(
             word_count=len(html.split()),
         )
     else:
-        e = Entry(author_id=author_id, title=title, content=content, word_count=len(content.split()))
+        e = Entry(
+            author_id=author_id, title=title, content=content, word_count=len(content.split())
+        )
     s.add(e)
     await s.flush()
 
@@ -58,17 +58,14 @@ async def create_entry(
 
 async def get_entry_by_id(s: AsyncSession, entry_id: UUID) -> Entry | None:
     """Get entry by ID, excluding soft-deleted entries."""
-    result = await s.execute(
-        select(Entry).where(Entry.id == entry_id, Entry.is_deleted.is_(False))
-    )
+    result = await s.execute(select(Entry).where(Entry.id == entry_id, Entry.is_deleted.is_(False)))
     return result.scalar_one_or_none()
 
 
 async def list_entries(s: AsyncSession, limit: int | None = None, offset: int = 0) -> list[Entry]:
-    query = select(Entry).where(Entry.is_deleted == False).order_by(Entry.created_at.desc())
+    query = select(Entry).where(Entry.is_deleted.is_(False)).order_by(Entry.created_at.desc())
     if limit is not None:
         query = query.limit(limit)
     if offset > 0:
         query = query.offset(offset)
-    rows = (await s.execute(query)).scalars().all()
-    return rows
+    return (await s.execute(query)).scalars().all()

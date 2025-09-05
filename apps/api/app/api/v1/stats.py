@@ -36,7 +36,7 @@ async def get_stats(
     s: Annotated[AsyncSession, Depends(get_session)],
 ) -> StatsResponse:
     """Get statistics about user's journal entries.
-    
+
     Returns:
         StatsResponse with entry counts and statistics.
     """
