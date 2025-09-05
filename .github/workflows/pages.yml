@@ -29,10 +29,12 @@ jobs:
         with:
           bun-version: '1.2.21'
 
-      - name: Install dependencies
+      - name: Install dependencies (web)
+        working-directory: apps/web
         run: bun install --frozen-lockfile
 
       - name: Build Storybook static
+        working-directory: apps/web
         run: bun run build-storybook
 
       - name: Prepare Pages artifact
@@ -41,12 +43,9 @@ jobs:
           mkdir -p deploy
           
           # Include Storybook under /storybook
-          mv storybook-static deploy/storybook
+          mv apps/web/storybook-static deploy/storybook
           
-          # Copy ONLY index.html from public to root (not recursively)
-          if [ -f public/index.html ]; then
-            cp public/index.html deploy/
-          fi
+          # Optionally include a simple root index (disabled for now)
           
           # Optionally include docs HTML if present
           if [ -d docs-html ]; then
@@ -73,4 +72,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-
