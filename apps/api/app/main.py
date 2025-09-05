@@ -3,6 +3,7 @@ from __future__ import annotations
 import asyncio
 
 from fastapi import FastAPI
+import logging
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import PlainTextResponse
 from strawberry.fastapi import GraphQLRouter
@@ -27,9 +28,9 @@ app = FastAPI(title="Journal API", version="1.0.0")
 # Observability (configurable endpoint)
 try:
     setup_otel("journal-api", settings.otlp_endpoint)
-except Exception:
+except Exception as exc:
     # Non-fatal if OTel collector isn't up in dev
-    pass
+    logging.getLogger(__name__).warning("OTel setup skipped: %s", exc)
 
 # CORS (frontend at localhost:5173 / 127.0.0.1:5173)
 app.add_middleware(

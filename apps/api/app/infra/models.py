@@ -3,6 +3,7 @@ from __future__ import annotations
 # Standard library imports
 from datetime import datetime
 from uuid import UUID, uuid4
+import logging
 
 from pydantic import field_validator
 
@@ -70,8 +71,8 @@ class Event(SQLModel, table=True):
         try:
             if isinstance(v, (bytes, bytearray)) and len(v) == 16:
                 return UUID(bytes=bytes(v))
-        except Exception:
-            pass
+        except Exception as exc:
+            logging.getLogger(__name__).debug("aggregate_id pre-validate coercion skipped: %s", exc)
         return v
 
 
@@ -81,9 +82,8 @@ def _event_before_insert(mapper: object, connection: object, target: Event) -> N
     try:
         if isinstance(target.aggregate_id, (bytes, bytearray)) and len(target.aggregate_id) == 16:
             target.aggregate_id = UUID(bytes=bytes(target.aggregate_id))
-    except Exception:
-        # Leave as-is; the DB will raise a clear error if invalid
-        pass
+    except Exception as exc:
+        logging.getLogger(__name__).debug("aggregate_id coercion skipped: %s", exc)
 
 
 class ProcessedEvent(SQLModel, table=True):
