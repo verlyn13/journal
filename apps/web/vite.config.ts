@@ -49,8 +49,6 @@ export default defineConfig({
 					'monaco-editor': ['monaco-editor'],
 					// Split React and related libraries
 					'react-vendor': ['react', 'react-dom'],
-					// Split TipTap editor
-					'editor': ['@tiptap/react', '@tiptap/core', '@tiptap/starter-kit', '@tiptap/extension-highlight', '@tiptap/extension-link', '@tiptap/extension-placeholder', '@tiptap/extension-typography'],
 					// Split math libraries
 					'math': ['katex'],
 					// Split query libraries
