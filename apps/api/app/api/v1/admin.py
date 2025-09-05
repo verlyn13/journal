@@ -18,7 +18,7 @@ router = APIRouter(prefix="/admin", tags=["admin"])
 @router.get("/ping")
 async def admin_ping(user_id: Annotated[str, Depends(require_user)]) -> dict[str, str]:
     """Simple ping endpoint for admin health check.
-    
+
     Returns:
         Status response.
     """
@@ -28,10 +28,10 @@ async def admin_ping(user_id: Annotated[str, Depends(require_user)]) -> dict[str
 @router.get("/health")
 async def admin_health(
     user_id: Annotated[str, Depends(require_user)],
-    db: Annotated[AsyncSession, Depends(get_session)]
+    db: Annotated[AsyncSession, Depends(get_session)],
 ) -> dict[str, str]:
     """Health check endpoint that verifies database connectivity.
-    
+
     Returns:
         Health status including database connectivity state.
     """
@@ -51,10 +51,10 @@ async def admin_health(
 @router.post("/reindex-embeddings")
 async def reindex_embeddings(body: dict | None = None) -> dict[str, str]:
     """Trigger a bulk reindexing of all entry embeddings.
-    
+
     Args:
         body: Optional configuration for reindexing.
-        
+
     Returns:
         Status message indicating the reindex has been queued.
     """
@@ -62,7 +62,7 @@ async def reindex_embeddings(body: dict | None = None) -> dict[str, str]:
         "event_type": "embedding.reindex",
         "event_data": body or {},
         "aggregate_type": "embedding",
-        "aggregate_id": "bulk_reindex"
+        "aggregate_id": "bulk_reindex",
     }
     payload = json.dumps(event_data).encode("utf-8")
     async with nats_conn() as nc:

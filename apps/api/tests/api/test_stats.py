@@ -2,6 +2,7 @@
 Consolidated test cases for stats API endpoint.
 Moved from test_api_admin_extended.py to proper location.
 """
+
 import pytest
 from datetime import datetime, timedelta
 from httpx import AsyncClient
@@ -20,17 +21,17 @@ class TestStatsAPI:
         client: AsyncClient,
         auth_headers: dict[str, str],
         db_session: AsyncSession,
-        monkeypatch
+        monkeypatch,
     ):
         """Test stats calculation with entries across different time periods."""
         # Mock current time for deterministic testing
         mock_now = datetime(2024, 6, 15, 14, 30, 0)  # Friday, June 15, 2024
-        
+
         def mock_utcnow():
             return mock_now
-        
+
         monkeypatch.setattr("app.api.v1.stats._utcnow", mock_utcnow)
-        
+
         # Create entries at different times
         entries = [
             # Today (June 15)
@@ -39,14 +40,14 @@ class TestStatsAPI:
                 content="Content",
                 author_id="11111111-1111-1111-1111-111111111111",
                 created_at=mock_now.replace(hour=10),
-                updated_at=mock_now.replace(hour=10)
+                updated_at=mock_now.replace(hour=10),
             ),
             Entry(
                 title="Today 2",
                 content="Content",
                 author_id="11111111-1111-1111-1111-111111111111",
                 created_at=mock_now.replace(hour=8),
-                updated_at=mock_now.replace(hour=8)
+                updated_at=mock_now.replace(hour=8),
             ),
             # This week but not today (June 12, Tuesday)
             Entry(
@@ -54,7 +55,7 @@ class TestStatsAPI:
                 content="Content",
                 author_id="11111111-1111-1111-1111-111111111111",
                 created_at=mock_now - timedelta(days=3),
-                updated_at=mock_now - timedelta(days=3)
+                updated_at=mock_now - timedelta(days=3),
             ),
             # This month but not this week (June 1)
             Entry(
@@ -62,7 +63,7 @@ class TestStatsAPI:
                 content="Content",
                 author_id="11111111-1111-1111-1111-111111111111",
                 created_at=mock_now.replace(day=1),
-                updated_at=mock_now.replace(day=1)
+                updated_at=mock_now.replace(day=1),
             ),
             # Last month (May 20)
             Entry(
@@ -70,7 +71,7 @@ class TestStatsAPI:
                 content="Content",
                 author_id="11111111-1111-1111-1111-111111111111",
                 created_at=mock_now.replace(month=5, day=20),
-                updated_at=mock_now.replace(month=5, day=20)
+                updated_at=mock_now.replace(month=5, day=20),
             ),
             # Recently updated (created long ago but updated 3 days ago)
             Entry(
@@ -78,7 +79,7 @@ class TestStatsAPI:
                 content="Content",
                 author_id="11111111-1111-1111-1111-111111111111",
                 created_at=mock_now.replace(month=1),
-                updated_at=mock_now - timedelta(days=3)
+                updated_at=mock_now - timedelta(days=3),
             ),
             # Deleted entry (should not be counted)
             Entry(
@@ -87,23 +88,20 @@ class TestStatsAPI:
                 author_id="11111111-1111-1111-1111-111111111111",
                 created_at=mock_now,
                 updated_at=mock_now,
-                is_deleted=True
+                is_deleted=True,
             ),
         ]
-        
+
         for entry in entries:
             db_session.add(entry)
         await db_session.commit()
-        
+
         # Get stats
-        response = await client.get(
-            "/api/v1/stats",
-            headers=auth_headers
-        )
-        
+        response = await client.get("/api/v1/stats", headers=auth_headers)
+
         assert response.status_code == 200
         data = response.json()
-        
+
         # Verify counts
         assert data["total_entries"] == 6  # All non-deleted entries
         assert data["entries_today"] == 2  # Today 1 and Today 2
@@ -113,20 +111,13 @@ class TestStatsAPI:
         assert data["favorite_entries"] == 0  # Not implemented yet
 
     @pytest.mark.asyncio()
-    async def test_stats_with_no_entries(
-        self,
-        client: AsyncClient,
-        auth_headers: dict[str, str]
-    ):
+    async def test_stats_with_no_entries(self, client: AsyncClient, auth_headers: dict[str, str]):
         """Test stats when there are no entries."""
-        response = await client.get(
-            "/api/v1/stats",
-            headers=auth_headers
-        )
-        
+        response = await client.get("/api/v1/stats", headers=auth_headers)
+
         assert response.status_code == 200
         data = response.json()
-        
+
         # All counts should be zero
         assert data["total_entries"] == 0
         assert data["entries_today"] == 0
@@ -141,17 +132,17 @@ class TestStatsAPI:
         client: AsyncClient,
         auth_headers: dict[str, str],
         db_session: AsyncSession,
-        monkeypatch
+        monkeypatch,
     ):
         """Test stats calculation at week boundaries."""
         # Mock current time to be Monday morning
         mock_now = datetime(2024, 6, 10, 0, 30, 0)  # Monday, June 10, 2024
-        
+
         def mock_utcnow():
             return mock_now
-        
+
         monkeypatch.setattr("app.api.v1.stats._utcnow", mock_utcnow)
-        
+
         # Create entries
         entries = [
             # This week (Monday morning)
@@ -160,7 +151,7 @@ class TestStatsAPI:
                 content="Content",
                 author_id="11111111-1111-1111-1111-111111111111",
                 created_at=mock_now.replace(minute=0),
-                updated_at=mock_now.replace(minute=0)
+                updated_at=mock_now.replace(minute=0),
             ),
             # Last week (Sunday night)
             Entry(
@@ -168,22 +159,19 @@ class TestStatsAPI:
                 content="Content",
                 author_id="11111111-1111-1111-1111-111111111111",
                 created_at=mock_now - timedelta(hours=1),
-                updated_at=mock_now - timedelta(hours=1)
+                updated_at=mock_now - timedelta(hours=1),
             ),
         ]
-        
+
         for entry in entries:
             db_session.add(entry)
         await db_session.commit()
-        
-        response = await client.get(
-            "/api/v1/stats",
-            headers=auth_headers
-        )
-        
+
+        response = await client.get("/api/v1/stats", headers=auth_headers)
+
         assert response.status_code == 200
         data = response.json()
-        
+
         # Monday entry is in this week, Sunday is not
         assert data["entries_this_week"] == 1
         assert data["total_entries"] == 2
@@ -194,17 +182,17 @@ class TestStatsAPI:
         client: AsyncClient,
         auth_headers: dict[str, str],
         db_session: AsyncSession,
-        monkeypatch
+        monkeypatch,
     ):
         """Test stats calculation at month boundaries."""
         # Mock current time to be first day of month
         mock_now = datetime(2024, 6, 1, 0, 30, 0)  # June 1, 2024
-        
+
         def mock_utcnow():
             return mock_now
-        
+
         monkeypatch.setattr("app.api.v1.stats._utcnow", mock_utcnow)
-        
+
         # Create entries
         entries = [
             # This month (June 1)
@@ -213,7 +201,7 @@ class TestStatsAPI:
                 content="Content",
                 author_id="11111111-1111-1111-1111-111111111111",
                 created_at=mock_now.replace(minute=0),
-                updated_at=mock_now.replace(minute=0)
+                updated_at=mock_now.replace(minute=0),
             ),
             # Last month (May 31)
             Entry(
@@ -221,31 +209,25 @@ class TestStatsAPI:
                 content="Content",
                 author_id="11111111-1111-1111-1111-111111111111",
                 created_at=mock_now - timedelta(hours=1),
-                updated_at=mock_now - timedelta(hours=1)
+                updated_at=mock_now - timedelta(hours=1),
             ),
         ]
-        
+
         for entry in entries:
             db_session.add(entry)
         await db_session.commit()
-        
-        response = await client.get(
-            "/api/v1/stats",
-            headers=auth_headers
-        )
-        
+
+        response = await client.get("/api/v1/stats", headers=auth_headers)
+
         assert response.status_code == 200
         data = response.json()
-        
+
         # June entry is in this month, May is not
         assert data["entries_this_month"] == 1
         assert data["total_entries"] == 2
 
     @pytest.mark.asyncio()
-    async def test_stats_requires_authentication(
-        self,
-        client: AsyncClient
-    ):
+    async def test_stats_requires_authentication(self, client: AsyncClient):
         """Test that stats endpoint requires authentication."""
         response = await client.get("/api/v1/stats")
         assert response.status_code == 401
@@ -256,16 +238,16 @@ class TestStatsAPI:
         client: AsyncClient,
         auth_headers: dict[str, str],
         db_session: AsyncSession,
-        monkeypatch
+        monkeypatch,
     ):
         """Test recent entries calculation based on updated_at."""
         mock_now = datetime(2024, 6, 15, 14, 30, 0)
-        
+
         def mock_utcnow():
             return mock_now
-        
+
         monkeypatch.setattr("app.api.v1.stats._utcnow", mock_utcnow)
-        
+
         # Create entries with different update times
         entries = [
             # Updated 3 days ago (should be included)
@@ -274,7 +256,7 @@ class TestStatsAPI:
                 content="Content",
                 author_id="11111111-1111-1111-1111-111111111111",
                 created_at=mock_now - timedelta(days=30),
-                updated_at=mock_now - timedelta(days=3)
+                updated_at=mock_now - timedelta(days=3),
             ),
             # Updated 6 days ago (should be included)
             Entry(
@@ -282,7 +264,7 @@ class TestStatsAPI:
                 content="Content",
                 author_id="11111111-1111-1111-1111-111111111111",
                 created_at=mock_now - timedelta(days=30),
-                updated_at=mock_now - timedelta(days=6)
+                updated_at=mock_now - timedelta(days=6),
             ),
             # Updated 8 days ago (should NOT be included)
             Entry(
@@ -290,22 +272,19 @@ class TestStatsAPI:
                 content="Content",
                 author_id="11111111-1111-1111-1111-111111111111",
                 created_at=mock_now - timedelta(days=30),
-                updated_at=mock_now - timedelta(days=8)
+                updated_at=mock_now - timedelta(days=8),
             ),
         ]
-        
+
         for entry in entries:
             db_session.add(entry)
         await db_session.commit()
-        
-        response = await client.get(
-            "/api/v1/stats",
-            headers=auth_headers
-        )
-        
+
+        response = await client.get("/api/v1/stats", headers=auth_headers)
+
         assert response.status_code == 200
         data = response.json()
-        
+
         # Only entries updated within last 7 days
         assert data["recent_entries"] == 2
         assert data["total_entries"] == 3

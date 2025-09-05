@@ -11,34 +11,58 @@ from markdown_it import MarkdownIt
 # Safe markdown processing with proper parser and sanitization
 
 # Safe markdown processor with sanitization
-_md_processor = MarkdownIt("commonmark").enable(['table', 'strikethrough'])
+_md_processor = MarkdownIt("commonmark").enable(["table", "strikethrough"])
 
 # Allowed HTML tags and attributes for security
 _ALLOWED_TAGS = {
-    'p', 'br', 'strong', 'em', 'u', 's', 'sup', 'sub',
-    'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
-    'ul', 'ol', 'li', 'blockquote', 'hr',
-    'code', 'pre', 'span',
-    'a', 'img',
-    'table', 'thead', 'tbody', 'tr', 'th', 'td'
+    "p",
+    "br",
+    "strong",
+    "em",
+    "u",
+    "s",
+    "sup",
+    "sub",
+    "h1",
+    "h2",
+    "h3",
+    "h4",
+    "h5",
+    "h6",
+    "ul",
+    "ol",
+    "li",
+    "blockquote",
+    "hr",
+    "code",
+    "pre",
+    "span",
+    "a",
+    "img",
+    "table",
+    "thead",
+    "tbody",
+    "tr",
+    "th",
+    "td",
 }
 
 _ALLOWED_ATTRIBUTES = {
-    'a': ['href', 'title'],
-    'img': ['src', 'alt', 'width', 'height'],
-    'code': ['class'],  # For syntax highlighting
-    'span': ['class'],  # For special formatting
-    'th': ['align'],
-    'td': ['align']
+    "a": ["href", "title"],
+    "img": ["src", "alt", "width", "height"],
+    "code": ["class"],  # For syntax highlighting
+    "span": ["class"],  # For special formatting
+    "th": ["align"],
+    "td": ["align"],
 }
 
 
 def markdown_to_html(md: str) -> str:
     """Convert markdown to sanitized HTML using proper parser.
-    
+
     Args:
         md: Markdown text to convert
-        
+
     Returns:
         Sanitized HTML string
     """
@@ -51,10 +75,7 @@ def markdown_to_html(md: str) -> str:
 
         # Sanitize HTML to prevent XSS
         clean_html = bleach.clean(
-            html,
-            tags=_ALLOWED_TAGS,
-            attributes=_ALLOWED_ATTRIBUTES,
-            strip=True
+            html, tags=_ALLOWED_TAGS, attributes=_ALLOWED_ATTRIBUTES, strip=True
         )
 
         return clean_html
@@ -62,18 +83,19 @@ def markdown_to_html(md: str) -> str:
     except Exception as e:
         # Fallback to escaped plain text if parsing fails
         import logging
+
         logging.warning(f"Markdown parsing failed: {e}")
-        return html_module.escape(md).replace('\n', '<br/>')
+        return html_module.escape(md).replace("\n", "<br/>")
 
 
 def html_to_markdown(html: str) -> str:
     """Convert HTML back to markdown (basic implementation).
-    
+
     Note: This is a lossy conversion and may not perfectly recreate the original markdown.
-    
+
     Args:
         html: HTML text to convert
-        
+
     Returns:
         Markdown string
     """
@@ -85,17 +107,17 @@ def html_to_markdown(html: str) -> str:
         out = html
 
         # Headers with attributes
-        out = re.sub(r'<h1[^>]*>', '# ', out)
+        out = re.sub(r"<h1[^>]*>", "# ", out)
         out = out.replace("</h1>", "\n\n")
-        out = re.sub(r'<h2[^>]*>', '## ', out)
+        out = re.sub(r"<h2[^>]*>", "## ", out)
         out = out.replace("</h2>", "\n\n")
-        out = re.sub(r'<h3[^>]*>', '### ', out)
+        out = re.sub(r"<h3[^>]*>", "### ", out)
         out = out.replace("</h3>", "\n\n")
-        out = re.sub(r'<h4[^>]*>', '#### ', out)
+        out = re.sub(r"<h4[^>]*>", "#### ", out)
         out = out.replace("</h4>", "\n\n")
-        out = re.sub(r'<h5[^>]*>', '##### ', out)
+        out = re.sub(r"<h5[^>]*>", "##### ", out)
         out = out.replace("</h5>", "\n\n")
-        out = re.sub(r'<h6[^>]*>', '###### ', out)
+        out = re.sub(r"<h6[^>]*>", "###### ", out)
         out = out.replace("</h6>", "\n\n")
 
         # Code blocks
@@ -122,21 +144,21 @@ def html_to_markdown(html: str) -> str:
 
         # Links (handle various attribute formats)
         link_pattern = r'<a\s+[^>]*href="([^"]+)"[^>]*>([^<]+)</a>'
-        out = re.sub(link_pattern, r'[\2](\1)', out)
+        out = re.sub(link_pattern, r"[\2](\1)", out)
 
         # Images
         img_pattern = r'<img\s+[^>]*src="([^"]+)"[^>]*alt="([^"]*)"[^>]*/?>'
-        out = re.sub(img_pattern, r'![\2](\1)', out)
+        out = re.sub(img_pattern, r"![\2](\1)", out)
         # Handle img tags without alt
         img_pattern2 = r'<img\s+[^>]*src="([^"]+)"[^>]*/?>'
-        out = re.sub(img_pattern2, r'![](\1)', out)
+        out = re.sub(img_pattern2, r"![](\1)", out)
 
         # Blockquotes
-        out = re.sub(r'<blockquote[^>]*>', '> ', out)
+        out = re.sub(r"<blockquote[^>]*>", "> ", out)
         out = out.replace("</blockquote>", "\n\n")
 
         # Clean up extra whitespace
-        out = re.sub(r'\n{3,}', '\n\n', out)
+        out = re.sub(r"\n{3,}", "\n\n", out)
 
         # Decode HTML entities back to literal characters
         out = html_module.unescape(out)
@@ -146,5 +168,6 @@ def html_to_markdown(html: str) -> str:
     except Exception as e:
         # Fallback - return original HTML if conversion fails
         import logging
+
         logging.warning(f"HTML to markdown conversion failed: {e}")
         return html

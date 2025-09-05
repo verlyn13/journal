@@ -18,4 +18,3 @@ def test_html_to_markdown_basic():
     md = html_to_markdown(html)
     assert md.startswith("## Sub")
     assert "Paragraph" in md
-

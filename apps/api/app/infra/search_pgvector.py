@@ -23,7 +23,7 @@ def _vec_literal(vec: list[float]) -> str:
 
 async def hybrid_search(s: AsyncSession, q: str, k: int = 10, alpha: float = 0.6):
     """Hybrid search with graceful degradation.
-    
+
     Combines FTS and vector similarity. If embeddings don't exist, falls back to FTS only.
     Uses COALESCE to handle missing embeddings gracefully.
     """
@@ -36,6 +36,7 @@ async def hybrid_search(s: AsyncSession, q: str, k: int = 10, alpha: float = 0.6
         q_vec = _vec_literal(q_emb)
     except Exception as e:
         import logging
+
         logging.warning(f"Embedding generation failed, falling back to keyword search: {e}")
         # Fall back to keyword-only search if embedding fails
         return await keyword_search(s, q, k)
@@ -62,7 +63,7 @@ async def hybrid_search(s: AsyncSession, q: str, k: int = 10, alpha: float = 0.6
 
 async def semantic_search(s: AsyncSession, q: str, k: int = 10):
     """Semantic search with graceful degradation.
-    
+
     Returns empty list if no embeddings exist instead of failing.
     """
     if not q.strip():
@@ -73,6 +74,7 @@ async def semantic_search(s: AsyncSession, q: str, k: int = 10):
         q_vec = _vec_literal(q_emb)
     except Exception as e:
         import logging
+
         logging.warning(f"Embedding generation failed for similarity search: {e}")
         # Return empty if embedding generation fails
         return []
@@ -129,7 +131,7 @@ async def upsert_entry_embedding(s: AsyncSession, entry_id: Any, text_source: st
                 last_exc = e
                 if i == attempts - 1:
                     raise
-                delay = min(cap, base * (factor ** i))
+                delay = min(cap, base * (factor**i))
                 delay = random.random() * delay
                 await asyncio.sleep(delay)
         # Convert list to pgvector string format: '[0.1, 0.2, ...]'
@@ -150,4 +152,5 @@ async def upsert_entry_embedding(s: AsyncSession, entry_id: Any, text_source: st
     except Exception as e:
         # Log error but don't fail
         import logging
+
         logging.warning(f"Failed to upsert embedding for entry {entry_id}: {e}")

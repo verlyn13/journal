@@ -31,4 +31,3 @@ async def test_nats_request_reply_contract():
     finally:
         await nc.drain()
         await nc.close()
-

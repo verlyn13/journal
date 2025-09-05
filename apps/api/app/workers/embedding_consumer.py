@@ -1,6 +1,7 @@
 """
 Embedding consumer worker that processes entry events and updates embeddings.
 """
+
 import asyncio
 import json
 import logging
@@ -56,7 +57,9 @@ class EmbeddingConsumer:
                 # Exponential backoff with full jitter
                 delay = min(cap, base * (factor ** (attempt - 1)))
                 jitter = random.random() * delay
-                logger.warning(f"NATS connect failed (attempt {attempt}/{max_attempts}): {e}; retrying in {jitter:.2f}s")
+                logger.warning(
+                    f"NATS connect failed (attempt {attempt}/{max_attempts}): {e}; retrying in {jitter:.2f}s"
+                )
                 await asyncio.sleep(jitter)
         logger.error(f"Failed to connect to NATS after {max_attempts} attempts: {last_err}")
         raise last_err
@@ -75,26 +78,31 @@ class EmbeddingConsumer:
         try:
             # Parse the event data
             data = json.loads(msg.data.decode())
-            event_type = data.get('event_type')
-            event_data = data.get('event_data', {})
-            event_id = data.get('id')
+            event_type = data.get("event_type")
+            event_data = data.get("event_data", {})
+            event_id = data.get("id")
 
             logger.info(f"Processing {event_type} event for entry {event_data.get('entry_id')}")
 
             # Idempotency: skip if already processed
             if event_id:
                 async for session in get_session():
-                    exists = (await session.execute(text("SELECT 1 FROM processed_events WHERE event_id = :e"), {"e": event_id})).first()
+                    exists = (
+                        await session.execute(
+                            text("SELECT 1 FROM processed_events WHERE event_id = :e"),
+                            {"e": event_id},
+                        )
+                    ).first()
                     if exists:
                         await msg.ack()
                         return
 
             # Handle different event types
-            if event_type in ['entry.created', 'entry.updated']:
+            if event_type in ["entry.created", "entry.updated"]:
                 await self._handle_entry_upsert(event_data)
-            elif event_type == 'entry.deleted':
+            elif event_type == "entry.deleted":
                 await self._handle_entry_deletion(event_data)
-            elif event_type == 'embedding.reindex':
+            elif event_type == "embedding.reindex":
                 await self._handle_reindex_request(event_data)
             else:
                 logger.warning(f"Unknown event type: {event_type}")
@@ -105,8 +113,12 @@ class EmbeddingConsumer:
             if event_id:
                 async for session in get_session():
                     try:
-                        await session.execute(text("INSERT INTO processed_events(event_id, outcome) VALUES (:e, :o) ON CONFLICT (event_id) DO NOTHING"),
-                                              {"e": event_id, "o": event_type})
+                        await session.execute(
+                            text(
+                                "INSERT INTO processed_events(event_id, outcome) VALUES (:e, :o) ON CONFLICT (event_id) DO NOTHING"
+                            ),
+                            {"e": event_id, "o": event_type},
+                        )
                         await session.commit()
                     except Exception:
                         await session.rollback()
@@ -117,7 +129,9 @@ class EmbeddingConsumer:
             logger.exception("JSON decode error")
             # Poison message: DLQ + TERM if enabled
             if os.getenv("OUTBOX_DLQ_ENABLED", "0") == "1":
-                await self._publish_dlq({"error": "json_decode", "raw": msg.data.decode(errors='ignore')}, reason=str(e))
+                await self._publish_dlq(
+                    {"error": "json_decode", "raw": msg.data.decode(errors="ignore")}, reason=str(e)
+                )
                 if hasattr(msg, "term"):
                     await msg.term()
                     metrics_inc("worker_process_total", {"result": "term", "reason": "poison"})
@@ -142,7 +156,7 @@ class EmbeddingConsumer:
     @staticmethod
     async def _handle_entry_upsert(event_data: dict[str, Any]):
         """Handle entry creation/update by generating and storing embedding."""
-        entry_id = event_data.get('entry_id')
+        entry_id = event_data.get("entry_id")
         if not entry_id:
             logger.error("No entry_id in event data")
             return
@@ -169,7 +183,7 @@ class EmbeddingConsumer:
     @staticmethod
     async def _handle_entry_deletion(event_data: dict[str, Any]):
         """Handle entry deletion by removing embedding."""
-        entry_id = event_data.get('entry_id')
+        entry_id = event_data.get("entry_id")
         if not entry_id:
             logger.error("No entry_id in event data")
             return
@@ -179,7 +193,7 @@ class EmbeddingConsumer:
                 # Delete embedding record
                 await session.execute(
                     text("DELETE FROM entry_embeddings WHERE entry_id = :entry_id"),
-                    {"entry_id": entry_id}
+                    {"entry_id": entry_id},
                 )
                 await session.commit()
                 logger.info(f"Deleted embedding for entry {entry_id}")
@@ -300,8 +314,7 @@ class EmbeddingConsumer:
 async def main():
     """Main entry point for the embedding consumer worker."""
     logging.basicConfig(
-        level=logging.INFO,
-        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+        level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
     )
 
     consumer = EmbeddingConsumer()

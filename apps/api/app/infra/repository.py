@@ -18,6 +18,7 @@ class RepositoryError(Exception):
 
 class NotFoundError(RepositoryError):
     """Entity not found."""
+
     def __init__(self, entity_type: str, entity_id: str | UUID | None = None):
         self.entity_type = entity_type
         self.entity_id = entity_id
@@ -26,6 +27,7 @@ class NotFoundError(RepositoryError):
 
 class ConflictError(RepositoryError):
     """Optimistic lock conflict."""
+
     def __init__(self, message: str, expected: int | None = None, actual: int | None = None):
         self.expected = expected
         self.actual = actual
@@ -49,17 +51,19 @@ class EntryRepository:
         await self.session.flush()
         return entry
 
-    async def update_entry(self, entry_id: UUID, data: dict[str, Any], expected_version: int) -> Entry:
+    async def update_entry(
+        self, entry_id: UUID, data: dict[str, Any], expected_version: int
+    ) -> Entry:
         """Update entry with optimistic locking.
-        
+
         Args:
             entry_id: ID of entry to update
             data: Fields to update (excluding version)
             expected_version: Expected current version
-            
+
         Returns:
             Updated entry
-            
+
         Raises:
             NotFoundError: Entry doesn't exist
             ConflictError: Version mismatch (concurrent modification)
@@ -77,12 +81,12 @@ class EntryRepository:
             raise ConflictError(
                 "Entry was modified by another user",
                 expected=expected_version,
-                actual=entry.version
+                actual=entry.version,
             )
 
         # Apply updates
         for key, value in data.items():
-            if key != 'version':  # Don't allow manual version setting
+            if key != "version":  # Don't allow manual version setting
                 setattr(entry, key, value)
 
         # Increment version

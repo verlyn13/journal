@@ -31,4 +31,3 @@ async def test_nats_reconnect_sanity():
     finally:
         await nc.drain()
         await nc.close()
-
