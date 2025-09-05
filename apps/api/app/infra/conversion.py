@@ -137,7 +137,7 @@ def html_to_markdown(html: str) -> str:
         out = out.replace("<ul>", "").replace("</ul>", "\n")
         out = out.replace("<ol>", "").replace("</ol>", "\n")
 
-        # Paragraphs and breaks
+        # Paragraph handling and line breaks
         out = out.replace("<p>", "").replace("</p>", "\n\n")
         out = out.replace("<br>", "  \n").replace("<br/>", "  \n").replace("<br />", "  \n")
 

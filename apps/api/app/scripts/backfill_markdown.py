@@ -7,9 +7,7 @@ Markdown formatting and metadata.
 
 import asyncio
 
-from typing import Optional
-
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 from sqlmodel import select
 
 from app.infra.db import get_async_engine
@@ -24,8 +22,6 @@ async def backfill_markdown_content(
     Returns the number of updated rows.
     """
     if session is None:
-        from sqlalchemy.ext.asyncio import async_sessionmaker
-
         engine = get_async_engine()
         sm = async_sessionmaker(bind=engine, class_=AsyncSession, expire_on_commit=False)
         async with sm() as session:
@@ -64,9 +60,7 @@ async def main() -> None:
         count = await backfill_markdown_content(session, dry_run=True)
         print(f"Would process {count} entries")
 
-        # Uncomment to actually run the backfill
-        # count = await backfill_markdown_content(session)
-        # print(f"Processed {count} entries")
+        # For a real run, call without dry_run and report stats
 
 
 if __name__ == "__main__":  # pragma: no cover

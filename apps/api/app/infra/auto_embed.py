@@ -8,7 +8,6 @@ from uuid import UUID
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.infra.embeddings import get_embedding
 from app.infra.models import Entry
 from app.infra.search_pgvector import upsert_entry_embedding
 from app.settings import settings
@@ -34,7 +33,6 @@ async def ensure_embedding_for_entry(entry: Entry, session: AsyncSession) -> Non
     if mode == "inline":
         # Generate embedding synchronously (good for tests)
         try:
-            embedding = get_embedding(text)
             await upsert_entry_embedding(session, entry.id, text)
         except Exception as e:
             # Log error but don't fail the request
@@ -60,9 +58,4 @@ def publish_embedding_event(entry_id: UUID, text: str) -> None:
     # For now, just log that we would publish
     logger.info("Would publish embedding event for entry %s", entry_id)
 
-    # Example of what this might look like:
-    # await event_bus.publish("journal.entry.embedding_needed", {
-    #     "entry_id": str(entry_id),
-    #     "text": text,
-    #     "timestamp": datetime.utcnow().isoformat()
-    # })
+    # Example of what this might look like (removed commented code)

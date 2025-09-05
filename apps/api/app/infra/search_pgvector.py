@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import logging
 import os
 import random
 
@@ -118,13 +119,12 @@ async def upsert_entry_embedding(s: AsyncSession, entry_id: Any, text_source: st
         factor = float(os.getenv("RETRY_EMBED_FACTOR", "2.0"))
         cap = float(os.getenv("RETRY_EMBED_MAX_BACKOFF_SECS", "15"))
 
-        last_exc = None
+        # Retry loop with jittered backoff
         for i in range(attempts):
             try:
                 emb = get_embedding(text_source)
                 break
-            except Exception as e:
-                last_exc = e
+            except Exception:
                 if i == attempts - 1:
                     raise
                 delay = min(cap, base * (factor**i))
@@ -147,8 +147,6 @@ async def upsert_entry_embedding(s: AsyncSession, entry_id: Any, text_source: st
         await s.commit()
     except Exception as e:
         # Log error but don't fail
-        import logging
-
         logging.getLogger(__name__).warning(
             "Failed to upsert embedding for entry %s: %s", entry_id, e
         )
