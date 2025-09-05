@@ -14,7 +14,7 @@ from app.settings import settings
 
 async def ensure_embedding_for_entry(entry: Entry, session: AsyncSession) -> None:
     """Ensure embedding exists for entry based on configuration.
-    
+
     Args:
         entry: Entry to generate embedding for
         session: Database session
@@ -34,6 +34,7 @@ async def ensure_embedding_for_entry(entry: Entry, session: AsyncSession) -> Non
         except Exception as e:
             # Log error but don't fail the request
             import logging
+
             logging.warning(f"Failed to generate embedding for entry {entry.id}: {e}")
 
     elif mode == "event":
@@ -43,6 +44,7 @@ async def ensure_embedding_for_entry(entry: Entry, session: AsyncSession) -> Non
         except Exception as e:
             # Log error but don't fail the request
             import logging
+
             logging.warning(f"Failed to publish embedding event for entry {entry.id}: {e}")
 
     # mode == "off" - do nothing
@@ -50,12 +52,13 @@ async def ensure_embedding_for_entry(entry: Entry, session: AsyncSession) -> Non
 
 async def publish_embedding_event(entry_id: UUID, text: str) -> None:
     """Publish event for async embedding generation.
-    
+
     This is a placeholder - replace with your actual event bus/NATS publishing.
     """
     # TODO: Replace with actual event publishing
     # For now, just log that we would publish
     import logging
+
     logging.info(f"Would publish embedding event for entry {entry_id}")
 
     # Example of what this might look like:

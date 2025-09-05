@@ -71,6 +71,7 @@ dev-dependencies = [
     "typer>=0.12.0",
     "pytest-timeout>=2.4.0",
     "pytest-xdist>=3.8.0",
+    "libcst>=1.8.2",
 ]
 
 [project.scripts]
@@ -130,6 +131,16 @@ ignore = [
     "PLR0915", # too-many-statements
     "PLR2004", # magic-value-comparison
     "C901",    # too-complex
+    
+    # FastAPI specific - these are being addressed in a separate PR
+    "FAST002", # FastAPI dependency without Annotated
+    "B904",    # raise-without-from
+    "ANN201",  # missing-return-type-annotation-public-function
+    "ARG001",  # unused-function-argument
+    "DOC201",  # return-not-documented-in-docstring
+    "DOC501",  # raised-exception-missing-from-docstring
+    "CPY001",  # missing-copyright-notice
+    "INP001",  # implicit-namespace-package
     
     # Boolean traps (FastAPI uses them)
     "FBT001",  # boolean-type-hint-positional-argument
@@ -271,6 +282,9 @@ convention = "google"
     "FBT",    # boolean-trap (test parameters)
     "SLF001", # private-member-access
     "D",      # docstrings not needed in tests
+    "PLR6301", # method-could-be-function (pytest test classes)
+    "DTZ003", # allow naive datetime in tests
+    "BLE001", # allow broad except in tests
 ]
 "alembic/**/*.py" = [
     "D",      # docstrings not needed in migrations

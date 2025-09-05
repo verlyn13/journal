@@ -10,6 +10,7 @@ def test_jwt_encode_decode_roundtrip(monkeypatch):
 
     def _fake_now():
         import datetime
+
         return datetime.datetime.fromtimestamp(fixed_epoch, datetime.UTC)
 
     monkeypatch.setattr(auth_mod, "_utcnow", _fake_now)
@@ -31,6 +32,7 @@ def test_refresh_token_type(monkeypatch):
 
     def _fake_now():
         import datetime
+
         return datetime.datetime.fromtimestamp(fixed_epoch, datetime.UTC)
 
     monkeypatch.setattr(auth_mod, "_utcnow", _fake_now)

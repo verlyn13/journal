@@ -1,35 +1,39 @@
 """
 Test configuration and fixtures for the Journal API.
 """
+
 import os
 import uuid
 
 from collections.abc import AsyncGenerator, Generator
 
+# Alembic for proper schema and extensions
+from pathlib import Path
+
 import pytest
 import pytest_asyncio
 
+from alembic.config import Config
 from fastapi.testclient import TestClient
 from httpx import ASGITransport, AsyncClient
-from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, AsyncConnection, create_async_engine
-from sqlalchemy.orm import sessionmaker
 from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncConnection, AsyncEngine, AsyncSession, create_async_engine
+from sqlalchemy.orm import sessionmaker
 from sqlmodel import SQLModel
 
-# Alembic for proper schema and extensions
-from pathlib import Path
 from alembic import command
-from alembic.config import Config
-
 from app.infra.db import get_session
 from app.infra.models import Entry
 from app.main import app
 from app.settings import settings
 
+
 # Set testing mode before importing app
 settings.testing = True
 
-TEST_DB_URL = os.getenv("TEST_DB_URL", "postgresql+asyncpg://journal:journal@localhost:5433/journal_test")
+TEST_DB_URL = os.getenv(
+    "TEST_DB_URL", "postgresql+asyncpg://journal:journal@localhost:5433/journal_test"
+)
 
 # Ensure Alembic and the app use the same test database URL
 os.environ["JOURNAL_DB_URL"] = TEST_DB_URL
@@ -70,20 +74,21 @@ async def bootstrap_schema(async_engine: AsyncEngine):
         # If prior partial runs left stray tables, drop them to avoid duplicate errors
         async def _drop_stray_tables():
             async with async_engine.begin() as conn:
-                await conn.execute(_text(
-                    "DROP TABLE IF EXISTS entry_embeddings, events, entries CASCADE"
-                ))
+                await conn.execute(
+                    _text("DROP TABLE IF EXISTS entry_embeddings, events, entries CASCADE")
+                )
+
         await _drop_stray_tables()
 
         # Run Alembic in a thread to avoid event loop issues
         import asyncio
         import threading
-        
+
         def run_alembic():
             cfg = Config(str(Path(__file__).resolve().parents[1] / "alembic.ini"))
             cfg.set_main_option("sqlalchemy.url", TEST_DB_URL)
             command.upgrade(cfg, "head")
-        
+
         await asyncio.get_event_loop().run_in_executor(None, run_alembic)
 
     yield
@@ -93,13 +98,13 @@ async def bootstrap_schema(async_engine: AsyncEngine):
 async def db_connection(async_engine: AsyncEngine, bootstrap_schema) -> AsyncConnection:
     """One dedicated connection for the test, with an OUTER transaction."""
     conn = await async_engine.connect()
-    trans = await conn.begin()              # <-- external transaction
-    
+    trans = await conn.begin()  # <-- external transaction
+
     # Add timeout settings to prevent infinite hangs
     await conn.execute(text("SET LOCAL statement_timeout = '5s'"))
     await conn.execute(text("SET LOCAL lock_timeout = '1s'"))
     await conn.execute(text("SET LOCAL idle_in_transaction_session_timeout = '5s'"))
-    
+
     try:
         yield conn
     finally:
@@ -120,7 +125,7 @@ async def session_factory(db_connection: AsyncConnection):
 @pytest_asyncio.fixture
 async def db_session(session_factory, db_connection: AsyncConnection) -> AsyncSession:
     """Bind AsyncSession to the already-transactional connection.
-    
+
     Uses join_transaction_mode='create_savepoint' so any session.commit()
     inside test code just releases a SAVEPOINT while the outer transaction remains.
     """
@@ -159,6 +164,7 @@ async def client(request, session_factory, db_connection: AsyncConnection):
     - Session commits use savepoints; we roll back the outer transaction after the request,
       ensuring no cross-request leakage while permitting concurrent requests.
     """
+
     async def override_get_session():
         # Use per-request isolated connections only for the concurrency stress test.
         if request.node.name == "test_concurrent_user_operations":
@@ -210,7 +216,7 @@ async def sample_entry(db_session: AsyncSession) -> Entry:
     # Generate unique IDs for each test run to avoid constraint violations
     entry_id = str(uuid.uuid4())
     author_id = str(uuid.uuid4())
-    
+
     entry = Entry(
         id=entry_id,
         title="Test Entry",
@@ -271,6 +277,7 @@ def nats_capture(monkeypatch):
     class _ctx:
         async def __aenter__(self):
             return conn
+
         async def __aexit__(self, exc_type, exc, tb):
             return False
 
@@ -285,16 +292,10 @@ def nats_capture(monkeypatch):
 
 # Test utilities
 def create_test_entry_data(
-    title: str = "Test Entry",
-    content: str = "Test content",
-    **kwargs
+    title: str = "Test Entry", content: str = "Test content", **kwargs
 ) -> dict:
     """Create test entry data."""
-    return {
-        "title": title,
-        "content": content,
-        **kwargs
-    }
+    return {"title": title, "content": content, **kwargs}
 
 
 def assert_entry_response(response_data: dict, expected_title: str = None):

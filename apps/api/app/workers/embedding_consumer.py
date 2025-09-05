@@ -1,6 +1,7 @@
 """
 Embedding consumer worker that processes entry events and updates embeddings.
 """
+
 import asyncio
 import json
 import logging
@@ -14,7 +15,7 @@ import nats
 from sqlalchemy import select, text
 
 from app.infra.db import get_session
-from app.infra.embeddings import RateLimited
+from app.infra.embeddings import RateLimitedError
 from app.infra.models import Entry
 from app.infra.search_pgvector import upsert_entry_embedding
 from app.settings import settings
@@ -50,13 +51,15 @@ class EmbeddingConsumer:
                 self.js = js
                 logger.info("Connected to NATS")
                 return
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001
                 last_err = e
                 attempt += 1
                 # Exponential backoff with full jitter
                 delay = min(cap, base * (factor ** (attempt - 1)))
                 jitter = random.random() * delay
-                logger.warning(f"NATS connect failed (attempt {attempt}/{max_attempts}): {e}; retrying in {jitter:.2f}s")
+                logger.warning(
+                    f"NATS connect failed (attempt {attempt}/{max_attempts}): {e}; retrying in {jitter:.2f}s"
+                )
                 await asyncio.sleep(jitter)
         logger.error(f"Failed to connect to NATS after {max_attempts} attempts: {last_err}")
         raise last_err
@@ -66,7 +69,7 @@ class EmbeddingConsumer:
         if self.nc and hasattr(self.nc, "close"):
             try:
                 await self.nc.close()
-            except Exception:
+            except Exception:  # noqa: BLE001
                 logger.debug("NC close failed (mock or already closed)")
             logger.info("Disconnected from NATS")
 
@@ -75,26 +78,31 @@ class EmbeddingConsumer:
         try:
             # Parse the event data
             data = json.loads(msg.data.decode())
-            event_type = data.get('event_type')
-            event_data = data.get('event_data', {})
-            event_id = data.get('id')
+            event_type = data.get("event_type")
+            event_data = data.get("event_data", {})
+            event_id = data.get("id")
 
             logger.info(f"Processing {event_type} event for entry {event_data.get('entry_id')}")
 
             # Idempotency: skip if already processed
             if event_id:
                 async for session in get_session():
-                    exists = (await session.execute(text("SELECT 1 FROM processed_events WHERE event_id = :e"), {"e": event_id})).first()
+                    exists = (
+                        await session.execute(
+                            text("SELECT 1 FROM processed_events WHERE event_id = :e"),
+                            {"e": event_id},
+                        )
+                    ).first()
                     if exists:
                         await msg.ack()
                         return
 
             # Handle different event types
-            if event_type in ['entry.created', 'entry.updated']:
+            if event_type in ["entry.created", "entry.updated"]:
                 await self._handle_entry_upsert(event_data)
-            elif event_type == 'entry.deleted':
+            elif event_type == "entry.deleted":
                 await self._handle_entry_deletion(event_data)
-            elif event_type == 'embedding.reindex':
+            elif event_type == "embedding.reindex":
                 await self._handle_reindex_request(event_data)
             else:
                 logger.warning(f"Unknown event type: {event_type}")
@@ -105,19 +113,25 @@ class EmbeddingConsumer:
             if event_id:
                 async for session in get_session():
                     try:
-                        await session.execute(text("INSERT INTO processed_events(event_id, outcome) VALUES (:e, :o) ON CONFLICT (event_id) DO NOTHING"),
-                                              {"e": event_id, "o": event_type})
+                        await session.execute(
+                            text(
+                                "INSERT INTO processed_events(event_id, outcome) VALUES (:e, :o) ON CONFLICT (event_id) DO NOTHING"
+                            ),
+                            {"e": event_id, "o": event_type},
+                        )
                         await session.commit()
-                    except Exception:
+                    except Exception:  # noqa: BLE001
                         await session.rollback()
             logger.debug(f"Processed and acked {event_type} event")
             metrics_inc("worker_process_total", {"result": "ok", "type": event_type})
 
         except json.JSONDecodeError as e:
-            logger.error(f"JSON decode error: {e}")
+            logger.exception("JSON decode error")
             # Poison message: DLQ + TERM if enabled
             if os.getenv("OUTBOX_DLQ_ENABLED", "0") == "1":
-                await self._publish_dlq({"error": "json_decode", "raw": msg.data.decode(errors='ignore')}, reason=str(e))
+                await self._publish_dlq(
+                    {"error": "json_decode", "raw": msg.data.decode(errors="ignore")}, reason=str(e)
+                )
                 if hasattr(msg, "term"):
                     await msg.term()
                     metrics_inc("worker_process_total", {"result": "term", "reason": "poison"})
@@ -125,12 +139,12 @@ class EmbeddingConsumer:
             # Default: NAK for redelivery
             await msg.nak()
             metrics_inc("worker_process_total", {"result": "retry", "reason": "json"})
-        except RateLimited as e:
+        except RateLimitedError as e:
             logger.warning("Embedding provider rate-limited or circuit open; NAK for redelivery")
             await msg.nak()
             metrics_inc("worker_process_total", {"result": "retry", "reason": "ratelimited"})
         except Exception as e:
-            logger.error(f"Error processing message: {e}")
+            logger.exception("Error processing message")
             # Don't ack on error - let NATS retry
             try:
                 await msg.nak()
@@ -139,9 +153,10 @@ class EmbeddingConsumer:
                 logger.exception("Failed to NAK message")
             metrics_inc("worker_process_total", {"result": "retry", "reason": "error"})
 
-    async def _handle_entry_upsert(self, event_data: dict[str, Any]):
+    @staticmethod
+    async def _handle_entry_upsert(event_data: dict[str, Any]):
         """Handle entry creation/update by generating and storing embedding."""
-        entry_id = event_data.get('entry_id')
+        entry_id = event_data.get("entry_id")
         if not entry_id:
             logger.error("No entry_id in event data")
             return
@@ -161,13 +176,14 @@ class EmbeddingConsumer:
                 await session.commit()
                 logger.info(f"Updated embedding for entry {entry_id}")
             except Exception as e:
-                logger.error(f"Failed to update embedding for entry {entry_id}: {e}")
+                logger.exception("Failed to update embedding for entry %s", entry_id)
                 await session.rollback()
                 raise
 
-    async def _handle_entry_deletion(self, event_data: dict[str, Any]):
+    @staticmethod
+    async def _handle_entry_deletion(event_data: dict[str, Any]):
         """Handle entry deletion by removing embedding."""
-        entry_id = event_data.get('entry_id')
+        entry_id = event_data.get("entry_id")
         if not entry_id:
             logger.error("No entry_id in event data")
             return
@@ -177,16 +193,17 @@ class EmbeddingConsumer:
                 # Delete embedding record
                 await session.execute(
                     text("DELETE FROM entry_embeddings WHERE entry_id = :entry_id"),
-                    {"entry_id": entry_id}
+                    {"entry_id": entry_id},
                 )
                 await session.commit()
                 logger.info(f"Deleted embedding for entry {entry_id}")
             except Exception as e:
-                logger.error(f"Failed to delete embedding for entry {entry_id}: {e}")
+                logger.exception("Failed to delete embedding for entry %s", entry_id)
                 await session.rollback()
                 raise
 
-    async def _handle_reindex_request(self, event_data: dict[str, Any]):
+    @staticmethod
+    async def _handle_reindex_request(event_data: dict[str, Any]):
         """Handle bulk reindexing request."""
         logger.info("Starting bulk reindex of embeddings")
 
@@ -208,14 +225,14 @@ class EmbeddingConsumer:
                         if i % 100 == 0:
                             logger.info(f"Processed {i}/{len(rows)} entries")
                     except Exception as e:
-                        logger.error(f"Failed to reindex entry {entry_id}: {e}")
+                        logger.exception("Failed to reindex entry %s", entry_id)
                         # Continue with next entry
 
                 await session.commit()
                 logger.info(f"Completed bulk reindex of {len(rows)} entries")
 
             except Exception as e:
-                logger.error(f"Bulk reindex failed: {e}")
+                logger.exception("Bulk reindex failed")
                 await session.rollback()
                 raise
 
@@ -253,7 +270,7 @@ class EmbeddingConsumer:
                 await asyncio.sleep(1)
 
         except Exception as e:
-            logger.error(f"Error in message consumption: {e}")
+            logger.exception("Error in message consumption")
             raise
         finally:
             await self.disconnect()
@@ -271,7 +288,7 @@ class EmbeddingConsumer:
                 js = None
                 try:
                     js = self.nc.jetstream()
-                except Exception:
+                except Exception:  # noqa: BLE001
                     js = None
                 if js:
                     await js.publish("journal.dlq", payload)
@@ -284,7 +301,7 @@ class EmbeddingConsumer:
                     js = None
                     try:
                         js = nc.jetstream()
-                    except Exception:
+                    except Exception:  # noqa: BLE001
                         js = None
                     if js:
                         await js.publish("journal.dlq", payload)
@@ -297,8 +314,7 @@ class EmbeddingConsumer:
 async def main():
     """Main entry point for the embedding consumer worker."""
     logging.basicConfig(
-        level=logging.INFO,
-        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+        level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
     )
 
     consumer = EmbeddingConsumer()
@@ -309,7 +325,7 @@ async def main():
         logger.info("Received interrupt signal")
         await consumer.stop()
     except Exception as e:
-        logger.error(f"Worker failed: {e}")
+        logger.exception("Worker failed")
         raise
 
 

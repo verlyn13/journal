@@ -4,6 +4,7 @@ Backfill script for converting entries to Markdown format.
 This script processes existing entries and ensures they have proper
 Markdown formatting and metadata.
 """
+
 import asyncio
 
 from typing import Optional
@@ -15,23 +16,27 @@ from app.infra.db import get_async_engine
 from app.infra.models import Entry
 
 
-async def backfill_markdown_content(session: AsyncSession = None, batch_size: int = 100, dry_run: bool = False) -> int:
+async def backfill_markdown_content(
+    session: AsyncSession = None, batch_size: int = 100, dry_run: bool = False
+) -> int:
     """
     Convert legacy HTML entries to Markdown in batches.
     Returns the number of updated rows.
     """
     if session is None:
         from sqlalchemy.ext.asyncio import async_sessionmaker
+
         engine = get_async_engine()
         sm = async_sessionmaker(bind=engine, class_=AsyncSession, expire_on_commit=False)
         async with sm() as session:
             return await backfill_markdown_content(session, batch_size, dry_run)
 
     # SELECT entries that need conversion (content_version = 1 and no markdown_content)
-    query = select(Entry).where(
-        (Entry.content_version == 1) &
-        (Entry.markdown_content.is_(None))
-    ).limit(batch_size)
+    query = (
+        select(Entry)
+        .where((Entry.content_version == 1) & (Entry.markdown_content.is_(None)))
+        .limit(batch_size)
+    )
 
     result = await session.execute(query)
     entries = result.scalars().all()

@@ -25,7 +25,7 @@ def render_prom() -> str:
     with _lock:
         for (name, items), val in _counters.items():
             if items:
-                lbl = ",".join(f"{k}=\"{v}\"" for k, v in items)
+                lbl = ",".join(f'{k}="{v}"' for k, v in items)
                 lines.append(f"{name}{{{lbl}}} {val}")
             else:
                 lines.append(f"{name} {val}")

@@ -1,6 +1,6 @@
 import pytest
 
-from app.infra.conversion import markdown_to_html, html_to_markdown
+from app.infra.conversion import html_to_markdown, markdown_to_html
 
 
 @pytest.mark.unit
@@ -18,4 +18,3 @@ def test_html_to_markdown_basic():
     md = html_to_markdown(html)
     assert md.startswith("## Sub")
     assert "Paragraph" in md
-

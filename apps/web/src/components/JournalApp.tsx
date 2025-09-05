@@ -26,6 +26,32 @@ export function JournalApp() {
     user: undefined,
   });
 
+  // Sidebar collapsed state (persisted)
+  const SIDEBAR_COLLAPSED_KEY = 'journal:ui:sidebar-collapsed';
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return false;
+    const saved = localStorage.getItem(SIDEBAR_COLLAPSED_KEY);
+    return saved === '1';
+  });
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    localStorage.setItem(SIDEBAR_COLLAPSED_KEY, isSidebarCollapsed ? '1' : '0');
+  }, [isSidebarCollapsed]);
+
+  // Global keyboard shortcut: Cmd/Ctrl + B toggles sidebar
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      const isCmdOrCtrl = e.metaKey || e.ctrlKey;
+      if (isCmdOrCtrl && (e.key === 'b' || e.key === 'B')) {
+        e.preventDefault();
+        setIsSidebarCollapsed((v) => !v);
+      }
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, []);
+
   // Initialize app and check authentication
   useEffect(() => {
     const initializeApp = async () => {
@@ -105,8 +131,7 @@ export function JournalApp() {
         const entryTitle = title || `New Entry - ${new Date().toLocaleDateString()}`;
         const created = await createEntryMut.mutateAsync({
           title: entryTitle,
-          markdown_content: '# Start writing your thoughts...\n',
-          content_version: 2,
+          content: '# Start writing your thoughts...\n',
         });
         setState((prev) => ({
           ...prev,
@@ -114,7 +139,7 @@ export function JournalApp() {
           selectedEntry: {
             id: created.id,
             title: created.title || entryTitle,
-            content: created.markdown_content || '# Start writing your thoughts...\n',
+            content: created.content || '# Start writing your thoughts...\n',
           },
         }));
       } catch (_error) {}
@@ -167,20 +192,23 @@ export function JournalApp() {
       <div
         className={`
         relative grid min-h-screen transition-all duration-300 ease-sanctuary
-        ${state.isFocusMode ? 'grid-cols-1' : 'grid-cols-[260px_1fr_minmax(480px,720px)]'} 
+        ${state.isFocusMode
+          ? 'grid-cols-1'
+          : isSidebarCollapsed
+            ? 'grid-cols-[1fr_minmax(480px,720px)]'
+            : 'grid-cols-[260px_1fr_minmax(480px,720px)]'} 
         gap-4 p-4
         `}
       >
         {/* Left Sidebar */}
-        <aside
-          data-testid="sidebar"
-          className={`
-            transition-all duration-300 ease-sanctuary
-            ${state.isFocusMode ? 'hidden' : 'block'}
-          `}
-        >
-          <Sidebar onCreateEntry={() => handleCreateEntry()} authenticated={state.authenticated} />
-        </aside>
+        {!isSidebarCollapsed && !state.isFocusMode ? (
+          <aside
+            data-testid="sidebar"
+            className="transition-all duration-300 ease-sanctuary"
+          >
+            <Sidebar onCreateEntry={() => handleCreateEntry()} authenticated={state.authenticated} />
+          </aside>
+        ) : null}
 
         {/* Center - Entry List */}
         <main
@@ -235,6 +263,36 @@ export function JournalApp() {
             }}
           />
         </section>
+
+        {/* Hover-peek tab for collapsed sidebar */}
+        {isSidebarCollapsed && !state.isFocusMode ? (
+          <div
+            className="group absolute left-1 top-4 bottom-4 z-30 flex items-center"
+            data-testid="sidebar-peek"
+            aria-label="Collapsed sidebar peek"
+          >
+            {/* Tab */}
+            <button
+              type="button"
+              aria-label="Toggle sidebar"
+              title="Toggle sidebar (Cmd/Ctrl+B)"
+              className="h-28 w-3 rounded-r bg-sanctuary-accent/80 hover:bg-sanctuary-accent focus:ring-2 ring-sanctuary-accent-outline outline-none transition-colors"
+              onClick={() => setIsSidebarCollapsed((v) => !v)}
+              onMouseEnter={() => {
+                // No-op; hover handled by CSS to reveal panel
+              }}
+              data-testid="sidebar-peek-tab"
+            />
+            {/* Peek panel */}
+            <div
+              className="pointer-events-none ml-1 opacity-0 translate-x-[-8px] group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 ease-sanctuary"
+            >
+              <div className="pointer-events-auto w-[260px] shadow-xl rounded-xl overflow-hidden border border-sanctuary-border bg-sanctuary-bg-secondary">
+                <Sidebar onCreateEntry={() => handleCreateEntry()} authenticated={state.authenticated} />
+              </div>
+            </div>
+          </div>
+        ) : null}
 
         {/* Focus Mode Background */}
         <div
