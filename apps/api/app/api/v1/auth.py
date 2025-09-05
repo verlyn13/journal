@@ -26,7 +26,7 @@ class RefreshRequest(BaseModel):
 @router.post("/login")
 async def login(body: LoginRequest):
     """Password login (demo only accepts demo/demo123)."""
-    if body.username == "demo" and body.password == "demo123":
+    if body.username == "demo" and body.password == "demo123":  # noqa: S105
         user_id = "123e4567-e89b-12d3-a456-426614174000"
     else:
         raise HTTPException(
@@ -87,6 +87,6 @@ async def get_me(user_id: str = Depends(get_current_user)):
 
 
 @router.post("/logout")
-async def logout(user_id: str = Depends(get_current_user)):
+async def logout(user_id: str = Depends(get_current_user)):  # noqa: ARG001
     # In a real app, you might invalidate the token in Redis
     return {"message": "Logged out successfully"}

@@ -5,6 +5,7 @@ This script processes existing entries and ensures they have proper
 Markdown formatting and metadata.
 """
 import asyncio
+
 from typing import Optional
 
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -28,16 +29,16 @@ async def backfill_markdown_content(session: AsyncSession = None, batch_size: in
 
     # SELECT entries that need conversion (content_version = 1 and no markdown_content)
     query = select(Entry).where(
-        (Entry.content_version == 1) & 
+        (Entry.content_version == 1) &
         (Entry.markdown_content.is_(None))
     ).limit(batch_size)
-    
+
     result = await session.execute(query)
     entries = result.scalars().all()
-    
+
     if dry_run:
         return len(entries)
-    
+
     updated = 0
     for entry in entries:
         # Simple conversion: treat existing content as markdown and update version
@@ -45,7 +46,7 @@ async def backfill_markdown_content(session: AsyncSession = None, batch_size: in
         entry.content_version = 2
         session.add(entry)
         updated += 1
-    
+
     await session.commit()
     return updated
 
@@ -53,11 +54,11 @@ async def backfill_markdown_content(session: AsyncSession = None, batch_size: in
 async def main() -> None:
     """Main entry point for the backfill script."""
     engine = get_async_engine()
-    
+
     async with AsyncSession(engine) as session:
         count = await backfill_markdown_content(session, dry_run=True)
         print(f"Would process {count} entries")
-        
+
         # Uncomment to actually run the backfill
         # count = await backfill_markdown_content(session)
         # print(f"Processed {count} entries")

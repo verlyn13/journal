@@ -3,26 +3,26 @@ from __future__ import annotations
 import json
 
 from fastapi import APIRouter, Depends
-from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.infra.nats_bus import nats_conn
-from app.infra.db import get_session
 from app.infra.auth import require_user
+from app.infra.db import get_session
+from app.infra.nats_bus import nats_conn
 
 
 router = APIRouter(prefix="/admin", tags=["admin"])
 
 
 @router.get("/ping")
-async def admin_ping(user_id: str = Depends(require_user)):
+async def admin_ping(user_id: str = Depends(require_user)):  # noqa: ARG001
     """Simple ping endpoint for admin health check."""
     return {"status": "pong"}
 
 
 @router.get("/health")
 async def admin_health(
-    user_id: str = Depends(require_user),
+    user_id: str = Depends(require_user),  # noqa: ARG001
     db: AsyncSession = Depends(get_session)
 ):
     """Health check endpoint that verifies database connectivity."""
@@ -30,9 +30,9 @@ async def admin_health(
         # Check database connection
         result = await db.execute(text("SELECT 1"))
         db_status = "healthy" if result.scalar() == 1 else "unhealthy"
-    except Exception:
+    except Exception:  # noqa: BLE001
         db_status = "unhealthy"
-    
+
     return {
         "status": "healthy" if db_status == "healthy" else "degraded",
         "database": db_status,
