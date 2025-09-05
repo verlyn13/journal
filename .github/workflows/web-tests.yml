@@ -17,7 +17,7 @@ jobs:
         with:
           bun-version: '1.2.21'
       - name: Install deps
-        run: bun install --frozen-lockfile
+        run: bun install
       - name: Run vitest with coverage
         run: bun run test:coverage || bun run test:run
       - name: Upload vitest coverage artifact

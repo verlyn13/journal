@@ -31,7 +31,7 @@ jobs:
 
       - name: Install dependencies (web)
         working-directory: apps/web
-        run: bun install --frozen-lockfile
+        run: bun install
 
       - name: Build Storybook static
         working-directory: apps/web
