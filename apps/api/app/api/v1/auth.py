@@ -35,7 +35,7 @@ async def login(body: LoginRequest) -> dict[str, str]:
     Raises:
         HTTPException: If invalid credentials.
     """
-    if body.username == "demo" and body.password == "demo123":
+    if body.username == "demo" and body.password == "demo123":  # noqa: S105
         user_id = "123e4567-e89b-12d3-a456-426614174000"
     else:
         raise HTTPException(
@@ -108,7 +108,7 @@ async def get_me(user_id: Annotated[str, Depends(get_current_user)]) -> dict[str
 
 
 @router.post("/logout")
-async def logout(user_id: Annotated[str, Depends(get_current_user)]) -> dict[str, str]:
+async def logout(user_id: Annotated[str, Depends(get_current_user)]) -> dict[str, str]:  # noqa: ARG001
     """Log out the current user.
 
     Returns:

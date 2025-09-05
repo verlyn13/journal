@@ -32,7 +32,7 @@ class StatsResponse(BaseModel):
 
 @router.get("/stats")
 async def get_stats(
-    user_id: Annotated[str, Depends(require_user)],
+    user_id: Annotated[str, Depends(require_user)],  # noqa: ARG001
     s: Annotated[AsyncSession, Depends(get_session)],
 ) -> StatsResponse:
     """Get statistics about user's journal entries.
