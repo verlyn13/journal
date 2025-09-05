@@ -9,7 +9,7 @@ import random
 from datetime import datetime, timedelta
 
 # Third-party imports
-from sqlalchemy import select, update
+from sqlalchemy import select, text, update
 
 # Local imports
 from app.infra.models import Event
