@@ -69,6 +69,10 @@ describe('Dual-Write Integration', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    // Ensure UI starts with sidebar expanded
+    try {
+      localStorage.removeItem('journal:ui:sidebar-collapsed');
+    } catch {}
     queryClient = new QueryClient({
       defaultOptions: {
         queries: { retry: false },
@@ -101,8 +105,9 @@ describe('Dual-Write Integration', () => {
       { timeout: 5000 },
     );
 
-    // Test should pass if the app renders in markdown mode
-    expect(screen.getByTestId('sidebar')).toBeInTheDocument();
+    // App rendered in markdown mode; ensure main layout rendered
+    // Sidebar may be collapsed; assert on entry list instead of sidebar
+    expect(screen.getByTestId('entry-list')).toBeInTheDocument();
 
     // The main test is that updateEntry would be called with dual format
     // This test verifies the API call structure when it happens
