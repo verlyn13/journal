@@ -4,6 +4,16 @@ on:
   push:
     branches: [ main ]
   pull_request:
+  workflow_dispatch:
+    inputs:
+      markers:
+        description: "pytest -m markers (e.g., 'unit or component')"
+        required: false
+        default: ""
+      ksubset:
+        description: "pytest -k subset filter"
+        required: false
+        default: ""
 
 jobs:
   unit_component:

@@ -5,25 +5,20 @@ on:
   pull_request:
     branches: [ main ]
     paths:
-      - '**/*.ts'
-      - '**/*.js'
-      - '**/*.mjs'
-      - '**/*.cjs'
-      - '.biome.json'
-      - 'tsconfig.json'
-      - 'package.json'
+      - 'apps/web/**/*.{ts,tsx,js,mjs,cjs}'
+      - 'apps/web/biome.json'
+      - 'apps/web/tsconfig.json'
+      - 'apps/web/package.json'
       - '.github/workflows/quality.yml'
   push:
     branches: [ main ]
     paths:
-      - '**/*.ts'
-      - '**/*.js'
-      - '**/*.mjs'
-      - '**/*.cjs'
-      - '.biome.json'
-      - 'tsconfig.json'
-      - 'package.json'
+      - 'apps/web/**/*.{ts,tsx,js,mjs,cjs}'
+      - 'apps/web/biome.json'
+      - 'apps/web/tsconfig.json'
+      - 'apps/web/package.json'
       - '.github/workflows/quality.yml'
+  workflow_dispatch: {}
 
 jobs:
   biome-and-types:
@@ -47,4 +42,3 @@ jobs:
 
       - name: TypeScript typecheck
         run: npx tsc --noEmit
-
