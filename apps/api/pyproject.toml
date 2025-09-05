@@ -285,12 +285,20 @@ convention = "google"
     "PLR6301", # method-could-be-function (pytest test classes)
     "DTZ003", # allow naive datetime in tests
     "BLE001", # allow broad except in tests
+    "RUF029", # async-without-await in test helpers
+    "PT001",  # fixture parentheses nits
+    "PT018",  # composite assertions
+    "T201",   # print used in test output
+    "PERF401", # list comprehensions and extend in tests
 ]
 "alembic/**/*.py" = [
     "D",      # docstrings not needed in migrations
     "E402",   # module-import-not-at-top
     "INP001", # implicit-namespace-package
+    "T201",   # print allowed in migration env
 ]
+".tools/*.py" = ["T201"]
+"test_debug.py" = ["T201"]
 "app/api/deps.py" = [
     "ARG001", # unused-function-argument (dependency injection)
 ]

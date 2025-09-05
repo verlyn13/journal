@@ -52,13 +52,16 @@ async def backfill_markdown_content(
     return updated
 
 
+import logging
+
+
 async def main() -> None:
     """Main entry point for the backfill script."""
     engine = get_async_engine()
 
     async with AsyncSession(engine) as session:
         count = await backfill_markdown_content(session, dry_run=True)
-        print(f"Would process {count} entries")
+        logging.getLogger(__name__).info("Would process %s entries", count)
 
         # For a real run, call without dry_run and report stats
 
