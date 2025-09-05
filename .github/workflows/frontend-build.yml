@@ -5,19 +5,20 @@ on:
   push:
     branches: [ main ]
     paths:
-      - 'src/**'
-      - 'rollup.config.js'
-      - 'package.json'
-      - 'package-lock.json'
+      - 'apps/web/src/**'
+      - 'apps/web/vite.config.ts'
+      - 'apps/web/package.json'
+      - 'apps/web/bun.lock'
       - '.github/workflows/frontend-build.yml'
   pull_request:
     branches: [ main ]
     paths:
-      - 'src/**'
-      - 'rollup.config.js'
-      - 'package.json'
-      - 'package-lock.json'
+      - 'apps/web/src/**'
+      - 'apps/web/vite.config.ts'
+      - 'apps/web/package.json'
+      - 'apps/web/bun.lock'
       - '.github/workflows/frontend-build.yml'
+  workflow_dispatch: {}
 
 jobs:
   build:

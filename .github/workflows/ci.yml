@@ -5,6 +5,17 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      subset:
+        description: "Pytest -k subset (optional)"
+        required: false
+        default: ""
+      verbose:
+        description: "Verbose logs"
+        required: false
+        type: boolean
+        default: false
 
 concurrency:
   group: ci-${{ github.ref }}
