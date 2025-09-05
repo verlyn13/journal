@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { toEntryDetailVm, toEntryVm } from '@/lib/entryMapper';
+import { toEntryDetailVm, toEntryVm } from '../lib/entryMapper';
 import api from '../services/api';
 import type { EntryApi, EntryDetailVm, EntryVm } from '../types/entry';
 

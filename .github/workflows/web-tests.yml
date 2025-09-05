@@ -59,11 +59,6 @@ jobs:
       - name: Install API deps
         working-directory: apps/api
         run: uv sync --all-extras --dev
-      - name: Run DB migrations
-        working-directory: apps/api
-        env:
-          JOURNAL_DB_URL: postgresql+asyncpg://journal:journal@localhost:5432/journal
-        run: uv run alembic -c alembic.ini upgrade head
       - name: Wait for DB auth (robust)
         working-directory: apps/api
         env:
@@ -85,6 +80,11 @@ jobs:
           else:
               raise SystemExit('DB did not become ready for auth in time')
           PY
+      - name: Run DB migrations
+        working-directory: apps/api
+        env:
+          JOURNAL_DB_URL: postgresql+asyncpg://journal:journal@localhost:5432/journal
+        run: uv run alembic -c alembic.ini upgrade head
       - name: Start API server
         working-directory: apps/api
         env:
