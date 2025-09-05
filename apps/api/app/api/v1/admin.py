@@ -40,7 +40,7 @@ async def admin_health(
         # Check database connection
         result = await db.execute(text("SELECT 1"))
         db_status = "healthy" if result.scalar() == 1 else "unhealthy"
-    except Exception:
+    except Exception:  # noqa: BLE001
         db_status = "unhealthy"
 
     return {

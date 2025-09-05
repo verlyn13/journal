@@ -31,7 +31,7 @@ async def ensure_embedding_for_entry(entry: Entry, session: AsyncSession) -> Non
         try:
             embedding = get_embedding(text)
             await upsert_entry_embedding(session, entry.id, text)
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             # Log error but don't fail the request
             import logging
 
@@ -41,7 +41,7 @@ async def ensure_embedding_for_entry(entry: Entry, session: AsyncSession) -> Non
         # Publish event for async processing (production)
         try:
             await publish_embedding_event(entry.id, text)
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             # Log error but don't fail the request
             import logging
 

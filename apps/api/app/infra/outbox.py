@@ -7,7 +7,7 @@ import json
 import os
 import random
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 # Third-party imports
 from sqlalchemy import select, text, update
@@ -60,7 +60,7 @@ async def relay_outbox(session_factory, poll_seconds: float = 1.0):
                     js = None
                     try:
                         js = nc.jetstream()
-                    except Exception:
+                    except Exception:  # noqa: BLE001
                         js = None
                     for ev in rows:
                         subject = SUBJECT_MAP.get(ev.aggregate_type, "journal.events")
@@ -82,10 +82,10 @@ async def relay_outbox(session_factory, poll_seconds: float = 1.0):
                             await s.execute(
                                 update(Event)
                                 .where(Event.id == ev.id)
-                                .values(published_at=datetime.utcnow(), **_pub_state_fields())
+                                .values(published_at=datetime.now(timezone.utc), **_pub_state_fields())
                             )
                             metrics_inc("outbox_publish_attempts_total", {"result": "ok"})
-                        except Exception as e:
+                        except Exception as e:  # noqa: BLE001
                             # Compute backoff and schedule retry if enabled; otherwise, best-effort log
                             if retry_enabled:
                                 await _schedule_retry_or_dead(s, ev, e, nc)
@@ -93,7 +93,7 @@ async def relay_outbox(session_factory, poll_seconds: float = 1.0):
                                 _log_only(e)
                             metrics_inc("outbox_publish_attempts_total", {"result": "error"})
                 await s.commit()
-        except Exception:
+        except Exception:  # noqa: BLE001
             # Back off briefly and try again; non-fatal in dev
             await asyncio.sleep(poll_seconds)
 
@@ -115,7 +115,7 @@ async def process_outbox_batch(session_factory) -> int:
             js = None
             try:
                 js = nc.jetstream()
-            except Exception:
+            except Exception:  # noqa: BLE001
                 js = None
             for ev in rows:
                 subject = SUBJECT_MAP.get(ev.aggregate_type, "journal.events")
@@ -134,11 +134,11 @@ async def process_outbox_batch(session_factory) -> int:
                     await s.execute(
                         update(Event)
                         .where(Event.id == ev.id)
-                        .values(published_at=datetime.utcnow(), **_pub_state_fields())
+                        .values(published_at=datetime.now(timezone.utc), **_pub_state_fields())
                     )
                     published += 1
                     metrics_inc("outbox_publish_attempts_total", {"result": "ok"})
-                except Exception as e:
+                except Exception as e:  # noqa: BLE001
                     if os.getenv("OUTBOX_RETRY_ENABLED", "0") == "1":
                         await _schedule_retry_or_dead(s, ev, e, nc)
                     else:
@@ -163,7 +163,7 @@ def _log_only(error: Exception) -> None:
         import logging
 
         logging.warning(f"outbox publish failed: {error!r}")
-    except Exception:
+    except Exception:  # noqa: BLE001
         pass
 
 
@@ -174,7 +174,7 @@ async def _schedule_retry_or_dead(session, ev: Event, error: Exception, nc) -> N
     """
     try:
         # Read current attempts; if column missing this will fail and we fall back silently
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
         base = float(os.getenv("OUTBOX_RETRY_BASE_SECS", "0.25"))
         factor = float(os.getenv("OUTBOX_RETRY_FACTOR", "2.0"))
         cap = float(os.getenv("OUTBOX_RETRY_MAX_BACKOFF_SECS", "15"))
@@ -192,7 +192,7 @@ async def _schedule_retry_or_dead(session, ev: Event, error: Exception, nc) -> N
                 _text("SELECT attempts FROM events WHERE id = :id"), {"id": ev.id}
             ).scalar_one()
             attempts = int(row or 0)
-        except Exception:
+        except Exception:  # noqa: BLE001
             attempts = 0
 
         next_delay = min(cap, base * (factor ** max(attempts, 0)))
@@ -224,7 +224,7 @@ async def _schedule_retry_or_dead(session, ev: Event, error: Exception, nc) -> N
                     js = None
                     try:
                         js = nc.jetstream()
-                    except Exception:
+                    except Exception:  # noqa: BLE001
                         js = None
                     envelope = {
                         "original_subject": SUBJECT_MAP.get(ev.aggregate_type, "journal.events"),
@@ -239,8 +239,8 @@ async def _schedule_retry_or_dead(session, ev: Event, error: Exception, nc) -> N
                     else:
                         await nc.publish("journal.dlq", data)
                     metrics_inc("outbox_dlq_total")
-                except Exception:
+                except Exception:  # noqa: BLE001
                     pass
-    except Exception:
+    except Exception:  # noqa: BLE001
         # swallow to avoid crashing outbox relay
         pass

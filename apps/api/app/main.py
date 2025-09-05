@@ -27,7 +27,7 @@ app = FastAPI(title="Journal API", version="1.0.0")
 # Observability (configurable endpoint)
 try:
     setup_otel("journal-api", settings.otlp_endpoint)
-except Exception:
+except Exception:  # noqa: BLE001
     # Non-fatal if OTel collector isn't up in dev
     pass
 

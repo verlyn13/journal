@@ -74,11 +74,12 @@ def markdown_to_html(md: str) -> str:
         html = _md_processor.render(md)
 
         # Sanitize HTML to prevent XSS
-        return bleach.clean(
+        clean_html = bleach.clean(
             html, tags=_ALLOWED_TAGS, attributes=_ALLOWED_ATTRIBUTES, strip=True
         )
+        return clean_html
 
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001
         # Fallback to escaped plain text if parsing fails
         import logging
 
@@ -163,7 +164,7 @@ def html_to_markdown(html: str) -> str:
 
         return out.strip()
 
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001
         # Fallback - return original HTML if conversion fails
         import logging
 

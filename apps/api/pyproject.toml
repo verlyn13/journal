@@ -283,6 +283,8 @@ convention = "google"
     "SLF001", # private-member-access
     "D",      # docstrings not needed in tests
     "PLR6301", # method-could-be-function (pytest test classes)
+    "DTZ003", # allow naive datetime in tests
+    "BLE001", # allow broad except in tests
 ]
 "alembic/**/*.py" = [
     "D",      # docstrings not needed in migrations
