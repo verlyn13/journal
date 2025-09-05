@@ -6,7 +6,7 @@ from typing import Annotated, Any, Literal
 from uuid import UUID
 
 # Third-party imports
-from fastapi import APIRouter, Depends, HTTPException, Query, Request
+from fastapi import APIRouter, Depends, HTTPException, Query, Request, Response
 from pydantic import BaseModel, Field
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -286,13 +286,19 @@ async def update_entry(
         ) from c
 
 
-@router.delete("/{entry_id}", status_code=204)
+@router.delete(
+    "/{entry_id}",
+    status_code=204,
+    response_class=Response,
+    response_model=None,
+    responses={204: {"description": "No Content", "content": {}}},
+)
 async def delete_entry(
     entry_id: str,
     expected_version: Annotated[int, Query(description="Expected version for optimistic locking")],
     user_id: Annotated[str, Depends(require_user)],
     s: Annotated[AsyncSession, Depends(get_session)],
-):
+) -> None:
     """Soft delete entry with optimistic locking.
 
     Returns 204 No Content on success to match API expectations.
@@ -313,8 +319,8 @@ async def delete_entry(
     try:
         await repo.soft_delete(eid, expected_version)
         await s.commit()
-        # No response body for 204
-        return
+        # Explicit empty 204 response
+        return Response(status_code=204)
 
     except NotFoundError as e:
         raise HTTPException(status_code=404, detail="Entry not found") from e

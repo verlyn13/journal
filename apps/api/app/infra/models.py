@@ -5,8 +5,10 @@ from datetime import datetime
 from typing import Optional
 from uuid import UUID, uuid4
 
+from pydantic import field_validator
+
 # Third-party imports
-from sqlalchemy import JSON, Column, Integer
+from sqlalchemy import JSON, Column, Integer, event
 from sqlalchemy.orm import declarative_mixin
 from sqlmodel import Field, SQLModel
 
@@ -58,6 +60,32 @@ class Event(SQLModel, table=True):
     event_data: dict = Field(sa_column=Column(JSON, nullable=False))
     occurred_at: datetime = Field(default_factory=datetime.utcnow, index=True)
     published_at: datetime | None = Field(default=None, index=True)
+
+    # Validators
+    @field_validator("aggregate_id", mode="before")
+    @classmethod
+    def _coerce_aggregate_id(cls, v):  # type: ignore[no-untyped-def]
+        """Coerce raw 16-byte values into UUID for compatibility with older tests.
+
+        Accepts bytes/bytearray of length 16 and converts to UUID; otherwise returns input.
+        """
+        try:
+            if isinstance(v, (bytes, bytearray)) and len(v) == 16:
+                return UUID(bytes=bytes(v))
+        except Exception:
+            pass
+        return v
+
+
+# SQLAlchemy-level safeguard for raw bytes assigned via ORM operations/tests
+@event.listens_for(Event, "before_insert")
+def _event_before_insert(mapper, connection, target):  # type: ignore[no-untyped-def]
+    try:
+        if isinstance(target.aggregate_id, (bytes, bytearray)) and len(target.aggregate_id) == 16:
+            target.aggregate_id = UUID(bytes=bytes(target.aggregate_id))
+    except Exception:
+        # Leave as-is; the DB will raise a clear error if invalid
+        pass
 
 
 class ProcessedEvent(SQLModel, table=True):

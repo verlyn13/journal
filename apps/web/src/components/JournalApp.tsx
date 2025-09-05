@@ -1,9 +1,10 @@
-import { useCallback, useEffect, useState } from 'react';
+import { Suspense, useCallback, useEffect, useState } from 'react';
+import React from 'react';
 import { useCreateEntry, useEntriesList } from '../hooks/useEntryQueries';
 import api, { type AuthStatus } from '../services/api';
 import EntryList from './layout/EntryList';
 import Sidebar from './layout/Sidebar';
-import MarkdownSplitPane from './markdown/MarkdownSplitPane';
+const MarkdownSplitPane = React.lazy(() => import('./markdown/MarkdownSplitPane'));
 
 interface JournalAppState {
   selectedEntryId: string | null;
@@ -234,7 +235,8 @@ export function JournalApp() {
           ${state.isFocusMode ? 'max-w-prose mx-auto' : ''}
         `}
         >
-          <MarkdownSplitPane
+          <Suspense fallback={<div className="p-4 text-sm text-sanctuary-text-tertiary">Loading editor…</div>}>
+            <MarkdownSplitPane
             entry={
               state.selectedEntry
                 ? {
@@ -261,7 +263,8 @@ export function JournalApp() {
                 // TODO: Add proper error handling/notification
               }
             }}
-          />
+            />
+          </Suspense>
         </section>
 
         {/* Hover-peek tab for collapsed sidebar */}

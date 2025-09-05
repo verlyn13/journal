@@ -34,12 +34,12 @@ async def backfill_markdown_content(batch_size: int = 100, dry_run: bool = False
                 try:
                     md = html_to_markdown(e.content or "")
                     if not md or not md.strip():
-                        logger.warning(f"Empty conversion for entry {e.id}")
+                        logger.warning("Empty conversion for entry %s", e.id)
                         continue
                     e.markdown_content = md
                     e.content_version = 2
                 except Exception as exc:
-                    logger.error(f"Failed to convert entry {e.id}: {exc}")
+                    logger.error("Failed to convert entry %s: %s", e.id, exc)
                     continue
             if not dry_run:
                 await s.commit()

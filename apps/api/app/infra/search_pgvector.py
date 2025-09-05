@@ -21,7 +21,9 @@ def _vec_literal(vec: list[float]) -> str:
     return "[" + ", ".join(f"{v:.8f}" for v in vec) + "]"
 
 
-async def hybrid_search(s: AsyncSession, q: str, k: int = 10, alpha: float = 0.6):
+async def hybrid_search(
+    s: AsyncSession, q: str, k: int = 10, alpha: float = 0.6
+) -> list[dict[str, Any]]:
     """Hybrid search with graceful degradation.
 
     Combines FTS and vector similarity. If embeddings don't exist, falls back to FTS only.
@@ -58,7 +60,7 @@ async def hybrid_search(s: AsyncSession, q: str, k: int = 10, alpha: float = 0.6
     return [dict(r) for r in rows]
 
 
-async def semantic_search(s: AsyncSession, q: str, k: int = 10):
+async def semantic_search(s: AsyncSession, q: str, k: int = 10) -> list[dict[str, Any]]:
     """Semantic search with graceful degradation.
 
     Returns empty list if no embeddings exist instead of failing.
@@ -87,7 +89,7 @@ async def semantic_search(s: AsyncSession, q: str, k: int = 10):
     return [dict(r) for r in res.mappings().all()]
 
 
-async def keyword_search(s: AsyncSession, q: str, k: int = 10):
+async def keyword_search(s: AsyncSession, q: str, k: int = 10) -> list[dict[str, Any]]:
     """Keyword-only search fallback."""
     if not q.strip():
         return []
@@ -107,7 +109,7 @@ async def keyword_search(s: AsyncSession, q: str, k: int = 10):
     return [dict(r) for r in res.mappings().all()]
 
 
-async def upsert_entry_embedding(s: AsyncSession, entry_id: Any, text_source: str):
+async def upsert_entry_embedding(s: AsyncSession, entry_id: Any, text_source: str) -> None:
     """Generate embedding for text and upsert into entry_embeddings."""
     try:
         # Retry embedding fetch with bounded exponential backoff and full jitter
@@ -147,4 +149,6 @@ async def upsert_entry_embedding(s: AsyncSession, entry_id: Any, text_source: st
         # Log error but don't fail
         import logging
 
-        logging.warning(f"Failed to upsert embedding for entry {entry_id}: {e}")
+        logging.getLogger(__name__).warning(
+            "Failed to upsert embedding for entry %s: %s", entry_id, e
+        )

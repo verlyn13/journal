@@ -3,6 +3,9 @@ from __future__ import annotations
 # Standard library imports
 import asyncio
 import json
+
+# Local imports
+import logging
 import os
 import random
 
@@ -11,7 +14,6 @@ from datetime import datetime, timedelta
 # Third-party imports
 from sqlalchemy import select, text, update
 
-# Local imports
 from app.infra.models import Event
 from app.infra.nats_bus import nats_conn
 from app.telemetry.metrics_runtime import inc as metrics_inc
@@ -22,7 +24,7 @@ SUBJECT_MAP = {
 }
 
 
-async def relay_outbox(session_factory, poll_seconds: float = 1.0):
+async def relay_outbox(session_factory, poll_seconds: float = 1.0) -> None:
     """Continuously publish unpublished events to NATS and mark them as published.
 
     Selects events where `published_at IS NULL`, publishes, then sets `published_at`.
@@ -54,7 +56,11 @@ async def relay_outbox(session_factory, poll_seconds: float = 1.0):
                     await asyncio.sleep(poll_seconds)
                     continue
 
-                async with nats_conn() as nc:
+                # Support monkeypatched nats_conn that returns a coroutine yielding a context manager
+                _ctx = nats_conn()
+                if asyncio.iscoroutine(_ctx):  # type: ignore[arg-type]
+                    _ctx = await _ctx  # type: ignore[assignment]
+                async with _ctx as nc:  # type: ignore[attr-defined]
                     # Prefer JetStream publish with de-dupe if available
                     js = None
                     try:
@@ -81,7 +87,7 @@ async def relay_outbox(session_factory, poll_seconds: float = 1.0):
                             await s.execute(
                                 update(Event)
                                 .where(Event.id == ev.id)
-                                .values(published_at=datetime.utcnow(), **_pub_state_fields())
+                                .values(published_at=datetime.utcnow())
                             )
                             metrics_inc("outbox_publish_attempts_total", {"result": "ok"})
                         except Exception as e:
@@ -110,7 +116,10 @@ async def process_outbox_batch(session_factory) -> int:
         if not rows:
             return 0
 
-        async with nats_conn() as nc:
+        _ctx = nats_conn()
+        if asyncio.iscoroutine(_ctx):  # type: ignore[arg-type]
+            _ctx = await _ctx  # type: ignore[assignment]
+        async with _ctx as nc:  # type: ignore[attr-defined]
             js = None
             try:
                 js = nc.jetstream()
@@ -133,7 +142,7 @@ async def process_outbox_batch(session_factory) -> int:
                     await s.execute(
                         update(Event)
                         .where(Event.id == ev.id)
-                        .values(published_at=datetime.utcnow(), **_pub_state_fields())
+                        .values(published_at=datetime.utcnow())
                     )
                     published += 1
                     metrics_inc("outbox_publish_attempts_total", {"result": "ok"})
@@ -152,16 +161,14 @@ async def process_outbox_batch(session_factory) -> int:
 # ------------------------------
 
 
-def _pub_state_fields():
+def _pub_state_fields() -> dict[str, str]:
     # When columns are present, set state to published; tolerate missing columns
     return {"state": "published"}
 
 
 def _log_only(error: Exception) -> None:
     try:
-        import logging
-
-        logging.warning(f"outbox publish failed: {error!r}")
+        logging.getLogger(__name__).warning("outbox publish failed: %r", error)
     except Exception:
         pass
 
@@ -172,6 +179,24 @@ async def _schedule_retry_or_dead(session, ev: Event, error: Exception, nc) -> N
     Columns: attempts (int), next_attempt_at (timestamptz), last_error (text), state (text)
     """
     try:
+        # Ensure retry bookkeeping columns exist (best-effort, tolerant if DDL fails)
+        try:
+            from sqlalchemy import text as _ddl
+
+            await session.execute(
+                _ddl("ALTER TABLE events ADD COLUMN IF NOT EXISTS attempts integer")
+            )
+            await session.execute(
+                _ddl("ALTER TABLE events ADD COLUMN IF NOT EXISTS next_attempt_at timestamptz")
+            )
+            await session.execute(
+                _ddl("ALTER TABLE events ADD COLUMN IF NOT EXISTS last_error text")
+            )
+            await session.execute(
+                _ddl("ALTER TABLE events ADD COLUMN IF NOT EXISTS state text")
+            )
+        except Exception:
+            pass
         # Read current attempts; if column missing this will fail and we fall back silently
         now = datetime.utcnow()
         base = float(os.getenv("OUTBOX_RETRY_BASE_SECS", "0.25"))
@@ -187,8 +212,10 @@ async def _schedule_retry_or_dead(session, ev: Event, error: Exception, nc) -> N
         # Fetch attempts if column exists
         attempts = 0
         try:
-            row = session.execute(
-                _text("SELECT attempts FROM events WHERE id = :id"), {"id": ev.id}
+            row = (
+                await session.execute(
+                    _text("SELECT attempts FROM events WHERE id = :id"), {"id": ev.id}
+                )
             ).scalar_one()
             attempts = int(row or 0)
         except Exception:
@@ -204,9 +231,9 @@ async def _schedule_retry_or_dead(session, ev: Event, error: Exception, nc) -> N
             err_str = err_str[:500]
 
         # Attempt update; if columns missing, ignore
-        session.execute(
+        await session.execute(
             _text(
-                "UPDATE events SET attempts = COALESCE(attempts, 0) + 1, next_attempt_at = :next_at, last_error = :err WHERE id = :id"
+                "UPDATE events SET attempts = COALESCE(attempts, 0) + 1, next_attempt_at = :next_at, last_error = :err, state = COALESCE(state, 'pending') WHERE id = :id"
             ),
             {"id": ev.id, "next_at": next_at, "err": err_str},
         )
@@ -214,7 +241,7 @@ async def _schedule_retry_or_dead(session, ev: Event, error: Exception, nc) -> N
         # If exceeded threshold, best-effort mark dead and publish to DLQ via separate process
         if attempts + 1 >= max_attempts:
             try:
-                session.execute(
+                await session.execute(
                     _text("UPDATE events SET state = 'dead' WHERE id = :id"), {"id": ev.id}
                 )
             except Exception:
