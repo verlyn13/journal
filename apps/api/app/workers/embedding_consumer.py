@@ -255,8 +255,7 @@ class EmbeddingConsumer:
                 queue="embedding_workers",
                 cb=self.process_entry_event,
                 manual_ack=True,
-                max_deliver=int(os.getenv("JS_MAX_DELIVER", "6")),
-                ack_wait=float(os.getenv("JS_ACK_WAIT_SECS", "30")),
+                max_deliver=int(os.getenv("JS_MAX_DELIVER", "3")),
             )
 
             # Subscribe to reindex events
@@ -296,11 +295,18 @@ class EmbeddingConsumer:
                 except Exception:
                     js = None
                 if js:
-                    await js.publish("journal.dlq", payload)
+                    try:
+                        await js.publish("journal.dlq", payload)
+                    except Exception:
+                        # Fallback to core publish if JetStream not available
+                        await self.nc.publish("journal.dlq", payload)
                 else:
                     await self.nc.publish("journal.dlq", payload)
             else:
-                async with nats_conn() as nc:
+                # Import within function to honor monkeypatching in tests
+                from app.infra.nats_bus import nats_conn as _nats_conn
+
+                async with _nats_conn() as nc:
                     js = None
                     try:
                         js = nc.jetstream()

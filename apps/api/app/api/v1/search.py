@@ -20,7 +20,7 @@ async def search_hybrid(
     q: Annotated[str, Query(min_length=1, description="Search query")],
     s: Annotated[AsyncSession, Depends(get_session)],
     k: Annotated[int, Query(ge=1, le=100, description="Number of results")] = 10,
-    alpha: Annotated[float, Query(ge=0.0, le=1.0, description="Semantic weight")] = 0.6,
+    alpha: float = 0.6,
 ) -> list[dict[str, Any]]:
     """Perform hybrid search combining keyword and semantic search.
 
@@ -36,7 +36,7 @@ async def search_hybrid(
     Raises:
         HTTPException: If alpha is out of range.
     """
-    if not (0.0 <= alpha <= 1.0):
+    if not (0.0 <= float(alpha) <= 1.0):
         raise HTTPException(400, "alpha must be in [0,1]")
     return await hybrid_search(s, q=q, k=k, alpha=alpha)
 
