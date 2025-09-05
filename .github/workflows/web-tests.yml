@@ -62,7 +62,7 @@ jobs:
       - name: Wait for DB auth (robust)
         working-directory: apps/api
         env:
-          DB_SYNC_URL: postgresql+psycopg2://journal:journal@localhost:5432/journal
+          DB_SYNC_URL: postgresql://journal:journal@localhost:5432/journal
         run: |
           uv run python - << 'PY'
           import os, time
