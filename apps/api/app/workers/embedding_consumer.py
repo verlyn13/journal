@@ -224,14 +224,14 @@ class EmbeddingConsumer:
                         await upsert_entry_embedding(session, entry_id, text_source)
                         if i % 100 == 0:
                             logger.info(f"Processed {i}/{len(rows)} entries")
-                    except Exception as e:  # noqa: BLE001
+                    except Exception as e:
                         logger.exception("Failed to reindex entry %s", entry_id)
                         # Continue with next entry
 
                 await session.commit()
                 logger.info(f"Completed bulk reindex of {len(rows)} entries")
 
-            except Exception as e:  # noqa: BLE001
+            except Exception as e:
                 logger.exception("Bulk reindex failed")
                 await session.rollback()
                 raise
@@ -269,7 +269,7 @@ class EmbeddingConsumer:
             while self.running:
                 await asyncio.sleep(1)
 
-        except Exception as e:  # noqa: BLE001
+        except Exception as e:
             logger.exception("Error in message consumption")
             raise
         finally:
@@ -307,7 +307,7 @@ class EmbeddingConsumer:
                         await js.publish("journal.dlq", payload)
                     else:
                         await nc.publish("journal.dlq", payload)
-        except Exception:  # noqa: BLE001
+        except Exception:
             logger.exception("Failed to publish to DLQ")
 
 
@@ -324,7 +324,7 @@ async def main():
     except KeyboardInterrupt:
         logger.info("Received interrupt signal")
         await consumer.stop()
-    except Exception as e:  # noqa: BLE001
+    except Exception as e:
         logger.exception("Worker failed")
         raise
 

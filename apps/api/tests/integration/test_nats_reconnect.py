@@ -1,5 +1,6 @@
-import os
 import asyncio
+import os
+
 import pytest
 
 
@@ -12,6 +13,7 @@ async def test_nats_reconnect_sanity():
         pytest.skip("Set RUN_REAL_NATS_RESTART=1 and restart NATS externally to run this test")
 
     import nats
+
     from app.settings import settings
 
     # Connect and subscribe; restart server externally for this test
@@ -31,4 +33,3 @@ async def test_nats_reconnect_sanity():
     finally:
         await nc.drain()
         await nc.close()
-

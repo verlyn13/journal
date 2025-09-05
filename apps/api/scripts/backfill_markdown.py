@@ -1,12 +1,14 @@
 from __future__ import annotations
+
 import asyncio
-from sqlalchemy.ext.asyncio import AsyncSession
 import logging
+
+from sqlalchemy.ext.asyncio import AsyncSession
 from sqlmodel import select
 
+from app.infra.conversion import html_to_markdown
 from app.infra.db import AsyncSessionLocal
 from app.infra.models import Entry
-from app.infra.conversion import html_to_markdown
 
 
 logger = logging.getLogger(__name__)
@@ -18,10 +20,14 @@ async def backfill_markdown_content(batch_size: int = 100, dry_run: bool = False
     async with AsyncSessionLocal() as s:  # type: AsyncSession
         while True:
             rows = (
-                await s.execute(
-                    select(Entry).where(Entry.markdown_content.is_(None)).limit(batch_size)
+                (
+                    await s.execute(
+                        select(Entry).where(Entry.markdown_content.is_(None)).limit(batch_size)
+                    )
                 )
-            ).scalars().all()
+                .scalars()
+                .all()
+            )
             if not rows:
                 break
             for e in rows:

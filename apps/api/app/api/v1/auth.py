@@ -87,6 +87,6 @@ async def get_me(user_id: str = Depends(get_current_user)):
 
 
 @router.post("/logout")
-async def logout(user_id: str = Depends(get_current_user)):  # noqa: ARG001
+async def logout(user_id: str = Depends(get_current_user)):
     # In a real app, you might invalidate the token in Redis
     return {"message": "Logged out successfully"}

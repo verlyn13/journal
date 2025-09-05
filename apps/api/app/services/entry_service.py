@@ -38,7 +38,9 @@ async def create_entry(
             word_count=len(html.split()),
         )
     else:
-        e = Entry(author_id=author_id, title=title, content=content, word_count=len(content.split()))
+        e = Entry(
+            author_id=author_id, title=title, content=content, word_count=len(content.split())
+        )
     s.add(e)
     await s.flush()
 
@@ -58,9 +60,7 @@ async def create_entry(
 
 async def get_entry_by_id(s: AsyncSession, entry_id: UUID) -> Entry | None:
     """Get entry by ID, excluding soft-deleted entries."""
-    result = await s.execute(
-        select(Entry).where(Entry.id == entry_id, Entry.is_deleted.is_(False))
-    )
+    result = await s.execute(select(Entry).where(Entry.id == entry_id, Entry.is_deleted.is_(False)))
     return result.scalar_one_or_none()
 
 

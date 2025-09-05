@@ -1,8 +1,10 @@
 """
 Extended unit tests for markdown/HTML conversion functions.
 """
+
 import pytest
-from app.infra.conversion import markdown_to_html, html_to_markdown
+
+from app.infra.conversion import html_to_markdown, markdown_to_html
 
 
 @pytest.mark.unit
