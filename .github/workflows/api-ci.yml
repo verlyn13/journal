@@ -1,16 +1,12 @@
-name: API CI
+name: API CI (Deprecated)
 
 on:
-  push:
-    branches: [ main, develop ]
-    paths:
-      - 'apps/api/**'
-      - '.github/workflows/api-ci.yml'
-  pull_request:
-    branches: [ main, develop ]
-    paths:
-      - 'apps/api/**'
-      - '.github/workflows/api-ci.yml'
+  workflow_dispatch:
+    inputs:
+      note:
+        description: "Legacy API CI; use api-tests.yml and ci.yml for routine checks"
+        required: false
+        default: ""
 
 env:
   PYTHON_VERSION: "3.12"
