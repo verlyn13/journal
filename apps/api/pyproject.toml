@@ -282,6 +282,7 @@ convention = "google"
     "FBT",    # boolean-trap (test parameters)
     "SLF001", # private-member-access
     "D",      # docstrings not needed in tests
+    "PLR6301", # method-could-be-function (pytest test classes)
 ]
 "alembic/**/*.py" = [
     "D",      # docstrings not needed in migrations
