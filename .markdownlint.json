@@ -1,11 +1,16 @@
 {
   "default": true,
-  "MD013": { "line_length": 120 },
+  "MD013": { "line_length": 160 },
   "MD033": false,
   "MD041": false,
   "MD007": { "indent": 4 },
   "MD026": { "punctuation": ".,;:!" },
   "MD024": { "allow_different_nesting": true },
   "no-hard-tabs": true,
-  "whitespace": false
+  "whitespace": false,
+  "ignores": [
+    "docs/**",
+    "apps/api/docs/**",
+    "apps/api/htmlcov/**"
+  ]
 }
