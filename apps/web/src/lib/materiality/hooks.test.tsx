@@ -1,12 +1,12 @@
-import { renderHook, act, waitFor } from '@testing-library/react';
-import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
+import { act, renderHook, waitFor } from '@testing-library/react';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   useElevation,
-  useTexture,
   useGlassSupport,
   useMateriality,
   useParallax,
   useRipple,
+  useTexture,
 } from './hooks';
 
 describe('useElevation', () => {

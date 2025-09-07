@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
-import { Glass, FrostedGlass, Acrylic, supportsBackdropFilter } from './glass';
+import { Acrylic, FrostedGlass, Glass, supportsBackdropFilter } from './glass';
 
 describe('Glass Component', () => {
   it('renders with default blur and opacity', () => {
@@ -10,7 +10,7 @@ describe('Glass Component', () => {
     // jsdom may not retain unsupported CSS properties like backdrop-filter
     if (typeof CSS !== 'undefined' && CSS.supports('backdrop-filter', 'blur(1px)')) {
       expect(element).toHaveStyle(
-        'background-color: rgba(255, 255, 255, 0.8); backdrop-filter: blur(8px) saturate(150%)'
+        'background-color: rgba(255, 255, 255, 0.8); backdrop-filter: blur(8px) saturate(150%)',
       );
     } else {
       expect(element).toHaveStyle('background-color: rgba(255, 255, 255, 0.8)');
@@ -78,7 +78,7 @@ describe('Glass Component', () => {
     expect(element).toHaveClass('glass', 'custom-glass');
     if (typeof CSS !== 'undefined' && CSS.supports('backdrop-filter', 'blur(1px)')) {
       expect(element).toHaveStyle(
-        'background-color: rgba(0, 0, 255, 0.9); backdrop-filter: blur(16px) saturate(120%)'
+        'background-color: rgba(0, 0, 255, 0.9); backdrop-filter: blur(16px) saturate(120%)',
       );
     } else {
       expect(element).toHaveStyle('background-color: rgba(0, 0, 255, 0.9)');
@@ -93,7 +93,7 @@ describe('FrostedGlass Component', () => {
     expect(element).toHaveClass('glass');
     if (typeof CSS !== 'undefined' && CSS.supports('backdrop-filter', 'blur(1px)')) {
       expect(element).toHaveStyle(
-        'background-color: rgba(255, 255, 255, 0.95); backdrop-filter: blur(16px) saturate(120%)'
+        'background-color: rgba(255, 255, 255, 0.95); backdrop-filter: blur(16px) saturate(120%)',
       );
     } else {
       expect(element).toHaveStyle('background-color: rgba(255, 255, 255, 0.95)');
@@ -109,7 +109,7 @@ describe('FrostedGlass Component', () => {
     const element = screen.getByTestId('frosted');
     if (typeof CSS !== 'undefined' && CSS.supports('backdrop-filter', 'blur(1px)')) {
       expect(element).toHaveStyle(
-        'background-color: rgba(255, 255, 255, 0.8); backdrop-filter: blur(24px) saturate(120%)'
+        'background-color: rgba(255, 255, 255, 0.8); backdrop-filter: blur(24px) saturate(120%)',
       );
     } else {
       expect(element).toHaveStyle('background-color: rgba(255, 255, 255, 0.8)');
@@ -124,7 +124,7 @@ describe('Acrylic Component', () => {
     expect(element).toHaveClass('glass', 'acrylic');
     if (typeof CSS !== 'undefined' && CSS.supports('backdrop-filter', 'blur(1px)')) {
       expect(element).toHaveStyle(
-        'background-color: rgba(243, 243, 243, 0.6); backdrop-filter: blur(24px) saturate(150%)'
+        'background-color: rgba(243, 243, 243, 0.6); backdrop-filter: blur(24px) saturate(150%)',
       );
     } else {
       expect(element).toHaveStyle('background-color: rgba(243, 243, 243, 0.6)');
@@ -150,7 +150,7 @@ describe('Acrylic Component', () => {
     const element = screen.getByTestId('acrylic');
     if (typeof CSS !== 'undefined' && CSS.supports('backdrop-filter', 'blur(1px)')) {
       expect(element).toHaveStyle(
-        'background-color: rgba(243, 243, 243, 0.8); backdrop-filter: blur(16px) saturate(150%)'
+        'background-color: rgba(243, 243, 243, 0.8); backdrop-filter: blur(16px) saturate(150%)',
       );
     } else {
       expect(element).toHaveStyle('background-color: rgba(243, 243, 243, 0.8)');

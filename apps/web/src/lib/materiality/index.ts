@@ -1,16 +1,16 @@
 // Materiality System v2.0
 // Visual depth and surface effects
 
-export * from './surfaces';
 export * from './elevation';
-export * from './textures';
 export * from './glass';
 export * from './hooks';
+export * from './surfaces';
+export * from './textures';
 
 export type {
-  SurfaceProps,
   ElevationLevel,
-  TextureType,
   GlassProps,
   MaterialityConfig,
+  SurfaceProps,
+  TextureType,
 } from './types';

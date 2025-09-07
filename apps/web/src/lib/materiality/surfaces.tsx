@@ -2,9 +2,9 @@
 
 import type React from 'react';
 import { forwardRef } from 'react';
-import type { SurfaceProps } from './types';
 import { getElevationStyles } from './elevation';
 import { getTextureStyles } from './textures';
+import type { SurfaceProps } from './types';
 
 export const Surface = forwardRef<HTMLDivElement, SurfaceProps>(
   (

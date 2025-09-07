@@ -1,10 +1,10 @@
 // React Hooks for Materiality System
 
-import { useState, useEffect, useCallback, useRef } from 'react';
-import type { ElevationLevel, TextureType, MaterialityConfig } from './types';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { getElevationStyles, getHoverElevation, getPressedElevation } from './elevation';
-import { getTextureOpacity } from './textures';
 import { supportsBackdropFilter } from './glass';
+import { getTextureOpacity } from './textures';
+import type { ElevationLevel, MaterialityConfig, TextureType } from './types';
 
 // Hook for interactive elevation
 export function useElevation(

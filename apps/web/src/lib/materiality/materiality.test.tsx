@@ -5,7 +5,7 @@ import {
   getPressedElevation,
   isElevationAccessible,
 } from './elevation';
-import { getTextureStyles, getTextureOpacity, isTextureAccessible } from './textures';
+import { getTextureOpacity, getTextureStyles, isTextureAccessible } from './textures';
 
 describe('Materiality System', () => {
   describe('Elevation System', () => {

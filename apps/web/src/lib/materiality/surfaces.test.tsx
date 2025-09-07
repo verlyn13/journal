@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
-import { Surface, Card, Paper, FloatingPanel } from './surfaces';
+import { Card, FloatingPanel, Paper, Surface } from './surfaces';
 
 describe('Surface Component', () => {
   it('renders flat surface by default', () => {
