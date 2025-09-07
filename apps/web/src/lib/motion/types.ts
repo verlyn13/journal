@@ -53,7 +53,7 @@ export interface ViewTransitionConfig {
   updateCallback?: () => void | Promise<void>;
 }
 
-export type MotionPreset = 
+export type MotionPreset =
   | 'fadeIn'
   | 'fadeOut'
   | 'slideUp'

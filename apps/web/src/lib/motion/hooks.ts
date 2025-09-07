@@ -1,22 +1,20 @@
 // React Hooks for Motion System
 
-import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { createStagger, createTimeline, getOrchestrator } from './orchestrator';
+import { motionPresets } from './presets';
 import type {
+  AnimationState,
   MotionConfig,
+  ReducedMotionOptions,
   SpringConfig,
   StaggerConfig,
   TimelineStep,
   ViewTransitionConfig,
-  AnimationState,
-  ReducedMotionOptions,
 } from './types';
-import { getOrchestrator, createStagger, createTimeline } from './orchestrator';
-import { motionPresets } from './presets';
 
 // Hook for reduced motion preferences
-export function useReducedMotion(
-  options: ReducedMotionOptions = { strategy: 'respect' }
-): boolean {
+export function useReducedMotion(options: ReducedMotionOptions = { strategy: 'respect' }): boolean {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
   useEffect(() => {
@@ -47,7 +45,7 @@ export function useReducedMotion(
 
 // Main motion hook
 export function useMotion<T extends HTMLElement = HTMLDivElement>(
-  config: MotionConfig = {}
+  config: MotionConfig = {},
 ): {
   ref: React.RefObject<T>;
   animate: (to: Partial<CSSStyleDeclaration>) => Promise<void>;
@@ -73,7 +71,7 @@ export function useMotion<T extends HTMLElement = HTMLDivElement>(
         animationRef.current.cancel();
       }
 
-      setState(prev => ({ ...prev, isAnimating: true }));
+      setState((prev) => ({ ...prev, isAnimating: true }));
 
       const element = ref.current;
       const duration = prefersReducedMotion ? 0 : (config.duration ?? 300);
@@ -87,15 +85,9 @@ export function useMotion<T extends HTMLElement = HTMLDivElement>(
       animationRef.current = element.animate(keyframes, {
         duration,
         delay: config.delay ?? 0,
-        easing: typeof config.easing === 'string' 
-          ? config.easing 
-          : 'ease',
-        iterations: config.loop === true 
-          ? Infinity 
-          : (config.loop ?? 1),
-        direction: config.alternate 
-          ? 'alternate' 
-          : (config.reverse ? 'reverse' : 'normal'),
+        easing: typeof config.easing === 'string' ? config.easing : 'ease',
+        iterations: config.loop === true ? Infinity : (config.loop ?? 1),
+        direction: config.alternate ? 'alternate' : config.reverse ? 'reverse' : 'normal',
         fill: 'forwards',
       });
 
@@ -108,7 +100,7 @@ export function useMotion<T extends HTMLElement = HTMLDivElement>(
         hasAnimated: true,
       });
     },
-    [config, prefersReducedMotion]
+    [config, prefersReducedMotion],
   );
 
   // Cleanup on unmount
@@ -130,7 +122,7 @@ export function useSpring(
     stiffness: 100,
     damping: 10,
     mass: 1,
-  }
+  },
 ): {
   value: number;
   set: (target: number) => void;
@@ -140,67 +132,55 @@ export function useSpring(
   const [value, setValue] = useState(initialValue);
   const [velocity, setVelocity] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
-  
+
   const springIdRef = useRef(`spring-${Math.random()}`);
   const orchestrator = useMemo(() => getOrchestrator(), []);
 
-  const set = useCallback((target: number) => {
-    const spring = orchestrator.createSpring(
-      springIdRef.current,
-      value,
-      config
-    );
-    
-    spring.setTarget(target);
-    setIsAnimating(true);
+  const set = useCallback(
+    (target: number) => {
+      const spring = orchestrator.createSpring(springIdRef.current, value, config);
 
-    // Update values during animation
-    const updateLoop = () => {
-      setValue(spring.position);
-      setVelocity(spring.velocity);
+      spring.setTarget(target);
+      setIsAnimating(true);
 
-      if (!spring.isSettled()) {
-        requestAnimationFrame(updateLoop);
-      } else {
-        setIsAnimating(false);
-      }
-    };
+      // Update values during animation
+      const updateLoop = () => {
+        setValue(spring.position);
+        setVelocity(spring.velocity);
 
-    requestAnimationFrame(updateLoop);
-  }, [value, config, orchestrator]);
+        if (!spring.isSettled()) {
+          requestAnimationFrame(updateLoop);
+        } else {
+          setIsAnimating(false);
+        }
+      };
+
+      requestAnimationFrame(updateLoop);
+    },
+    [value, config, orchestrator],
+  );
 
   return { value, set, velocity, isAnimating };
 }
 
 // Stagger animation hook
-export function useStagger(
-  config: StaggerConfig
-): {
+export function useStagger(config: StaggerConfig): {
   delays: number[];
   getDelay: (index: number) => number;
-  animateAll: (
-    elements: HTMLElement[],
-    animation: Partial<CSSStyleDeclaration>
-  ) => Promise<void>;
+  animateAll: (elements: HTMLElement[], animation: Partial<CSSStyleDeclaration>) => Promise<void>;
 } {
   const delays = useMemo(
     () => createStagger(config),
-    [config.children, config.delayBetween, config.from, config.ease]
+    [config.children, config.delayBetween, config.from, config.ease, config],
   );
 
-  const getDelay = useCallback(
-    (index: number) => delays[index] ?? 0,
-    [delays]
-  );
+  const getDelay = useCallback((index: number) => delays[index] ?? 0, [delays]);
 
   const animateAll = useCallback(
-    async (
-      elements: HTMLElement[],
-      animation: Partial<CSSStyleDeclaration>
-    ) => {
+    async (elements: HTMLElement[], animation: Partial<CSSStyleDeclaration>) => {
       const animations = elements.map((element, index) => {
         const delay = delays[index] ?? 0;
-        
+
         return element.animate(
           [
             {}, // Current state
@@ -211,22 +191,20 @@ export function useStagger(
             delay,
             easing: 'ease',
             fill: 'forwards',
-          }
+          },
         );
       });
 
-      await Promise.all(animations.map(a => a.finished));
+      await Promise.all(animations.map((a) => a.finished));
     },
-    [delays]
+    [delays],
   );
 
   return { delays, getDelay, animateAll };
 }
 
 // Timeline animation hook
-export function useTimeline(
-  steps: TimelineStep[]
-): {
+export function useTimeline(steps: TimelineStep[]): {
   play: () => void;
   pause: () => void;
   reset: () => void;
@@ -265,7 +243,7 @@ export function useViewTransition(): {
     async (config: ViewTransitionConfig) => {
       await orchestrator.startViewTransition(config);
     },
-    [orchestrator]
+    [orchestrator],
   );
 
   return { startTransition, isSupported };
@@ -273,7 +251,7 @@ export function useViewTransition(): {
 
 // Preset motion hook
 export function usePresetMotion<T extends HTMLElement = HTMLDivElement>(
-  preset: keyof typeof motionPresets
+  preset: keyof typeof motionPresets,
 ): {
   ref: React.RefObject<T>;
   trigger: () => Promise<void>;
@@ -287,7 +265,7 @@ export function usePresetMotion<T extends HTMLElement = HTMLDivElement>(
 
     const element = ref.current;
     const computedStyle = window.getComputedStyle(element);
-    
+
     // Store original values
     const original = {
       opacity: computedStyle.opacity,

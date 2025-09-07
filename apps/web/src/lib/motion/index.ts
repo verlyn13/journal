@@ -1,39 +1,37 @@
 // Motion System v2.0
 // Comprehensive animation and transition orchestration
 
-export type { 
-  MotionConfig, 
-  SpringConfig, 
-  TransitionConfig,
-  AnimationState,
-  MotionPreset 
-} from './types';
-
-export { 
-  MotionOrchestrator,
-  createSpring,
-  createStagger,
-  createTimeline 
-} from './orchestrator';
-
-export { 
+export {
   useMotion,
+  useReducedMotion,
   useSpring,
   useStagger,
   useTimeline,
-  useReducedMotion,
-  useViewTransition 
+  useViewTransition,
 } from './hooks';
 
-export { 
+export {
+  createSpring,
+  createStagger,
+  createTimeline,
+  MotionOrchestrator,
+} from './orchestrator';
+export {
+  easingFunctions,
   motionPresets,
   springPresets,
-  easingFunctions 
 } from './presets';
+export type {
+  AnimationState,
+  MotionConfig,
+  MotionPreset,
+  SpringConfig,
+  TransitionConfig,
+} from './types';
 
-export { 
+export {
   applyMotion,
+  calculateStagger,
   getMotionDuration,
   interpolateSpring,
-  calculateStagger 
 } from './utils';

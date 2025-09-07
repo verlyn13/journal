@@ -1,9 +1,9 @@
-import { Suspense, useCallback, useEffect, useState } from 'react';
-import React from 'react';
-import { useCreateEntry, useEntriesList, useDeleteEntry } from '../hooks/useEntryQueries';
+import React, { Suspense, useCallback, useEffect, useState } from 'react';
+import { useCreateEntry, useDeleteEntry, useEntriesList } from '../hooks/useEntryQueries';
 import api, { type AuthStatus } from '../services/api';
 import EntryList from './layout/EntryList';
 import Sidebar from './layout/Sidebar';
+
 const MarkdownSplitPane = React.lazy(() => import('./markdown/MarkdownSplitPane'));
 
 interface JournalAppState {
@@ -157,7 +157,6 @@ export function JournalApp() {
           }));
         }
       } catch (_error) {
-        console.error('Failed to delete entry:', _error);
         // TODO: Add error notification
       }
     },
