@@ -133,7 +133,10 @@ export const springPresets: Record<string, SpringConfig> = {
 };
 
 // Motion presets with configurations
-export const motionPresets: Record<string, MotionConfig & { to?: Partial<CSSStyleDeclaration>; reset?: boolean }> = {
+export const motionPresets: Record<
+  string,
+  MotionConfig & { to?: Partial<CSSStyleDeclaration>; reset?: boolean }
+> = {
   fadeIn: {
     duration: 300,
     easing: 'ease-out',
