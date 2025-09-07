@@ -22,7 +22,9 @@ export default defineConfig({
         '*.config.ts',
         '**/*.d.ts',
         '**/*.stories.tsx',
-        '**/index.ts'
+        // Only exclude barrel exports, not implementation files
+        'src/lib/index.ts',
+        'src/lib/theme/index.ts'
       ]
     },
     css: true,

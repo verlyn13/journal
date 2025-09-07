@@ -60,7 +60,7 @@ export function Sidebar({
         const statsData = await api.getStats();
         setStats(statsData);
         setTags([]); // No tags support yet
-      } catch (error) {
+      } catch (_error) {
         // If we get a 401, it means auth failed - use defaults but don't keep retrying
         // Failed to fetch stats - using defaults
         setStats({
