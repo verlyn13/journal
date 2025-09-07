@@ -22,6 +22,7 @@ export interface JournalEntry {
   title: string;
   content: string;
   markdown_content?: string;
+  // Versioning fields from API (optimistic locking / content representation)
   content_version?: number;
   version?: number;
   date: string;

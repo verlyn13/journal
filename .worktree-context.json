@@ -1,7 +1,16 @@
 {
-  "name": "design-tokens",
-  "branch": "refactor/design-tokens",
-  "created": "2025-09-07T04:57:05Z",
-  "frontend_port": 5174,
-  "backend_port": 5001
+  "worktree": "motion-system",
+  "branch": "refactor/motion-system",
+  "phase": "1.2",
+  "description": "Motion System Implementation",
+  "frontend_port": 5175,
+  "backend_port": 5002,
+  "created": "2025-09-07T07:45:28-08:00",
+  "tasks": [
+    "Create motion orchestrator with View Transitions API",
+    "Implement spring physics calculations",
+    "Add reduced motion preferences",
+    "Create React hooks for motion",
+    "Implement stagger and timeline utilities"
+  ]
 }
