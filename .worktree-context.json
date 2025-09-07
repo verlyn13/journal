@@ -1,16 +1,16 @@
 {
-  "worktree": "motion-system",
-  "branch": "refactor/motion-system",
-  "phase": "1.2",
-  "description": "Motion System Implementation",
-  "frontend_port": 5175,
-  "backend_port": 5002,
-  "created": "2025-09-07T07:45:28-08:00",
+  "worktree": "materiality",
+  "branch": "feature/materiality",
+  "phase": "2.1",
+  "description": "Materiality Features Implementation",
+  "frontend_port": 5176,
+  "backend_port": 5003,
+  "created": "2025-09-07T08:16:17-08:00",
   "tasks": [
-    "Create motion orchestrator with View Transitions API",
-    "Implement spring physics calculations",
-    "Add reduced motion preferences",
-    "Create React hooks for motion",
-    "Implement stagger and timeline utilities"
+    "Create vibrant translucent surfaces",
+    "Implement elevation shadow system",
+    "Add paper texture to editor",
+    "Create glass morphism effects",
+    "Ensure AA accessibility compliance"
   ]
 }
