@@ -131,20 +131,17 @@ export default function MarkdownSplitPane({ entry, onSave }: Props) {
 
   return (
     <div
-      className={`grid gap-4 ${layout === 'side' ? 'grid-cols-1 lg:grid-cols-[var(--md-left)_1fr]' : 'grid-rows-[var(--md-top)_1fr]'}`}
-      style={{
-        ...(gridStyle as React.CSSProperties),
-        // CSS custom properties as hints for Tailwind class above
-        ['--md-left' as any]: `${Math.round(ratio * 1000) / 10}%`,
-        ['--md-top' as any]: `${Math.round(ratio * 1000) / 10}%`,
-      }}
+      className={`grid gap-4 ${layout === 'side' ? 'grid-cols-2' : ''}`}
+      style={gridStyle}
       onWheel={handleWheel}
       data-testid="splitpane"
       data-layout={layout}
       data-ratio={ratio.toFixed(3)}
     >
       {/* Header controls */}
-      <div className="col-span-full flex items-center justify-between text-xs text-sanctuary-text-secondary">
+      <div
+        className={`${layout === 'side' ? 'col-span-full' : ''} flex items-center justify-between text-xs text-sanctuary-text-secondary`}
+      >
         <div className="inline-flex items-center gap-2">
           <button
             type="button"
@@ -161,21 +158,36 @@ export default function MarkdownSplitPane({ entry, onSave }: Props) {
         </div>
         <span className="text-[11px] text-sanctuary-text-tertiary">{saveLabel}</span>
       </div>
-      <div className="border border-sanctuary-border rounded-md">
-        <div className="px-3 py-2 text-xs text-sanctuary-text-secondary border-b border-sanctuary-border">Markdown Editor</div>
+      <div className="border border-sanctuary-border rounded-md overflow-hidden">
+        <div className="px-3 py-2 text-xs text-sanctuary-text-secondary border-b border-sanctuary-border">
+          Markdown Editor
+        </div>
         <div className="p-2">
-          <Suspense fallback={<div className="text-xs text-sanctuary-text-tertiary">Loading editor…</div>}>
-            <MarkdownEditor value={md} onChange={setMd} height="70vh" />
+          <Suspense
+            fallback={<div className="text-xs text-sanctuary-text-tertiary">Loading editor…</div>}
+          >
+            <MarkdownEditor
+              value={md}
+              onChange={setMd}
+              height={layout === 'stack' ? '35vh' : '70vh'}
+            />
           </Suspense>
           {/* Autosave enabled; manual save not shown */}
         </div>
       </div>
-      <div className="border border-sanctuary-border rounded-md">
+      <div className="border border-sanctuary-border rounded-md overflow-hidden">
         <div className="px-3 py-2 text-xs text-sanctuary-text-secondary border-b border-sanctuary-border">
           Preview (sanitized)
         </div>
-        <div className="p-4">
-          <Suspense fallback={<div className="text-xs text-sanctuary-text-tertiary">Rendering preview…</div>}>
+        <div
+          className="p-4 overflow-y-auto"
+          style={{ maxHeight: layout === 'stack' ? '35vh' : '70vh' }}
+        >
+          <Suspense
+            fallback={
+              <div className="text-xs text-sanctuary-text-tertiary">Rendering preview…</div>
+            }
+          >
             <MarkdownPreview markdown={md} />
           </Suspense>
         </div>

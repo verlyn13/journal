@@ -1,6 +1,6 @@
 import { Suspense, useCallback, useEffect, useState } from 'react';
 import React from 'react';
-import { useCreateEntry, useEntriesList } from '../hooks/useEntryQueries';
+import { useCreateEntry, useEntriesList, useDeleteEntry } from '../hooks/useEntryQueries';
 import api, { type AuthStatus } from '../services/api';
 import EntryList from './layout/EntryList';
 import Sidebar from './layout/Sidebar';
@@ -8,7 +8,13 @@ const MarkdownSplitPane = React.lazy(() => import('./markdown/MarkdownSplitPane'
 
 interface JournalAppState {
   selectedEntryId: string | null;
-  selectedEntry: { id: string; title: string; content: string } | null;
+  selectedEntry: {
+    id: string;
+    title: string;
+    content: string;
+    contentVersion?: number;
+    version?: number;
+  } | null;
   isFocusMode: boolean;
   saving: boolean;
   loading: boolean;
@@ -46,11 +52,12 @@ export function JournalApp() {
       const isCmdOrCtrl = e.metaKey || e.ctrlKey;
       if (isCmdOrCtrl && (e.key === 'b' || e.key === 'B')) {
         e.preventDefault();
+        e.stopPropagation();
         setIsSidebarCollapsed((v) => !v);
       }
     };
-    window.addEventListener('keydown', onKeyDown);
-    return () => window.removeEventListener('keydown', onKeyDown);
+    window.addEventListener('keydown', onKeyDown, true); // Use capture phase
+    return () => window.removeEventListener('keydown', onKeyDown, true);
   }, []);
 
   // Initialize app and check authentication
@@ -109,7 +116,13 @@ export function JournalApp() {
       }
       setState((prev) => ({
         ...prev,
-        selectedEntry: { id: entry.id, title: entry.title, content: contentForEditor || '' },
+        selectedEntry: {
+          id: entry.id,
+          title: entry.title,
+          content: contentForEditor || '',
+          contentVersion: (entry as any).content_version || 1,
+          version: (entry as any).version,
+        },
       }));
     } catch (_error) {
       // Reset selection on error
@@ -122,6 +135,34 @@ export function JournalApp() {
   }, []);
 
   // Removed legacy save callback (replaced by MarkdownSplitPane onSave)
+
+  // Handle entry deletion
+  const deleteEntryMut = useDeleteEntry();
+  const handleDeleteEntry = useCallback(
+    async (entryId: string) => {
+      try {
+        // Find the entry to get its version for optimistic locking
+        const entry = listData.find((e) => e.id === entryId);
+        const version = entry?.version;
+
+        // Delete with version for optimistic locking
+        await deleteEntryMut.mutateAsync({ entryId, version });
+
+        // Clear selection if deleted entry was selected
+        if (state.selectedEntryId === entryId) {
+          setState((prev) => ({
+            ...prev,
+            selectedEntryId: null,
+            selectedEntry: null,
+          }));
+        }
+      } catch (_error) {
+        console.error('Failed to delete entry:', _error);
+        // TODO: Add error notification
+      }
+    },
+    [deleteEntryMut, listData, state.selectedEntryId],
+  );
 
   // Handle new entry creation
   const createEntryMut = useCreateEntry();
@@ -140,7 +181,10 @@ export function JournalApp() {
           selectedEntry: {
             id: created.id,
             title: created.title || entryTitle,
-            content: created.content || '# Start writing your thoughts...\n',
+            content:
+              created.markdown_content || created.content || '# Start writing your thoughts...\n',
+            contentVersion: (created as any).content_version || 2,
+            version: (created as any).version || 1,
           },
         }));
       } catch (_error) {}
@@ -193,21 +237,24 @@ export function JournalApp() {
       <div
         className={`
         relative grid min-h-screen transition-all duration-300 ease-sanctuary
-        ${state.isFocusMode
-          ? 'grid-cols-1'
-          : isSidebarCollapsed
-            ? 'grid-cols-[1fr_minmax(480px,720px)]'
-            : 'grid-cols-[260px_1fr_minmax(480px,720px)]'} 
+        ${
+          state.isFocusMode
+            ? 'grid-cols-1'
+            : isSidebarCollapsed
+              ? 'grid-cols-[1fr_minmax(480px,720px)]'
+              : 'grid-cols-[260px_1fr_minmax(480px,720px)]'
+        } 
         gap-4 p-4
         `}
       >
         {/* Left Sidebar */}
         {!isSidebarCollapsed && !state.isFocusMode ? (
-          <aside
-            data-testid="sidebar"
-            className="transition-all duration-300 ease-sanctuary"
-          >
-            <Sidebar onCreateEntry={() => handleCreateEntry()} authenticated={state.authenticated} />
+          <aside data-testid="sidebar" className="transition-all duration-300 ease-sanctuary">
+            <Sidebar
+              onCreateEntry={() => handleCreateEntry()}
+              onToggleCollapse={() => setIsSidebarCollapsed(true)}
+              authenticated={state.authenticated}
+            />
           </aside>
         ) : null}
 
@@ -224,6 +271,7 @@ export function JournalApp() {
             selectedEntry={state.selectedEntryId}
             onSelectEntry={handleSelectEntry}
             onCreateEntry={handleCreateEntry}
+            onDeleteEntry={handleDeleteEntry}
             isLoading={listLoading}
           />
         </main>
@@ -235,34 +283,45 @@ export function JournalApp() {
           ${state.isFocusMode ? 'max-w-prose mx-auto' : ''}
         `}
         >
-          <Suspense fallback={<div className="p-4 text-sm text-sanctuary-text-tertiary">Loading editor…</div>}>
-            <MarkdownSplitPane
-            entry={
-              state.selectedEntry
-                ? {
-                    id: state.selectedEntry.id,
-                    title: state.selectedEntry.title,
-                    content: state.selectedEntry.content,
-                  }
-                : null
+          <Suspense
+            fallback={
+              <div className="p-4 text-sm text-sanctuary-text-tertiary">Loading editor…</div>
             }
-            onSave={async ({ markdown }) => {
-              if (!state.selectedEntryId) return;
-              try {
-                const updated = await api.updateEntry(state.selectedEntryId, {
-                  title: state.selectedEntry?.title,
-                  content: markdown,
-                  markdown_content: markdown,
-                  content_version: 2,
-                });
-                setState((prev) => ({
-                  ...prev,
-                  selectedEntry: { id: updated.id, title: updated.title, content: markdown },
-                }));
-              } catch (_e) {
-                // TODO: Add proper error handling/notification
+          >
+            <MarkdownSplitPane
+              entry={
+                state.selectedEntry
+                  ? {
+                      id: state.selectedEntry.id,
+                      title: state.selectedEntry.title,
+                      content: state.selectedEntry.content,
+                    }
+                  : null
               }
-            }}
+              onSave={async ({ markdown }) => {
+                if (!state.selectedEntryId) return;
+                try {
+                  const updated = await api.updateEntry(state.selectedEntryId, {
+                    title: state.selectedEntry?.title,
+                    content: markdown,
+                    markdown_content: markdown,
+                    content_version: state.selectedEntry?.contentVersion === 1 ? 1 : 2,
+                    expected_version: state.selectedEntry?.version || 1,
+                  });
+                  setState((prev) => ({
+                    ...prev,
+                    selectedEntry: {
+                      id: updated.id,
+                      title: updated.title,
+                      content: markdown,
+                      contentVersion: (updated as any).content_version || 2,
+                      version: (updated as any).version,
+                    },
+                  }));
+                } catch (_e) {
+                  // TODO: Add proper error handling/notification
+                }
+              }}
             />
           </Suspense>
         </section>
@@ -279,19 +338,35 @@ export function JournalApp() {
               type="button"
               aria-label="Toggle sidebar"
               title="Toggle sidebar (Cmd/Ctrl+B)"
-              className="h-28 w-3 rounded-r bg-sanctuary-accent/80 hover:bg-sanctuary-accent focus:ring-2 ring-sanctuary-accent-outline outline-none transition-colors"
-              onClick={() => setIsSidebarCollapsed((v) => !v)}
+              className="h-28 w-6 rounded-r bg-sanctuary-accent/80 hover:bg-sanctuary-accent focus:ring-2 ring-sanctuary-accent-outline outline-none transition-colors flex items-center justify-center"
+              onClick={() => setIsSidebarCollapsed(false)}
               onMouseEnter={() => {
                 // No-op; hover handled by CSS to reveal panel
               }}
               data-testid="sidebar-peek-tab"
-            />
-            {/* Peek panel */}
-            <div
-              className="pointer-events-none ml-1 opacity-0 translate-x-[-8px] group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 ease-sanctuary"
             >
+              <svg
+                className="w-3 h-3 text-sanctuary-bg-primary"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
+            </button>
+            {/* Peek panel */}
+            <div className="pointer-events-none ml-1 opacity-0 translate-x-[-8px] group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 ease-sanctuary">
               <div className="pointer-events-auto w-[260px] shadow-xl rounded-xl overflow-hidden border border-sanctuary-border bg-sanctuary-bg-secondary">
-                <Sidebar onCreateEntry={() => handleCreateEntry()} authenticated={state.authenticated} />
+                <Sidebar
+                  onCreateEntry={() => handleCreateEntry()}
+                  onToggleCollapse={() => setIsSidebarCollapsed(false)}
+                  authenticated={state.authenticated}
+                />
               </div>
             </div>
           </div>

@@ -17,7 +17,7 @@ export function MarkdownPreview({ markdown }: Props) {
     return <div>Invalid content</div>;
   }
   return (
-    <div className="prose prose-sanctuary max-w-none">
+    <div className="prose prose-lg max-w-none">
       <ReactMarkdown
         remarkPlugins={[remarkGfm, remarkBreaks, remarkMath]}
         rehypePlugins={[

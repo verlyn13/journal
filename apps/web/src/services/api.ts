@@ -112,8 +112,20 @@ class ApiService {
       await this.refreshToken();
       const newToken = this.getAccessToken();
       if (newToken) {
-        // Retry with new token
-        return this.request(endpoint, options, requireAuth);
+        // Retry with new token - update the headers
+        headers.Authorization = `Bearer ${newToken}`;
+        const retryConfig: RequestInit = {
+          ...options,
+          headers,
+        };
+        const retryResponse = await fetch(url, retryConfig);
+        if (!retryResponse.ok) {
+          throw new Error(`API Error: ${retryResponse.statusText}`);
+        }
+        if (retryResponse.status === 204) {
+          return {} as T;
+        }
+        return await retryResponse.json();
       }
     }
 
@@ -215,6 +227,8 @@ class ApiService {
       content?: string;
       markdown_content?: string;
       content_version?: number;
+      is_deleted?: boolean;
+      expected_version?: number;
     },
   ): Promise<JournalEntry> {
     return this.request<JournalEntry>(`/v1/entries/${id}`, {
@@ -223,8 +237,11 @@ class ApiService {
     });
   }
 
-  async deleteEntry(id: string): Promise<void> {
-    await this.request(`/v1/entries/${id}`, {
+  async deleteEntry(id: string, expectedVersion?: number): Promise<void> {
+    // If version is provided, add it as query parameter for optimistic locking
+    const versionParam =
+      expectedVersion !== undefined ? `?expected_version=${expectedVersion}` : '';
+    await this.request(`/v1/entries/${id}${versionParam}`, {
       method: 'DELETE',
     });
   }

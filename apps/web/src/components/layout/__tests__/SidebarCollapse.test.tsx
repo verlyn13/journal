@@ -11,7 +11,11 @@ vi.mock('../../../services/api', () => {
     default: {
       getEntries: vi.fn(async () => []),
       getEntry: vi.fn(async (id: string) => ({ id, title: 'T', content: '# T' })),
-      createEntry: vi.fn(async ({ title }: { title: string }) => ({ id: 'e1', title, content: '' })),
+      createEntry: vi.fn(async ({ title }: { title: string }) => ({
+        id: 'e1',
+        title,
+        content: '',
+      })),
       updateEntry: vi.fn(async (_id: string, payload: Record<string, unknown>) => ({
         id: 'e1',
         title: (payload.title as string) || 'T',

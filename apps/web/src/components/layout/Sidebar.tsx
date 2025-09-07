@@ -5,10 +5,16 @@ import api from '../../services/api';
 interface SidebarProps {
   onCreateEntry?: () => void;
   onSelectView?: (view: string) => void;
+  onToggleCollapse?: () => void;
   authenticated?: boolean;
 }
 
-export function Sidebar({ onCreateEntry, onSelectView, authenticated = false }: SidebarProps) {
+export function Sidebar({
+  onCreateEntry,
+  onSelectView,
+  onToggleCollapse,
+  authenticated = false,
+}: SidebarProps) {
   // Theme state sync with localStorage and documentElement class
   const THEME_STORAGE_KEY = 'journal:theme';
   const [theme, setTheme] = useState<'dawn' | 'dusk'>(() => {
@@ -46,21 +52,25 @@ export function Sidebar({ onCreateEntry, onSelectView, authenticated = false }: 
   // Fetch real data from API
   useEffect(() => {
     const fetchData = async () => {
+      if (!authenticated) return; // Check auth before each fetch
+
       try {
         setLoading(true);
-        // Fetch stats
-        const statsData = await api.getStats().catch(() => ({
+        // Fetch stats - let errors propagate for proper handling
+        const statsData = await api.getStats();
+        setStats(statsData);
+        setTags([]); // No tags support yet
+      } catch (error) {
+        // If we get a 401, it means auth failed - use defaults but don't keep retrying
+        // Failed to fetch stats - using defaults
+        setStats({
           total_entries: 0,
           entries_today: 0,
           entries_this_week: 0,
           entries_this_month: 0,
           recent_entries: 0,
           favorite_entries: 0,
-        }));
-
-        setStats(statsData);
-        setTags([]); // No tags support yet
-      } catch (_error) {
+        });
       } finally {
         setLoading(false);
       }
@@ -127,14 +137,33 @@ export function Sidebar({ onCreateEntry, onSelectView, authenticated = false }: 
       {/* Header */}
       <div className="flex items-center justify-between">
         <h1 className="text-lg font-serif font-bold text-sanctuary-text-primary">Journal</h1>
-        <button
-          type="button"
-          className="w-8 h-8 bg-sanctuary-accent hover:bg-sanctuary-accent-hover text-sanctuary-bg-primary rounded-lg flex items-center justify-center transition-colors"
-          title="New Entry"
-          onClick={handleCreateEntry}
-        >
-          <span className="text-sm font-bold">+</span>
-        </button>
+        <div className="flex items-center gap-2">
+          {onToggleCollapse && (
+            <button
+              type="button"
+              className="w-8 h-8 bg-sanctuary-bg-tertiary hover:bg-sanctuary-accent/20 text-sanctuary-text-primary rounded-lg flex items-center justify-center transition-colors"
+              title="Collapse Sidebar (Cmd/Ctrl+B)"
+              onClick={onToggleCollapse}
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M15 19l-7-7 7-7"
+                />
+              </svg>
+            </button>
+          )}
+          <button
+            type="button"
+            className="w-8 h-8 bg-sanctuary-accent hover:bg-sanctuary-accent-hover text-sanctuary-bg-primary rounded-lg flex items-center justify-center transition-colors"
+            title="New Entry"
+            onClick={handleCreateEntry}
+          >
+            <span className="text-sm font-bold">+</span>
+          </button>
+        </div>
       </div>
 
       {/* Quick Links */}

@@ -48,3 +48,21 @@ export function useCreateEntry() {
     },
   });
 }
+
+export function useDeleteEntry() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ entryId, version }: { entryId: string; version?: number }) => {
+      await api.deleteEntry(entryId, version);
+      return entryId;
+    },
+    onSuccess: (deletedId) => {
+      // Remove from list
+      qc.setQueryData<EntryVm[]>(keys.list, (old = []) =>
+        old.filter((entry) => entry.id !== deletedId),
+      );
+      // Invalidate the item query
+      qc.invalidateQueries({ queryKey: keys.item(deletedId) });
+    },
+  });
+}
