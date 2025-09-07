@@ -106,15 +106,15 @@ describe('Motion System', () => {
     });
 
     it('should calculate stagger with different strategies', () => {
-      const config: any = {
+      const config = {
         delayBetween: 50,
-        from: 'first',
+        from: 'first' as const,
       };
 
       expect(calculateStagger(0, 5, config)).toBe(0);
       expect(calculateStagger(2, 5, config)).toBe(100);
 
-      config.from = 'last';
+      (config as { from: 'first' | 'last' | 'center' }).from = 'last';
       expect(calculateStagger(0, 5, config)).toBe(200);
       expect(calculateStagger(4, 5, config)).toBe(0);
     });

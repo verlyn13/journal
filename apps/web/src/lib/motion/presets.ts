@@ -71,11 +71,14 @@ export const easingFunctions = {
     if (t < 1 / d1) {
       return n1 * t * t;
     } else if (t < 2 / d1) {
-      return n1 * (t -= 1.5 / d1) * t + 0.75;
+      const u = t - 1.5 / d1;
+      return n1 * u * u + 0.75;
     } else if (t < 2.5 / d1) {
-      return n1 * (t -= 2.25 / d1) * t + 0.9375;
+      const u = t - 2.25 / d1;
+      return n1 * u * u + 0.9375;
     } else {
-      return n1 * (t -= 2.625 / d1) * t + 0.984375;
+      const u = t - 2.625 / d1;
+      return n1 * u * u + 0.984375;
     }
   },
   easeInBounce: (t: number) => 1 - easingFunctions.easeOutBounce(1 - t),
@@ -130,7 +133,7 @@ export const springPresets: Record<string, SpringConfig> = {
 };
 
 // Motion presets with configurations
-export const motionPresets: Record<string, MotionConfig & { to?: any; reset?: boolean }> = {
+export const motionPresets: Record<string, MotionConfig & { to?: Partial<CSSStyleDeclaration>; reset?: boolean }> = {
   fadeIn: {
     duration: 300,
     easing: 'ease-out',

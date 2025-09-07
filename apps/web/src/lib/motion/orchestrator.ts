@@ -131,7 +131,15 @@ export class MotionOrchestrator {
       return;
     }
 
-    const transition = (document as any).startViewTransition(config.updateCallback);
+    type ViewTransition = {
+      updateCallbackDone: Promise<void>;
+      finished: Promise<void>;
+    };
+    const transition = (
+      document as Document & {
+        startViewTransition?: (cb: () => void | Promise<void>) => ViewTransition;
+      }
+    ).startViewTransition!(config.updateCallback);
 
     if (config.name) {
       transition.updateCallbackDone.then(() => {

@@ -125,14 +125,14 @@ export function easingToCss(easing: string | ((t: number) => number)): string {
 
 // Merge motion configs with precedence
 export function mergeMotionConfigs(...configs: Partial<MotionConfig>[]): MotionConfig {
-  return configs.reduce(
-    (merged, config) => ({
-      ...merged,
-      ...config,
-      spring: config.spring ? { ...merged.spring, ...config.spring } : merged.spring,
-    }),
-    {} as MotionConfig,
-  );
+  const result: MotionConfig = {} as MotionConfig;
+  for (const config of configs) {
+    Object.assign(result, config);
+    if (config.spring) {
+      result.spring = { ...(result.spring ?? {}), ...config.spring };
+    }
+  }
+  return result;
 }
 
 // Check if motion is currently active
@@ -194,18 +194,20 @@ export function observeMotion(
 // Batch motion updates for performance
 export function batchMotion(updates: Array<() => void>): void {
   requestAnimationFrame(() => {
-    updates.forEach((update) => update());
+    for (const update of updates) {
+      update();
+    }
   });
 }
 
 // Debounce motion triggers
-export function debounceMotion(
-  fn: (...args: any[]) => void,
+export function debounceMotion<T extends unknown[]>(
+  fn: (...args: T) => void,
   delay: number,
-): (...args: any[]) => void {
+): (...args: T) => void {
   let timeoutId: NodeJS.Timeout | null = null;
 
-  return (...args: any[]) => {
+  return (...args: T) => {
     if (timeoutId) {
       clearTimeout(timeoutId);
     }
@@ -218,13 +220,13 @@ export function debounceMotion(
 }
 
 // Throttle motion triggers
-export function throttleMotion(
-  fn: (...args: any[]) => void,
+export function throttleMotion<T extends unknown[]>(
+  fn: (...args: T) => void,
   limit: number,
-): (...args: any[]) => void {
+): (...args: T) => void {
   let inThrottle = false;
 
-  return (...args: any[]) => {
+  return (...args: T) => {
     if (!inThrottle) {
       fn(...args);
       inThrottle = true;

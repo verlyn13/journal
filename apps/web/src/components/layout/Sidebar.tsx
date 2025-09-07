@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useId, useState } from 'react';
 import type { Tag } from '../../services/api';
 import api from '../../services/api';
 
@@ -132,6 +132,8 @@ export function Sidebar({
     { name: 'Other', count: Math.floor(stats.total_entries * 0.1), color: 'bg-orange-500' },
   ];
 
+  const themeSelectId = useId();
+
   return (
     <div className="bg-sanctuary-bg-secondary rounded-xl p-4 h-full space-y-6">
       {/* Header */}
@@ -146,6 +148,7 @@ export function Sidebar({
               onClick={onToggleCollapse}
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <title>Collapse sidebar</title>
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -281,7 +284,7 @@ export function Sidebar({
             value={theme}
             onChange={(e) => setTheme(e.target.value === 'dusk' ? 'dusk' : 'dawn')}
             aria-label="Theme selector"
-            id="theme-select"
+            id={themeSelectId}
             name="theme"
           >
             <option value="dawn">Dawn</option>
