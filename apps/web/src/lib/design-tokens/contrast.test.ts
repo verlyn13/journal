@@ -10,7 +10,9 @@ function luminance(rgb: string): number {
   const b = parseInt(hex.substr(4, 2), 16) / 255;
 
   // Apply gamma correction
-  const [rs, gs, bs] = [r, g, b].map((c) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4));
+  const [rs, gs, bs] = [r, g, b].map((c) =>
+    c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4,
+  );
 
   // Calculate relative luminance
   return 0.2126 * rs + 0.7152 * gs + 0.0722 * bs;
@@ -87,13 +89,13 @@ describe('Color Contrast Verification', () => {
     it('should have similar contrast ratios across themes', () => {
       const dawnRatio = contrastRatio(
         tokens.color.dawn.text.primary,
-        tokens.color.dawn.background.primary
+        tokens.color.dawn.background.primary,
       );
       const duskRatio = contrastRatio(
         tokens.color.dusk.text.primary,
-        tokens.color.dusk.background.primary
+        tokens.color.dusk.background.primary,
       );
-      
+
       // Ratios should be within 2 points of each other
       expect(Math.abs(dawnRatio - duskRatio)).toBeLessThan(2);
     });
