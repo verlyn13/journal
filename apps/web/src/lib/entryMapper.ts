@@ -19,7 +19,7 @@ function formatHm(d: Date | null): string {
 }
 
 function buildPreview(content: string, existing?: string | null): string {
-  if (existing && existing.trim()) return existing;
+  if (existing?.trim()) return existing;
 
   // Strip HTML tags first
   const withoutHtml = (content || '')
@@ -66,7 +66,7 @@ function countWords(content: string): number {
 
 export function toEntryVm(api: EntryApi): EntryVm {
   const created = isoToDate(api.created_at);
-  const updated = isoToDate(api.updated_at);
+  const _updated = isoToDate(api.updated_at);
   // Use markdown_content if available (when in markdown mode), otherwise fall back to content
   const contentForDisplay = api.markdown_content || api.content || '';
   const preview = buildPreview(contentForDisplay, api.preview ?? undefined);
