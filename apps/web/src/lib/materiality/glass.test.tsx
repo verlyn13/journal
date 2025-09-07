@@ -159,12 +159,12 @@ describe('Acrylic Component', () => {
 });
 
 describe('supportsBackdropFilter', () => {
-  it('returns true when backdrop-filter is supported', () => {
-    // Already mocked in test-setup.ts to return true
-    expect(supportsBackdropFilter()).toBe(true);
+  it('returns false when backdrop-filter is not supported', () => {
+    // Mocked in test-setup.ts to return false (jsdom doesn't support backdrop-filter)
+    expect(supportsBackdropFilter()).toBe(false);
   });
 
-  // Note: Testing the false case is difficult due to how CSS.supports
-  // is globally mocked in the test environment. The implementation is
-  // simple enough that we can rely on the positive test case.
+  // Note: Testing the true case would require a real browser environment
+  // that supports backdrop-filter. The implementation correctly checks
+  // CSS.supports and handles the window override for testing.
 });

@@ -109,11 +109,16 @@ describe('useTexture', () => {
 });
 
 describe('useGlassSupport', () => {
-  it('detects backdrop-filter support', () => {
+  it('detects backdrop-filter support', async () => {
     const { result } = renderHook(() => useGlassSupport());
 
-    expect(result.current.supported).toBe(true); // Mocked to true in test-setup
-    expect(result.current.fallbackStyles).toEqual({});
+    await waitFor(() => {
+      expect(result.current.supported).toBe(false); // Mocked to false in test-setup (jsdom limitation)
+      expect(result.current.fallbackStyles).toEqual({
+        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+        boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.15)',
+      });
+    });
   });
 
   it('provides fallback styles when not supported', async () => {

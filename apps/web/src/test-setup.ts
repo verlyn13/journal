@@ -36,17 +36,20 @@ global.ResizeObserver = vi.fn().mockImplementation(() => ({
   disconnect: vi.fn(),
 }));
 
-// Mock CSS.supports for glass morphism tests
-// jsdom doesn't actually support backdrop-filter, so we return false
-// This ensures tests properly skip backdrop-filter assertions
+// Mock backdrop-filter support for glass morphism tests
+// The supportsBackdropFilter function checks for __BACKDROP_SUPPORT_OVERRIDE__ first
+// This works in both jsdom and happy-dom environments
+(window as unknown as { __BACKDROP_SUPPORT_OVERRIDE__?: boolean }).__BACKDROP_SUPPORT_OVERRIDE__ =
+  false;
+
+// Also mock CSS.supports for consistency
 Object.defineProperty(window.CSS, 'supports', {
   writable: true,
   value: vi.fn().mockImplementation((property: string, _value?: string) => {
-    // jsdom doesn't support backdrop-filter, return false
+    // Always return false for backdrop-filter in test environment
     if (property === 'backdrop-filter' || property === '-webkit-backdrop-filter') {
       return false;
     }
-    // Always return false for jsdom environment
     return false;
   }),
 });
