@@ -35,3 +35,15 @@ global.ResizeObserver = vi.fn().mockImplementation(() => ({
   unobserve: vi.fn(),
   disconnect: vi.fn(),
 }));
+
+// Mock CSS.supports for glass morphism tests
+Object.defineProperty(window.CSS, 'supports', {
+  writable: true,
+  value: vi.fn().mockImplementation((property: string) => {
+    // Support backdrop-filter for testing glass effects
+    if (property === 'backdrop-filter' || property === '-webkit-backdrop-filter') {
+      return true;
+    }
+    return false;
+  }),
+});
