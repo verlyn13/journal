@@ -22,7 +22,7 @@ const elevationShadows: Record<ElevationLevel, ElevationShadow[]> = {
     { x: 0, y: 10, blur: 10, spread: 0, color: '#000000', opacity: 0.22 },
   ],
   5: [
-    { x: 0, y: 19, blur: 38, spread: 0, color: '#000000', opacity: 0.30 },
+    { x: 0, y: 19, blur: 38, spread: 0, color: '#000000', opacity: 0.3 },
     { x: 0, y: 15, blur: 12, spread: 0, color: '#000000', opacity: 0.22 },
   ],
 };
@@ -30,14 +30,15 @@ const elevationShadows: Record<ElevationLevel, ElevationShadow[]> = {
 // Generate box-shadow CSS string
 export function getElevationStyles(level: ElevationLevel): React.CSSProperties {
   const shadows = elevationShadows[level];
-  
+
   if (!shadows || shadows.length === 0) {
     return {};
   }
 
   const boxShadow = shadows
-    .map(shadow => 
-      `${shadow.x}px ${shadow.y}px ${shadow.blur}px ${shadow.spread}px rgba(${hexToRgb(shadow.color)}, ${shadow.opacity})`
+    .map(
+      (shadow) =>
+        `${shadow.x}px ${shadow.y}px ${shadow.blur}px ${shadow.spread}px rgba(${hexToRgb(shadow.color)}, ${shadow.opacity})`,
     )
     .join(', ');
 
@@ -48,7 +49,7 @@ export function getElevationStyles(level: ElevationLevel): React.CSSProperties {
 function hexToRgb(hex: string): string {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
   if (!result) return '0, 0, 0';
-  
+
   return `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}`;
 }
 
@@ -72,27 +73,25 @@ export function getElevationTransition(duration = 200): React.CSSProperties {
 // Generate elevation classes for CSS
 export function generateElevationCSS(): string {
   const css: string[] = [];
-  
+
   for (const [level, shadows] of Object.entries(elevationShadows)) {
     if (shadows.length === 0) continue;
-    
+
     const boxShadow = shadows
-      .map(shadow => 
-        `${shadow.x}px ${shadow.y}px ${shadow.blur}px ${shadow.spread}px rgba(${hexToRgb(shadow.color)}, ${shadow.opacity})`
+      .map(
+        (shadow) =>
+          `${shadow.x}px ${shadow.y}px ${shadow.blur}px ${shadow.spread}px rgba(${hexToRgb(shadow.color)}, ${shadow.opacity})`,
       )
       .join(', ');
-    
+
     css.push(`.elevation-${level} { box-shadow: ${boxShadow}; }`);
   }
-  
+
   return css.join('\n');
 }
 
 // Check if elevation is accessible (has enough contrast)
-export function isElevationAccessible(
-  level: ElevationLevel,
-  backgroundColor: string
-): boolean {
+export function isElevationAccessible(level: ElevationLevel, backgroundColor: string): boolean {
   // Simple check - in production, use a proper contrast calculation
   // Higher elevations need lighter backgrounds for visibility
   return level <= 3 || isLightColor(backgroundColor);
@@ -103,7 +102,7 @@ function isLightColor(color: string): boolean {
   const r = parseInt(hex.substr(0, 2), 16);
   const g = parseInt(hex.substr(2, 2), 16);
   const b = parseInt(hex.substr(4, 2), 16);
-  
+
   // Calculate relative luminance
   const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
   return luminance > 0.5;

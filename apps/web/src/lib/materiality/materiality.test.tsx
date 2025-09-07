@@ -1,18 +1,13 @@
 import { describe, expect, it } from 'vitest';
-import { 
-  getElevationStyles, 
-  getHoverElevation, 
+import {
+  getElevationStyles,
+  getHoverElevation,
   getPressedElevation,
-  isElevationAccessible 
+  isElevationAccessible,
 } from './elevation';
-import { 
-  getTextureStyles, 
-  getTextureOpacity,
-  isTextureAccessible 
-} from './textures';
+import { getTextureStyles, getTextureOpacity, isTextureAccessible } from './textures';
 
 describe('Materiality System', () => {
-
   describe('Elevation System', () => {
     it('should generate correct elevation styles', () => {
       const styles = getElevationStyles(2);

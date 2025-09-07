@@ -1,24 +1,28 @@
 // Surface Components with Materiality
 
-import React, { forwardRef } from 'react';
+import type React from 'react';
+import { forwardRef } from 'react';
 import type { SurfaceProps } from './types';
 import { getElevationStyles } from './elevation';
 import { getTextureStyles } from './textures';
 
 export const Surface = forwardRef<HTMLDivElement, SurfaceProps>(
-  ({ 
-    variant = 'flat',
-    elevation = 0,
-    texture = 'none',
-    vibrant = false,
-    interactive = false,
-    className = '',
-    children,
-    ...props
-  }, ref) => {
+  (
+    {
+      variant = 'flat',
+      elevation = 0,
+      texture = 'none',
+      vibrant = false,
+      interactive = false,
+      className = '',
+      children,
+      ...props
+    },
+    ref,
+  ) => {
     const elevationStyles = getElevationStyles(elevation);
     const textureStyles = getTextureStyles(texture);
-    
+
     const surfaceClasses = [
       'surface',
       `surface--${variant}`,
@@ -26,20 +30,18 @@ export const Surface = forwardRef<HTMLDivElement, SurfaceProps>(
       interactive && 'surface--interactive',
       texture !== 'none' && `texture-${texture}`,
       className,
-    ].filter(Boolean).join(' ');
+    ]
+      .filter(Boolean)
+      .join(' ');
 
     const surfaceStyles: React.CSSProperties = {
       ...elevationStyles,
       ...textureStyles,
       position: 'relative',
-      backgroundColor: vibrant 
-        ? 'rgba(255, 255, 255, 0.85)' 
-        : 'var(--surface-primary)',
+      backgroundColor: vibrant ? 'rgba(255, 255, 255, 0.85)' : 'var(--surface-primary)',
       backdropFilter: vibrant ? 'blur(20px) saturate(180%)' : undefined,
       WebkitBackdropFilter: vibrant ? 'blur(20px) saturate(180%)' : undefined,
-      transition: interactive 
-        ? 'transform 200ms ease, box-shadow 200ms ease' 
-        : undefined,
+      transition: interactive ? 'transform 200ms ease, box-shadow 200ms ease' : undefined,
     };
 
     return (
@@ -53,8 +55,8 @@ export const Surface = forwardRef<HTMLDivElement, SurfaceProps>(
         {...props}
       >
         {texture !== 'none' && (
-          <div 
-            className="surface__texture" 
+          <div
+            className="surface__texture"
             style={{
               position: 'absolute',
               inset: 0,
@@ -70,7 +72,7 @@ export const Surface = forwardRef<HTMLDivElement, SurfaceProps>(
         {children}
       </div>
     );
-  }
+  },
 );
 
 Surface.displayName = 'Surface';
@@ -88,7 +90,7 @@ export const Card = forwardRef<HTMLDivElement, SurfaceProps>(
         {...props}
       />
     );
-  }
+  },
 );
 
 Card.displayName = 'Card';
@@ -106,7 +108,7 @@ export const Paper = forwardRef<HTMLDivElement, SurfaceProps>(
         {...props}
       />
     );
-  }
+  },
 );
 
 Paper.displayName = 'Paper';
@@ -124,7 +126,7 @@ export const FloatingPanel = forwardRef<HTMLDivElement, SurfaceProps>(
         {...props}
       />
     );
-  }
+  },
 );
 
 FloatingPanel.displayName = 'FloatingPanel';

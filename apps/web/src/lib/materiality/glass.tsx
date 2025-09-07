@@ -1,6 +1,7 @@
 // Glass Morphism Effects
 
-import React, { forwardRef } from 'react';
+import type React from 'react';
+import { forwardRef } from 'react';
 import type { GlassProps } from './types';
 
 const blurValues = {
@@ -12,17 +13,12 @@ const blurValues = {
 };
 
 export const Glass = forwardRef<HTMLDivElement, GlassProps>(
-  ({ 
-    blur = 'md',
-    opacity = 0.8,
-    saturation = 1.5,
-    tint,
-    className = '',
-    children,
-    ...props
-  }, ref) => {
+  (
+    { blur = 'md', opacity = 0.8, saturation = 1.5, tint, className = '', children, ...props },
+    ref,
+  ) => {
     const glassStyles: React.CSSProperties = {
-      backgroundColor: tint 
+      backgroundColor: tint
         ? `rgba(${hexToRgba(tint)}, ${opacity})`
         : `rgba(255, 255, 255, ${opacity})`,
       backdropFilter: `blur(${blurValues[blur]}) saturate(${saturation * 100}%)`,
@@ -31,16 +27,11 @@ export const Glass = forwardRef<HTMLDivElement, GlassProps>(
     };
 
     return (
-      <div
-        ref={ref}
-        className={`glass ${className}`}
-        style={glassStyles}
-        {...props}
-      >
+      <div ref={ref} className={`glass ${className}`} style={glassStyles} {...props}>
         {children}
       </div>
     );
-  }
+  },
 );
 
 Glass.displayName = 'Glass';
@@ -48,16 +39,8 @@ Glass.displayName = 'Glass';
 // Frosted glass variant
 export const FrostedGlass = forwardRef<HTMLDivElement, GlassProps>(
   ({ blur = 'lg', opacity = 0.95, saturation = 1.2, ...props }, ref) => {
-    return (
-      <Glass
-        ref={ref}
-        blur={blur}
-        opacity={opacity}
-        saturation={saturation}
-        {...props}
-      />
-    );
-  }
+    return <Glass ref={ref} blur={blur} opacity={opacity} saturation={saturation} {...props} />;
+  },
 );
 
 FrostedGlass.displayName = 'FrostedGlass';
@@ -66,16 +49,9 @@ FrostedGlass.displayName = 'FrostedGlass';
 export const Acrylic = forwardRef<HTMLDivElement, GlassProps>(
   ({ blur = 'xl', opacity = 0.6, tint = '#f3f3f3', ...props }, ref) => {
     return (
-      <Glass
-        ref={ref}
-        blur={blur}
-        opacity={opacity}
-        tint={tint}
-        className="acrylic"
-        {...props}
-      />
+      <Glass ref={ref} blur={blur} opacity={opacity} tint={tint} className="acrylic" {...props} />
     );
-  }
+  },
 );
 
 Acrylic.displayName = 'Acrylic';
@@ -84,7 +60,7 @@ Acrylic.displayName = 'Acrylic';
 function hexToRgba(hex: string): string {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
   if (!result) return '255, 255, 255';
-  
+
   return `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}`;
 }
 
@@ -140,6 +116,17 @@ export function generateGlassCSS(): string {
 
 // Check if backdrop-filter is supported
 export function supportsBackdropFilter(): boolean {
-  return CSS.supports('backdrop-filter', 'blur(1px)') || 
-         CSS.supports('-webkit-backdrop-filter', 'blur(1px)');
+  if (typeof window === 'undefined') return false;
+  const override = (window as unknown as { __BACKDROP_SUPPORT_OVERRIDE__?: boolean })
+    .__BACKDROP_SUPPORT_OVERRIDE__;
+  if (typeof override === 'boolean') return override;
+  const css = (
+    window as unknown as { CSS?: { supports?: (prop: string, value: string) => boolean } }
+  ).CSS;
+  const hasCssSupports = !!css && typeof css.supports === 'function';
+  if (!hasCssSupports) return false;
+  return (
+    css!.supports!('backdrop-filter', 'blur(1px)') ||
+    css!.supports!('-webkit-backdrop-filter', 'blur(1px)')
+  );
 }

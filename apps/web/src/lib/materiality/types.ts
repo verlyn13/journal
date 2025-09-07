@@ -12,13 +12,7 @@ export interface SurfaceProps {
 
 export type ElevationLevel = 0 | 1 | 2 | 3 | 4 | 5;
 
-export type TextureType = 
-  | 'none'
-  | 'paper'
-  | 'canvas'
-  | 'linen'
-  | 'noise'
-  | 'grain';
+export type TextureType = 'none' | 'paper' | 'canvas' | 'linen' | 'noise' | 'grain';
 
 export interface GlassProps {
   blur?: 'none' | 'sm' | 'md' | 'lg' | 'xl';

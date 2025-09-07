@@ -1,6 +1,5 @@
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
-import React from 'react';
 import { Surface, Card, Paper, FloatingPanel } from './surfaces';
 
 describe('Surface Component', () => {
@@ -12,34 +11,41 @@ describe('Surface Component', () => {
   });
 
   it('applies raised variant with elevation', () => {
-    render(<Surface variant="raised" elevation={2} data-testid="surface">Content</Surface>);
+    render(
+      <Surface variant="raised" elevation={2} data-testid="surface">
+        Content
+      </Surface>,
+    );
     const element = screen.getByTestId('surface');
     expect(element).toHaveClass('surface', 'surface--raised');
     expect(element).toHaveAttribute('data-elevation', '2');
   });
 
   it('applies texture styles', () => {
-    render(<Surface texture="paper" data-testid="surface">Content</Surface>);
+    render(
+      <Surface texture="paper" data-testid="surface">
+        Content
+      </Surface>,
+    );
     const element = screen.getByTestId('surface');
     expect(element).toHaveClass('texture-paper');
   });
 
   it('applies vibrant effect', () => {
-    render(<Surface vibrant data-testid="surface">Content</Surface>);
+    render(
+      <Surface vibrant data-testid="surface">
+        Content
+      </Surface>,
+    );
     const element = screen.getByTestId('surface');
     expect(element).toHaveStyle({ backdropFilter: 'blur(20px) saturate(180%)' });
   });
 
   it('combines multiple properties', () => {
     render(
-      <Surface 
-        variant="floating" 
-        elevation={3} 
-        texture="canvas" 
-        data-testid="surface"
-      >
+      <Surface variant="floating" elevation={3} texture="canvas" data-testid="surface">
         Content
-      </Surface>
+      </Surface>,
     );
     const element = screen.getByTestId('surface');
     expect(element).toHaveClass('surface', 'surface--floating', 'texture-canvas');
@@ -57,13 +63,21 @@ describe('Card Component', () => {
   });
 
   it('accepts custom elevation', () => {
-    render(<Card elevation={2} data-testid="card">Content</Card>);
+    render(
+      <Card elevation={2} data-testid="card">
+        Content
+      </Card>,
+    );
     const element = screen.getByTestId('card');
     expect(element).toHaveAttribute('data-elevation', '2');
   });
 
   it('disables interactive behavior when specified', () => {
-    render(<Card interactive={false} data-testid="card">Content</Card>);
+    render(
+      <Card interactive={false} data-testid="card">
+        Content
+      </Card>,
+    );
     const element = screen.getByTestId('card');
     expect(element).toHaveAttribute('data-interactive', 'false');
   });
@@ -78,7 +92,11 @@ describe('Paper Component', () => {
   });
 
   it('accepts custom texture', () => {
-    render(<Paper texture="linen" data-testid="paper">Content</Paper>);
+    render(
+      <Paper texture="linen" data-testid="paper">
+        Content
+      </Paper>,
+    );
     const element = screen.getByTestId('paper');
     expect(element).toHaveClass('texture-linen');
     expect(element).not.toHaveClass('texture-paper');
@@ -95,13 +113,21 @@ describe('FloatingPanel Component', () => {
   });
 
   it('applies vibrant effect when specified', () => {
-    render(<FloatingPanel vibrant data-testid="panel">Panel</FloatingPanel>);
+    render(
+      <FloatingPanel vibrant data-testid="panel">
+        Panel
+      </FloatingPanel>,
+    );
     const element = screen.getByTestId('panel');
     expect(element).toHaveStyle({ backdropFilter: 'blur(20px) saturate(180%)' });
   });
 
   it('accepts custom elevation override', () => {
-    render(<FloatingPanel elevation={5} data-testid="panel">Panel</FloatingPanel>);
+    render(
+      <FloatingPanel elevation={5} data-testid="panel">
+        Panel
+      </FloatingPanel>,
+    );
     const element = screen.getByTestId('panel');
     expect(element).toHaveAttribute('data-elevation', '5');
   });

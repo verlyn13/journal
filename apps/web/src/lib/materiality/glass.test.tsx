@@ -1,6 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
-import React from 'react';
+import { describe, expect, it } from 'vitest';
 import { Glass, FrostedGlass, Acrylic, supportsBackdropFilter } from './glass';
 
 describe('Glass Component', () => {
@@ -15,7 +14,11 @@ describe('Glass Component', () => {
   });
 
   it('applies custom blur level', () => {
-    render(<Glass blur="xl" data-testid="glass">Content</Glass>);
+    render(
+      <Glass blur="xl" data-testid="glass">
+        Content
+      </Glass>,
+    );
     const element = screen.getByTestId('glass');
     expect(element).toHaveStyle({
       backdropFilter: 'blur(24px) saturate(150%)',
@@ -23,7 +26,11 @@ describe('Glass Component', () => {
   });
 
   it('applies custom opacity', () => {
-    render(<Glass opacity={0.5} data-testid="glass">Content</Glass>);
+    render(
+      <Glass opacity={0.5} data-testid="glass">
+        Content
+      </Glass>,
+    );
     const element = screen.getByTestId('glass');
     expect(element).toHaveStyle({
       backgroundColor: 'rgba(255, 255, 255, 0.5)',
@@ -31,7 +38,11 @@ describe('Glass Component', () => {
   });
 
   it('applies custom tint color', () => {
-    render(<Glass tint="#ff0000" data-testid="glass">Content</Glass>);
+    render(
+      <Glass tint="#ff0000" data-testid="glass">
+        Content
+      </Glass>,
+    );
     const element = screen.getByTestId('glass');
     expect(element).toHaveStyle({
       backgroundColor: 'rgba(255, 0, 0, 0.8)',
@@ -39,7 +50,11 @@ describe('Glass Component', () => {
   });
 
   it('applies custom saturation', () => {
-    render(<Glass saturation={2} data-testid="glass">Content</Glass>);
+    render(
+      <Glass saturation={2} data-testid="glass">
+        Content
+      </Glass>,
+    );
     const element = screen.getByTestId('glass');
     expect(element).toHaveStyle({
       backdropFilter: 'blur(8px) saturate(200%)',
@@ -48,16 +63,16 @@ describe('Glass Component', () => {
 
   it('combines multiple properties', () => {
     render(
-      <Glass 
-        blur="lg" 
-        opacity={0.9} 
-        saturation={1.2} 
+      <Glass
+        blur="lg"
+        opacity={0.9}
+        saturation={1.2}
         tint="#0000ff"
         className="custom-glass"
         data-testid="glass"
       >
         Content
-      </Glass>
+      </Glass>,
     );
     const element = screen.getByTestId('glass');
     expect(element).toHaveClass('glass', 'custom-glass');
@@ -83,7 +98,7 @@ describe('FrostedGlass Component', () => {
     render(
       <FrostedGlass blur="xl" opacity={0.8} data-testid="frosted">
         Content
-      </FrostedGlass>
+      </FrostedGlass>,
     );
     const element = screen.getByTestId('frosted');
     expect(element).toHaveStyle({
@@ -105,7 +120,11 @@ describe('Acrylic Component', () => {
   });
 
   it('accepts custom tint', () => {
-    render(<Acrylic tint="#ffffff" data-testid="acrylic">Content</Acrylic>);
+    render(
+      <Acrylic tint="#ffffff" data-testid="acrylic">
+        Content
+      </Acrylic>,
+    );
     const element = screen.getByTestId('acrylic');
     expect(element).toHaveStyle({
       backgroundColor: 'rgba(255, 255, 255, 0.6)',
@@ -116,7 +135,7 @@ describe('Acrylic Component', () => {
     render(
       <Acrylic blur="lg" opacity={0.8} data-testid="acrylic">
         Content
-      </Acrylic>
+      </Acrylic>,
     );
     const element = screen.getByTestId('acrylic');
     expect(element).toHaveStyle({

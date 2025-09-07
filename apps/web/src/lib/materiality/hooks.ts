@@ -9,7 +9,7 @@ import { supportsBackdropFilter } from './glass';
 // Hook for interactive elevation
 export function useElevation(
   initialLevel: ElevationLevel = 1,
-  interactive = true
+  interactive = true,
 ): {
   elevation: ElevationLevel;
   elevationStyles: React.CSSProperties;
@@ -23,10 +23,10 @@ export function useElevation(
   const [elevation, setElevation] = useState<ElevationLevel>(initialLevel);
   const [isHovered, setIsHovered] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
-  
-  const currentElevation = isPressed 
+
+  const currentElevation = isPressed
     ? getPressedElevation(initialLevel)
-    : isHovered 
+    : isHovered
       ? getHoverElevation(initialLevel)
       : initialLevel;
 
@@ -64,18 +64,19 @@ export function useElevation(
 // Hook for texture management
 export function useTexture(
   type: TextureType = 'none',
-  darkMode = false
+  darkMode = false,
 ): {
   textureOpacity: number;
   textureStyles: React.CSSProperties;
 } {
   const opacity = getTextureOpacity(type, darkMode);
-  
-  const textureStyles: React.CSSProperties = type === 'none' 
-    ? {}
-    : {
-        '--texture-opacity': opacity,
-      } as React.CSSProperties;
+
+  const textureStyles: React.CSSProperties =
+    type === 'none'
+      ? {}
+      : ({
+          '--texture-opacity': opacity,
+        } as React.CSSProperties);
 
   return {
     textureOpacity: opacity,
@@ -105,9 +106,7 @@ export function useGlassSupport(): {
 }
 
 // Hook for materiality configuration
-export function useMateriality(
-  config?: Partial<MaterialityConfig>
-): MaterialityConfig {
+export function useMateriality(config?: Partial<MaterialityConfig>): MaterialityConfig {
   const defaultConfig: MaterialityConfig = {
     elevationScale: 1,
     textureOpacity: 1,
@@ -124,13 +123,13 @@ export function useMateriality(
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
     const handleChange = (e: MediaQueryListEvent) => {
-      setMaterialityConfig(prev => ({
+      setMaterialityConfig((prev) => ({
         ...prev,
         reducedMotion: e.matches,
       }));
     };
 
-    setMaterialityConfig(prev => ({
+    setMaterialityConfig((prev) => ({
       ...prev,
       reducedMotion: mediaQuery.matches,
     }));
@@ -145,7 +144,7 @@ export function useMateriality(
 // Hook for parallax depth effect
 export function useParallax(
   depth = 1,
-  enabled = true
+  enabled = true,
 ): {
   ref: React.RefObject<HTMLDivElement>;
   parallaxStyles: React.CSSProperties;
@@ -162,10 +161,10 @@ export function useParallax(
     const handleMouseMove = (e: MouseEvent) => {
       const centerX = rect.left + rect.width / 2;
       const centerY = rect.top + rect.height / 2;
-      
+
       const deltaX = (e.clientX - centerX) / rect.width;
       const deltaY = (e.clientY - centerY) / rect.height;
-      
+
       setOffset({
         x: deltaX * depth * 10,
         y: deltaY * depth * 10,
