@@ -35,3 +35,49 @@ global.ResizeObserver = vi.fn().mockImplementation(() => ({
   unobserve: vi.fn(),
   disconnect: vi.fn(),
 }));
+
+// Mock Element.animate for Web Animations API
+if (typeof Element !== 'undefined' && !Element.prototype.animate) {
+  Element.prototype.animate = vi.fn().mockImplementation((keyframes, options) => ({
+    play: vi.fn(),
+    pause: vi.fn(),
+    cancel: vi.fn(),
+    finish: vi.fn(),
+    reverse: vi.fn(),
+    currentTime: 0,
+    effect: {
+      getComputedTiming: vi.fn().mockReturnValue({
+        duration: options?.duration || 0,
+        delay: options?.delay || 0,
+        endDelay: 0,
+        fill: options?.fill || 'auto',
+        iterationStart: 0,
+        iterations: 1,
+        easing: options?.easing || 'linear',
+        direction: 'normal',
+        progress: 0,
+        currentIteration: 0,
+        localTime: 0,
+        activeDuration: options?.duration || 0,
+        endTime: options?.duration || 0,
+      }),
+    },
+    finished: Promise.resolve(),
+    ready: Promise.resolve(),
+    startTime: null,
+    playState: 'idle',
+    playbackRate: 1,
+    timeline: null,
+    id: '',
+    pending: false,
+    onfinish: null,
+    oncancel: null,
+    onremove: null,
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+    dispatchEvent: vi.fn(),
+    commitStyles: vi.fn(),
+    persist: vi.fn(),
+    updatePlaybackRate: vi.fn(),
+  }));
+}
