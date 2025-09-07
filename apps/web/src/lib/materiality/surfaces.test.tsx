@@ -38,7 +38,7 @@ describe('Surface Component', () => {
       </Surface>,
     );
     const element = screen.getByTestId('surface');
-    expect(element).toHaveStyle({ backdropFilter: 'blur(20px) saturate(180%)' });
+    expect(element).toHaveStyle('backdrop-filter: blur(20px) saturate(180%)');
   });
 
   it('combines multiple properties', () => {
@@ -119,7 +119,7 @@ describe('FloatingPanel Component', () => {
       </FloatingPanel>,
     );
     const element = screen.getByTestId('panel');
-    expect(element).toHaveStyle({ backdropFilter: 'blur(20px) saturate(180%)' });
+    expect(element).toHaveStyle('backdrop-filter: blur(20px) saturate(180%)');
   });
 
   it('accepts custom elevation override', () => {

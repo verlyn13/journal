@@ -7,10 +7,9 @@ describe('Glass Component', () => {
     render(<Glass data-testid="glass">Content</Glass>);
     const element = screen.getByTestId('glass');
     expect(element).toHaveClass('glass');
-    expect(element).toHaveStyle({
-      backgroundColor: 'rgba(255, 255, 255, 0.8)',
-      backdropFilter: 'blur(8px) saturate(150%)',
-    });
+    expect(element).toHaveStyle(
+      'background-color: rgba(255, 255, 255, 0.8); backdrop-filter: blur(8px) saturate(150%)'
+    );
   });
 
   it('applies custom blur level', () => {
@@ -20,9 +19,7 @@ describe('Glass Component', () => {
       </Glass>,
     );
     const element = screen.getByTestId('glass');
-    expect(element).toHaveStyle({
-      backdropFilter: 'blur(24px) saturate(150%)',
-    });
+    expect(element).toHaveStyle('backdrop-filter: blur(24px) saturate(150%)');
   });
 
   it('applies custom opacity', () => {
@@ -32,9 +29,7 @@ describe('Glass Component', () => {
       </Glass>,
     );
     const element = screen.getByTestId('glass');
-    expect(element).toHaveStyle({
-      backgroundColor: 'rgba(255, 255, 255, 0.5)',
-    });
+    expect(element).toHaveStyle('background-color: rgba(255, 255, 255, 0.5)');
   });
 
   it('applies custom tint color', () => {
@@ -44,9 +39,7 @@ describe('Glass Component', () => {
       </Glass>,
     );
     const element = screen.getByTestId('glass');
-    expect(element).toHaveStyle({
-      backgroundColor: 'rgba(255, 0, 0, 0.8)',
-    });
+    expect(element).toHaveStyle('background-color: rgba(255, 0, 0, 0.8)');
   });
 
   it('applies custom saturation', () => {
@@ -56,9 +49,7 @@ describe('Glass Component', () => {
       </Glass>,
     );
     const element = screen.getByTestId('glass');
-    expect(element).toHaveStyle({
-      backdropFilter: 'blur(8px) saturate(200%)',
-    });
+    expect(element).toHaveStyle('backdrop-filter: blur(8px) saturate(200%)');
   });
 
   it('combines multiple properties', () => {
@@ -76,10 +67,9 @@ describe('Glass Component', () => {
     );
     const element = screen.getByTestId('glass');
     expect(element).toHaveClass('glass', 'custom-glass');
-    expect(element).toHaveStyle({
-      backgroundColor: 'rgba(0, 0, 255, 0.9)',
-      backdropFilter: 'blur(16px) saturate(120%)',
-    });
+    expect(element).toHaveStyle(
+      'background-color: rgba(0, 0, 255, 0.9); backdrop-filter: blur(16px) saturate(120%)'
+    );
   });
 });
 
@@ -88,10 +78,9 @@ describe('FrostedGlass Component', () => {
     render(<FrostedGlass data-testid="frosted">Content</FrostedGlass>);
     const element = screen.getByTestId('frosted');
     expect(element).toHaveClass('glass');
-    expect(element).toHaveStyle({
-      backgroundColor: 'rgba(255, 255, 255, 0.95)',
-      backdropFilter: 'blur(16px) saturate(120%)',
-    });
+    expect(element).toHaveStyle(
+      'background-color: rgba(255, 255, 255, 0.95); backdrop-filter: blur(16px) saturate(120%)'
+    );
   });
 
   it('accepts prop overrides', () => {
@@ -101,10 +90,9 @@ describe('FrostedGlass Component', () => {
       </FrostedGlass>,
     );
     const element = screen.getByTestId('frosted');
-    expect(element).toHaveStyle({
-      backgroundColor: 'rgba(255, 255, 255, 0.8)',
-      backdropFilter: 'blur(24px) saturate(120%)',
-    });
+    expect(element).toHaveStyle(
+      'background-color: rgba(255, 255, 255, 0.8); backdrop-filter: blur(24px) saturate(120%)'
+    );
   });
 });
 
@@ -113,10 +101,9 @@ describe('Acrylic Component', () => {
     render(<Acrylic data-testid="acrylic">Content</Acrylic>);
     const element = screen.getByTestId('acrylic');
     expect(element).toHaveClass('glass', 'acrylic');
-    expect(element).toHaveStyle({
-      backgroundColor: 'rgba(243, 243, 243, 0.6)',
-      backdropFilter: 'blur(24px) saturate(150%)',
-    });
+    expect(element).toHaveStyle(
+      'background-color: rgba(243, 243, 243, 0.6); backdrop-filter: blur(24px) saturate(150%)'
+    );
   });
 
   it('accepts custom tint', () => {
@@ -126,9 +113,7 @@ describe('Acrylic Component', () => {
       </Acrylic>,
     );
     const element = screen.getByTestId('acrylic');
-    expect(element).toHaveStyle({
-      backgroundColor: 'rgba(255, 255, 255, 0.6)',
-    });
+    expect(element).toHaveStyle('background-color: rgba(255, 255, 255, 0.6)');
   });
 
   it('accepts prop overrides', () => {
@@ -138,10 +123,9 @@ describe('Acrylic Component', () => {
       </Acrylic>,
     );
     const element = screen.getByTestId('acrylic');
-    expect(element).toHaveStyle({
-      backgroundColor: 'rgba(243, 243, 243, 0.8)',
-      backdropFilter: 'blur(16px) saturate(150%)',
-    });
+    expect(element).toHaveStyle(
+      'background-color: rgba(243, 243, 243, 0.8); backdrop-filter: blur(16px) saturate(150%)'
+    );
   });
 });
 
