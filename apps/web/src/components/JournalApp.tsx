@@ -120,8 +120,8 @@ export function JournalApp() {
           id: entry.id,
           title: entry.title,
           content: contentForEditor || '',
-          contentVersion: (entry as any).content_version || 1,
-          version: (entry as any).version,
+          contentVersion: entry.content_version || 1,
+          version: entry.version,
         },
       }));
     } catch (_error) {
@@ -182,8 +182,8 @@ export function JournalApp() {
             title: created.title || entryTitle,
             content:
               created.markdown_content || created.content || '# Start writing your thoughts...\n',
-            contentVersion: (created as any).content_version || 2,
-            version: (created as any).version || 1,
+            contentVersion: created.content_version || 2,
+            version: created.version || 1,
           },
         }));
       } catch (_error) {}
@@ -313,8 +313,8 @@ export function JournalApp() {
                       id: updated.id,
                       title: updated.title,
                       content: markdown,
-                      contentVersion: (updated as any).content_version || 2,
-                      version: (updated as any).version,
+                      contentVersion: updated.content_version || 2,
+                      version: updated.version,
                     },
                   }));
                 } catch (_e) {
@@ -330,7 +330,6 @@ export function JournalApp() {
           <div
             className="group absolute left-1 top-4 bottom-4 z-30 flex items-center"
             data-testid="sidebar-peek"
-            aria-label="Collapsed sidebar peek"
           >
             {/* Tab */}
             <button
@@ -350,6 +349,7 @@ export function JournalApp() {
                 stroke="currentColor"
                 viewBox="0 0 24 24"
               >
+                <title>Open sidebar</title>
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"

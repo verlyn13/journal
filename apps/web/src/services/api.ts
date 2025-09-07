@@ -22,6 +22,8 @@ export interface JournalEntry {
   title: string;
   content: string;
   markdown_content?: string;
+  content_version?: number;
+  version?: number;
   date: string;
   time: string;
   preview: string;
