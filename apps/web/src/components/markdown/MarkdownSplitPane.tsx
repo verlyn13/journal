@@ -1,5 +1,5 @@
-import { Suspense, useEffect, useMemo, useRef, useState } from 'react';
-import React from 'react';
+import React, { Suspense, useEffect, useMemo, useRef, useState } from 'react';
+
 const MarkdownEditor = React.lazy(() => import('./MarkdownEditor'));
 const MarkdownPreview = React.lazy(() => import('./MarkdownPreview'));
 
@@ -74,7 +74,7 @@ export default function MarkdownSplitPane({ entry, onSave }: Props) {
       })();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [entry?.id]);
+  }, [entry?.id, entry]);
 
   // Debounced autosave when content changes
   useEffect(() => {

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import type { EntryVm } from '../../types/entry';
 
 interface EntryListProps {
@@ -35,6 +35,8 @@ export function EntryList({
     if (dateStr === 'Yesterday') return dateStr;
     return dateStr;
   };
+
+  const searchId = useId();
 
   return (
     <div className="bg-sanctuary-bg-secondary rounded-xl p-4 h-full flex flex-col space-y-4">
@@ -89,7 +91,7 @@ export function EntryList({
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full pl-9 pr-4 py-2 bg-sanctuary-bg-tertiary border border-sanctuary-border rounded-lg text-sm text-sanctuary-text-primary placeholder-sanctuary-text-secondary focus:outline-none focus:ring-2 focus:ring-sanctuary-accent focus:border-transparent"
-            id="search-input"
+            id={searchId}
             name="q"
             aria-label="Search entries"
           />
@@ -146,7 +148,6 @@ export function EntryList({
             {filteredEntries.map((entry) => (
               <div
                 key={entry.id}
-                onClick={() => onSelectEntry(entry.id)}
                 className={`
               w-full p-3 rounded-lg text-left transition-all duration-200 group cursor-pointer
               ${
@@ -159,15 +160,18 @@ export function EntryList({
                 {/* Entry Header */}
                 <div className="flex items-start justify-between mb-2">
                   <div className="flex-1 min-w-0">
-                    <h3
-                      className={`font-medium text-sm truncate ${
+                    <button
+                      type="button"
+                      onClick={() => onSelectEntry(entry.id)}
+                      className={`font-medium text-sm truncate bg-transparent p-0 m-0 text-left ${
                         selectedEntry === entry.id
                           ? 'text-sanctuary-bg-primary'
                           : 'text-sanctuary-text-primary group-hover:text-sanctuary-text-primary'
                       }`}
+                      aria-label={`Open entry ${entry.title}`}
                     >
                       {entry.title}
-                    </h3>
+                    </button>
                     <div
                       className={`flex items-center gap-2 text-xs mt-1 ${
                         selectedEntry === entry.id
@@ -201,6 +205,7 @@ export function EntryList({
                           stroke="currentColor"
                           viewBox="0 0 24 24"
                         >
+                          <title>Delete entry</title>
                           <path
                             strokeLinecap="round"
                             strokeLinejoin="round"
@@ -265,6 +270,7 @@ export function EntryList({
               stroke="currentColor"
               viewBox="0 0 24 24"
             >
+              <title>Calendar view icon</title>
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -285,6 +291,7 @@ export function EntryList({
               stroke="currentColor"
               viewBox="0 0 24 24"
             >
+              <title>River view icon</title>
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"

@@ -81,3 +81,21 @@ if (typeof Element !== 'undefined' && !Element.prototype.animate) {
     updatePlaybackRate: vi.fn(),
   }));
 }
+
+// Mock backdrop-filter support for glass morphism tests
+// The supportsBackdropFilter function checks for __BACKDROP_SUPPORT_OVERRIDE__ first
+// This works in both jsdom and happy-dom environments
+(window as unknown as { __BACKDROP_SUPPORT_OVERRIDE__?: boolean }).__BACKDROP_SUPPORT_OVERRIDE__ =
+  false;
+
+// Also mock CSS.supports for consistency
+Object.defineProperty(window.CSS, 'supports', {
+  writable: true,
+  value: vi.fn().mockImplementation((property: string, _value?: string) => {
+    // Always return false for backdrop-filter in test environment
+    if (property === 'backdrop-filter' || property === '-webkit-backdrop-filter') {
+      return false;
+    }
+    return false;
+  }),
+});
