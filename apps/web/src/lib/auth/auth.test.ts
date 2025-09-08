@@ -10,7 +10,7 @@ import type { AuthSession, AuthUser, PasskeyCredential } from './types';
 beforeAll(() => {
   // Ensure window exists for tests
   if (typeof window === 'undefined') {
-    (globalThis as any).window = global;
+    (globalThis as any).window = globalThis;
   }
 
   // Mock WebAuthn API
