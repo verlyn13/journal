@@ -107,6 +107,7 @@ describe('Motion System', () => {
 
     it('should calculate stagger with different strategies', () => {
       const config = {
+        children: 5,
         delayBetween: 50,
         from: 'first' as const,
       };

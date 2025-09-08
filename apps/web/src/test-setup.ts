@@ -11,60 +11,78 @@ afterEach(() => {
   if (typeof document !== 'undefined') {
     document.body.innerHTML = '';
   }
-  try { localStorage?.clear?.(); } catch {}
-  try { sessionStorage?.clear?.(); } catch {}
+  try {
+    localStorage?.clear?.();
+  } catch {}
+  try {
+    sessionStorage?.clear?.();
+  } catch {}
 });
 
-// Mock window.matchMedia with a stable, configurable definition
+// Mock window.matchMedia defensively
 if (typeof window.matchMedia !== 'function') {
   Object.defineProperty(window, 'matchMedia', {
     configurable: true,
     writable: true,
-    value: (query: string) => ({
+    value: vi.fn().mockImplementation((query: string) => ({
       matches: false,
       media: query,
       onchange: null,
-      addListener: () => {},
-      removeListener: () => {},
-      addEventListener: () => {},
-      removeEventListener: () => {},
-      dispatchEvent: () => false,
-    } as unknown as MediaQueryList),
+      addListener: vi.fn(), // deprecated
+      removeListener: vi.fn(), // deprecated
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+    })),
   });
 }
 
-// Mock IntersectionObserver (configurable)
-if (typeof (globalThis as any).IntersectionObserver !== 'function') {
-  const NoopIntersectionObserver = class {
-    observe() {}
-    unobserve() {}
-    disconnect() {}
-    takeRecords() { return []; }
+// Mock IntersectionObserver defensively
+if (typeof (window as any).IntersectionObserver !== 'function') {
+  (window as any).IntersectionObserver = class {
+    observe = vi.fn();
+    unobserve = vi.fn();
+    disconnect = vi.fn();
+    takeRecords = vi.fn(() => []);
+    root = null;
+    rootMargin = '';
+    thresholds = [];
   };
-  Object.defineProperty(globalThis as any, 'IntersectionObserver', {
-    configurable: true,
-    writable: true,
-    value: NoopIntersectionObserver,
-  });
 }
 
-// Mock ResizeObserver (configurable)
-if (typeof (globalThis as any).ResizeObserver !== 'function') {
-  const NoopResizeObserver = class {
-    observe() {}
-    unobserve() {}
-    disconnect() {}
+// Mock ResizeObserver defensively
+if (typeof (window as any).ResizeObserver !== 'function') {
+  (window as any).ResizeObserver = class {
+    observe = vi.fn();
+    unobserve = vi.fn();
+    disconnect = vi.fn();
   };
-  Object.defineProperty(globalThis as any, 'ResizeObserver', {
-    configurable: true,
-    writable: true,
-    value: NoopResizeObserver,
-  });
+}
+
+// Mock DOMRect if missing
+if (typeof (window as any).DOMRect !== 'function') {
+  (window as any).DOMRect = class {
+    static fromRect(_rect?: Partial<DOMRect>) {
+      return new (window as any).DOMRect();
+    }
+    x = 0;
+    y = 0;
+    width = 0;
+    height = 0;
+    top = 0;
+    right = 0;
+    bottom = 0;
+    left = 0;
+  };
 }
 
 // Mock Element.animate for Web Animations API
 if (typeof Element !== 'undefined' && !Element.prototype.animate) {
-  const animateImpl = function (this: Element, keyframes?: Keyframe[] | PropertyIndexedKeyframes, options?: number | KeyframeAnimationOptions): Animation {
+  const animateImpl = function (
+    this: Element,
+    keyframes?: Keyframe[] | PropertyIndexedKeyframes,
+    options?: number | KeyframeAnimationOptions,
+  ): Animation {
     const opts = (typeof options === 'number' ? { duration: options } : options) || {};
     const effectTiming = {
       duration: (opts as KeyframeAnimationOptions).duration || 0,
@@ -125,30 +143,54 @@ if (typeof Element !== 'undefined' && !Element.prototype.animate) {
 (window as unknown as { __BACKDROP_SUPPORT_OVERRIDE__?: boolean }).__BACKDROP_SUPPORT_OVERRIDE__ =
   false;
 
-// Also mock CSS.supports for consistency, but guard when CSS is undefined in jsdom
-if (typeof window !== 'undefined') {
-  // Ensure window.CSS exists before defining supports to avoid crashes in jsdom
-  // @ts-expect-error: CSS may be undefined in the test environment
-  if (!window.CSS || typeof window.CSS !== 'object') {
-    // @ts-expect-error: creating minimal CSS namespace for tests
-    Object.defineProperty(window, 'CSS', { configurable: true, writable: true, value: {} });
-  }
-  // Only define supports if not already provided by the environment
-  // @ts-expect-error: CSS may be a minimal stub
-  if (!('supports' in window.CSS)) {
-    Object.defineProperty(window.CSS as object, 'supports', {
-      configurable: true,
-      writable: true,
-      value: (property: string, _value?: string) => {
-        // Always return false for backdrop-filter in test environment
-        if (property === 'backdrop-filter' || property === '-webkit-backdrop-filter') {
-          return false;
-        }
-        return false;
-      },
-    });
-  }
+// Ensure window.CSS exists before defining supports
+if (!('CSS' in window) || typeof (window as any).CSS !== 'object' || (window as any).CSS === null) {
+  // Define a minimal CSS object
+  Object.defineProperty(window, 'CSS', {
+    configurable: true,
+    writable: true,
+    value: {},
+  });
 }
 
-// Local CSS namespace type helper for TS only
-type CSSNamespace = { supports?: (property: string, value?: string) => boolean };
+// Provide CSS.supports if not available
+if (typeof (window as any).CSS.supports !== 'function') {
+  Object.defineProperty((window as any).CSS, 'supports', {
+    configurable: true,
+    writable: true,
+    value: vi.fn().mockImplementation((property: string, _value?: string) => {
+      // Always return false for backdrop-filter in test environment
+      if (property === 'backdrop-filter' || property === '-webkit-backdrop-filter') {
+        return false;
+      }
+      return false;
+    }),
+  });
+}
+
+// Mock HTMLElement constructor for instanceof checks
+if (typeof window !== 'undefined' && typeof HTMLElement === 'undefined') {
+  (globalThis as any).HTMLElement = class HTMLElement {
+    static [Symbol.hasInstance](obj: any) {
+      return obj && typeof obj === 'object' && obj.nodeType === 1;
+    }
+  };
+}
+
+// Ensure Element constructor exists for instanceof checks
+if (typeof window !== 'undefined' && typeof Element === 'undefined') {
+  (globalThis as any).Element = class Element {
+    static [Symbol.hasInstance](obj: any) {
+      return obj && typeof obj === 'object' && obj.nodeType === 1;
+    }
+  };
+}
+
+// Mock DocumentType for instanceof checks
+if (typeof window !== 'undefined' && typeof DocumentType === 'undefined') {
+  (globalThis as any).DocumentType = class DocumentType {
+    static [Symbol.hasInstance](obj: any) {
+      return obj && typeof obj === 'object' && obj.nodeType === 10;
+    }
+  };
+}

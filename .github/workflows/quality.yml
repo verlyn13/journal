@@ -31,16 +31,23 @@ jobs:
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
         with:
-          bun-version: 1.2.21
+          bun-version: "1.2.21"
 
-      - name: Install dependencies (web)
+      - name: Print tool versions
+        working-directory: apps/web
+        run: |
+          echo "Node:" && node -v || true
+          echo "Bun:" && bun -v
+          echo "Biome:" && bun x biome --version
+
+      - name: Install dependencies
         working-directory: apps/web
         run: bun install
 
-      - name: Biome check (web)
+      - name: Biome check
         working-directory: apps/web
         run: bun x biome ci --reporter=github .
 
-      - name: TypeScript typecheck (web)
+      - name: TypeScript typecheck
         working-directory: apps/web
         run: bun x tsc --noEmit
