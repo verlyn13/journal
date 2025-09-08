@@ -1,10 +1,10 @@
 // Authentication System Tests
 
-import { describe, it, expect, vi, beforeEach, afterEach, beforeAll } from 'vitest';
-import { renderHook, act, waitFor } from '@testing-library/react';
+import { act, renderHook, waitFor } from '@testing-library/react';
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
+import { useAuth, useOAuthProviders, usePasskeySupport, usePasskeys } from './hooks';
 import { AuthenticationOrchestrator } from './orchestrator';
-import { useAuth, usePasskeySupport, usePasskeys, useOAuthProviders } from './hooks';
-import type { AuthUser, AuthSession, PasskeyCredential } from './types';
+import type { AuthSession, AuthUser, PasskeyCredential } from './types';
 
 // Setup WebAuthn and window mocks before all tests
 beforeAll(() => {
@@ -12,7 +12,7 @@ beforeAll(() => {
   if (typeof window === 'undefined') {
     (global as any).window = global;
   }
-  
+
   // Mock WebAuthn API
   (global as any).PublicKeyCredential = vi.fn();
   (global as any).AuthenticatorAssertionResponse = vi.fn();
@@ -74,19 +74,19 @@ describe('AuthenticationOrchestrator', () => {
         configurable: true,
       });
     }
-    
+
     // Setup PublicKeyCredential with proper methods
     (window as any).PublicKeyCredential = {
       isUserVerifyingPlatformAuthenticatorAvailable: vi.fn().mockResolvedValue(true),
       isConditionalMediationAvailable: vi.fn().mockResolvedValue(true),
     };
-    
+
     // Reset mocks
     vi.clearAllMocks();
     localStorageMock.clear();
     mockCredentials.create.mockClear();
     mockCredentials.get.mockClear();
-    
+
     // Create orchestrator after mocks are set up
     orchestrator = new AuthenticationOrchestrator('/api/auth');
   });
@@ -98,14 +98,14 @@ describe('AuthenticationOrchestrator', () => {
   describe('Passkey Support Detection', () => {
     it('should detect passkey support when available', () => {
       mockPublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable = vi.fn();
-      
+
       const newOrchestrator = new AuthenticationOrchestrator();
       expect(newOrchestrator).toBeDefined();
     });
 
     it('should handle missing passkey support', () => {
       delete (global as any).navigator.credentials;
-      
+
       const newOrchestrator = new AuthenticationOrchestrator();
       expect(newOrchestrator).toBeDefined();
     });
@@ -125,20 +125,22 @@ describe('AuthenticationOrchestrator', () => {
         type: 'public-key',
       });
 
-      (fetch as any).mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({ challenge: btoa('challenge') }),
-      }).mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({
-          success: true,
-          user: { id: '1', email: 'test@example.com' },
-          token: 'token',
-        }),
-      });
+      (fetch as any)
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => ({ challenge: btoa('challenge') }),
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => ({
+            success: true,
+            user: { id: '1', email: 'test@example.com' },
+            token: 'token',
+          }),
+        });
 
       const result = await orchestrator.authenticate();
-      
+
       expect(mockCredentials.get).toHaveBeenCalled();
       expect(result.success).toBe(true);
       expect(result.method).toBe('passkey');
@@ -231,7 +233,7 @@ describe('AuthenticationOrchestrator', () => {
         });
 
       const result = await orchestrator.registerPasskey(user, 'My Device');
-      
+
       expect(mockCredentials.create).toHaveBeenCalled();
       expect(result.success).toBe(true);
     });
@@ -258,7 +260,7 @@ describe('AuthenticationOrchestrator', () => {
       });
 
       const result = await orchestrator.registerPasskey(user, 'My Device');
-      
+
       expect(result.success).toBe(false);
       expect(result.error?.code).toBe('PASSKEY_REGISTRATION_FAILED');
     });
@@ -382,7 +384,9 @@ describe('Authentication Hooks', () => {
 
   describe('usePasskeySupport', () => {
     it.skip('should detect passkey support', async () => {
-      mockPublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable = vi.fn().mockResolvedValue(true);
+      mockPublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable = vi
+        .fn()
+        .mockResolvedValue(true);
 
       const { result } = renderHook(() => usePasskeySupport());
 

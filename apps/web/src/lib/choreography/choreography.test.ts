@@ -1,16 +1,16 @@
 // Choreography System Tests
 
-import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
-import { ChoreographyOrchestrator } from './orchestrator';
-import { Timeline } from './timeline';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { GestureCoordinator } from './gestures';
 import { LayoutTransitionManager } from './layout';
+import { ChoreographyOrchestrator } from './orchestrator';
+import { Timeline } from './timeline';
 import type { ChoreographySequence } from './types';
 
 describe('Choreography System', () => {
   describe('ChoreographyOrchestrator', () => {
     let orchestrator: ChoreographyOrchestrator;
-    
+
     beforeEach(() => {
       orchestrator = new ChoreographyOrchestrator();
     });
@@ -23,10 +23,7 @@ describe('Choreography System', () => {
           {
             target: '.test-element',
             animation: {
-              keyframes: [
-                { opacity: '0' },
-                { opacity: '1' },
-              ],
+              keyframes: [{ opacity: '0' }, { opacity: '1' }],
             },
             duration: 100,
           },
@@ -34,7 +31,7 @@ describe('Choreography System', () => {
       };
 
       orchestrator.registerSequence(sequence);
-      
+
       // Mock element
       const mockElement = document.createElement('div');
       mockElement.className = 'test-element';
@@ -54,7 +51,7 @@ describe('Choreography System', () => {
       });
 
       await orchestrator.play('test-sequence');
-      
+
       expect(animateSpy).toHaveBeenCalledWith(
         expect.arrayContaining([
           expect.objectContaining({ opacity: '0' }),
@@ -63,7 +60,7 @@ describe('Choreography System', () => {
         expect.objectContaining({
           duration: 100,
           fill: 'both',
-        })
+        }),
       );
 
       document.body.removeChild(mockElement);
@@ -98,7 +95,7 @@ describe('Choreography System', () => {
       document.body.appendChild(mockElement);
 
       await newOrchestrator.play('reduced-motion-test');
-      
+
       // Should apply final state directly
       expect(mockElement.style.opacity).toBe('1');
 
@@ -116,7 +113,7 @@ describe('Choreography System', () => {
       };
 
       orchestrator.registerSequence(sequence);
-      
+
       // Test stagger calculation (internal method would be tested via effects)
       const controller = orchestrator.getController('stagger-test');
       expect(controller).toBeUndefined(); // Not playing yet
@@ -138,7 +135,7 @@ describe('Choreography System', () => {
       };
 
       orchestrator.registerSequence(sequence);
-      
+
       const mockElement = document.createElement('div');
       mockElement.className = 'stop-element';
       document.body.appendChild(mockElement);
@@ -176,11 +173,8 @@ describe('Choreography System', () => {
 
     it('should add animations to timeline', () => {
       const element = document.createElement('div');
-      
-      timeline.add(element, [
-        { opacity: '0' },
-        { opacity: '1' },
-      ], { duration: 300 });
+
+      timeline.add(element, [{ opacity: '0' }, { opacity: '1' }], { duration: 300 });
 
       expect(timeline.progress).toBe(0);
     });
@@ -188,7 +182,7 @@ describe('Choreography System', () => {
     it('should support position strings', () => {
       const el1 = document.createElement('div');
       const el2 = document.createElement('div');
-      
+
       timeline
         .add(el1, [{ opacity: '0' }, { opacity: '1' }], { duration: 300 })
         .add(el2, [{ opacity: '0' }, { opacity: '1' }], { duration: 200, position: '>' });
@@ -199,28 +193,22 @@ describe('Choreography System', () => {
 
     it('should handle play/pause/restart', () => {
       const element = document.createElement('div');
-      
-      timeline.add(element, [
-        { opacity: '0' },
-        { opacity: '1' },
-      ], { duration: 300 });
+
+      timeline.add(element, [{ opacity: '0' }, { opacity: '1' }], { duration: 300 });
 
       timeline.play();
       timeline.pause();
-      
+
       expect(timeline.progress).toBeGreaterThanOrEqual(0);
-      
+
       timeline.restart();
       expect(timeline.progress).toBeCloseTo(0, 5);
     });
 
     it('should seek to specific time', () => {
       const element = document.createElement('div');
-      
-      timeline.add(element, [
-        { opacity: '0' },
-        { opacity: '1' },
-      ], { duration: 1000 });
+
+      timeline.add(element, [{ opacity: '0' }, { opacity: '1' }], { duration: 1000 });
 
       timeline.seek(500);
       expect(timeline.progress).toBeCloseTo(0.5, 1);
@@ -252,23 +240,23 @@ describe('Choreography System', () => {
     it('should handle gesture subscriptions', () => {
       const swipeHandler = vi.fn();
       const tapHandler = vi.fn();
-      
+
       coordinator.on('swipe', swipeHandler);
       coordinator.on('tap', tapHandler);
-      
+
       // Handlers are registered
       expect(swipeHandler).not.toHaveBeenCalled();
       expect(tapHandler).not.toHaveBeenCalled();
     });
 
     it('should respect disabled state', () => {
-      const disabledCoordinator = new GestureCoordinator({ 
-        enabled: false 
+      const disabledCoordinator = new GestureCoordinator({
+        enabled: false,
       });
-      
+
       disabledCoordinator.attach(element);
       // Should not attach when disabled
-      
+
       disabledCoordinator.destroy();
     });
   });
@@ -290,7 +278,7 @@ describe('Choreography System', () => {
       document.body.appendChild(element);
 
       manager.capture('test', '.test-layout');
-      
+
       // Snapshot should be captured
       expect(manager.isTransitioning('test')).toBe(false);
 
@@ -304,12 +292,12 @@ describe('Choreography System', () => {
 
       // Create a snapshot first
       manager.capture('morph', '.morph-test');
-      
+
       // The morph transition will calculate deltas between snapshot and current position
       // Since we can't easily mock the complex delta calculation, we'll just verify
       // that the transition method runs without errors when positions differ
       await expect(
-        manager.transition('morph', { type: 'morph', duration: 300 })
+        manager.transition('morph', { type: 'morph', duration: 300 }),
       ).resolves.toBeUndefined();
 
       document.body.removeChild(element);
@@ -324,14 +312,14 @@ describe('Choreography System', () => {
       });
 
       manager.captureGroup('group', '.group-item');
-      
+
       await manager.transitionGroup('group', {
         type: 'fade',
         duration: 200,
         stagger: 50,
       });
 
-      items.forEach(el => document.body.removeChild(el));
+      items.forEach((el) => document.body.removeChild(el));
     });
 
     it('should respect reduced motion', async () => {
@@ -349,7 +337,7 @@ describe('Choreography System', () => {
       await newManager.transition('reduced', { type: 'morph' });
 
       // Should skip animation when reduced motion is preferred
-      
+
       document.body.removeChild(element);
     });
   });
@@ -357,30 +345,30 @@ describe('Choreography System', () => {
   describe('Preset Animations', () => {
     it('should have entry morph preset', async () => {
       const { presetTimelines } = await import('./timeline');
-      
+
       expect(presetTimelines).toBeDefined();
       expect(presetTimelines.entryMorph).toBeInstanceOf(Function);
-      
+
       // Don't actually call the function as it creates animations
       // Just verify it exists and is callable
     });
 
     it('should have sidebar collapse preset', async () => {
       const { presetTimelines } = await import('./timeline');
-      
+
       expect(presetTimelines).toBeDefined();
       expect(presetTimelines.sidebarCollapse).toBeInstanceOf(Function);
-      
+
       // Don't actually call the function as it creates animations
       // Just verify it exists and is callable
     });
 
     it('should have focus mode preset', async () => {
       const { presetTimelines } = await import('./timeline');
-      
+
       expect(presetTimelines).toBeDefined();
       expect(presetTimelines.focusMode).toBeInstanceOf(Function);
-      
+
       // Don't actually call the function as it creates animations
       // Just verify it exists and is callable
     });

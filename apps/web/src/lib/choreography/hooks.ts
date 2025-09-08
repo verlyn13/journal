@@ -1,16 +1,16 @@
 // React Hooks for Choreography System
 
-import { useEffect, useRef, useState, useCallback } from 'react';
-import { ChoreographyOrchestrator } from './orchestrator';
-import { Timeline } from './timeline';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { GestureCoordinator, type GestureEvent } from './gestures';
 import { LayoutTransitionManager } from './layout';
+import { ChoreographyOrchestrator } from './orchestrator';
+import { Timeline } from './timeline';
 import type {
-  ChoreographySequence,
   ChoreographyController,
+  ChoreographySequence,
   ChoreographyState,
-  LayoutTransition,
   GestureConfig,
+  LayoutTransition,
 } from './types';
 
 // Global orchestrator instance
@@ -39,7 +39,7 @@ export function useChoreography(sequence: ChoreographySequence): {
 
   useEffect(() => {
     orchestrator.registerSequence(sequence);
-    
+
     return () => {
       orchestrator.stop(sequence.id);
       if (animationFrameRef.current) {
@@ -53,7 +53,7 @@ export function useChoreography(sequence: ChoreographySequence): {
     if (ctrl) {
       setState(ctrl.state);
       setProgress(ctrl.progress);
-      
+
       if (ctrl.state === 'playing') {
         animationFrameRef.current = requestAnimationFrame(updateProgress);
       }
@@ -138,9 +138,7 @@ export function useTimeline(config?: { duration?: number; ease?: string }): {
 }
 
 // Hook for gesture coordination
-export function useGestures(
-  config?: GestureConfig
-): {
+export function useGestures(config?: GestureConfig): {
   ref: React.RefObject<HTMLElement>;
   onSwipe: (callback: (event: GestureEvent) => void) => void;
   onPinch: (callback: (event: GestureEvent) => void) => void;
@@ -162,21 +160,33 @@ export function useGestures(
     };
   }, [coordinator]);
 
-  const onSwipe = useCallback((callback: (event: GestureEvent) => void) => {
-    coordinator.on('swipe', callback);
-  }, [coordinator]);
+  const onSwipe = useCallback(
+    (callback: (event: GestureEvent) => void) => {
+      coordinator.on('swipe', callback);
+    },
+    [coordinator],
+  );
 
-  const onPinch = useCallback((callback: (event: GestureEvent) => void) => {
-    coordinator.on('pinch', callback);
-  }, [coordinator]);
+  const onPinch = useCallback(
+    (callback: (event: GestureEvent) => void) => {
+      coordinator.on('pinch', callback);
+    },
+    [coordinator],
+  );
 
-  const onTap = useCallback((callback: (event: GestureEvent) => void) => {
-    coordinator.on('tap', callback);
-  }, [coordinator]);
+  const onTap = useCallback(
+    (callback: (event: GestureEvent) => void) => {
+      coordinator.on('tap', callback);
+    },
+    [coordinator],
+  );
 
-  const onDrag = useCallback((callback: (event: GestureEvent) => void) => {
-    coordinator.on('drag', callback);
-  }, [coordinator]);
+  const onDrag = useCallback(
+    (callback: (event: GestureEvent) => void) => {
+      coordinator.on('drag', callback);
+    },
+    [coordinator],
+  );
 
   return {
     ref,
@@ -197,25 +207,40 @@ export function useLayoutTransition(): {
 } {
   const [manager] = useState(() => new LayoutTransitionManager());
 
-  const capture = useCallback((key: string, selector: string) => {
-    manager.capture(key, selector);
-  }, [manager]);
+  const capture = useCallback(
+    (key: string, selector: string) => {
+      manager.capture(key, selector);
+    },
+    [manager],
+  );
 
-  const captureGroup = useCallback((groupKey: string, selector: string) => {
-    manager.captureGroup(groupKey, selector);
-  }, [manager]);
+  const captureGroup = useCallback(
+    (groupKey: string, selector: string) => {
+      manager.captureGroup(groupKey, selector);
+    },
+    [manager],
+  );
 
-  const transition = useCallback(async (key: string, config?: LayoutTransition) => {
-    await manager.transition(key, config);
-  }, [manager]);
+  const transition = useCallback(
+    async (key: string, config?: LayoutTransition) => {
+      await manager.transition(key, config);
+    },
+    [manager],
+  );
 
-  const transitionGroup = useCallback(async (groupKey: string, config?: LayoutTransition) => {
-    await manager.transitionGroup(groupKey, config);
-  }, [manager]);
+  const transitionGroup = useCallback(
+    async (groupKey: string, config?: LayoutTransition) => {
+      await manager.transitionGroup(groupKey, config);
+    },
+    [manager],
+  );
 
-  const isTransitioning = useCallback((key: string) => {
-    return manager.isTransitioning(key);
-  }, [manager]);
+  const isTransitioning = useCallback(
+    (key: string) => {
+      return manager.isTransitioning(key);
+    },
+    [manager],
+  );
 
   useEffect(() => {
     return () => {
@@ -240,7 +265,7 @@ export function useEntrance(
     duration?: number;
     easing?: string;
     threshold?: number;
-  }
+  },
 ): boolean {
   const [hasEntered, setHasEntered] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
@@ -253,22 +278,25 @@ export function useEntrance(
         if (entry.isIntersecting && !hasEntered) {
           setIsVisible(true);
           setHasEntered(true);
-          
+
           // Animate entrance
           if (ref.current) {
-            ref.current.animate([
-              { opacity: '0', transform: 'translateY(20px)' },
-              { opacity: '1', transform: 'translateY(0)' },
-            ], {
-              duration: options?.duration || 400,
-              delay: options?.delay || 0,
-              easing: options?.easing || 'cubic-bezier(0.4, 0, 0.2, 1)',
-              fill: 'both',
-            });
+            ref.current.animate(
+              [
+                { opacity: '0', transform: 'translateY(20px)' },
+                { opacity: '1', transform: 'translateY(0)' },
+              ],
+              {
+                duration: options?.duration || 400,
+                delay: options?.delay || 0,
+                easing: options?.easing || 'cubic-bezier(0.4, 0, 0.2, 1)',
+                fill: 'both',
+              },
+            );
           }
         }
       },
-      { threshold: options?.threshold || 0.1 }
+      { threshold: options?.threshold || 0.1 },
     );
 
     observer.observe(ref.current);
@@ -287,18 +315,21 @@ export function useExit(
     duration?: number;
     easing?: string;
     onComplete?: () => void;
-  }
+  },
 ): void {
   useEffect(() => {
     if (isExiting && ref.current) {
-      const animation = ref.current.animate([
-        { opacity: '1', transform: 'scale(1)' },
-        { opacity: '0', transform: 'scale(0.95)' },
-      ], {
-        duration: options?.duration || 200,
-        easing: options?.easing || 'ease-in',
-        fill: 'forwards',
-      });
+      const animation = ref.current.animate(
+        [
+          { opacity: '1', transform: 'scale(1)' },
+          { opacity: '0', transform: 'scale(0.95)' },
+        ],
+        {
+          duration: options?.duration || 200,
+          easing: options?.easing || 'ease-in',
+          fill: 'forwards',
+        },
+      );
 
       animation.finished.then(() => {
         options?.onComplete?.();
@@ -314,7 +345,7 @@ export function useStagger(
     stagger?: number;
     duration?: number;
     easing?: string;
-  }
+  },
 ): {
   animate: () => void;
   reset: () => void;
@@ -324,15 +355,18 @@ export function useStagger(
 
     itemsRef.current.forEach((item, index) => {
       if (item) {
-        item.animate([
-          { opacity: '0', transform: 'translateY(10px)' },
-          { opacity: '1', transform: 'translateY(0)' },
-        ], {
-          duration: options?.duration || 300,
-          delay: index * (options?.stagger || 50),
-          easing: options?.easing || 'cubic-bezier(0.4, 0, 0.2, 1)',
-          fill: 'both',
-        });
+        item.animate(
+          [
+            { opacity: '0', transform: 'translateY(10px)' },
+            { opacity: '1', transform: 'translateY(0)' },
+          ],
+          {
+            duration: options?.duration || 300,
+            delay: index * (options?.stagger || 50),
+            easing: options?.easing || 'cubic-bezier(0.4, 0, 0.2, 1)',
+            fill: 'both',
+          },
+        );
       }
     });
   }, [itemsRef, options]);
@@ -340,7 +374,7 @@ export function useStagger(
   const reset = useCallback(() => {
     if (!itemsRef.current) return;
 
-    itemsRef.current.forEach(item => {
+    itemsRef.current.forEach((item) => {
       if (item) {
         item.style.opacity = '0';
         item.style.transform = 'translateY(10px)';

@@ -18,18 +18,18 @@ export class Timeline {
   add(
     element: Element | Element[],
     props: Keyframe[] | PropertyIndexedKeyframes,
-    options?: KeyframeAnimationOptions & { position?: number | string }
+    options?: KeyframeAnimationOptions & { position?: number | string },
   ): this {
     const elements = Array.isArray(element) ? element : [element];
     const { position = '>' } = options || {};
-    
+
     elements.forEach((el, index) => {
       const startTime = this.calculatePosition(position, index);
       const animation = new TimelineAnimation(el, props, {
         ...options,
         delay: startTime,
       });
-      
+
       this.animations.push(animation);
       this.updateDuration(animation);
     });
@@ -68,7 +68,7 @@ export class Timeline {
   // Play timeline
   play(): void {
     if (this.isPlaying) return;
-    
+
     this.isPlaying = true;
     this.startTime = performance.now() - this.currentTime;
     this.tick();
@@ -85,21 +85,21 @@ export class Timeline {
 
   // Reverse timeline
   reverse(): void {
-    this.animations.forEach(anim => anim.reverse());
+    this.animations.forEach((anim) => anim.reverse());
     this.play();
   }
 
   // Restart timeline
   restart(): void {
     this.currentTime = 0;
-    this.animations.forEach(anim => anim.restart());
+    this.animations.forEach((anim) => anim.restart());
     this.play();
   }
 
   // Seek to specific time
   seek(time: number): void {
     this.currentTime = Math.max(0, Math.min(time, this.duration));
-    this.animations.forEach(anim => anim.seek(this.currentTime));
+    this.animations.forEach((anim) => anim.seek(this.currentTime));
   }
 
   // Animation loop
@@ -110,7 +110,7 @@ export class Timeline {
     this.currentTime = now - this.startTime;
 
     // Update all animations
-    this.animations.forEach(anim => {
+    this.animations.forEach((anim) => {
       anim.update(this.currentTime);
     });
 
@@ -141,7 +141,7 @@ export class Timeline {
   // Clear timeline
   clear(): void {
     this.pause();
-    this.animations.forEach(anim => anim.cancel());
+    this.animations.forEach((anim) => anim.cancel());
     this.animations = [];
     this.currentTime = 0;
     this.duration = 0;
@@ -160,14 +160,14 @@ class TimelineAnimation {
   constructor(
     element: Element,
     keyframes: Keyframe[] | PropertyIndexedKeyframes,
-    options: KeyframeAnimationOptions = {}
+    options: KeyframeAnimationOptions = {},
   ) {
     this.element = element;
     this.keyframes = keyframes;
     this.options = options;
     this.startTime = options.delay || 0;
-    this.endTime = this.startTime + (options.duration as number || 0);
-    
+    this.endTime = this.startTime + ((options.duration as number) || 0);
+
     this.createAnimation();
   }
 
@@ -181,7 +181,7 @@ class TimelineAnimation {
 
   update(time: number): void {
     if (!this.animation) return;
-    
+
     if (time < this.startTime) {
       this.animation.currentTime = 0;
     } else if (time > this.endTime) {
@@ -215,51 +215,72 @@ export const presetTimelines = {
   // Entry creation morphing
   entryMorph: () => {
     const timeline = new Timeline({ duration: 600 });
-    
+
     return timeline
-      .add('.entry-create-button', [
-        { transform: 'scale(1)', opacity: '1' },
-        { transform: 'scale(0.95)', opacity: '0.8' },
-        { transform: 'scale(1.5)', opacity: '0' },
-      ], { duration: 300, easing: 'cubic-bezier(0.4, 0, 0.2, 1)' })
-      .add('.entry-editor', [
-        { transform: 'scale(0.8) translateY(20px)', opacity: '0' },
-        { transform: 'scale(1) translateY(0)', opacity: '1' },
-      ], { duration: 400, easing: 'cubic-bezier(0.34, 1.56, 0.64, 1)', position: '-=' });
+      .add(
+        '.entry-create-button',
+        [
+          { transform: 'scale(1)', opacity: '1' },
+          { transform: 'scale(0.95)', opacity: '0.8' },
+          { transform: 'scale(1.5)', opacity: '0' },
+        ],
+        { duration: 300, easing: 'cubic-bezier(0.4, 0, 0.2, 1)' },
+      )
+      .add(
+        '.entry-editor',
+        [
+          { transform: 'scale(0.8) translateY(20px)', opacity: '0' },
+          { transform: 'scale(1) translateY(0)', opacity: '1' },
+        ],
+        { duration: 400, easing: 'cubic-bezier(0.34, 1.56, 0.64, 1)', position: '-=' },
+      );
   },
 
   // Sidebar collapse with overshoot
   sidebarCollapse: () => {
     const timeline = new Timeline({ duration: 400 });
-    
+
     return timeline
-      .add('.sidebar', [
-        { transform: 'translateX(0)' },
-        { transform: 'translateX(-105%)' },
-        { transform: 'translateX(-100%)' },
-      ], { duration: 400, easing: 'cubic-bezier(0.68, -0.55, 0.265, 1.55)' })
-      .add('.main-content', [
-        { marginLeft: '280px' },
-        { marginLeft: '0' },
-      ], { duration: 400, easing: 'cubic-bezier(0.4, 0, 0.2, 1)', position: '<' });
+      .add(
+        '.sidebar',
+        [
+          { transform: 'translateX(0)' },
+          { transform: 'translateX(-105%)' },
+          { transform: 'translateX(-100%)' },
+        ],
+        { duration: 400, easing: 'cubic-bezier(0.68, -0.55, 0.265, 1.55)' },
+      )
+      .add('.main-content', [{ marginLeft: '280px' }, { marginLeft: '0' }], {
+        duration: 400,
+        easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
+        position: '<',
+      });
   },
 
   // Focus mode ceremony
   focusMode: () => {
     const timeline = new Timeline({ duration: 800 });
-    
+
     return timeline
-      .add('.header, .sidebar', [
-        { opacity: '1', transform: 'translateY(0)' },
-        { opacity: '0', transform: 'translateY(-20px)' },
-      ], { duration: 300, easing: 'ease-out' })
-      .add('.editor-container', [
-        { transform: 'scale(0.95)', opacity: '0.8' },
-        { transform: 'scale(1)', opacity: '1' },
-      ], { duration: 500, easing: 'cubic-bezier(0.34, 1.56, 0.64, 1)', position: '-=' })
-      .add('.focus-overlay', [
-        { opacity: '0' },
-        { opacity: '1' },
-      ], { duration: 300, position: '<' });
+      .add(
+        '.header, .sidebar',
+        [
+          { opacity: '1', transform: 'translateY(0)' },
+          { opacity: '0', transform: 'translateY(-20px)' },
+        ],
+        { duration: 300, easing: 'ease-out' },
+      )
+      .add(
+        '.editor-container',
+        [
+          { transform: 'scale(0.95)', opacity: '0.8' },
+          { transform: 'scale(1)', opacity: '1' },
+        ],
+        { duration: 500, easing: 'cubic-bezier(0.34, 1.56, 0.64, 1)', position: '-=' },
+      )
+      .add('.focus-overlay', [{ opacity: '0' }, { opacity: '1' }], {
+        duration: 300,
+        position: '<',
+      });
   },
 };

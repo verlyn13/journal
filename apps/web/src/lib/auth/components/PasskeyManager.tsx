@@ -1,14 +1,15 @@
 // Passkey Management Component
 
-import React, { useState } from 'react';
-import { useAuth, usePasskeys, usePasskeySupport } from '../hooks';
+import type React from 'react';
+import { useState } from 'react';
+import { useAuth, usePasskeySupport, usePasskeys } from '../hooks';
 import type { PasskeyCredential } from '../types';
 
 export const PasskeyManager: React.FC = () => {
   const { user, registerPasskey } = useAuth();
   const { passkeys, loading, error, deletePasskey, renamePasskey } = usePasskeys(user);
   const { supported: passkeysSupported, checking } = usePasskeySupport();
-  
+
   const [isRegistering, setIsRegistering] = useState(false);
   const [newPasskeyName, setNewPasskeyName] = useState('');
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -59,9 +60,7 @@ export const PasskeyManager: React.FC = () => {
   if (!passkeysSupported) {
     return (
       <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-        <p className="text-yellow-800">
-          Passkeys are not supported on this device or browser.
-        </p>
+        <p className="text-yellow-800">Passkeys are not supported on this device or browser.</p>
       </div>
     );
   }
@@ -71,7 +70,8 @@ export const PasskeyManager: React.FC = () => {
       <div>
         <h3 className="text-lg font-semibold mb-2">Passkeys</h3>
         <p className="text-sm text-gray-600 mb-4">
-          Passkeys provide a secure, password-free way to sign in using your device's biometric authentication.
+          Passkeys provide a secure, password-free way to sign in using your device's biometric
+          authentication.
         </p>
       </div>
 
@@ -149,13 +149,16 @@ export const PasskeyManager: React.FC = () => {
                       <p className="text-sm text-gray-500">
                         Added {new Date(passkey.createdAt).toLocaleDateString()}
                         {passkey.lastUsed && (
-                          <span> • Last used {new Date(passkey.lastUsed).toLocaleDateString()}</span>
+                          <span>
+                            {' '}
+                            • Last used {new Date(passkey.lastUsed).toLocaleDateString()}
+                          </span>
                         )}
                       </p>
                     </div>
                   )}
                 </div>
-                
+
                 <div className="flex gap-2">
                   <button
                     onClick={() => {
@@ -174,7 +177,7 @@ export const PasskeyManager: React.FC = () => {
                       />
                     </svg>
                   </button>
-                  
+
                   <button
                     onClick={() => handleDeletePasskey(passkey)}
                     className="p-2 text-red-600 hover:text-red-800 hover:bg-red-50 rounded"

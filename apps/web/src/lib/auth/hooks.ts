@@ -1,16 +1,16 @@
 // Authentication React Hooks
 
-import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { AuthenticationOrchestrator } from './orchestrator';
+import { AuthEventType } from './types';
 import type {
+  AuthError,
+  AuthEvent,
+  AuthProvider,
+  AuthResult,
+  AuthSession,
   AuthState,
   AuthUser,
-  AuthSession,
-  AuthError,
-  AuthResult,
-  AuthProvider,
-  AuthEvent,
-  AuthEventType,
   PasskeyCredential,
 } from './types';
 
@@ -30,7 +30,7 @@ export function useAuth(apiBaseUrl?: string) {
   // Initialize orchestrator
   useEffect(() => {
     orchestratorRef.current = new AuthenticationOrchestrator(apiBaseUrl);
-    
+
     // Check existing session
     checkSession();
 
@@ -41,7 +41,7 @@ export function useAuth(apiBaseUrl?: string) {
 
   // Check existing session
   const checkSession = useCallback(async () => {
-    setState(prev => ({ ...prev, isLoading: true }));
+    setState((prev) => ({ ...prev, isLoading: true }));
     try {
       const sessionData = localStorage.getItem('auth_session');
       if (sessionData) {
@@ -65,7 +65,7 @@ export function useAuth(apiBaseUrl?: string) {
     } catch (error) {
       console.error('Failed to check session', error);
     }
-    setState(prev => ({ ...prev, isLoading: false }));
+    setState((prev) => ({ ...prev, isLoading: false }));
   }, []);
 
   // Login
@@ -78,12 +78,12 @@ export function useAuth(apiBaseUrl?: string) {
       };
     }
 
-    setState(prev => ({ ...prev, isLoading: true, error: null }));
+    setState((prev) => ({ ...prev, isLoading: true, error: null }));
     emitEvent({ type: AuthEventType.LOGIN_STARTED, timestamp: new Date() });
 
     try {
       const result = await orchestratorRef.current.authenticate();
-      
+
       if (result.success && result.user) {
         const session: AuthSession = {
           user: result.user,
@@ -94,7 +94,7 @@ export function useAuth(apiBaseUrl?: string) {
         };
 
         localStorage.setItem('auth_session', JSON.stringify(session));
-        
+
         setState({
           isAuthenticated: true,
           isLoading: false,
@@ -111,7 +111,7 @@ export function useAuth(apiBaseUrl?: string) {
 
         return result;
       } else {
-        setState(prev => ({
+        setState((prev) => ({
           ...prev,
           isLoading: false,
           error: result.error || null,
@@ -132,7 +132,7 @@ export function useAuth(apiBaseUrl?: string) {
         details: error,
       };
 
-      setState(prev => ({
+      setState((prev) => ({
         ...prev,
         isLoading: false,
         error: authError,
@@ -166,41 +166,44 @@ export function useAuth(apiBaseUrl?: string) {
   }, []);
 
   // Register passkey
-  const registerPasskey = useCallback(async (name: string): Promise<boolean> => {
-    if (!orchestratorRef.current || !state.user) {
-      return false;
-    }
-
-    try {
-      const result = await orchestratorRef.current.registerPasskey(state.user, name);
-      
-      if (result.success) {
-        // Update user with new passkey
-        setState(prev => ({
-          ...prev,
-          user: result.user || prev.user,
-        }));
-
-        emitEvent({
-          type: AuthEventType.PASSKEY_REGISTERED,
-          timestamp: new Date(),
-          data: { name },
-        });
-
-        return true;
+  const registerPasskey = useCallback(
+    async (name: string): Promise<boolean> => {
+      if (!orchestratorRef.current || !state.user) {
+        return false;
       }
-      return false;
-    } catch (error) {
-      console.error('Failed to register passkey', error);
-      return false;
-    }
-  }, [state.user]);
+
+      try {
+        const result = await orchestratorRef.current.registerPasskey(state.user, name);
+
+        if (result.success) {
+          // Update user with new passkey
+          setState((prev) => ({
+            ...prev,
+            user: result.user || prev.user,
+          }));
+
+          emitEvent({
+            type: AuthEventType.PASSKEY_REGISTERED,
+            timestamp: new Date(),
+            data: { name },
+          });
+
+          return true;
+        }
+        return false;
+      } catch (error) {
+        console.error('Failed to register passkey', error);
+        return false;
+      }
+    },
+    [state.user],
+  );
 
   // Event emitter
   const emitEvent = useCallback((event: AuthEvent) => {
     const listeners = eventListenersRef.current.get(event.type);
     if (listeners) {
-      listeners.forEach(listener => listener(event));
+      listeners.forEach((listener) => listener(event));
     }
   }, []);
 
@@ -240,7 +243,8 @@ export function usePasskeySupport() {
           'credentials' in navigator &&
           'PublicKeyCredential' in window
         ) {
-          const available = await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
+          const available =
+            await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
           setSupported(available);
         }
       } catch (error) {
@@ -286,64 +290,70 @@ export function usePasskeys(user: AuthUser | null) {
   }, [user]);
 
   // Delete a passkey
-  const deletePasskey = useCallback(async (passkeyId: string): Promise<boolean> => {
-    if (!user) return false;
+  const deletePasskey = useCallback(
+    async (passkeyId: string): Promise<boolean> => {
+      if (!user) return false;
 
-    setLoading(true);
-    setError(null);
+      setLoading(true);
+      setError(null);
 
-    try {
-      const response = await fetch(`/api/auth/passkeys/${passkeyId}`, {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId: user.id }),
-      });
+      try {
+        const response = await fetch(`/api/auth/passkeys/${passkeyId}`, {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId: user.id }),
+        });
 
-      if (response.ok) {
-        setPasskeys(prev => prev.filter(p => p.id !== passkeyId));
-        return true;
-      } else {
-        throw new Error('Failed to delete passkey');
+        if (response.ok) {
+          setPasskeys((prev) => prev.filter((p) => p.id !== passkeyId));
+          return true;
+        } else {
+          throw new Error('Failed to delete passkey');
+        }
+      } catch (error) {
+        setError('Failed to delete passkey');
+        console.error(error);
+        return false;
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      setError('Failed to delete passkey');
-      console.error(error);
-      return false;
-    } finally {
-      setLoading(false);
-    }
-  }, [user]);
+    },
+    [user],
+  );
 
   // Rename a passkey
-  const renamePasskey = useCallback(async (passkeyId: string, newName: string): Promise<boolean> => {
-    if (!user) return false;
+  const renamePasskey = useCallback(
+    async (passkeyId: string, newName: string): Promise<boolean> => {
+      if (!user) return false;
 
-    setLoading(true);
-    setError(null);
+      setLoading(true);
+      setError(null);
 
-    try {
-      const response = await fetch(`/api/auth/passkeys/${passkeyId}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId: user.id, name: newName }),
-      });
+      try {
+        const response = await fetch(`/api/auth/passkeys/${passkeyId}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId: user.id, name: newName }),
+        });
 
-      if (response.ok) {
-        setPasskeys(prev => prev.map(p => 
-          p.id === passkeyId ? { ...p, name: newName } : p
-        ));
-        return true;
-      } else {
-        throw new Error('Failed to rename passkey');
+        if (response.ok) {
+          setPasskeys((prev) =>
+            prev.map((p) => (p.id === passkeyId ? { ...p, name: newName } : p)),
+          );
+          return true;
+        } else {
+          throw new Error('Failed to rename passkey');
+        }
+      } catch (error) {
+        setError('Failed to rename passkey');
+        console.error(error);
+        return false;
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      setError('Failed to rename passkey');
-      console.error(error);
-      return false;
-    } finally {
-      setLoading(false);
-    }
-  }, [user]);
+    },
+    [user],
+  );
 
   useEffect(() => {
     fetchPasskeys();
@@ -361,18 +371,20 @@ export function usePasskeys(user: AuthUser | null) {
 
 // Hook for OAuth provider status
 export function useOAuthProviders() {
-  const [providers, setProviders] = useState<{
-    provider: AuthProvider;
-    available: boolean;
-    connected: boolean;
-  }[]>([]);
+  const [providers, setProviders] = useState<
+    {
+      provider: AuthProvider;
+      available: boolean;
+      connected: boolean;
+    }[]
+  >([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const checkProviders = async () => {
       const providerList: AuthProvider[] = ['google', 'github', 'apple'];
       const results = await Promise.all(
-        providerList.map(async provider => {
+        providerList.map(async (provider) => {
           try {
             const response = await fetch(`/api/auth/oauth/${provider}/status`);
             const data = await response.json();
@@ -388,7 +400,7 @@ export function useOAuthProviders() {
               connected: false,
             };
           }
-        })
+        }),
       );
       setProviders(results);
       setLoading(false);
@@ -402,7 +414,7 @@ export function useOAuthProviders() {
       const response = await fetch(`/api/auth/oauth/${provider}/connect`, {
         method: 'POST',
       });
-      
+
       if (response.ok) {
         const data = await response.json();
         window.location.href = data.authUrl;
@@ -420,11 +432,11 @@ export function useOAuthProviders() {
       const response = await fetch(`/api/auth/oauth/${provider}/disconnect`, {
         method: 'POST',
       });
-      
+
       if (response.ok) {
-        setProviders(prev => prev.map(p => 
-          p.provider === provider ? { ...p, connected: false } : p
-        ));
+        setProviders((prev) =>
+          prev.map((p) => (p.provider === provider ? { ...p, connected: false } : p)),
+        );
         return true;
       }
       return false;
@@ -466,7 +478,7 @@ export function useSessionRefresh(session: AuthSession | null) {
           refreshToken: data.refreshToken,
           expiresAt: new Date(data.expiresAt),
         };
-        
+
         localStorage.setItem('auth_session', JSON.stringify(newSession));
         return newSession;
       }
@@ -486,7 +498,7 @@ export function useSessionRefresh(session: AuthSession | null) {
     const expiresAt = new Date(session.expiresAt);
     const now = new Date();
     const timeUntilExpiry = expiresAt.getTime() - now.getTime();
-    
+
     // Refresh 5 minutes before expiry
     const refreshTime = timeUntilExpiry - 5 * 60 * 1000;
 

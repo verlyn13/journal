@@ -29,11 +29,11 @@ export interface PasskeyCredential {
   createdAt: Date;
 }
 
-export type AuthMethod = 
-  | 'passkey' 
-  | 'oauth-apple' 
-  | 'oauth-google' 
-  | 'oauth-github' 
+export type AuthMethod =
+  | 'passkey'
+  | 'oauth-apple'
+  | 'oauth-google'
+  | 'oauth-github'
   | 'magic-link'
   | 'session';
 

@@ -1,12 +1,12 @@
 // Choreography Orchestrator - Central animation coordination
 
 import type {
-  ChoreographySequence,
-  ChoreographyStep,
-  ChoreographyState,
   ChoreographyController,
-  TimelineConfig,
+  ChoreographySequence,
+  ChoreographyState,
+  ChoreographyStep,
   StaggerConfig,
+  TimelineConfig,
 } from './types';
 
 export class ChoreographyOrchestrator {
@@ -18,7 +18,7 @@ export class ChoreographyOrchestrator {
   constructor() {
     if (typeof window !== 'undefined') {
       this.reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      
+
       // Listen for reduced motion changes
       window.matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change', (e) => {
         this.reducedMotion = e.matches;
@@ -55,18 +55,18 @@ export class ChoreographyOrchestrator {
     this.controllers.set(sequenceId, controller);
 
     // Start animations
-    animations.forEach(anim => anim.play());
+    animations.forEach((anim) => anim.play());
   }
 
   // Create animations from sequence
   private async createAnimations(sequence: ChoreographySequence): Promise<Animation[]> {
     const animations: Animation[] = [];
     const { steps, options } = sequence;
-    
+
     for (let i = 0; i < steps.length; i++) {
       const step = steps[i];
       const delay = this.calculateDelay(i, options?.stagger, step.delay);
-      
+
       const animation = await this.createAnimation(step, delay);
       if (animation) {
         animations.push(animation);
@@ -77,15 +77,12 @@ export class ChoreographyOrchestrator {
   }
 
   // Create single animation
-  private async createAnimation(
-    step: ChoreographyStep,
-    delay: number
-  ): Promise<Animation | null> {
+  private async createAnimation(step: ChoreographyStep, delay: number): Promise<Animation | null> {
     const element = this.getElement(step.target);
     if (!element) return null;
 
     const { animation, duration = 300, easing = 'ease' } = step;
-    
+
     // Use Web Animations API
     if (animation.keyframes) {
       return element.animate(animation.keyframes, {
@@ -114,12 +111,9 @@ export class ChoreographyOrchestrator {
     element: Element,
     from: Partial<CSSStyleDeclaration>,
     to: Partial<CSSStyleDeclaration>,
-    options: { duration: number; delay: number; easing: string }
+    options: { duration: number; delay: number; easing: string },
   ): Animation {
-    const keyframes = [
-      { ...from },
-      { ...to },
-    ];
+    const keyframes = [{ ...from }, { ...to }];
 
     return element.animate(keyframes, {
       duration: options.duration,
@@ -133,7 +127,7 @@ export class ChoreographyOrchestrator {
   private calculateDelay(
     index: number,
     stagger?: number | StaggerConfig,
-    baseDelay?: number
+    baseDelay?: number,
   ): number {
     let delay = baseDelay || 0;
 
@@ -149,9 +143,9 @@ export class ChoreographyOrchestrator {
   // Calculate complex stagger patterns
   private calculateComplexStagger(index: number, config: StaggerConfig): number {
     const { amount = 100, from = 'start', ease = 'linear' } = config;
-    
+
     let progress = index;
-    
+
     // Calculate progress based on 'from' direction
     if (from === 'center') {
       // Stagger from center outward
@@ -168,33 +162,30 @@ export class ChoreographyOrchestrator {
   }
 
   // Create controller for animations
-  private createController(
-    sequenceId: string,
-    animations: Animation[]
-  ): ChoreographyController {
+  private createController(sequenceId: string, animations: Animation[]): ChoreographyController {
     let state: ChoreographyState = 'playing';
-    
+
     return {
       play: () => {
-        animations.forEach(anim => anim.play());
+        animations.forEach((anim) => anim.play());
         state = 'playing';
       },
       pause: () => {
-        animations.forEach(anim => anim.pause());
+        animations.forEach((anim) => anim.pause());
         state = 'paused';
       },
       reverse: () => {
-        animations.forEach(anim => anim.reverse());
+        animations.forEach((anim) => anim.reverse());
       },
       restart: () => {
-        animations.forEach(anim => {
+        animations.forEach((anim) => {
           anim.currentTime = 0;
           anim.play();
         });
         state = 'playing';
       },
       seek: (time: number) => {
-        animations.forEach(anim => {
+        animations.forEach((anim) => {
           anim.currentTime = time;
         });
       },
@@ -221,7 +212,7 @@ export class ChoreographyOrchestrator {
 
   // Apply final states without animation
   private applyFinalStates(sequence: ChoreographySequence): void {
-    sequence.steps.forEach(step => {
+    sequence.steps.forEach((step) => {
       const element = this.getElement(step.target);
       if (element && element instanceof HTMLElement && step.animation.to) {
         Object.assign(element.style, step.animation.to);
@@ -233,7 +224,7 @@ export class ChoreographyOrchestrator {
   stop(sequenceId: string): void {
     const animations = this.activeAnimations.get(sequenceId);
     if (animations) {
-      animations.forEach(anim => anim.cancel());
+      animations.forEach((anim) => anim.cancel());
       this.activeAnimations.delete(sequenceId);
     }
     this.controllers.delete(sequenceId);
@@ -242,7 +233,7 @@ export class ChoreographyOrchestrator {
   // Stop all sequences
   stopAll(): void {
     this.activeAnimations.forEach((animations, id) => {
-      animations.forEach(anim => anim.cancel());
+      animations.forEach((anim) => anim.cancel());
     });
     this.activeAnimations.clear();
     this.controllers.clear();

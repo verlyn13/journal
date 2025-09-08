@@ -1,16 +1,16 @@
 // Authentication Orchestrator - Central authentication coordination
 
 import type {
-  AuthResult,
-  AuthMethod,
-  AuthProvider,
   AuthError,
   AuthErrorCode,
+  AuthMethod,
+  AuthProvider,
+  AuthResult,
+  AuthUser,
+  MagicLinkConfig,
+  OAuthConfig,
   PasskeyOptions,
   PasskeyRegistrationOptions,
-  OAuthConfig,
-  MagicLinkConfig,
-  AuthUser,
 } from './types';
 
 export class AuthenticationOrchestrator {
@@ -68,15 +68,15 @@ export class AuthenticationOrchestrator {
     try {
       // Get registration options from server
       const options = await this.getPasskeyRegistrationOptions(user);
-      
+
       // Create credential
-      const credential = await navigator.credentials.create({
+      const credential = (await navigator.credentials.create({
         publicKey: options,
-      }) as PublicKeyCredential;
+      })) as PublicKeyCredential;
 
       // Verify with server
       const result = await this.verifyPasskeyRegistration(credential, name);
-      
+
       return {
         success: true,
         user: result.user,
@@ -95,10 +95,10 @@ export class AuthenticationOrchestrator {
   private async passkeyAuth(): Promise<AuthResult> {
     try {
       const options = await this.getPasskeyOptions();
-      
-      const assertion = await navigator.credentials.get({
+
+      const assertion = (await navigator.credentials.get({
         publicKey: options,
-      }) as PublicKeyCredential;
+      })) as PublicKeyCredential;
 
       return this.verifyAssertion(assertion);
     } catch (error: any) {
@@ -114,16 +114,16 @@ export class AuthenticationOrchestrator {
     try {
       const config = await this.getOAuthConfig(provider);
       const authUrl = this.buildOAuthUrl(config);
-      
+
       // Open OAuth popup or redirect
       const authCode = await this.openOAuthWindow(authUrl);
-      
+
       // Exchange code for tokens
       const tokens = await this.exchangeOAuthCode(authCode, provider);
-      
+
       // Get user info
       const user = await this.fetchOAuthUser(tokens.accessToken, provider);
-      
+
       return {
         success: true,
         user,
@@ -157,13 +157,13 @@ export class AuthenticationOrchestrator {
 
       // Send magic link
       await this.sendMagicLink({ email });
-      
+
       // Wait for verification (polling or websocket)
       const verification = await this.waitForMagicLinkVerification(email);
-      
+
       // Exchange for session
       const result = await this.verifyMagicLink(verification);
-      
+
       return {
         ...result,
         method: 'magic-link',
@@ -253,7 +253,7 @@ export class AuthenticationOrchestrator {
   // Helper: Verify passkey registration
   private async verifyPasskeyRegistration(
     credential: PublicKeyCredential,
-    name: string
+    name: string,
   ): Promise<{ user: AuthUser }> {
     const response = await fetch(`${this.apiBaseUrl}/webauthn/register/verify`, {
       method: 'POST',
@@ -400,9 +400,10 @@ export class AuthenticationOrchestrator {
   }
 
   // Magic link helpers
-  private async promptForEmail(): Promise<string | null> {
+  private async promptForEmail(): Promise<string | undefined> {
     // This would be replaced with a proper UI component
-    return prompt('Enter your email for magic link:');
+    const email = prompt('Enter your email for magic link:');
+    return email ?? undefined;
   }
 
   private async sendMagicLink(config: MagicLinkConfig): Promise<void> {
@@ -426,7 +427,7 @@ export class AuthenticationOrchestrator {
         const data = await response.json();
         if (data.verified) return data.verification;
       }
-      await new Promise(resolve => setTimeout(resolve, pollInterval));
+      await new Promise((resolve) => setTimeout(resolve, pollInterval));
     }
     throw new Error('Magic link verification timeout');
   }

@@ -1,6 +1,7 @@
 // Authentication Button Component
 
-import React, { useState } from 'react';
+import type React from 'react';
+import { useState } from 'react';
 import { useAuth, usePasskeySupport } from '../hooks';
 import type { AuthProvider } from '../types';
 
@@ -111,10 +112,7 @@ export const AuthButton: React.FC<AuthButtonProps> = ({
             <p className="font-medium">{user.name || user.email}</p>
             <p className="text-sm text-gray-500">{user.email}</p>
           </div>
-          <button
-            onClick={logout}
-            className="w-full text-left px-3 py-2 hover:bg-gray-100 rounded"
-          >
+          <button onClick={logout} className="w-full text-left px-3 py-2 hover:bg-gray-100 rounded">
             Sign Out
           </button>
         </div>
@@ -141,9 +139,9 @@ export const AuthButton: React.FC<AuthButtonProps> = ({
               Sign in with Passkey
             </button>
           )}
-          
+
           <div className="my-2 border-t" />
-          
+
           <button
             onClick={() => setSelectedProvider('google')}
             className="w-full text-left px-3 py-2 hover:bg-gray-100 rounded flex items-center gap-2"
@@ -151,7 +149,7 @@ export const AuthButton: React.FC<AuthButtonProps> = ({
             <img src="/icons/google.svg" alt="Google" className="h-5 w-5" />
             Continue with Google
           </button>
-          
+
           <button
             onClick={() => setSelectedProvider('github')}
             className="w-full text-left px-3 py-2 hover:bg-gray-100 rounded flex items-center gap-2"
@@ -159,7 +157,7 @@ export const AuthButton: React.FC<AuthButtonProps> = ({
             <img src="/icons/github.svg" alt="GitHub" className="h-5 w-5" />
             Continue with GitHub
           </button>
-          
+
           <button
             onClick={() => setSelectedProvider('apple')}
             className="w-full text-left px-3 py-2 hover:bg-gray-100 rounded flex items-center gap-2"
@@ -167,9 +165,9 @@ export const AuthButton: React.FC<AuthButtonProps> = ({
             <img src="/icons/apple.svg" alt="Apple" className="h-5 w-5" />
             Continue with Apple
           </button>
-          
+
           <div className="my-2 border-t" />
-          
+
           <button
             onClick={() => {
               setShowOptions(false);

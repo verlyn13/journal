@@ -32,7 +32,7 @@ export class LayoutTransitionManager {
 
     const rect = element.getBoundingClientRect();
     const computedStyle = getComputedStyle(element);
-    
+
     this.snapshots.set(key, {
       element,
       rect,
@@ -53,16 +53,13 @@ export class LayoutTransitionManager {
   }
 
   // Perform layout transition
-  async transition(
-    key: string,
-    transition: LayoutTransition = { type: 'morph' }
-  ): Promise<void> {
+  async transition(key: string, transition: LayoutTransition = { type: 'morph' }): Promise<void> {
     const snapshot = this.snapshots.get(key);
     if (!snapshot) return;
 
     const { element } = snapshot;
     const currentRect = element.getBoundingClientRect();
-    
+
     // Skip if reduced motion
     if (this.reducedMotion) {
       this.snapshots.delete(key);
@@ -101,42 +98,39 @@ export class LayoutTransitionManager {
   private async morphTransition(
     element: Element,
     deltas: { deltaX: number; deltaY: number; deltaW: number; deltaH: number },
-    config: LayoutTransition
+    config: LayoutTransition,
   ): Promise<void> {
     const duration = config.duration || 300;
     const ease = config.ease || 'cubic-bezier(0.4, 0, 0.2, 1)';
 
-    const animation = element.animate([
-      {
-        transform: `
+    const animation = element.animate(
+      [
+        {
+          transform: `
           translate(${deltas.deltaX}px, ${deltas.deltaY}px)
           scale(${deltas.deltaW}, ${deltas.deltaH})
         `,
-      },
+        },
+        {
+          transform: 'none',
+        },
+      ],
       {
-        transform: 'none',
+        duration,
+        easing: ease,
+        fill: 'both',
       },
-    ], {
-      duration,
-      easing: ease,
-      fill: 'both',
-    });
+    );
 
     await animation.finished;
   }
 
   // Fade transition
-  private async fadeTransition(
-    element: Element,
-    config: LayoutTransition
-  ): Promise<void> {
+  private async fadeTransition(element: Element, config: LayoutTransition): Promise<void> {
     const duration = config.duration || 200;
     const ease = config.ease || 'ease-in-out';
 
-    const animation = element.animate([
-      { opacity: '0' },
-      { opacity: '1' },
-    ], {
+    const animation = element.animate([{ opacity: '0' }, { opacity: '1' }], {
       duration,
       easing: ease,
     });
@@ -148,18 +142,18 @@ export class LayoutTransitionManager {
   private async slideTransition(
     element: Element,
     deltas: { deltaX: number; deltaY: number },
-    config: LayoutTransition
+    config: LayoutTransition,
   ): Promise<void> {
     const duration = config.duration || 300;
     const ease = config.ease || 'cubic-bezier(0.4, 0, 0.2, 1)';
 
-    const animation = element.animate([
-      { transform: `translate(${deltas.deltaX}px, ${deltas.deltaY}px)` },
-      { transform: 'none' },
-    ], {
-      duration,
-      easing: ease,
-    });
+    const animation = element.animate(
+      [{ transform: `translate(${deltas.deltaX}px, ${deltas.deltaY}px)` }, { transform: 'none' }],
+      {
+        duration,
+        easing: ease,
+      },
+    );
 
     await animation.finished;
   }
@@ -168,18 +162,18 @@ export class LayoutTransitionManager {
   private async scaleTransition(
     element: Element,
     deltas: { deltaW: number; deltaH: number },
-    config: LayoutTransition
+    config: LayoutTransition,
   ): Promise<void> {
     const duration = config.duration || 300;
     const ease = config.ease || 'cubic-bezier(0.34, 1.56, 0.64, 1)';
 
-    const animation = element.animate([
-      { transform: `scale(${deltas.deltaW}, ${deltas.deltaH})` },
-      { transform: 'scale(1, 1)' },
-    ], {
-      duration,
-      easing: ease,
-    });
+    const animation = element.animate(
+      [{ transform: `scale(${deltas.deltaW}, ${deltas.deltaH})` }, { transform: 'scale(1, 1)' }],
+      {
+        duration,
+        easing: ease,
+      },
+    );
 
     await animation.finished;
   }
@@ -188,27 +182,30 @@ export class LayoutTransitionManager {
   private async flipTransition(
     element: Element,
     deltas: { deltaX: number; deltaY: number; deltaW: number; deltaH: number },
-    config: LayoutTransition
+    config: LayoutTransition,
   ): Promise<void> {
     const duration = config.duration || 400;
     const ease = config.ease || 'cubic-bezier(0.4, 0, 0.2, 1)';
 
     // Invert phase
-    const animation = element.animate([
-      {
-        transform: `
+    const animation = element.animate(
+      [
+        {
+          transform: `
           translate(${deltas.deltaX}px, ${deltas.deltaY}px)
           scale(${deltas.deltaW}, ${deltas.deltaH})
         `,
-      },
+        },
+        {
+          transform: 'none',
+        },
+      ],
       {
-        transform: 'none',
+        duration,
+        easing: ease,
+        fill: 'both',
       },
-    ], {
-      duration,
-      easing: ease,
-      fill: 'both',
-    });
+    );
 
     // Play phase
     await animation.finished;
@@ -217,7 +214,7 @@ export class LayoutTransitionManager {
   // Batch layout transitions
   async transitionGroup(
     groupKey: string,
-    transition: LayoutTransition = { type: 'morph' }
+    transition: LayoutTransition = { type: 'morph' },
   ): Promise<void> {
     const promises: Promise<void>[] = [];
     const stagger = transition.stagger || 0;
@@ -226,14 +223,14 @@ export class LayoutTransitionManager {
       if (key.startsWith(groupKey)) {
         const index = parseInt(key.split('-').pop() || '0', 10);
         const delay = index * stagger;
-        
+
         promises.push(
-          new Promise(resolve => {
+          new Promise((resolve) => {
             setTimeout(async () => {
               await this.transition(key, transition);
               resolve();
             }, delay);
-          })
+          }),
         );
       }
     });
@@ -284,7 +281,7 @@ export const layoutPresets = {
   modalAppear: (manager: LayoutTransitionManager) => {
     manager.capture('modal-backdrop', '.modal-backdrop');
     manager.capture('modal-content', '.modal-content');
-    
+
     setTimeout(() => {
       manager.transition('modal-backdrop', {
         type: 'fade',
@@ -301,7 +298,7 @@ export const layoutPresets = {
   // Navigation transition
   navigationSlide: (manager: LayoutTransitionManager) => {
     manager.captureGroup('nav-items', '.nav-item');
-    
+
     setTimeout(() => {
       manager.transitionGroup('nav-items', {
         type: 'slide',
