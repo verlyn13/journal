@@ -10,7 +10,7 @@ export default defineConfig({
   plugins: [react()],
   test: {
     globals: true,
-    environment: process.env.CI ? 'jsdom' : 'happy-dom',
+    environment: 'jsdom', // Force single environment for consistency
     setupFiles: ['./src/test-setup.ts'],
     include: ['src/**/*.{test,spec}.{ts,tsx}'],
     coverage: {

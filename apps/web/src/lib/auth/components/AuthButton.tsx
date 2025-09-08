@@ -21,7 +21,7 @@ export const AuthButton: React.FC<AuthButtonProps> = ({
   const { isAuthenticated, isLoading, user, login, logout } = useAuth();
   const { supported: passkeysSupported } = usePasskeySupport();
   const [showOptions, setShowOptions] = useState(false);
-  const [selectedProvider, setSelectedProvider] = useState<AuthProvider | null>(null);
+  // const [selectedProvider, setSelectedProvider] = useState<AuthProvider | null>(null);
 
   const handleAuth = async () => {
     if (isAuthenticated) {
@@ -43,7 +43,7 @@ export const AuthButton: React.FC<AuthButtonProps> = ({
   const getButtonIcon = () => {
     if (isLoading) {
       return (
-        <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+        <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24" aria-label="Loading">
           <circle
             className="opacity-25"
             cx="12"
@@ -89,7 +89,7 @@ export const AuthButton: React.FC<AuthButtonProps> = ({
 
   return (
     <div className="relative">
-      <button
+      <button type="button"
         onClick={handleAuth}
         disabled={isLoading}
         className={`
@@ -121,7 +121,7 @@ export const AuthButton: React.FC<AuthButtonProps> = ({
       {!isAuthenticated && showOptions && (
         <div className="absolute top-full mt-2 right-0 bg-white rounded-lg shadow-lg p-2 min-w-[250px]">
           {passkeysSupported && (
-            <button
+            <button type="button"
               onClick={() => {
                 setShowOptions(false);
                 handleAuth();
@@ -142,24 +142,24 @@ export const AuthButton: React.FC<AuthButtonProps> = ({
 
           <div className="my-2 border-t" />
 
-          <button
-            onClick={() => setSelectedProvider('google')}
+          <button type="button"
+            onClick={() => handleAuth()}
             className="w-full text-left px-3 py-2 hover:bg-gray-100 rounded flex items-center gap-2"
           >
             <img src="/icons/google.svg" alt="Google" className="h-5 w-5" />
             Continue with Google
           </button>
 
-          <button
-            onClick={() => setSelectedProvider('github')}
+          <button type="button"
+            onClick={() => handleAuth()}
             className="w-full text-left px-3 py-2 hover:bg-gray-100 rounded flex items-center gap-2"
           >
             <img src="/icons/github.svg" alt="GitHub" className="h-5 w-5" />
             Continue with GitHub
           </button>
 
-          <button
-            onClick={() => setSelectedProvider('apple')}
+          <button type="button"
+            onClick={() => handleAuth()}
             className="w-full text-left px-3 py-2 hover:bg-gray-100 rounded flex items-center gap-2"
           >
             <img src="/icons/apple.svg" alt="Apple" className="h-5 w-5" />
@@ -168,14 +168,14 @@ export const AuthButton: React.FC<AuthButtonProps> = ({
 
           <div className="my-2 border-t" />
 
-          <button
+          <button type="button"
             onClick={() => {
               setShowOptions(false);
               handleAuth();
             }}
             className="w-full text-left px-3 py-2 hover:bg-gray-100 rounded flex items-center gap-2"
           >
-            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-label="Mail">
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"

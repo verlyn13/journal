@@ -7,34 +7,54 @@ afterEach(() => {
   cleanup();
 });
 
-// Mock window.matchMedia
-Object.defineProperty(window, 'matchMedia', {
-  writable: true,
-  value: vi.fn().mockImplementation((query) => ({
-    matches: false,
-    media: query,
-    onchange: null,
-    addListener: vi.fn(),
-    removeListener: vi.fn(),
-    addEventListener: vi.fn(),
-    removeEventListener: vi.fn(),
-    dispatchEvent: vi.fn(),
-  })),
-});
+// Mock window.matchMedia defensively
+if (typeof window.matchMedia !== 'function') {
+  Object.defineProperty(window, 'matchMedia', {
+    configurable: true,
+    writable: true,
+    value: vi.fn().mockImplementation((query: string) => ({
+      matches: false,
+      media: query,
+      onchange: null,
+      addListener: vi.fn(),       // deprecated
+      removeListener: vi.fn(),    // deprecated
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+    }))
+  });
+}
 
-// Mock IntersectionObserver
-global.IntersectionObserver = vi.fn().mockImplementation(() => ({
-  observe: vi.fn(),
-  unobserve: vi.fn(),
-  disconnect: vi.fn(),
-}));
+// Mock IntersectionObserver defensively
+if (typeof (window as any).IntersectionObserver !== 'function') {
+  (window as any).IntersectionObserver = class {
+    constructor(_cb: Function) {}
+    observe = vi.fn();
+    unobserve = vi.fn();
+    disconnect = vi.fn();
+    takeRecords = vi.fn(() => []);
+    root = null;
+    rootMargin = '';
+    thresholds = [];
+  };
+}
 
-// Mock ResizeObserver
-global.ResizeObserver = vi.fn().mockImplementation(() => ({
-  observe: vi.fn(),
-  unobserve: vi.fn(),
-  disconnect: vi.fn(),
-}));
+// Mock ResizeObserver defensively
+if (typeof (window as any).ResizeObserver !== 'function') {
+  (window as any).ResizeObserver = class {
+    observe = vi.fn();
+    unobserve = vi.fn();
+    disconnect = vi.fn();
+  };
+}
+
+// Mock DOMRect if missing
+if (typeof (window as any).DOMRect !== 'function') {
+  (window as any).DOMRect = class {
+    static fromRect(_rect?: Partial<DOMRect>) { return new (window as any).DOMRect(); }
+    x=0; y=0; width=0; height=0; top=0; right=0; bottom=0; left=0;
+  };
+}
 
 // Mock Element.animate for Web Animations API
 if (typeof Element !== 'undefined' && !Element.prototype.animate) {
@@ -88,14 +108,27 @@ if (typeof Element !== 'undefined' && !Element.prototype.animate) {
 (window as unknown as { __BACKDROP_SUPPORT_OVERRIDE__?: boolean }).__BACKDROP_SUPPORT_OVERRIDE__ =
   false;
 
-// Also mock CSS.supports for consistency
-Object.defineProperty(window.CSS, 'supports', {
-  writable: true,
-  value: vi.fn().mockImplementation((property: string, _value?: string) => {
-    // Always return false for backdrop-filter in test environment
-    if (property === 'backdrop-filter' || property === '-webkit-backdrop-filter') {
+// Ensure window.CSS exists before defining supports
+if (!('CSS' in window) || typeof (window as any).CSS !== 'object' || (window as any).CSS === null) {
+  // Define a minimal CSS object
+  Object.defineProperty(window, 'CSS', {
+    configurable: true,
+    writable: true,
+    value: {}
+  });
+}
+
+// Provide CSS.supports if not available
+if (typeof (window as any).CSS.supports !== 'function') {
+  Object.defineProperty((window as any).CSS, 'supports', {
+    configurable: true,
+    writable: true,
+    value: vi.fn().mockImplementation((property: string, _value?: string) => {
+      // Always return false for backdrop-filter in test environment
+      if (property === 'backdrop-filter' || property === '-webkit-backdrop-filter') {
+        return false;
+      }
       return false;
-    }
-    return false;
-  }),
-});
+    }),
+  });
+}
