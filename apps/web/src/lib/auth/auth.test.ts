@@ -10,13 +10,13 @@ import type { AuthSession, AuthUser, PasskeyCredential } from './types';
 beforeAll(() => {
   // Ensure window exists for tests
   if (typeof window === 'undefined') {
-    (global as any).window = global;
+    (globalThis as any).window = global;
   }
 
   // Mock WebAuthn API
-  (global as any).PublicKeyCredential = vi.fn();
-  (global as any).AuthenticatorAssertionResponse = vi.fn();
-  (global as any).AuthenticatorAttestationResponse = vi.fn();
+  (globalThis as any).PublicKeyCredential = vi.fn();
+  (globalThis as any).AuthenticatorAssertionResponse = vi.fn();
+  (globalThis as any).AuthenticatorAttestationResponse = vi.fn();
 });
 
 // Mock navigator.credentials
@@ -33,7 +33,7 @@ const mockPublicKeyCredential = {
 };
 
 // Mock fetch
-global.fetch = vi.fn();
+globalThis.fetch = vi.fn();
 
 // Mock localStorage
 const localStorageMock = (() => {
@@ -59,7 +59,7 @@ if (typeof window !== 'undefined') {
     writable: true,
   });
 } else {
-  (global as any).localStorage = localStorageMock;
+  (globalThis as any).localStorage = localStorageMock;
 }
 
 describe('AuthenticationOrchestrator', () => {
@@ -104,7 +104,7 @@ describe('AuthenticationOrchestrator', () => {
     });
 
     it('should handle missing passkey support', () => {
-      delete (global as any).navigator.credentials;
+      delete (globalThis as any).navigator.credentials;
 
       const newOrchestrator = new AuthenticationOrchestrator();
       expect(newOrchestrator).toBeDefined();
@@ -166,7 +166,7 @@ describe('AuthenticationOrchestrator', () => {
         location: { href: 'http://localhost?code=auth-code' },
         close: vi.fn(),
       }));
-      (global as any).window = { open: mockOpen };
+      (globalThis as any).window = { open: mockOpen };
 
       // Continue with OAuth mocks...
     });
@@ -189,7 +189,7 @@ describe('AuthenticationOrchestrator', () => {
         });
 
       // Mock prompt for email
-      (global as any).prompt = vi.fn(() => 'test@example.com');
+      (globalThis as any).prompt = vi.fn(() => 'test@example.com');
 
       // Continue with magic link mocks...
     });
@@ -312,8 +312,8 @@ describe('Authentication Hooks', () => {
     });
 
     it.skip('should handle login', async () => {
-      (global as any).navigator = { credentials: mockCredentials };
-      (global as any).PublicKeyCredential = mockPublicKeyCredential;
+      (globalThis as any).navigator = { credentials: mockCredentials };
+      (globalThis as any).PublicKeyCredential = mockPublicKeyCredential;
 
       mockCredentials.get.mockResolvedValue({
         id: 'credential-id',
@@ -399,7 +399,7 @@ describe('Authentication Hooks', () => {
     });
 
     it.skip('should handle no passkey support', async () => {
-      delete (global as any).PublicKeyCredential;
+      delete (globalThis as any).PublicKeyCredential;
 
       const { result } = renderHook(() => usePasskeySupport());
 

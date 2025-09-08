@@ -32,7 +32,7 @@ export const AuthButton: React.FC<AuthButtonProps> = ({
         if (result.success) {
           onSuccess?.();
         } else {
-          onError?.(result.error);
+          onError?.(result.error || new Error('Authentication failed'));
         }
       } catch (error) {
         onError?.(error instanceof Error ? error : new Error(String(error)));

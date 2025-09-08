@@ -457,7 +457,7 @@ export function useOAuthProviders() {
 // Session refresh hook
 export function useSessionRefresh(session: AuthSession | null) {
   const [refreshing, setRefreshing] = useState(false);
-  const timeoutRef = useRef<NodeJS.Timeout>();
+  const timeoutRef = useRef<ReturnType<typeof setTimeout>>();
 
   const refreshSession = useCallback(async (): Promise<AuthSession | null> => {
     if (!session?.refreshToken) return null;

@@ -143,7 +143,7 @@ if (typeof (window as any).CSS.supports !== 'function') {
 
 // Mock HTMLElement constructor for instanceof checks
 if (typeof window !== 'undefined' && typeof HTMLElement === 'undefined') {
-  (global as any).HTMLElement = class HTMLElement {
+  (globalThis as any).HTMLElement = class HTMLElement {
     static [Symbol.hasInstance](obj: any) {
       return obj && typeof obj === 'object' && obj.nodeType === 1;
     }
@@ -152,7 +152,7 @@ if (typeof window !== 'undefined' && typeof HTMLElement === 'undefined') {
 
 // Ensure Element constructor exists for instanceof checks
 if (typeof window !== 'undefined' && typeof Element === 'undefined') {
-  (global as any).Element = class Element {
+  (globalThis as any).Element = class Element {
     static [Symbol.hasInstance](obj: any) {
       return obj && typeof obj === 'object' && obj.nodeType === 1;
     }
@@ -161,7 +161,7 @@ if (typeof window !== 'undefined' && typeof Element === 'undefined') {
 
 // Mock DocumentType for instanceof checks
 if (typeof window !== 'undefined' && typeof DocumentType === 'undefined') {
-  (global as any).DocumentType = class DocumentType {
+  (globalThis as any).DocumentType = class DocumentType {
     static [Symbol.hasInstance](obj: any) {
       return obj && typeof obj === 'object' && obj.nodeType === 10;
     }
