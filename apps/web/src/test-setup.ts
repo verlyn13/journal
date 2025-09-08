@@ -2,9 +2,17 @@ import '@testing-library/jest-dom/vitest';
 import { cleanup } from '@testing-library/react';
 import { afterEach, vi } from 'vitest';
 
-// Cleanup after each test
+// Ensure strong test isolation between files and tests
 afterEach(() => {
   cleanup();
+  vi.clearAllMocks();
+  vi.resetModules();
+  // Reset DOM and storage to avoid cross-test leakage
+  if (typeof document !== 'undefined') {
+    document.body.innerHTML = '';
+  }
+  try { localStorage?.clear?.(); } catch {}
+  try { sessionStorage?.clear?.(); } catch {}
 });
 
 // Mock window.matchMedia defensively
@@ -66,48 +74,59 @@ if (typeof (window as any).DOMRect !== 'function') {
 
 // Mock Element.animate for Web Animations API
 if (typeof Element !== 'undefined' && !Element.prototype.animate) {
-  Element.prototype.animate = vi.fn().mockImplementation((keyframes, options) => ({
-    play: vi.fn(),
-    pause: vi.fn(),
-    cancel: vi.fn(),
-    finish: vi.fn(),
-    reverse: vi.fn(),
-    currentTime: 0,
-    effect: {
-      getComputedTiming: vi.fn().mockReturnValue({
-        duration: options?.duration || 0,
-        delay: options?.delay || 0,
-        endDelay: 0,
-        fill: options?.fill || 'auto',
-        iterationStart: 0,
-        iterations: 1,
-        easing: options?.easing || 'linear',
-        direction: 'normal',
-        progress: 0,
-        currentIteration: 0,
-        localTime: 0,
-        activeDuration: options?.duration || 0,
-        endTime: options?.duration || 0,
-      }),
-    },
-    finished: Promise.resolve(),
-    ready: Promise.resolve(),
-    startTime: null,
-    playState: 'idle',
-    playbackRate: 1,
-    timeline: null,
-    id: '',
-    pending: false,
-    onfinish: null,
-    oncancel: null,
-    onremove: null,
-    addEventListener: vi.fn(),
-    removeEventListener: vi.fn(),
-    dispatchEvent: vi.fn(),
-    commitStyles: vi.fn(),
-    persist: vi.fn(),
-    updatePlaybackRate: vi.fn(),
-  }));
+  const animateImpl = function (this: Element, keyframes?: Keyframe[] | PropertyIndexedKeyframes, options?: number | KeyframeAnimationOptions): Animation {
+    const opts = (typeof options === 'number' ? { duration: options } : options) || {};
+    const effectTiming = {
+      duration: (opts as KeyframeAnimationOptions).duration || 0,
+      delay: (opts as KeyframeAnimationOptions).delay || 0,
+      endDelay: 0,
+      fill: (opts as KeyframeAnimationOptions).fill || 'auto',
+      iterationStart: 0,
+      iterations: 1,
+      easing: (opts as KeyframeAnimationOptions).easing || 'linear',
+      direction: 'normal',
+      progress: 0,
+      currentIteration: 0,
+      localTime: 0,
+      activeDuration: (opts as KeyframeAnimationOptions).duration || 0,
+      endTime: (opts as KeyframeAnimationOptions).duration || 0,
+    } as unknown as ComputedEffectTiming;
+
+    const anim: Partial<Animation> = {
+      play: () => {},
+      pause: () => {},
+      cancel: () => {},
+      finish: () => {},
+      reverse: () => {},
+      currentTime: 0,
+      effect: { getComputedTiming: () => effectTiming } as unknown as AnimationEffect,
+      finished: Promise.resolve() as unknown as Promise<Animation>,
+      ready: Promise.resolve() as unknown as Promise<Animation>,
+      startTime: null,
+      playState: 'idle' as AnimationPlayState,
+      playbackRate: 1,
+      timeline: null,
+      id: '',
+      pending: false,
+      onfinish: null,
+      oncancel: null,
+      onremove: null,
+      addEventListener: () => {},
+      removeEventListener: () => {},
+      dispatchEvent: () => false,
+      commitStyles: () => {},
+      persist: () => {},
+      updatePlaybackRate: () => {},
+    };
+
+    return anim as Animation;
+  };
+
+  Object.defineProperty(Element.prototype, 'animate', {
+    configurable: true,
+    writable: true,
+    value: animateImpl,
+  });
 }
 
 // Mock backdrop-filter support for glass morphism tests

@@ -28,13 +28,14 @@ export default defineConfig({
       ]
     },
     css: true,
-    threads: process.env.CI ? false : undefined,
-    isolate: true,
-    pool: 'forks',
+    // Strengthen isolation and leak detection
     restoreMocks: true,
     clearMocks: true,
     unstubGlobals: true,
     unstubEnvs: true,
+    isolate: true,
+    pool: 'forks',
+    maxConcurrency: 4,
     sequence: {
       shuffle: true,
       seed: Date.now()

@@ -18,7 +18,9 @@ export class LayoutTransitionManager {
 
   constructor() {
     if (typeof window !== 'undefined') {
-      this.reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      this.reducedMotion =
+        typeof window.matchMedia === 'function' &&
+        !!window.matchMedia('(prefers-reduced-motion: reduce)')?.matches;
     } else {
       this.reducedMotion = false;
     }
