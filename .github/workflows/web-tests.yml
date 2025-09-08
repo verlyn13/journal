@@ -53,7 +53,8 @@ jobs:
           bun x vitest run \
             --environment=jsdom \
             --coverage.enabled \
-            --reporter=default,junit \
+            --reporter=default \
+            --reporter=junit \
             --outputFile.junit=./reports/junit.xml \
             --bail 1
 
