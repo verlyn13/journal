@@ -89,10 +89,20 @@ export function useGlassSupport(): {
   supported: boolean;
   fallbackStyles: React.CSSProperties;
 } {
-  const [supported, setSupported] = useState(() => supportsBackdropFilter());
+  const [supported, setSupported] = useState(() => {
+    try {
+      return supportsBackdropFilter();
+    } catch (e) {
+      return false;
+    }
+  });
 
   useEffect(() => {
-    setSupported(supportsBackdropFilter());
+    try {
+      setSupported(supportsBackdropFilter());
+    } catch (e) {
+      setSupported(false);
+    }
   }, []);
 
   const fallbackStyles: React.CSSProperties = supported
