@@ -16,13 +16,16 @@ export class ChoreographyOrchestrator {
   private reducedMotion: boolean;
 
   constructor() {
-    if (typeof window !== 'undefined') {
-      this.reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (typeof window !== 'undefined' && typeof window.matchMedia === 'function') {
+      const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+      this.reducedMotion = mediaQuery ? mediaQuery.matches : false;
 
       // Listen for reduced motion changes
-      window.matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change', (e) => {
-        this.reducedMotion = e.matches;
-      });
+      if (mediaQuery && typeof mediaQuery.addEventListener === 'function') {
+        mediaQuery.addEventListener('change', (e) => {
+          this.reducedMotion = e.matches;
+        });
+      }
     } else {
       this.reducedMotion = false;
     }

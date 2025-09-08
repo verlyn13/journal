@@ -1,17 +1,315 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuites name="vitest tests" tests="6" failures="0" errors="0" time="0.019104193">
-    <testsuite name="src/lib/design-tokens/tokens.test.ts" timestamp="2025-09-08T16:21:35.670Z" hostname="fedora-top" tests="6" failures="0" errors="0" skipped="0" time="0.019104193">
-        <testcase classname="src/lib/design-tokens/tokens.test.ts" name="Design Tokens &gt; should have consistent color structure for both themes" time="0.002851676">
+<testsuites name="vitest tests" tests="134" failures="1" errors="0" time="3.579477506">
+    <testsuite name="src/__tests__/integration/dual-write.test.tsx" timestamp="2025-09-08T19:19:19.106Z" hostname="fedora-top" tests="3" failures="0" errors="0" skipped="0" time="0.3395628">
+        <testcase classname="src/__tests__/integration/dual-write.test.tsx" name="Dual-Write Integration &gt; saves both formats when in markdown mode" time="0.286015975">
         </testcase>
-        <testcase classname="src/lib/design-tokens/tokens.test.ts" name="Design Tokens &gt; should generate CSS variables for dawn theme" time="0.002489807">
+        <testcase classname="src/__tests__/integration/dual-write.test.tsx" name="Dual-Write Integration &gt; sends correct header in markdown mode" time="0.032097699">
         </testcase>
-        <testcase classname="src/lib/design-tokens/tokens.test.ts" name="Design Tokens &gt; should generate CSS variables for dusk theme" time="0.001044262">
+        <testcase classname="src/__tests__/integration/dual-write.test.tsx" name="Dual-Write Integration &gt; preserves backward compatibility in HTML mode" time="0.006269352">
         </testcase>
-        <testcase classname="src/lib/design-tokens/tokens.test.ts" name="Design Tokens &gt; should have spacing scale that follows 8px base unit" time="0.005467599">
+    </testsuite>
+    <testsuite name="src/lib/auth/auth.test.ts" timestamp="2025-09-08T19:19:19.109Z" hostname="fedora-top" tests="16" failures="0" errors="0" skipped="9" time="0.072056799">
+        <testcase classname="src/lib/auth/auth.test.ts" name="AuthenticationOrchestrator &gt; Passkey Support Detection &gt; should detect passkey support when available" time="0.003621341">
         </testcase>
-        <testcase classname="src/lib/design-tokens/tokens.test.ts" name="Design Tokens &gt; should have typography tokens with proper font stacks" time="0.000437612">
+        <testcase classname="src/lib/auth/auth.test.ts" name="AuthenticationOrchestrator &gt; Passkey Support Detection &gt; should handle missing passkey support" time="0.003984893">
         </testcase>
-        <testcase classname="src/lib/design-tokens/tokens.test.ts" name="Design Tokens &gt; should have motion tokens with cubic-bezier values" time="0.000875927">
+        <testcase classname="src/lib/auth/auth.test.ts" name="AuthenticationOrchestrator &gt; Authentication Flow &gt; should attempt passkey authentication first" time="0.011480793">
+        </testcase>
+        <testcase classname="src/lib/auth/auth.test.ts" name="AuthenticationOrchestrator &gt; Authentication Flow &gt; should fall back to OAuth when passkey fails" time="0.026754987">
+        </testcase>
+        <testcase classname="src/lib/auth/auth.test.ts" name="AuthenticationOrchestrator &gt; Authentication Flow &gt; should fall back to magic link as last resort" time="0.004384009">
+        </testcase>
+        <testcase classname="src/lib/auth/auth.test.ts" name="AuthenticationOrchestrator &gt; Passkey Registration &gt; should register a new passkey" time="0">
+            <skipped/>
+        </testcase>
+        <testcase classname="src/lib/auth/auth.test.ts" name="AuthenticationOrchestrator &gt; Passkey Registration &gt; should handle registration errors" time="0.006314068">
+        </testcase>
+        <testcase classname="src/lib/auth/auth.test.ts" name="Authentication Hooks &gt; useAuth &gt; should be importable and callable" time="0.00429109">
+        </testcase>
+        <testcase classname="src/lib/auth/auth.test.ts" name="Authentication Hooks &gt; useAuth &gt; should restore session from localStorage" time="0">
+            <skipped/>
+        </testcase>
+        <testcase classname="src/lib/auth/auth.test.ts" name="Authentication Hooks &gt; useAuth &gt; should handle login" time="0">
+            <skipped/>
+        </testcase>
+        <testcase classname="src/lib/auth/auth.test.ts" name="Authentication Hooks &gt; useAuth &gt; should handle logout" time="0">
+            <skipped/>
+        </testcase>
+        <testcase classname="src/lib/auth/auth.test.ts" name="Authentication Hooks &gt; usePasskeySupport &gt; should detect passkey support" time="0">
+            <skipped/>
+        </testcase>
+        <testcase classname="src/lib/auth/auth.test.ts" name="Authentication Hooks &gt; usePasskeySupport &gt; should handle no passkey support" time="0">
+            <skipped/>
+        </testcase>
+        <testcase classname="src/lib/auth/auth.test.ts" name="Authentication Hooks &gt; usePasskeys &gt; should fetch user passkeys" time="0">
+            <skipped/>
+        </testcase>
+        <testcase classname="src/lib/auth/auth.test.ts" name="Authentication Hooks &gt; usePasskeys &gt; should delete a passkey" time="0">
+            <skipped/>
+        </testcase>
+        <testcase classname="src/lib/auth/auth.test.ts" name="Authentication Hooks &gt; useOAuthProviders &gt; should fetch provider status" time="0">
+            <skipped/>
+        </testcase>
+    </testsuite>
+    <testsuite name="src/lib/choreography/choreography.test.ts" timestamp="2025-09-08T19:19:19.115Z" hostname="fedora-top" tests="18" failures="1" errors="0" skipped="0" time="0.592631627">
+        <testcase classname="src/lib/choreography/choreography.test.ts" name="Choreography System &gt; ChoreographyOrchestrator &gt; should register and play sequences" time="0.021219182">
+        </testcase>
+        <testcase classname="src/lib/choreography/choreography.test.ts" name="Choreography System &gt; ChoreographyOrchestrator &gt; should respect reduced motion preference" time="0.015810478">
+        </testcase>
+        <testcase classname="src/lib/choreography/choreography.test.ts" name="Choreography System &gt; ChoreographyOrchestrator &gt; should handle stagger delays" time="0.003626895">
+        </testcase>
+        <testcase classname="src/lib/choreography/choreography.test.ts" name="Choreography System &gt; ChoreographyOrchestrator &gt; should stop sequences" time="0.049618486">
+        </testcase>
+        <testcase classname="src/lib/choreography/choreography.test.ts" name="Choreography System &gt; Timeline &gt; should add animations to timeline" time="0.002530141">
+        </testcase>
+        <testcase classname="src/lib/choreography/choreography.test.ts" name="Choreography System &gt; Timeline &gt; should support position strings" time="0.00296378">
+        </testcase>
+        <testcase classname="src/lib/choreography/choreography.test.ts" name="Choreography System &gt; Timeline &gt; should handle play/pause/restart" time="0.038016743">
+            <failure message="expected 0.000005965999999716587 to be close to +0, received difference is 0.000005965999999716587, but expected 0.0000049999999999999996" type="AssertionError">
+AssertionError: expected 0.000005965999999716587 to be close to +0, received difference is 0.000005965999999716587, but expected 0.0000049999999999999996
+ ❯ src/lib/choreography/choreography.test.ts:205:33
+            </failure>
+        </testcase>
+        <testcase classname="src/lib/choreography/choreography.test.ts" name="Choreography System &gt; Timeline &gt; should seek to specific time" time="0.005942102">
+        </testcase>
+        <testcase classname="src/lib/choreography/choreography.test.ts" name="Choreography System &gt; GestureCoordinator &gt; should attach and detach from elements" time="0.008239898">
+        </testcase>
+        <testcase classname="src/lib/choreography/choreography.test.ts" name="Choreography System &gt; GestureCoordinator &gt; should handle gesture subscriptions" time="0.007787306">
+        </testcase>
+        <testcase classname="src/lib/choreography/choreography.test.ts" name="Choreography System &gt; GestureCoordinator &gt; should respect disabled state" time="0.00405725">
+        </testcase>
+        <testcase classname="src/lib/choreography/choreography.test.ts" name="Choreography System &gt; LayoutTransitionManager &gt; should capture layout snapshots" time="0.012816315">
+        </testcase>
+        <testcase classname="src/lib/choreography/choreography.test.ts" name="Choreography System &gt; LayoutTransitionManager &gt; should perform morph transitions" time="0.019821876">
+        </testcase>
+        <testcase classname="src/lib/choreography/choreography.test.ts" name="Choreography System &gt; LayoutTransitionManager &gt; should handle group transitions" time="0.119937785">
+        </testcase>
+        <testcase classname="src/lib/choreography/choreography.test.ts" name="Choreography System &gt; LayoutTransitionManager &gt; should respect reduced motion" time="0.23250433">
+        </testcase>
+        <testcase classname="src/lib/choreography/choreography.test.ts" name="Choreography System &gt; Preset Animations &gt; should have entry morph preset" time="0.009709804">
+        </testcase>
+        <testcase classname="src/lib/choreography/choreography.test.ts" name="Choreography System &gt; Preset Animations &gt; should have sidebar collapse preset" time="0.017103868">
+        </testcase>
+        <testcase classname="src/lib/choreography/choreography.test.ts" name="Choreography System &gt; Preset Animations &gt; should have focus mode preset" time="0.01016094">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/lib/design-tokens/contrast.test.ts" timestamp="2025-09-08T19:19:19.124Z" hostname="fedora-top" tests="11" failures="0" errors="0" skipped="0" time="0.040086836">
+        <testcase classname="src/lib/design-tokens/contrast.test.ts" name="Color Contrast Verification &gt; Dawn Theme (Light) &gt; should meet WCAG AA for primary text on background" time="0.001908659">
+        </testcase>
+        <testcase classname="src/lib/design-tokens/contrast.test.ts" name="Color Contrast Verification &gt; Dawn Theme (Light) &gt; should meet WCAG AA for secondary text on background" time="0.002671485">
+        </testcase>
+        <testcase classname="src/lib/design-tokens/contrast.test.ts" name="Color Contrast Verification &gt; Dawn Theme (Light) &gt; should meet WCAG AA for accent on background" time="0.001969364">
+        </testcase>
+        <testcase classname="src/lib/design-tokens/contrast.test.ts" name="Color Contrast Verification &gt; Dawn Theme (Light) &gt; should have visible contrast for borders" time="0.001859457">
+        </testcase>
+        <testcase classname="src/lib/design-tokens/contrast.test.ts" name="Color Contrast Verification &gt; Dawn Theme (Light) &gt; should meet WCAG AAA for primary text (enhanced accessibility)" time="0.002261275">
+        </testcase>
+        <testcase classname="src/lib/design-tokens/contrast.test.ts" name="Color Contrast Verification &gt; Dusk Theme (Dark) &gt; should meet WCAG AA for primary text on background" time="0.003170532">
+        </testcase>
+        <testcase classname="src/lib/design-tokens/contrast.test.ts" name="Color Contrast Verification &gt; Dusk Theme (Dark) &gt; should meet WCAG AA for secondary text on background" time="0.002478424">
+        </testcase>
+        <testcase classname="src/lib/design-tokens/contrast.test.ts" name="Color Contrast Verification &gt; Dusk Theme (Dark) &gt; should meet WCAG AA for accent on background" time="0.002514657">
+        </testcase>
+        <testcase classname="src/lib/design-tokens/contrast.test.ts" name="Color Contrast Verification &gt; Dusk Theme (Dark) &gt; should have visible contrast for borders" time="0.002285774">
+        </testcase>
+        <testcase classname="src/lib/design-tokens/contrast.test.ts" name="Color Contrast Verification &gt; Dusk Theme (Dark) &gt; should meet WCAG AAA for primary text (enhanced accessibility)" time="0.010920871">
+        </testcase>
+        <testcase classname="src/lib/design-tokens/contrast.test.ts" name="Color Contrast Verification &gt; Cross-theme Consistency &gt; should have similar contrast ratios across themes" time="0.001790343">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/lib/design-tokens/tokens.test.ts" timestamp="2025-09-08T19:19:19.127Z" hostname="fedora-top" tests="6" failures="0" errors="0" skipped="0" time="0.029153585">
+        <testcase classname="src/lib/design-tokens/tokens.test.ts" name="Design Tokens &gt; should have consistent color structure for both themes" time="0.00416146">
+        </testcase>
+        <testcase classname="src/lib/design-tokens/tokens.test.ts" name="Design Tokens &gt; should generate CSS variables for dawn theme" time="0.002342128">
+        </testcase>
+        <testcase classname="src/lib/design-tokens/tokens.test.ts" name="Design Tokens &gt; should generate CSS variables for dusk theme" time="0.004665017">
+        </testcase>
+        <testcase classname="src/lib/design-tokens/tokens.test.ts" name="Design Tokens &gt; should have spacing scale that follows 8px base unit" time="0.002111166">
+        </testcase>
+        <testcase classname="src/lib/design-tokens/tokens.test.ts" name="Design Tokens &gt; should have typography tokens with proper font stacks" time="0.002160329">
+        </testcase>
+        <testcase classname="src/lib/design-tokens/tokens.test.ts" name="Design Tokens &gt; should have motion tokens with cubic-bezier values" time="0.007782676">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/lib/materiality/glass.test.tsx" timestamp="2025-09-08T19:19:19.129Z" hostname="fedora-top" tests="12" failures="0" errors="0" skipped="0" time="0.466576263">
+        <testcase classname="src/lib/materiality/glass.test.tsx" name="Glass Component &gt; renders with default blur and opacity" time="0.031490114">
+        </testcase>
+        <testcase classname="src/lib/materiality/glass.test.tsx" name="Glass Component &gt; applies custom blur level" time="0.012413543">
+        </testcase>
+        <testcase classname="src/lib/materiality/glass.test.tsx" name="Glass Component &gt; applies custom opacity" time="0.029816242">
+        </testcase>
+        <testcase classname="src/lib/materiality/glass.test.tsx" name="Glass Component &gt; applies custom tint color" time="0.01807306">
+        </testcase>
+        <testcase classname="src/lib/materiality/glass.test.tsx" name="Glass Component &gt; applies custom saturation" time="0.010605971">
+        </testcase>
+        <testcase classname="src/lib/materiality/glass.test.tsx" name="Glass Component &gt; combines multiple properties" time="0.025980304">
+        </testcase>
+        <testcase classname="src/lib/materiality/glass.test.tsx" name="FrostedGlass Component &gt; renders with frosted defaults" time="0.216179387">
+        </testcase>
+        <testcase classname="src/lib/materiality/glass.test.tsx" name="FrostedGlass Component &gt; accepts prop overrides" time="0.024338632">
+        </testcase>
+        <testcase classname="src/lib/materiality/glass.test.tsx" name="Acrylic Component &gt; renders with acrylic defaults" time="0.025911036">
+        </testcase>
+        <testcase classname="src/lib/materiality/glass.test.tsx" name="Acrylic Component &gt; accepts custom tint" time="0.032253741">
+        </testcase>
+        <testcase classname="src/lib/materiality/glass.test.tsx" name="Acrylic Component &gt; accepts prop overrides" time="0.016304493">
+        </testcase>
+        <testcase classname="src/lib/materiality/glass.test.tsx" name="supportsBackdropFilter &gt; returns false when backdrop-filter is not supported" time="0.013852273">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/lib/materiality/hooks.test.tsx" timestamp="2025-09-08T19:19:19.131Z" hostname="fedora-top" tests="24" failures="0" errors="0" skipped="0" time="0.40547547">
+        <testcase classname="src/lib/materiality/hooks.test.tsx" name="useElevation &gt; returns initial elevation and styles" time="0.007723028">
+        </testcase>
+        <testcase classname="src/lib/materiality/hooks.test.tsx" name="useElevation &gt; increases elevation on hover when interactive" time="0.006074028">
+        </testcase>
+        <testcase classname="src/lib/materiality/hooks.test.tsx" name="useElevation &gt; decreases elevation on press when interactive" time="0.008008113">
+        </testcase>
+        <testcase classname="src/lib/materiality/hooks.test.tsx" name="useElevation &gt; resets elevation on mouse leave" time="0.022120226">
+        </testcase>
+        <testcase classname="src/lib/materiality/hooks.test.tsx" name="useElevation &gt; does not change elevation when not interactive" time="0.007103081">
+        </testcase>
+        <testcase classname="src/lib/materiality/hooks.test.tsx" name="useElevation &gt; respects max elevation on hover" time="0.014112383">
+        </testcase>
+        <testcase classname="src/lib/materiality/hooks.test.tsx" name="useElevation &gt; respects min elevation on press" time="0.006122583">
+        </testcase>
+        <testcase classname="src/lib/materiality/hooks.test.tsx" name="useTexture &gt; returns opacity and styles for texture" time="0.010504762">
+        </testcase>
+        <testcase classname="src/lib/materiality/hooks.test.tsx" name="useTexture &gt; returns empty styles for none texture" time="0.01012869">
+        </testcase>
+        <testcase classname="src/lib/materiality/hooks.test.tsx" name="useTexture &gt; reduces opacity in dark mode" time="0.013244232">
+        </testcase>
+        <testcase classname="src/lib/materiality/hooks.test.tsx" name="useGlassSupport &gt; detects backdrop-filter support" time="0.020674838">
+        </testcase>
+        <testcase classname="src/lib/materiality/hooks.test.tsx" name="useGlassSupport &gt; provides fallback styles when not supported" time="0.029288172">
+        </testcase>
+        <testcase classname="src/lib/materiality/hooks.test.tsx" name="useMateriality &gt; returns default configuration" time="0.00944744">
+        </testcase>
+        <testcase classname="src/lib/materiality/hooks.test.tsx" name="useMateriality &gt; merges custom configuration" time="0.007239966">
+        </testcase>
+        <testcase classname="src/lib/materiality/hooks.test.tsx" name="useMateriality &gt; detects reduced motion preference" time="0.007418927">
+        </testcase>
+        <testcase classname="src/lib/materiality/hooks.test.tsx" name="useMateriality &gt; responds to reduced motion changes" time="0.009665154">
+        </testcase>
+        <testcase classname="src/lib/materiality/hooks.test.tsx" name="useParallax &gt; initializes with zero offset" time="0.017358517">
+        </testcase>
+        <testcase classname="src/lib/materiality/hooks.test.tsx" name="useParallax &gt; returns ref for element binding" time="0.008009795">
+        </testcase>
+        <testcase classname="src/lib/materiality/hooks.test.tsx" name="useParallax &gt; applies transition to parallax styles" time="0.009556208">
+        </testcase>
+        <testcase classname="src/lib/materiality/hooks.test.tsx" name="useParallax &gt; does not apply transforms when disabled" time="0.008449729">
+        </testcase>
+        <testcase classname="src/lib/materiality/hooks.test.tsx" name="useRipple &gt; returns rippleRef and createRipple function" time="0.011065682">
+        </testcase>
+        <testcase classname="src/lib/materiality/hooks.test.tsx" name="useRipple &gt; creates ripple element on click" time="0.055955553">
+        </testcase>
+        <testcase classname="src/lib/materiality/hooks.test.tsx" name="useRipple &gt; removes ripple after animation" time="0.024344652">
+        </testcase>
+        <testcase classname="src/lib/materiality/hooks.test.tsx" name="useRipple &gt; handles missing rippleRef gracefully" time="0.070767625">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/lib/materiality/materiality.test.tsx" timestamp="2025-09-08T19:19:19.137Z" hostname="fedora-top" tests="8" failures="0" errors="0" skipped="0" time="0.045224753">
+        <testcase classname="src/lib/materiality/materiality.test.tsx" name="Materiality System &gt; Elevation System &gt; should generate correct elevation styles" time="0.004238375">
+        </testcase>
+        <testcase classname="src/lib/materiality/materiality.test.tsx" name="Materiality System &gt; Elevation System &gt; should increase elevation on hover" time="0.004653561">
+        </testcase>
+        <testcase classname="src/lib/materiality/materiality.test.tsx" name="Materiality System &gt; Elevation System &gt; should decrease elevation on press" time="0.002867411">
+        </testcase>
+        <testcase classname="src/lib/materiality/materiality.test.tsx" name="Materiality System &gt; Elevation System &gt; should check elevation accessibility" time="0.014339481">
+        </testcase>
+        <testcase classname="src/lib/materiality/materiality.test.tsx" name="Materiality System &gt; Texture System &gt; should generate texture styles" time="0.002207782">
+        </testcase>
+        <testcase classname="src/lib/materiality/materiality.test.tsx" name="Materiality System &gt; Texture System &gt; should return empty styles for none texture" time="0.002160374">
+        </testcase>
+        <testcase classname="src/lib/materiality/materiality.test.tsx" name="Materiality System &gt; Texture System &gt; should adjust opacity for dark mode" time="0.001919838">
+        </testcase>
+        <testcase classname="src/lib/materiality/materiality.test.tsx" name="Materiality System &gt; Texture System &gt; should check texture accessibility" time="0.003690138">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/lib/materiality/surfaces.test.tsx" timestamp="2025-09-08T19:19:19.138Z" hostname="fedora-top" tests="13" failures="0" errors="0" skipped="0" time="0.392811146">
+        <testcase classname="src/lib/materiality/surfaces.test.tsx" name="Surface Component &gt; renders flat surface by default" time="0.014380224">
+        </testcase>
+        <testcase classname="src/lib/materiality/surfaces.test.tsx" name="Surface Component &gt; applies raised variant with elevation" time="0.014026438">
+        </testcase>
+        <testcase classname="src/lib/materiality/surfaces.test.tsx" name="Surface Component &gt; applies texture styles" time="0.02347824">
+        </testcase>
+        <testcase classname="src/lib/materiality/surfaces.test.tsx" name="Surface Component &gt; applies vibrant effect" time="0.009835627">
+        </testcase>
+        <testcase classname="src/lib/materiality/surfaces.test.tsx" name="Surface Component &gt; combines multiple properties" time="0.031942088">
+        </testcase>
+        <testcase classname="src/lib/materiality/surfaces.test.tsx" name="Card Component &gt; renders as raised surface with interactive elevation" time="0.022236822">
+        </testcase>
+        <testcase classname="src/lib/materiality/surfaces.test.tsx" name="Card Component &gt; accepts custom elevation" time="0.017501174">
+        </testcase>
+        <testcase classname="src/lib/materiality/surfaces.test.tsx" name="Card Component &gt; disables interactive behavior when specified" time="0.014340103">
+        </testcase>
+        <testcase classname="src/lib/materiality/surfaces.test.tsx" name="Paper Component &gt; renders flat surface with paper texture by default" time="0.012674225">
+        </testcase>
+        <testcase classname="src/lib/materiality/surfaces.test.tsx" name="Paper Component &gt; accepts custom texture" time="0.015801833">
+        </testcase>
+        <testcase classname="src/lib/materiality/surfaces.test.tsx" name="FloatingPanel Component &gt; renders floating surface with high elevation" time="0.026721476">
+        </testcase>
+        <testcase classname="src/lib/materiality/surfaces.test.tsx" name="FloatingPanel Component &gt; applies vibrant effect when specified" time="0.161688722">
+        </testcase>
+        <testcase classname="src/lib/materiality/surfaces.test.tsx" name="FloatingPanel Component &gt; accepts custom elevation override" time="0.019514497">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/lib/motion/motion.test.ts" timestamp="2025-09-08T19:19:19.141Z" hostname="fedora-top" tests="13" failures="0" errors="0" skipped="0" time="0.083321528">
+        <testcase classname="src/lib/motion/motion.test.ts" name="Motion System &gt; Spring Physics &gt; should create spring with initial value" time="0.004974229">
+        </testcase>
+        <testcase classname="src/lib/motion/motion.test.ts" name="Motion System &gt; Spring Physics &gt; should update spring position over time" time="0.005138528">
+        </testcase>
+        <testcase classname="src/lib/motion/motion.test.ts" name="Motion System &gt; Spring Physics &gt; should settle when near target" time="0.003470327">
+        </testcase>
+        <testcase classname="src/lib/motion/motion.test.ts" name="Motion System &gt; Stagger Calculations &gt; should create linear stagger delays" time="0.003646348">
+        </testcase>
+        <testcase classname="src/lib/motion/motion.test.ts" name="Motion System &gt; Stagger Calculations &gt; should stagger from last" time="0.006262598">
+        </testcase>
+        <testcase classname="src/lib/motion/motion.test.ts" name="Motion System &gt; Stagger Calculations &gt; should stagger from center" time="0.003973645">
+        </testcase>
+        <testcase classname="src/lib/motion/motion.test.ts" name="Motion System &gt; Stagger Calculations &gt; should apply easing to stagger" time="0.004792168">
+        </testcase>
+        <testcase classname="src/lib/motion/motion.test.ts" name="Motion System &gt; Motion Utilities &gt; should calculate motion duration" time="0.002760186">
+        </testcase>
+        <testcase classname="src/lib/motion/motion.test.ts" name="Motion System &gt; Motion Utilities &gt; should interpolate spring values" time="0.003454622">
+        </testcase>
+        <testcase classname="src/lib/motion/motion.test.ts" name="Motion System &gt; Motion Utilities &gt; should calculate stagger with different strategies" time="0.002549645">
+        </testcase>
+        <testcase classname="src/lib/motion/motion.test.ts" name="Motion System &gt; Motion Presets &gt; should have all easing functions" time="0.00677622">
+        </testcase>
+        <testcase classname="src/lib/motion/motion.test.ts" name="Motion System &gt; Motion Presets &gt; should have spring presets with required properties" time="0.019173656">
+        </testcase>
+        <testcase classname="src/lib/motion/motion.test.ts" name="Motion System &gt; Motion Presets &gt; should have motion presets with configurations" time="0.004517777">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/utils/__tests__/markdown-converter.test.ts" timestamp="2025-09-08T19:19:19.144Z" hostname="fedora-top" tests="4" failures="0" errors="0" skipped="0" time="0.085677556">
+        <testcase classname="src/utils/__tests__/markdown-converter.test.ts" name="Markdown Converter Contract &gt; converts valid HTML to markdown" time="0.01538116">
+        </testcase>
+        <testcase classname="src/utils/__tests__/markdown-converter.test.ts" name="Markdown Converter Contract &gt; handles invalid input gracefully" time="0.002562433">
+        </testcase>
+        <testcase classname="src/utils/__tests__/markdown-converter.test.ts" name="Markdown Converter Contract &gt; preserves line breaks correctly" time="0.014746035">
+        </testcase>
+        <testcase classname="src/utils/__tests__/markdown-converter.test.ts" name="Markdown Converter Contract &gt; converts math spans correctly" time="0.04574949">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/components/layout/__tests__/SidebarCollapse.test.tsx" timestamp="2025-09-08T19:19:19.145Z" hostname="fedora-top" tests="2" failures="0" errors="0" skipped="0" time="0.812137721">
+        <testcase classname="src/components/layout/__tests__/SidebarCollapse.test.tsx" name="Sidebar collapse + keyboard toggle &gt; toggles collapse with Cmd/Ctrl+B and shows hover-peek tab" time="0.36922366">
+        </testcase>
+        <testcase classname="src/components/layout/__tests__/SidebarCollapse.test.tsx" name="Sidebar collapse + keyboard toggle &gt; persists collapsed state across reloads" time="0.429089488">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/components/markdown/__tests__/MarkdownPreview.test.tsx" timestamp="2025-09-08T19:19:19.146Z" hostname="fedora-top" tests="3" failures="0" errors="0" skipped="3" time="0">
+        <testcase classname="src/components/markdown/__tests__/MarkdownPreview.test.tsx" name="MarkdownPreview Sanitization &gt; blocks dangerous content" time="0">
+            <skipped/>
+        </testcase>
+        <testcase classname="src/components/markdown/__tests__/MarkdownPreview.test.tsx" name="MarkdownPreview Sanitization &gt; preserves KaTeX classes" time="0">
+            <skipped/>
+        </testcase>
+        <testcase classname="src/components/markdown/__tests__/MarkdownPreview.test.tsx" name="MarkdownPreview Sanitization &gt; highlights code blocks" time="0">
+            <skipped/>
+        </testcase>
+    </testsuite>
+    <testsuite name="src/components/markdown/__tests__/SplitPaneToggle.test.tsx" timestamp="2025-09-08T19:19:19.147Z" hostname="fedora-top" tests="1" failures="0" errors="0" skipped="0" time="0.214761422">
+        <testcase classname="src/components/markdown/__tests__/SplitPaneToggle.test.tsx" name="MarkdownSplitPane layout toggle &gt; toggles between side and stack and persists layout" time="0.206285328">
         </testcase>
     </testsuite>
 </testsuites>

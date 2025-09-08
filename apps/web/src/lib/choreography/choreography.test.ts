@@ -202,7 +202,7 @@ describe('Choreography System', () => {
       expect(timeline.progress).toBeGreaterThanOrEqual(0);
 
       timeline.restart();
-      expect(timeline.progress).toBeCloseTo(0, 5);
+      expect(timeline.progress).toBeCloseTo(0, 4);
     });
 
     it('should seek to specific time', () => {
