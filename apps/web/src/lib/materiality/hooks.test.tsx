@@ -113,6 +113,7 @@ describe('useGlassSupport', () => {
     const { result } = renderHook(() => useGlassSupport());
 
     await waitFor(() => {
+      expect(result.current.supported).toBeDefined(); // Should be defined
       expect(result.current.supported).toBe(false); // Mocked to false in test-setup (jsdom limitation)
       expect(result.current.fallbackStyles).toEqual({
         backgroundColor: 'rgba(255, 255, 255, 0.95)',
