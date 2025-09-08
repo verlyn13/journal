@@ -10,7 +10,8 @@ export default defineConfig({
   plugins: [react()],
   test: {
     globals: true,
-    environment: process.env.CI ? 'jsdom' : 'happy-dom',
+    // Use a single DOM environment for parity with CI and to avoid env-specific drift
+    environment: 'jsdom',
     setupFiles: ['./src/test-setup.ts'],
     include: ['src/**/*.{test,spec}.{ts,tsx}'],
     coverage: {
@@ -28,14 +29,19 @@ export default defineConfig({
       ]
     },
     css: true,
-    threads: process.env.CI ? false : undefined,
+    // Strengthen isolation and leak detection
+    restoreMocks: true,
+    clearMocks: true,
+    unstubGlobals: true,
+    unstubEnvs: true,
     isolate: true,
-    pool: 'threads',
-    poolOptions: {
-      threads: {
-        singleThread: true
-      }
-    }
+    pool: 'forks',
+    maxConcurrency: 4,
+    sequence: {
+      shuffle: true,
+      seed: 1337,
+    },
+    testTimeout: 10000,
   },
   define: {
     'import.meta.env.VITE_EDITOR': JSON.stringify('html')

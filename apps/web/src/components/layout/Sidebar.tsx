@@ -21,8 +21,10 @@ export function Sidebar({
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem(THEME_STORAGE_KEY) as 'dawn' | 'dusk' | null;
       if (saved === 'dawn' || saved === 'dusk') return saved;
-      // Default to system preference
-      const prefersDark = window.matchMedia?.('(prefers-color-scheme: dark)').matches;
+      // Default to system preference (guard matchMedia presence)
+      const prefersDark =
+        typeof window.matchMedia === 'function' &&
+        !!window.matchMedia('(prefers-color-scheme: dark)')?.matches;
       return prefersDark ? 'dusk' : 'dawn';
     }
     return 'dusk';

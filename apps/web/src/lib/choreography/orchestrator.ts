@@ -17,10 +17,13 @@ export class ChoreographyOrchestrator {
 
   constructor() {
     if (typeof window !== 'undefined') {
-      this.reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      
-      // Listen for reduced motion changes
-      window.matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change', (e) => {
+      const mql = typeof window.matchMedia === 'function'
+        ? window.matchMedia('(prefers-reduced-motion: reduce)')
+        : undefined;
+      this.reducedMotion = !!mql?.matches;
+
+      // Listen for reduced motion changes if supported
+      mql?.addEventListener?.('change', (e: MediaQueryListEvent) => {
         this.reducedMotion = e.matches;
       });
     } else {

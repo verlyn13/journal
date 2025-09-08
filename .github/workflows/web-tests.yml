@@ -6,7 +6,7 @@ on:
   pull_request:
 
 jobs:
-  vitest:
+  unit:
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -14,11 +14,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Ensure Node for tooling parity (logs only)
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.8.0'
+
       # Bun for web unit tests
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
         with:
-          bun-version: latest
+          bun-version: 1.2.21
 
       - name: Cache bun store
         uses: actions/cache@v4
@@ -34,13 +40,17 @@ jobs:
           echo "Node:" && node -v || true
           echo "Bun:" && bun -v
           echo "Vitest:" && bun x vitest --version
+          node -e "console.log('jsdom:', require('jsdom/package.json').version)"
 
       - name: Run Vitest (CI profile)
         env:
           CI: "true"
         run: |
+          mkdir -p reports
           bun x vitest run \
-            --coverage --reporter=verbose \
+            --coverage \
+            --reporter=default,junit,verbose \
+            --outputFile.junit=./reports/junit.xml \
             --logHeapUsage
 
       - name: Upload coverage
@@ -49,6 +59,13 @@ jobs:
         with:
           name: vitest-coverage
           path: apps/web/coverage
+
+      - name: Upload vitest junit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vitest-junit
+          path: apps/web/reports/junit.xml
 
   playwright:
     runs-on: ubuntu-latest
