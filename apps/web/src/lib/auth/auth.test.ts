@@ -1,10 +1,32 @@
 // Authentication System Tests
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach, beforeAll } from 'vitest';
 import { renderHook, act, waitFor } from '@testing-library/react';
 import { AuthenticationOrchestrator } from './orchestrator';
 import { useAuth, usePasskeySupport, usePasskeys, useOAuthProviders } from './hooks';
 import type { AuthUser, AuthSession, PasskeyCredential } from './types';
+
+// Setup WebAuthn mocks before all tests
+beforeAll(() => {
+  // Mock WebAuthn API
+  global.PublicKeyCredential = vi.fn() as unknown as typeof PublicKeyCredential;
+  global.AuthenticatorAssertionResponse = vi.fn() as unknown as typeof AuthenticatorAssertionResponse;
+  global.AuthenticatorAttestationResponse = vi.fn() as unknown as typeof AuthenticatorAttestationResponse;
+
+  // Mock navigator.credentials if it doesn't exist
+  if (!navigator.credentials) {
+    Object.defineProperty(navigator, 'credentials', {
+      writable: true,
+      configurable: true,
+      value: {
+        create: vi.fn(),
+        get: vi.fn(),
+        preventSilentAccess: vi.fn(),
+        store: vi.fn(),
+      },
+    });
+  }
+});
 
 // Mock navigator.credentials
 const mockCredentials = {
