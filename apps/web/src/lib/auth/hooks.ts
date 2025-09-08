@@ -422,7 +422,7 @@ export function useOAuthProviders() {
       }
       return false;
     } catch (error) {
-      console.error(`Failed to connect ${provider}`, error);
+      // TODO: Implement proper error logging service
       return false;
     }
   }, []);
@@ -441,7 +441,7 @@ export function useOAuthProviders() {
       }
       return false;
     } catch (error) {
-      console.error(`Failed to disconnect ${provider}`, error);
+      // TODO: Implement proper error logging service
       return false;
     }
   }, []);
@@ -484,7 +484,7 @@ export function useSessionRefresh(session: AuthSession | null) {
       }
       return null;
     } catch (error) {
-      console.error('Failed to refresh session', error);
+      // TODO: Implement proper error logging service
       return null;
     } finally {
       setRefreshing(false);

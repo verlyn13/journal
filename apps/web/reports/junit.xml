@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites name="vitest tests" tests="6" failures="0" errors="0" time="0.019104193">
+    <testsuite name="src/lib/design-tokens/tokens.test.ts" timestamp="2025-09-08T16:21:35.670Z" hostname="fedora-top" tests="6" failures="0" errors="0" skipped="0" time="0.019104193">
+        <testcase classname="src/lib/design-tokens/tokens.test.ts" name="Design Tokens &gt; should have consistent color structure for both themes" time="0.002851676">
+        </testcase>
+        <testcase classname="src/lib/design-tokens/tokens.test.ts" name="Design Tokens &gt; should generate CSS variables for dawn theme" time="0.002489807">
+        </testcase>
+        <testcase classname="src/lib/design-tokens/tokens.test.ts" name="Design Tokens &gt; should generate CSS variables for dusk theme" time="0.001044262">
+        </testcase>
+        <testcase classname="src/lib/design-tokens/tokens.test.ts" name="Design Tokens &gt; should have spacing scale that follows 8px base unit" time="0.005467599">
+        </testcase>
+        <testcase classname="src/lib/design-tokens/tokens.test.ts" name="Design Tokens &gt; should have typography tokens with proper font stacks" time="0.000437612">
+        </testcase>
+        <testcase classname="src/lib/design-tokens/tokens.test.ts" name="Design Tokens &gt; should have motion tokens with cubic-bezier values" time="0.000875927">
+        </testcase>
+    </testsuite>
+</testsuites>

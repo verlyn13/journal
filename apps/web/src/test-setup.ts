@@ -16,19 +16,18 @@ if (typeof window.matchMedia !== 'function') {
       matches: false,
       media: query,
       onchange: null,
-      addListener: vi.fn(),       // deprecated
-      removeListener: vi.fn(),    // deprecated
+      addListener: vi.fn(), // deprecated
+      removeListener: vi.fn(), // deprecated
       addEventListener: vi.fn(),
       removeEventListener: vi.fn(),
       dispatchEvent: vi.fn(),
-    }))
+    })),
   });
 }
 
 // Mock IntersectionObserver defensively
 if (typeof (window as any).IntersectionObserver !== 'function') {
   (window as any).IntersectionObserver = class {
-    constructor(_cb: Function) {}
     observe = vi.fn();
     unobserve = vi.fn();
     disconnect = vi.fn();
@@ -51,8 +50,17 @@ if (typeof (window as any).ResizeObserver !== 'function') {
 // Mock DOMRect if missing
 if (typeof (window as any).DOMRect !== 'function') {
   (window as any).DOMRect = class {
-    static fromRect(_rect?: Partial<DOMRect>) { return new (window as any).DOMRect(); }
-    x=0; y=0; width=0; height=0; top=0; right=0; bottom=0; left=0;
+    static fromRect(_rect?: Partial<DOMRect>) {
+      return new (window as any).DOMRect();
+    }
+    x = 0;
+    y = 0;
+    width = 0;
+    height = 0;
+    top = 0;
+    right = 0;
+    bottom = 0;
+    left = 0;
   };
 }
 
@@ -114,7 +122,7 @@ if (!('CSS' in window) || typeof (window as any).CSS !== 'object' || (window as 
   Object.defineProperty(window, 'CSS', {
     configurable: true,
     writable: true,
-    value: {}
+    value: {},
   });
 }
 
@@ -131,4 +139,31 @@ if (typeof (window as any).CSS.supports !== 'function') {
       return false;
     }),
   });
+}
+
+// Mock HTMLElement constructor for instanceof checks
+if (typeof window !== 'undefined' && typeof HTMLElement === 'undefined') {
+  (global as any).HTMLElement = class HTMLElement {
+    static [Symbol.hasInstance](obj: any) {
+      return obj && typeof obj === 'object' && obj.nodeType === 1;
+    }
+  };
+}
+
+// Ensure Element constructor exists for instanceof checks
+if (typeof window !== 'undefined' && typeof Element === 'undefined') {
+  (global as any).Element = class Element {
+    static [Symbol.hasInstance](obj: any) {
+      return obj && typeof obj === 'object' && obj.nodeType === 1;
+    }
+  };
+}
+
+// Mock DocumentType for instanceof checks
+if (typeof window !== 'undefined' && typeof DocumentType === 'undefined') {
+  (global as any).DocumentType = class DocumentType {
+    static [Symbol.hasInstance](obj: any) {
+      return obj && typeof obj === 'object' && obj.nodeType === 10;
+    }
+  };
 }

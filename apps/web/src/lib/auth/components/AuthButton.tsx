@@ -8,7 +8,7 @@ import type { AuthProvider } from '../types';
 interface AuthButtonProps {
   className?: string;
   onSuccess?: () => void;
-  onError?: (error: any) => void;
+  onError?: (error: Error) => void;
   preferredMethod?: 'passkey' | 'oauth' | 'magic-link';
 }
 
@@ -35,7 +35,7 @@ export const AuthButton: React.FC<AuthButtonProps> = ({
           onError?.(result.error);
         }
       } catch (error) {
-        onError?.(error);
+        onError?.(error instanceof Error ? error : new Error(String(error)));
       }
     }
   };

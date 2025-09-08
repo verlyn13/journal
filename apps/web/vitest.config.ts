@@ -30,12 +30,17 @@ export default defineConfig({
     css: true,
     threads: process.env.CI ? false : undefined,
     isolate: true,
-    pool: 'threads',
-    poolOptions: {
-      threads: {
-        singleThread: true
-      }
-    }
+    pool: 'forks',
+    restoreMocks: true,
+    clearMocks: true,
+    unstubGlobals: true,
+    unstubEnvs: true,
+    sequence: {
+      shuffle: true,
+      seed: Date.now()
+    },
+    testTimeout: 10000,
+    hookTimeout: 10000
   },
   define: {
     'import.meta.env.VITE_EDITOR': JSON.stringify('html')

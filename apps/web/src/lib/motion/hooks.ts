@@ -77,9 +77,9 @@ export function useMotion<T extends HTMLElement = HTMLDivElement>(
       const duration = prefersReducedMotion ? 0 : (config.duration ?? 300);
 
       // Use Web Animations API
-      const keyframes = [
+      const keyframes: Keyframe[] = [
         {}, // Current state
-        to, // Target state
+        to as Keyframe, // Target state
       ];
 
       animationRef.current = element.animate(keyframes, {
@@ -184,7 +184,7 @@ export function useStagger(config: StaggerConfig): {
         return element.animate(
           [
             {}, // Current state
-            animation, // Target state
+            animation as Keyframe, // Target state
           ],
           {
             duration: 300,

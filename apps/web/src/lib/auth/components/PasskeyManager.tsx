@@ -88,6 +88,7 @@ export const PasskeyManager: React.FC = () => {
             disabled={isRegistering}
           />
           <button
+            type="button"
             onClick={handleRegisterPasskey}
             disabled={isRegistering || !newPasskeyName.trim()}
             className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed"
@@ -161,6 +162,7 @@ export const PasskeyManager: React.FC = () => {
 
                 <div className="flex gap-2">
                   <button
+                    type="button"
                     onClick={() => {
                       setEditingId(passkey.id);
                       setEditingName(passkey.name);
@@ -169,6 +171,7 @@ export const PasskeyManager: React.FC = () => {
                     title="Rename"
                   >
                     <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <title>Rename passkey</title>
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -179,11 +182,13 @@ export const PasskeyManager: React.FC = () => {
                   </button>
 
                   <button
+                    type="button"
                     onClick={() => handleDeletePasskey(passkey)}
                     className="p-2 text-red-600 hover:text-red-800 hover:bg-red-50 rounded"
                     title="Delete"
                   >
                     <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <title>Delete passkey</title>
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"

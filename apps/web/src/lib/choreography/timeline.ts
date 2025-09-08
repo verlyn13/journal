@@ -16,11 +16,21 @@ export class Timeline {
 
   // Add animation to timeline
   add(
-    element: Element | Element[],
+    element: Element | Element[] | string,
     props: Keyframe[] | PropertyIndexedKeyframes,
     options?: KeyframeAnimationOptions & { position?: number | string },
   ): this {
-    const elements = Array.isArray(element) ? element : [element];
+    let elements: Element[];
+    
+    if (typeof element === 'string') {
+      // Handle selector string
+      const selected = document.querySelectorAll(element);
+      elements = Array.from(selected);
+    } else if (Array.isArray(element)) {
+      elements = element;
+    } else {
+      elements = [element];
+    }
     const { position = '>' } = options || {};
 
     elements.forEach((el, index) => {
@@ -50,11 +60,11 @@ export class Timeline {
       case '>': // After previous
         return lastEnd;
       case '<': // With previous
-        return lastAnimation ? lastAnimation.startTime : 0;
+        return lastAnimation ? (Number(lastAnimation.startTime) || 0) : 0;
       case '+=': // Relative to end
-        return lastEnd + (this.config?.stagger || 0) * index;
+        return lastEnd + (Number(this.config?.stagger) || 0) * index;
       case '-=': // Overlap with previous
-        return Math.max(0, lastEnd - (this.config?.stagger || 100));
+        return Math.max(0, lastEnd - (Number(this.config?.stagger) || 100));
       default:
         return 0;
     }
@@ -185,7 +195,8 @@ class TimelineAnimation {
     if (time < this.startTime) {
       this.animation.currentTime = 0;
     } else if (time > this.endTime) {
-      this.animation.currentTime = this.animation.effect?.getComputedTiming().duration || 0;
+      const duration = this.animation.effect?.getComputedTiming().duration || 0;
+      this.animation.currentTime = typeof duration === 'number' ? duration : Number(duration) || 0;
     } else {
       this.animation.currentTime = time - this.startTime;
     }

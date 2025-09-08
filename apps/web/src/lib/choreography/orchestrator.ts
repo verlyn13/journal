@@ -113,7 +113,7 @@ export class ChoreographyOrchestrator {
     to: Partial<CSSStyleDeclaration>,
     options: { duration: number; delay: number; easing: string },
   ): Animation {
-    const keyframes = [{ ...from }, { ...to }];
+    const keyframes: Keyframe[] = [{ ...from }, { ...to }];
 
     return element.animate(keyframes, {
       duration: options.duration,
@@ -196,7 +196,9 @@ export class ChoreographyOrchestrator {
         if (animations.length === 0) return 0;
         const firstAnim = animations[0];
         const duration = firstAnim.effect?.getComputedTiming().duration || 0;
-        return duration > 0 ? (firstAnim.currentTime || 0) / Number(duration) : 0;
+        const durationNum = typeof duration === 'number' ? duration : Number(duration) || 0;
+        const currentTime = typeof firstAnim.currentTime === 'number' ? firstAnim.currentTime : Number(firstAnim.currentTime) || 0;
+        return durationNum > 0 ? currentTime / durationNum : 0;
       },
     };
   }
