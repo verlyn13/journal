@@ -1,3 +1,4 @@
+/// <reference types="@vitest/runner" />
 import '@testing-library/jest-dom/vitest';
 import { cleanup } from '@testing-library/react';
 import { afterEach, vi } from 'vitest';
@@ -89,6 +90,11 @@ if (typeof Element !== 'undefined' && !Element.prototype.animate) {
   false;
 
 // Also mock CSS.supports for consistency
+// First ensure window.CSS exists
+if (!window.CSS) {
+  (window as Window & { CSS: unknown }).CSS = {};
+}
+
 Object.defineProperty(window.CSS, 'supports', {
   writable: true,
   value: vi.fn().mockImplementation((property: string, _value?: string) => {
@@ -98,4 +104,20 @@ Object.defineProperty(window.CSS, 'supports', {
     }
     return false;
   }),
+});
+
+// Mock WebAuthn API
+global.PublicKeyCredential = vi.fn() as unknown as typeof PublicKeyCredential;
+global.AuthenticatorAssertionResponse = vi.fn() as unknown as typeof AuthenticatorAssertionResponse;
+global.AuthenticatorAttestationResponse = vi.fn() as unknown as typeof AuthenticatorAttestationResponse;
+
+// Mock navigator.credentials
+Object.defineProperty(navigator, 'credentials', {
+  writable: true,
+  value: {
+    create: vi.fn(),
+    get: vi.fn(),
+    preventSilentAccess: vi.fn(),
+    store: vi.fn(),
+  },
 });

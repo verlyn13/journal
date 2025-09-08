@@ -10,29 +10,80 @@ import type { AuthUser, AuthSession, PasskeyCredential } from './types';
 const mockCredentials = {
   create: vi.fn(),
   get: vi.fn(),
+  preventSilentAccess: vi.fn(),
+  store: vi.fn(),
 };
 
 const mockPublicKeyCredential = {
-  isUserVerifyingPlatformAuthenticatorAvailable: vi.fn(),
+  isUserVerifyingPlatformAuthenticatorAvailable: vi.fn().mockResolvedValue(true),
+  isConditionalMediationAvailable: vi.fn().mockResolvedValue(true),
 };
 
 // Mock fetch
 global.fetch = vi.fn();
 
+// Mock localStorage
+const localStorageMock = (() => {
+  let store: Record<string, string> = {};
+  return {
+    getItem: (key: string) => store[key] || null,
+    setItem: (key: string, value: string) => {
+      store[key] = value.toString();
+    },
+    removeItem: (key: string) => {
+      delete store[key];
+    },
+    clear: () => {
+      store = {};
+    },
+  };
+})();
+
+// Set up localStorage mock on global object
+if (typeof window !== 'undefined') {
+  Object.defineProperty(window, 'localStorage', {
+    value: localStorageMock,
+    writable: true,
+  });
+} else {
+  (global as any).localStorage = localStorageMock;
+}
+
 describe('AuthenticationOrchestrator', () => {
   let orchestrator: AuthenticationOrchestrator;
 
   beforeEach(() => {
-    orchestrator = new AuthenticationOrchestrator('/api/auth');
+    // Setup window object first
+    if (typeof window === 'undefined') {
+      (global as any).window = global;
+    }
     
-    // Setup mocks
-    (global as any).navigator = {
-      credentials: mockCredentials,
-    };
-    (global as any).PublicKeyCredential = mockPublicKeyCredential;
+    // Setup mocks before creating orchestrator
+    Object.defineProperty(global, 'navigator', {
+      value: {
+        credentials: mockCredentials,
+      },
+      writable: true,
+      configurable: true,
+    });
+    
+    Object.defineProperty(window, 'PublicKeyCredential', {
+      value: {
+        ...mockPublicKeyCredential,
+        isUserVerifyingPlatformAuthenticatorAvailable: vi.fn().mockResolvedValue(true),
+      },
+      writable: true,
+      configurable: true,
+    });
     
     // Reset mocks
     vi.clearAllMocks();
+    localStorageMock.clear();
+    mockCredentials.create.mockClear();
+    mockCredentials.get.mockClear();
+    
+    // Create orchestrator after mocks are set up
+    orchestrator = new AuthenticationOrchestrator('/api/auth');
   });
 
   afterEach(() => {
@@ -211,17 +262,34 @@ describe('AuthenticationOrchestrator', () => {
 
 describe('Authentication Hooks', () => {
   beforeEach(() => {
-    localStorage.clear();
+    // Setup mocks
+    Object.defineProperty(global, 'navigator', {
+      value: {
+        credentials: mockCredentials,
+      },
+      writable: true,
+      configurable: true,
+    });
+    
+    Object.defineProperty(global, 'PublicKeyCredential', {
+      value: mockPublicKeyCredential,
+      writable: true,
+      configurable: true,
+    });
+    
+    localStorageMock.clear();
     vi.clearAllMocks();
   });
 
   describe('useAuth', () => {
-    it('should initialize with unauthenticated state', () => {
+    it('should initialize with unauthenticated state', async () => {
       const { result } = renderHook(() => useAuth());
       
-      expect(result.current.isAuthenticated).toBe(false);
-      expect(result.current.user).toBe(null);
-      expect(result.current.session).toBe(null);
+      await waitFor(() => {
+        expect(result.current.isAuthenticated).toBe(false);
+        expect(result.current.user).toBe(null);
+        expect(result.current.session).toBe(null);
+      });
     });
 
     it('should restore session from localStorage', async () => {
