@@ -93,7 +93,9 @@ export function useTimeline(config?: { duration?: number; ease?: string }): {
   restart: () => void;
   progress: number;
 } {
-  const [timeline] = useState(() => new Timeline(config ? { duration: config.duration || 1000, ...config } : undefined));
+  const [timeline] = useState(
+    () => new Timeline(config ? { duration: config.duration || 1000, ...config } : undefined),
+  );
   const [progress, setProgress] = useState(0);
   const animationFrameRef = useRef<number>();
 

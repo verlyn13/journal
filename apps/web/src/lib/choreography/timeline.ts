@@ -21,7 +21,7 @@ export class Timeline {
     options?: KeyframeAnimationOptions & { position?: number | string },
   ): this {
     let elements: Element[];
-    
+
     if (typeof element === 'string') {
       // Handle selector string
       const selected = document.querySelectorAll(element);
@@ -60,7 +60,7 @@ export class Timeline {
       case '>': // After previous
         return lastEnd;
       case '<': // With previous
-        return lastAnimation ? (Number(lastAnimation.startTime) || 0) : 0;
+        return lastAnimation ? Number(lastAnimation.startTime) || 0 : 0;
       case '+=': // Relative to end
         return lastEnd + (Number(this.config?.stagger) || 0) * index;
       case '-=': // Overlap with previous

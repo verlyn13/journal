@@ -32,7 +32,10 @@ export const AuthButton: React.FC<AuthButtonProps> = ({
         if (result.success) {
           onSuccess?.();
         } else {
-          onError?.(result.error || new Error('Authentication failed'));
+          const error = result.error
+            ? new Error(result.error.message)
+            : new Error('Authentication failed');
+          onError?.(error);
         }
       } catch (error) {
         onError?.(error instanceof Error ? error : new Error(String(error)));
@@ -89,7 +92,8 @@ export const AuthButton: React.FC<AuthButtonProps> = ({
 
   return (
     <div className="relative">
-      <button type="button"
+      <button
+        type="button"
         onClick={handleAuth}
         disabled={isLoading}
         className={`
@@ -121,7 +125,8 @@ export const AuthButton: React.FC<AuthButtonProps> = ({
       {!isAuthenticated && showOptions && (
         <div className="absolute top-full mt-2 right-0 bg-white rounded-lg shadow-lg p-2 min-w-[250px]">
           {passkeysSupported && (
-            <button type="button"
+            <button
+              type="button"
               onClick={() => {
                 setShowOptions(false);
                 handleAuth();
@@ -142,7 +147,8 @@ export const AuthButton: React.FC<AuthButtonProps> = ({
 
           <div className="my-2 border-t" />
 
-          <button type="button"
+          <button
+            type="button"
             onClick={() => handleAuth()}
             className="w-full text-left px-3 py-2 hover:bg-gray-100 rounded flex items-center gap-2"
           >
@@ -150,7 +156,8 @@ export const AuthButton: React.FC<AuthButtonProps> = ({
             Continue with Google
           </button>
 
-          <button type="button"
+          <button
+            type="button"
             onClick={() => handleAuth()}
             className="w-full text-left px-3 py-2 hover:bg-gray-100 rounded flex items-center gap-2"
           >
@@ -158,7 +165,8 @@ export const AuthButton: React.FC<AuthButtonProps> = ({
             Continue with GitHub
           </button>
 
-          <button type="button"
+          <button
+            type="button"
             onClick={() => handleAuth()}
             className="w-full text-left px-3 py-2 hover:bg-gray-100 rounded flex items-center gap-2"
           >
@@ -168,14 +176,21 @@ export const AuthButton: React.FC<AuthButtonProps> = ({
 
           <div className="my-2 border-t" />
 
-          <button type="button"
+          <button
+            type="button"
             onClick={() => {
               setShowOptions(false);
               handleAuth();
             }}
             className="w-full text-left px-3 py-2 hover:bg-gray-100 rounded flex items-center gap-2"
           >
-            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-label="Mail">
+            <svg
+              className="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              aria-label="Mail"
+            >
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"

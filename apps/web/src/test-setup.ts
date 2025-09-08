@@ -11,8 +11,12 @@ afterEach(() => {
   if (typeof document !== 'undefined') {
     document.body.innerHTML = '';
   }
-  try { localStorage?.clear?.(); } catch {}
-  try { sessionStorage?.clear?.(); } catch {}
+  try {
+    localStorage?.clear?.();
+  } catch {}
+  try {
+    sessionStorage?.clear?.();
+  } catch {}
 });
 
 // Mock window.matchMedia defensively
@@ -74,7 +78,11 @@ if (typeof (window as any).DOMRect !== 'function') {
 
 // Mock Element.animate for Web Animations API
 if (typeof Element !== 'undefined' && !Element.prototype.animate) {
-  const animateImpl = function (this: Element, keyframes?: Keyframe[] | PropertyIndexedKeyframes, options?: number | KeyframeAnimationOptions): Animation {
+  const animateImpl = function (
+    this: Element,
+    keyframes?: Keyframe[] | PropertyIndexedKeyframes,
+    options?: number | KeyframeAnimationOptions,
+  ): Animation {
     const opts = (typeof options === 'number' ? { duration: options } : options) || {};
     const effectTiming = {
       duration: (opts as KeyframeAnimationOptions).duration || 0,

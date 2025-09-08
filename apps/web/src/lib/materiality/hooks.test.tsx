@@ -207,7 +207,7 @@ describe('useMateriality', () => {
 
     // Simulate media query change
     act(() => {
-      if (listener) listener({ matches: true });
+      if (listener) listener({ matches: true } as MediaQueryListEvent);
     });
 
     expect(result.current.reducedMotion).toBe(true);
@@ -273,7 +273,7 @@ describe('useRipple', () => {
       currentTarget: container,
       clientX: 100,
       clientY: 100,
-    } as React.MouseEvent;
+    } as unknown as React.MouseEvent;
 
     // Mock getBoundingClientRect
     container.getBoundingClientRect = vi.fn().mockReturnValue({
@@ -308,7 +308,7 @@ describe('useRipple', () => {
       currentTarget: container,
       clientX: 100,
       clientY: 100,
-    } as React.MouseEvent;
+    } as unknown as React.MouseEvent;
 
     container.getBoundingClientRect = vi.fn().mockReturnValue({
       left: 0,
@@ -340,7 +340,7 @@ describe('useRipple', () => {
       currentTarget: document.createElement('div'),
       clientX: 100,
       clientY: 100,
-    } as React.MouseEvent;
+    } as unknown as React.MouseEvent;
 
     // Should not throw
     expect(() => {

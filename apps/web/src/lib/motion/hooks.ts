@@ -86,7 +86,8 @@ export function useMotion<T extends HTMLElement = HTMLDivElement>(
         duration,
         delay: config.delay ?? 0,
         easing: typeof config.easing === 'string' ? config.easing : 'ease',
-        iterations: config.loop === true ? Infinity : (typeof config.loop === 'number' ? config.loop : 1),
+        iterations:
+          config.loop === true ? Infinity : typeof config.loop === 'number' ? config.loop : 1,
         direction: config.alternate ? 'alternate' : config.reverse ? 'reverse' : 'normal',
         fill: 'forwards',
       });

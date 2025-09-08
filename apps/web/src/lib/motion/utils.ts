@@ -17,13 +17,16 @@ export function applyMotion(
       ? (cssTimingFunctions[config.easing] ?? config.easing)
       : 'ease';
 
-  const keyframes = [from, to];
+  // Remove offset property from CSS styles to avoid conflicts with Keyframe type
+  const { offset: _offsetFrom, ...fromKeyframe } = from as any;
+  const { offset: _offsetTo, ...toKeyframe } = to as any;
+  const keyframes: Keyframe[] = [fromKeyframe, toKeyframe];
 
   return element.animate(keyframes, {
     duration,
     delay,
     easing,
-    iterations: config.loop === true ? Infinity : (config.loop ?? 1),
+    iterations: config.loop === true ? Infinity : typeof config.loop === 'number' ? config.loop : 1,
     direction: config.alternate ? 'alternate' : config.reverse ? 'reverse' : 'normal',
     fill: 'forwards',
   });
@@ -35,7 +38,7 @@ export function getMotionDuration(config: MotionConfig): number {
   const delay = config.delay ?? 0;
   const iterations = config.loop === true ? 1 : (config.loop ?? 1);
 
-  return delay + baseDuration * iterations;
+  return delay + baseDuration * (typeof iterations === 'number' ? iterations : 1);
 }
 
 // Interpolate spring values

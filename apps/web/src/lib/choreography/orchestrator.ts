@@ -113,7 +113,10 @@ export class ChoreographyOrchestrator {
     to: Partial<CSSStyleDeclaration>,
     options: { duration: number; delay: number; easing: string },
   ): Animation {
-    const keyframes: Keyframe[] = [{ ...from }, { ...to }];
+    // Remove offset property to avoid conflict with Keyframe type
+    const { offset: _offsetFrom, ...fromWithoutOffset } = from as any;
+    const { offset: _offsetTo, ...toWithoutOffset } = to as any;
+    const keyframes: Keyframe[] = [fromWithoutOffset, toWithoutOffset];
 
     return element.animate(keyframes, {
       duration: options.duration,
@@ -197,7 +200,10 @@ export class ChoreographyOrchestrator {
         const firstAnim = animations[0];
         const duration = firstAnim.effect?.getComputedTiming().duration || 0;
         const durationNum = typeof duration === 'number' ? duration : Number(duration) || 0;
-        const currentTime = typeof firstAnim.currentTime === 'number' ? firstAnim.currentTime : Number(firstAnim.currentTime) || 0;
+        const currentTime =
+          typeof firstAnim.currentTime === 'number'
+            ? firstAnim.currentTime
+            : Number(firstAnim.currentTime) || 0;
         return durationNum > 0 ? currentTime / durationNum : 0;
       },
     };
