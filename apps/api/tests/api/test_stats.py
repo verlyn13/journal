@@ -13,11 +13,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.infra.models import Entry
 
 
-@pytest.mark.component
+@pytest.mark.component()
 class TestStatsAPI:
     """Test cases for stats endpoint."""
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_stats_with_various_date_ranges(
         self,
         client: AsyncClient,
@@ -112,7 +112,7 @@ class TestStatsAPI:
         assert data["recent_entries"] == 4  # Updated in last 7 days
         assert data["favorite_entries"] == 0  # Not implemented yet
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_stats_with_no_entries(self, client: AsyncClient, auth_headers: dict[str, str]):
         """Test stats when there are no entries."""
         response = await client.get("/api/v1/stats", headers=auth_headers)
@@ -128,7 +128,7 @@ class TestStatsAPI:
         assert data["recent_entries"] == 0
         assert data["favorite_entries"] == 0
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_stats_week_boundary(
         self,
         client: AsyncClient,
@@ -178,7 +178,7 @@ class TestStatsAPI:
         assert data["entries_this_week"] == 1
         assert data["total_entries"] == 2
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_stats_month_boundary(
         self,
         client: AsyncClient,
@@ -228,13 +228,13 @@ class TestStatsAPI:
         assert data["entries_this_month"] == 1
         assert data["total_entries"] == 2
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_stats_requires_authentication(self, client: AsyncClient):
         """Test that stats endpoint requires authentication."""
         response = await client.get("/api/v1/stats")
         assert response.status_code == 401
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_stats_recent_entries_calculation(
         self,
         client: AsyncClient,

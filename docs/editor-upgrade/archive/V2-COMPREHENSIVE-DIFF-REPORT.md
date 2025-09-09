@@ -1,17 +1,20 @@
 # V2 Comprehensive Editor Migration Diff Report
+
 ## TipTap WYSIWYG → CodeMirror/Markdown Dual-Pane Editor
+
 ### Based on Actual Codebase Analysis & editor-upgrade-v2.md Specifications
 
-Generated: September 2025  
-Scope: Complete migration analysis with security, performance, and UX considerations  
-Current Implementation: TipTap with Monaco, Math, SlashCommands extensions  
-Target Implementation: CodeMirror 6 with Markdown, react-markdown rendering  
+Generated: September 2025\
+Scope: Complete migration analysis with security, performance, and UX considerations\
+Current Implementation: TipTap with Monaco, Math, SlashCommands extensions\
+Target Implementation: CodeMirror 6 with Markdown, react-markdown rendering
 
----
+***
 
 ## Executive Summary
 
 This report provides a comprehensive diff between the current TipTap-based implementation and the proposed CodeMirror/Markdown dual-pane editor, incorporating refinements from editor-upgrade-v2.md including:
+
 - **Turndown service** for HTML-to-Markdown conversion
 - **remark-breaks** for intuitive line break handling
 - **Security hardening** with DOMPurify
@@ -21,19 +24,21 @@ This report provides a comprehensive diff between the current TipTap-based imple
 ### Critical Findings from Actual Codebase
 
 Current implementation consists of:
+
 - **2,576 lines** of editor code across 12 components
 - **TipTap extensions**: StarterKit, Link, Highlight, Typography, Placeholder
 - **Custom extensions**: CodeBlockMonaco (Monaco Editor integration), MathInline/MathBlock (KaTeX), SlashCommands
 - **UI Components**: BubbleToolbar (523 lines), JournalEditor (397 lines)
-- **Bundle impact**: TipTap (~200KB) + Monaco (~2MB) + KaTeX (~300KB)
+- **Bundle impact**: TipTap (\~200KB) + Monaco (\~2MB) + KaTeX (\~300KB)
 
----
+***
 
 ## Part 1: Component-by-Component Diff Analysis
 
-### 1.1 JournalEditor.tsx (397 lines → ~450 lines estimated)
+### 1.1 JournalEditor.tsx (397 lines → \~450 lines estimated)
 
 #### Current Implementation
+
 ```typescript
 // Current: TipTap-based WYSIWYG
 import { EditorContent, useEditor } from "@tiptap/react";
@@ -66,6 +71,7 @@ const editor = useEditor({
 ```
 
 #### Target Implementation
+
 ```typescript
 // Target: Dual-pane Markdown editor
 import CodeMirror from '@uiw/react-codemirror';
@@ -109,15 +115,17 @@ const renderMarkdown = (content: string) => {
 ```
 
 **Diff Summary:**
+
 - **+50 lines** for dual-pane layout logic
 - **+30 lines** for Turndown conversion setup
 - **+20 lines** for security sanitization
 - **-100 lines** removing TipTap configuration
-- **Net change: ~0 lines** but significant structural change
+- **Net change: \~0 lines** but significant structural change
 
 ### 1.2 BubbleToolbar.tsx (523 lines → REMOVED)
 
 #### Current Implementation
+
 - Complex floating toolbar with 523 lines
 - Link editor component (163-290)
 - Highlight color picker
@@ -125,18 +133,21 @@ const renderMarkdown = (content: string) => {
 - Math insertion
 
 #### Target Implementation
+
 - **REMOVED ENTIRELY**
 - Replaced by Markdown syntax in CodeMirror
 - User types markdown directly: `**bold**`, `_italic_`, `[link](url)`
 - Better keyboard-driven workflow
 
 **Diff Summary:**
+
 - **-523 lines** complete removal
 - **Major UX change** from mouse-driven to keyboard-driven
 
 ### 1.3 CodeBlockMonaco Extension (→ Native Markdown Code Blocks)
 
 #### Current Implementation
+
 ```typescript
 // Custom Monaco integration for code blocks
 export const CodeBlockMonaco = Node.create({
@@ -147,21 +158,24 @@ export const CodeBlockMonaco = Node.create({
 ```
 
 #### Target Implementation
-```markdown
+
+````markdown
 # In CodeMirror (user types):
 ```javascript
 function example() {
     return "Native markdown code blocks";
 }
-```
+````
 
-# Rendered in preview via rehype-highlight:
-<ReactMarkdown
-    rehypePlugins={[
-        [rehypeHighlight, { detect: true }]
-    ]}
+# Rendered in preview via rehype-highlight
+
+\<ReactMarkdown
+rehypePlugins={\[
+\[rehypeHighlight, { detect: true }]
+]}
 />
-```
+
+````
 
 **Diff Summary:**
 - **-500+ lines** of Monaco integration code
@@ -182,9 +196,10 @@ export const MathInline = Node.create({
         };
     }
 });
-```
+````
 
 #### Target Implementation
+
 ```typescript
 // Integrated in Markdown pipeline
 <ReactMarkdown
@@ -200,18 +215,21 @@ export const MathInline = Node.create({
 ```
 
 **Diff Summary:**
+
 - **-119 lines** of custom math node code
-- **Preserved KaTeX** rendering (~300KB stays)
+- **Preserved KaTeX** rendering (\~300KB stays)
 - **Simpler integration** via remark/rehype plugins
 
 ### 1.5 SlashCommands Extension (→ Markdown Snippets)
 
 #### Current Implementation
+
 - Complex command palette with categories
 - Template insertion system
-- ~300+ lines of slash command logic
+- \~300+ lines of slash command logic
 
 #### Target Implementation
+
 ```typescript
 // Simplified snippet system in CodeMirror
 const snippets = [
@@ -224,17 +242,19 @@ import { snippetCompletion } from '@codemirror/autocomplete';
 ```
 
 **Diff Summary:**
+
 - **-300+ lines** of slash command UI
 - **+50 lines** for snippet system
 - **Better performance** with native CodeMirror completions
 
----
+***
 
 ## Part 2: Data Migration Strategy
 
 ### 2.1 Database Migration Plan
 
 #### Current State
+
 ```sql
 -- Current entries table
 CREATE TABLE entries (
@@ -246,6 +266,7 @@ CREATE TABLE entries (
 ```
 
 #### Migration Process
+
 ```python
 # apps/api/app/migrations/convert_html_to_markdown.py
 from turndown import Turndown
@@ -288,6 +309,7 @@ def migrate_entries_to_markdown(db: Session):
 ```
 
 #### Rollback Strategy
+
 ```python
 def rollback_to_html(db: Session, entry_id: UUID):
     """Rollback individual entry to HTML if needed"""
@@ -316,11 +338,12 @@ const EditorComponent = features.markdownEditor.enabled
     : JournalEditor;
 ```
 
----
+***
 
 ## Part 3: Bundle Size Analysis
 
 ### Current Bundle Impact
+
 ```
 TipTap Core:          ~200KB
 Monaco Editor:        ~2MB (lazy loaded but still huge)
@@ -331,6 +354,7 @@ Total:               ~2.55MB
 ```
 
 ### Target Bundle Impact
+
 ```
 CodeMirror Core:      ~150KB
 Markdown Extensions:  ~30KB
@@ -345,6 +369,7 @@ Savings:             ~1.95MB (76% reduction)
 ```
 
 ### Bundle Optimization Strategy
+
 ```javascript
 // Lazy load the editor
 const MarkdownEditor = lazy(() => import('./MarkdownEditor'));
@@ -368,19 +393,21 @@ export default {
 };
 ```
 
----
+***
 
 ## Part 4: Security Considerations
 
 ### 4.1 XSS Prevention
 
 #### Current Vulnerability
+
 ```typescript
 // Current: TipTap renders HTML directly
 <div dangerouslySetInnerHTML={{ __html: editor.getHTML() }} />
 ```
 
 #### Secured Implementation
+
 ```typescript
 // Target: All content sanitized
 import DOMPurify from 'dompurify';
@@ -402,6 +429,7 @@ const renderSafeMarkdown = (content: string) => {
 ```
 
 ### 4.2 Content Security Policy
+
 ```typescript
 // apps/web/index.html
 <meta http-equiv="Content-Security-Policy" 
@@ -411,18 +439,20 @@ const renderSafeMarkdown = (content: string) => {
                img-src 'self' data: https:;">
 ```
 
----
+***
 
 ## Part 5: User Experience Migration
 
 ### 5.1 Line Break Handling (Critical UX Fix)
 
 #### Current Behavior
+
 - Single Enter = new paragraph (`<p>`)
 - Shift+Enter = line break (`<br>`)
 - Users confused by invisible formatting
 
 #### Target Behavior with remark-breaks
+
 ```typescript
 // Natural line break handling
 import remarkBreaks from 'remark-breaks';
@@ -441,17 +471,18 @@ Second line"
 
 ### 5.2 Keyboard Shortcuts Migration
 
-| Action | Current (TipTap) | Target (CodeMirror) |
-|--------|-----------------|---------------------|
-| Bold | Ctrl+B | Type `**text**` |
-| Italic | Ctrl+I | Type `_text_` |
-| Link | Ctrl+K | Type `[text](url)` |
-| Save | Ctrl+S | Ctrl+S (preserved) |
-| Heading | Toolbar button | Type `# Heading` |
-| Code | Ctrl+` | Type `` `code` `` |
-| Math | Button | Type `$math$` |
+| Action  | Current (TipTap) | Target (CodeMirror) |
+| ------- | ---------------- | ------------------- |
+| Bold    | Ctrl+B           | Type `**text**`     |
+| Italic  | Ctrl+I           | Type `_text_`       |
+| Link    | Ctrl+K           | Type `[text](url)`  |
+| Save    | Ctrl+S           | Ctrl+S (preserved)  |
+| Heading | Toolbar button   | Type `# Heading`    |
+| Code    | Ctrl+\`          | Type `` `code` ``   |
+| Math    | Button           | Type `$math$`       |
 
 ### 5.3 Migration Messaging
+
 ```typescript
 // Show migration banner for affected users
 const MigrationBanner = () => (
@@ -467,11 +498,12 @@ const MigrationBanner = () => (
 );
 ```
 
----
+***
 
 ## Part 6: Testing Strategy
 
 ### 6.1 Unit Tests
+
 ```typescript
 // apps/web/src/components/editor/__tests__/MarkdownEditor.test.tsx
 describe('MarkdownEditor', () => {
@@ -496,6 +528,7 @@ describe('MarkdownEditor', () => {
 ```
 
 ### 6.2 Integration Tests
+
 ```typescript
 // E2E test for migration flow
 test('existing HTML entries display correctly', async ({ page }) => {
@@ -514,6 +547,7 @@ test('existing HTML entries display correctly', async ({ page }) => {
 ```
 
 ### 6.3 Performance Tests
+
 ```typescript
 // Measure bundle size changes
 describe('Bundle Size', () => {
@@ -530,64 +564,73 @@ describe('Bundle Size', () => {
 });
 ```
 
----
+***
 
 ## Part 7: Implementation Timeline
 
 ### Phase 1: Foundation (Week 1-2)
+
 - [ ] Set up CodeMirror with markdown mode
 - [ ] Implement Turndown HTML→Markdown conversion
 - [ ] Add remark-breaks for line break handling
 - [ ] Create basic split-pane layout
 
 ### Phase 2: Feature Parity (Week 3-4)
+
 - [ ] Implement markdown preview with react-markdown
 - [ ] Add math support (remark-math/rehype-katex)
 - [ ] Set up syntax highlighting (rehype-highlight)
 - [ ] Add DOMPurify sanitization
 
 ### Phase 3: Migration (Week 5-6)
+
 - [ ] Create database migration scripts
 - [ ] Implement feature flags
 - [ ] Add fallback to old editor
 - [ ] Set up A/B testing
 
 ### Phase 4: Testing & Optimization (Week 7-8)
+
 - [ ] Comprehensive testing suite
 - [ ] Bundle size optimization
 - [ ] Performance testing
 - [ ] Security audit
 
 ### Phase 5: Rollout (Week 9-10)
+
 - [ ] 10% rollout to beta users
 - [ ] Monitor metrics and feedback
 - [ ] Fix issues and optimize
 - [ ] Gradual rollout to 100%
 
----
+***
 
 ## Part 8: Risk Assessment
 
 ### High Risk Items
+
 1. **Data Loss**: Mitigated by keeping original HTML, dual-format storage
 2. **User Confusion**: Mitigated by migration banner, help docs, classic mode
 3. **Performance Regression**: Mitigated by lazy loading, code splitting
 
 ### Medium Risk Items
+
 1. **Math Rendering Issues**: Test extensively with complex equations
 2. **Mobile Experience**: Ensure touch-friendly markdown editing
 3. **Accessibility**: Maintain ARIA labels and keyboard navigation
 
 ### Low Risk Items
+
 1. **Bundle Size**: Already measured, 76% reduction expected
 2. **Security**: DOMPurify is battle-tested
 3. **Browser Compatibility**: CodeMirror 6 supports all modern browsers
 
----
+***
 
 ## Part 9: Rollback Plan
 
 ### Immediate Rollback (< 1 hour)
+
 ```typescript
 // Feature flag disable
 process.env.VITE_MARKDOWN_EDITOR = 'false';
@@ -595,6 +638,7 @@ process.env.VITE_MARKDOWN_EDITOR = 'false';
 ```
 
 ### Data Rollback (< 1 day)
+
 ```sql
 -- Revert to HTML content
 UPDATE entries 
@@ -603,6 +647,7 @@ WHERE content_format = 'dual';
 ```
 
 ### Complete Rollback (< 1 week)
+
 ```bash
 # Revert git commits
 git revert <markdown-editor-commits>
@@ -614,28 +659,31 @@ pg_restore -d journal backup_before_migration.sql
 ./deploy.sh v1.2.3
 ```
 
----
+***
 
 ## Part 10: Success Metrics
 
 ### Technical Metrics
+
 - **Bundle Size**: < 600KB (currently 2.55MB)
 - **Initial Load**: < 2s on 3G (currently 5s)
 - **Editor Init**: < 100ms (currently 500ms)
 - **Memory Usage**: < 50MB (currently 200MB with Monaco)
 
 ### User Metrics
+
 - **Adoption Rate**: > 80% stay on new editor
 - **Support Tickets**: < 5% increase
 - **User Satisfaction**: > 4.0/5.0 rating
 - **Performance Perception**: > 70% say "faster"
 
 ### Business Metrics
+
 - **Storage Costs**: 30% reduction (Markdown smaller than HTML)
 - **CDN Costs**: 50% reduction (smaller bundles)
 - **Development Velocity**: 2x faster feature development
 
----
+***
 
 ## Conclusion
 
@@ -651,6 +699,6 @@ The V2 plan's additions (Turndown, remark-breaks, security hardening) address th
 
 **Recommendation**: Proceed with Phase 1 implementation while maintaining the current editor in parallel. Use feature flags for gradual rollout and maintain dual-format storage for safe rollback.
 
----
+***
 
 *End of V2 Comprehensive Diff Report*

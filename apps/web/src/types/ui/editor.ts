@@ -4,7 +4,7 @@
 
 // TODO: Uncomment when TipTap is installed
 // import type { Editor } from '@tiptap/react';
-type Editor = any; // Temporary placeholder
+type Editor = unknown; // Temporary placeholder
 import type { Entry } from '../domain/entry';
 
 // Editor state types
@@ -34,18 +34,18 @@ export interface FocusModeProps {
 
 // Bubble toolbar types
 export interface BubbleToolbarProps {
-  editor: any | null;
+  editor: Editor | null;
 }
 
 // Type guard for Editor instance
-export function isEditorReady(editor: any | null): editor is any {
+export function isEditorReady(editor: Editor | null): editor is Editor {
   return editor !== null && !editor.isDestroyed;
 }
 
 // Helper to safely execute editor commands
 export function withEditor<T>(
-  editor: any | null,
-  callback: (editor: any) => T,
+  editor: Editor | null,
+  callback: (editor: Editor) => T,
   defaultValue?: T,
 ): T | undefined {
   if (isEditorReady(editor)) {

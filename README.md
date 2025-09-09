@@ -30,9 +30,10 @@ mise run dev:full
 ## 🏗 Architecture
 
 ### Frontend (React + TypeScript)
+
 - **Location**: `apps/web/`
 - **Tech Stack**: React 18, TypeScript, Vite, CodeMirror
-- **Features**: 
+- **Features**:
   - Markdown editor with live preview (CodeMirror)
   - Math rendering with KaTeX
   - Code syntax highlighting (rehype-highlight)
@@ -40,6 +41,7 @@ mise run dev:full
   - Hybrid search (keyword + semantic)
 
 ### Backend (FastAPI + PostgreSQL)
+
 - **Location**: `apps/api/`
 - **Tech Stack**: FastAPI, SQLModel, PostgreSQL with pgvector
 - **Features**:
@@ -113,7 +115,7 @@ Run with Bun from the repo root (use Node/npm if preferred):
 
 - API
   - `bun run api:setup` — start Postgres (5433), Redis (6380), NATS (4222) and run migrations
-  - `bun run api:dev` — start FastAPI dev server (http://127.0.0.1:8000)
+  - `bun run api:dev` — start FastAPI dev server (<http://127.0.0.1:8000>)
   - `bun run api:test` — run API tests via pytest
   - `bun run api:lint` — lint/format API code (ruff)
   - `bun run api:db:upgrade` — apply DB migrations (alembic via uv)
@@ -122,21 +124,25 @@ Run with Bun from the repo root (use Node/npm if preferred):
   - `bun run api:worker` — start embedding consumer worker
 
 - Web
-  - `bun run web:dev` — start frontend dev server (http://localhost:5173)
+  - `bun run web:dev` — start frontend dev server (<http://localhost:5173>)
   - `bun run web:build` — build frontend assets
   - `bun run web:preview` — preview built frontend
 
 ## 🔧 Configuration
 
 ### Frontend Environment
+
 Create `apps/web/.env`:
+
 ```env
 VITE_API_URL=http://127.0.0.1:5000/api
 VITE_GRAPHQL_URL=http://127.0.0.1:8000/graphql
 ```
 
 ### Backend Environment
+
 Create `apps/api/.env`:
+
 ```env
 JOURNAL_DB_URL=postgresql+asyncpg://journal:journal@localhost:5433/journal
 JOURNAL_REDIS_URL=redis://localhost:6380/0
@@ -146,13 +152,14 @@ JOURNAL_JWT_SECRET=your-secret-key-change-in-production
 
 ## 📖 API Documentation
 
-- **OpenAPI/Swagger**: http://127.0.0.1:8000/docs
-- **ReDoc**: http://127.0.0.1:8000/redoc
-- **GraphQL Playground**: http://127.0.0.1:8000/graphql
+- **OpenAPI/Swagger**: <http://127.0.0.1:8000/docs>
+- **ReDoc**: <http://127.0.0.1:8000/redoc>
+- **GraphQL Playground**: <http://127.0.0.1:8000/graphql>
 
 ## 🧪 Testing
 
 ### Frontend Tests
+
 ```bash
 # Unit tests
 bun run test
@@ -168,6 +175,7 @@ bun run test:visual
 ```
 
 ### Backend Tests
+
 ```bash
 cd apps/api
 
@@ -182,18 +190,21 @@ uv run pytest -m integration
 ## 🛠 Tooling
 
 ### Frontend
+
 - **Biome**: Formatting and linting
 - **TypeScript**: Type checking
 - **Vite**: Build tooling
 - **Playwright**: E2E testing
 
 ### Backend
+
 - **uv**: Python package management
 - **Ruff**: Python linting and formatting
 - **MyPy**: Static type checking
 - **pytest**: Testing framework
 
 ### Pre-commit Hooks
+
 ```bash
 # Frontend
 cd apps/web
@@ -223,6 +234,7 @@ docker run -p 3000:3000 journal-web
 ### Using DevContainers
 
 For VS Code users:
+
 1. Install "Dev Containers" extension
 2. Open project in VS Code
 3. `Cmd/Ctrl + Shift + P` → "Dev Containers: Reopen in Container"
@@ -231,6 +243,7 @@ For VS Code users:
 ## 📋 Features
 
 ### Editor Features
+
 - **Markdown Editing**: Native markdown editing with CodeMirror
 - **Live Preview**: Real-time markdown-to-HTML preview
 - **Math Rendering**: LaTeX math with KaTeX (inline: `$x^2$`, block: `$$...$$`)
@@ -239,12 +252,14 @@ For VS Code users:
 - **Dark Mode**: Built-in OneDark theme
 
 ### Search & Discovery
+
 - **Hybrid Search**: Combines keyword and semantic search
 - **Vector Embeddings**: AI-powered content similarity
 - **Full-text Search**: PostgreSQL FTS with ranking
 - **Smart Suggestions**: Auto-complete and recommendations
 
 ### Backend Capabilities
+
 - **Event Sourcing**: Complete audit trail
 - **Background Processing**: Async embedding generation
 - **GraphQL API**: Flexible data queries
@@ -265,6 +280,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for development guidelines.
 - [API Documentation](http://localhost:8000/docs)
 - [Editor Guide](apps/web/EDITOR_GUIDE.md)
 - [Initial Planning](docs/initial-planning/)
+
 ### Roadmap
 
 See `docs/ROADMAP.md` for the live roadmap, branching strategy, testing strategy, and CI/CD.

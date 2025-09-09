@@ -1,11 +1,12 @@
----
+***
+
 title: "CodeMirror Documentation Integration"
 description: "Integration of CodeMirror official documentation with application-specific guides"
 date: "2025-04-08"
 author: "Documentation Specialist"
 category: "Documentation"
-tags: ["documentation", "codemirror", "editor", "phase-18"]
----
+tags: \["documentation", "codemirror", "editor", "phase-18"]
+------------------------------------------------------------
 
 # CodeMirror Documentation Integration
 

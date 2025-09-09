@@ -6,6 +6,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends
 from sqlalchemy import text
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.infra.auth import require_user
@@ -40,7 +41,7 @@ async def admin_health(
         # Check database connection
         result = await db.execute(text("SELECT 1"))
         db_status = "healthy" if result.scalar() == 1 else "unhealthy"
-    except Exception:
+    except SQLAlchemyError:
         db_status = "unhealthy"
 
     return {

@@ -1,12 +1,12 @@
----
+***
+
 title: CodeMirror Basic Example
 description: "A basic example demonstrating how to set up a simple CodeMirror editor instance with default functionality."
 category: "CodeMirror Examples"
 status: active
-tags: ["codemirror", "example", "basic", "setup", "javascript"]
+tags: \["codemirror", "example", "basic", "setup", "javascript"]
 version: "6.0"
----
-
+--------------
 
 # Setting Up a Basic CodeMirror Editor
 
@@ -30,6 +30,7 @@ const view = new EditorView({
 ```
 
 This code:
+
 1. Creates an editor with the text "Start document"
 2. Places it at the end of the document body
 3. Loads a set of basic extensions that provide essential functionality

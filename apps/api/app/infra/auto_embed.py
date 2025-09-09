@@ -6,6 +6,7 @@ import logging
 
 from uuid import UUID
 
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.infra.models import Entry
@@ -34,17 +35,13 @@ async def ensure_embedding_for_entry(entry: Entry, session: AsyncSession) -> Non
         # Generate embedding synchronously (good for tests)
         try:
             await upsert_entry_embedding(session, entry.id, text)
-        except Exception as e:
+        except (SQLAlchemyError, RuntimeError, ValueError) as e:
             # Log error but don't fail the request
             logger.warning("Failed to generate embedding for entry %s: %s", entry.id, e)
 
     elif mode == "event":
         # Publish event for async processing (production)
-        try:
-            publish_embedding_event(entry.id, text)
-        except Exception as e:
-            # Log error but don't fail the request
-            logger.warning("Failed to publish embedding event for entry %s: %s", entry.id, e)
+        publish_embedding_event(entry.id, text)
 
     # mode == "off" - do nothing
 
@@ -54,8 +51,8 @@ def publish_embedding_event(entry_id: UUID, text: str) -> None:
 
     This is a placeholder - replace with your actual event bus/NATS publishing.
     """
-    # TODO: Replace with actual event publishing
-    # For now, just log that we would publish
+    # Replace with actual event publishing when bus is integrated.
+    # For now, just log that we would publish.
     logger.info("Would publish embedding event for entry %s", entry_id)
 
     # Example of what this might look like (removed commented code)

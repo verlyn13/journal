@@ -4,17 +4,20 @@
 
 ### 1. Entry Deletion 409 Conflict (Optimistic Concurrency Control)
 
-**Problem**: 
+**Problem**:
+
 - Version mismatch when deleting entries
 - The app uses optimistic locking with version tracking
 - React 19's different timing exposed a race condition where stale versions were being used
 
 **Root Cause**:
+
 - The deletion was using the version from the cached list data
 - This version could be stale if the entry was modified elsewhere
 - React 19's stricter batching made this issue more apparent
 
 **Solution Implemented**:
+
 ```javascript
 // Before: Using potentially stale version from list
 const entry = listData.find((e) => e.id === entryId);
@@ -30,26 +33,30 @@ version = freshEntry.version;
 ### 2. Non-Fluid Entry Clicking
 
 **Problem**:
+
 - Entry selection felt sluggish
 - UI wasn't responding immediately to clicks
 - Content not switching when clicking different entries
 
 **Root Cause**:
+
 - React 19's `startTransition` was deferring state updates too aggressively
 - The selectedEntry state wasn't updating properly
 - Async state updates were getting lost or batched incorrectly
 
 **Solution Implemented**:
+
 1. **Removed `startTransition` for now**:
-   - Direct state updates work more reliably
-   - Selection and content loading happen sequentially
-   - May revisit optimization later with better implementation
+
+- Direct state updates work more reliably
+- Selection and content loading happen sequentially
+- May revisit optimization later with better implementation
 
 2. **Simplified the flow**:
    ```javascript
    // Immediate selection update
    setState((prev) => ({ ...prev, selectedEntryId: entryId }));
-   
+
    // Load and update content
    const entry = await api.getEntry(entryId);
    setState((prev) => ({
@@ -65,10 +72,12 @@ version = freshEntry.version;
 ### 3. React Query Configuration Optimization
 
 **Problem**:
+
 - Default React Query settings not optimized for React 19
 - Excessive re-renders and refetches
 
 **Solution Implemented**:
+
 ```javascript
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -89,19 +98,22 @@ const queryClient = new QueryClient({
 
 ## ✅ Testing Complete - Issues Resolved
 
-### ✅ Deletion Fix Verified:
+### ✅ Deletion Fix Verified
+
 - Entry deletion now works without 409 errors
 - Fresh version is fetched before deletion
-- Console shows: "Delete: fetched fresh version" 
+- Console shows: "Delete: fetched fresh version"
 - Optimistic concurrency control working correctly
 
-### ✅ Entry Selection Fix Verified:
+### ✅ Entry Selection Fix Verified
+
 - Clicking entries now switches content immediately
 - Selection highlighting works properly
 - Content loads progressively without blocking UI
 - Event handlers working on parent div elements
 
-### To test with/without React Compiler:
+### To test with/without React Compiler
+
 ```bash
 # Without compiler (baseline)
 ENABLE_REACT_COMPILER=false bun run dev
@@ -170,20 +182,23 @@ If issues persist, you can temporarily disable React 19 optimizations:
 ## ✅ Final Migration Status: COMPLETE
 
 ### All Issues Resolved ✅
+
 1. **Entry Deletion 409 Conflicts**: ✅ Fixed by fetching fresh versions
-2. **Entry Selection Not Working**: ✅ Fixed by moving click handlers to parent elements  
+2. **Entry Selection Not Working**: ✅ Fixed by moving click handlers to parent elements
 3. **TypeScript Ref Warnings**: ✅ Fixed by updating RefObject types for React 19 compatibility
 4. **Test Environment Issues**: ✅ Fixed by adding proper localStorage/sessionStorage mocks
 
 ### Testing Results ✅
+
 - **All Tests Passing**: 115/118 tests pass (3 skipped by design)
 - **Build Success**: Production build completes without errors
 - **Dev Server**: Running cleanly without console errors
 - **User Workflows**: All critical paths verified working
 
 ### Performance Metrics ✅
+
 - **Bundle Size**: 4.3% smaller than React 18
-- **Build Time**: ~12-14 seconds (consistent with React 18)
+- **Build Time**: \~12-14 seconds (consistent with React 18)
 - **Test Suite**: Completes in 5.6 seconds
 
 **Migration Status: 🎉 READY FOR PRODUCTION DEPLOYMENT**

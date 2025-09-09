@@ -1,16 +1,17 @@
----
+***
+
 title: "Flask Journal API Reference"
 description: "Comprehensive reference for all API endpoints in the Flask Journal application"
 category: "API Reference"
-date_created: "2025-04-08"
-last_updated: "2025-04-08"
+date\_created: "2025-04-08"
+last\_updated: "2025-04-08"
 version: "1.0"
 status: active
-related_topics:
-  - "Authentication"
-  - "Data Model"
-tags: ["api", "reference", "endpoints", "flask"]
----
+related\_topics:
+\- "Authentication"
+\- "Data Model"
+tags: \["api", "reference", "endpoints", "flask"]
+-------------------------------------------------
 
 # Flask Journal API Reference
 
@@ -74,11 +75,11 @@ The API uses standard HTTP status codes to indicate the success or failure of re
 
 Renders Markdown text as HTML for preview purposes.
 
-| Attribute | Value |
-|-----------|-------|
-| **URL** | `/api/v1/markdown/preview` |
-| **Method** | `POST` |
-| **Auth Required** | Yes |
+| Attribute         | Value                      |
+| ----------------- | -------------------------- |
+| **URL**           | `/api/v1/markdown/preview` |
+| **Method**        | `POST`                     |
+| **Auth Required** | Yes                        |
 
 **Request Body:**
 
@@ -101,6 +102,7 @@ Status Code: `200 OK`
 **Error Responses:**
 
 Status Code: `400 Bad Request`
+
 ```json
 {
   "error": "Request must be JSON"
@@ -108,6 +110,7 @@ Status Code: `400 Bad Request`
 ```
 
 Status Code: `500 Internal Server Error`
+
 ```json
 {
   "error": "Failed to render Markdown"
@@ -140,9 +143,9 @@ async function previewMarkdown(markdownText) {
 **Notes:**
 
 - This endpoint uses the Python `markdown` library with the following extensions enabled:
-  - `markdown.extensions.tables`
-  - `markdown.extensions.fenced_code`
-  - `markdown.extensions.extra`
+  \- `markdown.extensions.tables`
+  \- `markdown.extensions.fenced_code`
+  \- `markdown.extensions.extra`
 - The endpoint is protected by `login_required` to prevent unauthorized usage
 - Empty strings or null values for `text` will return an empty HTML result
 
@@ -152,15 +155,16 @@ These endpoints are not traditional API endpoints but are HTML form-based routes
 
 #### Register User
 
-| Attribute | Value |
-|-----------|-------|
-| **URL** | `/auth/register` |
-| **Method** | `GET`, `POST` |
-| **Auth Required** | No |
+| Attribute         | Value            |
+| ----------------- | ---------------- |
+| **URL**           | `/auth/register` |
+| **Method**        | `GET`, `POST`    |
+| **Auth Required** | No               |
 
-This endpoint displays a registration form (GET) and processes new user registrations (POST). 
+This endpoint displays a registration form (GET) and processes new user registrations (POST).
 
 **Form Parameters:**
+
 - `username`: Unique username for the new account
 - `email`: Unique email address
 - `password`: User's password
@@ -170,30 +174,32 @@ The endpoint performs validation including checking for duplicate usernames and 
 
 #### Login
 
-| Attribute | Value |
-|-----------|-------|
-| **URL** | `/auth/login` |
-| **Method** | `GET`, `POST` |
-| **Auth Required** | No |
+| Attribute         | Value         |
+| ----------------- | ------------- |
+| **URL**           | `/auth/login` |
+| **Method**        | `GET`, `POST` |
+| **Auth Required** | No            |
 
 This endpoint displays a login form (GET) and processes authentication requests (POST).
 
 **Form Parameters:**
+
 - `username`: Registered username
 - `password`: User's password
 - `remember_me`: Boolean field for persistent login session
 
 **Notes:**
+
 - Supports a `next` URL parameter for redirecting to protected pages after login
 - Performs security checks on the `next` parameter to prevent open redirects
 
 #### Logout
 
-| Attribute | Value |
-|-----------|-------|
-| **URL** | `/auth/logout` |
-| **Method** | `GET` |
-| **Auth Required** | Yes |
+| Attribute         | Value          |
+| ----------------- | -------------- |
+| **URL**           | `/auth/logout` |
+| **Method**        | `GET`          |
+| **Auth Required** | Yes            |
 
 This endpoint terminates the user's session. It is protected by the `login_required` decorator.
 
@@ -203,106 +209,118 @@ These endpoints are primarily HTML-based routes that handle CRUD operations for 
 
 #### List Journal Entries
 
-| Attribute | Value |
-|-----------|-------|
-| **URL** | `/`, `/index` |
-| **Method** | `GET` |
-| **Auth Required** | Yes |
+| Attribute         | Value         |
+| ----------------- | ------------- |
+| **URL**           | `/`, `/index` |
+| **Method**        | `GET`         |
+| **Auth Required** | Yes           |
 
 Displays a paginated list of journal entries for the authenticated user.
 
 **Query Parameters:**
+
 - `page`: Page number for pagination (default: 1)
 
 #### Create New Entry
 
-| Attribute | Value |
-|-----------|-------|
-| **URL** | `/new_entry` |
-| **Method** | `GET`, `POST` |
-| **Auth Required** | Yes |
+| Attribute         | Value         |
+| ----------------- | ------------- |
+| **URL**           | `/new_entry`  |
+| **Method**        | `GET`, `POST` |
+| **Auth Required** | Yes           |
 
 This endpoint displays an entry creation form (GET) and processes new journal entry submissions (POST).
 
 **Form Parameters:**
+
 - `title`: The title of the journal entry
 - `body`: The main content of the journal entry
 - `tags`: Optional comma-separated list of tags
 
 #### View Entry
 
-| Attribute | Value |
-|-----------|-------|
-| **URL** | `/entry/<entry_id>` |
-| **Method** | `GET` |
-| **Auth Required** | Yes |
+| Attribute         | Value               |
+| ----------------- | ------------------- |
+| **URL**           | `/entry/<entry_id>` |
+| **Method**        | `GET`               |
+| **Auth Required** | Yes                 |
 
 Displays a detailed view of a single journal entry.
 
 **URL Parameters:**
+
 - `entry_id`: The ID of the entry to view
 
 **Notes:**
+
 - Returns 404 if the entry doesn't exist
 - Returns 403 if the entry belongs to another user
 
 #### Edit Entry
 
-| Attribute | Value |
-|-----------|-------|
-| **URL** | `/edit_entry/<entry_id>` |
-| **Method** | `GET`, `POST` |
-| **Auth Required** | Yes |
+| Attribute         | Value                    |
+| ----------------- | ------------------------ |
+| **URL**           | `/edit_entry/<entry_id>` |
+| **Method**        | `GET`, `POST`            |
+| **Auth Required** | Yes                      |
 
 This endpoint displays an edit form pre-populated with entry data (GET) and processes updates to an existing entry (POST).
 
 **URL Parameters:**
+
 - `entry_id`: The ID of the entry to edit
 
 **Form Parameters:**
+
 - `title`: The updated title of the journal entry
 - `body`: The updated content of the journal entry
 - `tags`: Optional comma-separated list of tags
 
 **Notes:**
+
 - Returns 404 if the entry doesn't exist
 - Returns 403 if the entry belongs to another user
 
 #### Delete Entry
 
-| Attribute | Value |
-|-----------|-------|
-| **URL** | `/delete_entry/<entry_id>` |
-| **Method** | `POST` |
-| **Auth Required** | Yes |
+| Attribute         | Value                      |
+| ----------------- | -------------------------- |
+| **URL**           | `/delete_entry/<entry_id>` |
+| **Method**        | `POST`                     |
+| **Auth Required** | Yes                        |
 
 Deletes a journal entry.
 
 **URL Parameters:**
+
 - `entry_id`: The ID of the entry to delete
 
 **Notes:**
+
 - Only accepts POST requests for security reasons
 - Returns 404 if the entry doesn't exist
 - Returns 403 if the entry belongs to another user
 
 #### Entries by Tag
 
-| Attribute | Value |
-|-----------|-------|
-| **URL** | `/tag/<tag_name>` |
-| **Method** | `GET` |
-| **Auth Required** | Yes |
+| Attribute         | Value             |
+| ----------------- | ----------------- |
+| **URL**           | `/tag/<tag_name>` |
+| **Method**        | `GET`             |
+| **Auth Required** | Yes               |
 
 Displays all journal entries associated with a specific tag.
 
 **URL Parameters:**
+
 - `tag_name`: The name of the tag to filter by
 
 **Query Parameters:**
+
 - `page`: Page number for pagination (default: 1)
 
 **Notes:**
+
 - Returns 404 if the tag doesn't exist
 - Only shows entries belonging to the authenticated user
 

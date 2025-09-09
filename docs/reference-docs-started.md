@@ -5,19 +5,21 @@ I've created a comprehensive documentation fetching and management system for yo
 ### 🎯 **Core Components**
 
 1. **`fetch-docs.ts`** - A TypeScript script that:
-   - Fetches essential documentation from official Biome and Bun websites
-   - Converts HTML to clean markdown format
-   - Organizes docs into a logical directory structure
-   - Handles retries and error recovery
-   - Creates an index for easy navigation
+
+- Fetches essential documentation from official Biome and Bun websites
+- Converts HTML to clean markdown format
+- Organizes docs into a logical directory structure
+- Handles retries and error recovery
+- Creates an index for easy navigation
 
 2. **`docs.sh`** - A feature-rich shell script providing:
-   - Documentation fetching and updating
-   - Backup and restore functionality
-   - Local documentation server
-   - Search capabilities
-   - HTML conversion (with pandoc)
-   - Integrity checking
+
+- Documentation fetching and updating
+- Backup and restore functionality
+- Local documentation server
+- Search capabilities
+- HTML conversion (with pandoc)
+- Integrity checking
 
 3. **`package.json`** - NPM scripts for all documentation tasks integrated with your development workflow
 
@@ -78,6 +80,7 @@ docs/
 ### 🎯 **What Gets Downloaded**
 
 **From Biome v2.2.2:**
+
 - Getting Started Guide
 - Configuration Guide
 - Migration to v2 Guide
@@ -89,6 +92,7 @@ docs/
 - Changelog
 
 **From Bun 1.2.21:**
+
 - Installation Guide
 - Package Manager Documentation
 - bunfig.toml Configuration
@@ -100,6 +104,7 @@ docs/
 - Standalone Executables Guide
 
 This system ensures you have all essential documentation available offline, organized, and easily searchable. It's particularly useful for:
+
 - Team onboarding
 - Offline development
 - Quick reference during coding

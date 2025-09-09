@@ -149,23 +149,19 @@ export function EntryList({
             {filteredEntries.map((entry) => (
               <div
                 key={entry.id}
-                onClick={() => {
-                  if (onSelectEntry) {
-                    onSelectEntry(entry.id);
-                  }
-                }}
-                className={`
-              w-full p-3 rounded-lg text-left transition-all duration-200 group cursor-pointer
-              ${
-                selectedEntry === entry.id
-                  ? 'bg-sanctuary-accent text-sanctuary-bg-primary shadow-md'
-                  : 'bg-sanctuary-bg-tertiary hover:bg-sanctuary-bg-primary/50 text-sanctuary-text-primary hover:shadow-sm'
-              }
-            `}
+                className={`w-full rounded-lg transition-all duration-200 group ${
+                  selectedEntry === entry.id
+                    ? 'bg-sanctuary-accent text-sanctuary-bg-primary shadow-md'
+                    : 'bg-sanctuary-bg-tertiary hover:bg-sanctuary-bg-primary/50 text-sanctuary-text-primary hover:shadow-sm'
+                }`}
               >
                 {/* Entry Header */}
-                <div className="flex items-start justify-between mb-2">
-                  <div className="flex-1 min-w-0">
+                <div className="flex items-start justify-between">
+                  <button
+                    type="button"
+                    onClick={() => onSelectEntry(entry.id)}
+                    className="flex-1 min-w-0 p-3 text-left rounded-lg"
+                  >
                     <span
                       className={`font-medium text-sm truncate ${
                         selectedEntry === entry.id
@@ -188,7 +184,7 @@ export function EntryList({
                       <span>•</span>
                       <span>{entry.wordCount} words</span>
                     </div>
-                  </div>
+                  </button>
                   <div className="flex items-center gap-1 ml-2">
                     {onDeleteEntry && (
                       <button

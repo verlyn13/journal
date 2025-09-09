@@ -10,11 +10,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.infra.models import Entry
 
 
-@pytest.mark.component
+@pytest.mark.component()
 class TestEntriesMarkdownAPI:
     """Test markdown content handling in entries API."""
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_update_entry_with_markdown_sets_version(
         self,
         client: AsyncClient,
@@ -48,7 +48,7 @@ class TestEntriesMarkdownAPI:
         # Should set content_version to 2 (markdown)
         assert data.get("content_version") == 2
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_update_entry_markdown_with_explicit_version(
         self, client: AsyncClient, auth_headers: dict[str, str], sample_entry: Entry
     ):
@@ -67,7 +67,7 @@ class TestEntriesMarkdownAPI:
         data = response.json()
         assert data["content_version"] == 3  # Should use provided version
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_update_entry_html_preserves_version(
         self, client: AsyncClient, auth_headers: dict[str, str], sample_entry: Entry
     ):
@@ -102,7 +102,7 @@ class TestEntriesMarkdownAPI:
         # Version should not change when updating HTML only
         assert data.get("content_version") == 2
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_update_entry_markdown_with_code_blocks(
         self, client: AsyncClient, auth_headers: dict[str, str], sample_entry: Entry
     ):
@@ -140,7 +140,7 @@ console.log("Hello");
         assert "def hello():" in data["content"]
         assert "console.log" in data["content"]
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_update_entry_markdown_with_lists(
         self, client: AsyncClient, auth_headers: dict[str, str], sample_entry: Entry
     ):
@@ -176,7 +176,7 @@ Ordered:
         assert "<ol>" in data["content"] or "First" in data["content"]
         assert "<li>" in data["content"] or "Item" in data["content"]
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_update_entry_markdown_with_images(
         self, client: AsyncClient, auth_headers: dict[str, str], sample_entry: Entry
     ):
@@ -206,7 +206,7 @@ Some text here.
         assert "<img" in data["content"] or "https://example.com/image.jpg" in data["content"]
         assert "Alt text" in data["content"] or "alt=" in data["content"]
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_update_entry_empty_markdown(
         self, client: AsyncClient, auth_headers: dict[str, str], sample_entry: Entry
     ):
@@ -225,7 +225,7 @@ Some text here.
         assert data["markdown_content"] == ""
         assert data["content"] == ""  # HTML should also be empty
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_update_entry_markdown_special_characters(
         self, client: AsyncClient, auth_headers: dict[str, str], sample_entry: Entry
     ):
@@ -257,7 +257,7 @@ Math: 5 < 10 && 10 > 5
             "&lt;" in data["content"] or "&gt;" in data["content"] or "brackets" in data["content"]
         )
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_update_entry_prefer_markdown_header(
         self, client: AsyncClient, auth_headers: dict[str, str], sample_entry: Entry
     ):
@@ -290,7 +290,7 @@ Math: 5 < 10 && 10 > 5
         assert data["editor_mode"] == "markdown"
         assert "markdown_content" in data
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_update_entry_mixed_content_priority(
         self, client: AsyncClient, auth_headers: dict[str, str], sample_entry: Entry
     ):
@@ -313,7 +313,7 @@ Math: 5 < 10 && 10 > 5
         assert "Markdown wins" in data["content"]
         assert "HTML loses" not in data["content"]
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_update_entry_null_markdown_allowed(
         self, client: AsyncClient, auth_headers: dict[str, str], sample_entry: Entry
     ):

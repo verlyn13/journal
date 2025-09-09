@@ -1,41 +1,55 @@
 # LINTER
 
-*Source: https://biomejs.dev/linter*
+*Source: <https://biomejs.dev/linter>*
 *Fetched: 2025-08-30T00:47:26.105Z*
 
----
+***
 
 # Linter
 
-        Biome’s linter statically analyzes your code to find and fix common errors and to help you write better, modern code.
+```
+    Biome’s linter statically analyzes your code to find and fix common errors and to help you write better, modern code.
+```
+
 It [supports multiple languages](/internals/language-support) and provides a total of **349 rules**.
 You can quickly try the Biome linter via the CLI. The following command runs the linter on all files from the root of your project:
 
-   -  [  npm ](#tab-panel-194)
--  [  pnpm ](#tab-panel-195)
--  [  bun ](#tab-panel-196)
--  [  deno ](#tab-panel-197)
--  [  yarn ](#tab-panel-198)
+- [  npm ](#tab-panel-194)
+- [  pnpm ](#tab-panel-195)
+- [  bun ](#tab-panel-196)
+- [  deno ](#tab-panel-197)
+- [  yarn ](#tab-panel-198)
 
-     ```
+  ```
+  ```
+
 1npx @biomejs/biome lint
-```
+
+````
 
      ```
 1pnpm exec biome lint
-```
+````
 
-     ```
+````
+ ```
+````
+
 1bunx --bun biome lint
-```
+
+````
 
      ```
 1deno run -A npm:@biomejs/biome lint
-```
+````
 
-     ```
+````
+ ```
+````
+
 1yarn exec biome lint
-```
+
+````
 
 
 Or you can specify one or multiple folders, for example `./src` and `./public`
@@ -48,24 +62,31 @@ Or you can specify one or multiple folders, for example `./src` and `./public`
 
      ```
 1npx @biomejs/biome lint ./src ./public
-```
+````
 
-     ```
+````
+ ```
+````
+
 1pnpm exec biome lint ./src ./public
-```
+
+````
 
      ```
 1bunx --bun biome lint ./src ./public
-```
+````
 
-     ```
+````
+ ```
+````
+
 1deno run -A npm:@biomejs/biome lint ./src ./public
-```
+
+````
 
      ```
 1yarn exec biome lint ./src ./public
-```
-
+````
 
 The command accepts a list of files and directories.
 
@@ -73,9 +94,10 @@ Caution
 
 If you pass a glob as a parameter, your shell will expand it. **Biome doesn’t support globs**.
 The result of the expansion depends on your shell.
-For example, some shells don’t support the recursive glob `**` or the alternation `{}` in the following command:Terminal window```
-1biome lint ./src/**/*.test.{js,ts}
-```
+For example, some shells don’t support the recursive glob `**` or the alternation `{}` in the following command:Terminal window\`\`\`
+1biome lint ./src/\*\*/\*.test.{js,ts}
+
+````
 
 Shell expansion has a performance cost and a limit on the number of files you can pass to the command.
 
@@ -94,7 +116,7 @@ Biome linter ships with a set of recommended rules that varies based on language
 
 Terminal window```
 1biome lint2biome check
-```
+````
 
 Each lint rule ships with a default [severity](/reference/diagnostics#diagnostic-severity) which you can lean more about by reading the documentation of the rule.
 
@@ -117,31 +139,42 @@ Safe fixes are guaranteed to not change the semantic of your code.
 They can be applied without explicit review.
 To apply *safe fixes* from the CLI, use `--write`:
 
-   -  [  npm ](#tab-panel-204)
--  [  pnpm ](#tab-panel-205)
--  [  bun ](#tab-panel-206)
--  [  deno ](#tab-panel-207)
--  [  yarn ](#tab-panel-208)
+- [  npm ](#tab-panel-204)
+- [  pnpm ](#tab-panel-205)
+- [  bun ](#tab-panel-206)
+- [  deno ](#tab-panel-207)
+- [  yarn ](#tab-panel-208)
 
-     ```
+  ```
+  ```
+
 1npx @biomejs/biome lint --write ./src
-```
+
+````
 
      ```
 1pnpm exec biome lint --write ./src
-```
+````
 
-     ```
+````
+ ```
+````
+
 1bunx --bun biome lint --write ./src
-```
+
+````
 
      ```
 1deno run -A npm:@biomejs/biome lint --write ./src
-```
+````
 
-     ```
+````
+ ```
+````
+
 1yarn exec biome lint --write ./src
-```
+
+````
 
 
 From an LSP-compatible editor, you can apply safe fixes **on save** with the code action `source.fixAll.biome`.
@@ -161,24 +194,31 @@ To apply both *safe fixes* and *unsafe fixes* from the CLI, use `--write --unsaf
 
      ```
 1npx @biomejs/biome lint --write --unsafe ./src
-```
+````
 
-     ```
+````
+ ```
+````
+
 1pnpm exec biome lint --write --unsafe ./src
-```
+
+````
 
      ```
 1bunx --bun biome lint --write --unsafe ./src
-```
+````
 
-     ```
+````
+ ```
+````
+
 1deno run -A npm:@biomejs/biome lint --write --unsafe ./src
-```
+
+````
 
      ```
 1yarn exec biome lint --write --unsafe ./src
-```
-
+````
 
 From an LSP-compatible editor, it’s not possible to apply all unsafe fixes on save. It would be undesirable to change the semantics of your code on save. However, you can review the single code fix and choose to apply it.
 
@@ -195,13 +235,14 @@ A rule should follow these **pillars**:
 Tell the user what they should do. Generally, this is implemented using a code action.
 If a code action is not applicable a note should tell the user what they should do to fix the error.
 
-If you think a rule doesn’t follow these pillars, please [open an issue](https://github.com/biomejs/biome/issues/new?assignees=&#x26;labels=S-To+triage&#x26;projects=&#x26;template=01_bug.yml&#x26;title=%F0%9F%90%9B+%3CTITLE%3E).
+If you think a rule doesn’t follow these pillars, please [open an issue](https://github.com/biomejs/biome/issues/new?assignees=\&labels=S-To+triage\&projects=\&template=01_bug.yml\&title=%F0%9F%90%9B+%3CTITLE%3E).
 
 ## Configure the linter
 
 [Section titled “Configure the linter”](#configure-the-linter)
 In many cases, you want to change the linter based on your personal needs, or the needs or your organisation/project.
 Biome allows you to customise the linter, and in this section you will learn how to do it.
+
 ### Disable a rule
 
 [Section titled “Disable a rule”](#disable-a-rule)
@@ -209,8 +250,9 @@ You can turn off a rule with `off`.
 
 The following configuration disables the recommended rule `noDebugger`:
 
-biome.json```
+biome.json\`\`\`
 1{2  "linter": {3    "rules": {4      "suspicious": {5        "noDebugger": "off"6      }7    }8  }9}
+
 ```
 
 ### Disable recommended rules
@@ -219,8 +261,10 @@ biome.json```
 You can disable the recommended rules with a simple configuration. This may be useful in cases when you only want to enable a few rules.
 
 ```
+
 1{2  "linter": {3    "rules": {4      "recommended": false5    }6  }7}
-```
+
+````
 
 ### Change rule severity
 
@@ -233,7 +277,7 @@ If you’re happy with this default and you want to avail of it, the configurati
 
 biome.json```
 1{2  "linter": {3    "rules": {4      "style": {5        "noShoutyConstants": "on"6      }7    }8  }9}
-```
+````
 
 If you aren’t happy with the default severity, Biome allows you to change it with `"error"`, `"warn"` and `"info"`
 
@@ -267,9 +311,10 @@ Code fixes can be configured using the `fix` option. It can have one of three va
 
 - `unsafe`: the rule will emit an [unsafe fix](#unsafe-fixes);
 
-biome.jsonc```
+biome.jsonc\`\`\`
 1{2  "linter": {3    "rules": {4      "correctness": {5        "noUnusedVariables": {6          "level": "error",7          "fix": "none" // no code fix suggested for noUnusedVariables8        }9      },10      "style": {11        "useConst": {12          "level": "warn",13          "fix": "unsafe" // the code fix for `useConst` is now considered unsafe14        },15        "useTemplate": {16          "level": "warn",17          "fix": "safe" // the code fix for `useTemplate` is now considered safe18        }19      }20    }21  }22}
-```
+
+````
 
 ### Skip a rule or a group
 
@@ -280,7 +325,7 @@ For example, the following command skips all the rules that belong to the `style
 
 Terminal window```
 1biome lint --skip=style --skip=suspicious/noExplicitAny
-```
+````
 
 ### Run only a rule or a group
 
@@ -289,9 +334,10 @@ The command `biome lint` accepts an option `--only` that allows running individu
 
 For example, the following command runs only the rule `style/useNamingConvention`, the rule `style/noInferrableTypes` and the rules that belong to `a11y`. If the rule is disabled in the configuration, then its severity level is set to `error` for a recommended rule or `warn` otherwise.
 
-Terminal window```
+Terminal window\`\`\`
 1biome lint --only=style/useNamingConvention --only=style/noInferrableTypes --only=a11y
-```
+
+````
 
 ### Rule options
 
@@ -305,7 +351,7 @@ You can set them by shaping the value of the rule differently.
 
 biome.json```
 1{2  "linter": {3    "rules": {4      "style": {5        "useNamingConvention": {6          "level": "error",7          "options": {8            "strictCase": false9          }10        }11      }12    }13  }14}
-```
+````
 
 ### Domains
 
@@ -324,21 +370,23 @@ Biome’s linter will automatically enable the rules that belong to a domain whe
 
 However, if there’s no `package.json` or the default configuration doesn’t apply, you can enable the domain via configuration:
 
-biome.json```
+biome.json\`\`\`
 1{2  "linter": {3    "domains": {4      "test": "recommended"5    }6  }7}
-```
+
+````
 
 Additionally, you can enable **all** rules that belong to a domain using the `"all"` value:
 
 biome.json```
 1{2  "linter": {3    "domains": {4      "test": "all"5    }6  }7}
-```
+````
 
 Like rules and groups, you can also turn the rules that belong to a domains with the `"off"` value:
 
-biome.json```
+biome.json\`\`\`
 1{2  "linter": {3    "domains": {4      "test": "off"5    }6  }7}
-```
+
+````
 
 To learn more about each domain, consult [the appropriate page](/linter/domains).
 
@@ -376,11 +424,15 @@ Use the `source.fixAll.biome` code action to instruct Biome to apply all **safe 
 
      .vscode/settings.json```
 1{2  "editor.codeActionsOnSave": {3    "source.fixAll.biome": "explicit",4  }5}
-```
+````
 
-     .zed/settings.json```
-1{2  "code_actions_on_format": {3    "source.fixAll.biome": true,4  }5}
-```
+````
+ .zed/settings.json```
+````
+
+1{2  "code\_actions\_on\_format": {3    "source.fixAll.biome": true,4  }5}
+
+````
 
 
 Use the source action code `source.fixAll.biome`
@@ -395,11 +447,15 @@ Use `source.suppressRule.inline.biome` to control whether the editor should show
 
      .vscode/settings.json```
 1{2  "editor.codeActionsOnSave": {3    "source.suppressRule.inline.biome": "never",4  }5}
-```
+````
 
-     .zed/settings.json```
-1{2  "code_actions_on_format": {3    "source.suppressRule.inline.biome": false,4  }5}
-```
+````
+ .zed/settings.json```
+````
+
+1{2  "code\_actions\_on\_format": {3    "source.suppressRule.inline.biome": false,4  }5}
+
+````
 
 
 Use the source action code `source.suppressRule.inline.biome`
@@ -411,11 +467,15 @@ Use `source.suppressRule.topLevel.biome` to control whether the editor should sh
 
      .vscode/settings.json```
 1{2  "editor.codeActionsOnSave": {3    "source.suppressRule.topLevel.biome": "never",4  }5}
-```
+````
 
-     .zed/settings.json```
-1{2  "code_actions_on_format": {3    "source.suppressRule.topLevel.biome": false,4  }5}
-```
+````
+ .zed/settings.json```
+````
+
+1{2  "code\_actions\_on\_format": {3    "source.suppressRule.topLevel.biome": false,4  }5}
+
+````
 
 
 Use the source action code `source.suppressRule.topLevel.biome`
@@ -429,11 +489,12 @@ If you are migrating from ESLint, there’s a dedicated [migration guide](/guide
 Use the command `biome migrate eslint` to port the rules defined in your `eslint` configuration file to `biome.json`:
 Terminal window```
 1biome migrate eslint
-```
+````
 
 Lint the project by suppressing possible new rules that are caught by Biome, using the following command:
-Terminal window```
+Terminal window\`\`\`
 1biome lint --write --unsafe --suppress="suppressed due to migration"
+
 ```
 
 The command will suppress all linting violation that Biome finds, using the reason `"suppressed due to migration"`. Now the linter shouldn’t error anymore, and it’s possible to remove the suppression comments at a later stage.
@@ -534,3 +595,4 @@ the library `@other-org/validator` isn’t a direct dependency of the project.
 The **team is aware** of the constraint and will work towards optimizing the infrastructure with time and resources.
 
      Copyright (c) 2023-present Biome Developers and Contributors.
+```

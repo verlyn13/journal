@@ -1,19 +1,20 @@
----
+***
+
 title: "Troubleshooting Guide: Topic Name"
-description: "Solutions for common issues with [Topic]"
+description: "Solutions for common issues with \[Topic]"
 category: "Troubleshooting"
-date_created: "YYYY-MM-DD"
-last_updated: "YYYY-MM-DD"
-applies_to: 
-  - "Component/Feature 1"
-  - "Component/Feature 2"
-severity_levels:
-  - "critical|high|medium|low"
-related_docs:
-  - "Related Documentation 1"
-  - "Related Documentation 2"
-tags: ["troubleshooting", "errors", "specific-functionality"]
----
+date\_created: "YYYY-MM-DD"
+last\_updated: "YYYY-MM-DD"
+applies\_to:
+\- "Component/Feature 1"
+\- "Component/Feature 2"
+severity\_levels:
+\- "critical|high|medium|low"
+related\_docs:
+\- "Related Documentation 1"
+\- "Related Documentation 2"
+tags: \["troubleshooting", "errors", "specific-functionality"]
+--------------------------------------------------------------
 
 # Troubleshooting Guide: Topic Name
 
@@ -37,11 +38,13 @@ Use this checklist to quickly identify common issues:
 ### Issue 1: Descriptive Title of the Problem
 
 **Symptoms:**
+
 - Observable sign of the issue
 - Another observable sign of the issue
 - Error message (if applicable)
 
 **Potential Causes:**
+
 - Cause 1
 - Cause 2
 - Cause 3
@@ -49,52 +52,54 @@ Use this checklist to quickly identify common issues:
 **Solutions:**
 
 1. **Solution for Cause 1**
-   
+
    Step-by-step instructions to resolve the issue.
-   
+
    ```python
    # Example code (if applicable)
    def solution_example():
        return "Fixed issue 1"
    ```
-   
+
    Expected outcome: What should happen after applying this solution.
 
 2. **Solution for Cause 2**
 
    Step-by-step instructions for the alternative solution.
-   
+
    Expected outcome: What should happen after applying this solution.
 
 **Verification:**
 
 How to verify that the issue has been successfully resolved.
 
----
+***
 
 ### Issue 2: Another Common Problem
 
 **Symptoms:**
+
 - Observable sign of the issue
 - Another observable sign of the issue
 - Error message (if applicable)
 
 **Potential Causes:**
+
 - Cause 1
 - Cause 2
 
 **Solutions:**
 
 1. **Solution for Cause 1**
-   
+
    Step-by-step instructions to resolve the issue.
-   
+
    Expected outcome: What should happen after applying this solution.
 
 2. **Solution for Cause 2**
 
    Step-by-step instructions for the alternative solution.
-   
+
    Expected outcome: What should happen after applying this solution.
 
 **Verification:**
@@ -108,6 +113,7 @@ How to verify that the issue has been successfully resolved.
 **Meaning:** Explanation of what this error message indicates.
 
 **Common Causes:**
+
 - Cause 1
 - Cause 2
 
@@ -118,6 +124,7 @@ How to verify that the issue has been successfully resolved.
 **Meaning:** Explanation of what this error message indicates.
 
 **Common Causes:**
+
 - Cause 1
 - Cause 2
 
@@ -169,7 +176,7 @@ Guidelines for when to escalate the issue or seek additional support:
 
 - If the error persists after trying all solutions in this guide
 - If you encounter error messages not covered in this guide
-- If you observe [specific critical behavior]
+- If you observe \[specific critical behavior]
 
 ### Support Resources
 

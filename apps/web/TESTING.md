@@ -9,7 +9,7 @@ The Journal web application uses Vitest for testing React components and integra
 - **Test Files**: 3 (2 active, 1 skipped)
 - **Total Tests**: 10 (7 passing, 3 skipped)
 - **Test Categories**: Unit and Integration
-- **Execution Time**: ~3 seconds
+- **Execution Time**: \~3 seconds
 
 ## Test Organization
 
@@ -220,27 +220,32 @@ This builds the production bundle and verifies size constraints.
 The dual-write tests verify:
 
 1. **Markdown Mode**:
-   - Sends `markdown_content` field when saving
-   - Sets `content_version: 2` for markdown entries
-   - Includes `X-Editor-Mode: markdown` header
+
+- Sends `markdown_content` field when saving
+- Sets `content_version: 2` for markdown entries
+- Includes `X-Editor-Mode: markdown` header
 
 2. **Legacy Mode**:
-   - Only sends HTML content
-   - No markdown-specific fields
-   - Maintains backward compatibility
+
+- Only sends HTML content
+- No markdown-specific fields
+- Maintains backward compatibility
 
 3. **Header Negotiation**:
-   - API respects `X-Editor-Mode` header
-   - Returns appropriate format based on client preference
+
+- API respects `X-Editor-Mode` header
+- Returns appropriate format based on client preference
 
 ## Continuous Integration
 
 Tests run automatically in CI on:
+
 - Pull requests
 - Pushes to main branch
 - Manual workflow dispatch
 
 GitHub Actions workflow includes:
+
 1. Install dependencies with Bun
 2. Run type checking
 3. Run linting
@@ -252,20 +257,24 @@ GitHub Actions workflow includes:
 ### Common Issues
 
 1. **Test Timeout**
-   - Increase timeout: `{ timeout: 5000 }`
-   - Check for unresolved promises
+
+- Increase timeout: `{ timeout: 5000 }`
+- Check for unresolved promises
 
 2. **Module Import Errors**
-   - Clear cache: `rm -rf node_modules/.vite`
-   - Reinstall: `bun install`
+
+- Clear cache: `rm -rf node_modules/.vite`
+- Reinstall: `bun install`
 
 3. **React Testing Library Queries**
-   - Use `screen.debug()` to see rendered output
-   - Prefer accessible queries (getByRole, getByLabelText)
+
+- Use `screen.debug()` to see rendered output
+- Prefer accessible queries (getByRole, getByLabelText)
 
 4. **Mock Not Working**
-   - Ensure mock is before component import
-   - Clear module cache between tests
+
+- Ensure mock is before component import
+- Clear module cache between tests
 
 ### Debug Mode
 
@@ -295,7 +304,7 @@ bun test --ui
 3. **Visual Regression**: Add visual regression tests for UI consistency
 4. **Performance Tests**: Add tests for bundle size and runtime performance
 
----
+***
 
 *Last Updated: September 2025*
 *Test Framework: Vitest 3.2.4*

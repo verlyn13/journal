@@ -7,7 +7,7 @@ import pytest
 from app.infra.conversion import html_to_markdown, markdown_to_html
 
 
-@pytest.mark.unit
+@pytest.mark.unit()
 class TestConversionExtended:
     """Extended tests for conversion functions."""
 
@@ -125,13 +125,13 @@ Ordered:
 
     def test_markdown_to_html_empty_input(self):
         """Test empty markdown input."""
-        assert markdown_to_html("") == ""
-        assert markdown_to_html(None) == ""
+        assert not markdown_to_html("")
+        assert not markdown_to_html(None)
 
     def test_html_to_markdown_empty_input(self):
         """Test empty HTML input."""
-        assert html_to_markdown("") == ""
-        assert html_to_markdown(None) == ""
+        assert not html_to_markdown("")
+        assert not html_to_markdown(None)
 
     def test_markdown_to_html_special_characters(self):
         """Test markdown with special characters."""

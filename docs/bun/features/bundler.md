@@ -1,25 +1,25 @@
 # BUNDLER
 
-*Source: https://bun.sh/docs/bundler*
+*Source: <https://bun.sh/docs/bundler>*
 *Fetched: 2025-08-30T00:47:26.755Z*
 
----
+***
 
-Bun&#x27;s fast native bundler can be used via the `bun build` CLI command or the `Bun.build()` JavaScript API.
+Bun's fast native bundler can be used via the `bun build` CLI command or the `Bun.build()` JavaScript API.
 
-JavaScriptCLIJavaScript```
+JavaScriptCLIJavaScript\`\`\`
 await Bun.build({
-  entrypoints: ['./index.tsx'],
-  outdir: './build',
+entrypoints: \['./index.tsx'],
+outdir: './build',
 });
 
-```
+````
 
 CLI```
 bun build ./index.tsx --outdir ./build
-```
+````
 
-It&#x27;s fast. The numbers below represent performance on esbuild&#x27;s [three.js benchmark](https://github.com/oven-sh/bun/tree/main/bench/bundle).
+It's fast. The numbers below represent performance on esbuild's [three.js benchmark](https://github.com/oven-sh/bun/tree/main/bench/bundle).
 
 [](/images/bundler-speed.png)Bundling 10 copies of three.js from scratch, with sourcemaps and minification## [Why bundle?](#why-bundle)
 
@@ -28,24 +28,24 @@ The bundler is a key piece of infrastructure in the JavaScript ecosystem. As a b
 - **Reducing HTTP requests.** A single package in `node_modules` may consist of hundreds of files, and large applications may have dozens of such dependencies. Loading each of these files with a separate HTTP request becomes untenable very quickly, so bundlers are used to convert our application source code into a smaller number of self-contained "bundles" that can be loaded with a single request.
 - **Code transforms.** Modern apps are commonly built with languages or tools like TypeScript, JSX, and CSS modules, all of which must be converted into plain JavaScript and CSS before they can be consumed by a browser. The bundler is the natural place to configure these transformations.
 - **Framework features.** Frameworks rely on bundler plugins & code transformations to implement common patterns like file-system routing, client-server code co-location (think `getServerSideProps` or Remix loaders), and server components.
-- **Full-stack Applications.** Bun&#x27;s bundler can handle both server and client code in a single command, enabling optimized production builds and single-file executables. With build-time HTML imports, you can bundle your entire application — frontend assets and backend server — into a single deployable unit.
+- **Full-stack Applications.** Bun's bundler can handle both server and client code in a single command, enabling optimized production builds and single-file executables. With build-time HTML imports, you can bundle your entire application — frontend assets and backend server — into a single deployable unit.
 
-Let&#x27;s jump into the bundler API.
+Let's jump into the bundler API.
 
 Note that the Bun bundler is not intended to replace `tsc` for typechecking or generating type declarations.
 
 ## [Basic example](#basic-example)
 
-Let&#x27;s build our first bundle. You have the following two files, which implement a simple client-side rendered React app.
+Let's build our first bundle. You have the following two files, which implement a simple client-side rendered React app.
 
-./index.tsx./Component.tsx./index.tsx```
-import * as ReactDOM from 'react-dom/client';
+./index.tsx./Component.tsx./index.tsx\`\`\`
+import \* as ReactDOM from 'react-dom/client';
 import {Component} from "./Component"
 
 const root = ReactDOM.createRoot(document.getElementById('root')!);
 root.render()
 
-```
+````
 
 ./Component.tsx```
 export function Component(props: {message: string}) {
@@ -53,23 +53,23 @@ export function Component(props: {message: string}) {
 
 }
 
-```
+````
 
-Here, `index.tsx` is the "entrypoint" to our application. Commonly, this will be a script that performs some *side effect*, like starting a server or—in this case—initializing a React root. Because we&#x27;re using TypeScript & JSX, we need to bundle our code before it can be sent to the browser.
+Here, `index.tsx` is the "entrypoint" to our application. Commonly, this will be a script that performs some *side effect*, like starting a server or—in this case—initializing a React root. Because we're using TypeScript & JSX, we need to bundle our code before it can be sent to the browser.
 
 To create our bundle:
 
-JavaScriptCLIJavaScript```
+JavaScriptCLIJavaScript\`\`\`
 await Bun.build({
-  entrypoints: ['./index.tsx'],
-  outdir: './out',
+entrypoints: \['./index.tsx'],
+outdir: './out',
 })
 
-```
+````
 
 CLI```
 bun build ./index.tsx --outdir ./out
-```
+````
 
 For each file specified in `entrypoints`, Bun will generate a new bundle. This bundle will be written to disk in the `./out` directory (as resolved from the current working directory). After running the build, the file system looks like this:
 
@@ -84,24 +84,24 @@ For each file specified in `entrypoints`, Bun will generate a new bundle. This b
 
 The contents of `out/index.js` will look something like this:
 
-out/index.js```
+out/index.js\`\`\`
 // ...
-// ~20k lines of code
+// \~20k lines of code
 // including the contents of `react-dom/client` and all its dependencies
 // this is where the $jsxDEV and $createRoot functions are defined
 
 // Component.tsx
 function Component(props) {
-  return $jsxDEV("p", {
-    children: props.message
-  }, undefined, false, undefined, this);
+return $jsxDEV("p", {
+children: props.message
+}, undefined, false, undefined, this);
 }
 
 // index.tsx
 var rootNode = document.getElementById("root");
 var root = $createRoot(rootNode);
 root.render($jsxDEV(Component, {
-  message: "Sup!"
+message: "Sup!"
 }, undefined, false, undefined, this));
 
 ```
@@ -111,24 +111,23 @@ Tutorial: Run this file in your browser
 We can load this file in the browser to see our app in action. Create an `index.html` file in the `out` directory:
 
 ```
+
 touch out/index.html
+
 ```
 
 Then paste the following contents into it:
 
 ```
 
-
-
-
-
-
 ```
 
 Then spin up a static file server serving the `out` directory:
 
 ```
+
 bunx serve out
+
 ```
 
 Visit `http://localhost:5000` to see your bundled app in action.
@@ -138,7 +137,9 @@ Visit `http://localhost:5000` to see your bundled app in action.
 Like the runtime and test runner, the bundler supports watch mode natively.
 
 ```
+
 bun build ./index.tsx --outdir ./out --watch
+
 ```
 
 ## [Content types](#content-types)
@@ -150,6 +151,7 @@ ExtensionsDetails`.js` `.jsx`, `.cjs` `.mjs` `.mts` `.cts` `.ts` `.tsx`Uses Bun&
 JSON files are parsed and inlined into the bundle as a JavaScript object.
 
 ```
+
 import pkg from "./package.json";
 pkg.name; // => "my-package"
 
@@ -160,6 +162,7 @@ pkg.name; // => "my-package"
 TOML files are parsed and inlined into the bundle as a JavaScript object.
 
 ```
+
 import config from "./bunfig.toml";
 config.logLevel; // => "debug"
 
@@ -170,10 +173,11 @@ config.logLevel; // => "debug"
 The contents of the text file are read and inlined into the bundle as a string.
 
 ```
+
 import contents from "./file.txt";
 console.log(contents); // => "Hello, world!"
 
-```
+````
 
 `.node` `.wasm`These files are supported by the Bun runtime, but during bundling they are treated as [assets](#assets).### [Assets](#assets)
 
@@ -184,14 +188,14 @@ InputOutputInput```
 import logo from "./logo.svg";
 console.log(logo);
 
-```
+````
 
-Output```
+Output\`\`\`
 // bundled output
 var logo = "./logo-ab237dfe.svg";
 console.log(logo);
 
-```
+````
 
 The exact behavior of the file loader is also impacted by [`naming`](#naming) and [`publicPath`](#publicpath).
 
@@ -213,16 +217,19 @@ const result = await Bun.build({
 });
 // => { success: boolean, outputs: BuildArtifact[], logs: BuildMessage[] }
 
-```
+````
 
-CLI```
+CLI\`\`\`
 bun build --entrypoints ./index.ts
-```
 
 ```
-# the bundle will be printed to stdout
-#
 ```
+
+# the bundle will be printed to stdout
+
+#
+
+````
 
 ### [`outdir`](#outdir)
 
@@ -235,35 +242,38 @@ const result = await Bun.build({
 });
 // => { success: boolean, outputs: BuildArtifact[], logs: BuildMessage[] }
 
-```
+````
 
-CLI```
+CLI\`\`\`
 bun build --entrypoints ./index.ts --outdir ./out
-```
 
 ```
+```
+
 # a summary of bundled files will be printed to stdout
+
 ```
 
 If `outdir` is not passed to the JavaScript API, bundled code will not be written to disk. Bundled files are returned in an array of `BuildArtifact` objects. These objects are Blobs with extra properties; see [Outputs](#outputs) for complete documentation.
 
 ```
+
 const result = await Bun.build({
-  entrypoints: ["./index.ts"],
+entrypoints: \["./index.ts"],
 });
 
 for (const res of result.outputs) {
-  // Can be consumed as blobs
-  await res.text();
+// Can be consumed as blobs
+await res.text();
 
-  // Bun will set Content-Type and Etag headers
-  new Response(res);
+// Bun will set Content-Type and Etag headers
+new Response(res);
 
-  // Can be written manually, but you should use `outdir` in this case.
-  Bun.write(path.join("out", res.path), res);
+// Can be written manually, but you should use `outdir` in this case.
+Bun.write(path.join("out", res.path), res);
 }
 
-```
+````
 
 When `outdir` is set, the `path` property on a `BuildArtifact` will be the absolute path to where it was written to.
 
@@ -278,11 +288,12 @@ await Bun.build({
   target: 'browser', // default
 })
 
-```
+````
 
-CLI```
+CLI\`\`\`
 bun build --entrypoints ./index.ts --outdir ./out --target browser
-```
+
+````
 
 Depending on the target, Bun will apply different module resolution rules and optimizations.
 
@@ -313,11 +324,12 @@ await Bun.build({
   format: "esm",
 })
 
-```
+````
 
-CLI```
+CLI\`\`\`
 bun build ./index.tsx --outdir ./out --format esm
-```
+
+````
 
 To use ES Module syntax in browsers, set `format` to `"esm"` and make sure your `<script type="module">` tag has `type="module"` set.
 
@@ -332,11 +344,12 @@ await Bun.build({
   format: "cjs",
 })
 
-```
+````
 
-CLI```
+CLI\`\`\`
 bun build ./index.tsx --outdir ./out --format cjs
-```
+
+````
 
 #### `format: "iife"` - IIFE
 
@@ -353,43 +366,44 @@ await Bun.build({
   splitting: false, // default
 })
 
-```
+````
 
-CLI```
+CLI\`\`\`
 bun build ./index.tsx --outdir ./out --splitting
-```
+
+````
 
 When `true`, the bundler will enable *code splitting*. When multiple entrypoints both import the same file, module, or set of files/modules, it&#x27;s often useful to split the shared code into a separate bundle. This shared bundle is known as a *chunk*. Consider the following files:
 
 entry-a.tsentry-b.tsshared.tsentry-a.ts```
 import { shared } from './shared.ts';
 
-```
+````
 
-entry-b.ts```
+entry-b.ts\`\`\`
 import { shared } from './shared.ts';
 
-```
+````
 
 shared.ts```
 export const shared = 'shared';
 
-```
+````
 
 To bundle `entry-a.ts` and `entry-b.ts` with code-splitting enabled:
 
-JavaScriptCLIJavaScript```
+JavaScriptCLIJavaScript\`\`\`
 await Bun.build({
-  entrypoints: ['./entry-a.ts', './entry-b.ts'],
-  outdir: './out',
-  splitting: true,
+entrypoints: \['./entry-a.ts', './entry-b.ts'],
+outdir: './out',
+splitting: true,
 })
 
-```
+````
 
 CLI```
 bun build ./entry-a.ts ./entry-b.ts --outdir ./out --splitting
-```
+````
 
 Running this build will result in the following files:
 
@@ -411,21 +425,21 @@ The generated `chunk-2fce6291bf86559d.js` file contains the shared code. To avoi
 
 A list of plugins to use during bundling.
 
-JavaScriptCLIJavaScript```
+JavaScriptCLIJavaScript\`\`\`
 await Bun.build({
-  entrypoints: ['./index.tsx'],
-  outdir: './out',
-  plugins: [/* ... */],
+entrypoints: \['./index.tsx'],
+outdir: './out',
+plugins: \[/\* ... \*/],
 })
 
-```
+````
 
 CLI```
 n/a
 
-```
+````
 
-Bun implements a universal plugin system for both Bun&#x27;s runtime and bundler. Refer to the [plugin documentation](https://bun.com/docs/bundler/plugins) for complete documentation.
+Bun implements a universal plugin system for both Bun's runtime and bundler. Refer to the [plugin documentation](https://bun.com/docs/bundler/plugins) for complete documentation.
 
 ### [`env`](#env)
 
@@ -435,26 +449,26 @@ Controls how environment variables are handled during bundling. Internally, this
 
 Injects environment variables into the bundled output by converting `process.env.FOO` references to string literals containing the actual environment variable values.
 
-JavaScriptCLIJavaScript```
+JavaScriptCLIJavaScript\`\`\`
 await Bun.build({
-  entrypoints: ['./index.tsx'],
-  outdir: './out',
-  env: "inline",
+entrypoints: \['./index.tsx'],
+outdir: './out',
+env: "inline",
 })
 
-```
+````
 
 CLI```
 FOO=bar BAZ=123 bun build ./index.tsx --outdir ./out --env inline
-```
+````
 
 For the input below:
 
-input.js```
+input.js\`\`\`
 console.log(process.env.FOO);
 console.log(process.env.BAZ);
 
-```
+````
 
 The generated bundle will contain the following code:
 
@@ -462,26 +476,26 @@ output.js```
 console.log("bar");
 console.log("123");
 
-```
+````
 
 #### `env: "PUBLIC_*"` (prefix)
 
 Inlines environment variables matching the given prefix (the part before the `*` character), replacing `process.env.FOO` with the actual environment variable value. This is useful for selectively inlining environment variables for things like public-facing URLs or client-side tokens, without worrying about injecting private credentials into output bundles.
 
-JavaScriptCLIJavaScript```
+JavaScriptCLIJavaScript\`\`\`
 await Bun.build({
-  entrypoints: ['./index.tsx'],
-  outdir: './out',
+entrypoints: \['./index.tsx'],
+outdir: './out',
 
-  // Inline all env vars that start with "ACME_PUBLIC_"
-  env: "ACME_PUBLIC_*",
+// Inline all env vars that start with "ACME\_PUBLIC\_"
+env: "ACME\_PUBLIC\_\*",
 })
 
-```
+````
 
 CLI```
 FOO=bar BAZ=123 ACME_PUBLIC_URL=https://acme.com bun build ./index.tsx --outdir ./out --env 'ACME_PUBLIC_*'
-```
+````
 
 For example, given the following environment variables:
 
@@ -491,9 +505,9 @@ FOO=bar BAZ=123 ACME_PUBLIC_URL=https://acme.com
 
 And source code:
 
-index.tsx```
+index.tsx\`\`\`
 console.log(process.env.FOO);
-console.log(process.env.ACME_PUBLIC_URL);
+console.log(process.env.ACME\_PUBLIC\_URL);
 console.log(process.env.BAZ);
 
 ```
@@ -501,8 +515,9 @@ console.log(process.env.BAZ);
 The generated bundle will contain the following code:
 
 ```
+
 console.log(process.env.FOO);
-console.log("https://acme.com");
+console.log("<https://acme.com>");
 console.log(process.env.BAZ);
 
 ```
@@ -514,8 +529,10 @@ Disables environment variable injection entirely.
 For example, given the following environment variables:
 
 ```
-FOO=bar BAZ=123 ACME_PUBLIC_URL=https://acme.com
-```
+
+FOO=bar BAZ=123 ACME\_PUBLIC\_URL=<https://acme.com>
+
+````
 
 And source code:
 
@@ -524,7 +541,7 @@ console.log(process.env.FOO);
 console.log(process.env.ACME_PUBLIC_URL);
 console.log(process.env.BAZ);
 
-```
+````
 
 The generated bundle will contain the following code:
 
@@ -538,18 +555,18 @@ console.log(process.env.BAZ);
 
 Specifies the type of sourcemap to generate.
 
-JavaScriptCLIJavaScript```
+JavaScriptCLIJavaScript\`\`\`
 await Bun.build({
-  entrypoints: ['./index.tsx'],
-  outdir: './out',
-  sourcemap: 'linked', // default 'none'
+entrypoints: \['./index.tsx'],
+outdir: './out',
+sourcemap: 'linked', // default 'none'
 })
 
-```
+````
 
 CLI```
 bun build ./index.tsx --outdir ./out --sourcemap=linked
-```
+````
 
 `"none"`*Default.* No sourcemap is generated.`"linked"`
 
@@ -592,67 +609,67 @@ When targeting `bun`, identifiers will be minified by default.
 
 To enable all minification options:
 
-JavaScriptCLIJavaScript```
+JavaScriptCLIJavaScript\`\`\`
 await Bun.build({
-  entrypoints: ['./index.tsx'],
-  outdir: './out',
-  minify: true, // default false
+entrypoints: \['./index.tsx'],
+outdir: './out',
+minify: true, // default false
 })
 
-```
+````
 
 CLI```
 bun build ./index.tsx --outdir ./out --minify
-```
+````
 
 To granularly enable certain minifications:
 
-JavaScriptCLIJavaScript```
+JavaScriptCLIJavaScript\`\`\`
 await Bun.build({
-  entrypoints: ['./index.tsx'],
-  outdir: './out',
-  minify: {
-    whitespace: true,
-    identifiers: true,
-    syntax: true,
-  },
+entrypoints: \['./index.tsx'],
+outdir: './out',
+minify: {
+whitespace: true,
+identifiers: true,
+syntax: true,
+},
 })
 
-```
+````
 
 CLI```
 bun build ./index.tsx --outdir ./out --minify-whitespace --minify-identifiers --minify-syntax
-```
+````
 
 ### [`external`](#external)
 
 A list of import paths to consider *external*. Defaults to `[]`.
 
-JavaScriptCLIJavaScript```
+JavaScriptCLIJavaScript\`\`\`
 await Bun.build({
-  entrypoints: ['./index.tsx'],
-  outdir: './out',
-  external: ["lodash", "react"], // default: []
+entrypoints: \['./index.tsx'],
+outdir: './out',
+external: \["lodash", "react"], // default: \[]
 })
 
-```
+````
 
 CLI```
 bun build ./index.tsx --outdir ./out --external lodash --external react
-```
+````
 
 An external import is one that will not be included in the final bundle. Instead, the `import` statement will be left as-is, to be resolved at runtime.
 
 For instance, consider the following entrypoint file:
 
-index.tsx```
-import _ from "lodash";
+index.tsx\`\`\`
+import \_ from "lodash";
 import {z} from "zod";
 
 const value = z.string().parse("Hello world!")
-console.log(_.upperCase(value));
+console.log(\_.upperCase(value));
 
-```
+````
 
 Normally, bundling `index.tsx` would generate a bundle containing the entire source code of the `"zod"` package. If instead, we want to leave the `import` statement as-is, we can mark it as external:
 
@@ -663,11 +680,12 @@ await Bun.build({
   external: ['zod'],
 })
 
-```
+````
 
-CLI```
+CLI\`\`\`
 bun build ./index.tsx --outdir ./out --external zod
-```
+
+````
 
 The generated bundle will look something like this:
 
@@ -681,55 +699,55 @@ import {z} from "zod";
 var value = z.string().parse("Hello world!")
 console.log(_.upperCase(value));
 
-```
+````
 
 To mark all imports as external, use the wildcard `*`:
 
-JavaScriptCLIJavaScript```
+JavaScriptCLIJavaScript\`\`\`
 await Bun.build({
-  entrypoints: ['./index.tsx'],
-  outdir: './out',
-  external: ['*'],
+entrypoints: \['./index.tsx'],
+outdir: './out',
+external: \['\*'],
 })
 
-```
+````
 
 CLI```
 bun build ./index.tsx --outdir ./out --external '*'
-```
+````
 
 ### [`packages`](#packages)
 
 Control whatever package dependencies are included to bundle or not. Possible values: `bundle` (default), `external`. Bun treats any import which path do not start with `.`, `..` or `/` as package.
 
-JavaScriptCLIJavaScript```
+JavaScriptCLIJavaScript\`\`\`
 await Bun.build({
-  entrypoints: ['./index.ts'],
-  packages: 'external',
+entrypoints: \['./index.ts'],
+packages: 'external',
 })
 
-```
+````
 
 CLI```
 bun build ./index.ts --packages external
-```
+````
 
 ### [`naming`](#naming)
 
 Customizes the generated file names. Defaults to `./[dir]/[name].[ext]`.
 
-JavaScriptCLIJavaScript```
+JavaScriptCLIJavaScript\`\`\`
 await Bun.build({
-  entrypoints: ['./index.tsx'],
-  outdir: './out',
-  naming: "[dir]/[name].[ext]", // default
+entrypoints: \['./index.tsx'],
+outdir: './out',
+naming: "\[dir]/\[name].\[ext]", // default
 })
 
-```
+````
 
 CLI```
 bun build ./index.tsx --outdir ./out --entry-naming [dir]/[name].[ext]
-```
+````
 
 By default, the names of the generated bundles are based on the name of the associated entrypoint.
 
@@ -766,18 +784,18 @@ For example:
 
 Token`[name]``[ext]``[hash]``[dir]``./index.tsx``index``js``a1b2c3d4``""` (empty string)`./nested/entry.ts``entry``js``c3d4e5f6``"nested"`We can combine these tokens to create a template string. For instance, to include the hash in the generated bundle names:
 
-JavaScriptCLIJavaScript```
+JavaScriptCLIJavaScript\`\`\`
 await Bun.build({
-  entrypoints: ['./index.tsx'],
-  outdir: './out',
-  naming: 'files/[dir]/[name]-[hash].[ext]',
+entrypoints: \['./index.tsx'],
+outdir: './out',
+naming: 'files/\[dir]/\[name]-\[hash].\[ext]',
 })
 
-```
+````
 
 CLI```
 bun build ./index.tsx --outdir ./out --entry-naming [name]-[hash].[ext]
-```
+````
 
 This build would result in the following file structure:
 
@@ -792,41 +810,41 @@ This build would result in the following file structure:
 
 When a `string` is provided for the `naming` field, it is used only for bundles *that correspond to entrypoints*. The names of [chunks](#splitting) and copied assets are not affected. Using the JavaScript API, separate template strings can be specified for each type of generated file.
 
-JavaScriptCLIJavaScript```
+JavaScriptCLIJavaScript\`\`\`
 await Bun.build({
-  entrypoints: ['./index.tsx'],
-  outdir: './out',
-  naming: {
-    // default values
-    entry: '[dir]/[name].[ext]',
-    chunk: '[name]-[hash].[ext]',
-    asset: '[name]-[hash].[ext]',
-  },
+entrypoints: \['./index.tsx'],
+outdir: './out',
+naming: {
+// default values
+entry: '\[dir]/\[name].\[ext]',
+chunk: '\[name]-\[hash].\[ext]',
+asset: '\[name]-\[hash].\[ext]',
+},
 })
 
-```
+````
 
 CLI```
 bun build ./index.tsx --outdir ./out --entry-naming "[dir]/[name].[ext]" --chunk-naming "[name]-[hash].[ext]" --asset-naming "[name]-[hash].[ext]"
-```
+````
 
 ### [`root`](#root)
 
 The root directory of the project.
 
-JavaScriptCLIJavaScript```
+JavaScriptCLIJavaScript\`\`\`
 await Bun.build({
-  entrypoints: ['./pages/a.tsx', './pages/b.tsx'],
-  outdir: './out',
-  root: '.',
+entrypoints: \['./pages/a.tsx', './pages/b.tsx'],
+outdir: './out',
+root: '.',
 })
 
-```
+````
 
 CLI```
 n/a
 
-```
+````
 
 If unspecified, it is computed to be the first common ancestor of all entrypoint files. Consider the following file structure:
 
@@ -840,17 +858,17 @@ If unspecified, it is computed to be the first common ancestor of all entrypoint
 
 We can build both entrypoints in the `pages` directory:
 
-JavaScriptCLIJavaScript```
+JavaScriptCLIJavaScript\`\`\`
 await Bun.build({
-  entrypoints: ['./pages/index.tsx', './pages/settings.tsx'],
-  outdir: './out',
+entrypoints: \['./pages/index.tsx', './pages/settings.tsx'],
+outdir: './out',
 })
 
-```
+````
 
 CLI```
 bun build ./pages/index.tsx ./pages/settings.tsx --outdir ./out
-```
+````
 
 This would result in a file structure like this:
 
@@ -869,18 +887,18 @@ Since the `pages` directory is the first common ancestor of the entrypoint files
 
 This behavior can be overridden by specifying the `root` option:
 
-JavaScriptCLIJavaScript```
+JavaScriptCLIJavaScript\`\`\`
 await Bun.build({
-  entrypoints: ['./pages/index.tsx', './pages/settings.tsx'],
-  outdir: './out',
-  root: '.',
+entrypoints: \['./pages/index.tsx', './pages/settings.tsx'],
+outdir: './out',
+root: '.',
 })
 
-```
+````
 
 CLI```
 bun build ./pages/index.tsx ./pages/settings.tsx --outdir ./out --root .
-```
+````
 
 By specifying `.` as `root`, the generated file structure will look like this:
 
@@ -908,11 +926,11 @@ In many cases, generated bundles will contain no `import` statements. After all,
 
 In any of these cases, the final bundles may contain paths to other files. By default these imports are *relative*. Here is an example of a simple asset import:
 
-InputOutputInput```
+InputOutputInput\`\`\`
 import logo from './logo.svg';
 console.log(logo);
 
-```
+````
 
 Output```
 // logo.svg is copied into
@@ -920,29 +938,30 @@ Output```
 var logo = './logo-a7305bdef.svg';
 console.log(logo);
 
-```
+````
 
 Setting `publicPath` will prefix all file paths with the specified value.
 
-JavaScriptCLIJavaScript```
+JavaScriptCLIJavaScript\`\`\`
 await Bun.build({
-  entrypoints: ['./index.tsx'],
-  outdir: './out',
-  publicPath: 'https://cdn.example.com/', // default is undefined
+entrypoints: \['./index.tsx'],
+outdir: './out',
+publicPath: '<https://cdn.example.com/>', // default is undefined
 })
 
-```
+````
 
 CLI```
 bun build ./index.tsx --outdir ./out --public-path https://cdn.example.com/
-```
+````
 
 The output file would now look something like this.
 
-Output```
+Output\`\`\`
 var logo = './logo-a7305bdef.svg';
-var logo = 'https://cdn.example.com/logo-a7305bdef.svg';
-```
+var logo = '<https://cdn.example.com/logo-a7305bdef.svg>';
+
+````
 
 ### [`define`](#define)
 
@@ -958,11 +977,12 @@ await Bun.build({
   },
 })
 
-```
+````
 
-CLI```
+CLI\`\`\`
 bun build ./index.tsx --outdir ./out --define 'STRING="value"' --define "nested.boolean=true"
-```
+
+````
 
 ### [`loader`](#loader)
 
@@ -978,11 +998,12 @@ await Bun.build({
   },
 })
 
-```
+````
 
-CLI```
+CLI\`\`\`
 bun build ./index.tsx --outdir ./out --loader .png:dataurl --loader .txt:file
-```
+
+````
 
 ### [`banner`](#banner)
 
@@ -995,11 +1016,12 @@ await Bun.build({
   banner: '"use client";'
 })
 
-```
+````
 
-CLI```
-bun build ./index.tsx --outdir ./out --banner "\"use client\";"
-```
+CLI\`\`\`
+bun build ./index.tsx --outdir ./out --banner ""use client";"
+
+````
 
 ### [`footer`](#footer)
 
@@ -1012,11 +1034,12 @@ await Bun.build({
   footer: '// built with love in SF'
 })
 
-```
+````
 
-CLI```
+CLI\`\`\`
 bun build ./index.tsx --outdir ./out --footer="// built with love in SF"
-```
+
+````
 
 ### [`drop`](#drop)
 
@@ -1029,11 +1052,12 @@ await Bun.build({
   drop: ["console", "debugger", "anyIdentifier.or.propertyAccess"],
 })
 
-```
+````
 
-CLI```
+CLI\`\`\`
 bun build ./index.tsx --outdir ./out --drop=console --drop=debugger --drop=anyIdentifier.or.propertyAccess
-```
+
+````
 
 ### [`throw`](#throw)
 
@@ -1061,7 +1085,7 @@ if (!result.success) {
   console.error("Build failed with errors:", result.logs);
 }
 
-```
+````
 
 ## [Outputs](#outputs)
 
@@ -1117,18 +1141,18 @@ return new Response(artifact);
 
 The Bun runtime implements special pretty-printing of `BuildArtifact` object to make debugging easier.
 
-Build scriptShell outputBuild script```
+Build scriptShell outputBuild script\`\`\`
 // build.ts
-const build = await Bun.build({/* */});
+const build = await Bun.build({/\* \*/});
 
-const artifact = build.outputs[0];
+const artifact = build.outputs\[0];
 console.log(artifact);
 
-```
+````
 
 Shell output```
 bun run build.ts
-```
+````
 
 ```
 BuildArtifact (entry-point) {
@@ -1147,18 +1171,18 @@ BuildArtifact (entry-point) {
 
 The `bytecode: boolean` option can be used to generate bytecode for any JavaScript/TypeScript entrypoints. This can greatly improve startup times for large applications. Only supported for `"cjs"` format, only supports `"target": "bun"` and dependent on a matching version of Bun. This adds a corresponding `.jsc` file for each entrypoint.
 
-JavaScriptCLIJavaScript```
+JavaScriptCLIJavaScript\`\`\`
 await Bun.build({
-  entrypoints: ["./index.tsx"],
-  outdir: "./out",
-  bytecode: true,
+entrypoints: \["./index.tsx"],
+outdir: "./out",
+bytecode: true,
 })
 
-```
+````
 
 CLI```
 bun build ./index.tsx --outdir ./out --bytecode
-```
+````
 
 ### [Executables](#executables)
 
@@ -1408,24 +1432,24 @@ declare class ResolveMessage {
 
 ## CLI Usage
 
-$bun build <entrypoints...>### Flags
+$bun build \<entrypoints...>### Flags
 
 #### General Build Options
 
---productionSet NODE_ENV=production and enable minification--bytecodeUse a bytecode cache--target=<val>The intended execution environment for the bundle. "browser", "bun" or "node"--root=<val>Root directory used for multiple entry points--no-bundleTranspile file only, do not bundle--env=<val>Inline environment variables into the bundle as process.env.${name}. Defaults to &#x27;disable&#x27;. To inline environment variables matching a prefix, use my prefix like &#x27;FOO_PUBLIC_*&#x27;.#### Output & File Management
+\--productionSet NODE\_ENV=production and enable minification--bytecodeUse a bytecode cache--target=<val>The intended execution environment for the bundle. "browser", "bun" or "node"--root=<val>Root directory used for multiple entry points--no-bundleTranspile file only, do not bundle--env=<val>Inline environment variables into the bundle as process.env.${name}. Defaults to 'disable'. To inline environment variables matching a prefix, use my prefix like 'FOO\_PUBLIC\_\*'.#### Output & File Management
 
---outdir=<val>Default to "dist" if multiple files--outfile=<val>Write to a file--sourcemap=<val>Build with sourcemaps - &#x27;linked&#x27;, &#x27;inline&#x27;, &#x27;external&#x27;, or &#x27;none&#x27;--public-path=<val>A prefix to be appended to any import paths in bundled code--entry-naming=<val>Customize entry point filenames. Defaults to "[dir]/[name].[ext]"--chunk-naming=<val>Customize chunk filenames. Defaults to "[name]-[hash].[ext]"--asset-naming=<val>Customize asset filenames. Defaults to "[name]-[hash].[ext]"#### Minification & Optimization
+\--outdir=<val>Default to "dist" if multiple files--outfile=<val>Write to a file--sourcemap=<val>Build with sourcemaps - 'linked', 'inline', 'external', or 'none'--public-path=<val>A prefix to be appended to any import paths in bundled code--entry-naming=<val>Customize entry point filenames. Defaults to "\[dir]/\[name].\[ext]"--chunk-naming=<val>Customize chunk filenames. Defaults to "\[name]-\[hash].\[ext]"--asset-naming=<val>Customize asset filenames. Defaults to "\[name]-\[hash].\[ext]"#### Minification & Optimization
 
---splittingEnable code splitting--emit-dce-annotationsRe-emit DCE annotations in bundles. Enabled by default unless --minify-whitespace is passed.--minifyEnable all minification flags--minify-syntaxMinify syntax and inline data--minify-whitespaceMinify whitespace--minify-identifiersMinify identifiers--css-chunkingChunk CSS files together to reduce duplicated CSS loaded in a browser. Only has an effect when multiple entrypoints import CSS#### Module & Dependency Handling
+\--splittingEnable code splitting--emit-dce-annotationsRe-emit DCE annotations in bundles. Enabled by default unless --minify-whitespace is passed.--minifyEnable all minification flags--minify-syntaxMinify syntax and inline data--minify-whitespaceMinify whitespace--minify-identifiersMinify identifiers--css-chunkingChunk CSS files together to reduce duplicated CSS loaded in a browser. Only has an effect when multiple entrypoints import CSS#### Module & Dependency Handling
 
---format=<val>Specifies the module format to build to. "esm", "cjs" and "iife" are supported. Defaults to "esm".-e,--external=<val>Exclude module from transpilation (can use * wildcards). ex: -e react--packages=<val>Add dependencies to bundle or keep them external. "external", "bundle" is supported. Defaults to "bundle".--conditions=<val>Pass custom conditions to resolve#### Development Workflow
+\--format=<val>Specifies the module format to build to. "esm", "cjs" and "iife" are supported. Defaults to "esm".-e,--external=<val>Exclude module from transpilation (can use \* wildcards). ex: -e react--packages=<val>Add dependencies to bundle or keep them external. "external", "bundle" is supported. Defaults to "bundle".--conditions=<val>Pass custom conditions to resolve#### Development Workflow
 
---watchAutomatically restart the process on file change--no-clear-screenDisable clearing the terminal screen on reload when --watch is enabled--react-fast-refreshEnable React Fast Refresh transform (does not emit hot-module code, use this for testing)#### Output Content Customization
+\--watchAutomatically restart the process on file change--no-clear-screenDisable clearing the terminal screen on reload when --watch is enabled--react-fast-refreshEnable React Fast Refresh transform (does not emit hot-module code, use this for testing)#### Output Content Customization
 
---banner=<val>Add a banner to the bundled output such as "use client"; for a bundle being used with RSCs--footer=<val>Add a footer to the bundled output such as // built with bun!#### Standalone Executable Build
+\--banner=<val>Add a banner to the bundled output such as "use client"; for a bundle being used with RSCs--footer=<val>Add a footer to the bundled output such as // built with bun!#### Standalone Executable Build
 
---compileGenerate a standalone Bun executable containing your bundled code. Implies --production--windows-hide-consoleWhen using --compile targeting Windows, prevent a Command prompt from opening alongside the executable--windows-icon=<val>When using --compile targeting Windows, assign an executable icon#### Experimental Web App Features
+\--compileGenerate a standalone Bun executable containing your bundled code. Implies --production--windows-hide-consoleWhen using --compile targeting Windows, prevent a Command prompt from opening alongside the executable--windows-icon=<val>When using --compile targeting Windows, assign an executable icon#### Experimental Web App Features
 
---app(EXPERIMENTAL) Build a web app for production using Bun Bake.--server-components(EXPERIMENTAL) Enable server components--debug-dump-server-filesWhen --app is set, dump all server files to disk even when building statically--debug-no-minifyWhen --app is set, do not minify anything### Examples
+\--app(EXPERIMENTAL) Build a web app for production using Bun Bake.--server-components(EXPERIMENTAL) Enable server components--debug-dump-server-filesWhen --app is set, dump all server files to disk even when building statically--debug-no-minifyWhen --app is set, do not minify anything### Examples
 
-Frontend web apps:bun build --outfile=bundle.js ./src/index.tsbun build --minify --splitting --outdir=out ./index.jsx ./lib/worker.tsBundle code to be run in Bun (reduces server startup time)bun build --target=bun --outfile=server.js ./server.tsCreating a standalone executable (see https://bun.sh/docs/bundler/executables)bun build --compile --outfile=my-app ./cli.tsA full list of flags is available at https://bun.sh/docs/bundler
+Frontend web apps:bun build --outfile=bundle.js ./src/index.tsbun build --minify --splitting --outdir=out ./index.jsx ./lib/worker.tsBundle code to be run in Bun (reduces server startup time)bun build --target=bun --outfile=server.js ./server.tsCreating a standalone executable (see <https://bun.sh/docs/bundler/executables)bun> build --compile --outfile=my-app ./cli.tsA full list of flags is available at <https://bun.sh/docs/bundler>

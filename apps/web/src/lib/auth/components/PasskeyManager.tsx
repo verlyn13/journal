@@ -141,7 +141,6 @@ export const PasskeyManager: React.FC = () => {
                             setEditingName('');
                           }
                         }}
-                        autoFocus
                       />
                     </div>
                   ) : (

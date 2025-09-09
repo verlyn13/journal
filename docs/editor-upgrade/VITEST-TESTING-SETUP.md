@@ -1,7 +1,8 @@
 # Vitest Testing Setup
+
 ## Modern Testing Strategy for Journal Application
 
----
+***
 
 ## Why Vitest Over Jest
 
@@ -12,7 +13,7 @@
 5. **Compatible API** - Easy migration from Jest
 6. **Better performance** - Faster test runs
 
----
+***
 
 ## Installation & Configuration
 
@@ -140,7 +141,7 @@ global.ResizeObserver = vi.fn().mockImplementation(() => ({
 }
 ```
 
----
+***
 
 ## Testing Patterns for Editor Migration
 
@@ -223,7 +224,7 @@ describe('MarkdownEditor', () => {
 
 ### 2. Sanitization Tests
 
-```typescript
+````typescript
 // apps/web/src/components/markdown/__tests__/MarkdownPreview.test.tsx
 import { describe, it, expect } from 'vitest';
 import { render } from '@testing-library/react';
@@ -269,11 +270,11 @@ describe('MarkdownPreview - Security', () => {
     expect(container.querySelector('.hljs')).toBeInTheDocument();
   });
 });
-```
+````
 
 ### 3. Conversion Tests
 
-```typescript
+````typescript
 // apps/web/src/utils/__tests__/markdown-converter.test.ts
 import { describe, it, expect } from 'vitest';
 import { convertHtmlToMarkdown } from '../markdown-converter';
@@ -318,7 +319,7 @@ describe('HTML to Markdown Conversion', () => {
     const testCases = [
       null,
       undefined,
-      123,
+    123,
       {},
       []
     ];
@@ -347,7 +348,7 @@ describe('HTML to Markdown Conversion', () => {
     expect(result.markdown).toBe('```javascript\nconst x = 42;\n```');
   });
 });
-```
+````
 
 ### 4. Type Guard Tests
 
@@ -517,11 +518,12 @@ describe('Performance', () => {
 });
 ```
 
----
+***
 
 ## Test Execution Strategy
 
 ### 1. Continuous Testing
+
 ```bash
 # During development
 bun run test:watch
@@ -531,12 +533,14 @@ bun run test:ui
 ```
 
 ### 2. Pre-commit Testing
+
 ```bash
 # In .husky/pre-commit
 bun run quality:test
 ```
 
 ### 3. CI Pipeline Testing
+
 ```yaml
 # .github/workflows/test.yml
 - name: Run tests
@@ -551,27 +555,30 @@ bun run quality:test
     files: ./apps/web/coverage/coverage-final.json
 ```
 
----
+***
 
 ## Coverage Requirements
 
 ### Minimum Thresholds
+
 - **Branches**: 80%
 - **Functions**: 80%
 - **Lines**: 80%
 - **Statements**: 80%
 
 ### Critical Paths (100% Required)
+
 - Sanitization logic
 - HTML to Markdown conversion
 - Type guards
 - Error boundaries
 
----
+***
 
 ## Debugging Tests
 
 ### 1. Interactive Debugging
+
 ```bash
 # Debug in Chrome DevTools
 bun run test:debug
@@ -581,6 +588,7 @@ bun run test:debug MarkdownEditor.test.tsx
 ```
 
 ### 2. Verbose Output
+
 ```bash
 # See all test output
 bun run test --reporter=verbose
@@ -589,17 +597,19 @@ bun run test --reporter=verbose
 bun run test:coverage --reporter=verbose
 ```
 
----
+***
 
 ## Migration from Jest
 
 ### Quick Migration Steps
+
 1. Replace `jest.fn()` with `vi.fn()`
 2. Replace `jest.mock()` with `vi.mock()`
 3. Replace `expect.any()` with Vitest equivalents
 4. Update imports from `'jest'` to `'vitest'`
 
 ### Example Migration
+
 ```typescript
 // Before (Jest)
 import { jest } from '@jest/globals';
@@ -612,7 +622,7 @@ const mockFn = vi.fn();
 vi.mock('./module');
 ```
 
----
+***
 
 ## Benefits Over Jest
 
@@ -622,6 +632,6 @@ vi.mock('./module');
 4. **Type safety**: Better TypeScript integration
 5. **Vite alignment**: Same config system
 
----
+***
 
 *This Vitest setup ensures fast, reliable testing without deprecated dependencies.*

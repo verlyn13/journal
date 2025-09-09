@@ -1,15 +1,17 @@
 # Bulletproof Implementation Plan
+
 ## Correct-by-Construction Approach for Editor Migration
 
 ### Philosophy: Write Once, Test to Confirm (Not Fix)
 
----
+***
 
 ## Pre-Implementation Verification Checklist
 
 Before writing ANY component code, verify:
 
 ### 1. Type Contracts First
+
 ```typescript
 // Define all interfaces BEFORE implementation
 interface MarkdownEditorProps {
@@ -31,6 +33,7 @@ interface SanitizationSchema {
 ```
 
 ### 2. Data Flow Verification
+
 ```mermaid
 graph LR
   A[HTML Entry] --> B[Turndown Service]
@@ -46,13 +49,14 @@ graph LR
 ```
 
 ### 3. Security Boundaries
+
 - **Input**: HTML from database (potentially unsafe)
 - **Conversion**: Turndown (safe - outputs markdown string)
 - **Editing**: CodeMirror (safe - text only)
 - **Rendering**: react-markdown → rehype-sanitize (makes safe)
 - **Storage**: Markdown string (safe by nature)
 
----
+***
 
 ## Implementation Workflow with Built-in Correctness
 
@@ -334,7 +338,7 @@ export function MarkdownSplitPane({ entry, onSave }: MarkdownSplitPaneProps) {
 }
 ```
 
----
+***
 
 ## Testing Strategy: Confirm Correctness, Not Find Bugs
 
@@ -370,7 +374,7 @@ describe('Markdown Converter', () => {
 });
 ```
 
-```typescript
+````typescript
 // apps/web/src/components/markdown/__tests__/sanitization.test.ts
 describe('Sanitization Schema', () => {
   it('allows KaTeX classes', () => {
@@ -398,9 +402,9 @@ describe('Sanitization Schema', () => {
     expect(container.querySelector('[class*="hljs"]')).toBeInTheDocument();
   });
 });
-```
+````
 
----
+***
 
 ## Build & Quality Pipeline
 
@@ -452,11 +456,12 @@ function checkBundleSize() {
 checkBundleSize();
 ```
 
----
+***
 
 ## Phase Implementation with Quality Gates
 
 ### Phase 2: Feature-Flagged Implementation
+
 ```bash
 # Step 1: Implement types and utilities
 ✓ Type definitions complete
@@ -479,6 +484,7 @@ bun run quality:all
 ```
 
 ### Phase 3: Data Layer
+
 ```bash
 # Step 1: Database migration
 ✓ Migration script reviewed
@@ -501,6 +507,7 @@ bun run quality:all
 ```
 
 ### Phase 4: Production Readiness
+
 ```bash
 # Step 1: E2E tests
 ✓ User flow: Create entry
@@ -519,7 +526,7 @@ bun run quality:all
 ✓ Developer notes
 ```
 
----
+***
 
 ## Correctness Checklist
 
@@ -551,11 +558,12 @@ After implementation:
 - [ ] Documentation complete
 - [ ] Rollback tested
 
----
+***
 
 ## Common Pitfalls to Avoid
 
 ### 1. Don't Trust Input
+
 ```typescript
 // BAD
 function convert(html) {
@@ -577,6 +585,7 @@ function convert(html: unknown): ConversionResult {
 ```
 
 ### 2. Don't Mix Concerns
+
 ```typescript
 // BAD - Component does too much
 function Editor({ entry, onSave }) {
@@ -595,6 +604,7 @@ function Preview({ content }) {
 ```
 
 ### 3. Don't Skip Validation
+
 ```typescript
 // BAD
 <ReactMarkdown>{content}</ReactMarkdown>
@@ -612,11 +622,12 @@ function Preview({ content }) {
 </ReactMarkdown>
 ```
 
----
+***
 
 ## Success Metrics
 
 ### Technical
+
 - Zero console errors
 - Zero TypeScript errors
 - Zero lint warnings
@@ -625,6 +636,7 @@ function Preview({ content }) {
 - Memory stable over time
 
 ### Functional
+
 - HTML converts correctly
 - Math renders properly
 - Code highlights work
@@ -633,12 +645,13 @@ function Preview({ content }) {
 - Both editors coexist
 
 ### Process
+
 - No "fix after test" cycles
 - No regression bugs
 - Clean git history
 - Documented decisions
 - Reviewable PRs
 
----
+***
 
 *This plan ensures correctness by construction. Follow it step by step, and the implementation will be right the first time.*

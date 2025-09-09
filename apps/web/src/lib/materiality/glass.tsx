@@ -134,7 +134,7 @@ export function supportsBackdropFilter(): boolean {
     const supports = css!.supports!('backdrop-filter', 'blur(1px)') ||
                     css!.supports!('-webkit-backdrop-filter', 'blur(1px)');
     return Boolean(supports);
-  } catch (e) {
+  } catch (_e) {
     return false;
   }
 }

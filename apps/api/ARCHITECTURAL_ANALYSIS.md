@@ -7,11 +7,13 @@ The failing tests reveal fundamental architectural issues in the Journal API tha
 ## 1. Content Length/Word Count Architecture
 
 ### The Problem
+
 Test failures: `test_content_length_tracking`, `test_large_content_handling`, `test_special_characters_in_content`
 
 ### Root Cause Analysis
 
 #### Current Architecture
+
 ```python
 def _entry_response(row: Any, prefer_md: bool) -> dict:
     content = row.markdown_content if prefer_md and row.markdown_content else row.content
@@ -25,23 +27,27 @@ def _entry_response(row: Any, prefer_md: bool) -> dict:
 #### Architectural Issues
 
 1. **Inconsistent Content Representation**
-   - The `content` field polymorphically returns either HTML or Markdown based on headers
-   - This violates the Single Responsibility Principle
-   - Clients can't reliably process the content without checking `editor_mode`
+
+- The `content` field polymorphically returns either HTML or Markdown based on headers
+- This violates the Single Responsibility Principle
+- Clients can't reliably process the content without checking `editor_mode`
 
 2. **Missing Computed Fields**
-   - `word_count` exists in the database but isn't exposed in the API
-   - No content length tracking or metrics
-   - No way for clients to display reading time estimates
+
+- `word_count` exists in the database but isn't exposed in the API
+- No content length tracking or metrics
+- No way for clients to display reading time estimates
 
 3. **Dual-Write Without Dual-Read**
-   - System writes both HTML and Markdown
-   - But only returns one format at a time
-   - Creates information asymmetry
+
+- System writes both HTML and Markdown
+- But only returns one format at a time
+- Creates information asymmetry
 
 ### Architectural Solution
 
 #### Proposed Response Structure
+
 ```python
 class EntryResponse(BaseModel):
     # Identity
@@ -75,6 +81,7 @@ class ContentMetrics(BaseModel):
 ```
 
 #### Benefits
+
 - Explicit content format handling
 - Metrics computed once on write, not on every read
 - Clear separation of concerns
@@ -83,12 +90,15 @@ class ContentMetrics(BaseModel):
 ## 2. Special Character Handling Architecture
 
 ### The Problem
+
 Test failure: `test_special_characters_escaped_properly`
 
 ### Root Cause Analysis
 
 #### Current Architecture
+
 The markdown-to-HTML conversion uses string manipulation with incomplete escaping:
+
 ```python
 def markdown_to_html(md: str) -> str:
     # Uses html.escape but then manipulates strings
@@ -100,23 +110,27 @@ def markdown_to_html(md: str) -> str:
 #### Architectural Issues
 
 1. **Mixing Escaping Levels**
-   - HTML escaping applied early
-   - Then string manipulation potentially breaks it
-   - No clear escaping boundary
+
+- HTML escaping applied early
+- Then string manipulation potentially breaks it
+- No clear escaping boundary
 
 2. **No AST Representation**
-   - Direct string-to-string conversion
-   - No intermediate representation
-   - Can't validate or transform safely
+
+- Direct string-to-string conversion
+- No intermediate representation
+- Can't validate or transform safely
 
 3. **Security Vulnerabilities**
-   - Potential XSS if escaping is broken
-   - No Content Security Policy integration
-   - No sanitization layer
+
+- Potential XSS if escaping is broken
+- No Content Security Policy integration
+- No sanitization layer
 
 ### Architectural Solution
 
 #### Three-Layer Processing Pipeline
+
 ```python
 class MarkdownProcessor:
     def process(self, markdown: str) -> ProcessedContent:
@@ -138,6 +152,7 @@ class MarkdownProcessor:
 ```
 
 #### Benefits
+
 - Clear separation of parsing, transformation, and rendering
 - Security by design with sanitization layer
 - Extensible for new formats (LaTeX, PDF, etc.)
@@ -146,11 +161,13 @@ class MarkdownProcessor:
 ## 3. Semantic Search Architecture
 
 ### The Problem
+
 Test failures: `test_semantic_search_relevance`, `test_embedding_generation_for_existing_entry`, `test_search_excludes_deleted_entries_consistently`
 
 ### Root Cause Analysis
 
 #### Current Architecture
+
 ```python
 # Embeddings generated manually via API endpoint
 @router.post("/entries/{entry_id}/embed")
@@ -165,23 +182,27 @@ async def semantic_search(s: AsyncSession, q: str, k: int = 10):
 #### Architectural Issues
 
 1. **No Automatic Embedding Generation**
-   - New entries have no embeddings
-   - Requires manual API call per entry
-   - Creates orphaned entries invisible to search
+
+- New entries have no embeddings
+- Requires manual API call per entry
+- Creates orphaned entries invisible to search
 
 2. **Tight Coupling**
-   - Search directly depends on embeddings table
-   - No fallback mechanism
-   - All-or-nothing approach
+
+- Search directly depends on embeddings table
+- No fallback mechanism
+- All-or-nothing approach
 
 3. **No Event-Driven Processing**
-   - Synchronous embedding generation blocks requests
-   - No retry mechanism for failures
-   - No batch processing capability
+
+- Synchronous embedding generation blocks requests
+- No retry mechanism for failures
+- No batch processing capability
 
 ### Architectural Solution
 
 #### Event-Driven Embedding Pipeline
+
 ```python
 class EntryEventProcessor:
     """Processes entry events through multiple handlers."""
@@ -235,6 +256,7 @@ class HybridSearchService:
 ```
 
 #### Benefits
+
 - Automatic embedding generation for all entries
 - Graceful degradation when embeddings unavailable
 - Async processing doesn't block requests
@@ -244,11 +266,13 @@ class HybridSearchService:
 ## 4. Concurrent Operations Architecture
 
 ### The Problem
+
 Test failure: `test_concurrent_user_operations`
 
 ### Root Cause Analysis
 
 #### Current Architecture
+
 ```python
 async def update_entry(session: AsyncSession, entry: Entry):
     # Direct session manipulation
@@ -259,23 +283,27 @@ async def update_entry(session: AsyncSession, entry: Entry):
 #### Architectural Issues
 
 1. **No Optimistic Locking**
-   - Last-write-wins behavior
-   - Silent data loss possible
-   - No conflict detection
+
+- Last-write-wins behavior
+- Silent data loss possible
+- No conflict detection
 
 2. **Session Scope Issues**
-   - Session lifecycle not properly managed
-   - No isolation level configuration
-   - Default transaction boundaries
+
+- Session lifecycle not properly managed
+- No isolation level configuration
+- Default transaction boundaries
 
 3. **No Concurrency Control**
-   - No version fields for optimistic locking
-   - No row-level locking strategy
-   - No conflict resolution mechanism
+
+- No version fields for optimistic locking
+- No row-level locking strategy
+- No conflict resolution mechanism
 
 ### Architectural Solution
 
 #### Optimistic Locking with Version Control
+
 ```python
 class EntryRepository:
     """Repository with concurrency control."""
@@ -344,6 +372,7 @@ class ConflictResolver:
 ```
 
 #### Benefits
+
 - Prevents silent data loss
 - Explicit conflict detection
 - Supports both automatic and manual conflict resolution
@@ -353,6 +382,7 @@ class ConflictResolver:
 ## 5. System-Wide Architectural Improvements
 
 ### Domain-Driven Design Structure
+
 ```
 app/
 ├── domain/           # Core business logic
@@ -376,6 +406,7 @@ app/
 ```
 
 ### Event Sourcing for Audit Trail
+
 ```python
 class EventStore:
     """Stores all domain events for audit and replay."""
@@ -396,6 +427,7 @@ class EventStore:
 ```
 
 ### CQRS for Read/Write Separation
+
 ```python
 # Write side - commands modify state
 class CreateEntryCommand:
@@ -417,16 +449,19 @@ class EntryReadModel:
 ## Recommendations
 
 ### Immediate Actions
+
 1. **Add Version Field**: Implement optimistic locking
 2. **Fix Content Response**: Return both HTML and markdown with metrics
 3. **Queue Embedding Generation**: Move to async processing
 
 ### Short-Term (1-2 Sprints)
+
 1. **Implement Event Bus**: Decouple components
 2. **Add Caching Layer**: Redis for embeddings and computed fields
 3. **Improve Error Handling**: Specific exceptions with retry logic
 
 ### Long-Term (Quarter)
+
 1. **Migrate to DDD Structure**: Clear boundaries and responsibilities
 2. **Implement Event Sourcing**: Complete audit trail
 3. **Add CQRS**: Optimize read and write paths separately
@@ -435,6 +470,7 @@ class EntryReadModel:
 ## Conclusion
 
 The test failures reveal that the current architecture has fundamental issues with:
+
 - **Data Consistency**: No concurrency control
 - **Scalability**: Synchronous processing, no caching
 - **Maintainability**: Tight coupling, mixed responsibilities

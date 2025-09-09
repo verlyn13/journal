@@ -319,7 +319,9 @@ describe('Choreography System', () => {
         stagger: 50,
       });
 
-      items.forEach((el) => document.body.removeChild(el));
+      items.forEach((el) => {
+        document.body.removeChild(el);
+      });
     });
 
     it('should respect reduced motion', async () => {

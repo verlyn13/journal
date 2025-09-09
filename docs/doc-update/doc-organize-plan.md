@@ -1,5 +1,4 @@
-
------
+***
 
 ## Workflow: Implementing a Containerized Repository Scanning System
 
@@ -9,10 +8,10 @@ This document provides a step-by-step guide to setting up and running a robust, 
 
 Before you begin, ensure you have the following installed on your host machine:
 
-  * **Docker and Docker Compose:** For running the containerized tools.
-  * **`treequery` CLI:** A locally installed binary for structural code queries. (This is the one tool we run outside the main Compose pipeline for simplicity, as it lacks a maintained official image).
+- **Docker and Docker Compose:** For running the containerized tools.
+- **`treequery` CLI:** A locally installed binary for structural code queries. (This is the one tool we run outside the main Compose pipeline for simplicity, as it lacks a maintained official image).
 
------
+***
 
 ### Step 1: Directory & File Structure
 
@@ -23,7 +22,7 @@ First, create the necessary directories in your project's root to hold configura
 mkdir -p .scanner/rules/semgrep .scanner/rules/treesitter .scanner/scripts
 ```
 
------
+***
 
 ### Step 2: Create Ignore Files
 
@@ -63,7 +62,7 @@ build/
 docs/build/
 ```
 
------
+***
 
 ### Step 3: Define the Scanners (`docker-compose.yml`)
 
@@ -82,7 +81,7 @@ services:
     build: .
     # This service is NOT part of the 'scan' profile
     volumes:
-      - .:/app
+            - .:/app
 
   # -------------------------------------------
   # SCANNER SERVICES
@@ -95,7 +94,7 @@ services:
     # Correct command: explicit input path
     command: scc --format json --by-file --wide --output .scanner/scc.json .
     volumes:
-      - .:/repo:ro # Mount code read-only
+            - .:/repo:ro # Mount code read-only
 
   semgrep:
     image: returntocorp/semgrep:latest
@@ -104,10 +103,10 @@ services:
     # Correct command: `scan` subcommand and dedicated output flag
     command: >
       semgrep scan --config /.scanner/rules/semgrep
-      --json --json-output .scanner/semgrep.json .
+            --json --json-output .scanner/semgrep.json .
     volumes:
-      - .:/repo:ro
-      - ./.scanner:/.scanner # Mount rules
+            - .:/repo:ro
+            - ./.scanner:/.scanner # Mount rules
 
   scancode:
     image: aboutcodeorg/scancode-toolkit:latest # Official image name
@@ -116,11 +115,11 @@ services:
     # Correct command: `scancode [OPTIONS] <input> <output_file>`
     command: >
       scancode --format json-pp --copyright --license --package --processes 4
-      --ignore ".git" --ignore ".scanner"
+            --ignore ".git" --ignore ".scanner"
       /repo /.scanner/scancode.json
     volumes:
-      - .:/repo:ro
-      - ./.scanner:/repo/.scanner # Mount scanner dir for output
+            - .:/repo:ro
+            - ./.scanner:/repo/.scanner # Mount scanner dir for output
 
   gitleaks:
     image: zricethezav/gitleaks:latest
@@ -129,10 +128,10 @@ services:
     # Command with optional baseline support
     command: >
       gitleaks detect --source .
-      --report-format json --report-path .scanner/gitleaks.json
+            --report-format json --report-path .scanner/gitleaks.json
       ${GITLEAKS_BASELINE:+ --baseline-path .scanner/gitleaks.baseline.json}
     volumes:
-      - .:/repo:ro
+            - .:/repo:ro
 
   # --- Optional Services (uncomment to enable) ---
 
@@ -158,15 +157,15 @@ services:
     working_dir: /repo
     command: python .scanner/scripts/merge_scans.py
     volumes:
-      - .:/repo # Mount read-write to create the output file
+            - .:/repo # Mount read-write to create the output file
     depends_on:
-      - scc
-      - semgrep
-      - scancode
-      - gitleaks
+            - scc
+            - semgrep
+            - scancode
+            - gitleaks
 ```
 
------
+***
 
 ### Step 4: Create Analysis Rules
 
@@ -178,15 +177,15 @@ Place your custom Semgrep and Tree-sitter rules in the directories you created. 
 
 ```yaml
 rules:
-  - id: fastapi-api-router
+      - id: fastapi-api-router
     patterns:
-      - pattern-either:
-        - pattern: |
+            - pattern-either:
+      - pattern: |
             import fastapi
             ...
             @$ROUTER.get(...)
             ...
-        - pattern: |
+      - pattern: |
             from fastapi import APIRouter
             ...
             router = APIRouter(...)
@@ -219,7 +218,7 @@ rules:
 ) @fastapi_route
 ```
 
------
+***
 
 ### Step 5: Implement the Hardened Merge Script
 
@@ -369,33 +368,33 @@ if __name__ == "__main__":
 
 ```
 
------
+***
 
 ### Step 6: Execute the Scan
 
 The workflow is now a simple two-command process.
 
-1.  **Run the `treequery` scan (local binary):**
+1. **Run the `treequery` scan (local binary):**
 
-    ```bash
-    treequery --query .scanner/rules/treesitter/fastapi_router.scm --repo . --json > .scanner/ts_fastapi.json
-    ```
+   ```bash
+   treequery --query .scanner/rules/treesitter/fastapi_router.scm --repo . --json > .scanner/ts_fastapi.json
+   ```
 
-2.  **Run the containerized pipeline:**
-    The `--profile scan` flag tells Compose to only run services marked with `profiles: ["scan"]`, ignoring your `dev` service.
+2. **Run the containerized pipeline:**
+   The `--profile scan` flag tells Compose to only run services marked with `profiles: ["scan"]`, ignoring your `dev` service.
 
-    ```bash
-    docker compose --profile scan run --rm merge-results
-    ```
+   ```bash
+   docker compose --profile scan run --rm merge-results
+   ```
 
 This command will automatically:
 
-  * Start the `scc`, `semgrep`, `scancode`, and `gitleaks` services.
-  * Wait for them to complete.
-  * Run the `merge-results` service to execute the Python script.
-  * Clean up the containers when finished.
+- Start the `scc`, `semgrep`, `scancode`, and `gitleaks` services.
+- Wait for them to complete.
+- Run the `merge-results` service to execute the Python script.
+- Clean up the containers when finished.
 
------
+***
 
 ### Step 7: Use the Output
 

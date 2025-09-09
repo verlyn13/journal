@@ -1,12 +1,11 @@
 # CONFIGURATION
 
-*Source: https://biomejs.dev/reference/configuration*
+*Source: <https://biomejs.dev/reference/configuration>*
 *Fetched: 2025-08-30T00:47:25.770Z*
 
----
+***
 
 # Configuration
-
 
 ## `$schema`
 
@@ -17,15 +16,16 @@ We publish a JSON schema file for our `biome.json`/`biome.jsonc` files.
 
 You can specify a relative path to the schema inside the `@biomejs/biome` NPM
 package if it is installed in the `node_modules` folder:
-biome.json```
-1{2  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json"3}
-```
+biome.json\`\`\`
+1{2  "$schema": "./node\_modules/@biomejs/biome/configuration\_schema.json"3}
+
+````
 
 If you have problems with resolving the physical file, you can use the one
 published on this site:
 biome.json```
 1{2  "$schema": "https://biomejs.dev/schemas/2.0.5/schema.json"3}
-```
+````
 
 ## `extends`
 
@@ -38,6 +38,7 @@ The order of paths to extend goes from least relevant to most relevant.
 
 Since v2, this option accepts a string that must match the value `"//"`, which can be used
 when setting up [monorepos](/guides/big-projects#monorepo)
+
 ## `root`
 
 [Section titled “root”](#root)
@@ -50,6 +51,7 @@ Default: `true`
 ## `files`
 
 [Section titled “files”](#files)
+
 ### `files.includes`
 
 [Section titled “files.includes”](#filesincludes)
@@ -59,9 +61,10 @@ If a folder matches a glob pattern, all files inside that folder will be
 processed.
 The following example matches all files with a `.js` extension inside the `src`
 folder:
-biome.json```
-1{2  "files": {3    "includes": ["src/**/*.js"]4  }5}
-```
+biome.json\`\`\`
+1{2  "files": {3    "includes": \["src/\*\*/\*.js"]4  }5}
+
+````
 
 `*` is used to match *all files in a folder*, while `**` *recursively* matches
 all files and subfolders in a folder. For more information on globs, see the
@@ -77,7 +80,7 @@ Consider the following example:
 
 biome.json```
 1{2  "files": {3    "includes": ["**", "!**/*.test.js", "**/special.test.js", "!test"]4  }5}
-```
+````
 
 This example specifies that:
 
@@ -113,14 +116,16 @@ are enabled.
 The scanner respects the `files.includes` setting, but there is some fineprint.
 See the [scanner documentation](/internals/architecture/#scanner) for more
 information.
+
 ### `files.ignoreUnknown`
 
 [Section titled “files.ignoreUnknown”](#filesignoreunknown)
 If `true`, Biome won’t emit diagnostics if it encounters files that it can’t
 handle.
-biome.json```
+biome.json\`\`\`
 1{2  "files": {3    "ignoreUnknown": true4  }5}
-```
+
+````
 
 Default: `false`
 
@@ -141,7 +146,7 @@ In the following example, the folders `lodash` and `dist` and the file `RedisCom
 
 biome.json```
 1{2  "files" : {3    "experimentalScannerIgnores": [4      "lodash",5      "dist",6      "RedisCommander.d.ts"7    ]8  }9}
-```
+````
 
 You should use this option only as a last resort in cases Biome takes a lot of time to lint/check your project. (Glob) paths aren’t supported, and only basenames are matched.
 
@@ -189,6 +194,7 @@ folder where `biome.json` was found.
 If Biome can’t find the configuration, it will attempt to use the current working directory.
 If no current working directory can’t be found, Biome won’t use the VCS integration, and a diagnostic
 will be emitted
+
 ### `vcs.defaultBranch`
 
 [Section titled “vcs.defaultBranch”](#vcsdefaultbranch)
@@ -197,6 +203,7 @@ The main branch of the project. Biome will use this branch when evaluating the c
 ## `linter`
 
 [Section titled “linter”](#linter)
+
 ### `linter.enabled`
 
 [Section titled “linter.enabled”](#linterenabled)
@@ -211,9 +218,10 @@ A list of [glob patterns](#glob-syntax-reference) of files to lint.
 
 The following example lints all files with a `.js` extension inside the `src`
 folder:
-biome.json```
-1{2  "linter": {3    "includes": ["src/**/*.js"]4  }5}
-```
+biome.json\`\`\`
+1{2  "linter": {3    "includes": \["src/\*\*/\*.js"]4  }5}
+
+````
 
 `*` is used to match *all files in a folder*, while `**` *recursively* matches
 all files and subfolders in a folder. For more information on globs, see the
@@ -227,7 +235,7 @@ Consider the following example:
 
 biome.json```
 1{2  "linter": {3    "includes": ["**", "!**/*.test.js", "**/special.test.js"]4  }5}
-```
+````
 
 This example specifies that:
 
@@ -243,14 +251,15 @@ This means that:
 
 - `src/app.test.js` **is not** linted.
 
-- `src/special.test.js` **is* linted.
+- `src/special.test.js` \**is* linted.
 
 Note that `linter.includes` is applied *after* `files.includes`. This means
 that any file that is not matched by `files.includes` can no longer be matched
 `linter.includes`. This means the following example **doesn’t work**:
-biome.jsonc```
+biome.jsonc\`\`\`
 1{2  "files": {3    "includes": "src/**"4  },5  "linter": {6    // This matches nothing because there is no overlap with `files.includes`:7    "includes": "scripts/**"8  }9}
-```
+
+````
 
 If `linter.includes` is not specified, all files matched by
 [`files.includes`](#filesincludes) are linted.
@@ -293,14 +302,15 @@ When passing the severity, you can control the severity emitted by all the rules
 For example, you can configure the `a11y` group to emit information diagnostics:
 biome.json```
 1{2  "linter": {3    "rules": {4      "a11y": "info"5    }6  }7}
-```
+````
 
 Here are the accepted values:
 
 `"on"`: each rule that belongs to the group will emit a diagnostic with the default severity of the rule. Refer to the documentation of the rule, or use the `explain` command:
-Terminal window```
+Terminal window\`\`\`
 biome explain noDebugger
-```
+
+````
 
 - `"off"`: none of the rules that belong to the group will emit any diagnostics.
 
@@ -319,11 +329,12 @@ Example:
 
 biome.json```
 1{2  "linter": {3    "enabled": true,4    "rules": {5      "nursery": {6        "recommended": true7      }8    }9  }10}
-```
+````
 
 ## `assist`
 
 [Section titled “assist”](#assist)
+
 ### `assist.enabled`
 
 [Section titled “assist.enabled”](#assistenabled)
@@ -338,9 +349,10 @@ A list of [glob patterns](#glob-syntax-reference) of files to lint.
 
 The following example analyzes all files with a `.js` extension inside the `src`
 folder:
-biome.json```
-1{2  "assist": {3    "includes": ["src/**/*.js"]4  }5}
-```
+biome.json\`\`\`
+1{2  "assist": {3    "includes": \["src/\*\*/\*.js"]4  }5}
+
+````
 
 `*` is used to match *all files in a folder*, while `**` *recursively* matches
 all files and subfolders in a folder. For more information on globs, see the
@@ -354,7 +366,7 @@ Consider the following example:
 
 biome.json```
 1{2  "assist": {3    "includes": ["**", "!**/*.test.js", "**/special.test.js"]4  }5}
-```
+````
 
 This example specifies that:
 
@@ -370,14 +382,15 @@ This means that:
 
 - `src/app.test.js` **is not** analyzed.
 
-- `src/special.test.js` **is* analyzed.
+- `src/special.test.js` \**is* analyzed.
 
 Note that `assist.includes` is applied *after* `files.includes`. This means
 that any file that is not matched by `files.includes` can no longer be matched
 `assist.includes`. This means the following example **doesn’t work**:
-biome.jsonc```
+biome.jsonc\`\`\`
 1{2  "files": {3    "includes": "src/**"4  },5  "assist": {6    // This matches nothing because there is no overlap with `files.includes`:7    "includes": "scripts/**"8  }9}
-```
+
+````
 
 If `assist.includes` is not specified, all files matched by
 [`files.includes`](#filesincludes) are linted.
@@ -407,7 +420,7 @@ Example:
 
 biome.json```
 1{2  "assist": {3    "enabled": true,4    "actions": {5      "source": {6        "recommended": true7      }8    }9  }10}
-```
+````
 
 ## `formatter`
 
@@ -428,9 +441,10 @@ A list of [glob patterns](#glob-syntax-reference) of files to format.
 
 The following example formats all files with a `.js` extension inside the `src`
 folder:
-biome.json```
-1{2  "formatter": {3    "includes": ["src/**/*.js"]4  }5}
-```
+biome.json\`\`\`
+1{2  "formatter": {3    "includes": \["src/\*\*/\*.js"]4  }5}
+
+````
 
 `*` is used to match *all files in a folder*, while `**` *recursively* matches
 all files and subfolders in a folder. For more information on globs, see the
@@ -444,7 +458,7 @@ Consider the following example:
 
 biome.json```
 1{2  "formatter": {3    "includes": ["**", "!**/*.test.js", "**/special.test.js"]4  }5}
-```
+````
 
 This example specifies that:
 
@@ -465,9 +479,10 @@ This means that:
 Note that `formatter.includes` is applied *after* `files.includes`. This means
 that any file that is not matched by `files.includes` can no longer be matched
 `formatter.includes`. This means the following example **doesn’t work**:
-biome.jsonc```
+biome.jsonc\`\`\`
 1{2  "files": {3    "includes": "src/**"4  },5  "formatter": {6    // This matches nothing because there is no overlap with `files.includes`:7    "includes": "scripts/**"8  }9}
-```
+
+````
 
 If `formatter.includes` is not specified, all files matched by
 [`files.includes`](#filesincludes) are formatted.
@@ -483,7 +498,7 @@ Allows to format a document that has syntax errors.
 
 biome.json```
 1{2  "formatter": {3    "formatWithErrors": true4  }5}
-```
+````
 
 Default: `false`
 
@@ -546,6 +561,7 @@ Whether to expand arrays and objects on multiple lines.
 
 `"auto"`, object literals are formatted on multiple lines if the first property has a newline,
 and array literals are formatted on a single line if it fits in the line.
+
 - `"always"`, these literals are formatted on multiple lines, regardless of length of the list.
 
 - `"never"`, these literals are formatted on a single line if it fits in the line.
@@ -579,9 +595,10 @@ These options apply only to JavaScript (and TypeScript) files.
 [Section titled “javascript.parser.unsafeParameterDecoratorsEnabled”](#javascriptparserunsafeparameterdecoratorsenabled)
 Allows to support the unsafe/experimental parameter decorators.
 
-biome.json```
+biome.json\`\`\`
 1{2  "javascript": {3    "parser": {4      "unsafeParameterDecoratorsEnabled": true5    }6  }7}
-```
+
+````
 
 Default: `false`
 
@@ -594,7 +611,7 @@ Default: `true`
 
 biome.json```
 1{2  "javascript": {3    "parser": {4      "jsxEverywhere": false5    }6  }7}
-```
+````
 
 ### `javascript.formatter.quoteStyle`
 
@@ -610,9 +627,10 @@ The type of quote used when representing jsx string literals. It can be `"single
 
 Default: `"double"`
 
-biome.json```
+biome.json\`\`\`
 1{2  "javascript": {3    "formatter": {4      "jsxQuoteStyle": "single"5    }6  }7}
-```
+
+````
 
 ### `javascript.formatter.quoteProperties`
 
@@ -623,7 +641,7 @@ Default: `"asNeeded"`
 
 biome.json```
 1{2  "javascript": {3    "formatter": {4      "quoteProperties": "preserve"5    }6  }7}
-```
+````
 
 ### `javascript.formatter.trailingCommas`
 
@@ -651,9 +669,10 @@ Default: `"always"`
 
 Example:
 
-biome.json```
+biome.json\`\`\`
 1{2  "javascript": {3    "formatter": {4      "semicolons": "asNeeded"5    }6  }7}
-```
+
+````
 
 ### `javascript.formatter.arrowParentheses`
 
@@ -755,12 +774,13 @@ Default: `"after"`.
 `"after`: the operator is placed after the expression:
 file.js```
 1if (2  expressionOne &#x26;&#x26;3  expressionTwo &#x26;&#x26;4  expressionThree &#x26;&#x26;5  expressionFour6) {}
-```
+````
 
 `"before`: the operator is placed before the expression:
-file.js```
-1if (2  expressionOne3  &#x26;&#x26; expressionTwo4  &#x26;&#x26; expressionThree5  &#x26;&#x26; expressionFour6) {}
-```
+file.js\`\`\`
+1if (2  expressionOne3  && expressionTwo4  && expressionThree5  && expressionFour6) {}
+
+````
 
 ### `javascript.globals`
 
@@ -769,7 +789,7 @@ A list of global names that Biome should ignore (analyzer, linter, etc.)
 
 biome.json```
 1{2  "javascript": {3    "globals": ["$", "_", "externalVariable"]4  }5}
-```
+````
 
 ### `javascript.jsxRuntime`
 
@@ -782,9 +802,10 @@ doesn’t require special handling by Biome.
 the `React` import. Corresponds to the `react` value for the
 `jsx` option in TypeScript’s [`tsconfig.json`](https://www.typescriptlang.org/tsconfig#jsx).
 
-biome.json```
+biome.json\`\`\`
 1{2  "javascript": {3    "jsxRuntime": "reactClassic"4  }5}
-```
+
+````
 
 For more information about the old vs. new JSX runtime, please see:
 [https://legacy.reactjs.org/blog/2020/09/22/introducing-the-new-jsx-transform.html](https://legacy.reactjs.org/blog/2020/09/22/introducing-the-new-jsx-transform.html)
@@ -800,7 +821,7 @@ Default: `true`
 
 biome.json```
 1{2  "javascript": {3    "linter": {4      "enabled": false5    }6  }7}
-```
+````
 
 ### `javascript.assist.enabled`
 
@@ -809,9 +830,10 @@ Enables Biome’s assist for JavaScript (and its super languages) files.
 
 Default: `true`
 
-biome.json```
+biome.json\`\`\`
 1{2  "javascript": {3    "assist": {4      "enabled": false5    }6  }7}
-```
+
+````
 
 ## `json`
 
@@ -825,16 +847,17 @@ Enables the parsing of comments in JSON files.
 
 biome.json```
 1{2  "json": {3    "parser": {4      "allowComments": true5    }6  }7}
-```
+````
 
 ### `json.parser.allowTrailingCommas`
 
 [Section titled “json.parser.allowTrailingCommas”](#jsonparserallowtrailingcommas)
 Enables the parsing of trailing commas in JSON files.
 
-biome.json```
+biome.json\`\`\`
 1{2  "json": {3    "parser": {4      "allowTrailingCommas": true5    }6  }7}
-```
+
+````
 
 ### `json.formatter.enabled`
 
@@ -845,7 +868,7 @@ Default: `true`
 
 biome.json```
 1{2  "json": {3    "formatter": {4      "enabled": false5    }6  }7}
-```
+````
 
 ### `json.formatter.indentStyle`
 
@@ -908,6 +931,7 @@ Whether to expand arrays and objects on multiple lines.
 
 `"auto"`, object literals are formatted on multiple lines if the first property has a newline,
 and array literals are formatted on a single line if it fits in the line.
+
 - `"always"`, these literals are formatted on multiple lines, regardless of length of the list.
 
 - `"never"`, these literals are formatted on a single line if it fits in the line.
@@ -923,9 +947,10 @@ Enables Biome’s formatter for JSON (and its super languages) files.
 
 Default: `true`
 
-biome.json```
+biome.json\`\`\`
 1{2  "json": {3    "linter": {4      "enabled": false5    }6  }7}
-```
+
+````
 
 ### `json.assist.enabled`
 
@@ -936,7 +961,7 @@ Default: `true`
 
 biome.json```
 1{2  "json": {3    "assist": {4      "enabled": false5    }6  }7}
-```
+````
 
 ## `css`
 
@@ -957,9 +982,10 @@ Enables Biome’s formatter for CSS files.
 
 Default: `false`
 
-biome.json```
+biome.json\`\`\`
 1{2  "css": {3    "formatter": {4      "enabled": false5    }6  }7}
-```
+
+````
 
 ### `css.formatter.indentStyle`
 
@@ -977,7 +1003,7 @@ Default: `2`
 
 biome.json```
 1{2  "css": {3    "formatter": {4      "indentWidth": 25    }6  }7}
-```
+````
 
 ### `css.formatter.lineEnding`
 
@@ -1013,9 +1039,10 @@ Enables Biome’s linter for CSS files.
 
 Default: `true`
 
-biome.json```
+biome.json\`\`\`
 1{2  "css": {3    "linter": {4      "enabled": false5    }6  }7}
-```
+
+````
 
 ### `css.assist.enabled`
 
@@ -1026,7 +1053,7 @@ Default: `true`
 
 biome.json```
 1{2  "css": {3    "assist": {4      "enabled": false5    }6  }7}
-```
+````
 
 ## `graphql`
 
@@ -1155,9 +1182,10 @@ Enables Biome’s linter for Grit files.
 
 Default: `true`
 
-biome.json```
+biome.json\`\`\`
 1{2  "grit": {3    "linter": {4      "enabled": false5    }6  }7}
-```
+
+````
 
 ### `grit.assist.enabled`
 
@@ -1168,7 +1196,7 @@ Default: `true`
 
 biome.json```
 1{2  "grit": {3    "assist": {4      "enabled": false5    }6  }7}
-```
+````
 
 ## `html`
 
@@ -1177,6 +1205,7 @@ Caution
 
 The HTML parser and formatter are still considered experimental, which means that breaking changes
 can happen in patch and minor versions.
+
 ### `html.parser.interpolation`
 
 [Section titled “html.parser.interpolation”](#htmlparserinterpolation)
@@ -1304,12 +1333,13 @@ The order of the patterns matter. If a file *can* match three patterns, only the
 
 ### `overrides.&#x3C;ITEM>.includes`
 
-[Section titled “overrides.&#x3C;ITEM>.includes”](#overridesitemincludes)
-A list of [glob patterns](https://en.wikipedia.org/wiki/Glob_(programming)) of
+[Section titled “overrides.\<ITEM>.includes”](#overridesitemincludes)
+A list of [glob patterns](https://en.wikipedia.org/wiki/Glob_\(programming\)) of
 files for which to apply customised settings.
-biome.jsonc```
-1{2  "overrides": [{3    "includes": ["scripts/*.js"],4    // settings that should only apply to the files specified in the includes field.5  }]6}
-```
+biome.jsonc\`\`\`
+1{2  "overrides": \[{3    "includes": \["scripts/\*.js"],4    // settings that should only apply to the files specified in the includes field.5  }]6}
+
+````
 
 ### `overrides.&#x3C;ITEM>.formatter`
 
@@ -1323,11 +1353,11 @@ For example, it’s possible to modify the formatter `lineWidth`, `indentStyle` 
 
 biome.json```
 1{2  "formatter": {3    "lineWidth": 1004  },5  "overrides": [6    {7      "includes": ["generated/**"],8      "formatter": {9        "lineWidth": 160,10        "indentStyle": "space"11      }12    }13  ]14}
-```
+````
 
 ### `overrides.&#x3C;ITEM>.linter`
 
-[Section titled “overrides.&#x3C;ITEM>.linter”](#overridesitemlinter)
+[Section titled “overrides.\<ITEM>.linter”](#overridesitemlinter)
 Includes the options of the [top level linter](#linter) configuration, minus `ignore` and `include`.
 
 #### Examples
@@ -1335,9 +1365,10 @@ Includes the options of the [top level linter](#linter) configuration, minus `ig
 [Section titled “Examples”](#examples-1)
 You can disable certain rules for certain glob paths, and disable the linter for other glob paths:
 
-biome.json```
-1{2  "linter": {3    "enabled": true,4    "rules": {5      "recommended": true6    }7  },8  "overrides": [9    {10      "includes": ["lib/**"],11      "linter": {12        "rules": {13          "suspicious": {14            "noDebugger": "off"15          }16        }17      }18    },19    {20      "includes": ["shims/**"],21      "linter": {22        "enabled": false23      }24    }25  ]26}
-```
+biome.json\`\`\`
+1{2  "linter": {3    "enabled": true,4    "rules": {5      "recommended": true6    }7  },8  "overrides": \[9    {10      "includes": \["lib/**"],11      "linter": {12        "rules": {13          "suspicious": {14            "noDebugger": "off"15          }16        }17      }18    },19    {20      "includes": \["shims/**"],21      "linter": {22        "enabled": false23      }24    }25  ]26}
+
+````
 
 ### `overrides.&#x3C;ITEM>.javascript`
 
@@ -1351,11 +1382,11 @@ You can change the formatting behaviour of JavaScript files in certain folders:
 
 biome.json```
 1{2  "formatter": {3    "lineWidth": 1204  },5  "javascript": {6    "formatter": {7      "quoteStyle": "single"8    }9  },10  "overrides": [11    {12      "includes": ["lib/**"],13      "javascript": {14        "formatter": {15          "quoteStyle": "double"16        }17      }18    }19  ]20}
-```
+````
 
 ### `overrides.&#x3C;ITEM>.json`
 
-[Section titled “overrides.&#x3C;ITEM>.json”](#overridesitemjson)
+[Section titled “overrides.\<ITEM>.json”](#overridesitemjson)
 Includes the options of the [top level json](#json) configuration. Lets you override JSON-specific settings for certain files.
 
 #### Examples
@@ -1363,8 +1394,9 @@ Includes the options of the [top level json](#json) configuration. Lets you over
 [Section titled “Examples”](#examples-3)
 You can enable parsing features for certain JSON files:
 
-biome.json```
-1{2  "linter": {3    "enabled": true,4    "rules": {5      "recommended": true6    }7  },8  "overrides": [9    {10      "includes": [".vscode/**"],11      "json": {12        "parser": {13          "allowComments": true,14          "allowTrailingCommas": true15        }16      }17    }18  ]19}
+biome.json\`\`\`
+1{2  "linter": {3    "enabled": true,4    "rules": {5      "recommended": true6    }7  },8  "overrides": \[9    {10      "includes": \[".vscode/\*\*"],11      "json": {12        "parser": {13          "allowComments": true,14          "allowTrailingCommas": true15        }16      }17    }18  ]19}
+
 ```
 
 ### `overrides.&#x3C;ITEM>.[language]`
@@ -1417,3 +1449,4 @@ specified from the command line. When you specify a glob on the command line,
 it is interpreted by your shell rather than by Biome. Shells may support
 slightly different syntax for globs. For instance, some shells do not support
 the recursive pattern `**`.     Copyright (c) 2023-present Biome Developers and Contributors.
+```

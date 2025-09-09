@@ -7,7 +7,7 @@ import pytest
 pytestmark = pytest.mark.integration
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_nats_reconnect_sanity():
     if os.getenv("RUN_REAL_NATS_RESTART") != "1":
         pytest.skip("Set RUN_REAL_NATS_RESTART=1 and restart NATS externally to run this test")

@@ -1,13 +1,15 @@
 # ARCHITECTURE
 
-*Source: https://biomejs.dev/internals/architecture*
+*Source: <https://biomejs.dev/internals/architecture>*
 *Fetched: 2025-08-30T00:47:26.406Z*
 
----
+***
 
 # Architecture
 
-        This document covers some of the internals of Biome, and how they are used inside the project.
+```
+    This document covers some of the internals of Biome, and how they are used inside the project.
+```
 
 ## Scanner
 
@@ -64,6 +66,7 @@ For the time being, if you really insist on preventing the scanner from
 accessing a given file or folder, you can use the
 [`files.experimentalScannerIgnores`](/reference/configuration/#filesexperimentalscannerignores)
 setting for that.
+
 ## Parser and CST
 
 [Section titled “Parser and CST”](#parser-and-cst)
@@ -131,7 +134,7 @@ This is an error emitted during parsing:
 8  ℹ Remove {
 ```
 
- 1 │ while {}      │       ^  ℹ Remove {">
+1 │ while {}      │       ^  ℹ Remove {">
 The same can’t be said for the following snippet. The parser can’t properly understand the syntax during the recovery phase, so it needs to rely on the bogus nodes to mark some syntax as erroneous. Notice the `JsBogusStatement`:
 
 ```
@@ -150,7 +153,8 @@ This is the error we get from the parsing phase:
 5  > 1 │ function}6      │         ^
 ```
 
- 1 │ function}      │         ^">
+1 │ function}      │         ^">
+
 ## Formatter
 
 [Section titled “Formatter”](#formatter)
@@ -174,5 +178,5 @@ Work in progress
 
 Biome uses a server-client architecture to run its tasks.
 
-A [daemon](https://en.wikipedia.org/wiki/Daemon_(computing)) is a long-running server
+A [daemon](https://en.wikipedia.org/wiki/Daemon_\(computing\)) is a long-running server
 that Biome spawns in the background and uses to process requests from the editor and CLI.     Copyright (c) 2023-present Biome Developers and Contributors.

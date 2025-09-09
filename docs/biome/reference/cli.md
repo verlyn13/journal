@@ -1,13 +1,15 @@
 # CLI
 
-*Source: https://biomejs.dev/reference/cli*
+*Source: <https://biomejs.dev/reference/cli>*
 *Fetched: 2025-08-30T00:47:25.744Z*
 
----
+***
 
 # CLI
 
-        # Command summary
+```
+    # Command summary
+```
 
 [Section titled “Command summary”](#command-summary)
 
@@ -114,7 +116,7 @@ Uses environment variable **`BIOME_CONFIG_PATH`**
 
 **`    --max-diagnostics`**=*`&#x3C;none|&#x3C;NUMBER>>`* —
 Cap the amount of diagnostics displayed. When `none` is provided, the limit is lifted.
-[default: 20]
+\[default: 20]
 
 **`    --skip-parse-errors`** —
 Skip over files containing syntax errors instead of emitting an error diagnostic.
@@ -136,15 +138,15 @@ If omitted, logs are printed to stdout.
 The level of logging. In order, from the most verbose to the least verbose: debug, info, warn, error.
 The value `none` won’t show any logging.
 
-[default: none]
+\[default: none]
 
 **`    --log-kind`**=*`&#x3C;pretty|compact|json>`* —
 How the log should look like.
-[default: pretty]
+\[default: pretty]
 
 **`    --diagnostic-level`**=*`&#x3C;info|warn|error>`* —
 The level of diagnostics to show. In order, from the lowest to the most important: info, warn, error. Passing `--diagnostic-level=error` will cause Biome to print only diagnostics that contain only errors.
-[default: info]
+\[default: info]
 
 **Available options:**
 
@@ -156,7 +158,7 @@ Prints help information
 [Section titled “biome rage”](#biome-rage)
 Prints information for debugging.
 
-**Usage**: **`biome`** **`rage`** [**`--daemon-logs`**] [**`--formatter`**] [**`--linter`**]
+**Usage**: **`biome`** **`rage`** \[**`--daemon-logs`**] \[**`--formatter`**] \[**`--linter`**]
 
 **Global options applied to all commands**
 
@@ -175,7 +177,7 @@ Uses environment variable **`BIOME_CONFIG_PATH`**
 
 **`    --max-diagnostics`**=*`&#x3C;none|&#x3C;NUMBER>>`* —
 Cap the amount of diagnostics displayed. When `none` is provided, the limit is lifted.
-[default: 20]
+\[default: 20]
 
 **`    --skip-parse-errors`** —
 Skip over files containing syntax errors instead of emitting an error diagnostic.
@@ -197,15 +199,15 @@ If omitted, logs are printed to stdout.
 The level of logging. In order, from the most verbose to the least verbose: debug, info, warn, error.
 The value `none` won’t show any logging.
 
-[default: none]
+\[default: none]
 
 **`    --log-kind`**=*`&#x3C;pretty|compact|json>`* —
 How the log should look like.
-[default: pretty]
+\[default: pretty]
 
 **`    --diagnostic-level`**=*`&#x3C;info|warn|error>`* —
 The level of diagnostics to show. In order, from the lowest to the most important: info, warn, error. Passing `--diagnostic-level=error` will cause Biome to print only diagnostics that contain only errors.
-[default: info]
+\[default: info]
 
 **Available options:**
 
@@ -231,7 +233,7 @@ Starts the Biome daemon server process.
 Allows to change the prefix applied to the file name of the logs.
 Uses environment variable **`BIOME_LOG_PREFIX_NAME`**
 
-[default: server.log]
+\[default: server.log]
 
 **`    --log-path`**=*`PATH`* —
 Allows to change the folder where logs are stored.
@@ -257,7 +259,7 @@ Prints help information
 [Section titled “biome check”](#biome-check)
 Runs formatter, linter and import sorting to the requested files.
 
-**Usage**: **`biome`** **`check`** [**`--write`**] [**`--unsafe`**] [**`--assist-enabled`**=*`&#x3C;true|false>`*] [**`--enforce-assist`**=*`&#x3C;true|false>`*] [**`--staged`**] [**`--changed`**] [**`--since`**=*`REF`*] [*`PATH`*]…
+**Usage**: **`biome`** **`check`** \[**`--write`**] \[**`--unsafe`**] \[**`--assist-enabled`**=*`&#x3C;true|false>`*] \[**`--enforce-assist`**=*`&#x3C;true|false>`*] \[**`--staged`**] \[**`--changed`**] \[**`--since`**=*`REF`*] \[*`PATH`*]…
 
 **The configuration that is contained inside the file `biome.json`**
 
@@ -268,7 +270,7 @@ Whether Biome should integrate itself with the VCS client
 The kind of client.
 
 **`    --vcs-use-ignore-file`**=*`&#x3C;true|false>`* —
-Whether Biome should use the VCS ignore file. When [true], Biome will ignore the files specified in the ignore file.
+Whether Biome should use the VCS ignore file. When \[true], Biome will ignore the files specified in the ignore file.
 
 **`    --vcs-root`**=*`PATH`* —
 The folder where Biome should check for VCS files. By default, Biome will use the same folder where `biome.json` was found.
@@ -518,7 +520,7 @@ Uses environment variable **`BIOME_CONFIG_PATH`**
 
 **`    --max-diagnostics`**=*`&#x3C;none|&#x3C;NUMBER>>`* —
 Cap the amount of diagnostics displayed. When `none` is provided, the limit is lifted.
-[default: 20]
+\[default: 20]
 
 **`    --skip-parse-errors`** —
 Skip over files containing syntax errors instead of emitting an error diagnostic.
@@ -540,15 +542,15 @@ If omitted, logs are printed to stdout.
 The level of logging. In order, from the most verbose to the least verbose: debug, info, warn, error.
 The value `none` won’t show any logging.
 
-[default: none]
+\[default: none]
 
 **`    --log-kind`**=*`&#x3C;pretty|compact|json>`* —
 How the log should look like.
-[default: pretty]
+\[default: pretty]
 
 **`    --diagnostic-level`**=*`&#x3C;info|warn|error>`* —
 The level of diagnostics to show. In order, from the lowest to the most important: info, warn, error. Passing `--diagnostic-level=error` will cause Biome to print only diagnostics that contain only errors.
-[default: info]
+\[default: info]
 
 **Available positional items:**
 
@@ -603,7 +605,7 @@ Prints help information
 [Section titled “biome lint”](#biome-lint)
 Run various checks on a set of files.
 
-**Usage**: **`biome`** **`lint`** [**`--write`**] [**`--unsafe`**] [**`--suppress`**] [**`--reason`**=*`STRING`*] [**`--only`**=*`&#x3C;GROUP|RULE>`*]… [**`--skip`**=*`&#x3C;GROUP|RULE>`*]… [**`--staged`**] [**`--changed`**] [**`--since`**=*`REF`*] [*`PATH`*]…
+**Usage**: **`biome`** **`lint`** \[**`--write`**] \[**`--unsafe`**] \[**`--suppress`**] \[**`--reason`**=*`STRING`*] \[**`--only`**=*`&#x3C;GROUP|RULE>`*]… \[**`--skip`**=*`&#x3C;GROUP|RULE>`*]… \[**`--staged`**] \[**`--changed`**] \[**`--since`**=*`REF`*] \[*`PATH`*]…
 
 **Set of properties to integrate Biome with a VCS software.**
 
@@ -614,7 +616,7 @@ Whether Biome should integrate itself with the VCS client
 The kind of client.
 
 **`    --vcs-use-ignore-file`**=*`&#x3C;true|false>`* —
-Whether Biome should use the VCS ignore file. When [true], Biome will ignore the files specified in the ignore file.
+Whether Biome should use the VCS ignore file. When \[true], Biome will ignore the files specified in the ignore file.
 
 **`    --vcs-root`**=*`PATH`* —
 The folder where Biome should check for VCS files. By default, Biome will use the same folder where `biome.json` was found.
@@ -657,7 +659,7 @@ Uses environment variable **`BIOME_CONFIG_PATH`**
 
 **`    --max-diagnostics`**=*`&#x3C;none|&#x3C;NUMBER>>`* —
 Cap the amount of diagnostics displayed. When `none` is provided, the limit is lifted.
-[default: 20]
+\[default: 20]
 
 **`    --skip-parse-errors`** —
 Skip over files containing syntax errors instead of emitting an error diagnostic.
@@ -679,15 +681,15 @@ If omitted, logs are printed to stdout.
 The level of logging. In order, from the most verbose to the least verbose: debug, info, warn, error.
 The value `none` won’t show any logging.
 
-[default: none]
+\[default: none]
 
 **`    --log-kind`**=*`&#x3C;pretty|compact|json>`* —
 How the log should look like.
-[default: pretty]
+\[default: pretty]
 
 **`    --diagnostic-level`**=*`&#x3C;info|warn|error>`* —
 The level of diagnostics to show. In order, from the lowest to the most important: info, warn, error. Passing `--diagnostic-level=error` will cause Biome to print only diagnostics that contain only errors.
-[default: info]
+\[default: info]
 
 **Available positional items:**
 
@@ -742,7 +744,7 @@ Prints help information
 [Section titled “biome format”](#biome-format)
 Run the formatter on a set of files.
 
-**Usage**: **`biome`** **`format`** [**`--write`**] [**`--staged`**] [**`--changed`**] [**`--since`**=*`REF`*] [*`PATH`*]…
+**Usage**: **`biome`** **`format`** \[**`--write`**] \[**`--staged`**] \[**`--changed`**] \[**`--since`**=*`REF`*] \[*`PATH`*]…
 
 **Generic options applied to all files**
 
@@ -818,7 +820,7 @@ Whether Biome should integrate itself with the VCS client
 The kind of client.
 
 **`    --vcs-use-ignore-file`**=*`&#x3C;true|false>`* —
-Whether Biome should use the VCS ignore file. When [true], Biome will ignore the files specified in the ignore file.
+Whether Biome should use the VCS ignore file. When \[true], Biome will ignore the files specified in the ignore file.
 
 **`    --vcs-root`**=*`PATH`* —
 The folder where Biome should check for VCS files. By default, Biome will use the same folder where `biome.json` was found.
@@ -851,7 +853,7 @@ Uses environment variable **`BIOME_CONFIG_PATH`**
 
 **`    --max-diagnostics`**=*`&#x3C;none|&#x3C;NUMBER>>`* —
 Cap the amount of diagnostics displayed. When `none` is provided, the limit is lifted.
-[default: 20]
+\[default: 20]
 
 **`    --skip-parse-errors`** —
 Skip over files containing syntax errors instead of emitting an error diagnostic.
@@ -873,15 +875,15 @@ If omitted, logs are printed to stdout.
 The level of logging. In order, from the most verbose to the least verbose: debug, info, warn, error.
 The value `none` won’t show any logging.
 
-[default: none]
+\[default: none]
 
 **`    --log-kind`**=*`&#x3C;pretty|compact|json>`* —
 How the log should look like.
-[default: pretty]
+\[default: pretty]
 
 **`    --diagnostic-level`**=*`&#x3C;info|warn|error>`* —
 The level of diagnostics to show. In order, from the lowest to the most important: info, warn, error. Passing `--diagnostic-level=error` will cause Biome to print only diagnostics that contain only errors.
-[default: info]
+\[default: info]
 
 **Available positional items:**
 
@@ -945,7 +947,7 @@ Command to use in CI environments. Runs formatter, linter and import sorting to 
 
 Files won’t be modified, the command is a read-only operation.
 
-**Usage**: **`biome`** **`ci`** [**`--formatter-enabled`**=*`&#x3C;true|false>`*] [**`--linter-enabled`**=*`&#x3C;true|false>`*] [**`--assist-enabled`**=*`&#x3C;true|false>`*] [**`--enforce-assist`**=*`&#x3C;true|false>`*] [**`--changed`**] [**`--since`**=*`REF`*] [*`PATH`*]…
+**Usage**: **`biome`** **`ci`** \[**`--formatter-enabled`**=*`&#x3C;true|false>`*] \[**`--linter-enabled`**=*`&#x3C;true|false>`*] \[**`--assist-enabled`**=*`&#x3C;true|false>`*] \[**`--enforce-assist`**=*`&#x3C;true|false>`*] \[**`--changed`**] \[**`--since`**=*`REF`*] \[*`PATH`*]…
 
 **The configuration that is contained inside the file `biome.json`**
 
@@ -956,7 +958,7 @@ Whether Biome should integrate itself with the VCS client
 The kind of client.
 
 **`    --vcs-use-ignore-file`**=*`&#x3C;true|false>`* —
-Whether Biome should use the VCS ignore file. When [true], Biome will ignore the files specified in the ignore file.
+Whether Biome should use the VCS ignore file. When \[true], Biome will ignore the files specified in the ignore file.
 
 **`    --vcs-root`**=*`PATH`* —
 The folder where Biome should check for VCS files. By default, Biome will use the same folder where `biome.json` was found.
@@ -1206,7 +1208,7 @@ Uses environment variable **`BIOME_CONFIG_PATH`**
 
 **`    --max-diagnostics`**=*`&#x3C;none|&#x3C;NUMBER>>`* —
 Cap the amount of diagnostics displayed. When `none` is provided, the limit is lifted.
-[default: 20]
+\[default: 20]
 
 **`    --skip-parse-errors`** —
 Skip over files containing syntax errors instead of emitting an error diagnostic.
@@ -1228,15 +1230,15 @@ If omitted, logs are printed to stdout.
 The level of logging. In order, from the most verbose to the least verbose: debug, info, warn, error.
 The value `none` won’t show any logging.
 
-[default: none]
+\[default: none]
 
 **`    --log-kind`**=*`&#x3C;pretty|compact|json>`* —
 How the log should look like.
-[default: pretty]
+\[default: pretty]
 
 **`    --diagnostic-level`**=*`&#x3C;info|warn|error>`* —
 The level of diagnostics to show. In order, from the lowest to the most important: info, warn, error. Passing `--diagnostic-level=error` will cause Biome to print only diagnostics that contain only errors.
-[default: info]
+\[default: info]
 
 **Available positional items:**
 
@@ -1275,7 +1277,7 @@ Prints help information
 [Section titled “biome init”](#biome-init)
 Bootstraps a new biome project. Creates a configuration file with some defaults.
 
-**Usage**: **`biome`** **`init`** [**`--jsonc`**]
+**Usage**: **`biome`** **`init`** \[**`--jsonc`**]
 
 **Available options:**
 
@@ -1297,7 +1299,7 @@ Acts as a server for the Language Server Protocol over stdin/stdout.
 Allows to change the prefix applied to the file name of the logs.
 Uses environment variable **`BIOME_LOG_PREFIX_NAME`**
 
-[default: server.log]
+\[default: server.log]
 
 **`    --log-path`**=*`PATH`* —
 Allows to change the folder where logs are stored.
@@ -1311,7 +1313,7 @@ Prints help information
 [Section titled “biome migrate”](#biome-migrate)
 Updates the configuration when there are breaking changes.
 
-**Usage**: **`biome`** **`migrate`** [**`--write`**] [*`COMMAND ...`*]
+**Usage**: **`biome`** **`migrate`** \[**`--write`**] \[*`COMMAND ...`*]
 
 **Global options applied to all commands**
 
@@ -1330,7 +1332,7 @@ Uses environment variable **`BIOME_CONFIG_PATH`**
 
 **`    --max-diagnostics`**=*`&#x3C;none|&#x3C;NUMBER>>`* —
 Cap the amount of diagnostics displayed. When `none` is provided, the limit is lifted.
-[default: 20]
+\[default: 20]
 
 **`    --skip-parse-errors`** —
 Skip over files containing syntax errors instead of emitting an error diagnostic.
@@ -1352,15 +1354,15 @@ If omitted, logs are printed to stdout.
 The level of logging. In order, from the most verbose to the least verbose: debug, info, warn, error.
 The value `none` won’t show any logging.
 
-[default: none]
+\[default: none]
 
 **`    --log-kind`**=*`&#x3C;pretty|compact|json>`* —
 How the log should look like.
-[default: pretty]
+\[default: pretty]
 
 **`    --diagnostic-level`**=*`&#x3C;info|warn|error>`* —
 The level of diagnostics to show. In order, from the lowest to the most important: info, warn, error. Passing `--diagnostic-level=error` will cause Biome to print only diagnostics that contain only errors.
-[default: info]
+\[default: info]
 
 **Available options:**
 
@@ -1395,7 +1397,7 @@ Prints help information
 [Section titled “biome migrate eslint”](#biome-migrate-eslint)
 It attempts to find the ESLint configuration file in the working directory, and update the Biome’s configuration file as a result.
 
-**Usage**: **`biome`** **`migrate`** **`eslint`** [**`--include-inspired`**] [**`--include-nursery`**]
+**Usage**: **`biome`** **`migrate`** **`eslint`** \[**`--include-inspired`**] \[**`--include-nursery`**]
 
 **Available options:**
 
@@ -1416,9 +1418,10 @@ Note: GritQL escapes code snippets using backticks, but most shells interpret ba
 ### Example
 
 [Section titled “Example”](#example)
-Terminal window```
+Terminal window\`\`\`
 1biome search '`console.log($message)`' # find all `console.log` invocations
-```
+
+````
 
 **Usage**: **`biome`** **`search`** [**`-l`**=*`ARG`*] *`PATTERN`* [*`PATH`*]…
 
@@ -1532,10 +1535,11 @@ Shows documentation of various aspects of the CLI.
 [Section titled “Examples”](#examples)
 Terminal window```
 1biome explain noDebugger
-```
+````
 
-Terminal window```
+Terminal window\`\`\`
 1biome explain daemon-logs
+
 ```
 
 **Usage**: **`biome`** **`explain`** *`NAME`*
@@ -1569,3 +1573,4 @@ Prints help information
 - When encountering symbolic links, the CLI will expand them until three levels deep. Deeper levels will result into an error diagnostic.
 
      Copyright (c) 2023-present Biome Developers and Contributors.
+```

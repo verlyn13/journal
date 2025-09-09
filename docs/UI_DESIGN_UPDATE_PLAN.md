@@ -1,4 +1,5 @@
 # Journal App UI/UX Orchestration Plan v2.0
+
 ## Parallel Refactor Strategy for Claude Code CLI Agent
 
 ```yaml
@@ -11,12 +12,14 @@ risk_tolerance: low
 rollback_enabled: true
 ```
 
----
+***
 
 ## Phase 0: Discovery & Infrastructure Setup
+
 **Duration: 2-3 days | Parallelizable: Yes**
 
 ### 0.1 Codebase Analysis & Audit
+
 ```bash
 # Branch: feat/discovery-audit
 git checkout -b feat/discovery-audit
@@ -26,47 +29,48 @@ git checkout -b feat/discovery-audit
 
 ```yaml
 stream_A:
-  - task: analyze_current_architecture
+      - task: analyze_current_architecture
     actions:
-      - Map component hierarchy
-      - Document all dependencies (package.json/lock analysis)
-      - Identify tech stack (Next.js/Vite/React version)
-      - Backend API surface analysis
-      - Database schema documentation
+            - Map component hierarchy
+            - Document all dependencies (package.json/lock analysis)
+            - Identify tech stack (Next.js/Vite/React version)
+            - Backend API surface analysis
+            - Database schema documentation
     output: /docs/current-architecture.md
 
 stream_B:
-  - task: performance_baseline
+      - task: performance_baseline
     actions:
-      - Lighthouse CI setup and baseline
-      - Bundle size analysis (webpack-bundle-analyzer)
-      - Runtime performance profiling
-      - Memory leak detection
-      - Current accessibility audit (axe-core)
+            - Lighthouse CI setup and baseline
+            - Bundle size analysis (webpack-bundle-analyzer)
+            - Runtime performance profiling
+            - Memory leak detection
+            - Current accessibility audit (axe-core)
     output: /metrics/baseline-report.json
 
 stream_C:
-  - task: test_coverage_analysis
+      - task: test_coverage_analysis
     actions:
-      - Unit test coverage report
-      - Integration test inventory
-      - E2E test suite review
-      - Missing test identification
-      - Test infrastructure health check
+            - Unit test coverage report
+            - Integration test inventory
+            - E2E test suite review
+            - Missing test identification
+            - Test infrastructure health check
     output: /testing/coverage-baseline.html
 
 stream_D:
-  - task: dependency_audit
+      - task: dependency_audit
     actions:
-      - Security vulnerabilities (npm audit)
-      - Outdated packages analysis
-      - Peer dependency conflicts
-      - Bundle tree-shaking opportunities
-      - License compliance check
+            - Security vulnerabilities (npm audit)
+            - Outdated packages analysis
+            - Peer dependency conflicts
+            - Bundle tree-shaking opportunities
+            - License compliance check
     output: /audit/dependency-report.md
 ```
 
 ### 0.2 Infrastructure Preparation
+
 ```bash
 # Branch: feat/infra-setup
 git checkout -b feat/infra-setup
@@ -114,6 +118,7 @@ export const orchestrationConfig = {
 **Setup Tasks:**
 
 1. **Automated Testing Pipeline**
+
 ```yaml
 - Configure Playwright for E2E
 - Setup React Testing Library
@@ -123,6 +128,7 @@ export const orchestrationConfig = {
 ```
 
 2. **Code Quality Tools**
+
 ```yaml
 - ESLint config (with custom rules for motion tokens)
 - Prettier with consistent formatting
@@ -132,6 +138,7 @@ export const orchestrationConfig = {
 ```
 
 3. **Feature Flag System**
+
 ```typescript
 // feature-flags.config.ts
 export const featureFlags = {
@@ -143,12 +150,14 @@ export const featureFlags = {
 }
 ```
 
----
+***
 
 ## Phase 1: Foundation Layer
+
 **Duration: 3-4 days | Parallelizable: Yes**
 
 ### Branch Strategy
+
 ```bash
 # Create develop branch from main
 git checkout main
@@ -163,6 +172,7 @@ git checkout -b refactor/accessibility-base
 ```
 
 ### 1.1 Design Token System
+
 **Branch:** `refactor/design-tokens` **✅ COMPLETE (Merged)**
 
 ```typescript
@@ -189,22 +199,24 @@ export const tokens = {
 ```
 
 **Tasks:**
+
 ```yaml
 parallel_tasks:
-  - task: create_token_package
+      - task: create_token_package
     test: unit tests for token generation
     validation: CSS custom properties output
 
-  - task: build_token_documentation
+      - task: build_token_documentation
     tool: Storybook or Docusaurus
     output: interactive token explorer
 
-  - task: migrate_hardcoded_values
+      - task: migrate_hardcoded_values
     script: codemod for value replacement
     validation: visual regression tests
 ```
 
 ### 1.2 Motion System Architecture
+
 **Branch:** `refactor/motion-system` **✅ COMPLETE (Merged)**
 
 ```typescript
@@ -229,6 +241,7 @@ export class MotionOrchestrator {
 ```
 
 ### 1.3 Component Architecture Refactor
+
 **Branch:** `refactor/component-architecture`
 
 ```typescript
@@ -249,6 +262,7 @@ export const Surface = forwardRef<HTMLDivElement, SurfaceProps>(
 ```
 
 ### 1.4 Accessibility Foundation
+
 **Branch:** `refactor/accessibility-base`
 
 ```typescript
@@ -272,9 +286,10 @@ export class FocusManager {
 }
 ```
 
----
+***
 
 ## Phase 2: Feature Implementation
+
 **Duration: 5-7 days | Parallelizable: Yes**
 
 ### Parallel Work Streams
@@ -298,6 +313,7 @@ gantt
 ```
 
 ### 2.1 Stream A: Visual Materiality
+
 **Branch:** `feat/m1-materiality` **✅ COMPLETE (Merged PR #14)**
 
 ```typescript
@@ -331,6 +347,7 @@ describe('Materiality Features', () => {
 ```
 
 ### 2.2 Stream B: Motion Choreography
+
 **Branch:** `feat/m2-choreography` **✅ COMPLETE (Merged PR #15)**
 
 ```typescript
@@ -365,6 +382,7 @@ class MotionTestHarness {
 ```
 
 ### 2.3 Stream C: Authentication System
+
 **Branch:** `feat/m4-auth-passkeys` **✅ COMPLETE (Merged PR #16)**
 
 ```typescript
@@ -403,6 +421,7 @@ export class AuthenticationOrchestrator {
 ```
 
 ### 2.4 Stream D: Export System
+
 **Branch:** `feat/m5-export-share`
 
 ```typescript
@@ -437,9 +456,10 @@ export class ExportOrchestrator {
 }
 ```
 
----
+***
 
 ## Phase 3: Integration & Stabilization
+
 **Duration: 3-4 days | Sequential**
 
 ### 3.1 Feature Flag Progressive Rollout
@@ -475,20 +495,20 @@ export class RolloutOrchestrator {
 ```yaml
 test_matrix:
   browsers:
-    - chrome: [126, 127, 128]
-    - safari: [17, 18]
-    - firefox: [128, 129]
-    - edge: [126, 127]
+      - chrome: [126, 127, 128]
+      - safari: [17, 18]
+      - firefox: [128, 129]
+      - edge: [126, 127]
 
   devices:
-    - desktop: [1920x1080, 1440x900, 1280x720]
-    - tablet: [iPad Pro, iPad Air, Surface]
-    - mobile: [iPhone 15, Pixel 8, Galaxy S24]
+      - desktop: [1920x1080, 1440x900, 1280x720]
+      - tablet: [iPad Pro, iPad Air, Surface]
+      - mobile: [iPhone 15, Pixel 8, Galaxy S24]
 
   conditions:
-    - network: [3G, 4G, WiFi, Offline]
-    - cpu_throttle: [1x, 4x, 6x]
-    - memory: [unlimited, 512MB, 256MB]
+      - network: [3G, 4G, WiFi, Offline]
+      - cpu_throttle: [1x, 4x, 6x]
+      - memory: [unlimited, 512MB, 256MB]
 ```
 
 ### 3.3 Performance Optimization Pass
@@ -537,9 +557,10 @@ export class PerformanceOrchestrator {
 }
 ```
 
----
+***
 
 ## Phase 4: Deployment & Monitoring
+
 **Duration: 2 days | Sequential**
 
 ### 4.1 Pre-Deployment Checklist
@@ -619,7 +640,7 @@ export const monitoringConfig = {
 }
 ```
 
----
+***
 
 ## Continuous Integration Pipeline
 
@@ -640,10 +661,10 @@ jobs:
       matrix:
         task: [typecheck, lint, format-check]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-      - run: npm ci --cache .npm
-      - run: npm run ${{ matrix.task }}
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
+            - run: npm ci --cache .npm
+            - run: npm run ${{ matrix.task }}
 
   test-suite:
     runs-on: ubuntu-latest
@@ -651,11 +672,11 @@ jobs:
       matrix:
         suite: [unit, integration, a11y]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-      - run: npm ci --cache .npm
-      - run: npm run test:${{ matrix.suite }}
-      - uses: codecov/codecov-action@v4
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
+            - run: npm ci --cache .npm
+            - run: npm run test:${{ matrix.suite }}
+            - uses: codecov/codecov-action@v4
         if: matrix.suite == 'unit'
 
   e2e-tests:
@@ -664,24 +685,24 @@ jobs:
       matrix:
         browser: [chromium, firefox, webkit]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-      - run: npx playwright install ${{ matrix.browser }}
-      - run: npm run test:e2e:${{ matrix.browser }}
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
+            - run: npx playwright install ${{ matrix.browser }}
+            - run: npm run test:e2e:${{ matrix.browser }}
 
   visual-regression:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: chromaui/action@v1
+            - uses: actions/checkout@v4
+            - uses: chromaui/action@v1
         with:
           projectToken: ${{ secrets.CHROMATIC_TOKEN }}
 
   performance-check:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: treosh/lighthouse-ci-action@v10
+            - uses: actions/checkout@v4
+            - uses: treosh/lighthouse-ci-action@v10
         with:
           configPath: ./lighthouse.config.js
           uploadArtifacts: true
@@ -691,15 +712,15 @@ jobs:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - run: npm run build
-      - uses: nwtgck/actions-netlify@v2
+            - uses: actions/checkout@v4
+            - run: npm run build
+            - uses: nwtgck/actions-netlify@v2
         with:
           publish-dir: './dist'
           enable-pull-request-comment: true
 ```
 
----
+***
 
 ## Risk Mitigation & Rollback Strategy
 
@@ -749,7 +770,7 @@ export class RollbackOrchestrator {
 }
 ```
 
----
+***
 
 ## Success Metrics & KPIs
 
@@ -778,7 +799,7 @@ export const successMetrics = {
 }
 ```
 
----
+***
 
 ## Execution Commands for Claude Code CLI
 
@@ -791,25 +812,26 @@ claude-code orchestrate run phase-0 --parallel --verbose
 
 # Execute refactor with monitoring
 claude-code orchestrate execute \
-  --phases 1,2,3,4 \
-  --parallel-factor 4 \
-  --rollback-enabled \
-  --monitor-metrics \
-  --feature-flags progressive
+      --phases 1,2,3,4 \
+      --parallel-factor 4 \
+      --rollback-enabled \
+      --monitor-metrics \
+      --feature-flags progressive
 
 # Validate before merge
 claude-code orchestrate validate --comprehensive
 
 # Deploy with gradual rollout
 claude-code orchestrate deploy \
-  --strategy canary \
-  --rollout-stages "1,5,25,50,100" \
-  --monitor-duration "2h,4h,12h,24h,stable"
+      --strategy canary \
+      --rollout-stages "1,5,25,50,100" \
+      --monitor-duration "2h,4h,12h,24h,stable"
 ```
 
----
+***
 
 This orchestration plan provides:
+
 1. **Parallel execution paths** to maximize efficiency
 2. **Comprehensive testing** at every stage
 3. **Progressive rollout** with automatic rollback

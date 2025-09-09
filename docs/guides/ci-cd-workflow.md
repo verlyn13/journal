@@ -1,15 +1,16 @@
----
+***
+
 title: "CI/CD Workflow Guide"
 description: "Comprehensive guide to the Journal project's CI/CD workflow and GitHub configuration"
 category: "Development Guides"
-related_topics:
-  - "Documentation Review Process"
-  - "Documentation Testing Process"
-  - "Markdown Linting Guide"
+related\_topics:
+\- "Documentation Review Process"
+\- "Documentation Testing Process"
+\- "Markdown Linting Guide"
 version: "1.0"
 status: "active"
-tags: ["ci-cd", "workflow", "github", "automation", "documentation"]
----
+tags: \["ci-cd", "workflow", "github", "automation", "documentation"]
+---------------------------------------------------------------------
 
 # CI/CD Workflow Guide
 
@@ -41,10 +42,12 @@ All workflow configurations are stored in the `.github/workflows/` directory.
 This workflow enforces documentation quality by running markdown linting and link checking on documentation files.
 
 **Triggering Conditions:**
+
 - Pull requests targeting the `main` branch
 - Only runs when files in the `docs/` directory, the workflow file itself, or package files are modified
 
 **Jobs:**
+
 - **Lint Markdown & Check Links**: Runs both `npm run lint:md` and `npm run lint:links` to ensure documentation meets quality standards
 
 ### 2.2. Python Tests (`python-tests.yml`)
@@ -52,11 +55,13 @@ This workflow enforces documentation quality by running markdown linting and lin
 This workflow runs tests and linting for the Python codebase.
 
 **Triggering Conditions:**
+
 - Push to `main` branch
 - Pull requests targeting the `main` branch
 - Only runs when Python files, requirements, or the workflow itself is modified
 
 **Jobs:**
+
 - **Run Tests & Linting**: Sets up Python, installs dependencies, runs flake8 for linting, and executes pytest with coverage reporting
 
 ### 2.3. Frontend Build (`frontend-build.yml`)
@@ -64,11 +69,13 @@ This workflow runs tests and linting for the Python codebase.
 This workflow validates and builds the frontend assets.
 
 **Triggering Conditions:**
+
 - Push to `main` branch
 - Pull requests targeting the `main` branch
 - Only runs when frontend source files, build configuration, or the workflow itself is modified
 
 **Jobs:**
+
 - **Build Frontend Assets**: Sets up Node.js, installs dependencies, and builds the frontend assets using Rollup
 
 ### 2.4. Deploy Documentation (`deploy-docs.yml`)
@@ -76,10 +83,12 @@ This workflow validates and builds the frontend assets.
 This workflow builds and deploys the project documentation to GitHub Pages.
 
 **Triggering Conditions:**
+
 - Push to `main` branch that modifies documentation or the workflow itself
-- Manual trigger via the Actions tab (workflow_dispatch)
+- Manual trigger via the Actions tab (workflow\_dispatch)
 
 **Jobs:**
+
 - **Build**: Prepares the documentation by generating JSDoc documentation and organizing the docs structure
 - **Deploy**: Deploys the documentation to GitHub Pages
 
@@ -102,6 +111,7 @@ The PR template (`.github/PULL_REQUEST_TEMPLATE.md`) guides contributors on prov
 The *source* documentation files reside in the `/docs` directory on the `main` branch. However, the live documentation site is *built* by the `deploy-docs.yml` workflow and hosted on **GitHub Pages**.
 
 **Workflow Process:**
+
 1. The workflow checks out the code.
 2. It generates JSDoc API documentation (`npm run docs`).
 3. It prepares a build directory (`_site`) containing source docs and generated API docs.
@@ -110,6 +120,7 @@ The *source* documentation files reside in the `/docs` directory on the `main` b
 
 **GitHub Pages Setup:**
 To enable this:
+
 1. Go to your repository on GitHub.
 2. Navigate to Settings > Pages.
 3. Under "Build and deployment", ensure "Source" is set to **"GitHub Actions"**.
@@ -124,14 +135,15 @@ To maintain code quality, configure branch protection rules for the `main` branc
 1. Go to Settings > Branches > Add rule
 2. Set "Branch name pattern" to `main`
 3. Enable:
-   - Require pull request reviews before merging
-   - Require status checks to pass before merging
-   - Require branches to be up to date before merging
+
+- Require pull request reviews before merging
+- Require status checks to pass before merging
+- Require branches to be up to date before merging
 
 ### 5.4. Using the GitHub CLI (`gh`)
 
 Many CI/CD tasks, such as triggering workflows, viewing run logs, or managing releases, can be performed using the [GitHub CLI Developer Guide](gh-cli.md). Familiarizing yourself with `gh` can significantly streamline your development workflow.
-4. Add the CI workflow status checks as required
+4\. Add the CI workflow status checks as required
 
 ### 5.2. Conventional Commits
 
@@ -146,6 +158,7 @@ Follow the [Conventional Commits](https://www.conventionalcommits.org/) specific
 ```
 
 Types:
+
 - `feat`: New feature
 - `fix`: Bug fix
 - `docs`: Documentation changes

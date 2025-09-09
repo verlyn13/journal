@@ -18,6 +18,8 @@ class Settings(BaseSettings):
 
     testing: bool = False
     auto_embed_mode: str = "event"  # "event" | "inline" | "off"
+    # Feature flags
+    user_mgmt_enabled: bool = False
 
     # Demo credentials for development/testing (override via env in real deployments)
     demo_username: str = "demo"

@@ -2,16 +2,17 @@
 
 import type {
   AuthError,
-  AuthErrorCode,
   AuthMethod,
   AuthProvider,
   AuthResult,
   AuthUser,
   MagicLinkConfig,
   OAuthConfig,
+  OAuthTokenResponse,
   PasskeyOptions,
   PasskeyRegistrationOptions,
 } from './types';
+import { AuthErrorCode } from './types';
 
 export class AuthenticationOrchestrator {
   private readonly passkeysSupported: boolean;
@@ -31,9 +32,8 @@ export class AuthenticationOrchestrator {
         try {
           const result = await this.passkeyAuth();
           if (result.success) return result;
-        } catch (error) {
-          console.warn('Passkey auth failed, trying fallbacks', error);
-        }
+        } catch (_error) {
+          }
       }
 
       // Try OAuth providers
@@ -101,8 +101,9 @@ export class AuthenticationOrchestrator {
       })) as PublicKeyCredential;
 
       return this.verifyAssertion(assertion);
-    } catch (error: any) {
-      if (error.name === 'NotAllowedError') {
+    } catch (error: unknown) {
+      const err = error as { name?: string };
+      if (err?.name === 'NotAllowedError') {
         throw this.createError('USER_CANCELLED', error);
       }
       throw this.createError('PASSKEY_AUTHENTICATION_FAILED', error);
@@ -272,7 +273,7 @@ export class AuthenticationOrchestrator {
   }
 
   // Helper: Convert credential to JSON
-  private credentialToJSON(credential: PublicKeyCredential): any {
+  private credentialToJSON(credential: PublicKeyCredential): unknown {
     const response = credential.response as AuthenticatorAssertionResponse;
     return {
       id: credential.id,
@@ -308,27 +309,33 @@ export class AuthenticationOrchestrator {
   }
 
   // Helper: Convert server options
-  private convertServerOptions(data: any): PasskeyOptions {
+  private convertServerOptions(data: unknown): PasskeyOptions {
+    type Cred = { id: string } & Record<string, unknown>;
+    type ServerData = { challenge: string; allowCredentials?: Cred[] } & Record<string, unknown>;
+    const d = data as ServerData;
     return {
-      ...data,
-      challenge: this.base64ToBuffer(data.challenge),
-      allowCredentials: data.allowCredentials?.map((cred: any) => ({
+      ...(d as Record<string, unknown>),
+      challenge: this.base64ToBuffer(d.challenge),
+      allowCredentials: d.allowCredentials?.map((cred: Cred) => ({
         ...cred,
         id: this.base64ToBuffer(cred.id),
       })),
-    };
+    } as unknown as PasskeyOptions;
   }
 
   // Helper: Convert server registration options
-  private convertServerRegistrationOptions(data: any): PasskeyRegistrationOptions {
+  private convertServerRegistrationOptions(data: unknown): PasskeyRegistrationOptions {
+    type User = { id: string } & Record<string, unknown>;
+    type ServerData = { challenge: string; user: User } & Record<string, unknown>;
+    const d = data as ServerData;
     return {
-      ...data,
-      challenge: this.base64ToBuffer(data.challenge),
+      ...(d as Record<string, unknown>),
+      challenge: this.base64ToBuffer(d.challenge),
       user: {
-        ...data.user,
-        id: this.base64ToBuffer(data.user.id),
+        ...d.user,
+        id: this.base64ToBuffer(d.user.id),
       },
-    };
+    } as unknown as PasskeyRegistrationOptions;
   }
 
   // OAuth helpers
@@ -374,14 +381,17 @@ export class AuthenticationOrchestrator {
             if (code) resolve(code);
             else reject(new Error('No auth code received'));
           }
-        } catch (e) {
+        } catch (_e) {
           // Cross-origin, ignore
         }
       }, 500);
     });
   }
 
-  private async exchangeOAuthCode(code: string, provider: AuthProvider): Promise<any> {
+  private async exchangeOAuthCode(
+    code: string,
+    provider: AuthProvider,
+  ): Promise<OAuthTokenResponse> {
     const response = await fetch(`${this.apiBaseUrl}/oauth/${provider}/token`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -415,7 +425,7 @@ export class AuthenticationOrchestrator {
     if (!response.ok) throw new Error('Failed to send magic link');
   }
 
-  private async waitForMagicLinkVerification(email: string): Promise<any> {
+  private async waitForMagicLinkVerification(email: string): Promise<unknown> {
     // Poll or use WebSocket for real-time verification
     // This is a simplified polling implementation
     const maxAttempts = 60; // 5 minutes
@@ -432,7 +442,7 @@ export class AuthenticationOrchestrator {
     throw new Error('Magic link verification timeout');
   }
 
-  private async verifyMagicLink(verification: any): Promise<AuthResult> {
+  private async verifyMagicLink(verification: unknown): Promise<AuthResult> {
     const response = await fetch(`${this.apiBaseUrl}/magic-link/verify`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -450,7 +460,7 @@ export class AuthenticationOrchestrator {
   }
 
   // Error helper
-  private createError(code: string, details?: any): AuthError {
+  private createError(code: string, details?: unknown): AuthError {
     const messages: Record<string, string> = {
       PASSKEY_NOT_SUPPORTED: 'Passkeys are not supported on this device',
       PASSKEY_REGISTRATION_FAILED: 'Failed to register passkey',
@@ -463,9 +473,13 @@ export class AuthenticationOrchestrator {
       UNKNOWN_ERROR: 'An unknown error occurred',
     };
 
+    const known = (Object.keys(messages) as Array<keyof typeof messages>).includes(
+      code as keyof typeof messages,
+    );
+    const finalCode = (known ? (code as keyof typeof messages) : 'UNKNOWN_ERROR') as keyof typeof messages;
     return {
-      code: code as any,
-      message: messages[code] || 'Unknown error',
+      code: AuthErrorCode[finalCode],
+      message: messages[finalCode],
       details,
     };
   }

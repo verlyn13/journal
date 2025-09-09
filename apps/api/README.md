@@ -35,7 +35,7 @@ A modern FastAPI-based backend for the Journal application, featuring:
    ```bash
    # With uv (recommended)
    uv sync --all-extras --dev
-   
+
    # Or with pip
    pip install -e ".[dev]"
    ```
@@ -50,6 +50,7 @@ A modern FastAPI-based backend for the Journal application, featuring:
    ```bash
    make dev
    # API will be available at http://127.0.0.1:8000
+   ```
 
 ### Local Development (This System)
 
@@ -88,10 +89,11 @@ A modern FastAPI-based backend for the Journal application, featuring:
   ```bash
   REFRESH=$(curl -s -X POST http://127.0.0.1:8000/api/v1/auth/demo | jq -r .refresh_token)
   curl -s -X POST http://127.0.0.1:8000/api/v1/auth/refresh \
-    -H 'Content-Type: application/json' \
-    -d "{\"refresh_token\":\"$REFRESH\"}" | jq
+  -H 'Content-Type: application/json' \
+  -d "{\"refresh_token\":\"$REFRESH\"}" | jq
   ```
-   ```
+  ```
+  ```
 
 ### Using DevContainers
 
@@ -104,9 +106,9 @@ For the most consistent development experience:
 
 ## 📚 API Documentation
 
-- **OpenAPI Docs**: http://127.0.0.1:8000/docs
-- **ReDoc**: http://127.0.0.1:8000/redoc
-- **GraphQL Playground**: http://127.0.0.1:8000/graphql
+- **OpenAPI Docs**: <http://127.0.0.1:8000/docs>
+- **ReDoc**: <http://127.0.0.1:8000/redoc>
+- **GraphQL Playground**: <http://127.0.0.1:8000/graphql>
 
 ### Authentication
 
@@ -416,10 +418,10 @@ OPENAI_API_KEY=""  # if using OpenAI embeddings
 
 ### Benchmarks
 
-- **Entry Creation**: ~50ms (including embedding generation)
-- **Search Query**: ~10ms (hybrid search, 1000 entries)
-- **Vector Search**: ~5ms (semantic only, 1000 entries)
-- **Entry Retrieval**: ~2ms (single entry by ID)
+- **Entry Creation**: \~50ms (including embedding generation)
+- **Search Query**: \~10ms (hybrid search, 1000 entries)
+- **Vector Search**: \~5ms (semantic only, 1000 entries)
+- **Entry Retrieval**: \~2ms (single entry by ID)
 
 ### Optimization Features
 

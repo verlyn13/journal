@@ -1,7 +1,9 @@
 # Journal Project - Complete Development Framework
+
 ## Modern Monorepo Architecture with FastAPI + Vite
 
 ### Table of Contents
+
 - [Overview](#overview)
 - [Architecture](#architecture)
 - [Development Setup](#development-setup)
@@ -20,6 +22,7 @@ The Journal project is a modern full-stack application built as a monorepo, comb
 ### Tech Stack Summary
 
 **Backend (Python 3.11+)**
+
 - FastAPI with async/await patterns
 - SQLModel (SQLAlchemy + Pydantic) for ORM
 - PostgreSQL 16+ with pgvector extension
@@ -28,6 +31,7 @@ The Journal project is a modern full-stack application built as a monorepo, comb
 - OpenTelemetry for observability
 
 **Frontend (TypeScript/React)**
+
 - Vite for blazing fast HMR
 - React 18 with hooks
 - TipTap for rich text editing
@@ -36,6 +40,7 @@ The Journal project is a modern full-stack application built as a monorepo, comb
 - KaTeX for mathematical notation
 
 **Build & Development**
+
 - Bun 1.2.21 as JavaScript runtime
 - uv for Python dependency management
 - Rollup for legacy bundle generation
@@ -95,6 +100,7 @@ journal/
 ### Monorepo Strategy
 
 The project uses a **workspace-based monorepo** approach:
+
 - Root `package.json` orchestrates all commands
 - Each app maintains its own dependencies
 - Shared tooling configuration at root level
@@ -105,11 +111,12 @@ The project uses a **workspace-based monorepo** approach:
 ### Prerequisites
 
 1. **System Requirements**
-   - Node.js 20+ (for compatibility)
-   - Bun 1.2.21+ (primary JS runtime)
-   - Python 3.11+ (backend)
-   - Docker & Docker Compose (infrastructure)
-   - PostgreSQL 16+ (if running locally)
+
+- Node.js 20+ (for compatibility)
+- Bun 1.2.21+ (primary JS runtime)
+- Python 3.11+ (backend)
+- Docker & Docker Compose (infrastructure)
+- PostgreSQL 16+ (if running locally)
 
 2. **Install Bun**
    ```bash
@@ -194,6 +201,7 @@ uv run <command>         # Run in venv context
 ### Frontend Build Pipeline
 
 #### Legacy Bundle (Rollup)
+
 ```bash
 # Development watch mode
 bun run dev
@@ -206,6 +214,7 @@ bun run build:verbose
 ```
 
 **Rollup Configuration:**
+
 - Entry points: `src/js/main.js`, `src/css/main.css`
 - Output: `journal/static/gen/`
 - Features:
@@ -216,6 +225,7 @@ bun run build:verbose
   - Manifest generation for cache busting
 
 #### Modern Web App (Vite)
+
 ```bash
 # Development server
 bun run web:dev         # Runs on http://localhost:5173
@@ -228,6 +238,7 @@ bun run web:preview
 ```
 
 **Vite Configuration:**
+
 - React with Fast Refresh
 - TypeScript with strict mode
 - Tailwind CSS v4
@@ -252,24 +263,28 @@ bun run api:worker      # Embedding consumer
 ### Test Categories
 
 1. **Unit Tests** (Python)
-   - Framework: pytest
-   - Coverage target: 85%+
-   - Location: `apps/api/tests/`
+
+- Framework: pytest
+- Coverage target: 85%+
+- Location: `apps/api/tests/`
 
 2. **E2E Tests** (Playwright)
-   - Browsers: Chrome, Firefox, Safari
-   - Viewports: Desktop, Mobile, Tablet
-   - Location: `tests/`
+
+- Browsers: Chrome, Firefox, Safari
+- Viewports: Desktop, Mobile, Tablet
+- Location: `tests/`
 
 3. **Visual Regression**
-   - Project: `visual`
-   - Baseline screenshots
-   - Pixel-perfect comparisons
+
+- Project: `visual`
+- Baseline screenshots
+- Pixel-perfect comparisons
 
 4. **Accessibility Tests**
-   - Project: `a11y`
-   - axe-core integration
-   - WCAG 2.1 compliance
+
+- Project: `a11y`
+- axe-core integration
+- WCAG 2.1 compliance
 
 ### Running Tests
 
@@ -290,6 +305,7 @@ bun run test:ui         # Playwright UI mode
 ### Test Configuration
 
 **Playwright (`playwright.config.js`):**
+
 - Parallel execution
 - Retry on failure (2x in CI)
 - Trace on first retry
@@ -297,6 +313,7 @@ bun run test:ui         # Playwright UI mode
 - Multiple reporters (HTML, JSON, GitHub)
 
 **Pytest (`apps/api/pyproject.toml`):**
+
 - Auto async mode
 - Coverage reporting (XML, HTML)
 - Strict markers
@@ -307,6 +324,7 @@ bun run test:ui         # Playwright UI mode
 ### GitHub Actions Workflow
 
 **Trigger Events:**
+
 - Push to `main` branch
 - Pull requests to `main`
 - Manual dispatch
@@ -314,35 +332,41 @@ bun run test:ui         # Playwright UI mode
 **Job: build-test**
 
 1. **Environment Setup**
-   - Ubuntu latest
-   - Bun 1.2.21
-   - Python 3.13.7 via uv
-   - Playwright browsers
+
+- Ubuntu latest
+- Bun 1.2.21
+- Python 3.13.7 via uv
+- Playwright browsers
 
 2. **Dependency Installation**
-   - Frozen lockfile installs
-   - Cached dependencies
+
+- Frozen lockfile installs
+- Cached dependencies
 
 3. **Quality Checks**
-   - Biome CI with GitHub reporter
-   - TypeScript type checking
-   - Ruff linting with GitHub annotations
-   - Ruff format check
-   - MyPy type checking
+
+- Biome CI with GitHub reporter
+- TypeScript type checking
+- Ruff linting with GitHub annotations
+- Ruff format check
+- MyPy type checking
 
 4. **Testing**
-   - pytest with 80% coverage requirement
-   - Playwright accessibility tests
-   - Playwright visual tests
+
+- pytest with 80% coverage requirement
+- Playwright accessibility tests
+- Playwright visual tests
 
 5. **Build Artifacts**
-   - Storybook static build
-   - Coverage reports
-   - Test results
+
+- Storybook static build
+- Coverage reports
+- Test results
 
 ### Deployment Strategy
 
 Currently manual deployment with automated build verification:
+
 - Production builds validated in CI
 - Artifacts uploaded for review
 - Manual deployment to production
@@ -379,13 +403,14 @@ bun run api:db:revision m="description"  # Create migration
    ```
 
 2. **Commit Convention**
-   - `feat:` New features
-   - `fix:` Bug fixes
-   - `docs:` Documentation
-   - `style:` Formatting
-   - `refactor:` Code restructuring
-   - `test:` Test changes
-   - `chore:` Maintenance
+
+- `feat:` New features
+- `fix:` Bug fixes
+- `docs:` Documentation
+- `style:` Formatting
+- `refactor:` Code restructuring
+- `test:` Test changes
+- `chore:` Maintenance
 
 ### Code Review Process
 
@@ -400,6 +425,7 @@ bun run api:db:revision m="description"  # Create migration
 ### Biome (JavaScript/TypeScript Linting)
 
 **Configuration (`.biome.json`):**
+
 - Formatter: 2 spaces, 100 char line width
 - Organizes imports automatically
 - Recommended rules enabled
@@ -408,6 +434,7 @@ bun run api:db:revision m="description"  # Create migration
 ### Ruff (Python Linting)
 
 **Configuration (`apps/api/pyproject.toml`):**
+
 - Target: Python 3.11+
 - Line length: 100 characters
 - Auto-fix enabled
@@ -417,6 +444,7 @@ bun run api:db:revision m="description"  # Create migration
 ### TypeScript
 
 **Configuration (`tsconfig.json`):**
+
 - Strict mode enabled
 - No implicit any
 - ES2022 target
@@ -425,6 +453,7 @@ bun run api:db:revision m="description"  # Create migration
 ### Storybook
 
 **Configuration:**
+
 - Framework: React + Vite
 - Addons: Essentials, A11y, Performance
 - Port: 6006
@@ -438,67 +467,67 @@ bun run build-storybook # Static build
 
 ### Development Commands
 
-| Command | Description |
-|---------|-------------|
-| `make dev` | Start legacy development server |
-| `bun run web:dev` | Start Vite development server |
-| `bun run api:dev` | Start FastAPI development server |
-| `bun run dev` | Watch and rebuild legacy assets |
-| `bun run storybook` | Start Storybook server |
+| Command             | Description                      |
+| ------------------- | -------------------------------- |
+| `make dev`          | Start legacy development server  |
+| `bun run web:dev`   | Start Vite development server    |
+| `bun run api:dev`   | Start FastAPI development server |
+| `bun run dev`       | Watch and rebuild legacy assets  |
+| `bun run storybook` | Start Storybook server           |
 
 ### Build Commands
 
-| Command | Description |
-|---------|-------------|
-| `bun run build` | Build legacy assets |
-| `bun run web:build` | Build modern web app |
-| `bun run web:publish` | Build and copy to static |
-| `bun run build-storybook` | Build Storybook static |
+| Command                   | Description              |
+| ------------------------- | ------------------------ |
+| `bun run build`           | Build legacy assets      |
+| `bun run web:build`       | Build modern web app     |
+| `bun run web:publish`     | Build and copy to static |
+| `bun run build-storybook` | Build Storybook static   |
 
 ### Testing Commands
 
-| Command | Description |
-|---------|-------------|
-| `bun run test` | Run Playwright tests |
-| `bun run test:a11y` | Run accessibility tests |
-| `bun run test:visual` | Run visual regression |
-| `bun run api:test` | Run Python tests |
-| `bun run check:all` | Run all checks |
+| Command               | Description             |
+| --------------------- | ----------------------- |
+| `bun run test`        | Run Playwright tests    |
+| `bun run test:a11y`   | Run accessibility tests |
+| `bun run test:visual` | Run visual regression   |
+| `bun run api:test`    | Run Python tests        |
+| `bun run check:all`   | Run all checks          |
 
 ### Code Quality Commands
 
-| Command | Description |
-|---------|-------------|
-| `bun run lint` | Lint JavaScript/TypeScript |
-| `bun run format` | Format JavaScript/TypeScript |
-| `bun run api:lint` | Lint and format Python |
-| `bun run typecheck` | TypeScript type checking |
+| Command             | Description                  |
+| ------------------- | ---------------------------- |
+| `bun run lint`      | Lint JavaScript/TypeScript   |
+| `bun run format`    | Format JavaScript/TypeScript |
+| `bun run api:lint`  | Lint and format Python       |
+| `bun run typecheck` | TypeScript type checking     |
 
 ### Database Commands
 
-| Command | Description |
-|---------|-------------|
-| `bun run api:setup` | Setup database infrastructure |
-| `bun run api:migrate` | Apply migrations |
-| `bun run api:db:revision m="msg"` | Create migration |
-| `bun run api:db:downgrade` | Rollback migration |
+| Command                           | Description                   |
+| --------------------------------- | ----------------------------- |
+| `bun run api:setup`               | Setup database infrastructure |
+| `bun run api:migrate`             | Apply migrations              |
+| `bun run api:db:revision m="msg"` | Create migration              |
+| `bun run api:db:downgrade`        | Rollback migration            |
 
 ### Documentation Commands
 
-| Command | Description |
-|---------|-------------|
-| `bun run docs:fetch` | Fetch tool documentation |
-| `bun run docs:serve` | Serve documentation locally |
-| `bun run docs:search TERM="query"` | Search documentation |
+| Command                            | Description                 |
+| ---------------------------------- | --------------------------- |
+| `bun run docs:fetch`               | Fetch tool documentation    |
+| `bun run docs:serve`               | Serve documentation locally |
+| `bun run docs:search TERM="query"` | Search documentation        |
 
 ### Utility Commands
 
-| Command | Description |
-|---------|-------------|
-| `make fresh` | Clean install everything |
-| `make clean` | Remove build artifacts |
-| `make assets-clean` | Clean generated assets |
-| `make help` | Show all make targets |
+| Command             | Description              |
+| ------------------- | ------------------------ |
+| `make fresh`        | Clean install everything |
+| `make clean`        | Remove build artifacts   |
+| `make assets-clean` | Clean generated assets   |
+| `make help`         | Show all make targets    |
 
 ## Environment Variables
 
@@ -575,76 +604,89 @@ ORDER BY pg_total_relation_size(relid) DESC;
 ### Frontend Optimization
 
 1. **Code Splitting**
-   - Dynamic imports for routes
-   - Lazy loading for heavy components
-   - Vendor chunk optimization
+
+- Dynamic imports for routes
+- Lazy loading for heavy components
+- Vendor chunk optimization
 
 2. **Asset Optimization**
-   - Image lazy loading
-   - WebP/AVIF formats
-   - Critical CSS inlining
+
+- Image lazy loading
+- WebP/AVIF formats
+- Critical CSS inlining
 
 3. **Caching Strategy**
-   - Content-hash based filenames
-   - Long-term browser caching
-   - Service worker for offline
+
+- Content-hash based filenames
+- Long-term browser caching
+- Service worker for offline
 
 ### Backend Optimization
 
 1. **Database**
-   - Connection pooling
-   - Query optimization with EXPLAIN
-   - Proper indexing strategy
-   - pgvector for similarity search
+
+- Connection pooling
+- Query optimization with EXPLAIN
+- Proper indexing strategy
+- pgvector for similarity search
 
 2. **Caching**
-   - Redis for session data
-   - Query result caching
-   - Static file caching
+
+- Redis for session data
+- Query result caching
+- Static file caching
 
 3. **Async Operations**
-   - Background tasks with workers
-   - Event-driven architecture
-   - WebSocket for real-time updates
+
+- Background tasks with workers
+- Event-driven architecture
+- WebSocket for real-time updates
 
 ## Security Considerations
 
 1. **Authentication & Authorization**
-   - JWT with refresh tokens
-   - Role-based access control
-   - Secure password hashing (bcrypt)
+
+- JWT with refresh tokens
+- Role-based access control
+- Secure password hashing (bcrypt)
 
 2. **Input Validation**
-   - Pydantic models for API
-   - Zod schemas for frontend
-   - SQL injection prevention
+
+- Pydantic models for API
+- Zod schemas for frontend
+- SQL injection prevention
 
 3. **Security Headers**
-   - CORS configuration
-   - CSP headers
-   - Rate limiting
+
+- CORS configuration
+- CSP headers
+- Rate limiting
 
 4. **Secrets Management**
-   - Environment variables
-   - Never commit secrets
-   - Rotate regularly
+
+- Environment variables
+- Never commit secrets
+- Rotate regularly
 
 ## Monitoring & Observability
 
 1. **Logging**
-   - Structured JSON logging
-   - Log levels (DEBUG, INFO, WARNING, ERROR)
-   - Correlation IDs for tracing
+
+- Structured JSON logging
+- Log levels (DEBUG, INFO, WARNING, ERROR)
+- Correlation IDs for tracing
 
 2. **Metrics**
-   - OpenTelemetry instrumentation
-   - Custom business metrics
-   - Performance monitoring
+
+- OpenTelemetry instrumentation
+- Custom business metrics
+- Performance monitoring
 
 3. **Error Tracking**
-   - Comprehensive error handling
-   - Stack trace preservation
-   - User-friendly error messages
+
+- Comprehensive error handling
+- Stack trace preservation
+- User-friendly error messages
 
 ## Troubleshooting
 
@@ -668,7 +710,7 @@ ORDER BY pg_total_relation_size(relid) DESC;
    # JavaScript
    rm -rf node_modules bun.lockb
    bun install
-   
+
    # Python
    cd apps/api
    rm -rf .venv uv.lock
@@ -684,23 +726,26 @@ ORDER BY pg_total_relation_size(relid) DESC;
 ## Contributing Guidelines
 
 1. **Code Style**
-   - Follow existing patterns
-   - Use type hints/annotations
-   - Write self-documenting code
-   - Add tests for new features
+
+- Follow existing patterns
+- Use type hints/annotations
+- Write self-documenting code
+- Add tests for new features
 
 2. **Pull Request Process**
-   - Create feature branch
-   - Write descriptive commits
-   - Update documentation
-   - Ensure CI passes
-   - Request review
+
+- Create feature branch
+- Write descriptive commits
+- Update documentation
+- Ensure CI passes
+- Request review
 
 3. **Testing Requirements**
-   - Unit tests for logic
-   - Integration tests for APIs
-   - E2E tests for critical paths
-   - Maintain coverage above 80%
+
+- Unit tests for logic
+- Integration tests for APIs
+- E2E tests for critical paths
+- Maintain coverage above 80%
 
 ## Future Roadmap
 
@@ -711,7 +756,7 @@ ORDER BY pg_total_relation_size(relid) DESC;
 - [ ] Advanced search with AI
 - [ ] Plugin system architecture
 
----
+***
 
 ## Quick Start Summary
 

@@ -49,7 +49,7 @@ export class LayoutTransitionManager {
   captureGroup(groupKey: string, selector: string): void {
     if (typeof document === 'undefined') return;
     const elements = document.querySelectorAll(selector);
-    elements.forEach((element, index) => {
+    elements.forEach((_element, index) => {
       this.capture(`${groupKey}-${index}`, `${selector}:nth-child(${index + 1})`);
     });
   }
@@ -221,7 +221,7 @@ export class LayoutTransitionManager {
     const promises: Promise<void>[] = [];
     const stagger = transition.stagger || 0;
 
-    this.snapshots.forEach((snapshot, key) => {
+    this.snapshots.forEach((_snapshot, key) => {
       if (key.startsWith(groupKey)) {
         const index = parseInt(key.split('-').pop() || '0', 10);
         const delay = index * stagger;

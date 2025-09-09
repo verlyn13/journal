@@ -7,13 +7,16 @@ The journal now uses a powerful markdown editor with side-by-side preview, combi
 ### Editor Features
 
 #### Writing in Markdown
+
 - **Native Markdown**: Write in standard markdown syntax
 - **Syntax Highlighting**: Code mirror provides syntax highlighting for markdown
 - **Dark Theme**: Built-in OneDark theme for comfortable editing
 - **Live Preview**: See your formatted content in real-time
 
 #### Math Support (KaTeX)
+
 Write mathematical expressions using LaTeX syntax:
+
 - **Inline Math**: Use single dollar signs `$x^2 + y^2 = z^2$`
 - **Block Math**: Use double dollar signs for display math
   ```
@@ -23,7 +26,9 @@ Write mathematical expressions using LaTeX syntax:
   ```
 
 #### Code Blocks
+
 Full syntax highlighting for code blocks:
+
 ````markdown
 ```javascript
 function hello() {
@@ -37,6 +42,7 @@ Supports all major programming languages with automatic syntax detection.
 ### Markdown Syntax Quick Reference
 
 #### Headers
+
 ```markdown
 # H1 Header
 ## H2 Header
@@ -44,6 +50,7 @@ Supports all major programming languages with automatic syntax detection.
 ```
 
 #### Emphasis
+
 ```markdown
 **bold text**
 *italic text*
@@ -51,6 +58,7 @@ Supports all major programming languages with automatic syntax detection.
 ```
 
 #### Lists
+
 ```markdown
 - Bullet point
 - Another point
@@ -58,16 +66,18 @@ Supports all major programming languages with automatic syntax detection.
 
 1. Numbered list
 2. Second item
-   1. Nested number
+  1. Nested number
 ```
 
 #### Links and Images
+
 ```markdown
 [Link text](https://example.com)
 ![Alt text](image-url.jpg)
 ```
 
 #### Tables
+
 ```markdown
 | Header 1 | Header 2 |
 |----------|----------|
@@ -76,12 +86,14 @@ Supports all major programming languages with automatic syntax detection.
 ```
 
 #### Blockquotes
+
 ```markdown
 > This is a blockquote
 > It can span multiple lines
 ```
 
 #### Horizontal Rule
+
 ```markdown
 ---
 ```
@@ -89,6 +101,7 @@ Supports all major programming languages with automatic syntax detection.
 ### Split Pane View
 
 The editor provides a split-pane interface:
+
 - **Left Pane**: Markdown editor with syntax highlighting
 - **Right Pane**: Live preview with formatted output
 - **Resizable**: Drag the divider to adjust pane sizes
@@ -97,6 +110,7 @@ The editor provides a split-pane interface:
 ### Keyboard Shortcuts
 
 **Editor Navigation:**
+
 - Standard text editing shortcuts work as expected
 - `Ctrl+Z` → Undo
 - `Ctrl+Shift+Z` → Redo
@@ -121,7 +135,8 @@ The editor provides a split-pane interface:
 ### Common Patterns
 
 #### Daily Journal Entry
-```markdown
+
+````markdown
 # Daily Entry - January 4, 2025
 
 ## Morning Thoughts
@@ -137,11 +152,13 @@ Progress on feature implementation...
 def improved_function():
     # Better implementation
     pass
-```
+````
 
 ## Evening Reflection
+
 Today was productive because...
-```
+
+````
 
 #### Technical Notes
 ```markdown
@@ -157,6 +174,6 @@ $$
 
 ## Solution
 Implement a more efficient algorithm...
-```
+````
 
 The markdown editor provides a perfect balance between simplicity and power, allowing you to focus on content while maintaining rich formatting capabilities.

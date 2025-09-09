@@ -1,77 +1,78 @@
----
+***
+
 title: "State Management Guide: Flask Journal System"
 description: "Defines patterns for managing client-side (Alpine.js, localStorage) and server-side (Flask-Session, Redis, Database) state in the Flask Journal MVP, including data synchronization strategies."
 category: "System Design"
-related_topics:
-  - "Comprehensive Guide: Personal Flask Blog/Journal System"
-  - "API Contract Guide"
-  - "HTMX + Alpine.js Integration" # Placeholder, assuming this doc exists/will exist
+related\_topics:
+\- "Comprehensive Guide: Personal Flask Blog/Journal System"
+\- "API Contract Guide"
+\- "HTMX + Alpine.js Integration" # Placeholder, assuming this doc exists/will exist
 version: "1.0"
 tags:
-  - "state management"
-  - "flask"
-  - "alpinejs"
-  - "htmx"
-  - "redis"
-  - "session"
-  - "localstorage"
-  - "data synchronization"
-  - "conflict resolution"
-  - "ui state"
-  - "server state"
-  - "mvp"
-  - "system design"
----
-
+\- "state management"
+\- "flask"
+\- "alpinejs"
+\- "htmx"
+\- "redis"
+\- "session"
+\- "localstorage"
+\- "data synchronization"
+\- "conflict resolution"
+\- "ui state"
+\- "server state"
+\- "mvp"
+\- "system design"
+------------------
 
 # State Management Guide for Flask Blog/Journal System
 
 This guide establishes patterns for managing state in your Flask journal application, focusing on both client-side and server-side state management. All examples follow the "lean and mean" philosophy using the agreed technology stack (Flask, SQLAlchemy, HTMX, Alpine.js, Redis).
 
 ## Table of Contents
+
 - [State Management Guide for Flask Blog/Journal System](#state-management-guide-for-flask-blogjournal-system)
-  - [Table of Contents](#table-of-contents)
-  - [Client-Side State Management](#client-side-state-management)
-    - [Alpine.js for UI State](#alpinejs-for-ui-state)
-      - [Base Template Setup](#base-template-setup)
-      - [Modal Component](#modal-component)
-      - [Dropdown Component](#dropdown-component)
-    - [Auto-saving Draft Content](#auto-saving-draft-content)
-      - [Editor.js for Auto-saving](#editorjs-for-auto-saving)
-      - [Draft Recovery Dialog HTML](#draft-recovery-dialog-html)
-    - [Theme Preference Persistence](#theme-preference-persistence)
-      - [Theme Switcher](#theme-switcher)
-      - [Alpine.js Theme Implementation](#alpinejs-theme-implementation)
-    - [Editor State Management](#editor-state-management)
-      - [Markdown Editor with State Management](#markdown-editor-with-state-management)
-  - [Server-Side State Management](#server-side-state-management)
-    - [Session Management with Redis](#session-management-with-redis)
-      - [Redis Session Configuration](#redis-session-configuration)
-      - [Session Usage in Routes](#session-usage-in-routes)
-    - [User Preferences and Settings](#user-preferences-and-settings)
-      - [User Preferences Model](#user-preferences-model)
-      - [Preferences Service](#preferences-service)
-      - [Preferences Route](#preferences-route)
-    - [Draft Entries Management](#draft-entries-management)
-      - [Draft Entry Model](#draft-entry-model)
-      - [Draft Service](#draft-service)
-      - [Draft API Routes](#draft-api-routes)
-    - [Flash Messages for Temporary State](#flash-messages-for-temporary-state)
-      - [Enhanced Flash Messages](#enhanced-flash-messages)
-      - [Flash Message Display with Alpine.js](#flash-message-display-with-alpinejs)
-      - [Usage in Routes](#usage-in-routes)
-  - [Data Synchronization](#data-synchronization)
-    - [Conflict Resolution](#conflict-resolution)
-      - [Server-Side Conflict Resolution](#server-side-conflict-resolution)
-      - [Client-Side Conflict Resolution UI](#client-side-conflict-resolution-ui)
-    - [Optimistic UI Updates](#optimistic-ui-updates)
-      - [Optimistic UI with Alpine.js](#optimistic-ui-with-alpinejs)
-    - [HTMX for Partial Page Updates](#htmx-for-partial-page-updates)
-      - [HTMX Pagination Example](#htmx-pagination-example)
-      - [HTMX Route Handler](#htmx-route-handler)
-      - [HTMX Form Submission with Validation](#htmx-form-submission-with-validation)
-      - [HTMX Success Response](#htmx-success-response)
-    - [In-Page Search with HTMX](#in-page-search-with-htmx)
+  \- [Table of Contents](#table-of-contents)
+  \- [Client-Side State Management](#client-side-state-management)
+  \- [Alpine.js for UI State](#alpinejs-for-ui-state)
+  \- [Base Template Setup](#base-template-setup)
+  \- [Modal Component](#modal-component)
+  \- [Dropdown Component](#dropdown-component)
+  \- [Auto-saving Draft Content](#auto-saving-draft-content)
+  \- [Editor.js for Auto-saving](#editorjs-for-auto-saving)
+  \- [Draft Recovery Dialog HTML](#draft-recovery-dialog-html)
+  \- [Theme Preference Persistence](#theme-preference-persistence)
+  \- [Theme Switcher](#theme-switcher)
+  \- [Alpine.js Theme Implementation](#alpinejs-theme-implementation)
+  \- [Editor State Management](#editor-state-management)
+  \- [Markdown Editor with State Management](#markdown-editor-with-state-management)
+  \- [Server-Side State Management](#server-side-state-management)
+  \- [Session Management with Redis](#session-management-with-redis)
+  \- [Redis Session Configuration](#redis-session-configuration)
+  \- [Session Usage in Routes](#session-usage-in-routes)
+  \- [User Preferences and Settings](#user-preferences-and-settings)
+  \- [User Preferences Model](#user-preferences-model)
+  \- [Preferences Service](#preferences-service)
+  \- [Preferences Route](#preferences-route)
+  \- [Draft Entries Management](#draft-entries-management)
+  \- [Draft Entry Model](#draft-entry-model)
+  \- [Draft Service](#draft-service)
+  \- [Draft API Routes](#draft-api-routes)
+  \- [Flash Messages for Temporary State](#flash-messages-for-temporary-state)
+  \- [Enhanced Flash Messages](#enhanced-flash-messages)
+  \- [Flash Message Display with Alpine.js](#flash-message-display-with-alpinejs)
+  \- [Usage in Routes](#usage-in-routes)
+  \- [Data Synchronization](#data-synchronization)
+  \- [Conflict Resolution](#conflict-resolution)
+  \- [Server-Side Conflict Resolution](#server-side-conflict-resolution)
+  \- [Client-Side Conflict Resolution UI](#client-side-conflict-resolution-ui)
+  \- [Optimistic UI Updates](#optimistic-ui-updates)
+  \- [Optimistic UI with Alpine.js](#optimistic-ui-with-alpinejs)
+  \- [HTMX for Partial Page Updates](#htmx-for-partial-page-updates)
+  \- [HTMX Pagination Example](#htmx-pagination-example)
+  \- [HTMX Route Handler](#htmx-route-handler)
+  \- [HTMX Form Submission with Validation](#htmx-form-submission-with-validation)
+  \- [HTMX Success Response](#htmx-success-response)
+  \- [In-Page Search with HTMX](#in-page-search-with-htmx)
 
 ## Client-Side State Management
 

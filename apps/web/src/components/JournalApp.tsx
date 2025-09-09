@@ -99,18 +99,13 @@ export function JournalApp() {
 
   // Handle entry selection - simplified without async
   const handleSelectEntry = useCallback((entryId: string) => {
-    console.error('handleSelectEntry ACTUALLY CALLED with:', entryId);
-    console.trace('Call stack');
-    
     // Immediately update the selection for instant feedback
     setState((prev) => {
-      console.log('Setting selectedEntryId to:', entryId);
       return { ...prev, selectedEntryId: entryId };
     });
 
     // Load content asynchronously
     api.getEntry(entryId).then(entry => {
-      console.log('Entry loaded:', entry.id, entry.title);
       
       // Prefer markdown_content for the markdown editor; convert HTML if needed
       let contentForEditor = entry.markdown_content as unknown as string | undefined;
@@ -133,7 +128,7 @@ export function JournalApp() {
               version: entry.version,
             },
           }));
-          console.log('Entry state updated');
+          // entry state updated after HTML->Markdown conversion
         });
       } else {
         setState((prev) => ({
@@ -146,10 +141,9 @@ export function JournalApp() {
             version: entry.version,
           },
         }));
-        console.log('Entry state updated');
+        // entry state updated
       }
     }).catch(_error => {
-      console.error('Failed to load entry:', _error);
       // Reset selection on error
       setState((prev) => ({
         ...prev,
@@ -171,10 +165,8 @@ export function JournalApp() {
         try {
           const freshEntry = await api.getEntry(entryId);
           version = freshEntry.version;
-          console.log('Delete: fetched fresh version', { entryId, version });
         } catch {
           // If fetch fails, try with no version (server will handle conflict)
-          console.warn('Delete: Could not fetch fresh version, proceeding without version check');
         }
 
         // Delete with version for optimistic locking
@@ -188,8 +180,7 @@ export function JournalApp() {
             selectedEntry: null,
           }));
         }
-      } catch (error) {
-        console.error('Delete failed:', error);
+      } catch (_error) {
         // TODO: Add error notification
       }
     },

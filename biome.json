@@ -86,12 +86,14 @@
       "formatter": { "enabled": false }
     },
     {
-      "includes": ["*.md", "**/*.md"],
+      "includes": ["*.md", "**/*.md", "docs/**/*.md"],
       "linter": {
         "enabled": false
       },
       "formatter": {
-        "enabled": false
+        "enabled": true,
+        "lineWidth": 160,
+        "indentWidth": 2
       }
     },
     {
@@ -105,17 +107,19 @@
       }
     },
     {
-      "includes": ["docs/**"],
-      "linter": {
-        "enabled": false
-      }
-    },
-    {
-      "includes": ["*.test.ts", "*.test.tsx", "*.spec.ts", "*.spec.tsx"],
+      "includes": ["*.test.ts", "*.test.tsx", "*.spec.ts", "*.spec.tsx", "apps/web/src/test-setup.ts", "apps/web/src/**/*.test.ts", "apps/web/src/**/*.spec.ts"],
       "linter": {
         "rules": {
           "suspicious": {
-            "noConsole": "off"
+            "noConsole": "off",
+            "noExplicitAny": "off",
+            "useIterableCallbackReturn": "off"
+          },
+          "correctness": {
+            "noUnusedFunctionParameters": "off"
+          },
+          "complexity": {
+            "noStaticOnlyClass": "off"
           }
         }
       }
@@ -142,7 +146,9 @@
       "scripts/**/*.ts",
       "*.json",
       "*.config.ts",
-      "*.config.js"
+      "*.config.js",
+      "*.md",
+      "docs/**/*.md"
     ],
     "experimentalScannerIgnores": [
       "**/node_modules",
@@ -173,8 +179,12 @@
       "**/Thumbs.db",
       "apps/api/**",
       "journal/**",
-      "*.md",
-      "docs/**",
+      "docs/_generated/**",
+      "docs/biome/**",
+      "docs/bun/**",
+      "docs/code-mirror/**",
+      "docs/external/**",
+      "docs/third-party/**",
       ".biome.json",
       ".gitignore",
       "bun.lockb"

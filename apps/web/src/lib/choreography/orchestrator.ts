@@ -6,7 +6,6 @@ import type {
   ChoreographyState,
   ChoreographyStep,
   StaggerConfig,
-  TimelineConfig,
 } from './types';
 
 export class ChoreographyOrchestrator {
@@ -40,7 +39,6 @@ export class ChoreographyOrchestrator {
   async play(sequenceId: string): Promise<void> {
     const sequence = this.sequences.get(sequenceId);
     if (!sequence) {
-      console.warn(`Sequence ${sequenceId} not found`);
       return;
     }
 
@@ -58,7 +56,9 @@ export class ChoreographyOrchestrator {
     this.controllers.set(sequenceId, controller);
 
     // Start animations
-    animations.forEach((anim) => anim.play());
+    animations.forEach((anim) => {
+      anim.play();
+    });
   }
 
   // Create animations from sequence
@@ -117,9 +117,12 @@ export class ChoreographyOrchestrator {
     options: { duration: number; delay: number; easing: string },
   ): Animation {
     // Remove offset property to avoid conflict with Keyframe type
-    const { offset: _offsetFrom, ...fromWithoutOffset } = from as any;
-    const { offset: _offsetTo, ...toWithoutOffset } = to as any;
-    const keyframes: Keyframe[] = [fromWithoutOffset, toWithoutOffset];
+    const { offset: _offsetFrom, ...fromRest } = from;
+    const { offset: _offsetTo, ...toRest } = to;
+    const keyframes: Keyframe[] = [
+      fromRest as unknown as Keyframe,
+      toRest as unknown as Keyframe,
+    ];
 
     return element.animate(keyframes, {
       duration: options.duration,
@@ -148,7 +151,7 @@ export class ChoreographyOrchestrator {
 
   // Calculate complex stagger patterns
   private calculateComplexStagger(index: number, config: StaggerConfig): number {
-    const { amount = 100, from = 'start', ease = 'linear' } = config;
+    const { amount = 100, from = 'start' } = config;
 
     let progress = index;
 
@@ -168,20 +171,26 @@ export class ChoreographyOrchestrator {
   }
 
   // Create controller for animations
-  private createController(sequenceId: string, animations: Animation[]): ChoreographyController {
+  private createController(_sequenceId: string, animations: Animation[]): ChoreographyController {
     let state: ChoreographyState = 'playing';
 
     return {
       play: () => {
-        animations.forEach((anim) => anim.play());
+        animations.forEach((anim) => {
+          anim.play();
+        });
         state = 'playing';
       },
       pause: () => {
-        animations.forEach((anim) => anim.pause());
+        animations.forEach((anim) => {
+          anim.pause();
+        });
         state = 'paused';
       },
       reverse: () => {
-        animations.forEach((anim) => anim.reverse());
+        animations.forEach((anim) => {
+          anim.reverse();
+        });
       },
       restart: () => {
         animations.forEach((anim) => {
@@ -235,7 +244,9 @@ export class ChoreographyOrchestrator {
   stop(sequenceId: string): void {
     const animations = this.activeAnimations.get(sequenceId);
     if (animations) {
-      animations.forEach((anim) => anim.cancel());
+      animations.forEach((anim) => {
+        anim.cancel();
+      });
       this.activeAnimations.delete(sequenceId);
     }
     this.controllers.delete(sequenceId);
@@ -243,8 +254,10 @@ export class ChoreographyOrchestrator {
 
   // Stop all sequences
   stopAll(): void {
-    this.activeAnimations.forEach((animations, id) => {
-      animations.forEach((anim) => anim.cancel());
+    this.activeAnimations.forEach((animations, _id) => {
+      animations.forEach((anim) => {
+        anim.cancel();
+      });
     });
     this.activeAnimations.clear();
     this.controllers.clear();

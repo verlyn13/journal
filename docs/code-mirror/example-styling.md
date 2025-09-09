@@ -1,12 +1,12 @@
----
+***
+
 title: CodeMirror Styling Example
 description: "Explains how to style CodeMirror editors using custom CSS, themes, base themes, and syntax highlighting, including examples for common styling tasks."
 category: "CodeMirror Examples"
 status: active
-tags: ["codemirror", "example", "styling", "css", "theme", "highlighting"]
+tags: \["codemirror", "example", "styling", "css", "theme", "highlighting"]
 version: "6.0"
----
-
+--------------
 
 # CodeMirror Styling Guide
 
@@ -88,6 +88,7 @@ You can freely style content text with different fonts, sizes, colors, etc. Code
 ### Padding and Margins
 
 To set padding for the document:
+
 - Add vertical padding to `.cm-content`
 - Add horizontal padding to `.cm-line`
 

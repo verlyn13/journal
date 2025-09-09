@@ -1,0 +1,28 @@
+# Exclude external documentation
+docs/_generated/
+docs/biome/
+docs/bun/
+docs/code-mirror/
+docs/external/
+docs/third-party/
+
+# Exclude API documentation  
+apps/api/docs/
+apps/api/htmlcov/
+
+# Exclude node_modules and other dependencies
+node_modules/
+**/node_modules/
+
+# Exclude build outputs
+dist/
+build/
+storybook-static/
+
+# Exclude coverage reports
+coverage/
+**/coverage/
+
+# Exclude vendor documentation
+vendor/
+**/vendor/

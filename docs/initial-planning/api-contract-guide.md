@@ -1,14 +1,15 @@
----
+***
+
 title: "API Contract Guide: Flask Journal System"
 description: "Defines standards for internal API endpoints, including design principles, request/response formats, authentication, and documentation for the Flask Journal MVP."
 category: "Project Planning"
-related_topics:
-  - "Flask Journal MVP Scope Definition"
-  - "Error Handling Guide"
-  - "Authentication/Authorization" # Conceptual link
+related\_topics:
+\- "Flask Journal MVP Scope Definition"
+\- "Error Handling Guide"
+\- "Authentication/Authorization" # Conceptual link
 version: "1.0"
-tags: ["api", "contract", "flask", "json", "rest", "standards", "design", "mvp", "planning"]
----
+tags: \["api", "contract", "flask", "json", "rest", "standards", "design", "mvp", "planning"]
+---------------------------------------------------------------------------------------------
 
 # API Contract Guide for Flask Blog/Journal System
 
@@ -17,39 +18,39 @@ This guide establishes standards for the internal API endpoints that support UI 
 ## Table of Contents
 
 - [API Contract Guide for Flask Blog/Journal System](#api-contract-guide-for-flask-blogjournal-system)
-  - [Table of Contents](#table-of-contents)
-  - [API Design Principles](#api-design-principles)
-    - [URL Structure](#url-structure)
-    - [HTTP Verb Usage](#http-verb-usage)
-    - [Query Parameter Conventions](#query-parameter-conventions)
-    - [Status Codes](#status-codes)
-  - [Request/Response Formats](#requestresponse-formats)
-    - [Standard JSON Structure](#standard-json-structure)
-    - [Error Response Format](#error-response-format)
-    - [Pagination Format](#pagination-format)
-    - [Filtering and Sorting Conventions](#filtering-and-sorting-conventions)
-  - [Authentication/Authorization](#authenticationauthorization)
-    - [Authentication Mechanism](#authentication-mechanism)
-    - [Required Headers](#required-headers)
-    - [Permission Checking](#permission-checking)
-    - [Rate Limiting Implementation](#rate-limiting-implementation)
-  - [Documentation Standards](#documentation-standards)
-    - [Inline Documentation](#inline-documentation)
-    - [API Reference Documentation](#api-reference-documentation)
-    - [Example Request/Response](#example-requestresponse)
-  - [API Examples (Conceptual)](#api-examples-conceptual)
-    - [Get API Token](#get-api-token)
-    - [List Entries](#list-entries)
-    - [Get Single Entry](#get-single-entry)
-    - [Create Entry](#create-entry)
-    - [Update Entry](#update-entry)
-    - [Delete Entry](#delete-entry)
-  - [Error Examples](#error-examples)
-    - [Authentication Error](#authentication-error)
-    - [Validation Error](#validation-error)
-    - [Resource Not Found](#resource-not-found)
-    - [Permission Denied](#permission-denied)
-    - [Rate Limit Exceeded](#rate-limit-exceeded)
+  \- [Table of Contents](#table-of-contents)
+  \- [API Design Principles](#api-design-principles)
+  \- [URL Structure](#url-structure)
+  \- [HTTP Verb Usage](#http-verb-usage)
+  \- [Query Parameter Conventions](#query-parameter-conventions)
+  \- [Status Codes](#status-codes)
+  \- [Request/Response Formats](#requestresponse-formats)
+  \- [Standard JSON Structure](#standard-json-structure)
+  \- [Error Response Format](#error-response-format)
+  \- [Pagination Format](#pagination-format)
+  \- [Filtering and Sorting Conventions](#filtering-and-sorting-conventions)
+  \- [Authentication/Authorization](#authenticationauthorization)
+  \- [Authentication Mechanism](#authentication-mechanism)
+  \- [Required Headers](#required-headers)
+  \- [Permission Checking](#permission-checking)
+  \- [Rate Limiting Implementation](#rate-limiting-implementation)
+  \- [Documentation Standards](#documentation-standards)
+  \- [Inline Documentation](#inline-documentation)
+  \- [API Reference Documentation](#api-reference-documentation)
+  \- [Example Request/Response](#example-requestresponse)
+  \- [API Examples (Conceptual)](#api-examples-conceptual)
+  \- [Get API Token](#get-api-token)
+  \- [List Entries](#list-entries)
+  \- [Get Single Entry](#get-single-entry)
+  \- [Create Entry](#create-entry)
+  \- [Update Entry](#update-entry)
+  \- [Delete Entry](#delete-entry)
+  \- [Error Examples](#error-examples)
+  \- [Authentication Error](#authentication-error)
+  \- [Validation Error](#validation-error)
+  \- [Resource Not Found](#resource-not-found)
+  \- [Permission Denied](#permission-denied)
+  \- [Rate Limit Exceeded](#rate-limit-exceeded)
 
 ## API Design Principles
 
@@ -128,13 +129,13 @@ def create_app(config_name='default'):
 
 Use appropriate HTTP verbs for each operation:
 
-| Verb   | Purpose                             | Examples                        |
-|--------|-------------------------------------|--------------------------------|
-| GET    | Retrieve resource(s)                | Get entries, Get specific entry |
-| POST   | Create new resource                 | Create new entry                |
-| PUT    | Update entire resource              | Update entire entry             |
-| PATCH  | Partial update of a resource        | Update only title of an entry   |
-| DELETE | Remove a resource                   | Delete an entry                 |
+| Verb   | Purpose                      | Examples                        |
+| ------ | ---------------------------- | ------------------------------- |
+| GET    | Retrieve resource(s)         | Get entries, Get specific entry |
+| POST   | Create new resource          | Create new entry                |
+| PUT    | Update entire resource       | Update entire entry             |
+| PATCH  | Partial update of a resource | Update only title of an entry   |
+| DELETE | Remove a resource            | Delete an entry                 |
 
 Implementation example (Conceptual - requires `entry_service`, `current_user`, error handling, schemas):
 
@@ -198,16 +199,16 @@ def delete_entry(entry_id):
 
 Define standard query parameters for common operations:
 
-| Parameter   | Purpose                          | Example                               |
-|-------------|----------------------------------|---------------------------------------|
-| `page`      | Pagination page number           | `/api/v1/entries?page=2`              |
-| `per_page`  | Items per page                   | `/api/v1/entries?per_page=20`         |
-| `sort`      | Sort field                       | `/api/v1/entries?sort=created_at`     |
-| `order`     | Sort order (asc/desc)            | `/api/v1/entries?order=desc`          |
-| `q`         | Search query                     | `/api/v1/entries?q=flask`             |
-| `filter[x]` | Filter by field                  | `/api/v1/entries?filter[is_public]=1` |
-| `include`   | Include related resources        | `/api/v1/entries?include=tags,author` |
-| `fields`    | Sparse fieldsets for projection  | `/api/v1/entries?fields=title,content`|
+| Parameter   | Purpose                         | Example                                |
+| ----------- | ------------------------------- | -------------------------------------- |
+| `page`      | Pagination page number          | `/api/v1/entries?page=2`               |
+| `per_page`  | Items per page                  | `/api/v1/entries?per_page=20`          |
+| `sort`      | Sort field                      | `/api/v1/entries?sort=created_at`      |
+| `order`     | Sort order (asc/desc)           | `/api/v1/entries?order=desc`           |
+| `q`         | Search query                    | `/api/v1/entries?q=flask`              |
+| `filter[x]` | Filter by field                 | `/api/v1/entries?filter[is_public]=1`  |
+| `include`   | Include related resources       | `/api/v1/entries?include=tags,author`  |
+| `fields`    | Sparse fieldsets for projection | `/api/v1/entries?fields=title,content` |
 
 Implementation example (Conceptual - requires service layer logic):
 
@@ -265,19 +266,19 @@ def get_entries():
 
 Use appropriate HTTP status codes for responses:
 
-| Code | Meaning               | Usage                                    |
-|------|------------------------|------------------------------------------|
-| 200  | OK                    | Successful GET, PUT, PATCH                |
-| 201  | Created               | Successful resource creation (POST)       |
-| 204  | No Content            | Successful DELETE                         |
-| 400  | Bad Request           | Invalid input/syntax error (generic)      |
-| 401  | Unauthorized          | Authentication required or failed         |
-| 403  | Forbidden             | Authenticated but lacks permission        |
-| 404  | Not Found             | Resource does not exist                   |
+| Code | Meaning               | Usage                                            |
+| ---- | --------------------- | ------------------------------------------------ |
+| 200  | OK                    | Successful GET, PUT, PATCH                       |
+| 201  | Created               | Successful resource creation (POST)              |
+| 204  | No Content            | Successful DELETE                                |
+| 400  | Bad Request           | Invalid input/syntax error (generic)             |
+| 401  | Unauthorized          | Authentication required or failed                |
+| 403  | Forbidden             | Authenticated but lacks permission               |
+| 404  | Not Found             | Resource does not exist                          |
 | 409  | Conflict              | Resource conflict (e.g., duplicate unique field) |
-| 422  | Unprocessable Entity  | Semantic errors in input (validation failed) |
-| 429  | Too Many Requests     | Rate limit exceeded                       |
-| 500  | Internal Server Error | Unexpected server error                   |
+| 422  | Unprocessable Entity  | Semantic errors in input (validation failed)     |
+| 429  | Too Many Requests     | Rate limit exceeded                              |
+| 500  | Internal Server Error | Unexpected server error                          |
 
 ## Request/Response Formats
 
@@ -462,8 +463,8 @@ Example response `meta` block:
 
 ### Filtering and Sorting Conventions
 
--   **Filtering:** Use `filter[field_name]=value`. Handle multiple filters. Consider operators (e.g., `filter[created_at][gte]=2023-01-01`).
--   **Sorting:** Use `sort=field_name` and `order=asc|desc`. Allow sorting by multiple fields (e.g., `sort=status,created_at&order=asc,desc`).
+- **Filtering:** Use `filter[field_name]=value`. Handle multiple filters. Consider operators (e.g., `filter[created_at][gte]=2023-01-01`).
+- **Sorting:** Use `sort=field_name` and `order=asc|desc`. Allow sorting by multiple fields (e.g., `sort=status,created_at&order=asc,desc`).
 
 Translate these query parameters into SQLAlchemy query modifications in your service layer.
 
@@ -519,9 +520,9 @@ Translate these query parameters into SQLAlchemy query modifications in your ser
 
 Use token-based authentication (e.g., JWT or simple opaque tokens stored securely).
 
--   **Token Generation:** Provide an endpoint (e.g., `/api/v1/auth/token`) where users exchange credentials (username/password) for a token.
--   **Token Storage:** Store tokens securely (e.g., in Redis with an expiry) or use stateless JWTs.
--   **Token Verification:** Verify tokens on each API request.
+- **Token Generation:** Provide an endpoint (e.g., `/api/v1/auth/token`) where users exchange credentials (username/password) for a token.
+- **Token Storage:** Store tokens securely (e.g., in Redis with an expiry) or use stateless JWTs.
+- **Token Verification:** Verify tokens on each API request.
 
 ```python
 # app/auth/token.py (Conceptual)
@@ -603,8 +604,8 @@ Use token-based authentication (e.g., JWT or simple opaque tokens stored securel
 
 ### Required Headers
 
--   Clients must send the token in the `Authorization` header using the `Bearer` scheme:
-    `Authorization: Bearer <your_token>`
+- Clients must send the token in the `Authorization` header using the `Bearer` scheme:
+  `Authorization: Bearer <your_token>`
 
 Handle this in the `@api_auth_required` decorator.
 
@@ -626,8 +627,8 @@ Handle this in the `@api_auth_required` decorator.
 
 Implement permission checks within route handlers or service methods after authentication.
 
--   **Ownership:** Check if the authenticated user owns the resource they are trying to access/modify.
--   **Roles (If applicable):** If roles are implemented later, check user roles against required permissions.
+- **Ownership:** Check if the authenticated user owns the resource they are trying to access/modify.
+- **Roles (If applicable):** If roles are implemented later, check user roles against required permissions.
 
 ```python
 # app/auth/permissions.py (Conceptual)
@@ -749,8 +750,8 @@ Register limiter in `create_app`:
 
 ### Inline Documentation
 
--   Use docstrings for all API route functions, service methods, and utility functions.
--   Explain the purpose, arguments, return values, and any potential exceptions.
+- Use docstrings for all API route functions, service methods, and utility functions.
+- Explain the purpose, arguments, return values, and any potential exceptions.
 
 ```python
 # Example Docstring
@@ -775,8 +776,8 @@ Register limiter in `create_app`:
 
 ### API Reference Documentation
 
--   Consider using tools like `Flask-RESTX` or `connexion` (with OpenAPI/Swagger specs) if a formal, auto-generated API reference is needed later. For MVP, clear inline documentation might suffice.
--   If using manual documentation, maintain a separate Markdown file detailing each endpoint, its parameters, request/response formats, and status codes.
+- Consider using tools like `Flask-RESTX` or `connexion` (with OpenAPI/Swagger specs) if a formal, auto-generated API reference is needed later. For MVP, clear inline documentation might suffice.
+- If using manual documentation, maintain a separate Markdown file detailing each endpoint, its parameters, request/response formats, and status codes.
 
 ```python
 # Example using Flask-RESTX (More complex setup, potentially beyond MVP)
@@ -815,7 +816,7 @@ Register limiter in `create_app`:
 
 Include clear examples in documentation (either inline docstrings or separate API reference).
 
-```markdown
+````markdown
 **Example: Create Entry**
 
 *Request:* `POST /api/v1/entries`
@@ -827,9 +828,10 @@ Include clear examples in documentation (either inline docstrings or separate AP
   "content": "This is the content of the new entry.",
   "is_public": false
 }
-```
+````
 
 *Response (Success 201):*
+
 ```json
 {
   "success": true,
@@ -847,6 +849,7 @@ Include clear examples in documentation (either inline docstrings or separate AP
 ```
 
 *Response (Validation Error 422):*
+
 ```json
 {
   "success": false,
@@ -859,7 +862,8 @@ Include clear examples in documentation (either inline docstrings or separate AP
   }
 }
 ```
-```
+
+````
 
 ---
 
@@ -1017,3 +1021,4 @@ These examples illustrate potential request/response cycles based on the princip
         "code": "RATE_LIMIT_EXCEEDED"
       }
     }
+````

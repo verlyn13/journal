@@ -5,6 +5,7 @@ A comprehensive documentation fetching and management system for **Biome v2.2.2*
 ## 🎯 Overview
 
 This documentation system provides automated tools to:
+
 - **Fetch** essential documentation from official Biome and Bun sources
 - **Organize** docs into a clean, navigable structure
 - **Convert** markdown to HTML for better viewing
@@ -143,8 +144,9 @@ make fresh
 ## 📖 Documentation Sources
 
 ### Biome v2.2.2
+
 - **Getting Started Guide**
-- **Configuration Guide** 
+- **Configuration Guide**
 - **Migration Guide**
 - **Configuration Reference**
 - **Linter Rules**
@@ -154,6 +156,7 @@ make fresh
 - **Changelog**
 
 ### Bun 1.2.21
+
 - **Installation**
 - **Package Manager**
 - **bunfig.toml Configuration**
@@ -167,18 +170,21 @@ make fresh
 ## 🔍 Features
 
 ### 1. **Smart Content Extraction**
+
 - Removes navigation, headers, footers
 - Converts HTML to clean markdown
 - Preserves code blocks and formatting
 - Maintains links and references
 
 ### 2. **Backup System**
+
 - Timestamped backups
 - Automatic cleanup (keeps last 5)
 - Easy restore functionality
 - Backup info tracking
 
 ### 3. **Search Capability**
+
 ```bash
 # Search for specific terms
 ./docs.sh search "formatter"
@@ -186,18 +192,21 @@ make fresh
 ```
 
 ### 4. **Local Server**
+
 ```bash
 # Serve on http://localhost:3000
 ./docs.sh serve
 ```
 
 ### 5. **HTML Conversion** (requires pandoc)
+
 ```bash
 # Convert all docs to HTML with navigation
 ./docs.sh convert
 ```
 
 ### 6. **Integrity Checking**
+
 ```bash
 # Check for empty files, broken links, etc.
 ./docs.sh check
@@ -277,13 +286,17 @@ fi
 ## 🚨 Troubleshooting
 
 ### Issue: Fetch fails with timeout
+
 **Solution**: Increase retry count in `fetch-docs.ts`:
+
 ```typescript
 await fetchPage(url, retries = 5)  // Increase retries
 ```
 
 ### Issue: HTML conversion requires pandoc
+
 **Solution**: Install pandoc:
+
 ```bash
 # macOS
 brew install pandoc
@@ -296,17 +309,19 @@ choco install pandoc
 ```
 
 ### Issue: Permission denied
+
 **Solution**: Make scripts executable:
+
 ```bash
 chmod +x fetch-docs.ts docs.sh
 ```
 
 ## 📊 Performance
 
-- **Fetch Time**: ~10-30 seconds for all docs
-- **Storage**: ~5-10 MB for complete documentation
+- **Fetch Time**: \~10-30 seconds for all docs
+- **Storage**: \~5-10 MB for complete documentation
 - **Search**: Instant grep-based search
-- **Conversion**: ~5 seconds for HTML generation
+- **Conversion**: \~5 seconds for HTML generation
 
 ## 🤝 Contributing
 
@@ -325,9 +340,9 @@ MIT License - Use freely in your projects
 
 Always refer to the official sources for the most current information:
 
-- **Biome**: [https://biomejs.dev](https://biomejs.dev)
-- **Bun**: [https://bun.sh/docs](https://bun.sh/docs)
+- **Biome**: <https://biomejs.dev>
+- **Bun**: <https://bun.sh/docs>
 
----
+***
 
 *Generated for Biome v2.2.2 and Bun 1.2.21*

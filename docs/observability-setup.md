@@ -12,10 +12,10 @@ This project implements a modern, automated observability stack optimized for a 
 ## Where It Lives
 
 - Core: `journal/observability.py`
-  - `setup_logging(env)`: configures structlog and stdlib logging
-  - `register_request_context(app)`: binds correlation_id, method, path, remote_addr, trace/span
-  - `register_error_handlers(app)`: 400/404/500 handlers with JSON for API
-  - `setup_otel(app)`: optional OTLP exporters (traces + logs) and Flask auto-instrumentation
+  \- `setup_logging(env)`: configures structlog and stdlib logging
+  \- `register_request_context(app)`: binds correlation\_id, method, path, remote\_addr, trace/span
+  \- `register_error_handlers(app)`: 400/404/500 handlers with JSON for API
+  \- `setup_otel(app)`: optional OTLP exporters (traces + logs) and Flask auto-instrumentation
 - App wiring: `journal/__init__.py` calls these during app creation
 
 ## Environment Variables
@@ -36,7 +36,7 @@ This project implements a modern, automated observability stack optimized for a 
 
 ## Local Dev
 
-1) Standard logging (no OTLP):
+1. Standard logging (no OTLP):
 
 ```
 export FLASK_ENV=development
@@ -44,7 +44,7 @@ export LOG_LEVEL=DEBUG
 uv run pytest -q  # live logs enabled via pytest.ini
 ```
 
-2) Enable OTLP to SigNoz (docker-compose default):
+2. Enable OTLP to SigNoz (docker-compose default):
 
 ```
 export OTEL_ENABLED=true
@@ -62,12 +62,12 @@ services:
     image: signoz/signoz:latest
     container_name: signoz
     ports:
-      - '4318:4318'   # OTLP/HTTP
-      - '3301:3301'   # SigNoz UI
+            - '4318:4318'   # OTLP/HTTP
+            - '3301:3301'   # SigNoz UI
     environment:
-      - CLICKHOUSE_DB_URL=http://clickhouse:8123
+            - CLICKHOUSE_DB_URL=http://clickhouse:8123
     depends_on:
-      - clickhouse
+            - clickhouse
   clickhouse:
     image: clickhouse/clickhouse-server:23.8
     container_name: clickhouse
@@ -76,7 +76,7 @@ services:
         soft: 262144
         hard: 262144
     ports:
-      - '8123:8123'
+            - '8123:8123'
 ```
 
 For a production-grade stack and latest instructions, prefer SigNoz's official compose files.
@@ -84,7 +84,7 @@ For a production-grade stack and latest instructions, prefer SigNoz's official c
 ## Testing Experience
 
 - Live logs in tests via `pytest.ini`:
-  - `log_cli = true`, `log_cli_level = INFO`
+  \- `log_cli = true`, `log_cli_level = INFO`
 - Use per-test correlation IDs (auto-generated if missing)
 - API errors return JSON envelope with `correlation_id`
 

@@ -5,8 +5,8 @@ import pytest
 from httpx import AsyncClient
 
 
-@pytest.mark.asyncio
-@pytest.mark.component
+@pytest.mark.asyncio()
+@pytest.mark.component()
 async def test_entry_api_edge_cases(client: AsyncClient, auth_headers):
     """Test edge cases in entry API to boost coverage."""
 
@@ -49,8 +49,8 @@ async def test_entry_api_edge_cases(client: AsyncClient, auth_headers):
     assert r4.status_code == 200
 
 
-@pytest.mark.asyncio
-@pytest.mark.component
+@pytest.mark.asyncio()
+@pytest.mark.component()
 async def test_content_format_headers(client: AsyncClient, auth_headers):
     """Test different content format headers."""
 
@@ -81,8 +81,8 @@ async def test_content_format_headers(client: AsyncClient, auth_headers):
             assert entries[0]["editor_mode"] == "markdown"
 
 
-@pytest.mark.asyncio
-@pytest.mark.component
+@pytest.mark.asyncio()
+@pytest.mark.component()
 async def test_invalid_entry_ids(client: AsyncClient, auth_headers):
     """Test various invalid entry ID scenarios."""
 

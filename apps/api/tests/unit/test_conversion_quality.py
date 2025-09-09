@@ -3,8 +3,6 @@ Quality-focused tests for markdown/HTML conversion.
 Tests edge cases, malformed input, and conversion fidelity.
 """
 
-import pytest
-
 from app.infra.conversion import html_to_markdown, markdown_to_html
 
 

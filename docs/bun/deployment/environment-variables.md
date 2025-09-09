@@ -1,11 +1,11 @@
 # ENVIRONMENT VARIABLES
 
-*Source: https://bun.sh/docs/runtime/env*
+*Source: <https://bun.sh/docs/runtime/env>*
 *Fetched: 2025-08-30T00:47:27.105Z*
 
----
+***
 
-Bun reads your `.env` files automatically and provides idiomatic ways to read and write your environment variables programmatically. Plus, some aspects of Bun&#x27;s runtime behavior can be configured with Bun-specific environment variables.
+Bun reads your `.env` files automatically and provides idiomatic ways to read and write your environment variables programmatically. Plus, some aspects of Bun's runtime behavior can be configured with Bun-specific environment variables.
 
 ## [Setting environment variables](#setting-environment-variables)
 
@@ -17,33 +17,37 @@ Bun reads the following files automatically (listed in order of increasing prece
 
 **Note:** When `NODE_ENV=test`, `.env.local` is **not** loaded. This ensures consistent test environments across different executions by preventing local overrides during testing. This behavior matches popular frameworks like [Next.js](https://nextjs.org/docs/pages/guides/environment-variables#test-environment-variables) and [Create React App](https://create-react-app.dev/docs/adding-custom-environment-variables/#what-other-env-files-can-be-used).
 
-.env```
+.env\`\`\`
 FOO=hello
 BAR=world
 
-```
+````
 
 Variables can also be set via the command line.
 
 Linux/macOSWindowsLinux/macOS```
 FOO=helloworld bun run dev
-```
+````
 
-Windows```
+Windows\`\`\`
+
 # Using CMD
-```
 
 ```
+```
+
 set FOO=helloworld && bun run dev
-```
 
+```
 ```
 
 # Using PowerShell
-```
 
 ```
+```
+
 $env:FOO="helloworld"; bun run dev
+
 ```
 
 Cross-platform solution with Windows
@@ -51,8 +55,10 @@ Cross-platform solution with Windows
 For a cross-platform solution, you can use [bun shell](https://bun.com/docs/runtime/shell). For example, the `bun exec` command.
 
 ```
+
 bun exec 'FOO=helloworld bun run dev'
-```
+
+````
 
 On Windows, `package.json` scripts called with `bun run` will automatically use the **bun shell**, making the following also cross-platform.
 
@@ -61,7 +67,7 @@ package.json```
   "dev": "NODE_ENV=development bun --watch app.ts",
 },
 
-```
+````
 
 Or programmatically by assigning a property to `process.env`.
 
@@ -72,14 +78,13 @@ process.env.FOO = "hello";
 
 ### [Manually specifying `.env` files](#manually-specifying-env-files)
 
-Bun supports `--env-file` to override which specific `.env` file to load. You can use `--env-file` when running scripts in bun&#x27;s runtime, or when running package.json scripts.
+Bun supports `--env-file` to override which specific `.env` file to load. You can use `--env-file` when running scripts in bun's runtime, or when running package.json scripts.
 
 ```
 bun --env-file=.env.1 src/index.ts
 ```
 
 ```
-
 ```
 
 ```
@@ -90,12 +95,12 @@ bun --env-file=.env.abc --env-file=.env.def run build
 
 Bun supports double quotes, single quotes, and template literal backticks:
 
-.env```
+.env\`\`\`
 FOO='hello'
 FOO="hello"
 FOO=`hello`
 
-```
+````
 
 ### [Expansion](#expansion)
 
@@ -105,7 +110,7 @@ Environment variables are automatically *expanded*. This means you can reference
 FOO=world
 BAR=hello$FOO
 
-```
+````
 
 ```
 process.env.BAR; // => "helloworld"
@@ -114,14 +119,14 @@ process.env.BAR; // => "helloworld"
 
 This is useful for constructing connection strings or other compound values.
 
-.env```
-DB_USER=postgres
-DB_PASSWORD=secret
-DB_HOST=localhost
-DB_PORT=5432
-DB_URL=postgres://$DB_USER:$DB_PASSWORD@$DB_HOST:$DB_PORT/$DB_NAME
+.env\`\`\`
+DB\_USER=postgres
+DB\_PASSWORD=secret
+DB\_HOST=localhost
+DB\_PORT=5432
+DB\_URL=postgres\://$DB\_USER:$DB\_PASSWORD@$DB\_HOST:$DB\_PORT/$DB\_NAME
 
-```
+````
 
 This can be disabled by escaping the `$` with a backslash.
 
@@ -129,7 +134,7 @@ This can be disabled by escaping the `$` with a backslash.
 FOO=world
 BAR=hello\$FOO
 
-```
+````
 
 ```
 process.env.BAR; // => "hello$FOO"
@@ -138,7 +143,7 @@ process.env.BAR; // => "hello$FOO"
 
 ### [`dotenv`](#dotenv)
 
-Generally speaking, you won&#x27;t need `dotenv` or `dotenv-expand` anymore, because Bun reads `.env` files automatically.
+Generally speaking, you won't need `dotenv` or `dotenv-expand` anymore, because Bun reads `.env` files automatically.
 
 ## [Reading environment variables](#reading-environment-variables)
 
@@ -179,7 +184,7 @@ Bun.env.whatever;
 
 ```
 
-To get autocompletion and tell TypeScript to treat a variable as a non-optional string, we&#x27;ll use [interface merging](https://www.typescriptlang.org/docs/handbook/declaration-merging.html#merging-interfaces).
+To get autocompletion and tell TypeScript to treat a variable as a non-optional string, we'll use [interface merging](https://www.typescriptlang.org/docs/handbook/declaration-merging.html#merging-interfaces).
 
 ```
 declare module "bun" {
@@ -207,7 +212,7 @@ For files larger than 50 KB, Bun caches transpiled output into `$BUN_RUNTIME_TRA
 
 This transpiler cache is global and shared across all projects. It is safe to delete the cache at any time. It is a content-addressable cache, so it will never contain duplicate entries. It is also safe to delete the cache while a Bun process is running.
 
-It is recommended to disable this cache when using ephemeral filesystems like Docker. Bun&#x27;s Docker images automatically disable this cache.
+It is recommended to disable this cache when using ephemeral filesystems like Docker. Bun's Docker images automatically disable this cache.
 
 ### [Disable the runtime transpiler cache](#disable-the-runtime-transpiler-cache)
 

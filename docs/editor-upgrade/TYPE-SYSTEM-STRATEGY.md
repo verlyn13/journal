@@ -1,14 +1,17 @@
 # Type System Strategy
+
 ## Systematic Approach to TypeScript Types in the Journal Project
 
----
+***
 
 ## Core Principles
 
 ### 1. **Single Source of Truth**
+
 Every data structure has ONE canonical type definition, not scattered duplicates.
 
 ### 2. **Type Hierarchy**
+
 ```
 Domain Types (business logic)
     ↓
@@ -20,9 +23,10 @@ Utility Types (helpers)
 ```
 
 ### 3. **No Implicit Any**
+
 TypeScript strict mode enforced - everything must be typed.
 
----
+***
 
 ## Type Organization Structure
 
@@ -48,7 +52,7 @@ apps/web/src/types/
     └── index.ts      # Utils re-exports
 ```
 
----
+***
 
 ## Type Definition Standards
 
@@ -196,7 +200,7 @@ export function toMarkdown(str: string): Markdown {
 }
 ```
 
----
+***
 
 ## Type Import Strategy
 
@@ -267,7 +271,7 @@ export {
 } from './utils';
 ```
 
----
+***
 
 ## Type Fixing Strategy
 
@@ -352,7 +356,7 @@ function isValidEntry(obj: unknown): obj is Record<string, unknown> {
 }
 ```
 
----
+***
 
 ## Type Error Resolution Workflow
 
@@ -411,7 +415,7 @@ if (isMarkdownEntry(entry)) {
 */
 ```
 
----
+***
 
 ## Testing Types
 
@@ -464,11 +468,12 @@ describe('Type Guards', () => {
 });
 ```
 
----
+***
 
 ## Migration Strategy for Existing Code
 
 ### Phase 1: Audit Current Types
+
 ```bash
 # Find all 'any' types
 grep -r "any" --include="*.ts" --include="*.tsx" apps/web/src
@@ -481,11 +486,13 @@ npx typescript-coverage-report
 ```
 
 ### Phase 2: Create Canonical Types
+
 1. Define domain types in `types/domain/`
 2. Define API types from OpenAPI spec
 3. Define UI component props/state types
 
 ### Phase 3: Incremental Migration
+
 ```typescript
 // Step 1: Add type imports
 import type { Entry } from '@/types/domain/entry';
@@ -506,6 +513,7 @@ const entry = normalizeEntry(apiResponse.data);
 ```
 
 ### Phase 4: Enable Strict Mode
+
 ```json
 // tsconfig.json
 {
@@ -522,11 +530,12 @@ const entry = normalizeEntry(apiResponse.data);
 }
 ```
 
----
+***
 
 ## Type System Maintenance
 
 ### 1. **Regular Audits**
+
 ```json
 // package.json
 {
@@ -539,16 +548,18 @@ const entry = normalizeEntry(apiResponse.data);
 ```
 
 ### 2. **Type Documentation**
+
 - Document why complex types exist
 - Document type migration decisions
 - Keep DECISIONS.md updated
 
 ### 3. **Type Reviews**
+
 - Review type changes in PRs
 - Ensure single source of truth
 - Prevent type duplication
 
----
+***
 
 ## Benefits of This Strategy
 
@@ -559,6 +570,6 @@ const entry = normalizeEntry(apiResponse.data);
 5. **Scalable**: Clear hierarchy and organization
 6. **Automated**: Generate from OpenAPI, validate at build
 
----
+***
 
 *This strategy ensures types are assets, not liabilities. Follow it consistently for a maintainable codebase.*

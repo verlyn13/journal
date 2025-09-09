@@ -1,13 +1,14 @@
----
+***
+
 title: "JavaScript API Documentation"
 description: "Guide to accessing and using the Flask Journal JavaScript API documentation"
 category: "Documentation"
-created_date: "2025-04-08"
-updated_date: "2025-04-08"
+created\_date: "2025-04-08"
+updated\_date: "2025-04-08"
 version: "1.0"
-tags: ["documentation", "javascript", "api", "jsdoc"]
+tags: \["documentation", "javascript", "api", "jsdoc"]
 status: active
----
+--------------
 
 # JavaScript API Documentation
 

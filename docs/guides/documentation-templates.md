@@ -1,17 +1,18 @@
----
+***
+
 title: "Documentation Templates Guide"
 description: "Guide to using Flask Journal documentation templates for consistent documentation"
 category: "Documentation"
-date_created: "2025-04-08"
-last_updated: "2025-04-08"
+date\_created: "2025-04-08"
+last\_updated: "2025-04-08"
 version: "1.0"
 status: active
-related_topics:
-  - "API Reference"
-  - "Data Model"
-  - "Documentation Standards"
-tags: ["documentation", "templates", "standards", "guidelines"]
----
+related\_topics:
+\- "API Reference"
+\- "Data Model"
+\- "Documentation Standards"
+tags: \["documentation", "templates", "standards", "guidelines"]
+----------------------------------------------------------------
 
 # Documentation Templates Guide
 
@@ -36,6 +37,7 @@ The Flask Journal project uses five main documentation templates:
 **Use when:** You need to explain a high-level concept, architectural principle, or design pattern used in the project.
 
 **Examples:**
+
 - Authentication Overview
 - Application Architecture
 - Database Schema Design
@@ -44,6 +46,7 @@ The Flask Journal project uses five main documentation templates:
 **Template Location:** [`docs/templates/concept-guide-template.md`](../templates/concept-guide-template.md)
 
 **Key Sections:**
+
 - Overview
 - Core Principles
 - Detailed Explanation
@@ -56,6 +59,7 @@ The Flask Journal project uses five main documentation templates:
 **Use when:** You need to document an API endpoint, including its parameters, request/response formats, and error handling.
 
 **Examples:**
+
 - Markdown Preview API
 - User Authentication Endpoints
 - Journal Entry CRUD Operations
@@ -63,6 +67,7 @@ The Flask Journal project uses five main documentation templates:
 **Template Location:** [`docs/templates/api-reference-template.md`](../templates/api-reference-template.md)
 
 **Key Sections:**
+
 - Endpoint Details (URL, Method, Auth)
 - Request Parameters
 - Response Format
@@ -75,6 +80,7 @@ The Flask Journal project uses five main documentation templates:
 **Use when:** You need to document an internal component, class, or module, especially if other developers will use or extend it.
 
 **Examples:**
+
 - User Model
 - Entry Model
 - EditorPersistence Component
@@ -83,6 +89,7 @@ The Flask Journal project uses five main documentation templates:
 **Template Location:** [`docs/templates/component-doc-template.md`](../templates/component-doc-template.md)
 
 **Key Sections:**
+
 - Interface (Methods, Properties)
 - Dependencies
 - Implementation Details
@@ -95,6 +102,7 @@ The Flask Journal project uses five main documentation templates:
 **Use when:** You need to provide step-by-step instructions for completing a specific task.
 
 **Examples:**
+
 - How to Add a New Field to an Entry
 - How to Implement a New Tag Feature
 - How to Set Up the Development Environment
@@ -103,6 +111,7 @@ The Flask Journal project uses five main documentation templates:
 **Template Location:** [`docs/templates/tutorial-template.md`](../templates/tutorial-template.md)
 
 **Key Sections:**
+
 - Overview
 - Prerequisites
 - Step-by-Step Instructions
@@ -116,6 +125,7 @@ The Flask Journal project uses five main documentation templates:
 **Use when:** You need to document common issues and their solutions.
 
 **Examples:**
+
 - Authentication Problems
 - Database Connection Issues
 - Editor Functionality Problems
@@ -124,6 +134,7 @@ The Flask Journal project uses five main documentation templates:
 **Template Location:** [`docs/templates/troubleshooting-template.md`](../templates/troubleshooting-template.md)
 
 **Key Sections:**
+
 - Quick Diagnosis Checklist
 - Common Issues and Solutions
 - Error Messages Reference

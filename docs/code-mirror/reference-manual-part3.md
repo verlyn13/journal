@@ -1,107 +1,107 @@
----
+***
+
 title: CodeMirror Reference Manual - Part 3
 description: "Part 3 of the CodeMirror 6 reference manual, covering extensions, key bindings, decorations, gutters, tooltips, panels, layers, language integration, highlighting, folding, indentation, bracket matching, and stream parsing."
 category: "CodeMirror Reference"
 status: active
-tags: ["codemirror", "reference", "manual", "extensions", "language", "highlighting"]
+tags: \["codemirror", "reference", "manual", "extensions", "language", "highlighting"]
 version: "6.0"
----
-
+--------------
 
 # CodeMirror Extensions Reference
 
 ## Table of Contents
 
 - [CodeMirror Extensions Reference](#codemirror-extensions-reference)
-  - [Table of Contents](#table-of-contents)
-  - [Key Bindings](#key-bindings)
-    - [KeyBinding Interface](#keybinding-interface)
-    - [Keymap Facet](#keymap-facet)
-    - [Helpers](#helpers)
-  - [Decorations](#decorations)
-    - [Decoration Class](#decoration-class)
-      - [Static Methods](#static-methods)
-      - [Static Properties](#static-properties)
-      - [Mark Decoration Options](#mark-decoration-options)
-      - [Widget Decoration Options](#widget-decoration-options)
-      - [Replace Decoration Options](#replace-decoration-options)
-      - [Line Decoration Options](#line-decoration-options)
-    - [DecorationSet Type](#decorationset-type)
-    - [WidgetType Class](#widgettype-class)
-      - [Methods to Implement](#methods-to-implement)
-      - [Optional Methods](#optional-methods)
-      - [Properties](#properties)
-    - [MatchDecorator Class](#matchdecorator-class)
-      - [Constructor](#constructor)
-      - [Methods](#methods)
-  - [Gutters](#gutters)
-    - [Line Numbers](#line-numbers)
-    - [Gutter Configuration](#gutter-configuration)
-    - [GutterMarker Class](#guttermarker-class)
-    - [Gutter Facets](#gutter-facets)
-  - [Tooltips](#tooltips)
-    - [Tooltip Interface](#tooltip-interface)
-    - [TooltipView Interface](#tooltipview-interface)
-    - [Tooltip Configuration](#tooltip-configuration)
-    - [Hover Tooltips](#hover-tooltips)
-  - [Panels](#panels)
-    - [Panel Interface](#panel-interface)
-    - [Panel Management](#panel-management)
-  - [Layers](#layers)
-    - [Layer Configuration](#layer-configuration)
-    - [LayerMarker Interface](#layermarker-interface)
-    - [RectangleMarker Class](#rectanglemarker-class)
-      - [Constructor](#constructor-1)
-      - [Properties](#properties-1)
-      - [Static Methods](#static-methods-1)
-  - [Rectangular Selection](#rectangular-selection)
-  - [Language Integration](#language-integration)
-    - [Language Class](#language-class)
-      - [Constructor](#constructor-2)
-      - [Properties](#properties-2)
-      - [Methods](#methods-1)
-      - [Properties](#properties-3)
-    - [LRLanguage Class](#lrlanguage-class)
-      - [Static Methods](#static-methods-2)
-      - [Methods](#methods-2)
-    - [ParseContext Class](#parsecontext-class)
-      - [Properties](#properties-4)
-      - [Methods](#methods-3)
-      - [Static Methods](#static-methods-3)
-    - [Syntax Tree](#syntax-tree)
-    - [LanguageSupport Class](#languagesupport-class)
-      - [Constructor](#constructor-3)
-      - [Properties](#properties-5)
-    - [LanguageDescription Class](#languagedescription-class)
-      - [Properties](#properties-6)
-      - [Methods](#methods-4)
-      - [Static Methods](#static-methods-4)
-  - [Highlighting](#highlighting)
-    - [HighlightStyle Class](#highlightstyle-class)
-      - [Properties](#properties-7)
-      - [Static Methods](#static-methods-5)
-    - [Highlight Configuration](#highlight-configuration)
-  - [Folding](#folding)
-    - [Fold Services](#fold-services)
-    - [Fold Commands](#fold-commands)
-    - [Fold Gutter](#fold-gutter)
-    - [Low-Level Fold State Management](#low-level-fold-state-management)
-  - [Indentation](#indentation)
-    - [Indent Services](#indent-services)
-    - [IndentContext Class](#indentcontext-class)
-      - [Constructor](#constructor-4)
-      - [Properties and Methods](#properties-and-methods)
-    - [TreeIndentContext Class](#treeindentcontext-class)
-      - [Properties and Methods](#properties-and-methods-1)
-    - [Indent Helper Functions](#indent-helper-functions)
-  - [Bracket Matching](#bracket-matching)
-  - [Stream Parser](#stream-parser)
-    - [StreamLanguage Class](#streamlanguage-class)
-    - [StreamParser Interface](#streamparser-interface)
-    - [StringStream Class](#stringstream-class)
-      - [Constructor](#constructor-5)
-      - [Properties](#properties-8)
-      - [Methods](#methods-5)
+  \- [Table of Contents](#table-of-contents)
+  \- [Key Bindings](#key-bindings)
+  \- [KeyBinding Interface](#keybinding-interface)
+  \- [Keymap Facet](#keymap-facet)
+  \- [Helpers](#helpers)
+  \- [Decorations](#decorations)
+  \- [Decoration Class](#decoration-class)
+  \- [Static Methods](#static-methods)
+  \- [Static Properties](#static-properties)
+  \- [Mark Decoration Options](#mark-decoration-options)
+  \- [Widget Decoration Options](#widget-decoration-options)
+  \- [Replace Decoration Options](#replace-decoration-options)
+  \- [Line Decoration Options](#line-decoration-options)
+  \- [DecorationSet Type](#decorationset-type)
+  \- [WidgetType Class](#widgettype-class)
+  \- [Methods to Implement](#methods-to-implement)
+  \- [Optional Methods](#optional-methods)
+  \- [Properties](#properties)
+  \- [MatchDecorator Class](#matchdecorator-class)
+  \- [Constructor](#constructor)
+  \- [Methods](#methods)
+  \- [Gutters](#gutters)
+  \- [Line Numbers](#line-numbers)
+  \- [Gutter Configuration](#gutter-configuration)
+  \- [GutterMarker Class](#guttermarker-class)
+  \- [Gutter Facets](#gutter-facets)
+  \- [Tooltips](#tooltips)
+  \- [Tooltip Interface](#tooltip-interface)
+  \- [TooltipView Interface](#tooltipview-interface)
+  \- [Tooltip Configuration](#tooltip-configuration)
+  \- [Hover Tooltips](#hover-tooltips)
+  \- [Panels](#panels)
+  \- [Panel Interface](#panel-interface)
+  \- [Panel Management](#panel-management)
+  \- [Layers](#layers)
+  \- [Layer Configuration](#layer-configuration)
+  \- [LayerMarker Interface](#layermarker-interface)
+  \- [RectangleMarker Class](#rectanglemarker-class)
+  \- [Constructor](#constructor-1)
+  \- [Properties](#properties-1)
+  \- [Static Methods](#static-methods-1)
+  \- [Rectangular Selection](#rectangular-selection)
+  \- [Language Integration](#language-integration)
+  \- [Language Class](#language-class)
+  \- [Constructor](#constructor-2)
+  \- [Properties](#properties-2)
+  \- [Methods](#methods-1)
+  \- [Properties](#properties-3)
+  \- [LRLanguage Class](#lrlanguage-class)
+  \- [Static Methods](#static-methods-2)
+  \- [Methods](#methods-2)
+  \- [ParseContext Class](#parsecontext-class)
+  \- [Properties](#properties-4)
+  \- [Methods](#methods-3)
+  \- [Static Methods](#static-methods-3)
+  \- [Syntax Tree](#syntax-tree)
+  \- [LanguageSupport Class](#languagesupport-class)
+  \- [Constructor](#constructor-3)
+  \- [Properties](#properties-5)
+  \- [LanguageDescription Class](#languagedescription-class)
+  \- [Properties](#properties-6)
+  \- [Methods](#methods-4)
+  \- [Static Methods](#static-methods-4)
+  \- [Highlighting](#highlighting)
+  \- [HighlightStyle Class](#highlightstyle-class)
+  \- [Properties](#properties-7)
+  \- [Static Methods](#static-methods-5)
+  \- [Highlight Configuration](#highlight-configuration)
+  \- [Folding](#folding)
+  \- [Fold Services](#fold-services)
+  \- [Fold Commands](#fold-commands)
+  \- [Fold Gutter](#fold-gutter)
+  \- [Low-Level Fold State Management](#low-level-fold-state-management)
+  \- [Indentation](#indentation)
+  \- [Indent Services](#indent-services)
+  \- [IndentContext Class](#indentcontext-class)
+  \- [Constructor](#constructor-4)
+  \- [Properties and Methods](#properties-and-methods)
+  \- [TreeIndentContext Class](#treeindentcontext-class)
+  \- [Properties and Methods](#properties-and-methods-1)
+  \- [Indent Helper Functions](#indent-helper-functions)
+  \- [Bracket Matching](#bracket-matching)
+  \- [Stream Parser](#stream-parser)
+  \- [StreamLanguage Class](#streamlanguage-class)
+  \- [StreamParser Interface](#streamparser-interface)
+  \- [StringStream Class](#stringstream-class)
+  \- [Constructor](#constructor-5)
+  \- [Properties](#properties-8)
+  \- [Methods](#methods-5)
 
 ## Key Bindings
 
@@ -109,20 +109,21 @@ version: "6.0"
 
 Key bindings associate key names with command-style functions.
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `key?` | `string` | The key name to use for this binding. |
-| `mac?` | `string` | Key to use specifically on macOS. |
-| `win?` | `string` | Key to use specifically on Windows. |
-| `linux?` | `string` | Key to use specifically on Linux. |
-| `run?` | `Command` | The command to execute when triggered. |
-| `shift?` | `Command` | Defines a second binding with Shift prefix. |
-| `any?` | `fn(view: EditorView, event: KeyboardEvent) → boolean` | Called for every key that is not a multi-stroke prefix. |
-| `scope?` | `string` | Sets the scope where binding applies (default: "editor"). |
-| `preventDefault?` | `boolean` | When true, prevents default handling even if command returns false. |
-| `stopPropagation?` | `boolean` | When true, stops event propagation when preventDefault is called. |
+| Property           | Type                                                   | Description                                                         |
+| ------------------ | ------------------------------------------------------ | ------------------------------------------------------------------- |
+| `key?`             | `string`                                               | The key name to use for this binding.                               |
+| `mac?`             | `string`                                               | Key to use specifically on macOS.                                   |
+| `win?`             | `string`                                               | Key to use specifically on Windows.                                 |
+| `linux?`           | `string`                                               | Key to use specifically on Linux.                                   |
+| `run?`             | `Command`                                              | The command to execute when triggered.                              |
+| `shift?`           | `Command`                                              | Defines a second binding with Shift prefix.                         |
+| `any?`             | `fn(view: EditorView, event: KeyboardEvent) → boolean` | Called for every key that is not a multi-stroke prefix.             |
+| `scope?`           | `string`                                               | Sets the scope where binding applies (default: "editor").           |
+| `preventDefault?`  | `boolean`                                              | When true, prevents default handling even if command returns false. |
+| `stopPropagation?` | `boolean`                                              | When true, stops event propagation when preventDefault is called.   |
 
 Key names may be strings like "Shift-Ctrl-Enter" with modifiers in any order.
+
 - Modifiers: `Shift-` (or `s-`), `Alt-` (or `a-`), `Ctrl-` (or `c-` or `Control-`), and `Cmd-` (or `m-` or `Meta-`)
 - Use `Mod-` as shorthand for `Cmd-` on Mac and `Ctrl-` elsewhere
 - Multi-stroke bindings use spaces between key names
@@ -153,57 +154,57 @@ Provides information on how to draw or style content. Always used wrapped in a R
 
 #### Static Methods
 
-| Method | Returns | Description |
-|--------|---------|-------------|
-| `mark(spec: Object)` | `Decoration` | Create a mark decoration for styling content in its range. |
-| `widget(spec: Object)` | `Decoration` | Create a widget decoration for displaying a DOM element at a position. |
-| `replace(spec: Object)` | `Decoration` | Create a decoration that replaces a range with a widget or hides it. |
-| `line(spec: Object)` | `Decoration` | Create a line decoration to add DOM attributes to a line. |
-| `set(of: Range<Decoration> \| readonly Range<Decoration>[], sort?: boolean = false)` | `DecorationSet` | Build a DecorationSet from ranges. |
+| Method                                                                               | Returns         | Description                                                            |
+| ------------------------------------------------------------------------------------ | --------------- | ---------------------------------------------------------------------- |
+| `mark(spec: Object)`                                                                 | `Decoration`    | Create a mark decoration for styling content in its range.             |
+| `widget(spec: Object)`                                                               | `Decoration`    | Create a widget decoration for displaying a DOM element at a position. |
+| `replace(spec: Object)`                                                              | `Decoration`    | Create a decoration that replaces a range with a widget or hides it.   |
+| `line(spec: Object)`                                                                 | `Decoration`    | Create a line decoration to add DOM attributes to a line.              |
+| `set(of: Range<Decoration> \| readonly Range<Decoration>[], sort?: boolean = false)` | `DecorationSet` | Build a DecorationSet from ranges.                                     |
 
 #### Static Properties
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `none` | `DecorationSet` | The empty set of decorations. |
+| Property | Type            | Description                   |
+| -------- | --------------- | ----------------------------- |
+| `none`   | `DecorationSet` | The empty set of decorations. |
 
 #### Mark Decoration Options
 
-| Option | Type | Description |
-|--------|------|-------------|
-| `inclusive?` | `boolean` | Whether the mark covers its boundaries. Default: false. |
-| `inclusiveStart?` | `boolean` | Whether the start is inclusive. |
-| `inclusiveEnd?` | `boolean` | Whether the end is inclusive. |
-| `attributes?` | `Object<string>` | Attributes to add to the DOM elements. |
-| `class?` | `string` | Shorthand for `{attributes: {class: value}}`. |
-| `tagName?` | `string` | Element to wrap the text in. |
-| `bidiIsolate?` | `Direction` | Direction for bidirectional isolation. |
+| Option            | Type             | Description                                             |
+| ----------------- | ---------------- | ------------------------------------------------------- |
+| `inclusive?`      | `boolean`        | Whether the mark covers its boundaries. Default: false. |
+| `inclusiveStart?` | `boolean`        | Whether the start is inclusive.                         |
+| `inclusiveEnd?`   | `boolean`        | Whether the end is inclusive.                           |
+| `attributes?`     | `Object<string>` | Attributes to add to the DOM elements.                  |
+| `class?`          | `string`         | Shorthand for `{attributes: {class: value}}`.           |
+| `tagName?`        | `string`         | Element to wrap the text in.                            |
+| `bidiIsolate?`    | `Direction`      | Direction for bidirectional isolation.                  |
 
 #### Widget Decoration Options
 
-| Option | Type | Description |
-|--------|------|-------------|
-| `widget` | `WidgetType` | The type of widget to draw. |
-| `side?` | `number` | Which side of the position the widget is on. Default: 0. |
-| `inlineOrder?` | `boolean` | Controls ordering between block and inline widgets. |
-| `block?` | `boolean` | Whether this is a block widget. Default: false. |
+| Option         | Type         | Description                                              |
+| -------------- | ------------ | -------------------------------------------------------- |
+| `widget`       | `WidgetType` | The type of widget to draw.                              |
+| `side?`        | `number`     | Which side of the position the widget is on. Default: 0. |
+| `inlineOrder?` | `boolean`    | Controls ordering between block and inline widgets.      |
+| `block?`       | `boolean`    | Whether this is a block widget. Default: false.          |
 
 #### Replace Decoration Options
 
-| Option | Type | Description |
-|--------|------|-------------|
-| `widget?` | `WidgetType` | Optional widget to draw in place of content. |
-| `inclusive?` | `boolean` | Whether range covers its boundaries. |
-| `inclusiveStart?` | `boolean` | Whether the start is inclusive. |
-| `inclusiveEnd?` | `boolean` | Whether the end is inclusive. |
-| `block?` | `boolean` | Whether this is a block-level decoration. Default: false. |
+| Option            | Type         | Description                                               |
+| ----------------- | ------------ | --------------------------------------------------------- |
+| `widget?`         | `WidgetType` | Optional widget to draw in place of content.              |
+| `inclusive?`      | `boolean`    | Whether range covers its boundaries.                      |
+| `inclusiveStart?` | `boolean`    | Whether the start is inclusive.                           |
+| `inclusiveEnd?`   | `boolean`    | Whether the end is inclusive.                             |
+| `block?`          | `boolean`    | Whether this is a block-level decoration. Default: false. |
 
 #### Line Decoration Options
 
-| Option | Type | Description |
-|--------|------|-------------|
-| `attributes?` | `Object<string>` | DOM attributes to add to the line wrapper. |
-| `class?` | `string` | Shorthand for `{attributes: {class: value}}`. |
+| Option        | Type             | Description                                   |
+| ------------- | ---------------- | --------------------------------------------- |
+| `attributes?` | `Object<string>` | DOM attributes to add to the line wrapper.    |
+| `class?`      | `string`         | Shorthand for `{attributes: {class: value}}`. |
 
 ### DecorationSet Type
 
@@ -219,26 +220,26 @@ Abstract class that describes widgets added to the content. Subclass this to cre
 
 #### Methods to Implement
 
-| Method | Returns | Description |
-|--------|---------|-------------|
+| Method                    | Returns       | Description                              |
+| ------------------------- | ------------- | ---------------------------------------- |
 | `toDOM(view: EditorView)` | `HTMLElement` | Build the DOM structure for this widget. |
 
 #### Optional Methods
 
-| Method | Returns | Description |
-|--------|---------|-------------|
-| `eq(widget: WidgetType)` | `boolean` | Compare with another instance. Default just returns false. |
-| `updateDOM(dom: HTMLElement, view: EditorView)` | `boolean` | Update existing DOM for this widget. Return true if successful. |
-| `ignoreEvent(event: Event)` | `boolean` | Configure which events to ignore. Default ignores all. |
-| `coordsAt(dom: HTMLElement, pos: number, side: number)` | `Rect \| null` | Override how screen coordinates are found. |
-| `destroy(dom: HTMLElement)` | `void` | Called when widget is removed. |
+| Method                                                  | Returns        | Description                                                     |
+| ------------------------------------------------------- | -------------- | --------------------------------------------------------------- |
+| `eq(widget: WidgetType)`                                | `boolean`      | Compare with another instance. Default just returns false.      |
+| `updateDOM(dom: HTMLElement, view: EditorView)`         | `boolean`      | Update existing DOM for this widget. Return true if successful. |
+| `ignoreEvent(event: Event)`                             | `boolean`      | Configure which events to ignore. Default ignores all.          |
+| `coordsAt(dom: HTMLElement, pos: number, side: number)` | `Rect \| null` | Override how screen coordinates are found.                      |
+| `destroy(dom: HTMLElement)`                             | `void`         | Called when widget is removed.                                  |
 
 #### Properties
 
-| Property | Type | Description |
-|----------|------|-------------|
+| Property          | Type     | Description                                            |
+| ----------------- | -------- | ------------------------------------------------------ |
 | `estimatedHeight` | `number` | Estimated height for measuring. Default: -1 (unknown). |
-| `lineBreaks` | `number` | Line breaks introduced by inline widget. Default: 0. |
+| `lineBreaks`      | `number` | Line breaks introduced by inline widget. Default: 0.   |
 
 ### MatchDecorator Class
 
@@ -250,20 +251,20 @@ Helper class to maintain decorations on visible code matching a regular expressi
 new MatchDecorator(config: Object)
 ```
 
-| Config Option | Type | Description |
-|---------------|------|-------------|
-| `regexp` | `RegExp` | Regular expression to match (needs 'g' flag). |
-| `decoration?` | `Decoration \| Function` | Decoration to apply or function to create it. |
-| `decorate?` | `Function` | Custom function to create decorations for matches. |
-| `boundary?` | `RegExp` | Boundary expression to reduce re-matching. |
-| `maxLength?` | `number` | Maximum additional invisible content to include. Default: 1000. |
+| Config Option | Type                     | Description                                                     |
+| ------------- | ------------------------ | --------------------------------------------------------------- |
+| `regexp`      | `RegExp`                 | Regular expression to match (needs 'g' flag).                   |
+| `decoration?` | `Decoration \| Function` | Decoration to apply or function to create it.                   |
+| `decorate?`   | `Function`               | Custom function to create decorations for matches.              |
+| `boundary?`   | `RegExp`                 | Boundary expression to reduce re-matching.                      |
+| `maxLength?`  | `number`                 | Maximum additional invisible content to include. Default: 1000. |
 
 #### Methods
 
-| Method | Returns | Description |
-|--------|---------|-------------|
-| `createDeco(view: EditorView)` | `RangeSet<Decoration>` | Compute decorations for viewport matches. |
-| `updateDeco(update: ViewUpdate, deco: DecorationSet)` | `DecorationSet` | Update decorations after a view update. |
+| Method                                                | Returns                | Description                               |
+| ----------------------------------------------------- | ---------------------- | ----------------------------------------- |
+| `createDeco(view: EditorView)`                        | `RangeSet<Decoration>` | Compute decorations for viewport matches. |
+| `updateDeco(update: ViewUpdate, deco: DecorationSet)` | `DecorationSet`        | Update decorations after a view update.   |
 
 ## Gutters
 
@@ -277,10 +278,10 @@ lineNumbers(config?: Object = {}) → Extension
 
 Create a line number gutter extension.
 
-| Config Option | Type | Description |
-|---------------|------|-------------|
-| `formatNumber?` | `fn(lineNo: number, state: EditorState) → string` | Custom line number formatter. |
-| `domEventHandlers?` | `Object<Function>` | DOM event handlers for gutter. |
+| Config Option       | Type                                              | Description                    |
+| ------------------- | ------------------------------------------------- | ------------------------------ |
+| `formatNumber?`     | `fn(lineNo: number, state: EditorState) → string` | Custom line number formatter.  |
+| `domEventHandlers?` | `Object<Function>`                                | DOM event handlers for gutter. |
 
 ```typescript
 highlightActiveLineGutter() → Extension
@@ -296,17 +297,17 @@ gutter(config: Object) → Extension
 
 Define an editor gutter. Multiple gutters appear in order of extension priority.
 
-| Config Option | Type | Description |
-|---------------|------|-------------|
-| `class?` | `string` | Extra CSS class for the wrapper element. |
-| `renderEmptyElements?` | `boolean` | Whether to render empty gutter elements. Default: false. |
-| `markers?` | `fn(view: EditorView) → RangeSet<GutterMarker> \| readonly RangeSet<GutterMarker>[]` | Get markers for this gutter. |
-| `lineMarker?` | `fn(view: EditorView, line: BlockInfo, otherMarkers: readonly GutterMarker[]) → GutterMarker \| null` | Add marker to every line. |
-| `widgetMarker?` | `fn(view: EditorView, widget: WidgetType, block: BlockInfo) → GutterMarker \| null` | Associate markers with block widgets. |
-| `lineMarkerChange?` | `fn(update: ViewUpdate) → boolean` | Predicate for when to update line markers. |
-| `initialSpacer?` | `fn(view: EditorView) → GutterMarker` | Add hidden spacer element for base width. |
-| `updateSpacer?` | `fn(spacer: GutterMarker, update: ViewUpdate) → GutterMarker` | Update spacer on view update. |
-| `domEventHandlers?` | `Object<Function>` | Event handlers for this gutter. |
+| Config Option          | Type                                                                                                  | Description                                              |
+| ---------------------- | ----------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
+| `class?`               | `string`                                                                                              | Extra CSS class for the wrapper element.                 |
+| `renderEmptyElements?` | `boolean`                                                                                             | Whether to render empty gutter elements. Default: false. |
+| `markers?`             | `fn(view: EditorView) → RangeSet<GutterMarker> \| readonly RangeSet<GutterMarker>[]`                  | Get markers for this gutter.                             |
+| `lineMarker?`          | `fn(view: EditorView, line: BlockInfo, otherMarkers: readonly GutterMarker[]) → GutterMarker \| null` | Add marker to every line.                                |
+| `widgetMarker?`        | `fn(view: EditorView, widget: WidgetType, block: BlockInfo) → GutterMarker \| null`                   | Associate markers with block widgets.                    |
+| `lineMarkerChange?`    | `fn(update: ViewUpdate) → boolean`                                                                    | Predicate for when to update line markers.               |
+| `initialSpacer?`       | `fn(view: EditorView) → GutterMarker`                                                                 | Add hidden spacer element for base width.                |
+| `updateSpacer?`        | `fn(spacer: GutterMarker, update: ViewUpdate) → GutterMarker`                                         | Update spacer on view update.                            |
+| `domEventHandlers?`    | `Object<Function>`                                                                                    | Event handlers for this gutter.                          |
 
 ```typescript
 gutters(config?: {fixed?: boolean}) → Extension
@@ -318,14 +319,14 @@ Configure the gutter-drawing plugin. Unless `fixed` is explicitly set to false, 
 
 Abstract class for gutter markers that attach information to a line in a specific gutter.
 
-| Method | Returns | Description |
-|--------|---------|-------------|
-| `eq(other: GutterMarker)` | `boolean` | Compare with another marker of same type. |
-| `toDOM?(view: EditorView)` | `Node` | Render DOM node for marker if needed. |
-| `destroy(dom: Node)` | `void` | Called when marker is removed. |
+| Method                     | Returns   | Description                               |
+| -------------------------- | --------- | ----------------------------------------- |
+| `eq(other: GutterMarker)`  | `boolean` | Compare with another marker of same type. |
+| `toDOM?(view: EditorView)` | `Node`    | Render DOM node for marker if needed.     |
+| `destroy(dom: Node)`       | `void`    | Called when marker is removed.            |
 
-| Property | Type | Description |
-|----------|------|-------------|
+| Property       | Type     | Description                         |
+| -------------- | -------- | ----------------------------------- |
 | `elementClass` | `string` | CSS classes for the gutter element. |
 
 ### Gutter Facets
@@ -360,29 +361,29 @@ Tooltips are DOM elements overlaid on the editor near a given document position.
 
 ### Tooltip Interface
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `pos` | `number` | Document position to show the tooltip at. |
-| `end?` | `number` | End of the range annotated by this tooltip. |
-| `create` | `fn(view: EditorView) → TooltipView` | Function that creates the tooltip's DOM. |
-| `above?` | `boolean` | Whether to show tooltip above target position. Default: false. |
-| `strictSide?` | `boolean` | Whether to strictly follow `above` even with limited space. Default: false. |
-| `arrow?` | `boolean` | Whether to show a connecting triangle. Default: false. |
-| `clip?` | `boolean` | Whether tooltip should be hidden when outside view. Default: true. |
+| Property      | Type                                 | Description                                                                 |
+| ------------- | ------------------------------------ | --------------------------------------------------------------------------- |
+| `pos`         | `number`                             | Document position to show the tooltip at.                                   |
+| `end?`        | `number`                             | End of the range annotated by this tooltip.                                 |
+| `create`      | `fn(view: EditorView) → TooltipView` | Function that creates the tooltip's DOM.                                    |
+| `above?`      | `boolean`                            | Whether to show tooltip above target position. Default: false.              |
+| `strictSide?` | `boolean`                            | Whether to strictly follow `above` even with limited space. Default: false. |
+| `arrow?`      | `boolean`                            | Whether to show a connecting triangle. Default: false.                      |
+| `clip?`       | `boolean`                            | Whether tooltip should be hidden when outside view. Default: true.          |
 
 ### TooltipView Interface
 
-| Property/Method | Type/Returns | Description |
-|-----------------|--------------|-------------|
-| `dom` | `HTMLElement` | The DOM element to position over the editor. |
-| `offset?` | `{x: number, y: number}` | Adjust tooltip position relative to anchor. |
-| `getCoords?` | `fn(pos: number) → Rect` | Custom positioning function. |
-| `overlap?` | `boolean` | Whether to disable anti-overlap behavior. Default: false. |
-| `mount?` | `fn(view: EditorView)` | Called after tooltip is added to DOM. |
-| `update?` | `fn(update: ViewUpdate)` | Update DOM for view state change. |
-| `destroy?` | `fn()` | Called when tooltip is removed. |
-| `positioned?` | `fn(space: Rect)` | Called when tooltip is positioned. |
-| `resize?` | `boolean` | Whether to disable automatic size restriction. Default: true. |
+| Property/Method | Type/Returns             | Description                                                   |
+| --------------- | ------------------------ | ------------------------------------------------------------- |
+| `dom`           | `HTMLElement`            | The DOM element to position over the editor.                  |
+| `offset?`       | `{x: number, y: number}` | Adjust tooltip position relative to anchor.                   |
+| `getCoords?`    | `fn(pos: number) → Rect` | Custom positioning function.                                  |
+| `overlap?`      | `boolean`                | Whether to disable anti-overlap behavior. Default: false.     |
+| `mount?`        | `fn(view: EditorView)`   | Called after tooltip is added to DOM.                         |
+| `update?`       | `fn(update: ViewUpdate)` | Update DOM for view state change.                             |
+| `destroy?`      | `fn()`                   | Called when tooltip is removed.                               |
+| `positioned?`   | `fn(space: Rect)`        | Called when tooltip is positioned.                            |
+| `resize?`       | `boolean`                | Whether to disable automatic size restriction. Default: true. |
 
 ### Tooltip Configuration
 
@@ -390,11 +391,11 @@ Tooltips are DOM elements overlaid on the editor near a given document position.
 tooltips(config?: Object = {}) → Extension
 ```
 
-| Config Option | Type | Description |
-|---------------|------|-------------|
-| `position?` | `"fixed" \| "absolute"` | Positioning method. Default: "fixed". |
-| `parent?` | `HTMLElement` | Element to put tooltips into. Default: editor element. |
-| `tooltipSpace?` | `fn(view: EditorView) → Rect` | Function that returns available tooltip space. |
+| Config Option   | Type                          | Description                                            |
+| --------------- | ----------------------------- | ------------------------------------------------------ |
+| `position?`     | `"fixed" \| "absolute"`       | Positioning method. Default: "fixed".                  |
+| `parent?`       | `HTMLElement`                 | Element to put tooltips into. Default: editor element. |
+| `tooltipSpace?` | `fn(view: EditorView) → Rect` | Function that returns available tooltip space.         |
 
 ```typescript
 showTooltip: Facet<Tooltip | null>
@@ -416,11 +417,11 @@ hoverTooltip(source: HoverTooltipSource, options?: Object = {}) → Extension
 
 Set up tooltips that appear when mouse hovers over ranges of text.
 
-| Option | Type | Description |
-|--------|------|-------------|
-| `hideOn?` | `fn(tr: Transaction, tooltip: Tooltip) → boolean` | Controls when transactions hide tooltip. Default: don't hide. |
-| `hideOnChange?` | `boolean \| "touch"` | Hide tooltip on doc changes or selection. Default: false. |
-| `hoverTime?` | `number` | Hover time before tooltip appears (ms). Default: 300ms. |
+| Option          | Type                                              | Description                                                   |
+| --------------- | ------------------------------------------------- | ------------------------------------------------------------- |
+| `hideOn?`       | `fn(tr: Transaction, tooltip: Tooltip) → boolean` | Controls when transactions hide tooltip. Default: don't hide. |
+| `hideOnChange?` | `boolean \| "touch"`                              | Hide tooltip on doc changes or selection. Default: false.     |
+| `hoverTime?`    | `number`                                          | Hover time before tooltip appears (ms). Default: 300ms.       |
 
 ```typescript
 type HoverTooltipSource = fn(view: EditorView, pos: number, side: -1 | 1) → Tooltip | Array | Promise | null
@@ -452,13 +453,13 @@ Panels are UI elements positioned above or below the editor.
 
 ### Panel Interface
 
-| Property/Method | Type/Returns | Description |
-|-----------------|--------------|-------------|
-| `dom` | `HTMLElement` | Element representing the panel. Will get "cm-panel" class. |
-| `mount?` | `fn()` | Called after panel is added to editor. |
-| `update?` | `fn(update: ViewUpdate)` | Update DOM for view update. |
-| `destroy?` | `fn()` | Called when panel is removed. |
-| `top?` | `boolean` | Whether panel should be at top or bottom. Default: false. |
+| Property/Method | Type/Returns             | Description                                                |
+| --------------- | ------------------------ | ---------------------------------------------------------- |
+| `dom`           | `HTMLElement`            | Element representing the panel. Will get "cm-panel" class. |
+| `mount?`        | `fn()`                   | Called after panel is added to editor.                     |
+| `update?`       | `fn(update: ViewUpdate)` | Update DOM for view update.                                |
+| `destroy?`      | `fn()`                   | Called when panel is removed.                              |
+| `top?`          | `boolean`                | Whether panel should be at top or bottom. Default: false.  |
 
 ### Panel Management
 
@@ -484,9 +485,9 @@ Get active panel created by constructor, if any.
 panels(config?: Object) → Extension
 ```
 
-| Config Option | Type | Description |
-|---------------|------|-------------|
-| `topContainer?` | `HTMLElement` | Override top panel container. |
+| Config Option      | Type          | Description                      |
+| ------------------ | ------------- | -------------------------------- |
+| `topContainer?`    | `HTMLElement` | Override top panel container.    |
 | `bottomContainer?` | `HTMLElement` | Override bottom panel container. |
 
 ## Layers
@@ -501,25 +502,25 @@ layer(config: Object) → Extension
 
 Define a layer.
 
-| Config Option | Type | Description |
-|---------------|------|-------------|
-| `above` | `boolean` | Whether shown above or below text. |
-| `class?` | `string` | CSS class for wrapper element. |
-| `update` | `fn(update: ViewUpdate, layer: HTMLElement) → boolean` | Called on updates. Return true to trigger marker update. |
-| `updateOnDocViewUpdate?` | `boolean` | Whether to update when doc view changes. Default: true. |
-| `markers` | `fn(view: EditorView) → readonly LayerMarker[]` | Build and measure markers for layer. |
-| `mount?` | `fn(layer: HTMLElement, view: EditorView)` | Called on layer creation. |
-| `destroy?` | `fn(layer: HTMLElement, view: EditorView)` | Called when layer is removed. |
+| Config Option            | Type                                                   | Description                                              |
+| ------------------------ | ------------------------------------------------------ | -------------------------------------------------------- |
+| `above`                  | `boolean`                                              | Whether shown above or below text.                       |
+| `class?`                 | `string`                                               | CSS class for wrapper element.                           |
+| `update`                 | `fn(update: ViewUpdate, layer: HTMLElement) → boolean` | Called on updates. Return true to trigger marker update. |
+| `updateOnDocViewUpdate?` | `boolean`                                              | Whether to update when doc view changes. Default: true.  |
+| `markers`                | `fn(view: EditorView) → readonly LayerMarker[]`        | Build and measure markers for layer.                     |
+| `mount?`                 | `fn(layer: HTMLElement, view: EditorView)`             | Called on layer creation.                                |
+| `destroy?`               | `fn(layer: HTMLElement, view: EditorView)`             | Called when layer is removed.                            |
 
 ### LayerMarker Interface
 
 Markers shown in a layer. Created during measuring phase with all positioning information.
 
-| Method | Returns | Description |
-|--------|---------|-------------|
-| `eq(other: LayerMarker)` | `boolean` | Compare to avoid unnecessary redraws. |
-| `draw()` | `HTMLElement` | Draw marker to the DOM. |
-| `update?(dom: HTMLElement, oldMarker: LayerMarker)` | `boolean` | Update existing marker. Return true if successful. |
+| Method                                              | Returns       | Description                                        |
+| --------------------------------------------------- | ------------- | -------------------------------------------------- |
+| `eq(other: LayerMarker)`                            | `boolean`     | Compare to avoid unnecessary redraws.              |
+| `draw()`                                            | `HTMLElement` | Draw marker to the DOM.                            |
+| `update?(dom: HTMLElement, oldMarker: LayerMarker)` | `boolean`     | Update existing marker. Return true if successful. |
 
 ### RectangleMarker Class
 
@@ -533,12 +534,12 @@ new RectangleMarker(className: string, left: number, top: number, width: number 
 
 #### Properties
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `left` | `number` | Left position (px, document-relative). |
-| `top` | `number` | Top position (px). |
-| `width` | `number \| null` | Width (px) or null for no width style. |
-| `height` | `number` | Height (px). |
+| Property | Type             | Description                            |
+| -------- | ---------------- | -------------------------------------- |
+| `left`   | `number`         | Left position (px, document-relative). |
+| `top`    | `number`         | Top position (px).                     |
+| `width`  | `number \| null` | Width (px) or null for no width style. |
+| `height` | `number`         | Height (px).                           |
 
 #### Static Methods
 
@@ -556,8 +557,8 @@ rectangularSelection(options?: Object) → Extension
 
 Enable rectangular selections, by default using Alt+mouse drag.
 
-| Option | Type | Description |
-|--------|------|-------------|
+| Option         | Type                              | Description                                 |
+| -------------- | --------------------------------- | ------------------------------------------- |
 | `eventFilter?` | `fn(event: MouseEvent) → boolean` | Custom predicate for rectangular selection. |
 
 ```typescript
@@ -580,24 +581,24 @@ new Language(data: Facet<Object<any>>, parser: Parser, extraExtensions?: Extensi
 
 #### Properties
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `extension` | `Extension` | Extension to install as document language. |
-| `parser` | `Parser` | The parser object. |
-| `data` | `Facet<Object<any>>` | The language data facet. |
-| `name` | `string` | A language name. |
+| Property    | Type                 | Description                                |
+| ----------- | -------------------- | ------------------------------------------ |
+| `extension` | `Extension`          | Extension to install as document language. |
+| `parser`    | `Parser`             | The parser object.                         |
+| `data`      | `Facet<Object<any>>` | The language data facet.                   |
+| `name`      | `string`             | A language name.                           |
 
 #### Methods
 
-| Method | Returns | Description |
-|--------|---------|-------------|
-| `isActiveAt(state: EditorState, pos: number, side?: -1 \| 0 \| 1 = -1)` | `boolean` | Check if language is active at position. |
-| `findRegions(state: EditorState)` | `{from: number, to: number}[]` | Find document regions parsed with this language. |
+| Method                                                                  | Returns                        | Description                                      |
+| ----------------------------------------------------------------------- | ------------------------------ | ------------------------------------------------ |
+| `isActiveAt(state: EditorState, pos: number, side?: -1 \| 0 \| 1 = -1)` | `boolean`                      | Check if language is active at position.         |
+| `findRegions(state: EditorState)`                                       | `{from: number, to: number}[]` | Find document regions parsed with this language. |
 
 #### Properties
 
-| Property | Type | Description |
-|----------|------|-------------|
+| Property        | Type      | Description                                              |
+| --------------- | --------- | -------------------------------------------------------- |
 | `allowsNesting` | `boolean` | Whether language allows nested languages. Default: true. |
 
 ### LRLanguage Class
@@ -612,10 +613,10 @@ static define(spec: Object) → LRLanguage
 
 Define a language from a parser.
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `name?` | `string` | The language name. |
-| `parser` | `LRParser` | The parser to use. |
+| Property        | Type          | Description                |
+| --------------- | ------------- | -------------------------- |
+| `name?`         | `string`      | The language name.         |
+| `parser`        | `LRParser`    | The parser to use.         |
 | `languageData?` | `Object<any>` | Language data to register. |
 
 #### Methods
@@ -632,11 +633,11 @@ Context provided to parsers working on editor content.
 
 #### Properties
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `state` | `EditorState` | The current editor state. |
-| `fragments` | `readonly TreeFragment[]` | Tree fragments for incremental parsing. |
-| `viewport` | `{from: number, to: number}` | Current editor viewport. |
+| Property    | Type                         | Description                             |
+| ----------- | ---------------------------- | --------------------------------------- |
+| `state`     | `EditorState`                | The current editor state.               |
+| `fragments` | `readonly TreeFragment[]`    | Tree fragments for incremental parsing. |
+| `viewport`  | `{from: number, to: number}` | Current editor viewport.                |
 
 #### Methods
 
@@ -704,11 +705,11 @@ new LanguageSupport(language: Language, support?: Extension = [])
 
 #### Properties
 
-| Property | Type | Description |
-|----------|------|-------------|
+| Property    | Type        | Description                                   |
+| ----------- | ----------- | --------------------------------------------- |
 | `extension` | `Extension` | Combined extension with language and support. |
-| `language` | `Language` | The language object. |
-| `support` | `Extension` | Supporting extensions. |
+| `language`  | `Language`  | The language object.                          |
+| `support`   | `Extension` | Supporting extensions.                        |
 
 ### LanguageDescription Class
 
@@ -716,13 +717,13 @@ Stores metadata about languages and handles dynamic loading.
 
 #### Properties
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `name` | `string` | Language name. |
-| `alias` | `readonly string[]` | Alternative names (lowercased, includes name). |
-| `extensions` | `readonly string[]` | Associated file extensions. |
-| `filename` | `RegExp \| undefined` | Optional filename pattern. |
-| `support` | `LanguageSupport \| undefined` | Loaded language support if available. |
+| Property     | Type                           | Description                                    |
+| ------------ | ------------------------------ | ---------------------------------------------- |
+| `name`       | `string`                       | Language name.                                 |
+| `alias`      | `readonly string[]`            | Alternative names (lowercased, includes name). |
+| `extensions` | `readonly string[]`            | Associated file extensions.                    |
+| `filename`   | `RegExp \| undefined`          | Optional filename pattern.                     |
+| `support`    | `LanguageSupport \| undefined` | Loaded language support if available.          |
 
 #### Methods
 
@@ -740,14 +741,14 @@ static of(spec: Object) → LanguageDescription
 
 Create a language description.
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `name` | `string` | The language name. |
-| `alias?` | `readonly string[]` | Alternative names. |
-| `extensions?` | `readonly string[]` | File extensions. |
-| `filename?` | `RegExp` | Filename pattern. |
-| `load?` | `fn() → Promise<LanguageSupport>` | Async loader function. |
-| `support?` | `LanguageSupport` | Already loaded support. |
+| Property      | Type                              | Description             |
+| ------------- | --------------------------------- | ----------------------- |
+| `name`        | `string`                          | The language name.      |
+| `alias?`      | `readonly string[]`               | Alternative names.      |
+| `extensions?` | `readonly string[]`               | File extensions.        |
+| `filename?`   | `RegExp`                          | Filename pattern.       |
+| `load?`       | `fn() → Promise<LanguageSupport>` | Async loader function.  |
+| `support?`    | `LanguageSupport`                 | Already loaded support. |
 
 ```typescript
 static matchFilename(descs: readonly LanguageDescription[], filename: string) → LanguageDescription | null
@@ -769,10 +770,10 @@ Associates CSS styles with highlighting tags.
 
 #### Properties
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `module` | `StyleModule \| null` | Style module with CSS rules. |
-| `specs` | `readonly TagStyle[]` | The tag styles in this highlighter. |
+| Property | Type                  | Description                         |
+| -------- | --------------------- | ----------------------------------- |
+| `module` | `StyleModule \| null` | Style module with CSS rules.        |
+| `specs`  | `readonly TagStyle[]` | The tag styles in this highlighter. |
 
 #### Static Methods
 
@@ -782,11 +783,11 @@ static define(specs: readonly TagStyle[], options?: Object) → HighlightStyle
 
 Create highlighter style associating styles with tags.
 
-| Option | Type | Description |
-|--------|------|-------------|
-| `scope?` | `Language \| NodeType` | Scope to a single language. |
-| `all?` | `string \| StyleSpec` | Style for all content. |
-| `themeType?` | `"dark" \| "light"` | Theme type this style applies to. |
+| Option       | Type                   | Description                       |
+| ------------ | ---------------------- | --------------------------------- |
+| `scope?`     | `Language \| NodeType` | Scope to a single language.       |
+| `all?`       | `string \| StyleSpec`  | Style for all content.            |
+| `themeType?` | `"dark" \| "light"`    | Theme type this style applies to. |
 
 ### Highlight Configuration
 
@@ -796,8 +797,8 @@ syntaxHighlighting(highlighter: Highlighter, options?: Object) → Extension
 
 Apply syntax highlighting to editor content.
 
-| Option | Type | Description |
-|--------|------|-------------|
+| Option     | Type      | Description                   |
+| ---------- | --------- | ----------------------------- |
 | `fallback` | `boolean` | Mark highlighter as fallback. |
 
 ```typescript
@@ -806,11 +807,11 @@ interface TagStyle
 
 Assigns style to highlighting tags.
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `tag` | `Tag \| readonly Tag[]` | The tag(s) to target. |
-| `class?` | `string` | Fixed class name for these tags. |
-| `[property: string]` | `any` | Style properties (if class isn't given). |
+| Property             | Type                    | Description                              |
+| -------------------- | ----------------------- | ---------------------------------------- |
+| `tag`                | `Tag \| readonly Tag[]` | The tag(s) to target.                    |
+| `class?`             | `string`                | Fixed class name for these tags.         |
+| `[property: string]` | `any`                   | Style properties (if class isn't given). |
 
 ```typescript
 defaultHighlightStyle: HighlightStyle
@@ -830,8 +831,8 @@ bidiIsolates(options?: Object = {}) → Extension
 
 Ensure proper rendering of bidirectional text isolation.
 
-| Option | Type | Description |
-|--------|------|-------------|
+| Option           | Type      | Description                               |
+| ---------------- | --------- | ----------------------------------------- |
 | `alwaysIsolate?` | `boolean` | Force isolation even in uniform LTR text. |
 
 ## Folding
@@ -899,9 +900,10 @@ foldKeymap: readonly KeyBinding[]
 ```
 
 Default fold-related key bindings:
-- Ctrl-Shift-[ (Cmd-Alt-[ on macOS): foldCode
+
+- Ctrl-Shift-\[ (Cmd-Alt-\[ on macOS): foldCode
 - Ctrl-Shift-] (Cmd-Alt-] on macOS): unfoldCode
-- Ctrl-Alt-[: foldAll
+- Ctrl-Alt-\[: foldAll
 - Ctrl-Alt-]: unfoldAll
 
 ```typescript
@@ -910,11 +912,11 @@ codeFolding(config?: Object) → Extension
 
 Configure code folding.
 
-| Option | Type | Description |
-|--------|------|-------------|
-| `placeholderDOM?` | `Function` | Custom function for fold placeholder elements. |
-| `placeholderText?` | `string` | Text for folded code. Default: "…" |
-| `preparePlaceholder?` | `Function` | Create custom placeholder value for a range. |
+| Option                | Type       | Description                                    |
+| --------------------- | ---------- | ---------------------------------------------- |
+| `placeholderDOM?`     | `Function` | Custom function for fold placeholder elements. |
+| `placeholderText?`    | `string`   | Text for folded code. Default: "…"             |
+| `preparePlaceholder?` | `Function` | Create custom placeholder value for a range.   |
 
 ### Fold Gutter
 
@@ -924,13 +926,13 @@ foldGutter(config?: Object = {}) → Extension
 
 Add fold gutter with indicators.
 
-| Option | Type | Description |
-|--------|------|-------------|
-| `markerDOM?` | `fn(open: boolean) → HTMLElement` | Custom markers for fold status. |
-| `openText?` | `string` | Text for lines that can be folded. Default: "⌄" |
-| `closedText?` | `string` | Text for folded lines. Default: "›" |
-| `domEventHandlers?` | `Object<Function>` | Event handlers for gutter. |
-| `foldingChanged?` | `fn(update: ViewUpdate) → boolean` | When to recompute fold markers. |
+| Option              | Type                               | Description                                     |
+| ------------------- | ---------------------------------- | ----------------------------------------------- |
+| `markerDOM?`        | `fn(open: boolean) → HTMLElement`  | Custom markers for fold status.                 |
+| `openText?`         | `string`                           | Text for lines that can be folded. Default: "⌄" |
+| `closedText?`       | `string`                           | Text for folded lines. Default: "›"             |
+| `domEventHandlers?` | `Object<Function>`                 | Event handlers for gutter.                      |
+| `foldingChanged?`   | `fn(update: ViewUpdate) → boolean` | When to recompute fold markers.                 |
 
 ### Low-Level Fold State Management
 
@@ -1014,24 +1016,24 @@ Used when calling indentation services, providing helpers for indentation logic.
 new IndentContext(state: EditorState, options?: Object = {})
 ```
 
-| Option | Type | Description |
-|--------|------|-------------|
+| Option                 | Type                       | Description                             |
+| ---------------------- | -------------------------- | --------------------------------------- |
 | `overrideIndentation?` | `fn(pos: number) → number` | Override line indentation for position. |
-| `simulateBreak?` | `number` | Position of simulated line break. |
-| `simulateDoubleBreak?` | `boolean` | Treat break as double line break. |
+| `simulateBreak?`       | `number`                   | Position of simulated line break.       |
+| `simulateDoubleBreak?` | `boolean`                  | Treat break as double line break.       |
 
 #### Properties and Methods
 
-| Property/Method | Type/Returns | Description |
-|-----------------|--------------|-------------|
-| `unit` | `number` | Indent unit column count. |
-| `state` | `EditorState` | The editor state. |
-| `lineAt(pos: number, bias?: -1 \| 1 = 1)` | `{text: string, from: number}` | Get line at position, considering simulated breaks. |
-| `textAfterPos(pos: number, bias?: -1 \| 1 = 1)` | `string` | Get text after position. |
-| `column(pos: number, bias?: -1 \| 1 = 1)` | `number` | Find column for position. |
-| `countColumn(line: string, pos?: number = line.length)` | `number` | Find column position in string. |
-| `lineIndent(pos: number, bias?: -1 \| 1 = 1)` | `number` | Find indentation column of line. |
-| `simulatedBreak` | `number \| null` | Simulated line break position. |
+| Property/Method                                         | Type/Returns                   | Description                                         |
+| ------------------------------------------------------- | ------------------------------ | --------------------------------------------------- |
+| `unit`                                                  | `number`                       | Indent unit column count.                           |
+| `state`                                                 | `EditorState`                  | The editor state.                                   |
+| `lineAt(pos: number, bias?: -1 \| 1 = 1)`               | `{text: string, from: number}` | Get line at position, considering simulated breaks. |
+| `textAfterPos(pos: number, bias?: -1 \| 1 = 1)`         | `string`                       | Get text after position.                            |
+| `column(pos: number, bias?: -1 \| 1 = 1)`               | `number`                       | Find column for position.                           |
+| `countColumn(line: string, pos?: number = line.length)` | `number`                       | Find column position in string.                     |
+| `lineIndent(pos: number, bias?: -1 \| 1 = 1)`           | `number`                       | Find indentation column of line.                    |
+| `simulatedBreak`                                        | `number \| null`               | Simulated line break position.                      |
 
 ### TreeIndentContext Class
 
@@ -1039,14 +1041,14 @@ Context information for node-based indentation strategies.
 
 #### Properties and Methods
 
-| Property/Method | Type/Returns | Description |
-|-----------------|--------------|-------------|
-| `pos` | `number` | Position for indentation calculation. |
-| `node` | `SyntaxNode` | Syntax node for indentation strategy. |
-| `textAfter` | `string` | Text after position. |
-| `baseIndent` | `number` | Indentation for reference line. |
-| `baseIndentFor(node: SyntaxNode)` | `number` | Get indentation for node's reference line. |
-| `continue()` | `number \| null` | Continue indentation search in parent nodes. |
+| Property/Method                   | Type/Returns     | Description                                  |
+| --------------------------------- | ---------------- | -------------------------------------------- |
+| `pos`                             | `number`         | Position for indentation calculation.        |
+| `node`                            | `SyntaxNode`     | Syntax node for indentation strategy.        |
+| `textAfter`                       | `string`         | Text after position.                         |
+| `baseIndent`                      | `number`         | Indentation for reference line.              |
+| `baseIndentFor(node: SyntaxNode)` | `number`         | Get indentation for node's reference line.   |
+| `continue()`                      | `number \| null` | Continue indentation search in parent nodes. |
 
 ### Indent Helper Functions
 
@@ -1082,12 +1084,12 @@ bracketMatching(config?: Config = {}) → Extension
 
 Enables bracket matching, highlighting matching pairs.
 
-| Option | Type | Description |
-|--------|------|-------------|
-| `afterCursor?` | `boolean` | Look at character after cursor. Default: true. |
-| `brackets?` | `string` | Bracket characters as pairs. Default: "()[]{}". |
-| `maxScanDistance?` | `number` | Maximum distance to scan. Default: 10000. |
-| `renderMatch?` | `fn(match: MatchResult, state: EditorState) → readonly Range<Decoration>[]` | Custom decoration for matches. |
+| Option             | Type                                                                        | Description                                      |
+| ------------------ | --------------------------------------------------------------------------- | ------------------------------------------------ |
+| `afterCursor?`     | `boolean`                                                                   | Look at character after cursor. Default: true.   |
+| `brackets?`        | `string`                                                                    | Bracket characters as pairs. Default: "()\[]{}". |
+| `maxScanDistance?` | `number`                                                                    | Maximum distance to scan. Default: 10000.        |
+| `renderMatch?`     | `fn(match: MatchResult, state: EditorState) → readonly Range<Decoration>[]` | Custom decoration for matches.                   |
 
 ```typescript
 matchBrackets(state: EditorState, pos: number, dir: -1 | 1, config?: Config = {}) → MatchResult | null
@@ -1099,11 +1101,11 @@ Find matching bracket at position.
 interface MatchResult
 ```
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `start` | `{from: number, to: number}` | Extent of bracket token found. |
-| `end?` | `{from: number, to: number}` | Extent of matched token if found. |
-| `matched` | `boolean` | Whether tokens match. |
+| Property  | Type                         | Description                       |
+| --------- | ---------------------------- | --------------------------------- |
+| `start`   | `{from: number, to: number}` | Extent of bracket token found.    |
+| `end?`    | `{from: number, to: number}` | Extent of matched token if found. |
+| `matched` | `boolean`                    | Whether tokens match.             |
 
 ```typescript
 bracketMatchingHandle: NodeProp<fn(node: SyntaxNode) → SyntaxNode | null>
@@ -1127,17 +1129,17 @@ Define a stream language from parser spec.
 
 Stream parser tokenizes content emitting token styles.
 
-| Property/Method | Type/Returns | Description |
-|-----------------|--------------|-------------|
-| `name?` | `string` | Language name. |
-| `startState?` | `fn(indentUnit: number) → State` | Create initial parser state. |
-| `token` | `fn(stream: StringStream, state: State) → string \| null` | Read one token, advancing stream. |
-| `blankLine?` | `fn(state: State, indentUnit: number)` | Handle blank line. |
-| `copyState?` | `fn(state: State) → State` | Copy parser state. |
-| `indent?` | `fn(state: State, textAfter: string, context: IndentContext) → number \| null` | Compute indentation. |
-| `languageData?` | `Object<any>` | Default language data. |
-| `tokenTable?` | `Object<Tag \| readonly Tag[]>` | Map token names to tags. |
-| `mergeTokens?` | `boolean` | Whether to merge adjacent tokens of same type. |
+| Property/Method | Type/Returns                                                                   | Description                                    |
+| --------------- | ------------------------------------------------------------------------------ | ---------------------------------------------- |
+| `name?`         | `string`                                                                       | Language name.                                 |
+| `startState?`   | `fn(indentUnit: number) → State`                                               | Create initial parser state.                   |
+| `token`         | `fn(stream: StringStream, state: State) → string \| null`                      | Read one token, advancing stream.              |
+| `blankLine?`    | `fn(state: State, indentUnit: number)`                                         | Handle blank line.                             |
+| `copyState?`    | `fn(state: State) → State`                                                     | Copy parser state.                             |
+| `indent?`       | `fn(state: State, textAfter: string, context: IndentContext) → number \| null` | Compute indentation.                           |
+| `languageData?` | `Object<any>`                                                                  | Default language data.                         |
+| `tokenTable?`   | `Object<Tag \| readonly Tag[]>`                                                | Map token names to tags.                       |
+| `mergeTokens?`  | `boolean`                                                                      | Whether to merge adjacent tokens of same type. |
 
 ### StringStream Class
 
@@ -1151,28 +1153,28 @@ new StringStream(string: string, tabSize: number, indentUnit: number, overrideIn
 
 #### Properties
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `pos` | `number` | Current position on the line. |
-| `start` | `number` | Start position of current token. |
-| `string` | `string` | The line. |
-| `indentUnit` | `number` | Indent unit size. |
+| Property     | Type     | Description                      |
+| ------------ | -------- | -------------------------------- |
+| `pos`        | `number` | Current position on the line.    |
+| `start`      | `number` | Start position of current token. |
+| `string`     | `string` | The line.                        |
+| `indentUnit` | `number` | Indent unit size.                |
 
 #### Methods
 
-| Method | Returns | Description |
-|--------|---------|-------------|
-| `eol()` | `boolean` | Check if at end of line. |
-| `sol()` | `boolean` | Check if at start of line. |
-| `peek()` | `string \| undefined` | Get next character without advancing. |
-| `next()` | `string \| undefined` | Read next character and advance. |
-| `eat(match: string \| RegExp \| Function)` | `string \| undefined` | Try to match and consume next character. |
-| `eatWhile(match: string \| RegExp \| Function)` | `boolean` | Match and consume characters while matching. |
-| `eatSpace()` | `boolean` | Consume whitespace ahead. |
-| `skipToEnd()` | `void` | Move to end of line. |
-| `skipTo(ch: string)` | `boolean \| undefined` | Move to before specified character. |
-| `backUp(n: number)` | `void` | Move back n characters. |
-| `column()` | `number` | Get column position at current position. |
-| `indentation()` | `number` | Get indentation column of current line. |
-| `match(pattern: string \| RegExp, consume?: boolean, caseInsensitive?: boolean)` | `boolean \| RegExpMatchArray \| null` | Match against string or regexp. |
-| `current()` | `string` | Get current token text. |
+| Method                                                                           | Returns                               | Description                                  |
+| -------------------------------------------------------------------------------- | ------------------------------------- | -------------------------------------------- |
+| `eol()`                                                                          | `boolean`                             | Check if at end of line.                     |
+| `sol()`                                                                          | `boolean`                             | Check if at start of line.                   |
+| `peek()`                                                                         | `string \| undefined`                 | Get next character without advancing.        |
+| `next()`                                                                         | `string \| undefined`                 | Read next character and advance.             |
+| `eat(match: string \| RegExp \| Function)`                                       | `string \| undefined`                 | Try to match and consume next character.     |
+| `eatWhile(match: string \| RegExp \| Function)`                                  | `boolean`                             | Match and consume characters while matching. |
+| `eatSpace()`                                                                     | `boolean`                             | Consume whitespace ahead.                    |
+| `skipToEnd()`                                                                    | `void`                                | Move to end of line.                         |
+| `skipTo(ch: string)`                                                             | `boolean \| undefined`                | Move to before specified character.          |
+| `backUp(n: number)`                                                              | `void`                                | Move back n characters.                      |
+| `column()`                                                                       | `number`                              | Get column position at current position.     |
+| `indentation()`                                                                  | `number`                              | Get indentation column of current line.      |
+| `match(pattern: string \| RegExp, consume?: boolean, caseInsensitive?: boolean)` | `boolean \| RegExpMatchArray \| null` | Match against string or regexp.              |
+| `current()`                                                                      | `string`                              | Get current token text.                      |

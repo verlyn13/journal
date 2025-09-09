@@ -1,17 +1,18 @@
----
+***
+
 title: "CodeMirror Integration Guide"
 description: "Detailed explanation of how CodeMirror is integrated and used in the Flask Journal application"
 category: "Guides"
-date_created: "2025-04-08"
-last_updated: "2025-04-08" # Updated to reflect initialization fix documentation
+date\_created: "2025-04-08"
+last\_updated: "2025-04-08" # Updated to reflect initialization fix documentation
 version: "1.0"
 status: active
-related_topics:
-  - "Editor Architecture"
-  - "JavaScript API Documentation"
-  - "CodeMirror Documentation"
-tags: ["editor", "codemirror", "integration", "javascript", "frontend"]
----
+related\_topics:
+\- "Editor Architecture"
+\- "JavaScript API Documentation"
+\- "CodeMirror Documentation"
+tags: \["editor", "codemirror", "integration", "javascript", "frontend"]
+------------------------------------------------------------------------
 
 # CodeMirror Integration Guide
 
@@ -21,13 +22,13 @@ This guide explains how the Flask Journal application integrates CodeMirror, map
 
 ## Key Integration Points
 
-| Flask Journal Component | CodeMirror Concept | Reference Document |
-|-------------------------|-------------------|-------------------|
-| Editor Setup (`editor/setup.js`) | Editor initialization and configuration | [Example Basic](../code-mirror/example-basic.md) |
-| Alpine Component (`editor/alpine-component.js`) | State management and event handling | [Reference Manual Part 1](../code-mirror/reference-manual-part1.md) |
-| Toolbar Actions (`editor/toolbar-actions.js`) | Commands and keymaps | [Reference Manual Part 2](../code-mirror/reference-manual-part2.md) |
-| Editor Theme (`editor/theme.js`) | Styling and themes | [Example Styling](../code-mirror/example-styling.md) |
-| Persistence (`editor/persistence.js`) | Transactions and document changes | [System Guide](../code-mirror/system-guide.md) |
+| Flask Journal Component                         | CodeMirror Concept                      | Reference Document                                                  |
+| ----------------------------------------------- | --------------------------------------- | ------------------------------------------------------------------- |
+| Editor Setup (`editor/setup.js`)                | Editor initialization and configuration | [Example Basic](../code-mirror/example-basic.md)                    |
+| Alpine Component (`editor/alpine-component.js`) | State management and event handling     | [Reference Manual Part 1](../code-mirror/reference-manual-part1.md) |
+| Toolbar Actions (`editor/toolbar-actions.js`)   | Commands and keymaps                    | [Reference Manual Part 2](../code-mirror/reference-manual-part2.md) |
+| Editor Theme (`editor/theme.js`)                | Styling and themes                      | [Example Styling](../code-mirror/example-styling.md)                |
+| Persistence (`editor/persistence.js`)           | Transactions and document changes       | [System Guide](../code-mirror/system-guide.md)                      |
 
 ## Initialization and Configuration
 
@@ -271,12 +272,12 @@ export function createEditorTheme(themeName = 'light') {
 
 The Flask Journal application uses several CodeMirror extensions to enhance functionality:
 
-| Extension | Purpose | Documentation Reference |
-|-----------|---------|--------------------------|
+| Extension                   | Purpose                      | Documentation Reference                                             |
+| --------------------------- | ---------------------------- | ------------------------------------------------------------------- |
 | `@codemirror/lang-markdown` | Markdown syntax highlighting | [Reference Manual Part 3](../code-mirror/reference-manual-part3.md) |
-| `@codemirror/language-data` | Support for code blocks | [Extensions Reference](../code-mirror/extensions-reference.md) |
-| `@codemirror/commands` | Default editing commands | [Reference Manual Part 2](../code-mirror/reference-manual-part2.md) |
-| `@codemirror/view` | UI components and events | [Reference Manual Part 2](../code-mirror/reference-manual-part2.md) |
+| `@codemirror/language-data` | Support for code blocks      | [Extensions Reference](../code-mirror/extensions-reference.md)      |
+| `@codemirror/commands`      | Default editing commands     | [Reference Manual Part 2](../code-mirror/reference-manual-part2.md) |
+| `@codemirror/view`          | UI components and events     | [Reference Manual Part 2](../code-mirror/reference-manual-part2.md) |
 
 ## Common Customization Scenarios
 
@@ -369,14 +370,14 @@ See: [System Guide](../code-mirror/system-guide.md) (DOM Structure section)
 
 ## Key Concepts Mapping
 
-| General CodeMirror Concept | Flask Journal Implementation | Documentation Reference |
-|----------------------------|------------------------------|--------------------------|
-| EditorState | Accessed via `editorView.state` | [Reference Manual Part 1](../code-mirror/reference-manual-part1.md) |
-| Transactions | Used in `EditorPersistence` for history control | [Reference Manual Part 1](../code-mirror/reference-manual-part1.md) |
-| Commands | Implemented in toolbar actions | [Reference Manual Part 2](../code-mirror/reference-manual-part2.md) |
-| Extensions | Combined in editor setup | [Extensions Reference](../code-mirror/extensions-reference.md) |
-| Themes | Defined in `theme.js` | [Example Styling](../code-mirror/example-styling.md) |
-| Accessibility | Tab handling implementation | [Example Tab Handling](../code-mirror/example-tab-handling.md) |
+| General CodeMirror Concept | Flask Journal Implementation                    | Documentation Reference                                             |
+| -------------------------- | ----------------------------------------------- | ------------------------------------------------------------------- |
+| EditorState                | Accessed via `editorView.state`                 | [Reference Manual Part 1](../code-mirror/reference-manual-part1.md) |
+| Transactions               | Used in `EditorPersistence` for history control | [Reference Manual Part 1](../code-mirror/reference-manual-part1.md) |
+| Commands                   | Implemented in toolbar actions                  | [Reference Manual Part 2](../code-mirror/reference-manual-part2.md) |
+| Extensions                 | Combined in editor setup                        | [Extensions Reference](../code-mirror/extensions-reference.md)      |
+| Themes                     | Defined in `theme.js`                           | [Example Styling](../code-mirror/example-styling.md)                |
+| Accessibility              | Tab handling implementation                     | [Example Tab Handling](../code-mirror/example-tab-handling.md)      |
 
 ## Conclusion
 

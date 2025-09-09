@@ -26,16 +26,17 @@ mise run dev:full
 ```
 
 What this does:
+
 - Starts Postgres (5433), Redis (6380), and NATS (4222) in Docker
 - Applies Alembic migrations using IPv4 (to avoid localhost/::1 auth issues)
 - Starts the API at `http://localhost:5000` (health: `/health`, metrics: `/metrics`)
 - Starts the Web at `http://localhost:5173`
 
 Environment overrides:
+
 - `JOURNAL_API_PORT` (default 5000)
 - `WEB_PORT` (default 5173)
 - `VITE_API_URL` (default `http://localhost:${JOURNAL_API_PORT}/api`)
-
 
 ## Backend (FastAPI)
 
@@ -61,6 +62,7 @@ make reset           # drop and recreate DB volume (dev only)
 ```
 
 Auth (dev/demo):
+
 ```bash
 curl -s -X POST http://127.0.0.1:8000/api/v1/auth/demo | jq
 TOKEN=$(curl -s -X POST http://127.0.0.1:8000/api/v1/auth/demo | jq -r .access_token)
@@ -68,9 +70,10 @@ curl -H "Authorization: Bearer $TOKEN" http://127.0.0.1:8000/api/v1/auth/me | jq
 ```
 
 Docs:
-- OpenAPI: http://127.0.0.1:8000/docs
-- ReDoc: http://127.0.0.1:8000/redoc
-- GraphQL: http://127.0.0.1:8000/graphql
+
+- OpenAPI: <http://127.0.0.1:8000/docs>
+- ReDoc: <http://127.0.0.1:8000/redoc>
+- GraphQL: <http://127.0.0.1:8000/graphql>
 
 ## Frontend (Web)
 
@@ -88,6 +91,7 @@ bun run dev   # -> http://localhost:5173
 ```
 
 Login in development:
+
 - Use demo credentials `demo` / `demo123` in the web app, or
 - Use `/api/v1/auth/demo` and set tokens in localStorage.
 

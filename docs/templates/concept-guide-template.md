@@ -1,16 +1,17 @@
----
+***
+
 title: "Concept Title"
 description: "Brief description of this concept"
 category: "Concepts"
-date_created: "YYYY-MM-DD"
-last_updated: "YYYY-MM-DD"
+date\_created: "YYYY-MM-DD"
+last\_updated: "YYYY-MM-DD"
 status: draft
-related_topics:
-  - "Related Topic 1"
-  - "Related Topic 2"
+related\_topics:
+\- "Related Topic 1"
+\- "Related Topic 2"
 version: "1.0"
-tags: ["concept", "specific-tag", "another-tag"]
----
+tags: \["concept", "specific-tag", "another-tag"]
+-------------------------------------------------
 
 # Concept Title
 

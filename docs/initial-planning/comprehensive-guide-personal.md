@@ -1,18 +1,22 @@
----
+***
+
 title: "Comprehensive Guide: Personal Flask Blog/Journal System"
 description: "A complete architecture and implementation plan for a personal Flask-based blog/journal system, covering structure, data models, auth, frontend, backend, deployment, security, and testing for a Fedora/systemd environment."
 category: "System Design" # Changed from "Project Planning" to better reflect the content
-related_topics:
-  - "Flask Journal MVP Scope Definition"
-  - "API Contract Guide"
-  - "Testing Strategy Guide" # Renamed for consistency
-  - "Deployment Script Improvements Guide" # Renamed for consistency
-  - "Error Handling Guide"
-  - "State Management Guide"
-  - "Implementing the Agentic Workflow with Roo Code" # Added reference
+related\_topics:
+\- "Flask Journal MVP Scope Definition"
+\- "API Contract Guide"
+\- "Testing Strategy Guide" # Renamed for consistency
+\- "Deployment Script Improvements Guide" # Renamed for consistency
+\- "Error Handling Guide"
+\- "State Management Guide"
+\- "Implementing the Agentic Workflow with Roo Code" # Added reference
 version: "1.0"
 tags:
-  # Core Technologies
+
+# Core Technologies
+
+```
   - "flask"
   - "sqlalchemy"
   - "sqlite"
@@ -21,7 +25,11 @@ tags:
   - "alpinejs"
   - "jinja2"
   - "werkzeug"
-  # Flask Extensions
+```
+
+# Flask Extensions
+
+```
   - "flask-login"
   - "flask-wtf"
   - "flask-session"
@@ -29,7 +37,11 @@ tags:
   - "flask-assets"
   - "flask-compress"
   - "flask-talisman"
-  # Deployment & Ops
+```
+
+# Deployment & Ops
+
+```
   - "systemd"
   - "gunicorn"
   - "deployment"
@@ -37,7 +49,11 @@ tags:
   - "backup"
   - "system administration"
   - "fedora"
-  # Architecture & Design
+```
+
+# Architecture & Design
+
+```
   - "architecture"
   - "system design"
   - "project structure"
@@ -49,7 +65,11 @@ tags:
   - "api design"
   - "lean and mean"
   - "personal project"
-  # Features & Concepts
+```
+
+# Features & Concepts
+
+```
   - "authentication"
   - "authorization"
   - "sessions"
@@ -64,7 +84,11 @@ tags:
   - "conflict resolution"
   - "error handling"
   - "progressive enhancement"
-  # Security
+```
+
+# Security
+
+```
   - "security"
   - "argon2"
   - "csrf"
@@ -72,19 +96,29 @@ tags:
   - "xss protection"
   - "input validation"
   - "file permissions"
-  # Performance
+```
+
+# Performance
+
+```
   - "performance optimization"
   - "caching"
   - "database optimization"
   - "frontend optimization"
-  # Testing
+```
+
+# Testing
+
+```
   - "testing"
   - "pytest"
   - "unit testing"
   - "integration testing"
   - "ui testing"
   - "test strategy"
----
+```
+
+***
 
 # Comprehensive Guide: Personal Flask Blog/Journal System
 
@@ -93,76 +127,76 @@ This guide presents a complete architecture and implementation plan for a person
 ## Table of Contents
 
 - [Comprehensive Guide: Personal Flask Blog/Journal System](#comprehensive-guide-personal-flask-blogjournal-system)
-  - [Table of Contents](#table-of-contents)
-  - [System Overview](#system-overview)
-  - [Architecture](#architecture)
-    - [Project Structure](#project-structure)
-    - [Frontend Architecture](#frontend-architecture)
-      - [1. User Interface Layer](#1-user-interface-layer)
-      - [2. Interaction Layer](#2-interaction-layer)
-      - [3. State Management](#3-state-management)
-    - [Backend Architecture](#backend-architecture)
-      - [1. Data Access Layer](#1-data-access-layer)
-      - [2. Service Layer](#2-service-layer)
-      - [3. API Layer](#3-api-layer)
-      - [4. Presentation Layer](#4-presentation-layer)
-  - [Data Models](#data-models)
-    - [User \& Authentication Models](#user--authentication-models)
-    - [Content Models](#content-models)
-    - [Relationship Models](#relationship-models)
-  - [Authentication System](#authentication-system)
-    - [User Registration \& Login](#user-registration--login)
-    - [Password Management](#password-management)
-    - [Session Handling](#session-handling)
-    - [Authorization](#authorization)
-  - [Data Flow \& Routing](#data-flow--routing)
-    - [Input Processing](#input-processing)
-    - [Form Handling](#form-handling)
-    - [API Endpoints](#api-endpoints)
-    - [Error Handling](#error-handling)
-  - [Frontend Implementation](#frontend-implementation)
-    - [HTMX + Alpine.js Integration](#htmx--alpinejs-integration)
-    - [LaTeX Rendering with MathJax](#latex-rendering-with-mathjax)
-    - [Template Structure](#template-structure)
-    - [Static Files Organization](#static-files-organization)
-    - [UI Components](#ui-components)
-  - [Backend Implementation](#backend-implementation)
-    - [Service Layer](#service-layer)
-    - [Database Integration](#database-integration)
-    - [Business Logic](#business-logic)
-    - [LaTeX Rendering with MathJax](#latex-rendering-with-mathjax-1)
-    - [Template Structure](#template-structure-1)
-    - [Static Files Organization](#static-files-organization-1)
-    - [UI Components](#ui-components-1)
-  - [Backend Implementation](#backend-implementation-1)
-    - [Service Layer](#service-layer-1)
-    - [Database Integration](#database-integration-1)
-    - [Business Logic](#business-logic-1)
-    - [Error Handling](#error-handling-1)
-  - [State Management](#state-management)
-    - [Client-Side State](#client-side-state)
-    - [Server-Side State](#server-side-state)
-    - [Data Synchronization](#data-synchronization)
-  - [System Administration](#system-administration)
-    - [Deployment Process](#deployment-process)
-    - [Systemd Service Configuration](#systemd-service-configuration)
-    - [Logging Setup](#logging-setup)
-    - [Backup Strategy](#backup-strategy)
-  - [Security Considerations](#security-considerations)
-    - [Authentication Security](#authentication-security)
-    - [Data Protection](#data-protection)
-    - [Input Validation](#input-validation)
-    - [File Permission Handling](#file-permission-handling)
-  - [Performance Optimizations](#performance-optimizations)
-    - [Caching Strategy](#caching-strategy)
-    - [Database Optimization](#database-optimization)
-    - [Frontend Optimization](#frontend-optimization)
-  - [Testing Strategy](#testing-strategy)
-    - [Unit Testing](#unit-testing)
-    - [Integration Testing](#integration-testing)
-    - [UI Testing](#ui-testing)
-    - [Integration Testing](#integration-testing-1)
-    - [UI Testing](#ui-testing-1)
+  \- [Table of Contents](#table-of-contents)
+  \- [System Overview](#system-overview)
+  \- [Architecture](#architecture)
+  \- [Project Structure](#project-structure)
+  \- [Frontend Architecture](#frontend-architecture)
+  \- [1. User Interface Layer](#1-user-interface-layer)
+  \- [2. Interaction Layer](#2-interaction-layer)
+  \- [3. State Management](#3-state-management)
+  \- [Backend Architecture](#backend-architecture)
+  \- [1. Data Access Layer](#1-data-access-layer)
+  \- [2. Service Layer](#2-service-layer)
+  \- [3. API Layer](#3-api-layer)
+  \- [4. Presentation Layer](#4-presentation-layer)
+  \- [Data Models](#data-models)
+  \- [User & Authentication Models](#user--authentication-models)
+  \- [Content Models](#content-models)
+  \- [Relationship Models](#relationship-models)
+  \- [Authentication System](#authentication-system)
+  \- [User Registration & Login](#user-registration--login)
+  \- [Password Management](#password-management)
+  \- [Session Handling](#session-handling)
+  \- [Authorization](#authorization)
+  \- [Data Flow & Routing](#data-flow--routing)
+  \- [Input Processing](#input-processing)
+  \- [Form Handling](#form-handling)
+  \- [API Endpoints](#api-endpoints)
+  \- [Error Handling](#error-handling)
+  \- [Frontend Implementation](#frontend-implementation)
+  \- [HTMX + Alpine.js Integration](#htmx--alpinejs-integration)
+  \- [LaTeX Rendering with MathJax](#latex-rendering-with-mathjax)
+  \- [Template Structure](#template-structure)
+  \- [Static Files Organization](#static-files-organization)
+  \- [UI Components](#ui-components)
+  \- [Backend Implementation](#backend-implementation)
+  \- [Service Layer](#service-layer)
+  \- [Database Integration](#database-integration)
+  \- [Business Logic](#business-logic)
+  \- [LaTeX Rendering with MathJax](#latex-rendering-with-mathjax-1)
+  \- [Template Structure](#template-structure-1)
+  \- [Static Files Organization](#static-files-organization-1)
+  \- [UI Components](#ui-components-1)
+  \- [Backend Implementation](#backend-implementation-1)
+  \- [Service Layer](#service-layer-1)
+  \- [Database Integration](#database-integration-1)
+  \- [Business Logic](#business-logic-1)
+  \- [Error Handling](#error-handling-1)
+  \- [State Management](#state-management)
+  \- [Client-Side State](#client-side-state)
+  \- [Server-Side State](#server-side-state)
+  \- [Data Synchronization](#data-synchronization)
+  \- [System Administration](#system-administration)
+  \- [Deployment Process](#deployment-process)
+  \- [Systemd Service Configuration](#systemd-service-configuration)
+  \- [Logging Setup](#logging-setup)
+  \- [Backup Strategy](#backup-strategy)
+  \- [Security Considerations](#security-considerations)
+  \- [Authentication Security](#authentication-security)
+  \- [Data Protection](#data-protection)
+  \- [Input Validation](#input-validation)
+  \- [File Permission Handling](#file-permission-handling)
+  \- [Performance Optimizations](#performance-optimizations)
+  \- [Caching Strategy](#caching-strategy)
+  \- [Database Optimization](#database-optimization)
+  \- [Frontend Optimization](#frontend-optimization)
+  \- [Testing Strategy](#testing-strategy)
+  \- [Unit Testing](#unit-testing)
+  \- [Integration Testing](#integration-testing)
+  \- [UI Testing](#ui-testing)
+  \- [Integration Testing](#integration-testing-1)
+  \- [UI Testing](#ui-testing-1)
 
 ## System Overview
 
@@ -177,6 +211,7 @@ The personal blog/journal system is designed with the following characteristics:
 - **GitHub Backup**: Content backed up to GitHub for version control
 
 The application leverages:
+
 - **Flask**: For the web framework
 - **SQLite**: For lightweight database storage
 - **HTMX + Alpine.js**: For frontend interactivity without a heavy framework
@@ -241,77 +276,84 @@ project/
 The frontend is organized into three main layers:
 
 #### 1. User Interface Layer
+
 - **Responsibility**: Present journal entries and provide navigation
 - **Technologies**: HTML, CSS, Jinja2 templates
 - **Components**:
-  - Entry list view (homepage)
-  - Single entry view
-  - Editor interface
-  - Search results interface
-  - Navigation components
-  - Responsive layouts
+  \- Entry list view (homepage)
+  \- Single entry view
+  \- Editor interface
+  \- Search results interface
+  \- Navigation components
+  \- Responsive layouts
 
 #### 2. Interaction Layer
+
 - **Responsibility**: Handle user input and client-side logic
 - **Technologies**: HTMX, Alpine.js
 - **Components**:
-  - Form handling with client-side validation
-  - Markdown editor with preview
-  - Auto-save functionality
-  - Search interface
-  - Tag management
-  - LaTeX rendering with MathJax
+  \- Form handling with client-side validation
+  \- Markdown editor with preview
+  \- Auto-save functionality
+  \- Search interface
+  \- Tag management
+  \- LaTeX rendering with MathJax
 
 #### 3. State Management
+
 - **Responsibility**: Maintain UI state and handle transitions
 - **Technologies**: Alpine.js, localStorage
 - **Components**:
-  - Editor state (edit/preview/split modes)
-  - Theme preferences
-  - Draft auto-saving
-  - Form validation states
-  - Modal and dropdown states
+  \- Editor state (edit/preview/split modes)
+  \- Theme preferences
+  \- Draft auto-saving
+  \- Form validation states
+  \- Modal and dropdown states
 
 ### Backend Architecture
 
 The backend is structured into four main layers:
 
 #### 1. Data Access Layer
+
 - **Responsibility**: Define, store, and retrieve application data
 - **Technologies**: SQLAlchemy, SQLite
 - **Components**:
-  - ORM models (User, Entry, Tag)
-  - Query operations
-  - Migration management with Alembic
-  - Transaction handling
+  \- ORM models (User, Entry, Tag)
+  \- Query operations
+  \- Migration management with Alembic
+  \- Transaction handling
 
 #### 2. Service Layer
+
 - **Responsibility**: Implement business logic
 - **Technologies**: Python classes
 - **Components**:
-  - Authentication services
-  - Entry management services
-  - Markdown processing
-  - Draft handling
-  - Search functionality
+  \- Authentication services
+  \- Entry management services
+  \- Markdown processing
+  \- Draft handling
+  \- Search functionality
 
 #### 3. API Layer
+
 - **Responsibility**: Expose endpoints for UI operations
 - **Technologies**: Flask routes, Blueprint
 - **Components**:
-  - RESTful routes for CRUD operations
-  - Response formatting
-  - Error handling
-  - Input validation
+  \- RESTful routes for CRUD operations
+  \- Response formatting
+  \- Error handling
+  \- Input validation
 
 #### 4. Presentation Layer
+
 - **Responsibility**: Render templates and handle user interaction
 - **Technologies**: Flask, Jinja2
 - **Components**:
-  - Route handlers
-  - Template rendering
-  - Session management
-  - Form processing
+  \- Route handlers
+  \- Template rendering
+  \- Session management
+  \- Form processing
 
 ## Data Models
 
@@ -434,6 +476,7 @@ class Tag(db.Model):
 ```
 
 ### Relationship Models
+
 (Implicitly defined via `db.relationship` and the `entry_tags` association table above).
 
 ## Authentication System
@@ -645,9 +688,10 @@ def logout():
 ```
 
 ### Password Management
--   **Hashing:** Use `werkzeug.security.generate_password_hash` with a strong method like `argon2` (as shown in `User.set_password`).
--   **Verification:** Use `werkzeug.security.check_password_hash` (as shown in `User.check_password`).
--   **Reset:** Implement a secure password reset flow (e.g., email with time-limited, single-use tokens) - *Potentially beyond MVP, confirm scope.*
+
+- **Hashing:** Use `werkzeug.security.generate_password_hash` with a strong method like `argon2` (as shown in `User.set_password`).
+- **Verification:** Use `werkzeug.security.check_password_hash` (as shown in `User.check_password`).
+- **Reset:** Implement a secure password reset flow (e.g., email with time-limited, single-use tokens) - *Potentially beyond MVP, confirm scope.*
 
 ```python
 # app/routes/auth.py (continued) - Conceptual Password Reset
@@ -691,9 +735,10 @@ def logout():
 ```
 
 ### Session Handling
--   Use `Flask-Login` for managing user sessions.
--   Configure `SECRET_KEY` properly.
--   Use Redis for server-side session storage via `Flask-Session` for better scalability and persistence than default client-side cookies.
+
+- Use `Flask-Login` for managing user sessions.
+- Configure `SECRET_KEY` properly.
+- Use Redis for server-side session storage via `Flask-Session` for better scalability and persistence than default client-side cookies.
 
 ```python
 # config.py
@@ -773,8 +818,9 @@ def load_user(user_id):
 ```
 
 ### Authorization
--   Use `flask_login.login_required` decorator for routes requiring login.
--   Implement ownership checks in service layer or via decorators for actions modifying specific resources (e.g., editing/deleting entries).
+
+- Use `flask_login.login_required` decorator for routes requiring login.
+- Implement ownership checks in service layer or via decorators for actions modifying specific resources (e.g., editing/deleting entries).
 
 ```python
 # app/auth/decorators.py (Conceptual - Ownership)
@@ -811,12 +857,14 @@ def load_user(user_id):
 ## Data Flow & Routing
 
 ### Input Processing
--   Use Flask's `request` object (`request.args`, `request.form`, `request.get_json()`).
--   Perform validation early.
+
+- Use Flask's `request` object (`request.args`, `request.form`, `request.get_json()`).
+- Perform validation early.
 
 ### Form Handling
--   Use `Flask-WTF` for form creation and validation.
--   Handle CSRF protection (enabled by default with Flask-WTF).
+
+- Use `Flask-WTF` for form creation and validation.
+- Handle CSRF protection (enabled by default with Flask-WTF).
 
 ```python
 # app/forms/entry_forms.py (Example)
@@ -833,9 +881,10 @@ def load_user(user_id):
 ```
 
 ### API Endpoints
--   Defined using Flask Blueprints (e.g., `api_bp`).
--   Follow RESTful principles outlined in [API Contract Guide](./api-contract-guide.md).
--   Use JSON for request/response bodies.
+
+- Defined using Flask Blueprints (e.g., `api_bp`).
+- Follow RESTful principles outlined in [API Contract Guide](./api-contract-guide.md).
+- Use JSON for request/response bodies.
 
 ```python
 # app/routes/api.py (Structure Example)
@@ -873,10 +922,11 @@ def load_user(user_id):
 ```
 
 ### Error Handling
--   Define custom exception classes (e.g., `ValidationError`, `AuthorizationError`, `ResourceNotFoundError`).
--   Use Flask's `@app.errorhandler()` or `@blueprint.errorhandler()` decorators to register handlers.
--   Handlers should return consistent JSON error responses using the `api_error` helper.
--   Log errors appropriately.
+
+- Define custom exception classes (e.g., `ValidationError`, `AuthorizationError`, `ResourceNotFoundError`).
+- Use Flask's `@app.errorhandler()` or `@blueprint.errorhandler()` decorators to register handlers.
+- Handlers should return consistent JSON error responses using the `api_error` helper.
+- Log errors appropriately.
 
 ```python
 # app/errors/exceptions.py
@@ -984,10 +1034,11 @@ def load_user(user_id):
 ## Frontend Implementation
 
 ### HTMX + Alpine.js Integration
--   **HTMX:** Use for partial page updates triggered by user actions (form submissions, button clicks). Server returns HTML fragments.
-    -   `hx-post`, `hx-get`, `hx-swap`, `hx-target`, `hx-trigger`.
--   **Alpine.js:** Use for client-side interactivity, UI state management (dropdowns, modals, editor state), and reacting to HTMX events.
-    -   `x-data`, `x-show`, `x-on`, `x-bind`, `$store`, `$dispatch`.
+
+- **HTMX:** Use for partial page updates triggered by user actions (form submissions, button clicks). Server returns HTML fragments.
+- `hx-post`, `hx-get`, `hx-swap`, `hx-target`, `hx-trigger`.
+- **Alpine.js:** Use for client-side interactivity, UI state management (dropdowns, modals, editor state), and reacting to HTMX events.
+- `x-data`, `x-show`, `x-on`, `x-bind`, `$store`, `$dispatch`.
 
 ```html
 <!-- Example: HTMX form submission with Alpine state -->
@@ -1014,9 +1065,10 @@ def load_user(user_id):
 ```
 
 ### LaTeX Rendering with MathJax
--   Include MathJax configuration and library in `base.html`.
--   Ensure Markdown processing on the backend preserves LaTeX syntax (e.g., `$..$`, `$$..$$`).
--   Trigger MathJax rendering after HTMX swaps content into the DOM.
+
+- Include MathJax configuration and library in `base.html`.
+- Ensure Markdown processing on the backend preserves LaTeX syntax (e.g., `$..$`, `$$..$$`).
+- Trigger MathJax rendering after HTMX swaps content into the DOM.
 
 ```python
 # app/services/markdown_service.py (Conceptual)
@@ -1086,17 +1138,20 @@ def load_user(user_id):
 ```
 
 ### Template Structure
--   Use Jinja2 inheritance (`base.html`, `{% extends %}`, `{% block %}`).
--   Organize templates by feature (`auth/`, `entries/`).
--   Create reusable partials/components (`components/`).
+
+- Use Jinja2 inheritance (`base.html`, `{% extends %}`, `{% block %}`).
+- Organize templates by feature (`auth/`, `entries/`).
+- Create reusable partials/components (`components/`).
 
 ### Static Files Organization
--   Standard Flask `static/` folder structure (`css/`, `js/`, `img/`).
--   Consider using `Flask-Assets` for bundling and minification (potentially post-MVP).
+
+- Standard Flask `static/` folder structure (`css/`, `js/`, `img/`).
+- Consider using `Flask-Assets` for bundling and minification (potentially post-MVP).
 
 ### UI Components
--   Define reusable HTML/Jinja2 partials in `templates/components/`.
--   Use Alpine.js for component-specific logic within these partials.
+
+- Define reusable HTML/Jinja2 partials in `templates/components/`.
+- Use Alpine.js for component-specific logic within these partials.
 
 ```html
 <!-- templates/components/modal.html -->
@@ -1121,9 +1176,10 @@ def load_user(user_id):
 ## Backend Implementation
 
 ### Service Layer
--   Encapsulate business logic in service classes (`AuthService`, `EntryService`, `DraftService`).
--   Services interact with data models and perform operations.
--   Return consistent result objects (e.g., `OperationResult`) indicating success/failure and data/errors.
+
+- Encapsulate business logic in service classes (`AuthService`, `EntryService`, `DraftService`).
+- Services interact with data models and perform operations.
+- Return consistent result objects (e.g., `OperationResult`) indicating success/failure and data/errors.
 
 ```python
 # app/services/entry_service.py (Conceptual Structure)
@@ -1276,10 +1332,11 @@ def load_user(user_id):
 ```
 
 ### Database Integration
--   Use `Flask-SQLAlchemy` for ORM and session management.
--   Use `Flask-Migrate` (Alembic) for database schema migrations.
--   Define models in `app/models/`.
--   Use transactions appropriately (often handled by Flask-SQLAlchemy session scope, but consider explicit blocks for complex operations).
+
+- Use `Flask-SQLAlchemy` for ORM and session management.
+- Use `Flask-Migrate` (Alembic) for database schema migrations.
+- Define models in `app/models/`.
+- Use transactions appropriately (often handled by Flask-SQLAlchemy session scope, but consider explicit blocks for complex operations).
 
 ```python
 # app/utils/transaction.py (Example explicit transaction)
@@ -1315,8 +1372,9 @@ def load_user(user_id):
 ```
 
 ### Business Logic
--   Resides primarily within the Service Layer.
--   Handles validation (beyond basic form validation), calculations, state transitions, and coordination between models.
+
+- Resides primarily within the Service Layer.
+- Handles validation (beyond basic form validation), calculations, state transitions, and coordination between models.
 
 ```python
 # app/services/draft_service.py (Conceptual)
@@ -4367,7 +4425,7 @@ class TestEntryAPI:
 
 Test template rendering:
 
-```python
+````python
 # tests/ui/test_templates.py
 import pytest
 from flask import render_template_string, render_template, current_app
@@ -4428,11 +4486,12 @@ class TestTemplates:
             assert '<strong>bold</strong>' in rendered
             assert '<em>italic</em>' in rendered
             assert '<code' in rendered
-```
+````
 
 This completes the comprehensive guide for your Flask blog/journal system. The architecture follows a "lean and mean" philosophy while providing all the necessary components for a robust, secure, and maintainable application.
 
 The system includes:
+
 - A solid application structure with clear separation of concerns
 - Comprehensive data models with proper relationships
 - Secure authentication and authorization
@@ -4446,61 +4505,64 @@ The system includes:
 - A comprehensive testing strategy
 
 This guide serves as both a blueprint and a reference for building your personal journal application.
-        session.add(entry)
-        session.commit()
-        
-        saved_entry = Entry.query.filter_by(title="Test Entry").first()
-        assert saved_entry is not None
-        assert saved_entry.content == "This is a test entry."
-        assert saved_entry.user_id == 1
-    
-    def test_reading_time(self, session):
-        """Test reading time calculation."""
-        # Create an entry with 200 words (1 minute reading time)
-        content = " ".join(["word"] * 200)
-        entry = Entry(
-            title="Reading Time Test",
-            content=content,
-            user_id=1
-        )
-        session.add(entry)
-        session.commit()
-        
-        assert entry.reading_time == 1
-        
-        # Update with 500 words (2.5 minutes, should round up to 3)
-        entry.content = " ".join(["word"] * 500)
-        session.commit()
-        
-        assert entry.reading_time == 3
-    
-    def test_tags_relationship(self, session):
-        """Test relationship between entries and tags."""
-        # Create entry and tags
-        entry = Entry(
-            title="Tagging Test",
-            content="Testing tag relationships",
-            user_id=1
-        )
-        
-        tag1 = Tag(name="test")
-        tag2 = Tag(name="example")
-        
-        # Add tags to entry
-        entry.tags.append(tag1)
-        entry.tags.append(tag2)
-        
-        session.add_all([entry, tag1, tag2])
-        session.commit()
-        
-        # Verify relationships
-        saved_entry = Entry.query.filter_by(title="Tagging Test").first()
-        assert len(saved_entry.tags) == 2
-        
-        tag_names = [tag.name for tag in saved_entry.tags]
-        assert "test" in tag_names
-        assert "example" in tag_names
+session.add(entry)
+session.commit()
+
 ```
+    saved_entry = Entry.query.filter_by(title="Test Entry").first()
+    assert saved_entry is not None
+    assert saved_entry.content == "This is a test entry."
+    assert saved_entry.user_id == 1
+
+def test_reading_time(self, session):
+    """Test reading time calculation."""
+    # Create an entry with 200 words (1 minute reading time)
+    content = " ".join(["word"] * 200)
+    entry = Entry(
+        title="Reading Time Test",
+        content=content,
+        user_id=1
+    )
+    session.add(entry)
+    session.commit()
+    
+    assert entry.reading_time == 1
+    
+    # Update with 500 words (2.5 minutes, should round up to 3)
+    entry.content = " ".join(["word"] * 500)
+    session.commit()
+    
+    assert entry.reading_time == 3
+
+def test_tags_relationship(self, session):
+    """Test relationship between entries and tags."""
+    # Create entry and tags
+    entry = Entry(
+        title="Tagging Test",
+        content="Testing tag relationships",
+        user_id=1
+    )
+    
+    tag1 = Tag(name="test")
+    tag2 = Tag(name="example")
+    
+    # Add tags to entry
+    entry.tags.append(tag1)
+    entry.tags.append(tag2)
+    
+    session.add_all([entry, tag1, tag2])
+    session.commit()
+    
+    # Verify relationships
+    saved_entry = Entry.query.filter_by(title="Tagging Test").first()
+    assert len(saved_entry.tags) == 2
+    
+    tag_names = [tag.name for tag in saved_entry.tags]
+    assert "test" in tag_names
+    assert "example" in tag_names
+```
+
+````
 
 Write tests for services:
 
@@ -4599,7 +4661,7 @@ class TestEntryService:
         updated_entry = Entry.query.get(entry.id)
         assert updated_entry.title == 'Updated Title'
         assert updated_entry.content == 'Updated content.'
-```
+````
 
 ### Integration Testing
 
@@ -4696,7 +4758,7 @@ class TestEntryAPI:
 
 Test template rendering:
 
-```python
+````python
 # tests/ui/test_templates.py
 import pytest
 from flask import render_template_string, render_template, current_app
@@ -4757,11 +4819,12 @@ class TestTemplates:
             assert '<strong>bold</strong>' in rendered
             assert '<em>italic</em>' in rendered
             assert '<code' in rendered
-```
+````
 
 This completes the comprehensive guide for your Flask blog/journal system. The architecture follows a "lean and mean" philosophy while providing all the necessary components for a robust, secure, and maintainable application.
 
 The system includes:
+
 - A solid application structure with clear separation of concerns
 - Comprehensive data models with proper relationships
 - Secure authentication and authorization

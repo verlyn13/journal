@@ -1,33 +1,33 @@
 # MODULES
 
-*Source: https://bun.sh/docs/runtime/modules*
+*Source: <https://bun.sh/docs/runtime/modules>*
 *Fetched: 2025-08-30T00:47:26.855Z*
 
----
+***
 
 Module resolution in JavaScript is a complex topic.
 
-The ecosystem is currently in the midst of a years-long transition from CommonJS modules to native ES modules. TypeScript enforces its own set of rules around import extensions that aren&#x27;t compatible with ESM. Different build tools support path re-mapping via disparate non-compatible mechanisms.
+The ecosystem is currently in the midst of a years-long transition from CommonJS modules to native ES modules. TypeScript enforces its own set of rules around import extensions that aren't compatible with ESM. Different build tools support path re-mapping via disparate non-compatible mechanisms.
 
-Bun aims to provide a consistent and predictable module resolution system that just works. Unfortunately it&#x27;s still quite complex.
+Bun aims to provide a consistent and predictable module resolution system that just works. Unfortunately it's still quite complex.
 
 ## [Syntax](#syntax)
 
 Consider the following files.
 
-index.tshello.tsindex.ts```
+index.tshello.tsindex.ts\`\`\`
 import { hello } from "./hello";
 
 hello();
 
-```
+````
 
 hello.ts```
 export function hello() {
   console.log("Hello world!");
 }
 
-```
+````
 
 When we run `index.ts`, it prints "Hello world!".
 
@@ -58,11 +58,11 @@ In this case, we are importing from `./hello`, a relative path with no extension
 
 Import paths can optionally include extensions. If an extension is present, Bun will only check for a file with that exact extension.
 
-index.ts```
+index.ts\`\`\`
 import { hello } from "./hello";
 import { hello } from "./hello.ts"; // this works
 
-```
+````
 
 If you import `from "*.js{x}"`, Bun will additionally check for a matching `*.ts{x}` file, to be compatible with TypeScript&#x27;s [ES module support](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-7.html#new-file-extensions).
 
@@ -71,16 +71,16 @@ import { hello } from "./hello";
 import { hello } from "./hello.ts"; // this works
 import { hello } from "./hello.js"; // this also works
 
-```
+````
 
 Bun supports both ES modules (`import`/`export` syntax) and CommonJS modules (`require()`/`module.exports`). The following CommonJS version would also work in Bun.
 
-index.jshello.jsindex.js```
+index.jshello.jsindex.js\`\`\`
 const { hello } = require("./hello");
 
 hello();
 
-```
+````
 
 hello.js```
 function hello() {
@@ -89,7 +89,7 @@ function hello() {
 
 exports.hello = hello;
 
-```
+````
 
 That said, using CommonJS is discouraged in new projects.
 
@@ -97,7 +97,7 @@ That said, using CommonJS is discouraged in new projects.
 
 Bun has native support for CommonJS and ES modules. ES Modules are the recommended module format for new projects, but CommonJS modules are still widely used in the Node.js ecosystem.
 
-In Bun&#x27;s JavaScript runtime, `require` can be used by both ES Modules and CommonJS modules. If the target module is an ES Module, `require` returns the module namespace object (equivalent to `import * as`). If the target module is a CommonJS module, `require` returns the `module.exports` object (as in Node.js).
+In Bun's JavaScript runtime, `require` can be used by both ES Modules and CommonJS modules. If the target module is an ES Module, `require` returns the module namespace object (equivalent to `import * as`). If the target module is a CommonJS module, `require` returns the `module.exports` object (as in Node.js).
 
 Module Type`require()``import * as`ES ModuleModule NamespaceModule NamespaceCommonJSmodule.exports`default` is `module.exports`, keys of module.exports are named exports### [Using `require()`](#using-require)
 
@@ -125,16 +125,16 @@ module.exports = { stuff };
 
 The biggest difference between CommonJS and ES Modules is that CommonJS modules are synchronous, while ES Modules are asynchronous. There are other differences too.
 
-- ES Modules support top-level `await` and CommonJS modules don&#x27;t.
+- ES Modules support top-level `await` and CommonJS modules don't.
 - ES Modules are always in [strict mode](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Strict_mode), while CommonJS modules are not.
 - Browsers do not have native support for CommonJS modules, but they do have native support for ES Modules via `<script type="module">`.
 - CommonJS modules are not statically analyzable, while ES Modules only allow static imports and exports.
 
-**CommonJS Modules:** These are a type of module system used in JavaScript. One key feature of CommonJS modules is that they load and execute synchronously. This means that when you import a CommonJS module, the code in that module runs immediately, and your program waits for it to finish before moving on to the next task. It&#x27;s similar to reading a book from start to finish without skipping pages.
+**CommonJS Modules:** These are a type of module system used in JavaScript. One key feature of CommonJS modules is that they load and execute synchronously. This means that when you import a CommonJS module, the code in that module runs immediately, and your program waits for it to finish before moving on to the next task. It's similar to reading a book from start to finish without skipping pages.
 
 **ES Modules (ESM):** These are another type of module system introduced in JavaScript. They have a slightly different behavior compared to CommonJS. In ESM, static imports (imports made using `import` statements) are synchronous, just like CommonJS. This means that when you import an ESM using a regular `import` statement, the code in that module runs immediately, and your program proceeds in a step-by-step manner. Think of it like reading a book page by page.
 
-**Dynamic imports:** Now, here comes the part that might be confusing. ES Modules also support importing modules on the fly via the `import()` function. This is called a "dynamic import" and it&#x27;s asynchronous, so it doesn&#x27;t block the main program execution. Instead, it fetches and loads the module in the background while your program continues to run. Once the module is ready, you can use it. This is like getting additional information from a book while you&#x27;re still reading it, without having to pause your reading.
+**Dynamic imports:** Now, here comes the part that might be confusing. ES Modules also support importing modules on the fly via the `import()` function. This is called a "dynamic import" and it's asynchronous, so it doesn't block the main program execution. Instead, it fetches and loads the module in the background while your program continues to run. Once the module is ready, you can use it. This is like getting additional information from a book while you're still reading it, without having to pause your reading.
 
 **In summary:**
 
@@ -165,9 +165,9 @@ const myStuff = require("./my-commonjs.cjs");
 
 ### [Top level await](#top-level-await)
 
-The only exception to this rule is top-level await. You can&#x27;t `require()` a file that uses top-level await, since the `require()` function is inherently synchronous.
+The only exception to this rule is top-level await. You can't `require()` a file that uses top-level await, since the `require()` function is inherently synchronous.
 
-Fortunately, very few libraries use top-level await, so this is rarely a problem. But if you&#x27;re using top-level await in your application code, make sure that file isn&#x27;t being `require()` from elsewhere in your application. Instead, you should use `import` or [dynamic `import()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/import).
+Fortunately, very few libraries use top-level await, so this is rarely a problem. But if you're using top-level await in your application code, make sure that file isn't being `require()` from elsewhere in your application. Instead, you should use `import` or [dynamic `import()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/import).
 
 ## [Importing packages](#importing-packages)
 
@@ -178,23 +178,23 @@ import { stuff } from "foo";
 
 ```
 
-The full specification of this algorithm are officially documented in the [Node.js documentation](https://nodejs.org/api/modules.html); we won&#x27;t rehash it here. Briefly: if you import `from "foo"`, Bun scans up the file system for a `node_modules` directory containing the package `foo`.
+The full specification of this algorithm are officially documented in the [Node.js documentation](https://nodejs.org/api/modules.html); we won't rehash it here. Briefly: if you import `from "foo"`, Bun scans up the file system for a `node_modules` directory containing the package `foo`.
 
-Once it finds the `foo` package, Bun reads the `package.json` to determine how the package should be imported. To determine the package&#x27;s entrypoint, Bun first reads the `exports` field and checks for the following conditions.
+Once it finds the `foo` package, Bun reads the `package.json` to determine how the package should be imported. To determine the package's entrypoint, Bun first reads the `exports` field and checks for the following conditions.
 
-package.json```
+package.json\`\`\`
 {
-  "name": "foo",
-  "exports": {
-    "bun": "./index.js",
-    "node": "./index.js",
-    "require": "./index.js", // if importer is CommonJS
-    "import": "./index.mjs", // if importer is ES module
-    "default": "./index.js",
-  }
+"name": "foo",
+"exports": {
+"bun": "./index.js",
+"node": "./index.js",
+"require": "./index.js", // if importer is CommonJS
+"import": "./index.mjs", // if importer is ES module
+"default": "./index.js",
+}
 }
 
-```
+````
 
 Whichever one of these conditions occurs *first* in the `package.json` is used to determine the package&#x27;s entrypoint.
 
@@ -208,7 +208,7 @@ package.json```
   }
 }
 
-```
+````
 
 Subpath imports and conditional imports work in conjunction with each other.
 
@@ -233,15 +233,15 @@ import stuff from "foo/index.mjs"; // this doesn't
 
 ```
 
-**Shipping TypeScript** — Note that Bun supports the special `"bun"` export condition. If your library is written in TypeScript, you can publish your (un-transpiled!) TypeScript files to `npm` directly. If you specify your package&#x27;s `*.ts` entrypoint in the `"bun"` condition, Bun will directly import and execute your TypeScript source files.
+**Shipping TypeScript** — Note that Bun supports the special `"bun"` export condition. If your library is written in TypeScript, you can publish your (un-transpiled!) TypeScript files to `npm` directly. If you specify your package's `*.ts` entrypoint in the `"bun"` condition, Bun will directly import and execute your TypeScript source files.
 
 If `exports` is not defined, Bun falls back to `"module"` (ESM imports only) then [`"main"`](https://nodejs.org/api/packages.html#main).
 
-package.json```
+package.json\`\`\`
 {
-  "name": "foo",
-  "module": "./index.js",
-  "main": "./index.js"
+"name": "foo",
+"module": "./index.js",
+"main": "./index.js"
 }
 
 ```
@@ -253,32 +253,37 @@ The `--conditions` flag allows you to specify a list of conditions to use when r
 This flag is supported in both `bun build` and Bun&#x27;s runtime.
 
 ```
+
 # Use it with bun build:
-```
 
 ```
+```
+
 bun build --conditions="react-server" --target=bun ./app/foo/route.js
-```
 
+```
 ```
 
 # Use it with bun's runtime:
-```
 
 ```
+```
+
 bun --conditions="react-server" ./app/foo/route.js
+
 ```
 
 You can also use `conditions` programmatically with `Bun.build`:
 
 ```
+
 await Bun.build({
-  conditions: ["react-server"],
-  target: "bun",
-  entryPoints: ["./app/foo/route.js"],
+conditions: \["react-server"],
+target: "bun",
+entryPoints: \["./app/foo/route.js"],
 });
 
-```
+````
 
 ## [Path re-mapping](#path-re-mapping)
 
@@ -294,13 +299,13 @@ tsconfig.json```
   }
 }
 
-```
+````
 
-If you aren&#x27;t a TypeScript user, you can create a [`jsconfig.json`](https://code.visualstudio.com/docs/languages/jsconfig) in your project root to achieve the same behavior.
+If you aren't a TypeScript user, you can create a [`jsconfig.json`](https://code.visualstudio.com/docs/languages/jsconfig) in your project root to achieve the same behavior.
 
 Low-level details of CommonJS interop in Bun
 
-Bun&#x27;s JavaScript runtime has native support for CommonJS. When Bun&#x27;s JavaScript transpiler detects usages of `module.exports`, it treats the file as CommonJS. The module loader will then wrap the transpiled module in a function shaped like this:
+Bun's JavaScript runtime has native support for CommonJS. When Bun's JavaScript transpiler detects usages of `module.exports`, it treats the file as CommonJS. The module loader will then wrap the transpiled module in a function shaped like this:
 
 ```
 (function (module, exports, require) {
@@ -313,4 +318,4 @@ Bun&#x27;s JavaScript runtime has native support for CommonJS. When Bun&#x27;s J
 
 Once the CommonJS module is successfully evaluated, a Synthetic Module Record is created with the `default` ES Module [export set to `module.exports`](https://github.com/oven-sh/bun/blob/9b6913e1a674ceb7f670f917fc355bb8758c6c72/src/bun.js/bindings/CommonJSModuleRecord.cpp#L212-L213) and keys of the `module.exports` object are re-exported as named exports (if the `module.exports` object is an object).
 
-When using Bun&#x27;s bundler, this works differently. The bundler will wrap the CommonJS module in a `require_${moduleName}` function which returns the `module.exports` object.
+When using Bun's bundler, this works differently. The bundler will wrap the CommonJS module in a `require_${moduleName}` function which returns the `module.exports` object.

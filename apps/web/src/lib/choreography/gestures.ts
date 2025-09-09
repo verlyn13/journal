@@ -52,7 +52,9 @@ export class GestureCoordinator {
   private handleGesture(event: GestureEvent): void {
     const listeners = this.listeners.get(event.type);
     if (listeners) {
-      listeners.forEach((listener) => listener(event));
+      listeners.forEach((listener) => {
+        listener(event);
+      });
     }
   }
 
@@ -71,7 +73,9 @@ export class GestureCoordinator {
 
   // Clean up all gestures
   destroy(): void {
-    this.activeGestures.forEach((tracker) => tracker.stop());
+    this.activeGestures.forEach((tracker) => {
+      tracker.stop();
+    });
     this.activeGestures.clear();
     this.listeners.clear();
   }

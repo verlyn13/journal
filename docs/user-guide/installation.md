@@ -1,10 +1,11 @@
----
+***
+
 title: "Flask Journal Installation Guide"
 description: "Instructions for setting up and running the Flask Journal application for local development"
 category: "User Documentation"
 version: "1.0"
-tags: ["installation", "setup", "configuration", "development"]
----
+tags: \["installation", "setup", "configuration", "development"]
+----------------------------------------------------------------
 
 # Flask Journal Installation Guide
 
@@ -88,6 +89,7 @@ cp config.example.py config.py
 ```
 
 Edit `config.py` to adjust settings such as:
+
 - Database URI
 - Secret key (for session security)
 - Debug mode
@@ -137,6 +139,7 @@ For an efficient development workflow:
    ```
 
 This setup will:
+
 - Automatically reload the Flask server when Python files change
 - Rebuild and update frontend assets when JavaScript or CSS files change
 
@@ -195,6 +198,6 @@ To update the application to the latest version:
 
 5. Restart the application
 
----
+***
 
 If you encounter any issues not covered in this guide, please refer to the project's issue tracker or contact the development team.

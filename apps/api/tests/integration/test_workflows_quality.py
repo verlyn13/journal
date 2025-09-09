@@ -5,21 +5,18 @@ Tests real user scenarios, error recovery, and system behavior under stress.
 
 import asyncio
 
-from datetime import datetime, timedelta
-
 import pytest
 
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.infra.models import Entry, Event
-from app.infra.outbox import relay_outbox
+from app.infra.models import Entry
 
 
 class TestWorkflowsQuality:
     """High-quality tests for complete user workflows and system integration."""
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_complete_journal_workflow(
         self, client: AsyncClient, auth_headers: dict[str, str], db_session: AsyncSession
     ):
@@ -97,13 +94,13 @@ class TestWorkflowsQuality:
         deleted_id = entries_created[2]["id"]
         assert not any(e["id"] == deleted_id for e in current_entries)
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_concurrent_user_operations(
         self, client: AsyncClient, auth_headers: dict[str, str]
     ):
         """Test system behavior under concurrent user operations."""
 
-        async def create_entry(index: int):
+        async def create_entry(index: int) -> object:
             return await client.post(
                 "/api/v1/entries",
                 json={
@@ -113,10 +110,10 @@ class TestWorkflowsQuality:
                 headers=auth_headers,
             )
 
-        async def search_entries(query: str):
+        async def search_entries(query: str) -> object:
             return await client.get("/api/v1/search", params={"q": query}, headers=auth_headers)
 
-        async def get_stats():
+        async def get_stats() -> object:
             return await client.get("/api/v1/stats", headers=auth_headers)
 
         # Run multiple operations concurrently
@@ -153,7 +150,7 @@ class TestWorkflowsQuality:
         stats_results = results[8:]
         assert all(r.status_code == 200 for r in stats_results)
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_error_recovery_workflow(self, client: AsyncClient, auth_headers: dict[str, str]):
         """Test system recovery from various error conditions."""
 
@@ -200,7 +197,7 @@ class TestWorkflowsQuality:
         )
         assert delete_response2.status_code in [204, 404]  # Idempotent or not found
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_data_consistency_across_operations(
         self, client: AsyncClient, auth_headers: dict[str, str], db_session: AsyncSession
     ):
@@ -254,7 +251,7 @@ class TestWorkflowsQuality:
         assert db_entry.title == original_data["title"]
         assert db_entry.markdown_content == original_data["markdown_content"]
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_pagination_workflow(self, client: AsyncClient, auth_headers: dict[str, str]):
         """Test pagination across multiple pages of entries."""
 
@@ -305,7 +302,7 @@ class TestWorkflowsQuality:
         # Verify total count
         assert len(all_entries) >= len(created_ids)
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_markdown_migration_workflow(
         self, client: AsyncClient, auth_headers: dict[str, str]
     ):
@@ -358,7 +355,7 @@ class TestWorkflowsQuality:
             if md_data.get("markdown_content"):
                 assert "# Migrated" in md_data["markdown_content"]
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_auth_expiry_workflow(self, client: AsyncClient):
         """Test workflow when authentication expires or is invalid."""
 

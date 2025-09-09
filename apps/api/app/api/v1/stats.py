@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel
@@ -17,7 +17,9 @@ router = APIRouter(tags=["stats"])
 
 
 def _utcnow() -> datetime:
-    return datetime.utcnow()
+    """UTC now; returns naive UTC for DB comparisons while avoiding utcnow()."""
+    # Use aware UTC then drop tzinfo to keep DB comparisons consistent and satisfy linter
+    return datetime.now(UTC).replace(tzinfo=None)
 
 
 class StatsResponse(BaseModel):
@@ -35,8 +37,6 @@ async def get_stats(
     s: AsyncSession = Depends(get_session),
 ) -> StatsResponse:
     """Get statistics about user's journal entries."""
-
-    # Deterministic tests can monkeypatch _utcnow()
     now = _utcnow()  # Use timezone-naive datetime
     today_start = now.replace(hour=0, minute=0, second=0, microsecond=0)
     week_start = now - timedelta(days=now.weekday())
@@ -45,49 +45,62 @@ async def get_stats(
     recent_cutoff = now - timedelta(days=7)
 
     # Total entries
-    total_result = await s.execute(
-        select(func.count(Entry.id)).where(Entry.is_deleted == False)
+    total_entries = (
+        (await s.execute(select(func.count(Entry.id)).where(not Entry.is_deleted))).scalar()
+        or 0
     )
-    total_entries = total_result.scalar() or 0
 
     # Entries today
-    today_result = await s.execute(
-        select(func.count(Entry.id)).where(
-            Entry.created_at >= today_start,
-            Entry.is_deleted == False,
-        )
+    entries_today = (
+        (
+            await s.execute(
+                select(func.count(Entry.id)).where(
+                    Entry.created_at >= today_start,
+                    not Entry.is_deleted,
+                )
+            )
+        ).scalar()
+        or 0
     )
-    entries_today = today_result.scalar() or 0
 
     # Entries this week
-    week_result = await s.execute(
-        select(func.count(Entry.id)).where(
-            Entry.created_at >= week_start,
-            Entry.is_deleted == False,
-        )
+    entries_this_week = (
+        (
+            await s.execute(
+                select(func.count(Entry.id)).where(
+                    Entry.created_at >= week_start,
+                    not Entry.is_deleted,
+                )
+            )
+        ).scalar()
+        or 0
     )
-    entries_this_week = week_result.scalar() or 0
 
     # Entries this month
-    month_result = await s.execute(
-        select(func.count(Entry.id)).where(
-            Entry.created_at >= month_start,
-            Entry.is_deleted == False,
-        )
+    entries_this_month = (
+        (
+            await s.execute(
+                select(func.count(Entry.id)).where(
+                    Entry.created_at >= month_start,
+                    not Entry.is_deleted,
+                )
+            )
+        ).scalar()
+        or 0
     )
-    entries_this_month = month_result.scalar() or 0
 
     # Recently edited entries (last 7 days)
-    recent_result = await s.execute(
-        select(func.count(Entry.id)).where(
-            Entry.updated_at >= recent_cutoff,
-            Entry.is_deleted == False,
-        )
+    recent_entries = (
+        (
+            await s.execute(
+                select(func.count(Entry.id)).where(
+                    Entry.updated_at >= recent_cutoff,
+                    not Entry.is_deleted,
+                )
+            )
+        ).scalar()
+        or 0
     )
-    recent_entries = recent_result.scalar() or 0
-
-    # TODO: Implement favorites when we have a favorites field
-    favorite_entries = 0
 
     return StatsResponse(
         total_entries=total_entries,
@@ -95,5 +108,5 @@ async def get_stats(
         entries_this_week=entries_this_week,
         entries_this_month=entries_this_month,
         recent_entries=recent_entries,
-        favorite_entries=favorite_entries,
+        favorite_entries=0,
     )

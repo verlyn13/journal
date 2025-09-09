@@ -1,21 +1,21 @@
 heck yes — let’s ship a FastAPI backend that feels like September-2025, not 2021. Below is a drop-in blueprint with **libraries, versions, repo layout, and copy-paste code** you can start from tonight. I’ve biased for: async, OpenAPI 3.1, Pydantic v2, SQLAlchemy 2 async, SQLModel (2025-stable), OTel, NATS JetStream, and pgvector — with citations to the current docs.
 
----
+***
 
 # Journal Backend — FastAPI “2025-grade” Stack
 
 ## Why this stack (quick receipts)
 
-* **FastAPI** now emits **OpenAPI 3.1 by default** and ships a first-party CLI (`fastapi dev/run`). It plays perfectly with **Pydantic v2**. ([FastAPI][1], [Pydantic][2])
-* **SQLAlchemy 2.x async** with **psycopg 3** (or `asyncpg`) is the modern PG path. ([SQLAlchemy][3], [PyPI][4])
-* **SQLModel 0.0.24 (Mar 7 2025)** is alive, Python 3.13-ready, and a natural fit with FastAPI/Pydantic. ([GitHub][5])
-* **OpenTelemetry** auto-/manual instrumentation for FastAPI is mature and easy to enable. ([OpenTelemetry Python Contrib][6], [OpenTelemetry][7])
-* **Strawberry GraphQL** integrates cleanly with FastAPI if/when you add a GraphQL facade. ([Redis][8])
-* **pgvector** is the simplest, most portable vector store for semantic search (lives inside Postgres). ([FastAPI][9])
-* **NATS JetStream** (nats-py v2.11+) is a lightweight event bus for outbox → stream patterns. ([DevDocs][10])
-* **Temporal** Python SDK is production-ready for durable workflows when you need them. ([PyPI][11])
+- **FastAPI** now emits **OpenAPI 3.1 by default** and ships a first-party CLI (`fastapi dev/run`). It plays perfectly with **Pydantic v2**. ([FastAPI][1], [Pydantic][2])
+- **SQLAlchemy 2.x async** with **psycopg 3** (or `asyncpg`) is the modern PG path. ([SQLAlchemy][3], [PyPI][4])
+- **SQLModel 0.0.24 (Mar 7 2025)** is alive, Python 3.13-ready, and a natural fit with FastAPI/Pydantic. ([GitHub][5])
+- **OpenTelemetry** auto-/manual instrumentation for FastAPI is mature and easy to enable. ([OpenTelemetry Python Contrib][6], [OpenTelemetry][7])
+- **Strawberry GraphQL** integrates cleanly with FastAPI if/when you add a GraphQL facade. ([Redis][8])
+- **pgvector** is the simplest, most portable vector store for semantic search (lives inside Postgres). ([FastAPI][9])
+- **NATS JetStream** (nats-py v2.11+) is a lightweight event bus for outbox → stream patterns. ([DevDocs][10])
+- **Temporal** Python SDK is production-ready for durable workflows when you need them. ([PyPI][11])
 
----
+***
 
 ## Repo layout
 
@@ -54,7 +54,7 @@ journal-backend/
 └─ tests/
 ```
 
----
+***
 
 ## pyproject (versions from Aug/Sep 2025 docs)
 
@@ -87,15 +87,15 @@ dependencies = [
 ]
 ```
 
-* FastAPI 0.116.x, OpenAPI 3.1, and the `fastapi` CLI are current. ([PyPI][12], [FastAPI][1])
-* SQLModel 0.0.24 released Mar 7 2025. ([GitHub][5])
-* OTel 1.36.0 is the June/July 2025 line. ([OpenTelemetry Python Contrib][6])
-* `nats-py` 2.11+ has the JetStream fixes you’ll want. ([DevDocs][10])
-* Auth choices reference **PyJWT** and **Authlib**. ([release-monitoring.org][13], [docs.authlib.org][14])
+- FastAPI 0.116.x, OpenAPI 3.1, and the `fastapi` CLI are current. ([PyPI][12], [FastAPI][1])
+- SQLModel 0.0.24 released Mar 7 2025. ([GitHub][5])
+- OTel 1.36.0 is the June/July 2025 line. ([OpenTelemetry Python Contrib][6])
+- `nats-py` 2.11+ has the JetStream fixes you’ll want. ([DevDocs][10])
+- Auth choices reference **PyJWT** and **Authlib**. ([release-monitoring.org][13], [docs.authlib.org][14])
 
 > Tip: consider **Astral’s `uv`** to initialize and run (`uv add fastapi --extra standard`; `fastapi dev app/main.py`). ([Astral Docs][15])
 
----
+***
 
 ## Settings (Pydantic v2)
 
@@ -117,7 +117,7 @@ settings = Settings()
 
 Pydantic v2 is the default in modern FastAPI; use `pydantic-settings` for env. ([Pydantic][2])
 
----
+***
 
 ## Async database + SQLModel + Alembic
 
@@ -152,7 +152,7 @@ SQLAlchemy 2 async engine; SQLModel integrates with SA & Pydantic v2. ([SQLAlche
 
 **Alembic** will autogenerate migrations from SQLModel/SA models.
 
----
+***
 
 ## Event sourcing (lean, Postgres-first)
 
@@ -196,15 +196,15 @@ A small **relay** task reads unpublished events and publishes to **NATS JetStrea
 
 > Want durable workflows? Keep events in PG and kick long-running jobs into **Temporal** from the relay (e.g., exports, analytics backfills). ([PyPI][11])
 
----
+***
 
 ## Vector search (pgvector)
 
-* Enable once per DB: `CREATE EXTENSION IF NOT EXISTS vector;`
-* Add `embedding vector(1536)` to a `entry_embeddings` table and keep it in sync via events.
+- Enable once per DB: `CREATE EXTENSION IF NOT EXISTS vector;`
+- Add `embedding vector(1536)` to a `entry_embeddings` table and keep it in sync via events.
   pgvector docs show install/index options (HNSW/IVFFlat). ([FastAPI][9])
 
----
+***
 
 ## OpenTelemetry (traces/metrics/logs)
 
@@ -236,7 +236,7 @@ FastAPIInstrumentor.instrument_app(app)
 
 FastAPI instrumentation + OTLP exporter: dead simple to enable; auto-instrument is available if you prefer. ([OpenTelemetry Python Contrib][6], [PyPI][17], [OpenTelemetry][7])
 
----
+***
 
 ## HTTP + WS API shell
 
@@ -272,22 +272,22 @@ async def collaborate(entry_id: str, ws: WebSocket):
 
 FastAPI’s WebSocket support is first-class; you can auth/room-broadcast with standard patterns. ([FastAPI][18])
 
----
+***
 
 ## Auth (JWT + optional OIDC)
 
-* **Local**: PyJWT to mint short-lived access tokens + refresh tokens (Redis session store).
-* **OIDC**: Use **Authlib** to integrate with Google/Microsoft if you want SSO later. ([release-monitoring.org][13], [docs.authlib.org][14])
-* FastAPI’s security docs show OAuth2 Password Flow + scopes if you want RBAC baked into tokens. ([GitHub][19])
+- **Local**: PyJWT to mint short-lived access tokens + refresh tokens (Redis session store).
+- **OIDC**: Use **Authlib** to integrate with Google/Microsoft if you want SSO later. ([release-monitoring.org][13], [docs.authlib.org][14])
+- FastAPI’s security docs show OAuth2 Password Flow + scopes if you want RBAC baked into tokens. ([GitHub][19])
 
----
+***
 
 ## Search & GraphQL (optional)
 
-* **REST search**: PG full-text + pgvector; build a hybrid rank (`ts_rank_cd` + cosine sim). ([FastAPI][9])
-* **GraphQL**: Mount Strawberry at `/graphql` with `strawberry.fastapi.GraphQLRouter(schema)`. ([Redis][8])
+- **REST search**: PG full-text + pgvector; build a hybrid rank (`ts_rank_cd` + cosine sim). ([FastAPI][9])
+- **GraphQL**: Mount Strawberry at `/graphql` with `strawberry.fastapi.GraphQLRouter(schema)`. ([Redis][8])
 
----
+***
 
 ## Dev & Run commands
 
@@ -304,51 +304,72 @@ uv run fastapi dev app/main.py   # hot reload
 
 `fastapi dev`/`fastapi run` are the current first-party way to serve your app locally/in production. ([FastAPI][20])
 
----
+***
 
 ## Production checklist (opinionated)
 
-* **ASGI server**: `uvicorn` behind your ingress/LB. Consider Granian if you need extra throughput; Uvicorn remains the standard. ([FastAPI][21])
-* **DB**: Postgres 15/16; enable pgvector; use **PgBouncer**; partition events by month. ([FastAPI][9])
-* **Observability**: OTel → OTLP (Tempo/Jaeger/etc.); scrape Prom metrics via exporter; error tracking with Sentry. ([OpenTelemetry][7])
-* **Eventing**: Outbox → NATS JetStream; consumers update projections/search indices. ([DevDocs][10])
-* **API**: OpenAPI 3.1; keep `x-trace-id` flowing; use response models (Pydantic v2). ([FastAPI][1])
+- **ASGI server**: `uvicorn` behind your ingress/LB. Consider Granian if you need extra throughput; Uvicorn remains the standard. ([FastAPI][21])
+- **DB**: Postgres 15/16; enable pgvector; use **PgBouncer**; partition events by month. ([FastAPI][9])
+- **Observability**: OTel → OTLP (Tempo/Jaeger/etc.); scrape Prom metrics via exporter; error tracking with Sentry. ([OpenTelemetry][7])
+- **Eventing**: Outbox → NATS JetStream; consumers update projections/search indices. ([DevDocs][10])
+- **API**: OpenAPI 3.1; keep `x-trace-id` flowing; use response models (Pydantic v2). ([FastAPI][1])
 
----
+***
 
 ## Small things that save big time (2025 patterns)
 
-* **Async SQLAlchemy** (`create_async_engine`) + **asyncpg** dialect for end-to-end async I/O. ([SQLAlchemy][3])
-* **psycopg LISTEN/NOTIFY** if you want PG-native change signals for local dev. ([psycopg.org][22])
-* **OpenAPI niceties**: you can extend/override schema bits (logos, tags, examples) directly in FastAPI. ([FastAPI][23])
+- **Async SQLAlchemy** (`create_async_engine`) + **asyncpg** dialect for end-to-end async I/O. ([SQLAlchemy][3])
+- **psycopg LISTEN/NOTIFY** if you want PG-native change signals for local dev. ([psycopg.org][22])
+- **OpenAPI niceties**: you can extend/override schema bits (logos, tags, examples) directly in FastAPI. ([FastAPI][23])
 
----
+***
 
 ### What’s next?
 
 If you want, I’ll convert this into a bootstrapped repo (routers + models + migrations + OTel + NATS docker-compose) so you can `docker compose up` and start wiring the frontend.
 
 [1]: https://fastapi.tiangolo.com/reference/fastapi/?utm_source=chatgpt.com "FastAPI class"
-[2]: https://docs.pydantic.dev/latest/?utm_source=chatgpt.com "Welcome to Pydantic - Pydantic"
-[3]: https://docs.sqlalchemy.org/en/latest/orm/extensions/asyncio.html?utm_source=chatgpt.com "Asynchronous I/O (asyncio) — SQLAlchemy 2.0 ..."
-[4]: https://pypi.org/project/SQLAlchemy/?utm_source=chatgpt.com "SQLAlchemy"
-[5]: https://github.com/fastapi/sqlmodel/releases?utm_source=chatgpt.com "Releases · fastapi/sqlmodel"
-[6]: https://opentelemetry-python-contrib.readthedocs.io/en/latest/instrumentation/fastapi/fastapi.html?utm_source=chatgpt.com "OpenTelemetry FastAPI Instrumentation"
-[7]: https://opentelemetry.io/docs/zero-code/python/?utm_source=chatgpt.com "Python zero-code instrumentation"
-[8]: https://redis.io/docs/latest/develop/clients/redis-py/?utm_source=chatgpt.com "redis-py guide (Python) | Docs"
-[9]: https://fastapi.tiangolo.com/advanced/security/oauth2-scopes/?utm_source=chatgpt.com "OAuth2 scopes"
-[10]: https://devdocs.io/fastapi/?utm_source=chatgpt.com "FastAPI documentation"
-[11]: https://pypi.org/project/sse-starlette/?utm_source=chatgpt.com "sse-starlette"
-[12]: https://pypi.org/project/PyJWT/?utm_source=chatgpt.com "PyJWT"
-[13]: https://release-monitoring.org/project/python-pyjwt?utm_source=chatgpt.com "PyJWT · Anitya"
-[14]: https://docs.authlib.org/en/v1.4.1/?utm_source=chatgpt.com "Authlib 1.4.1 documentation"
-[15]: https://docs.astral.sh/uv/guides/integration/fastapi/?utm_source=chatgpt.com "Using uv with FastAPI - Astral Docs"
-[16]: https://sqlmodel.tiangolo.com/tutorial/?utm_source=chatgpt.com "Tutorial - User Guide"
-[17]: https://pypi.org/project/opentelemetry-instrumentation-fastapi/?utm_source=chatgpt.com "opentelemetry-instrumentation-fastapi"
-[18]: https://fastapi.tiangolo.com/advanced/websockets/?utm_source=chatgpt.com "WebSockets"
-[19]: https://github.com/jpadilla/pyjwt/blob/master/.github/workflows/pypi-package.yml?utm_source=chatgpt.com "pypi-package.yml"
-[20]: https://fastapi.tiangolo.com/fastapi-cli/?utm_source=chatgpt.com "FastAPI CLI"
-[21]: https://fastapi.tiangolo.com/deployment/manually/?utm_source=chatgpt.com "Run a Server Manually"
-[22]: https://www.psycopg.org/psycopg3/docs/advanced/async.html?utm_source=chatgpt.com "Concurrent operations - psycopg 3.3.0.dev1 documentation"
-[23]: https://fastapi.tiangolo.com/how-to/extending-openapi/?utm_source=chatgpt.com "Extending OpenAPI - FastAPI"
 
+[2]: https://docs.pydantic.dev/latest/?utm_source=chatgpt.com "Welcome to Pydantic - Pydantic"
+
+[3]: https://docs.sqlalchemy.org/en/latest/orm/extensions/asyncio.html?utm_source=chatgpt.com "Asynchronous I/O (asyncio) — SQLAlchemy 2.0 ..."
+
+[4]: https://pypi.org/project/SQLAlchemy/?utm_source=chatgpt.com "SQLAlchemy"
+
+[5]: https://github.com/fastapi/sqlmodel/releases?utm_source=chatgpt.com "Releases · fastapi/sqlmodel"
+
+[6]: https://opentelemetry-python-contrib.readthedocs.io/en/latest/instrumentation/fastapi/fastapi.html?utm_source=chatgpt.com "OpenTelemetry FastAPI Instrumentation"
+
+[7]: https://opentelemetry.io/docs/zero-code/python/?utm_source=chatgpt.com "Python zero-code instrumentation"
+
+[8]: https://redis.io/docs/latest/develop/clients/redis-py/?utm_source=chatgpt.com "redis-py guide (Python) | Docs"
+
+[9]: https://fastapi.tiangolo.com/advanced/security/oauth2-scopes/?utm_source=chatgpt.com "OAuth2 scopes"
+
+[10]: https://devdocs.io/fastapi/?utm_source=chatgpt.com "FastAPI documentation"
+
+[11]: https://pypi.org/project/sse-starlette/?utm_source=chatgpt.com "sse-starlette"
+
+[12]: https://pypi.org/project/PyJWT/?utm_source=chatgpt.com "PyJWT"
+
+[13]: https://release-monitoring.org/project/python-pyjwt?utm_source=chatgpt.com "PyJWT · Anitya"
+
+[14]: https://docs.authlib.org/en/v1.4.1/?utm_source=chatgpt.com "Authlib 1.4.1 documentation"
+
+[15]: https://docs.astral.sh/uv/guides/integration/fastapi/?utm_source=chatgpt.com "Using uv with FastAPI - Astral Docs"
+
+[16]: https://sqlmodel.tiangolo.com/tutorial/?utm_source=chatgpt.com "Tutorial - User Guide"
+
+[17]: https://pypi.org/project/opentelemetry-instrumentation-fastapi/?utm_source=chatgpt.com "opentelemetry-instrumentation-fastapi"
+
+[18]: https://fastapi.tiangolo.com/advanced/websockets/?utm_source=chatgpt.com "WebSockets"
+
+[19]: https://github.com/jpadilla/pyjwt/blob/master/.github/workflows/pypi-package.yml?utm_source=chatgpt.com "pypi-package.yml"
+
+[20]: https://fastapi.tiangolo.com/fastapi-cli/?utm_source=chatgpt.com "FastAPI CLI"
+
+[21]: https://fastapi.tiangolo.com/deployment/manually/?utm_source=chatgpt.com "Run a Server Manually"
+
+[22]: https://www.psycopg.org/psycopg3/docs/advanced/async.html?utm_source=chatgpt.com "Concurrent operations - psycopg 3.3.0.dev1 documentation"
+
+[23]: https://fastapi.tiangolo.com/how-to/extending-openapi/?utm_source=chatgpt.com "Extending OpenAPI - FastAPI"

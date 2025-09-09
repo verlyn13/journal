@@ -1,13 +1,14 @@
----
+***
+
 title: "JSDoc Standards Guide"
 description: "Standards and best practices for JSDoc documentation in the Flask Journal project"
 category: "Documentation"
-created_date: "2025-04-08"
-updated_date: "2025-04-08"
+created\_date: "2025-04-08"
+updated\_date: "2025-04-08"
 version: "1.0"
-tags: ["documentation", "standards", "JSDoc", "javascript"]
+tags: \["documentation", "standards", "JSDoc", "javascript"]
 status: active
----
+--------------
 
 # JSDoc Standards Guide
 
@@ -98,18 +99,18 @@ Use typedefs for complex types:
 
 The following tags should be used consistently throughout the codebase:
 
-| Tag | Purpose | Example |
-|-----|---------|---------|
-| `@param` | Document a function parameter | `@param {string} name - The user's name` |
-| `@returns` | Document the return value | `@returns {boolean} True if successful` |
-| `@throws` | Document exceptions thrown | `@throws {Error} If the input is invalid` |
-| `@example` | Provide usage examples | `@example\n// Example code here` |
-| `@see` | Reference related documentation | `@see OtherFunction` |
-| `@deprecated` | Mark deprecated features | `@deprecated Use newFunction instead` |
-| `@async` | Mark async functions | `@async` |
-| `@private` | Mark private entities | `@private` |
-| `@module` | Identify module | `@module utilities` |
-| `@typedef` | Define custom types | `@typedef {Object} ConfigOptions` |
+| Tag           | Purpose                         | Example                                   |
+| ------------- | ------------------------------- | ----------------------------------------- |
+| `@param`      | Document a function parameter   | `@param {string} name - The user's name`  |
+| `@returns`    | Document the return value       | `@returns {boolean} True if successful`   |
+| `@throws`     | Document exceptions thrown      | `@throws {Error} If the input is invalid` |
+| `@example`    | Provide usage examples          | `@example\n// Example code here`          |
+| `@see`        | Reference related documentation | `@see OtherFunction`                      |
+| `@deprecated` | Mark deprecated features        | `@deprecated Use newFunction instead`     |
+| `@async`      | Mark async functions            | `@async`                                  |
+| `@private`    | Mark private entities           | `@private`                                |
+| `@module`     | Identify module                 | `@module utilities`                       |
+| `@typedef`    | Define custom types             | `@typedef {Object} ConfigOptions`         |
 
 ## Examples
 

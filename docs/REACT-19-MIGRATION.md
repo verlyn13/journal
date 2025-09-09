@@ -109,6 +109,7 @@ export default defineConfig({
 ```
 
 Install the compiler:
+
 ```bash
 bun add babel-plugin-react-compiler
 ```
@@ -204,7 +205,7 @@ function JournalList({ entries }) {
 
 ## 4. Vite configuration updates for React 19.1
 
-Update to **@vitejs/plugin-react@5.0.2** or later for full React 19.1 compatibility:
+Update to **@vitejs/plugin-react\@5.0.2** or later for full React 19.1 compatibility:
 
 ```bash
 bun add --dev @vitejs/plugin-react@^5.0.2
@@ -841,6 +842,7 @@ The most frequent issue affecting 80% of projects. Use package.json overrides:
 ```
 
 Or install with legacy peer deps:
+
 ```bash
 bun install --legacy-peer-deps
 ```

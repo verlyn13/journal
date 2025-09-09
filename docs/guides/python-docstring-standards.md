@@ -1,17 +1,18 @@
----
+***
+
 title: "Python Docstring Standards Guide"
 description: "Standards and best practices for Python docstrings in the Flask Journal project"
 category: "Documentation"
-created_date: "2025-04-08" 
-updated_date: "2025-04-08"
+created\_date: "2025-04-08"
+updated\_date: "2025-04-08"
 version: "1.0"
 status: active
-related_topics:
-  - "Documentation Standards"
-  - "JSDoc Standards Guide"
-  - "Code Quality"
-tags: ["documentation", "standards", "python", "docstrings", "sphinx"]
----
+related\_topics:
+\- "Documentation Standards"
+\- "JSDoc Standards Guide"
+\- "Code Quality"
+tags: \["documentation", "standards", "python", "docstrings", "sphinx"]
+-----------------------------------------------------------------------
 
 # Python Docstring Standards Guide
 
@@ -118,16 +119,16 @@ def my_property(self):
 
 The following sections should be used when applicable:
 
-| Section | Purpose | Format |
-|---------|---------|--------|
-| Args | Document function parameters | Name (type): Description |
-| Returns | Document return value | type: Description |
-| Raises | Document exceptions | ExceptionType: Description |
-| Attributes | Document class attributes | Name (type): Description |
-| Examples | Provide usage examples | >>> code\nResult |
-| Notes | Additional information | Free text |
-| Warnings | Important cautions | Free text |
-| See Also | Reference related items | function_name, ClassName |
+| Section    | Purpose                      | Format                     |
+| ---------- | ---------------------------- | -------------------------- |
+| Args       | Document function parameters | Name (type): Description   |
+| Returns    | Document return value        | type: Description          |
+| Raises     | Document exceptions          | ExceptionType: Description |
+| Attributes | Document class attributes    | Name (type): Description   |
+| Examples   | Provide usage examples       | >>> code\nResult           |
+| Notes      | Additional information       | Free text                  |
+| Warnings   | Important cautions           | Free text                  |
+| See Also   | Reference related items      | function\_name, ClassName  |
 
 ## Examples
 

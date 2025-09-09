@@ -20,7 +20,7 @@ uv run pytest --cov=app --cov-report=term-missing
 ## Test Organization
 
 - **api/** - HTTP endpoint tests (73 tests)
-- **integration/** - Cross-component tests (41 tests)  
+- **integration/** - Cross-component tests (41 tests)
 - **unit/** - Pure function tests (19 tests)
 - **e2e/** - End-to-end scenarios (9 tests)
 

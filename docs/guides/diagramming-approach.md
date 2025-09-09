@@ -1,17 +1,18 @@
----
+***
+
 title: "Diagramming Approach for Flask Journal"
 description: "Documentation of the chosen approach for creating and maintaining diagrams in the Flask Journal project"
 category: "Documentation"
-created_date: "2025-04-08"
-updated_date: "2025-04-08"
+created\_date: "2025-04-08"
+updated\_date: "2025-04-08"
 version: "1.0"
 status: active
-related_topics:
-  - "Documentation Standards"
-  - "Architecture Overview"
-  - "Data Model"
-tags: ["documentation", "diagrams", "mermaid", "architecture", "visualization"]
----
+related\_topics:
+\- "Documentation Standards"
+\- "Architecture Overview"
+\- "Data Model"
+tags: \["documentation", "diagrams", "mermaid", "architecture", "visualization"]
+--------------------------------------------------------------------------------
 
 # Diagramming Approach for Flask Journal
 
@@ -53,14 +54,14 @@ When rendered in compatible Markdown viewers, this will display as a rendered di
 
 The following diagram types will be used in Flask Journal documentation:
 
-| Diagram Type | Mermaid Syntax | Use Cases |
-|--------------|----------------|-----------|
-| Flowchart | `graph TD` or `graph LR` | Process flows, decision trees, algorithms |
-| Sequence Diagram | `sequenceDiagram` | Request handling, authentication flows, API interactions |
-| Class Diagram | `classDiagram` | Model relationships, class inheritance |
-| Entity Relationship | `erDiagram` | Database schema, data model visualization |
-| State Diagram | `stateDiagram-v2` | User session states, entry editing states |
-| Gantt Chart | `gantt` | Project timeline, development phases |
+| Diagram Type        | Mermaid Syntax           | Use Cases                                                |
+| ------------------- | ------------------------ | -------------------------------------------------------- |
+| Flowchart           | `graph TD` or `graph LR` | Process flows, decision trees, algorithms                |
+| Sequence Diagram    | `sequenceDiagram`        | Request handling, authentication flows, API interactions |
+| Class Diagram       | `classDiagram`           | Model relationships, class inheritance                   |
+| Entity Relationship | `erDiagram`              | Database schema, data model visualization                |
+| State Diagram       | `stateDiagram-v2`        | User session states, entry editing states                |
+| Gantt Chart         | `gantt`                  | Project timeline, development phases                     |
 
 ## Key Areas for Visual Documentation
 
@@ -75,6 +76,7 @@ Based on analysis of the project and documentation needs, the following key area
 **Target Document**: `docs/guides/architecture-overview.md` (to be created)
 
 **Key Elements to Include**:
+
 - Flask application structure (blueprints)
 - Database interactions
 - Authentication system
@@ -90,6 +92,7 @@ Based on analysis of the project and documentation needs, the following key area
 **Target Document**: `docs/guides/request-lifecycle.md` (to be created)
 
 **Key Elements to Include**:
+
 - Flask routing
 - Blueprint handling
 - Authentication middleware
@@ -106,6 +109,7 @@ Based on analysis of the project and documentation needs, the following key area
 **Target Document**: `docs/guides/authentication.md` (existing)
 
 **Key Elements to Include**:
+
 - Login sequence
 - Registration sequence
 - Password hashing
@@ -121,6 +125,7 @@ Based on analysis of the project and documentation needs, the following key area
 **Target Document**: `docs/guides/data-model.md` (existing)
 
 **Key Elements to Include**:
+
 - User model
 - Entry model
 - Tag model
@@ -136,6 +141,7 @@ Based on analysis of the project and documentation needs, the following key area
 **Target Document**: `docs/guides/editor-architecture.md` (to be created)
 
 **Key Elements to Include**:
+
 - Editor components
 - Event flow
 - Data persistence

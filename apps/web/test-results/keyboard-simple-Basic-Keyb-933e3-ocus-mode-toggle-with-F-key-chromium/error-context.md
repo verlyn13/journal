@@ -3,54 +3,54 @@
 ```yaml
 - generic [ref=e4]:
   - complementary [ref=e5]:
-    - generic [ref=e6]:
-      - generic [ref=e7]:
-        - heading "Journal" [level=1] [ref=e8]
-        - button "+" [ref=e9]:
+  - generic [ref=e6]:
+    - generic [ref=e7]:
+      - heading "Journal" [level=1] [ref=e8]
+      - button "+" [ref=e9]:
           - generic [ref=e10]: +
-      - generic [ref=e11]:
-        - heading "Quick Access" [level=2] [ref=e12]
-        - button "📝 Today 1" [ref=e13]:
+    - generic [ref=e11]:
+      - heading "Quick Access" [level=2] [ref=e12]
+      - button "📝 Today 1" [ref=e13]:
           - generic [ref=e14]:
             - generic [ref=e15]: 📝
             - generic [ref=e16]: Today
           - generic [ref=e17]: "1"
-        - button "🔄 On this day 3" [ref=e18]:
+      - button "🔄 On this day 3" [ref=e18]:
           - generic [ref=e19]:
             - generic [ref=e20]: 🔄
             - generic [ref=e21]: On this day
           - generic [ref=e22]: "3"
-        - button "⏱️ Recently edited 8" [ref=e23]:
+      - button "⏱️ Recently edited 8" [ref=e23]:
           - generic [ref=e24]:
             - generic [ref=e25]: ⏱️
             - generic [ref=e26]: Recently edited
           - generic [ref=e27]: "8"
-        - button "⭐ Favorites 12" [ref=e28]:
+      - button "⭐ Favorites 12" [ref=e28]:
           - generic [ref=e29]:
             - generic [ref=e30]: ⭐
             - generic [ref=e31]: Favorites
           - generic [ref=e32]: "12"
-      - generic [ref=e33]:
-        - generic [ref=e34]:
+    - generic [ref=e33]:
+      - generic [ref=e34]:
           - heading "Notebooks" [level=2] [ref=e35]
           - button "+ New" [ref=e36]
-        - button "Daily Thoughts 45" [ref=e37]:
+      - button "Daily Thoughts 45" [ref=e37]:
           - generic [ref=e40]: Daily Thoughts
           - generic [ref=e41]: "45"
-        - button "Work Ideas 23" [ref=e42]:
+      - button "Work Ideas 23" [ref=e42]:
           - generic [ref=e45]: Work Ideas
           - generic [ref=e46]: "23"
-        - button "Travel Plans 12" [ref=e47]:
+      - button "Travel Plans 12" [ref=e47]:
           - generic [ref=e50]: Travel Plans
           - generic [ref=e51]: "12"
-        - button "Reading Notes 67" [ref=e52]:
+      - button "Reading Notes 67" [ref=e52]:
           - generic [ref=e55]: Reading Notes
           - generic [ref=e56]: "67"
-      - generic [ref=e57]:
-        - generic [ref=e58]:
+    - generic [ref=e57]:
+      - generic [ref=e58]:
           - heading "Tags" [level=2] [ref=e59]
           - button "Manage" [ref=e60]
-        - generic [ref=e61]:
+      - generic [ref=e61]:
           - button "# gratitude 34" [ref=e62]:
             - generic [ref=e63]: "# gratitude"
             - generic [ref=e64]: "34"
@@ -69,30 +69,30 @@
           - button "# mindfulness 22" [ref=e77]:
             - generic [ref=e78]: "# mindfulness"
             - generic [ref=e79]: "22"
-      - generic [ref=e81]:
-        - generic [ref=e82]: Theme
-        - combobox [ref=e83]:
+    - generic [ref=e81]:
+      - generic [ref=e82]: Theme
+      - combobox [ref=e83]:
           - option "Dawn"
           - option "Dusk" [selected]
   - main [ref=e84]:
-    - generic [ref=e85]:
-      - generic [ref=e86]:
-        - generic [ref=e87]:
+  - generic [ref=e85]:
+    - generic [ref=e86]:
+      - generic [ref=e87]:
           - heading "Journal Entries" [level=2] [ref=e88]
           - generic [ref=e89]:
             - button "List" [ref=e90]
             - button "Calendar" [ref=e91]
             - button "River" [ref=e92]
-        - generic [ref=e93]:
+      - generic [ref=e93]:
           - searchbox "Search entries..." [ref=e94]
           - generic:
             - img
-        - generic [ref=e95]:
+      - generic [ref=e95]:
           - generic [ref=e96]: 5 entries
           - generic [ref=e97]: •
           - generic [ref=e98]: 2,034 words total
-      - generic [ref=e99]:
-        - 'button "Sunday Reflections Today • 12:03 PM • 324 words 😊 This morning I woke up feeling grateful for the simple pleasures in life. The way sunlight filtered through my bedroom window... #gratitude #morning #mindfulness" [ref=e100]':
+    - generic [ref=e99]:
+      - 'button "Sunday Reflections Today • 12:03 PM • 324 words 😊 This morning I woke up feeling grateful for the simple pleasures in life. The way sunlight filtered through my bedroom window... #gratitude #morning #mindfulness" [ref=e100]':
           - generic [ref=e101]:
             - generic [ref=e102]:
               - heading "Sunday Reflections" [level=3] [ref=e103]
@@ -108,7 +108,7 @@
             - generic [ref=e114]: "#gratitude"
             - generic [ref=e115]: "#morning"
             - generic [ref=e116]: "#mindfulness"
-        - 'button "Weekend Goals Review Yesterday • 8:15 PM • 198 words 🤔 Looking back at what I wanted to accomplish this weekend. Made good progress on the reading list, but still need to... #goals #productivity #reflection" [ref=e117]':
+      - 'button "Weekend Goals Review Yesterday • 8:15 PM • 198 words 🤔 Looking back at what I wanted to accomplish this weekend. Made good progress on the reading list, but still need to... #goals #productivity #reflection" [ref=e117]':
           - generic [ref=e118]:
             - generic [ref=e119]:
               - heading "Weekend Goals Review" [level=3] [ref=e120]
@@ -124,7 +124,7 @@
             - generic [ref=e131]: "#goals"
             - generic [ref=e132]: "#productivity"
             - generic [ref=e133]: "#reflection"
-        - 'button "Coffee Shop Musings Friday • 2:30 PM • 456 words 😐 Sitting in my favorite corner spot at the coffee shop, watching people go by. There''s something therapeutic about... #observation #creativity" [ref=e134]':
+      - 'button "Coffee Shop Musings Friday • 2:30 PM • 456 words 😐 Sitting in my favorite corner spot at the coffee shop, watching people go by. There''s something therapeutic about... #observation #creativity" [ref=e134]':
           - generic [ref=e135]:
             - generic [ref=e136]:
               - heading "Coffee Shop Musings" [level=3] [ref=e137]
@@ -139,7 +139,7 @@
           - generic [ref=e147]:
             - generic [ref=e148]: "#observation"
             - generic [ref=e149]: "#creativity"
-        - 'button "Learning JavaScript Async Thursday • 9:45 AM • 789 words 😊 Finally starting to understand promises and async/await. The lightbulb moment came when I realized it''s about... #learning #programming #breakthrough" [ref=e150]':
+      - 'button "Learning JavaScript Async Thursday • 9:45 AM • 789 words 😊 Finally starting to understand promises and async/await. The lightbulb moment came when I realized it''s about... #learning #programming #breakthrough" [ref=e150]':
           - generic [ref=e151]:
             - generic [ref=e152]:
               - heading "Learning JavaScript Async" [level=3] [ref=e153]
@@ -155,7 +155,7 @@
             - generic [ref=e164]: "#learning"
             - generic [ref=e165]: "#programming"
             - generic [ref=e166]: "#breakthrough"
-        - 'button "Rainy Day Thoughts Wednesday • 4:20 PM • 267 words 🤔 The rain has been falling steadily for hours now. There''s something about rainy days that makes me introspective... #weather #contemplation #mood" [ref=e167]':
+      - 'button "Rainy Day Thoughts Wednesday • 4:20 PM • 267 words 🤔 The rain has been falling steadily for hours now. There''s something about rainy days that makes me introspective... #weather #contemplation #mood" [ref=e167]':
           - generic [ref=e168]:
             - generic [ref=e169]:
               - heading "Rainy Day Thoughts" [level=3] [ref=e170]
@@ -171,34 +171,34 @@
             - generic [ref=e181]: "#weather"
             - generic [ref=e182]: "#contemplation"
             - generic [ref=e183]: "#mood"
-      - generic [ref=e185]:
-        - generic [ref=e186]: Scroll for more entries
-        - button "View All" [ref=e187]
+    - generic [ref=e185]:
+      - generic [ref=e186]: Scroll for more entries
+      - button "View All" [ref=e187]
   - generic [ref=e189]:
-    - button "◯ Focus Mode" [ref=e191]
-    - generic [ref=e193]:
-      - generic [ref=e194]:
-        - generic [ref=e195]:
+  - button "◯ Focus Mode" [ref=e191]
+  - generic [ref=e193]:
+    - generic [ref=e194]:
+      - generic [ref=e195]:
           - heading "Journal Entry" [level=1] [ref=e196]
           - time [ref=e198]: Sunday, August 31, 2025 • 07:42 PM
-        - generic [ref=e199]:
+      - generic [ref=e199]:
           - generic [ref=e200]: 1 words
           - generic [ref=e201]: 1 characters
           - generic [ref=e202]: Auto-saving
-      - generic [ref=e204]:
-        - button "H1" [ref=e205]
-        - button "H2" [ref=e206]
-        - button "B" [ref=e208]:
+    - generic [ref=e204]:
+      - button "H1" [ref=e205]
+      - button "H2" [ref=e206]
+      - button "B" [ref=e208]:
           - strong [ref=e209]: B
-        - button "I" [ref=e210]:
+      - button "I" [ref=e210]:
           - emphasis [ref=e211]: I
-        - button "✨" [ref=e212]
-        - button "•" [ref=e214]
-        - button "1." [ref=e215]
-        - button "\"" [ref=e216]
-      - paragraph [ref=e221]: f
-      - generic [ref=e222]:
-        - generic [ref=e223]:
+      - button "✨" [ref=e212]
+      - button "•" [ref=e214]
+      - button "1." [ref=e215]
+      - button "\"" [ref=e216]
+    - paragraph [ref=e221]: f
+    - generic [ref=e222]:
+      - generic [ref=e223]:
           - generic [ref=e224]:
             - generic [ref=e225]:
               - text: Press
@@ -209,5 +209,5 @@
               - generic [ref=e228]: /
               - text: for commands (coming soon)
           - generic [ref=e230]: "Last saved: 07:42 PM"
-        - paragraph [ref=e233]: Your thoughts matter. Write freely, think deeply, grow continuously.
+      - paragraph [ref=e233]: Your thoughts matter. Write freely, think deeply, grow continuously.
 ```

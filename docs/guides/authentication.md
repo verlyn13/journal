@@ -1,17 +1,18 @@
----
+***
+
 title: "Authentication System Guide"
 description: "Comprehensive documentation of the Flask Journal authentication system"
 category: "Guides"
-date_created: "2025-04-08"
-last_updated: "2025-04-08"
+date\_created: "2025-04-08"
+last\_updated: "2025-04-08"
 version: "1.0"
 status: active
-related_topics:
-  - "API Reference"
-  - "Data Model"
-  - "User Management"
-tags: ["authentication", "security", "flask-login", "user"]
----
+related\_topics:
+\- "API Reference"
+\- "Data Model"
+\- "User Management"
+tags: \["authentication", "security", "flask-login", "user"]
+------------------------------------------------------------
 
 # Authentication System Guide
 
@@ -118,23 +119,26 @@ sequenceDiagram
 
 *Figure 1: Sequence diagram showing registration, login, and logout processes.*
 
-
 ### Registration Process
 
 1. User navigates to `/auth/register`
 2. A registration form is displayed with fields for:
-   - Username
-   - Email
-   - Password
-   - Password confirmation
+
+- Username
+- Email
+- Password
+- Password confirmation
+
 3. Upon form submission, the server:
-   - Validates all inputs
-   - Checks for duplicate usernames and emails
-   - Hashes the password using Werkzeug's `generate_password_hash` function
-   - Creates a new User record
-   - Redirects to the login page with a success message
+
+- Validates all inputs
+- Checks for duplicate usernames and emails
+- Hashes the password using Werkzeug's `generate_password_hash` function
+- Creates a new User record
+- Redirects to the login page with a success message
 
 **Route Details:**
+
 ```python
 @auth.route('/register', methods=['GET', 'POST'])
 def register():
@@ -142,6 +146,7 @@ def register():
 ```
 
 **Security Considerations:**
+
 - Passwords are never stored in plain text
 - Werkzeug's password hashing uses a strong algorithm (scrypt in recent versions)
 - Duplicate username/email checks prevent account conflicts
@@ -150,17 +155,21 @@ def register():
 
 1. User navigates to `/auth/login`
 2. A login form is displayed with fields for:
-   - Username
-   - Password
-   - "Remember me" checkbox
+
+- Username
+- Password
+- "Remember me" checkbox
+
 3. Upon form submission, the server:
-   - Retrieves the user by username
-   - Checks the password against the stored hash
-   - If valid, creates a session for the user using `login_user()`
-   - If "remember me" was checked, sets a long-term session
-   - Redirects to the next page or the index page
+
+- Retrieves the user by username
+- Checks the password against the stored hash
+- If valid, creates a session for the user using `login_user()`
+- If "remember me" was checked, sets a long-term session
+- Redirects to the next page or the index page
 
 **Route Details:**
+
 ```python
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
@@ -168,6 +177,7 @@ def login():
 ```
 
 **Security Considerations:**
+
 - Failed login attempts provide generic error messages to prevent username enumeration
 - The "next" parameter is validated to prevent open redirects
 - Password checking uses constant-time comparison to prevent timing attacks
@@ -176,11 +186,13 @@ def login():
 
 1. User navigates to `/auth/logout`
 2. The server:
-   - Terminates the user's session using `logout_user()`
-   - Displays a confirmation message
-   - Redirects to the index page
+
+- Terminates the user's session using `logout_user()`
+- Displays a confirmation message
+- Redirects to the index page
 
 **Route Details:**
+
 ```python
 @auth.route('/logout')
 @login_required
@@ -189,6 +201,7 @@ def logout():
 ```
 
 **Security Considerations:**
+
 - The logout route is protected by `login_required` to prevent confusion
 - Session data is properly cleared to prevent session fixation attacks
 
@@ -202,6 +215,7 @@ The application uses the `@login_required` decorator to protect routes that shou
 4. After login, the user is redirected back to the originally requested URL
 
 **Example:**
+
 ```python
 @main.route('/')
 @login_required
@@ -215,6 +229,7 @@ def index():
 Throughout the application, `current_user` (provided by Flask-Login) can be used to access the currently logged-in user. This object is available in all routes and templates.
 
 **Example of ownership verification:**
+
 ```python
 @main.route('/entry/<int:entry_id>')
 @login_required
@@ -236,6 +251,7 @@ The Flask Journal application uses Werkzeug's password hashing functions, which:
 3. Store the algorithm, salt, and hash together
 
 **Implementation:**
+
 ```python
 def set_password(self, password):
     """Hashes the password and stores it."""
@@ -255,6 +271,7 @@ Currently, the application implements basic password validation through Flask-WT
 The Flask Journal application uses Flask-WTF's CSRF protection for all forms to prevent Cross-Site Request Forgery attacks.
 
 **Implementation:**
+
 - CSRF protection is enabled globally in the application configuration
 - All forms created using Flask-WTF automatically include a CSRF token
 - POST requests are verified to ensure they contain a valid CSRF token
@@ -276,11 +293,13 @@ The following enhancements are not currently implemented but may be added in fut
 ### Common Authentication Issues
 
 **Issue: "Invalid username or password" error**
+
 - Ensure you're using the correct username (not email) to log in
 - Verify that caps lock is not enabled
 - If you've forgotten your password, you'll need to create a new account (password reset is not implemented yet)
 
 **Issue: Logged out unexpectedly**
+
 - Session cookies may have expired (default session lifetime is browser session)
 - Check if "Remember me" was checked during login for persistent sessions
 - Server restarts may invalidate sessions if session storage is not persistent

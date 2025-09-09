@@ -1,12 +1,15 @@
 # V2 RELEASE
 
-*Source: https://biomejs.dev/blog/biome-v2/*
+*Source: <https://biomejs.dev/blog/biome-v2/>*
 
----
+***
 
 # Biome v2—codename: Biotype
 
-              Jun 17, 2025     - 12 min read     [ Emanuele Stoppa   ](https://bsky.app/profile/ematipico.xyz)  Biome Core Team, Biome Maintainers          We are happy to announce that Biome v2 is officially out! 🍾 Biome v2—codename: Biotype, the *first* JavaScript and TypeScript linter that provides
+```
+          Jun 17, 2025     - 12 min read     [ Emanuele Stoppa   ](https://bsky.app/profile/ematipico.xyz)  Biome Core Team, Biome Maintainers          We are happy to announce that Biome v2 is officially out! 🍾 Biome v2—codename: Biotype, the *first* JavaScript and TypeScript linter that provides
+```
+
 **type-aware linting rules that doesn’t rely on the TypeScript compiler**! This means that you can lint your project
 without necessarily installing the `typescript` package.
 With this release, the [Core Contributors of the project](/internals/people-and-credits#core-contributors) want to show
@@ -22,9 +25,10 @@ Keep in mind that your mileage may vary, as these early numbers are based on a l
 [Section titled “Installation and migration”](#installation-and-migration)
 Install or update the `@biomejs/biome` package. If you upgrade the package, run the `migrate` command.
 
-Terminal window```
+Terminal window\`\`\`
 1npm install --save-dev --save-exact @biomejs/biome2npx @biomejs/biome migrate --write
-```
+
+````
 
 The `migrate` command will take care of all the breaking changes of the configuration, so you don’t have to. However, there are
 some other changes that we couldn’t automate. We created a [migration guide](/guides/upgrade-to-biome-v2) that explains them,
@@ -69,7 +73,7 @@ The first looks like this:
 
 biome.jsonc```
 1{2    "root": false,3    // ...4}
-```
+````
 
 By setting the `root` field to `false`, you tell Biome this is a nested file. This is important, because if you run Biome inside the nested folder, it will know that the configuration is part of a bigger project and continue looking for the root configuration as well.
 
@@ -77,8 +81,9 @@ It is important to stress that the settings within the nested folder **do not** 
 
 Which brings us to the second way a nested configuration can be defined:
 
-biome.jsonc```
+biome.jsonc\`\`\`
 1{2    "extends": "//",3    // ...4}
+
 ```
 
 This is a convenient micro-syntax that sets both the `root` field to `false`, and will tell Biome that this nested configuration extends from the root configuration.
@@ -97,8 +102,10 @@ These plugins are still limited in scope: They only allow you to match code snip
 Here is an example of a plugin that reports on all usages of `Object.assign()`:
 
 ```
-1`$fn($args)` where {2    $fn &#x3C;: `Object.assign`,3    register_diagnostic(4        span = $fn,5        message = "Prefer object spread instead of `Object.assign()`"6    )7}
-```
+
+1`$fn($args)` where {2    $fn <: `Object.assign`,3    register\_diagnostic(4        span = $fn,5        message = "Prefer object spread instead of `Object.assign()`"6    )7}
+
+````
 
 It’s a first step, but we have plenty of ideas for making them more powerful, and we’re eager to hear from our users about what they would like to see prioritised.
 
@@ -114,40 +121,43 @@ Groups of imports separated by a blank line were considered separate *chunks*, m
 example.js```
 1import { lib2 } from "library2";2
 3import { util } from "./utils.js";4import { lib1 } from "library1";
-```
+````
 
 It would correctly sort `"library1"` to be placed above `"./utils.js"`, but it wouldn’t be able to
 carry it over the blank line to the top. This is what we got:
-organizer_v1.js```
+organizer\_v1.js\`\`\`
 1import { lib2 } from "library2";2
 3import { lib1 } from "library1";4import { util } from "./utils.js";
-```
+
+````
 
 But instead, what we really wanted was this:
 
 organizer_v2.js```
 1import { lib1 } from "library1";2import { lib2 } from "library2";3
 4import { util } from "./utils.js";
-```
+````
 
 Imports from the same module were not merged. Consider the following example:
 
-example.js```
+example.js\`\`\`
 1import { util1 } from "./utils.js";2import { util2 } from "./utils.js";
-```
+
+````
 
 What we wanted was this:
 
 organizer_v2.js```
 1import { util1, util2 } from "./utils.js";
-```
+````
 
 No custom ordering could be configured. Perhaps you didn’t really like the default approach of ordering by “distance” from the source that you’re importing from. Perhaps you wanted to organise the imports like this:
 
-organizer_v2.js```
+organizer\_v2.js\`\`\`
 1import { open } from "node:fs";2
 3import { internalLib1 } from "@company/library1";4import { internalLib2 } from "@company/library2";5
 6import { lib1 } from "library1";
+
 ```
 
 In Biome 2.0, all these limitations are lifted. In fact, if you look at the examples above, all snippets labeled `organizer_v2.js` can be produced just like that by our new import organizer.
@@ -188,7 +198,9 @@ The HTML formatter is still in the experimental stage, so it will remain **disab
 You can enable the HTML formatter by adding the following to your config file:
 
 ```
+
 1{2  "html": {3    "formatter": {4      "enabled": true5    }6  }7}
+
 ```
 
 ## Shout-outs
@@ -267,3 +279,4 @@ If you believe in the future of the project, you can also help with a financial 
 Additionally, the project provides an [enterprise support program ](/enterprise) where a company you can employ one of the core contributors to work a specific aspect of the Biome toolchain.
 
       [ Biome v2.1 ](/blog/biome-v2-1/)       [ VS Code extension V3 ](/blog/2025-05-29-biome-vscode-v3/)             Copyright (c) 2023-present Biome Developers and Contributors.
+```

@@ -28,7 +28,9 @@ class NotFoundError(RepositoryError):
 class ConflictError(RepositoryError):
     """Optimistic lock conflict."""
 
-    def __init__(self, message: str, expected: int | None = None, actual: int | None = None) -> None:
+    def __init__(
+        self, message: str, expected: int | None = None, actual: int | None = None
+    ) -> None:
         self.expected = expected
         self.actual = actual
         super().__init__(message)

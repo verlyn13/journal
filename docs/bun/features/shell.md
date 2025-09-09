@@ -1,11 +1,11 @@
 # SHELL
 
-*Source: https://bun.sh/docs/runtime/shell*
+*Source: <https://bun.sh/docs/runtime/shell>*
 *Fetched: 2025-08-30T00:47:26.874Z*
 
----
+***
 
-Bun Shell makes shell scripting with JavaScript & TypeScript fun. It&#x27;s a cross-platform bash-like shell with seamless JavaScript interop.
+Bun Shell makes shell scripting with JavaScript & TypeScript fun. It's a cross-platform bash-like shell with seamless JavaScript interop.
 
 Quickstart:
 
@@ -31,6 +31,7 @@ await $`cat ## [Features:](#features)
 The simplest shell command is `echo`. To run it, use the `$` template literal tag:
 
 ```
+
 import { $ } from "bun";
 
 await $`echo "Hello World!"`; // Hello World!
@@ -40,6 +41,7 @@ await $`echo "Hello World!"`; // Hello World!
 By default, shell commands print to stdout. To quiet the output, call `.quiet()`:
 
 ```
+
 import { $ } from "bun";
 
 await $`echo "Hello World!"`.quiet(); // No output
@@ -49,6 +51,7 @@ await $`echo "Hello World!"`.quiet(); // No output
 What if you want to access the output of the command as text? Use `.text()`:
 
 ```
+
 import { $ } from "bun";
 
 // .text() automatically calls .quiet() for you
@@ -61,12 +64,13 @@ console.log(welcome); // Hello World!\n
 By default, `await`ing will return stdout and stderr as `Buffer`s.
 
 ```
+
 import { $ } from "bun";
 
 const { stdout, stderr } = await $`echo "Hello!"`.quiet();
 
-console.log(stdout); // Buffer(7) [ 72, 101, 108, 108, 111, 33, 10 ]
-console.log(stderr); // Buffer(0) []
+console.log(stdout); // Buffer(7) \[ 72, 101, 108, 108, 111, 33, 10 ]
+console.log(stderr); // Buffer(0) \[]
 
 ```
 
@@ -75,15 +79,16 @@ console.log(stderr); // Buffer(0) []
 By default, non-zero exit codes will throw an error. This `ShellError` contains information about the command run.
 
 ```
+
 import { $ } from "bun";
 
 try {
-  const output = await $`something-that-may-fail`.text();
-  console.log(output);
+const output = await $`something-that-may-fail`.text();
+console.log(output);
 } catch (err) {
-  console.log(`Failed with code ${err.exitCode}`);
-  console.log(err.stdout.toString());
-  console.log(err.stderr.toString());
+console.log(`Failed with code ${err.exitCode}`);
+console.log(err.stdout.toString());
+console.log(err.stderr.toString());
 }
 
 ```
@@ -91,14 +96,15 @@ try {
 Throwing can be disabled with `.nothrow()`. The result&#x27;s `exitCode` will need to be checked manually.
 
 ```
+
 import { $ } from "bun";
 
 const { stdout, stderr, exitCode } = await $`something-that-may-fail`
-  .nothrow()
-  .quiet();
+.nothrow()
+.quiet();
 
 if (exitCode !== 0) {
-  console.log(`Non-zero exit code ${exitCode}`);
+console.log(`Non-zero exit code ${exitCode}`);
 }
 
 console.log(stdout);
@@ -109,6 +115,7 @@ console.log(stderr);
 The default handling of non-zero exit codes can be configured by calling `.nothrow()` or `.throws(boolean)` on the `$` function itself.
 
 ```
+
 import { $ } from "bun";
 // shell promises will not throw, meaning you will have to
 // check for `exitCode` manually on every shell command.
@@ -145,6 +152,7 @@ Bun Shell also supports redirecting from and to JavaScript objects.
 To redirect stdout to a JavaScript object, use the `>` operator:
 
 ```
+
 import { $ } from "bun";
 
 const buffer = Buffer.alloc(100);
@@ -164,11 +172,12 @@ The following JavaScript objects are supported for redirection to:
 To redirect the output from JavaScript objects to stdin, use the `<` operator:
 
 ```
+
 import { $ } from "bun";
 
 const response = new Response("hello i am a response body");
 
-const result = await $`cat The following JavaScript objects are supported for redirection from:
+const result = await $\`cat The following JavaScript objects are supported for redirection from:
 
 - `Buffer`, `Uint8Array`, `Uint16Array`, `Uint32Array`, `Int8Array`, `Int16Array`, `Int32Array`, `Float32Array`, `Float64Array`, `ArrayBuffer`, `SharedArrayBuffer` (reads from the underlying buffer)
 - `Bun.file(path)`, `Bun.file(fd)` (reads from the file)
@@ -182,6 +191,7 @@ import { $ } from "bun";
 await $`cat ### [Example: Redirect stdout -> file](#example-redirect-stdout-file)
 
 ```
+
 import { $ } from "bun";
 
 await $`echo bun! > greeting.txt`;
@@ -191,6 +201,7 @@ await $`echo bun! > greeting.txt`;
 ### [Example: Redirect stderr -> file](#example-redirect-stderr-file)
 
 ```
+
 import { $ } from "bun";
 
 await $`bun run index.ts 2> errors.txt`;
@@ -200,6 +211,7 @@ await $`bun run index.ts 2> errors.txt`;
 ### [Example: Redirect stderr -> stdout](#example-redirect-stderr-stdout)
 
 ```
+
 import { $ } from "bun";
 
 // redirects stderr to stdout, so all output
@@ -211,6 +223,7 @@ await $`bun run ./index.ts 2>&1`;
 ### [Example: Redirect stdout -> stderr](#example-redirect-stdout-stderr)
 
 ```
+
 import { $ } from "bun";
 
 // redirects stdout to stderr, so all output
@@ -224,6 +237,7 @@ await $`bun run ./index.ts 1>&2`;
 Like in bash, you can pipe the output of one command to another:
 
 ```
+
 import { $ } from "bun";
 
 const result = await $`echo "Hello World!" | wc -w`.text();
@@ -235,11 +249,12 @@ console.log(result); // 2\n
 You can also pipe with JavaScript objects:
 
 ```
+
 import { $ } from "bun";
 
 const response = new Response("hello i am a response body");
 
-const result = await $`cat ## [Command substitution (`$(...)`)](#command-substitution)
+const result = await $`cat ## [Command substitution (`$(...)\`)]\(#command-substitution)
 
 Command substitution allows you to substitute the output of another script into the current script:
 
@@ -251,7 +266,7 @@ await $`echo Hash of current commit: $(git rev-parse HEAD)`;
 
 ```
 
-This is a textual insertion of the command&#x27;s output and can be used to, for example, declare a shell variable:
+This is a textual insertion of the command's output and can be used to, for example, declare a shell variable:
 
 ```
 import { $ } from "bun";
@@ -264,7 +279,7 @@ await $`
 
 ```
 
-**NOTE**: Because Bun internally uses the special [`raw`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals#raw_strings) property on the input template literal, using the backtick syntax for command substitution won&#x27;t work:
+**NOTE**: Because Bun internally uses the special [`raw`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals#raw_strings) property on the input template literal, using the backtick syntax for command substitution won't work:
 
 ```
 import { $ } from "bun";
@@ -505,7 +520,7 @@ await $.braces(`echo {1,2,3}`);
 
 ### [`$.escape` (escape strings)](#escape-escape-strings)
 
-Exposes Bun Shell&#x27;s escaping logic as a function:
+Exposes Bun Shell's escaping logic as a function:
 
 ```
 import { $ } from "bun";
@@ -533,27 +548,32 @@ For simple shell scripts, instead of `/bin/sh`, you can use Bun Shell to run she
 
 To do so, just run the script with `bun` on a file with the `.sh` extension.
 
-script.sh```
+script.sh\`\`\`
 echo "Hello World! pwd=$(pwd)"
 
 ```
-
 ```
+
 bun ./script.sh
-```
 
 ```
+```
+
 Hello World! pwd=/home/demo
+
 ```
 
 Scripts with Bun Shell are cross platform, which means they work on Windows:
 
 ```
+
 bun .\script.sh
-```
 
 ```
+```
+
 Hello World! pwd=C:\Users\Demo
+
 ```
 
 ## [Implementation notes](#implementation-notes)
@@ -569,6 +589,7 @@ When parsing command arguments, it treats all *interpolated variables* as single
 This protects the Bun shell against **command injection**:
 
 ```
+
 import { $ } from "bun";
 
 const userInput = "my-file.txt; rm -rf /";
@@ -589,6 +610,7 @@ Similar to the `Bun.spawn` or `node:child_process.exec()` APIs, you can intentio
 When you do this, you hand off control, and Bun&#x27;s built-in protections no longer apply to the string interpreted by that new shell.
 
 ```
+
 import { $ } from "bun";
 
 const userInput = "world; touch /tmp/pwned";
@@ -605,6 +627,7 @@ await $`bash -c "echo ${userInput}"`;
 The Bun shell cannot know how an external command interprets its own command-line arguments. An attacker can supply input that the target program recognizes as one of its own options or flags, leading to unintended behavior.
 
 ```
+
 import { $ } from "bun";
 
 // Malicious input formatted as a Git command-line flag
@@ -621,3 +644,4 @@ await $`git ls-remote origin ${branch}`;
 ## [Credits](#credits)
 
 Large parts of this API were inspired by [zx](https://github.com/google/zx), [dax](https://github.com/dsherret/dax), and [bnx](https://github.com/wobsoriano/bnx). Thank you to the authors of those projects.
+```

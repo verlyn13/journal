@@ -5,29 +5,25 @@ Combines tests from test_api_admin.py and test_api_admin_extended.py
 
 import json
 
-from datetime import datetime, timedelta
-from unittest.mock import AsyncMock, patch
+from unittest.mock import AsyncMock
 
 import pytest
 
 from httpx import AsyncClient
-from sqlalchemy.ext.asyncio import AsyncSession
-
-from app.infra.models import Entry
 
 
-@pytest.mark.component
+@pytest.mark.component()
 class TestAdminAPI:
     """Test cases for admin endpoints."""
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_admin_ping(self, client: AsyncClient, auth_headers: dict[str, str]):
         """Test admin ping endpoint."""
         response = await client.get("/api/v1/admin/ping", headers=auth_headers)
         assert response.status_code == 200
         assert response.json() == {"status": "pong"}
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_admin_health(self, client: AsyncClient, auth_headers: dict[str, str]):
         """Test admin health check endpoint."""
         response = await client.get("/api/v1/admin/health", headers=auth_headers)
@@ -37,7 +33,7 @@ class TestAdminAPI:
         assert "database" in data
         assert data["status"] == "healthy"
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_admin_endpoints_unauthorized(self, client: AsyncClient):
         """Test admin endpoints without authentication."""
         response = await client.get("/api/v1/admin/ping")
@@ -46,7 +42,7 @@ class TestAdminAPI:
         response = await client.get("/api/v1/admin/health")
         assert response.status_code == 401
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_health_check_with_db_failure(
         self, client: AsyncClient, auth_headers: dict[str, str], monkeypatch
     ):
@@ -73,7 +69,7 @@ class TestAdminAPI:
         assert data["status"] == "degraded"
         assert data["database"] == "unhealthy"
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_reindex_embeddings_endpoint(
         self, client: AsyncClient, auth_headers: dict[str, str], monkeypatch
     ):
@@ -108,7 +104,7 @@ class TestAdminAPI:
         assert len(published_messages) == 1
         assert published_messages[0][0] == "journal.reindex.bulk"
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_reindex_embeddings_with_parameters(
         self, client: AsyncClient, auth_headers: dict[str, str], monkeypatch
     ):
@@ -146,7 +142,7 @@ class TestAdminAPI:
         assert message_data["event_data"]["batch_size"] == 100
         assert message_data["event_data"]["start_date"] == "2024-01-01"
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_reindex_does_not_require_authentication(self, client: AsyncClient, monkeypatch):
         """Test that reindex endpoint doesn't require authentication (current implementation)."""
 
