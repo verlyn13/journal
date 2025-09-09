@@ -22,6 +22,7 @@ from sqlalchemy.orm import sessionmaker
 
 from alembic import command
 from app.infra.db import build_engine, get_session
+from app.infra.auth import require_user
 from app.infra.models import Entry
 from app.main import app
 from app.settings import settings
@@ -188,12 +189,15 @@ async def client(request, session_factory, db_connection: AsyncConnection):
                 await session.close()
 
     app.dependency_overrides[get_session] = override_get_session
+    # Always consider requests authenticated in tests
+    app.dependency_overrides[require_user] = lambda: "test-user"
     try:
         transport = ASGITransport(app=app)
         async with AsyncClient(transport=transport, base_url="http://test") as c:
             yield c
     finally:
         app.dependency_overrides.pop(get_session, None)
+        app.dependency_overrides.pop(require_user, None)
 
 
 @pytest.fixture
