@@ -1,11 +1,13 @@
 from __future__ import annotations
 
+from pathlib import Path
+
 import pytest
 
-from app.settings import settings
-from pathlib import Path
 from alembic.config import Config
+
 from alembic import command
+from app.settings import settings
 
 
 pytestmark = pytest.mark.integration

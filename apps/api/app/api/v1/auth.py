@@ -1,11 +1,14 @@
 from __future__ import annotations
 
+import uuid
+
 # Third-party imports
 import jwt
 
 from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
-import uuid
 from pydantic import BaseModel, EmailStr, Field
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 
 # Local imports
 from app.infra.auth import (
@@ -14,25 +17,23 @@ from app.infra.auth import (
     create_verify_token,
     get_current_user,
 )
-from app.infra.db import get_session
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
-from app.infra.models import User
-from app.infra.security import hash_password, verify_password
-from app.infra.ratelimit import allow
-from app.infra.sessions import (
-    create_session as create_user_session,
-    get_session_by_refresh_id,
-    touch_session,
-    revoke_session,
-)
-from app.settings import settings
 from app.infra.cookies import (
-    set_refresh_cookie,
     clear_refresh_cookie,
     ensure_csrf_cookie,
     require_csrf,
+    set_refresh_cookie,
 )
+from app.infra.db import get_session
+from app.infra.models import User
+from app.infra.ratelimit import allow
+from app.infra.security import hash_password, verify_password
+from app.infra.sessions import (
+    create_session as create_user_session,
+    get_session_by_refresh_id,
+    revoke_session,
+    touch_session,
+)
+from app.settings import settings
 
 
 router = APIRouter(prefix="/auth", tags=["auth"])

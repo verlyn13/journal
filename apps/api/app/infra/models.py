@@ -132,7 +132,8 @@ class User(SQLModel, table=True):
 class UserSession(SQLModel, table=True):
     """Server-side refresh session record.
 
-    Tracks refresh token identity (refresh_id) by UUID, with lifecycle fields for rotation and revocation.
+    Tracks refresh token identity (refresh_id) by UUID, with lifecycle
+    fields for rotation and revocation.
     """
 
     __tablename__ = "user_sessions"
