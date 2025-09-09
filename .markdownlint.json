@@ -19,5 +19,19 @@
   "MD024": { "allow_different_nesting": true },
   "no-hard-tabs": true,
   "whitespace": false,
-  "ignores": ["docs/**", "apps/api/docs/**", "apps/api/htmlcov/**"]
+  "ignores": [
+    "docs/_generated/**",
+    "docs/biome/**",
+    "docs/bun/**",
+    "docs/code-mirror/**",
+    "docs/external/**",
+    "docs/third-party/**",
+    "apps/api/docs/**",
+    "apps/api/htmlcov/**",
+    "node_modules/**",
+    "**/node_modules/**",
+    "dist/**",
+    "build/**",
+    "coverage/**"
+  ]
 }
