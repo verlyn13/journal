@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 import asyncio
+import logging
 
 from fastapi import FastAPI
-import logging
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import PlainTextResponse
 from strawberry.fastapi import GraphQLRouter

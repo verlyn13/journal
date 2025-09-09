@@ -63,10 +63,9 @@ async def get_entry_by_id(s: AsyncSession, entry_id: UUID) -> Entry | None:
 
 
 async def list_entries(s: AsyncSession, limit: int | None = None, offset: int = 0) -> list[Entry]:
-    query = select(Entry).where(Entry.is_deleted == False).order_by(Entry.created_at.desc())
+    query = select(Entry).where(not Entry.is_deleted).order_by(Entry.created_at.desc())
     if limit is not None:
         query = query.limit(limit)
     if offset > 0:
         query = query.offset(offset)
-    rows = (await s.execute(query)).scalars().all()
-    return rows
+    return (await s.execute(query)).scalars().all()

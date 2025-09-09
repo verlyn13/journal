@@ -298,7 +298,7 @@ def create_test_entry_data(
     return {"title": title, "content": content, **kwargs}
 
 
-def assert_entry_response(response_data: dict, expected_title: str = None):
+def assert_entry_response(response_data: dict, expected_title: str | None = None):
     """Assert entry response has correct structure."""
     assert "id" in response_data
     assert "title" in response_data

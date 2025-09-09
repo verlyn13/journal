@@ -5,7 +5,7 @@ Extended test cases for outbox pattern implementation.
 import asyncio
 import json
 
-from contextlib import asynccontextmanager
+from contextlib import asynccontextmanager, suppress
 from datetime import datetime
 from unittest.mock import AsyncMock, MagicMock
 from uuid import uuid4
@@ -317,10 +317,8 @@ class TestOutboxPatternExtended:
 
         # Cancel the task
         task.cancel()
-        try:
+        with suppress(asyncio.CancelledError):
             await task
-        except asyncio.CancelledError:
-            pass
 
         # Verify event was published
         assert len(published_messages) == 1
@@ -474,10 +472,8 @@ class TestOutboxPatternExtended:
 
         # Cancel the task
         task.cancel()
-        try:
+        with suppress(asyncio.CancelledError):
             await task
-        except asyncio.CancelledError:
-            pass
 
         # Should have attempted twice (error then retry)
         assert call_count >= 2

@@ -87,7 +87,7 @@ class EmbeddingConsumer:
             event_data = data.get("event_data", {})
             event_id = data.get("id")
 
-            logger.info("Processing %s event for entry %s", event_type, event_data.get('entry_id'))
+            logger.info("Processing %s event for entry %s", event_type, event_data.get("entry_id"))
 
             # Idempotency: skip if already processed
             if event_id:
@@ -216,7 +216,7 @@ class EmbeddingConsumer:
             try:
                 # Get all entries that need reindexing
                 result = await session.execute(
-                    select(Entry.id, Entry.title, Entry.content).where(Entry.is_deleted == False)
+                    select(Entry.id, Entry.title, Entry.content).where(not Entry.is_deleted)
                 )
                 rows = result.fetchall()
 

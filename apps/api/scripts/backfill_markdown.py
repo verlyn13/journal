@@ -38,7 +38,7 @@ async def backfill_markdown_content(batch_size: int = 100, dry_run: bool = False
                     e.markdown_content = md
                     e.content_version = 2
                 except Exception as exc:
-                    logger.error("Failed to convert entry %s: %s", e.id, exc)
+                    logger.exception("Failed to convert entry %s: %s", e.id, exc)
                     continue
             if not dry_run:
                 await s.commit()

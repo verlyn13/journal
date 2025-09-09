@@ -1,9 +1,11 @@
 from __future__ import annotations
 
+import logging
+
+
 # Standard library imports
 from datetime import datetime
 from uuid import UUID, uuid4
-import logging
 
 from pydantic import field_validator
 

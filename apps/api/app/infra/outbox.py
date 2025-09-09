@@ -9,8 +9,9 @@ import logging
 import os
 import random
 
+from collections.abc import AsyncIterator, Callable
 from datetime import datetime, timedelta
-from typing import Any, AsyncIterator, Callable
+from typing import Any
 
 # Third-party imports
 from sqlalchemy import select, text, text as _text, update
@@ -61,10 +62,10 @@ async def relay_outbox(session_factory: SessionFactory, poll_seconds: float = 1.
                     continue
 
                 # Support monkeypatched nats_conn that returns a coroutine yielding a context manager
-                _ctx = nats_conn()
-                if asyncio.iscoroutine(_ctx):  # type: ignore[arg-type]
-                    _ctx = await _ctx  # type: ignore[assignment]
-                async with _ctx as nc:  # type: ignore[attr-defined]
+                ctx = nats_conn()
+                if asyncio.iscoroutine(ctx):  # type: ignore[arg-type]
+                    ctx = await ctx  # type: ignore[assignment]
+                async with ctx as nc:  # type: ignore[attr-defined]
                     # Prefer JetStream publish with de-dupe if available
                     js = None
                     try:
@@ -120,10 +121,10 @@ async def process_outbox_batch(session_factory: SessionFactory) -> int:
         if not rows:
             return 0
 
-        _ctx = nats_conn()
-        if asyncio.iscoroutine(_ctx):  # type: ignore[arg-type]
-            _ctx = await _ctx  # type: ignore[assignment]
-        async with _ctx as nc:  # type: ignore[attr-defined]
+        ctx = nats_conn()
+        if asyncio.iscoroutine(ctx):  # type: ignore[arg-type]
+            ctx = await ctx  # type: ignore[assignment]
+        async with ctx as nc:  # type: ignore[attr-defined]
             js = None
             try:
                 js = nc.jetstream()
@@ -195,9 +196,7 @@ async def _schedule_retry_or_dead(session: Any, ev: Event, error: Exception, nc:
             await session.execute(
                 _text("ALTER TABLE events ADD COLUMN IF NOT EXISTS last_error text")
             )
-            await session.execute(
-                _text("ALTER TABLE events ADD COLUMN IF NOT EXISTS state text")
-            )
+            await session.execute(_text("ALTER TABLE events ADD COLUMN IF NOT EXISTS state text"))
         except Exception as exc:
             logging.getLogger(__name__).debug("DDL ensure columns failed or not needed: %s", exc)
         # Read current attempts; if column missing this will fail and we fall back silently
@@ -247,7 +246,9 @@ async def _schedule_retry_or_dead(session: Any, ev: Event, error: Exception, nc:
                     _text("UPDATE events SET state = 'dead' WHERE id = :id"), {"id": ev.id}
                 )
             except Exception as exc:
-                logging.getLogger(__name__).debug("mark dead state failed (optional column): %s", exc)
+                logging.getLogger(__name__).debug(
+                    "mark dead state failed (optional column): %s", exc
+                )
             # DLQ if enabled
             if os.getenv("OUTBOX_DLQ_ENABLED", "0") == "1":
                 try:

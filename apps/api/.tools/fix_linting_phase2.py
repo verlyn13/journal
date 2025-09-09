@@ -33,11 +33,7 @@ def fix_missing_annotations(content: str) -> str:
     content = re.sub(r"def __init__\(self([^)]*)\):", r"def __init__(self\1) -> None:", content)
 
     # Fix async functions missing return type
-    content = re.sub(
-        r"async def (\w+)\(([^)]*)\)(\s*)(?!->)", r"async def \1(\2) -> None\3", content
-    )
-
-    return content
+    return re.sub(r"async def (\w+)\(([^)]*)\)(\s*)(?!->)", r"async def \1(\2) -> None\3", content)
 
 
 def fix_import_organization(content: str) -> str:
@@ -48,7 +44,7 @@ def fix_import_organization(content: str) -> str:
     in_imports = True
 
     for line in lines:
-        if in_imports and (line.startswith("import ") or line.startswith("from ")):
+        if in_imports and (line.startswith(("import ", "from "))):
             imports.append(line)
         elif in_imports and line.strip() and not line.startswith("#"):
             in_imports = False
@@ -71,9 +67,7 @@ def fix_security_issues(content: str) -> str:
     content = re.sub(r'(password.*=.*"demo123")', r"\1  # noqa: S105", content)
 
     # Fix random usage for non-crypto purposes
-    content = re.sub(r"random\.(random|uniform|randint)", r"random.\1  # noqa: S311", content)
-
-    return content
+    return re.sub(r"random\.(random|uniform|randint)", r"random.\1  # noqa: S311", content)
 
 
 def fix_logging_issues(content: str) -> str:
@@ -84,7 +78,7 @@ def fix_logging_issues(content: str) -> str:
         lines = content.split("\n")
         import_idx = -1
         for i, line in enumerate(lines):
-            if line.startswith("import ") or line.startswith("from "):
+            if line.startswith(("import ", "from ")):
                 import_idx = i
 
         if import_idx >= 0:
@@ -92,9 +86,7 @@ def fix_logging_issues(content: str) -> str:
             content = "\n".join(lines)
 
     # Replace logging. calls with logger.
-    content = re.sub(r"logging\.(info|warning|error|debug)\(", r"logger.\1(", content)
-
-    return content
+    return re.sub(r"logging\.(info|warning|error|debug)\(", r"logger.\1(", content)
 
 
 def process_file(file_path: Path) -> bool:
@@ -143,9 +135,8 @@ def main():
     fixed_count = 0
     for file_path in critical_files:
         full_path = app_dir / file_path
-        if full_path.exists():
-            if process_file(full_path):
-                fixed_count += 1
+        if full_path.exists() and process_file(full_path):
+            fixed_count += 1
 
     print(f"\nFixed {fixed_count} files")
     return 0

@@ -3,6 +3,7 @@ Integration tests for embedding worker functionality.
 """
 
 import asyncio
+import contextlib
 import json
 
 from unittest.mock import AsyncMock, MagicMock
@@ -57,10 +58,8 @@ async def test_worker_connection_retry(monkeypatch):
     await asyncio.sleep(2.0)  # Allow time for retry
     task.cancel()
 
-    try:
+    with contextlib.suppress(asyncio.CancelledError):
         await task
-    except asyncio.CancelledError:
-        pass
 
     # Should have attempted connection at least twice (initial + retry)
     assert len(connect_attempts) >= 2
