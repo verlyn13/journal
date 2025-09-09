@@ -10,6 +10,14 @@ vi.mock('../MarkdownEditor', () => {
   };
 });
 
+vi.mock('../MarkdownPreview', () => {
+  return {
+    default: ({ markdown }: { markdown: string }) => (
+      <div data-testid="md-preview">{markdown}</div>
+    ),
+  };
+});
+
 import MarkdownSplitPane from '../MarkdownSplitPane';
 
 describe('MarkdownSplitPane autosave', () => {
