@@ -2,10 +2,7 @@ from __future__ import annotations
 
 import time
 from collections import defaultdict
-from typing import Dict, Tuple
-
-
-_state: Dict[str, Tuple[float, int]] = defaultdict(lambda: (0.0, 0))
+_state: dict[str, tuple[float, int]] = defaultdict(lambda: (0.0, 0))
 
 
 def allow(key: str, max_attempts: int, window_seconds: int) -> bool:
@@ -18,4 +15,3 @@ def allow(key: str, max_attempts: int, window_seconds: int) -> bool:
         _state[key] = (win_start, count + 1)
         return True
     return False
-

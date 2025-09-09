@@ -28,6 +28,12 @@ from app.infra.sessions import (
 )
 from app.settings import settings
 from app.infra.auth_counters import login_success, login_fail, refresh_rotated, session_revoked
+from app.infra.cookies import (
+    set_refresh_cookie,
+    clear_refresh_cookie,
+    ensure_csrf_cookie,
+    require_csrf,
+)
 
 
 router = APIRouter(prefix="/auth", tags=["auth"])
@@ -104,10 +110,20 @@ async def login(
     sess = await create_user_session(s, user.id, ua, ip)
     access = create_access_token(str(user.id), scopes=user.roles)
     refresh = create_refresh_token(str(user.id), refresh_id=str(sess.refresh_id))
+<<<<<<< HEAD
     login_success("password")
     if settings.auth_cookie_refresh:
         # Cookie-based refresh; set httpOnly refresh cookie and ensure CSRF cookie exists
         # Max-Age based on refresh TTL in days
+||||||| parent of 81f2815 (fix(auth): import cookie helpers; make Request/Response non-optional; ruff fixes (ratelimit types, argon2 exceptions); add cookie flags once; stabilize autosave test with fake timers)
+    return {
+        "access_token": create_access_token(str(user.id), scopes=user.roles),
+        "refresh_token": create_refresh_token(str(user.id), refresh_id=str(sess.refresh_id)),
+        "token_type": "bearer",
+    }
+=======
+    if settings.auth_cookie_refresh:
+>>>>>>> 81f2815 (fix(auth): import cookie helpers; make Request/Response non-optional; ruff fixes (ratelimit types, argon2 exceptions); add cookie flags once; stabilize autosave test with fake timers)
         max_age = settings.refresh_token_days * 24 * 60 * 60
         set_refresh_cookie(response, refresh, max_age)
         ensure_csrf_cookie(response, request)
@@ -192,8 +208,15 @@ async def demo_login() -> dict[str, str]:
 @router.post("/refresh")
 async def refresh(
     body: RefreshRequest | None = None,
+<<<<<<< HEAD
     request: Request | None = None,
     response: Response | None = None,
+||||||| parent of 81f2815 (fix(auth): import cookie helpers; make Request/Response non-optional; ruff fixes (ratelimit types, argon2 exceptions); add cookie flags once; stabilize autosave test with fake timers)
+async def refresh(body: RefreshRequest, s: AsyncSession = Depends(get_session)) -> dict[str, str]:
+=======
+    request: Request = None,  # type: ignore[assignment]
+    response: Response = None,  # type: ignore[assignment]
+>>>>>>> 81f2815 (fix(auth): import cookie helpers; make Request/Response non-optional; ruff fixes (ratelimit types, argon2 exceptions); add cookie flags once; stabilize autosave test with fake timers)
     s: AsyncSession = Depends(get_session),
 ) -> dict[str, str]:
     """Exchange a valid refresh token for a new access token.
@@ -201,7 +224,12 @@ async def refresh(
     Flag off: legacy behavior (no rotation). Flag on: verify, lookup session by rid, rotate.
     """
     token_src = None
+<<<<<<< HEAD
     if settings.auth_cookie_refresh and request is not None:
+||||||| parent of 81f2815 (fix(auth): import cookie helpers; make Request/Response non-optional; ruff fixes (ratelimit types, argon2 exceptions); add cookie flags once; stabilize autosave test with fake timers)
+=======
+    if settings.auth_cookie_refresh:
+>>>>>>> 81f2815 (fix(auth): import cookie helpers; make Request/Response non-optional; ruff fixes (ratelimit types, argon2 exceptions); add cookie flags once; stabilize autosave test with fake timers)
         token_src = request.cookies.get(settings.refresh_cookie_name)
     if not token_src:
         if not body:
@@ -248,6 +276,7 @@ async def refresh(
     await touch_session(s, sess)
     refresh_rotated()
 
+<<<<<<< HEAD
     access = create_access_token(sub)
     new_refresh = create_refresh_token(sub, refresh_id=str(new_rid))
     if settings.auth_cookie_refresh and response is not None:
@@ -256,6 +285,21 @@ async def refresh(
         set_refresh_cookie(response, new_refresh, max_age)
         return {"access_token": access, "token_type": "bearer"}
     return {"access_token": access, "refresh_token": new_refresh, "token_type": "bearer"}
+||||||| parent of 81f2815 (fix(auth): import cookie helpers; make Request/Response non-optional; ruff fixes (ratelimit types, argon2 exceptions); add cookie flags once; stabilize autosave test with fake timers)
+    return {
+        "access_token": create_access_token(sub),
+        "refresh_token": create_refresh_token(sub, refresh_id=str(new_rid)),
+        "token_type": "bearer",
+    }
+=======
+    access_new = create_access_token(sub)
+    refresh_new = create_refresh_token(sub, refresh_id=str(new_rid))
+    if settings.auth_cookie_refresh:
+        max_age = settings.refresh_token_days * 24 * 60 * 60
+        set_refresh_cookie(response, refresh_new, max_age)
+        return {"access_token": access_new, "token_type": "bearer"}
+    return {"access_token": access_new, "refresh_token": refresh_new, "token_type": "bearer"}
+>>>>>>> 81f2815 (fix(auth): import cookie helpers; make Request/Response non-optional; ruff fixes (ratelimit types, argon2 exceptions); add cookie flags once; stabilize autosave test with fake timers)
 
 
 @router.get("/me")
@@ -273,8 +317,14 @@ async def logout(
     body: RefreshRequest | None = None,
     user_id: str = Depends(get_current_user),
     s: AsyncSession = Depends(get_session),
+<<<<<<< HEAD
     request: Request | None = None,
     response: Response | None = None,
+||||||| parent of 81f2815 (fix(auth): import cookie helpers; make Request/Response non-optional; ruff fixes (ratelimit types, argon2 exceptions); add cookie flags once; stabilize autosave test with fake timers)
+=======
+    request: Request = None,  # type: ignore[assignment]
+    response: Response = None,  # type: ignore[assignment]
+>>>>>>> 81f2815 (fix(auth): import cookie helpers; make Request/Response non-optional; ruff fixes (ratelimit types, argon2 exceptions); add cookie flags once; stabilize autosave test with fake timers)
 ) -> Response | dict[str, str]:
     # Demo mode: preserve legacy behavior
     if not settings.user_mgmt_enabled:
@@ -282,7 +332,15 @@ async def logout(
 
     # Flag on: revoke session by provided refresh token (cookie or body)
     token_src = None
+<<<<<<< HEAD
     if settings.auth_cookie_refresh and request is not None:
+||||||| parent of 81f2815 (fix(auth): import cookie helpers; make Request/Response non-optional; ruff fixes (ratelimit types, argon2 exceptions); add cookie flags once; stabilize autosave test with fake timers)
+    # Flag on: revoke session by provided refresh token
+    if not body:
+        raise HTTPException(status_code=400, detail="Missing refresh_token")
+=======
+    if settings.auth_cookie_refresh:
+>>>>>>> 81f2815 (fix(auth): import cookie helpers; make Request/Response non-optional; ruff fixes (ratelimit types, argon2 exceptions); add cookie flags once; stabilize autosave test with fake timers)
         require_csrf(request)
         token_src = request.cookies.get(settings.refresh_cookie_name)
     if not token_src:
@@ -304,10 +362,16 @@ async def logout(
     sess = await get_session_by_refresh_id(s, uuid.UUID(decoded["rid"]))
     if sess:
         await revoke_session(s, sess)
+<<<<<<< HEAD
         session_revoked()
     if settings.auth_cookie_refresh and response is not None:
         clear_refresh_cookie(response)
         return Response(status_code=204)
+||||||| parent of 81f2815 (fix(auth): import cookie helpers; make Request/Response non-optional; ruff fixes (ratelimit types, argon2 exceptions); add cookie flags once; stabilize autosave test with fake timers)
+=======
+    if settings.auth_cookie_refresh:
+        clear_refresh_cookie(response)
+>>>>>>> 81f2815 (fix(auth): import cookie helpers; make Request/Response non-optional; ruff fixes (ratelimit types, argon2 exceptions); add cookie flags once; stabilize autosave test with fake timers)
     return Response(status_code=204)
 
 
