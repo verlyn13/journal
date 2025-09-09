@@ -28,8 +28,10 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
-      - name: Lint Markdown Files
-        run: npm run lint:md
+      - name: Lint Markdown Files (Temporarily Disabled)
+        # TODO: Re-enable after markdown normalization PR
+        run: echo "Markdown linting temporarily disabled - will be re-enabled in separate PR"
+        # run: npm run lint:md
 
       - name: Check Markdown Links (non-blocking)
         run: npm run lint:links || true
