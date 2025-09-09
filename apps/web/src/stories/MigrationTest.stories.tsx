@@ -30,7 +30,7 @@ export const InteractionTest: Story = {
       <div style={{ padding: '20px' }}>
         <h3>Interactive Component Test</h3>
         <p>Count: {count}</p>
-        <button onClick={() => setCount(count + 1)}>Increment</button>
+        <button type="button" onClick={() => setCount(count + 1)}>Increment</button>
       </div>
     );
   },

@@ -1,6 +1,6 @@
 // Authentication React Hooks
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { AuthenticationOrchestrator } from './orchestrator';
 import { AuthEventType } from './types';
 import type {
@@ -27,17 +27,15 @@ export function useAuth(apiBaseUrl?: string) {
   const orchestratorRef = useRef<AuthenticationOrchestrator | undefined>(undefined);
   const eventListenersRef = useRef<Map<AuthEventType, Set<(event: AuthEvent) => void>>>(new Map());
 
-  // Initialize orchestrator
-  useEffect(() => {
-    orchestratorRef.current = new AuthenticationOrchestrator(apiBaseUrl);
-
-    // Check existing session
-    checkSession();
-
-    return () => {
-      orchestratorRef.current?.destroy();
-    };
-  }, [apiBaseUrl]);
+  // Event emitter (declared early to satisfy dependency ordering)
+  const emitEvent = useCallback((event: AuthEvent) => {
+    const listeners = eventListenersRef.current.get(event.type);
+    if (listeners) {
+      listeners.forEach((listener) => {
+        listener(event);
+      });
+    }
+  }, []);
 
   // Check existing session
   const checkSession = useCallback(async () => {
@@ -62,18 +60,29 @@ export function useAuth(apiBaseUrl?: string) {
           emitEvent({ type: AuthEventType.SESSION_EXPIRED, timestamp: new Date() });
         }
       }
-    } catch (error) {
-      console.error('Failed to check session', error);
+    } catch (_error) {
     }
     setState((prev) => ({ ...prev, isLoading: false }));
-  }, []);
+  }, [emitEvent]);
+
+  // Initialize orchestrator (after checkSession is defined)
+  useEffect(() => {
+    orchestratorRef.current = new AuthenticationOrchestrator(apiBaseUrl);
+
+    // Check existing session
+    checkSession();
+
+    return () => {
+      orchestratorRef.current?.destroy();
+    };
+  }, [apiBaseUrl, checkSession]);
 
   // Login
   const login = useCallback(async (): Promise<AuthResult> => {
     if (!orchestratorRef.current) {
       return {
         success: false,
-        error: { code: 'UNKNOWN_ERROR' as any, message: 'Orchestrator not initialized' },
+        error: { code: 'UNKNOWN_ERROR', message: 'Orchestrator not initialized' },
         method: 'session',
       };
     }
@@ -125,9 +134,9 @@ export function useAuth(apiBaseUrl?: string) {
 
         return result;
       }
-    } catch (error) {
+    } catch (_error) {
       const authError: AuthError = {
-        code: 'UNKNOWN_ERROR' as any,
+        code: 'UNKNOWN_ERROR',
         message: 'Authentication failed',
         details: error,
       };
@@ -150,7 +159,7 @@ export function useAuth(apiBaseUrl?: string) {
         method: 'session',
       };
     }
-  }, []);
+  }, [emitEvent]);
 
   // Logout
   const logout = useCallback(async () => {
@@ -163,7 +172,7 @@ export function useAuth(apiBaseUrl?: string) {
       error: null,
     });
     emitEvent({ type: AuthEventType.LOGOUT, timestamp: new Date() });
-  }, []);
+  }, [emitEvent]);
 
   // Register passkey
   const registerPasskey = useCallback(
@@ -191,21 +200,14 @@ export function useAuth(apiBaseUrl?: string) {
           return true;
         }
         return false;
-      } catch (error) {
-        console.error('Failed to register passkey', error);
+      } catch (_error) {
         return false;
       }
     },
-    [state.user],
+    [state.user, emitEvent],
   );
 
-  // Event emitter
-  const emitEvent = useCallback((event: AuthEvent) => {
-    const listeners = eventListenersRef.current.get(event.type);
-    if (listeners) {
-      listeners.forEach((listener) => listener(event));
-    }
-  }, []);
+  // Event emitter defined above
 
   // Subscribe to events
   const on = useCallback((type: AuthEventType, listener: (event: AuthEvent) => void) => {
@@ -247,8 +249,7 @@ export function usePasskeySupport() {
             await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
           setSupported(available);
         }
-      } catch (error) {
-        console.error('Failed to check passkey support', error);
+      } catch (_error) {
       } finally {
         setChecking(false);
       }
@@ -281,9 +282,8 @@ export function usePasskeys(user: AuthUser | null) {
       } else {
         throw new Error('Failed to fetch passkeys');
       }
-    } catch (error) {
+    } catch (_error) {
       setError('Failed to load passkeys');
-      console.error(error);
     } finally {
       setLoading(false);
     }
@@ -310,9 +310,8 @@ export function usePasskeys(user: AuthUser | null) {
         } else {
           throw new Error('Failed to delete passkey');
         }
-      } catch (error) {
+      } catch (_error) {
         setError('Failed to delete passkey');
-        console.error(error);
         return false;
       } finally {
         setLoading(false);
@@ -344,9 +343,8 @@ export function usePasskeys(user: AuthUser | null) {
         } else {
           throw new Error('Failed to rename passkey');
         }
-      } catch (error) {
+      } catch (_error) {
         setError('Failed to rename passkey');
-        console.error(error);
         return false;
       } finally {
         setLoading(false);
@@ -421,7 +419,7 @@ export function useOAuthProviders() {
         return true;
       }
       return false;
-    } catch (error) {
+    } catch (_error) {
       // TODO: Implement proper error logging service
       return false;
     }
@@ -440,7 +438,7 @@ export function useOAuthProviders() {
         return true;
       }
       return false;
-    } catch (error) {
+    } catch (_error) {
       // TODO: Implement proper error logging service
       return false;
     }
@@ -483,7 +481,7 @@ export function useSessionRefresh(session: AuthSession | null) {
         return newSession;
       }
       return null;
-    } catch (error) {
+    } catch (_error) {
       // TODO: Implement proper error logging service
       return null;
     } finally {

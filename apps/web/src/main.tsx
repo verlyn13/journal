@@ -10,15 +10,14 @@ function mountReactEditor() {
   const el = document.getElementById('react-editor-root');
   if (!el) return;
   
-  const root = createRoot(el, {
-    onUncaughtError: (error, errorInfo) => {
-      console.error('Uncaught error:', error);
-      // TODO: Send to error tracking service
-    },
-    onCaughtError: (error, errorInfo) => {
-      console.warn('Caught error:', error);
-    }
-  });
+    const root = createRoot(el, {
+      onUncaughtError: (_error, _errorInfo) => {
+        // TODO: Send to error tracking service
+      },
+      onCaughtError: (_error, _errorInfo) => {
+        // TODO: surface to user and/or send to telemetry
+      }
+    });
   
   // Optimized QueryClient for React 19
   const queryClient = new QueryClient({

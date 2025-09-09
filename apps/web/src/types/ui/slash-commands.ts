@@ -4,13 +4,13 @@
 
 // TODO: Uncomment when TipTap is installed
 // import type { Editor as TiptapEditor } from '@tiptap/core';
-type TiptapEditor = any; // Temporary placeholder
+type TiptapEditor = unknown; // Temporary placeholder
 
 export interface SlashCommandItem {
   title: string;
   emoji?: string;
   section?: 'Blocks' | 'Templates';
-  command: (props: { editor: any }) => void;
+  command: (props: { editor: TiptapEditor }) => void;
 }
 
 export interface SlashCommandProps {

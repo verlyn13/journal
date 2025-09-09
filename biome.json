@@ -107,11 +107,19 @@
       }
     },
     {
-      "includes": ["*.test.ts", "*.test.tsx", "*.spec.ts", "*.spec.tsx"],
+      "includes": ["*.test.ts", "*.test.tsx", "*.spec.ts", "*.spec.tsx", "apps/web/src/test-setup.ts", "apps/web/src/**/*.test.ts", "apps/web/src/**/*.spec.ts"],
       "linter": {
         "rules": {
           "suspicious": {
-            "noConsole": "off"
+            "noConsole": "off",
+            "noExplicitAny": "off",
+            "useIterableCallbackReturn": "off"
+          },
+          "correctness": {
+            "noUnusedFunctionParameters": "off"
+          },
+          "complexity": {
+            "noStaticOnlyClass": "off"
           }
         }
       }

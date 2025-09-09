@@ -92,7 +92,7 @@ export function useGlassSupport(): {
   const [supported, setSupported] = useState(() => {
     try {
       return supportsBackdropFilter();
-    } catch (e) {
+    } catch (_e) {
       return false;
     }
   });
@@ -100,7 +100,7 @@ export function useGlassSupport(): {
   useEffect(() => {
     try {
       setSupported(supportsBackdropFilter());
-    } catch (e) {
+    } catch (_e) {
       setSupported(false);
     }
   }, []);

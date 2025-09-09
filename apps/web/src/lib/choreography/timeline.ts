@@ -95,21 +95,27 @@ export class Timeline {
 
   // Reverse timeline
   reverse(): void {
-    this.animations.forEach((anim) => anim.reverse());
+    this.animations.forEach((anim) => {
+      anim.reverse();
+    });
     this.play();
   }
 
   // Restart timeline
   restart(): void {
     this.currentTime = 0;
-    this.animations.forEach((anim) => anim.restart());
+    this.animations.forEach((anim) => {
+      anim.restart();
+    });
     this.play();
   }
 
   // Seek to specific time
   seek(time: number): void {
     this.currentTime = Math.max(0, Math.min(time, this.duration));
-    this.animations.forEach((anim) => anim.seek(this.currentTime));
+    this.animations.forEach((anim) => {
+      anim.seek(this.currentTime);
+    });
   }
 
   // Animation loop
@@ -151,7 +157,9 @@ export class Timeline {
   // Clear timeline
   clear(): void {
     this.pause();
-    this.animations.forEach((anim) => anim.cancel());
+    this.animations.forEach((anim) => {
+      anim.cancel();
+    });
     this.animations = [];
     this.currentTime = 0;
     this.duration = 0;

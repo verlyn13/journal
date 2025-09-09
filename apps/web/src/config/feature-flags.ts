@@ -122,13 +122,13 @@ if (typeof window !== 'undefined') {
       userHash: hashUserId(getUserId()),
     },
   };
-  
-  console.log('🎛️ Feature Flags:', {
-    reactCompiler: featureFlags.reactCompiler,
-    react19Features: featureFlags.react19,
-  });
-  
-  if (import.meta.env.DEV) {
+  if (import.meta.env.DEV && featureFlags.development.debugLogging) {
+    // biome-ignore lint/suspicious/noConsole: intentional development logging
+    console.log('🎛️ Feature Flags:', {
+      reactCompiler: featureFlags.reactCompiler,
+      react19Features: featureFlags.react19,
+    });
+    // biome-ignore lint/suspicious/noConsole: intentional development logging
     console.log('🎯 Rollout Info:', rolloutInfo);
   }
 }

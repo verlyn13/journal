@@ -3,7 +3,6 @@
 import type React from 'react';
 import { useState } from 'react';
 import { useAuth, usePasskeySupport } from '../hooks';
-import type { AuthProvider } from '../types';
 
 interface AuthButtonProps {
   className?: string;
@@ -47,6 +46,7 @@ export const AuthButton: React.FC<AuthButtonProps> = ({
     if (isLoading) {
       return (
         <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24" aria-label="Loading">
+          <title>Loading</title>
           <circle
             className="opacity-25"
             cx="12"
@@ -68,6 +68,7 @@ export const AuthButton: React.FC<AuthButtonProps> = ({
     if (passkeysSupported && preferredMethod === 'passkey') {
       return (
         <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <title>Passkey</title>
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -80,6 +81,7 @@ export const AuthButton: React.FC<AuthButtonProps> = ({
 
     return (
       <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <title>Authentication</title>
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -116,7 +118,7 @@ export const AuthButton: React.FC<AuthButtonProps> = ({
             <p className="font-medium">{user.name || user.email}</p>
             <p className="text-sm text-gray-500">{user.email}</p>
           </div>
-          <button onClick={logout} className="w-full text-left px-3 py-2 hover:bg-gray-100 rounded">
+          <button type="button" onClick={logout} className="w-full text-left px-3 py-2 hover:bg-gray-100 rounded">
             Sign Out
           </button>
         </div>
@@ -134,6 +136,7 @@ export const AuthButton: React.FC<AuthButtonProps> = ({
               className="w-full text-left px-3 py-2 hover:bg-gray-100 rounded flex items-center gap-2"
             >
               <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <title>Passkey</title>
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -191,6 +194,7 @@ export const AuthButton: React.FC<AuthButtonProps> = ({
               stroke="currentColor"
               aria-label="Mail"
             >
+              <title>Mail</title>
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"

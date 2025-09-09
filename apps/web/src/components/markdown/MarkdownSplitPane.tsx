@@ -73,7 +73,7 @@ export default function MarkdownSplitPane({ entry, onSave }: Props) {
         }
       })();
     }
-  }, [entry?.id, entry?.content]);
+  }, [entry]);
 
   // Debounced autosave when content changes
   useEffect(() => {
