@@ -128,7 +128,7 @@ if (typeof window !== 'undefined') {
     react19Features: featureFlags.react19,
   });
   
-  if (process.env.NODE_ENV === 'development') {
+  if (import.meta.env.DEV) {
     console.log('🎯 Rollout Info:', rolloutInfo);
   }
 }

@@ -28,13 +28,13 @@ const sessionStorageMock = (() => {
 })();
 
 // Define localStorage and sessionStorage on global scope
-Object.defineProperty(global, 'localStorage', {
+Object.defineProperty(globalThis, 'localStorage', {
   value: localStorageMock,
   configurable: true,
   writable: true,
 });
 
-Object.defineProperty(global, 'sessionStorage', {
+Object.defineProperty(globalThis, 'sessionStorage', {
   value: sessionStorageMock,  
   configurable: true,
   writable: true,

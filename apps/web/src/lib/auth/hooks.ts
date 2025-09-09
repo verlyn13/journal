@@ -24,7 +24,7 @@ export function useAuth(apiBaseUrl?: string) {
     error: null,
   });
 
-  const orchestratorRef = useRef<AuthenticationOrchestrator>();
+  const orchestratorRef = useRef<AuthenticationOrchestrator | undefined>(undefined);
   const eventListenersRef = useRef<Map<AuthEventType, Set<(event: AuthEvent) => void>>>(new Map());
 
   // Initialize orchestrator
@@ -457,7 +457,7 @@ export function useOAuthProviders() {
 // Session refresh hook
 export function useSessionRefresh(session: AuthSession | null) {
   const [refreshing, setRefreshing] = useState(false);
-  const timeoutRef = useRef<ReturnType<typeof setTimeout>>();
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   const refreshSession = useCallback(async (): Promise<AuthSession | null> => {
     if (!session?.refreshToken) return null;

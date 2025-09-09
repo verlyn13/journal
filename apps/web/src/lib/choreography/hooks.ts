@@ -35,7 +35,7 @@ export function useChoreography(sequence: ChoreographySequence): {
   const [state, setState] = useState<ChoreographyState>('idle');
   const [progress, setProgress] = useState(0);
   const [controller, setController] = useState<ChoreographyController>();
-  const animationFrameRef = useRef<number>();
+  const animationFrameRef = useRef<number | undefined>(undefined);
 
   useEffect(() => {
     orchestrator.registerSequence(sequence);
@@ -97,7 +97,7 @@ export function useTimeline(config?: { duration?: number; ease?: string }): {
     () => new Timeline(config ? { duration: config.duration || 1000, ...config } : undefined),
   );
   const [progress, setProgress] = useState(0);
-  const animationFrameRef = useRef<number>();
+  const animationFrameRef = useRef<number | undefined>(undefined);
 
   const updateProgress = useCallback(() => {
     setProgress(timeline.progress);
