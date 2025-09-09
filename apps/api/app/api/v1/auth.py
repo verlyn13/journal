@@ -20,6 +20,12 @@ from sqlalchemy import select
 from app.infra.models import User
 from app.infra.security import hash_password, verify_password
 from app.infra.ratelimit import allow
+from app.infra.sessions import (
+    create_session as create_user_session,
+    get_session_by_refresh_id,
+    touch_session,
+    revoke_session,
+)
 from app.settings import settings
 
 
@@ -81,9 +87,13 @@ async def login(body: LoginRequest, request: Request, s: AsyncSession = Depends(
     if not ok:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
 
+    # Create server-side session and include rid in refresh
+    ua = request.headers.get("user-agent")
+    ip = request.client.host if request.client else None
+    sess = await create_user_session(s, user.id, ua, ip)
     return {
         "access_token": create_access_token(str(user.id), scopes=user.roles),
-        "refresh_token": create_refresh_token(str(user.id)),  # rotation in M1.T3
+        "refresh_token": create_refresh_token(str(user.id), refresh_id=str(sess.refresh_id)),
         "token_type": "bearer",
     }
 
@@ -163,8 +173,11 @@ async def demo_login() -> dict[str, str]:
 
 
 @router.post("/refresh")
-async def refresh(body: RefreshRequest) -> dict[str, str]:
-    """Exchange a valid refresh token for a new access token."""
+async def refresh(body: RefreshRequest, s: AsyncSession = Depends(get_session)) -> dict[str, str]:
+    """Exchange a valid refresh token for a new access token.
+
+    Flag off: legacy behavior (no rotation). Flag on: verify, lookup session by rid, rotate.
+    """
     try:
         decoded = jwt.decode(
             body.refresh_token,
@@ -173,16 +186,41 @@ async def refresh(body: RefreshRequest) -> dict[str, str]:
             audience=settings.jwt_aud,
             options={"require": ["exp", "iat"]},
         )
-        if decoded.get("typ") != "refresh":
-            raise HTTPException(status_code=401, detail="Invalid token type")
-        sub = decoded.get("sub")
-        if not sub:
-            raise HTTPException(status_code=401, detail="Invalid token")
     except jwt.PyJWTError as e:
         raise HTTPException(status_code=401, detail="Invalid token") from e
+
+    if decoded.get("typ") != "refresh":
+        raise HTTPException(status_code=401, detail="Invalid token type")
+
+    sub = decoded.get("sub")
+    if not sub:
+        raise HTTPException(status_code=401, detail="Invalid token")
+
+    # If feature disabled, return legacy behavior (no rotation)
+    if not settings.user_mgmt_enabled:
+        return {
+            "access_token": create_access_token(sub),
+            "refresh_token": body.refresh_token,
+            "token_type": "bearer",
+        }
+
+    rid = decoded.get("rid")
+    if not rid:
+        raise HTTPException(status_code=401, detail="Invalid token")
+
+    # Look up session by refresh_id
+    sess = await get_session_by_refresh_id(s, uuid.UUID(rid))
+    if not sess or sess.revoked_at is not None:
+        raise HTTPException(status_code=401, detail="Invalid session")
+
+    # Rotate rid
+    new_rid = uuid.uuid4()
+    sess.refresh_id = new_rid
+    await touch_session(s, sess)
+
     return {
         "access_token": create_access_token(sub),
-        "refresh_token": body.refresh_token,
+        "refresh_token": create_refresh_token(sub, refresh_id=str(new_rid)),
         "token_type": "bearer",
     }
 
@@ -198,6 +236,31 @@ async def get_me(user_id: str = Depends(get_current_user)) -> dict[str, str]:
 
 
 @router.post("/logout")
-async def logout(user_id: str = Depends(get_current_user)) -> dict[str, str]:
-    # In a real app, you might invalidate the token in Redis
-    return {"message": "Logged out successfully"}
+async def logout(
+    body: RefreshRequest | None = None,
+    user_id: str = Depends(get_current_user),
+    s: AsyncSession = Depends(get_session),
+) -> Response | dict[str, str]:
+    # Demo mode: preserve legacy behavior
+    if not settings.user_mgmt_enabled:
+        return {"message": "Logged out successfully"}
+
+    # Flag on: revoke session by provided refresh token
+    if not body:
+        raise HTTPException(status_code=400, detail="Missing refresh_token")
+    try:
+        decoded = jwt.decode(
+            body.refresh_token,
+            settings.jwt_secret,
+            algorithms=["HS256"],
+            audience=settings.jwt_aud,
+            options={"require": ["exp", "iat"]},
+        )
+    except jwt.PyJWTError:
+        raise HTTPException(status_code=401, detail="Invalid token")
+    if decoded.get("typ") != "refresh" or not decoded.get("rid"):
+        raise HTTPException(status_code=401, detail="Invalid token type")
+    sess = await get_session_by_refresh_id(s, uuid.UUID(decoded["rid"]))
+    if sess:
+        await revoke_session(s, sess)
+    return Response(status_code=204)

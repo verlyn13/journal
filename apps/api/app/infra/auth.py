@@ -33,7 +33,7 @@ def create_access_token(sub: str, scopes: list[str] | None = None) -> str:
     return jwt.encode(payload, settings.jwt_secret, algorithm="HS256")
 
 
-def create_refresh_token(sub: str) -> str:
+def create_refresh_token(sub: str, refresh_id: str | None = None) -> str:
     now = _utcnow()
     payload = {
         "iss": settings.jwt_iss,
@@ -44,6 +44,8 @@ def create_refresh_token(sub: str) -> str:
         "sub": sub,
         "typ": "refresh",
     }
+    if refresh_id:
+        payload["rid"] = refresh_id
     return jwt.encode(payload, settings.jwt_secret, algorithm="HS256")
 
 
