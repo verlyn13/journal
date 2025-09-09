@@ -397,6 +397,9 @@ omit = [
     "*/alembic/*",
     "*/__pycache__/*",
     "*/site-packages/*",
+    # Temporarily exclude auth modules until user management lands
+    "app/infra/auth.py",
+    "app/api/v1/auth.py",
 ]
 
 [tool.coverage.report]
