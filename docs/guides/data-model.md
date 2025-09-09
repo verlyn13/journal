@@ -7,9 +7,9 @@ last_updated: "2025-04-08"
 version: "1.0"
 status: active
 related_topics:
-  - "API Reference"
-  - "Authentication"
-  - "Database Schema"
+      - "API Reference"
+      - "Authentication"
+      - "Database Schema"
 tags: ["data-model", "database", "sqlalchemy", "orm"]
 ---
 

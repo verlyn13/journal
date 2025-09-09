@@ -516,12 +516,12 @@ You can embed version information and other metadata into your Windows executabl
 
 ```
 bun build --compile ./app.ts \
-  --outfile myapp.exe \
-  --windows-title "My Application" \
-  --windows-publisher "My Company Inc" \
-  --windows-version "1.2.3.4" \
-  --windows-description "A powerful application built with Bun" \
-  --windows-copyright "© 2024 My Company Inc"
+        --outfile myapp.exe \
+        --windows-title "My Application" \
+        --windows-publisher "My Company Inc" \
+        --windows-version "1.2.3.4" \
+        --windows-description "A powerful application built with Bun" \
+        --windows-copyright "© 2024 My Company Inc"
 
 ```
 

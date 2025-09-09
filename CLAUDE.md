@@ -1,9 +1,11 @@
 # Journal Project - Claude Code Configuration
+
 ## September 2025 - Modern Monorepo Architecture
 
 This configuration optimizes Claude Code CLI (v2025.9) for a modern TypeScript/Python monorepo with separate API and web applications.
 
 ## 📍 Project Roadmap
+
 **IMPORTANT**: Always consult `docs/ROADMAP.md` for current development priorities, phases, and acceptance criteria. The roadmap is the source of truth for:
 - Current phase objectives (Phase 1: Foundations & Polish)
 - Parallel workstreams and task ownership
@@ -28,6 +30,7 @@ journal/
 ## Critical Package Management Rules
 
 ### Python (API)
+
 **NEVER use pip, pip-tools, poetry, or conda directly**
 
 All Python operations in `apps/api/`:
@@ -37,6 +40,7 @@ All Python operations in `apps/api/`:
 - Run: `cd apps/api && uv run <command>`
 
 ### TypeScript/JavaScript (Web & Root)
+
 **Use Bun exclusively for all JavaScript operations**
 
 - Root level: `bun install`, `bun run <script>`
@@ -46,6 +50,7 @@ All Python operations in `apps/api/`:
 ## Development Commands
 
 ### Quick Actions (from root)
+
 ```bash
 # API Development
 bun run api:dev         # Start FastAPI with hot reload
@@ -64,6 +69,7 @@ bun run check:all       # CI-equivalent checks
 ```
 
 ### Database Operations (API)
+
 ```bash
 bun run api:migrate              # Apply migrations
 bun run api:db:revision m="msg"  # Create new migration
@@ -72,12 +78,14 @@ bun run api:db:revision m="msg"  # Create new migration
 ## Code Standards
 
 ### Python (apps/api/)
+
 - Style: PEP 8 via Ruff
 - Types: Full type hints, SQLModel for ORM
 - Testing: pytest with 80%+ coverage
 - Docs: Docstrings for public APIs
 
 ### TypeScript (apps/web/)
+
 - Style: Biome for formatting and linting
 - Types: Strict mode, no implicit any
 - Components: Functional React with hooks
@@ -86,6 +94,7 @@ bun run api:db:revision m="msg"  # Create new migration
 ## Claude Code Optimizations
 
 ### Task Management
+
 Use TodoWrite tool for:
 - Multi-step implementations
 - Complex refactoring
@@ -93,17 +102,20 @@ Use TodoWrite tool for:
 - Feature development
 
 ### Search Strategy
+
 1. Use `Grep` for code searches across the monorepo
 2. Use `Glob` for finding files by pattern
 3. Use `Task` tool for complex multi-file analysis
 
 ### Testing Workflow
+
 1. Write tests alongside implementation
 2. Run `bun run api:test` or `bun run web:test`
 3. Check coverage with `--cov` flag
 4. Use `bun run check:all` before marking complete
 
 ### Git Workflow
+
 1. Never commit directly unless asked
 2. Follow branching strategy from `docs/ROADMAP.md#branching-pr--merge-management`
 3. Use conventional commits: `feat:`, `fix:`, `chore:`
@@ -114,6 +126,7 @@ Use TodoWrite tool for:
 ## Architecture Decisions
 
 ### Backend (apps/api/)
+
 - **Framework**: FastAPI with async/await
 - **Database**: PostgreSQL 16+ with pgvector
 - **ORM**: SQLModel (SQLAlchemy + Pydantic)
@@ -122,6 +135,7 @@ Use TodoWrite tool for:
 - **Search**: pgvector for semantic search
 
 ### Frontend (apps/web/)
+
 - **Framework**: React 19 with TypeScript
 - **Build**: Vite for fast HMR
 - **Styling**: Tailwind CSS + Shadcn/ui
@@ -148,18 +162,21 @@ Use TodoWrite tool for:
 ## Agent Usage Guidelines
 
 ### When to Use Plan Mode
+
 - Analyzing complex architectural changes
 - Reviewing security-sensitive code
 - Understanding cross-service interactions
 - Planning large refactors
 
 ### When to Use Subagents
+
 - Database schema migrations
 - Complex search operations
 - Multi-file refactoring
 - Test generation
 
 ### Proactive Actions
+
 - Auto-format on file changes
 - Run type checking after TypeScript edits
 - Update imports when moving files
@@ -168,6 +185,7 @@ Use TodoWrite tool for:
 ## Common Workflows
 
 ### Implementing Roadmap Features
+
 1. Check `docs/ROADMAP.md` for current phase priorities
 2. Pick a task from Phase 1.5 concrete tasks
 3. Create feature branch: `feature/[area]-[description]`
@@ -176,6 +194,7 @@ Use TodoWrite tool for:
 6. Update roadmap completion status after merge
 
 ### Adding a New API Endpoint
+
 1. Define SQLModel schema in `apps/api/app/models/`
 2. Create service layer in `apps/api/app/services/`
 3. Add FastAPI route in `apps/api/app/api/`
@@ -183,12 +202,14 @@ Use TodoWrite tool for:
 5. Update OpenAPI schema
 
 ### Adding a New React Component
+
 1. Create component in `apps/web/src/components/`
 2. Add Storybook story if UI component
 3. Write unit tests alongside
 4. Update barrel exports
 
 ### Database Changes
+
 1. Modify SQLModel in `apps/api/app/models/`
 2. Create migration: `bun run api:db:revision m="description"`
 3. Review generated migration

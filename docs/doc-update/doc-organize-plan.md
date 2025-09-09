@@ -9,8 +9,8 @@ This document provides a step-by-step guide to setting up and running a robust, 
 
 Before you begin, ensure you have the following installed on your host machine:
 
-  * **Docker and Docker Compose:** For running the containerized tools.
-  * **`treequery` CLI:** A locally installed binary for structural code queries. (This is the one tool we run outside the main Compose pipeline for simplicity, as it lacks a maintained official image).
+- **Docker and Docker Compose:** For running the containerized tools.
+- **`treequery` CLI:** A locally installed binary for structural code queries. (This is the one tool we run outside the main Compose pipeline for simplicity, as it lacks a maintained official image).
 
 -----
 
@@ -82,7 +82,7 @@ services:
     build: .
     # This service is NOT part of the 'scan' profile
     volumes:
-      - .:/app
+            - .:/app
 
   # -------------------------------------------
   # SCANNER SERVICES
@@ -95,7 +95,7 @@ services:
     # Correct command: explicit input path
     command: scc --format json --by-file --wide --output .scanner/scc.json .
     volumes:
-      - .:/repo:ro # Mount code read-only
+            - .:/repo:ro # Mount code read-only
 
   semgrep:
     image: returntocorp/semgrep:latest
@@ -104,10 +104,10 @@ services:
     # Correct command: `scan` subcommand and dedicated output flag
     command: >
       semgrep scan --config /.scanner/rules/semgrep
-      --json --json-output .scanner/semgrep.json .
+            --json --json-output .scanner/semgrep.json .
     volumes:
-      - .:/repo:ro
-      - ./.scanner:/.scanner # Mount rules
+            - .:/repo:ro
+            - ./.scanner:/.scanner # Mount rules
 
   scancode:
     image: aboutcodeorg/scancode-toolkit:latest # Official image name
@@ -116,11 +116,11 @@ services:
     # Correct command: `scancode [OPTIONS] <input> <output_file>`
     command: >
       scancode --format json-pp --copyright --license --package --processes 4
-      --ignore ".git" --ignore ".scanner"
+            --ignore ".git" --ignore ".scanner"
       /repo /.scanner/scancode.json
     volumes:
-      - .:/repo:ro
-      - ./.scanner:/repo/.scanner # Mount scanner dir for output
+            - .:/repo:ro
+            - ./.scanner:/repo/.scanner # Mount scanner dir for output
 
   gitleaks:
     image: zricethezav/gitleaks:latest
@@ -129,10 +129,10 @@ services:
     # Command with optional baseline support
     command: >
       gitleaks detect --source .
-      --report-format json --report-path .scanner/gitleaks.json
+            --report-format json --report-path .scanner/gitleaks.json
       ${GITLEAKS_BASELINE:+ --baseline-path .scanner/gitleaks.baseline.json}
     volumes:
-      - .:/repo:ro
+            - .:/repo:ro
 
   # --- Optional Services (uncomment to enable) ---
 
@@ -158,12 +158,12 @@ services:
     working_dir: /repo
     command: python .scanner/scripts/merge_scans.py
     volumes:
-      - .:/repo # Mount read-write to create the output file
+            - .:/repo # Mount read-write to create the output file
     depends_on:
-      - scc
-      - semgrep
-      - scancode
-      - gitleaks
+            - scc
+            - semgrep
+            - scancode
+            - gitleaks
 ```
 
 -----
@@ -178,15 +178,15 @@ Place your custom Semgrep and Tree-sitter rules in the directories you created. 
 
 ```yaml
 rules:
-  - id: fastapi-api-router
+      - id: fastapi-api-router
     patterns:
-      - pattern-either:
-        - pattern: |
+            - pattern-either:
+      - pattern: |
             import fastapi
             ...
             @$ROUTER.get(...)
             ...
-        - pattern: |
+      - pattern: |
             from fastapi import APIRouter
             ...
             router = APIRouter(...)
@@ -390,10 +390,10 @@ The workflow is now a simple two-command process.
 
 This command will automatically:
 
-  * Start the `scc`, `semgrep`, `scancode`, and `gitleaks` services.
-  * Wait for them to complete.
-  * Run the `merge-results` service to execute the Python script.
-  * Clean up the containers when finished.
+- Start the `scc`, `semgrep`, `scancode`, and `gitleaks` services.
+- Wait for them to complete.
+- Run the `merge-results` service to execute the Python script.
+- Clean up the containers when finished.
 
 -----
 

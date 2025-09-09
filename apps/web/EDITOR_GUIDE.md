@@ -7,12 +7,14 @@ The journal now uses a powerful markdown editor with side-by-side preview, combi
 ### Editor Features
 
 #### Writing in Markdown
+
 - **Native Markdown**: Write in standard markdown syntax
 - **Syntax Highlighting**: Code mirror provides syntax highlighting for markdown
 - **Dark Theme**: Built-in OneDark theme for comfortable editing
 - **Live Preview**: See your formatted content in real-time
 
 #### Math Support (KaTeX)
+
 Write mathematical expressions using LaTeX syntax:
 - **Inline Math**: Use single dollar signs `$x^2 + y^2 = z^2$`
 - **Block Math**: Use double dollar signs for display math
@@ -23,6 +25,7 @@ Write mathematical expressions using LaTeX syntax:
   ```
 
 #### Code Blocks
+
 Full syntax highlighting for code blocks:
 ````markdown
 ```javascript
@@ -37,6 +40,7 @@ Supports all major programming languages with automatic syntax detection.
 ### Markdown Syntax Quick Reference
 
 #### Headers
+
 ```markdown
 # H1 Header
 ## H2 Header
@@ -44,6 +48,7 @@ Supports all major programming languages with automatic syntax detection.
 ```
 
 #### Emphasis
+
 ```markdown
 **bold text**
 *italic text*
@@ -51,6 +56,7 @@ Supports all major programming languages with automatic syntax detection.
 ```
 
 #### Lists
+
 ```markdown
 - Bullet point
 - Another point
@@ -58,16 +64,18 @@ Supports all major programming languages with automatic syntax detection.
 
 1. Numbered list
 2. Second item
-   1. Nested number
+  1. Nested number
 ```
 
 #### Links and Images
+
 ```markdown
 [Link text](https://example.com)
 ![Alt text](image-url.jpg)
 ```
 
 #### Tables
+
 ```markdown
 | Header 1 | Header 2 |
 |----------|----------|
@@ -76,12 +84,14 @@ Supports all major programming languages with automatic syntax detection.
 ```
 
 #### Blockquotes
+
 ```markdown
 > This is a blockquote
 > It can span multiple lines
 ```
 
 #### Horizontal Rule
+
 ```markdown
 ---
 ```
@@ -121,6 +131,7 @@ The editor provides a split-pane interface:
 ### Common Patterns
 
 #### Daily Journal Entry
+
 ```markdown
 # Daily Entry - January 4, 2025
 
@@ -140,6 +151,7 @@ def improved_function():
 ```
 
 ## Evening Reflection
+
 Today was productive because...
 ```
 

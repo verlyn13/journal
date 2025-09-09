@@ -41,14 +41,16 @@ We deploy static content to GitHub Pages and put Cloudflare in front:
 You have multiple options; the two simplest:
 
 ### Option A: Public cloud with app auth + Cloudflare Access
+
 - Host the Flask app (gunicorn) behind a reverse proxy (Nginx/Caddy) on a small VM (e.g., Fly.io/Render/VPS)
 - Put Cloudflare in front of your domain (`app.example.com`), enable Access just like above
 - Ensure Flask config is secure:
-  - `SECRET_KEY` from env; `SESSION_COOKIE_SECURE = True` (HTTPS only); `SESSION_COOKIE_SAMESITE = Lax`
-  - `PREFERRED_URL_SCHEME = https`
+      - `SECRET_KEY` from env; `SESSION_COOKIE_SECURE = True` (HTTPS only); `SESSION_COOKIE_SAMESITE = Lax`
+      - `PREFERRED_URL_SCHEME = https`
 - Use systemd service (see `deployment/journal.service`) and a reverse proxy for TLS (Let’s Encrypt) if not using Cloudflare Flexible/Full (strict recommended)
 
 ### Option B: Cloudflare Tunnel + Access (no public inbound)
+
 - Run a Cloudflare Tunnel connector on your host; no open ports are required
 - Map Tunnel route `app.example.com` → localhost:8000
 - Apply Access policy to `app.example.com`; only authenticated users pass
@@ -74,6 +76,7 @@ You have multiple options; the two simplest:
 - [ ] Verify Access gate and HTTPS end-to-end
 
 ## References
+
 - Cloudflare Access: https://developers.cloudflare.com/cloudflare-one/policies/access/
 - GitHub Pages with custom domain: https://docs.github.com/pages/configuring-a-custom-domain
 - Cloudflare Tunnel: https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/

@@ -6,8 +6,8 @@ date_created: "YYYY-MM-DD"
 last_updated: "YYYY-MM-DD"
 status: draft
 related_topics:
-  - "Related Topic 1"
-  - "Related Topic 2"
+      - "Related Topic 1"
+      - "Related Topic 2"
 version: "1.0"
 tags: ["concept", "specific-tag", "another-tag"]
 ---

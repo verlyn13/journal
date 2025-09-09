@@ -7,11 +7,11 @@ last_updated: "YYYY-MM-DD"
 status: draft
 api_version: "v1"
 related_endpoints:
-  - "Related Endpoint 1"
-  - "Related Endpoint 2"
+      - "Related Endpoint 1"
+      - "Related Endpoint 2"
 security:
-  - "Authentication Required: Yes/No"
-  - "Authorization Level: Any special permissions needed"
+      - "Authentication Required: Yes/No"
+      - "Authorization Level: Any special permissions needed"
 tags: ["api", "endpoint", "specific-functionality"]
 ---
 
@@ -150,9 +150,9 @@ For `POST`/`PUT`/`PATCH` requests, describe the expected request body format.
 ```bash
 curl -X POST \
   https://example.com/api/v1/endpoint_path \
-  -H 'Content-Type: application/json' \
-  -H 'Authorization: Bearer {token}' \
-  -d '{
+      -H 'Content-Type: application/json' \
+      -H 'Authorization: Bearer {token}' \
+      -d '{
     "property1": "value1",
     "property2": 123
   }'

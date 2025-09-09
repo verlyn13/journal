@@ -7,9 +7,9 @@ last_updated: "2025-04-08" # Updated to reflect initialization fix documentation
 version: "1.0"
 status: active
 related_topics:
-  - "Editor Architecture"
-  - "JavaScript API Documentation"
-  - "CodeMirror Documentation"
+      - "Editor Architecture"
+      - "JavaScript API Documentation"
+      - "CodeMirror Documentation"
 tags: ["editor", "codemirror", "integration", "javascript", "frontend"]
 ---
 

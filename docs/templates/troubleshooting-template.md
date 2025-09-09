@@ -5,13 +5,13 @@ category: "Troubleshooting"
 date_created: "YYYY-MM-DD"
 last_updated: "YYYY-MM-DD"
 applies_to: 
-  - "Component/Feature 1"
-  - "Component/Feature 2"
+      - "Component/Feature 1"
+      - "Component/Feature 2"
 severity_levels:
-  - "critical|high|medium|low"
+      - "critical|high|medium|low"
 related_docs:
-  - "Related Documentation 1"
-  - "Related Documentation 2"
+      - "Related Documentation 1"
+      - "Related Documentation 2"
 tags: ["troubleshooting", "errors", "specific-functionality"]
 ---
 

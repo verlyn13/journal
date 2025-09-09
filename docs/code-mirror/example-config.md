@@ -8,8 +8,8 @@ version: "1.0"
 status: active
 tags: ["codemirror", "configuration", "example", "setup", "flask-journal"]
 related_topics:
-  - "CodeMirror Integration Guide"
-  - "Editor Architecture"
+        - "CodeMirror Integration Guide"
+        - "Editor Architecture"
 ---
 
 # Example Configuration (Flask Journal)

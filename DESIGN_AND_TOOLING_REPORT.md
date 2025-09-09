@@ -217,20 +217,20 @@ def create_app(config_name='config.Config'):
 The application is organized into three main blueprints:
 
 1. **Auth Blueprint** (`/auth`): Handles user authentication
-   - `/auth/register` - User registration
-   - `/auth/login` - User login
-   - `/auth/logout` - User logout
+- `/auth/register` - User registration
+- `/auth/login` - User login
+- `/auth/logout` - User logout
 
 2. **Main Blueprint** (`/`): Core journal functionality
-   - `/` - Homepage/entry list
-   - `/new_entry` - Create new entry
-   - `/entry/<id>` - View entry
-   - `/edit_entry/<id>` - Edit entry
-   - `/delete_entry/<id>` - Delete entry
-   - `/tag/<name>` - View entries by tag
+- `/` - Homepage/entry list
+- `/new_entry` - Create new entry
+- `/entry/<id>` - View entry
+- `/edit_entry/<id>` - Edit entry
+- `/delete_entry/<id>` - Delete entry
+- `/tag/<name>` - View entries by tag
 
 3. **API Blueprint** (`/api/v1`): RESTful API endpoints
-   - `/api/v1/markdown/preview` - Markdown preview endpoint
+- `/api/v1/markdown/preview` - Markdown preview endpoint
 
 ### Authentication System
 
@@ -351,6 +351,7 @@ src/css/main.css →    PostCSS Process  →    journal/static/gen/main.[hash].c
 ### Table Definitions
 
 #### Users Table
+
 ```sql
 CREATE TABLE user (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -361,6 +362,7 @@ CREATE TABLE user (
 ```
 
 #### Entries Table
+
 ```sql
 CREATE TABLE entry (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -373,6 +375,7 @@ CREATE TABLE entry (
 ```
 
 #### Tags Table
+
 ```sql
 CREATE TABLE tag (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -381,6 +384,7 @@ CREATE TABLE tag (
 ```
 
 #### Entry-Tag Association Table
+
 ```sql
 CREATE TABLE entry_tags (
     entry_id INTEGER,
@@ -425,49 +429,49 @@ CREATE TABLE entry_tags (
 #### GitHub Actions Workflows
 
 1. **Continuous Integration** (`.github/workflows/ci.yml`):
-   - Runs on push to main and pull requests
-   - Steps:
-     - Checkout code
-     - Setup Python and Node.js
-     - Install dependencies
-     - Run linters (Biome, Ruff)
-     - Run type checkers (TypeScript, mypy)
-     - Run unit tests
-     - Build assets
+- Runs on push to main and pull requests
+- Steps:
+  - Checkout code
+  - Setup Python and Node.js
+  - Install dependencies
+  - Run linters (Biome, Ruff)
+  - Run type checkers (TypeScript, mypy)
+  - Run unit tests
+  - Build assets
 
 2. **GitHub Pages Deployment** (`.github/workflows/pages.yml`):
-   - Deploys Storybook documentation
-   - Triggered on push to main
-   - Builds and uploads to GitHub Pages
+- Deploys Storybook documentation
+- Triggered on push to main
+- Builds and uploads to GitHub Pages
 
 3. **Accessibility Testing** (`.github/workflows/ax.yml`):
-   - Runs Playwright with axe-core
-   - Tests all components for WCAG compliance
-   - Generates accessibility reports
+- Runs Playwright with axe-core
+- Tests all components for WCAG compliance
+- Generates accessibility reports
 
 4. **HTMX Testing** (`.github/workflows/hx.yml`):
-   - Tests HTMX interactions
-   - Validates partial page updates
-   - Ensures progressive enhancement
+- Tests HTMX interactions
+- Validates partial page updates
+- Ensures progressive enhancement
 
 ### Asset Optimization
 
 1. **JavaScript Bundling**:
-   - Tree shaking to remove unused code
-   - Code splitting for optimal loading
-   - Minification with Terser
-   - Source maps for debugging
+- Tree shaking to remove unused code
+- Code splitting for optimal loading
+- Minification with Terser
+- Source maps for debugging
 
 2. **CSS Processing**:
-   - PostCSS for transformations
-   - Autoprefixer for browser compatibility
-   - cssnano for minification
-   - PurgeCSS for removing unused styles (production)
+- PostCSS for transformations
+- Autoprefixer for browser compatibility
+- cssnano for minification
+- PurgeCSS for removing unused styles (production)
 
 3. **Cache Busting**:
-   - Content-based hashing for filenames
-   - Manifest file for asset mapping
-   - Long-term browser caching
+- Content-based hashing for filenames
+- Manifest file for asset mapping
+- Long-term browser caching
 
 ## Development Tooling
 
@@ -482,6 +486,7 @@ CREATE TABLE entry_tags (
 ### Code Quality Tools
 
 #### Python
+
 - **Ruff**: Fast Python linter and formatter
   - Configuration in `pyproject.toml`
   - Rules: E, F, I, N, W, UP, S
@@ -492,6 +497,7 @@ CREATE TABLE entry_tags (
   - Type hints required for public APIs
 
 #### JavaScript/TypeScript
+
 - **Biome**: Unified linter and formatter
   - Configuration in `biome.json`
   - Rules for JavaScript, TypeScript, JSON
@@ -553,26 +559,27 @@ CREATE TABLE entry_tags (
 ### Test Categories
 
 1. **Unit Tests** (`tests/unit/`):
-   - Model validation
-   - Form processing
-   - Utility functions
-   - Component logic
+- Model validation
+- Form processing
+- Utility functions
+- Component logic
 
 2. **Integration Tests** (`tests/integration/`):
-   - Database operations
-   - Authentication flow
-   - API endpoints
-   - Template rendering
+- Database operations
+- Authentication flow
+- API endpoints
+- Template rendering
 
 3. **End-to-End Tests** (`tests/e2e/`):
-   - User workflows
-   - Cross-browser testing
-   - Accessibility testing
-   - Performance testing
+- User workflows
+- Cross-browser testing
+- Accessibility testing
+- Performance testing
 
 ### Test Configuration
 
 #### Playwright Configuration
+
 ```javascript
 // playwright.config.js
 export default {
@@ -591,6 +598,7 @@ export default {
 ```
 
 #### pytest Configuration
+
 ```toml
 # pyproject.toml
 [tool.pytest.ini_options]
@@ -602,12 +610,14 @@ addopts = "-v --tb=short --strict-markers"
 ## Security Considerations
 
 ### Authentication Security
+
 - **Password Hashing**: Werkzeug's pbkdf2:sha256
 - **Session Management**: Secure session cookies
 - **CSRF Protection**: Flask-WTF tokens on all forms
 - **SQL Injection Prevention**: SQLAlchemy ORM parameterized queries
 
 ### Content Security
+
 - **XSS Prevention**: 
   - Jinja2 auto-escaping
   - Markdown sanitization
@@ -619,12 +629,14 @@ addopts = "-v --tb=short --strict-markers"
   - Length restrictions on inputs
 
 ### Configuration Security
+
 - **Environment Variables**: Sensitive data in `.env`
 - **Secret Key**: Random generation for production
 - **Debug Mode**: Disabled in production
 - **Error Handling**: Generic error messages to users
 
 ### Dependency Security
+
 - **Regular Updates**: Dependabot for automated PRs
 - **Security Audits**: 
   - `npm audit` for JavaScript
@@ -636,57 +648,58 @@ addopts = "-v --tb=short --strict-markers"
 ### Backend Optimizations
 
 1. **Database**:
-   - Indexed foreign keys
-   - Query optimization with eager loading
-   - Connection pooling (production)
-   - Pagination for large datasets
+- Indexed foreign keys
+- Query optimization with eager loading
+- Connection pooling (production)
+- Pagination for large datasets
 
 2. **Caching**:
-   - Template fragment caching
-   - Static file caching headers
-   - Redis integration ready (production)
+- Template fragment caching
+- Static file caching headers
+- Redis integration ready (production)
 
 3. **Async Support**:
-   - Async view functions where beneficial
-   - Background task queue ready (Celery)
+- Async view functions where beneficial
+- Background task queue ready (Celery)
 
 ### Frontend Optimizations
 
 1. **Loading Performance**:
-   - Critical CSS inlining
-   - JavaScript defer/async loading
-   - Resource hints (preload, prefetch)
-   - Image lazy loading
+- Critical CSS inlining
+- JavaScript defer/async loading
+- Resource hints (preload, prefetch)
+- Image lazy loading
 
 2. **Runtime Performance**:
-   - Virtual scrolling for long lists
-   - Debounced search inputs
-   - Optimistic UI updates with HTMX
-   - Web Workers for heavy processing
+- Virtual scrolling for long lists
+- Debounced search inputs
+- Optimistic UI updates with HTMX
+- Web Workers for heavy processing
 
 3. **Bundle Optimization**:
-   - Code splitting by route
-   - Tree shaking unused code
-   - Dynamic imports for large features
-   - CDN for common libraries
+- Code splitting by route
+- Tree shaking unused code
+- Dynamic imports for large features
+- CDN for common libraries
 
 ### Monitoring and Analytics
 
 1. **Application Monitoring**:
-   - Error tracking (Sentry ready)
-   - Performance monitoring
-   - User analytics (privacy-friendly)
-   - Database query analysis
+- Error tracking (Sentry ready)
+- Performance monitoring
+- User analytics (privacy-friendly)
+- Database query analysis
 
 2. **Build Metrics**:
-   - Bundle size tracking
-   - Build time monitoring
-   - Dependency size analysis
-   - Coverage reports
+- Bundle size tracking
+- Build time monitoring
+- Dependency size analysis
+- Coverage reports
 
 ## Future Enhancements
 
 ### Planned Features
+
 1. **Rich Text Editing**: WYSIWYG editor option
 2. **Media Attachments**: Image and file uploads
 3. **Search Functionality**: Full-text search with filters
@@ -695,37 +708,39 @@ addopts = "-v --tb=short --strict-markers"
 6. **Mobile Apps**: Progressive Web App support
 
 ### Infrastructure Improvements
+
 1. **Production Deployment**: 
-   - Docker containerization
-   - Kubernetes orchestration
-   - Cloud platform integration (AWS/GCP/Azure)
+- Docker containerization
+- Kubernetes orchestration
+- Cloud platform integration (AWS/GCP/Azure)
 
 2. **Database Migration**:
-   - PostgreSQL for production
-   - Alembic for migrations
-   - Read replicas for scaling
+- PostgreSQL for production
+- Alembic for migrations
+- Read replicas for scaling
 
 3. **API Enhancement**:
-   - RESTful API v2
-   - GraphQL endpoint
-   - OpenAPI documentation
-   - Rate limiting
+- RESTful API v2
+- GraphQL endpoint
+- OpenAPI documentation
+- Rate limiting
 
 ### Developer Experience
+
 1. **Development Environment**:
-   - Docker Compose setup
-   - Devcontainer configuration
-   - Hot module replacement
+- Docker Compose setup
+- Devcontainer configuration
+- Hot module replacement
 
 2. **Documentation**:
-   - API documentation with Swagger
-   - Component documentation expansion
-   - Video tutorials
+- API documentation with Swagger
+- Component documentation expansion
+- Video tutorials
 
 3. **Testing Enhancement**:
-   - Mutation testing
-   - Property-based testing
-   - Load testing suite
+- Mutation testing
+- Property-based testing
+- Load testing suite
 
 ## Conclusion
 

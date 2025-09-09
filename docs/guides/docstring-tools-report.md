@@ -7,9 +7,9 @@ updated_date: "2025-04-08"
 version: "1.0"
 status: "draft"
 related_topics:
-  - "Python Docstring Standards"
-  - "Documentation Quality"
-  - "Code Quality"
+      - "Python Docstring Standards"
+      - "Documentation Quality"
+      - "Code Quality"
 tags: ["documentation", "tools", "python", "docstrings", "automation"]
 ---
 
@@ -211,21 +211,21 @@ Based on the evaluation, we recommend implementing a combined approach:
    ```
 
 2. **Configuration Files**:
-   - Create `.flake8` for flake8/pydocstyle configuration
-   - Create `docs/sphinx/conf.py` for Sphinx configuration
-   - Add interrogate settings to existing `pyproject.toml`
+- Create `.flake8` for flake8/pydocstyle configuration
+- Create `docs/sphinx/conf.py` for Sphinx configuration
+- Add interrogate settings to existing `pyproject.toml`
 
 3. **Integration with Development Workflow**:
-   - Add docstring validation to pre-commit hooks
-   - Set up docstring coverage as part of CI/CD pipeline
-   - Create Sphinx documentation generation command
+- Add docstring validation to pre-commit hooks
+- Set up docstring coverage as part of CI/CD pipeline
+- Create Sphinx documentation generation command
 
 4. **Example CI/CD Addition**:
    ```yaml
-   - name: Check docstring coverage
+- name: Check docstring coverage
      run: interrogate -v journal/ --fail-under=90
      
-   - name: Build API documentation
+- name: Build API documentation
      run: cd docs/sphinx && make html
    ```
 

@@ -1,6 +1,7 @@
 # 📚 Documentation Index
 
 ## Statistics
+
 - ✅ Successfully fetched: 53 pages
 - ⚠️  Failed: 0 pages  
 - ⏭️  Skipped (cached): 0 pages
@@ -9,54 +10,64 @@
 ## Biome v2.2.2
 
 ### Guides
+
 - [Getting Started](biome/guides/getting-started.md)
 - [Configure Biome](biome/guides/configure-biome.md)
 - [Migrate from ESLint and Prettier](biome/guides/migrate-eslint-prettier.md)
 - [Editor Extensions](biome/guides/editor-extensions.md)
 
 ### Reference
+
 - [Configuration](biome/reference/configuration.md)
 - [CLI](biome/reference/cli.md)
 - [Linter](biome/reference/linter.md)
 - [Formatter](biome/reference/formatter.md)
 
 ### Recipes
+
 - [CI Setup](biome/recipes/ci-setup.md)
 
 ### Internals
+
 - [Architecture](biome/internals/architecture.md)
 - [Changelog](biome/internals/changelog.md)
 
 ## Bun 1.2.21
 
 ### Getting Started
+
 - [Installation](bun/getting-started/installation.md)
 - [Package Manager](bun/getting-started/package-manager.md)
 - [Quickstart](bun/getting-started/quickstart.md)
 
 ### Configuration
+
 - [bunfig.toml](bun/configuration/bunfig.md)
 - [TypeScript](bun/configuration/typescript.md)
 
 ### Features
+
 - [Bundler](bun/features/bundler.md)
 - [Testing](bun/features/testing.md)
 - [Modules](bun/features/modules.md)
 - [Shell](bun/features/shell.md)
 
 ### API
+
 - [SQL](bun/api/sql.md)
 - [HTTP Server](bun/api/http-server.md)
 - [WebSockets](bun/api/websockets.md)
 - [File I/O](bun/api/file-io.md)
 
 ### Deployment
+
 - [Standalone Executables](bun/deployment/standalone-executables.md)
 - [Environment Variables](bun/deployment/environment-variables.md)
 
 ## TypeScript Migration
 
 ### Project-Specific Guides
+
 - [Migration Guide](typescript-migration/migration-guide.md) - Complete guide for migrating this project to TypeScript
 
 ---

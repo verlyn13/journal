@@ -23,21 +23,21 @@ As outlined in the [Phase 15 Implementation Plan](@docs/implementation/15-phase-
 The following tasks have been delegated to the **Documentation Specialist**:
 
 1.  **API Documentation Improvement:**
-    *   Review and enhance Python docstrings in route files (`journal/api/`, `journal/auth/`, `journal/main/`).
-    *   Create/update comprehensive guides: `api-reference.md`, `authentication.md`, `data-model.md`.
-    *   Ensure clear documentation of endpoints, parameters, request/response formats, and error handling.
+-   Review and enhance Python docstrings in route files (`journal/api/`, `journal/auth/`, `journal/main/`).
+-   Create/update comprehensive guides: `api-reference.md`, `authentication.md`, `data-model.md`.
+-   Ensure clear documentation of endpoints, parameters, request/response formats, and error handling.
 2.  **Documentation Templates Creation:**
-    *   Develop standard Markdown templates for concept guides, API references, component docs, tutorials, and troubleshooting guides in `docs/templates/`.
-    *   Include standard YAML frontmatter and placeholder content.
-    *   Create a guide (`docs/guides/documentation-templates.md`) on using the templates.
+-   Develop standard Markdown templates for concept guides, API references, component docs, tutorials, and troubleshooting guides in `docs/templates/`.
+-   Include standard YAML frontmatter and placeholder content.
+-   Create a guide (`docs/guides/documentation-templates.md`) on using the templates.
 
 ## Expected Outcome
 
 By the end of this phase, we expect to have:
 
-*   Significantly improved and more comprehensive documentation for the core Flask application logic and API.
-*   A set of standardized Markdown templates to ensure consistency and quality in future documentation efforts.
-*   Clear guidelines on how to use the new documentation templates.
+-   Significantly improved and more comprehensive documentation for the core Flask application logic and API.
+-   A set of standardized Markdown templates to ensure consistency and quality in future documentation efforts.
+-   Clear guidelines on how to use the new documentation templates.
 
 ---
 

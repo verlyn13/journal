@@ -140,6 +140,7 @@ function ExpandableCard() {
 ## Preset Animations
 
 ### Entry Morphing
+
 ```tsx
 import { presetTimelines } from '@/lib/choreography';
 
@@ -148,12 +149,14 @@ entryMorph.play();
 ```
 
 ### Sidebar Collapse
+
 ```tsx
 const sidebarCollapse = presetTimelines.sidebarCollapse();
 sidebarCollapse.play();
 ```
 
 ### Focus Mode
+
 ```tsx
 const focusMode = presetTimelines.focusMode();
 focusMode.play();
@@ -162,6 +165,7 @@ focusMode.play();
 ## Advanced Features
 
 ### Stagger Animations
+
 ```tsx
 function StaggeredList({ items }) {
   const itemsRef = useRef<HTMLElement[]>([]);
@@ -183,6 +187,7 @@ function StaggeredList({ items }) {
 ```
 
 ### Entrance/Exit Animations
+
 ```tsx
 function AnimatedModal({ isOpen, onClose }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -204,6 +209,7 @@ function AnimatedModal({ isOpen, onClose }) {
 ## Configuration
 
 ### Global Orchestrator
+
 ```tsx
 const orchestrator = new ChoreographyOrchestrator();
 
@@ -216,6 +222,7 @@ await orchestrator.play('entry-create');
 ```
 
 ### Reduced Motion
+
 The system automatically respects `prefers-reduced-motion`:
 - Animations are skipped and final states applied instantly
 - Gesture thresholds are increased

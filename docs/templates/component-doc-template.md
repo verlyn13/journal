@@ -7,11 +7,11 @@ last_updated: "YYYY-MM-DD"
 status: draft
 component_type: "ui|service|utility|model"
 dependencies:
-  - "Dependency 1"
-  - "Dependency 2"
+      - "Dependency 1"
+      - "Dependency 2"
 related_components:
-  - "Related Component 1"
-  - "Related Component 2"
+      - "Related Component 1"
+      - "Related Component 2"
 file_path: "path/to/component/file.py"
 tags: ["component", "specific-functionality", "layer"]
 ---

@@ -1,4 +1,5 @@
 # Python/TypeScript Dual-Language Project Setup Guide
+
 *Authoritative configuration for Bun 1.2.21, Biome 2.2.2, uv 0.8.14, and Python 3.13.7*
 
 ## Executive Summary
@@ -544,29 +545,29 @@ Create `.pre-commit-config.yaml` for automated checks:
 ```yaml
 repos:
   # Ruff hooks
-  - repo: https://github.com/astral-sh/ruff-pre-commit
+      - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.12.11
     hooks:
       # Run the linter with autofix
-      - id: ruff-check
+            - id: ruff-check
         args: [--fix]
       # Run the formatter
-      - id: ruff-format
+            - id: ruff-format
 
   # uv hooks for dependency management
-  - repo: https://github.com/astral-sh/uv-pre-commit
+      - repo: https://github.com/astral-sh/uv-pre-commit
     rev: 0.8.14
     hooks:
       # Keep lock file up to date
-      - id: uv-lock
+            - id: uv-lock
       # Export requirements if needed
-      - id: uv-export
+            - id: uv-export
         args: ["--no-hashes", "--output-file=requirements.txt"]
 
   # Biome for TypeScript/JavaScript
-  - repo: local
+      - repo: local
     hooks:
-      - id: biome
+            - id: biome
         name: Biome check
         entry: bun run biome check --write
         language: system
@@ -731,65 +732,65 @@ jobs:
   typescript:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+            - uses: actions/checkout@v4
 
-      - uses: oven-sh/setup-bun@v2
+            - uses: oven-sh/setup-bun@v2
         with:
           bun-version: 1.2.21
 
-      - name: Install dependencies
+            - name: Install dependencies
         run: bun install --frozen-lockfile
 
-      - name: Run Biome checks
+            - name: Run Biome checks
         run: bun run lint
 
-      - name: Type check
+            - name: Type check
         run: bun run typecheck
 
-      - name: Run tests
+            - name: Run tests
         run: bun test --coverage
 
-      - name: Build
+            - name: Build
         run: bun run build
 
   python:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+            - uses: actions/checkout@v4
 
-      - name: Install uv
+            - name: Install uv
         run: curl -LsSf https://astral.sh/uv/0.8.14/install.sh | sh
 
-      - name: Set up Python
+            - name: Set up Python
         run: |
           uv python install 3.13.7
           uv python pin 3.13.7
 
-      - name: Install dependencies
+            - name: Install dependencies
         run: uv sync --frozen
 
-      - name: Run Ruff linter
+            - name: Run Ruff linter
         run: uv run ruff check . --output-format=github
 
-      - name: Run Ruff formatter check
+            - name: Run Ruff formatter check
         run: uv run ruff format --check .
 
-      - name: Run mypy
+            - name: Run mypy
         run: uv run mypy .
 
-      - name: Run tests
+            - name: Run tests
         run: uv run pytest --cov --cov-report=xml
 
   # Ruff-specific CI job for detailed reporting
   ruff:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/ruff-action@v3
+            - uses: actions/checkout@v4
+            - uses: astral-sh/ruff-action@v3
         with:
           version: "0.12.11"
           args: "check --output-format=github"
-      - uses: astral-sh/ruff-action@v3
+            - uses: astral-sh/ruff-action@v3
         with:
           version: "0.12.11"
           args: "format --check"
@@ -800,9 +801,9 @@ jobs:
 ```yaml
 # .gitlab-ci.yml
 stages:
-  - lint
-  - test
-  - build
+      - lint
+      - test
+      - build
 
 variables:
   BUN_VERSION: "1.2.21"
@@ -814,13 +815,13 @@ variables:
   stage: lint
   image: ghcr.io/astral-sh/ruff:${RUFF_VERSION}-alpine
   before_script:
-    - cd $CI_PROJECT_DIR
-    - ruff --version
+      - cd $CI_PROJECT_DIR
+      - ruff --version
 
 ruff-check:
   extends: .base_ruff
   script:
-    - ruff check --output-format=gitlab > code-quality-report.json
+      - ruff check --output-format=gitlab > code-quality-report.json
   artifacts:
     reports:
       codequality: $CI_PROJECT_DIR/code-quality-report.json
@@ -828,32 +829,32 @@ ruff-check:
 ruff-format:
   extends: .base_ruff
   script:
-    - ruff format --check --diff
+      - ruff format --check --diff
 
 biome-check:
   stage: lint
   image: node:20-alpine
   before_script:
-    - npm install -g @biomejs/biome@2.2.2
+      - npm install -g @biomejs/biome@2.2.2
   script:
-    - biome check .
+      - biome check .
 
 python-test:
   stage: test
   image: python:${PYTHON_VERSION}-slim
   before_script:
-    - curl -LsSf https://astral.sh/uv/${UV_VERSION}/install.sh | sh
-    - export PATH="$HOME/.local/bin:$PATH"
-    - uv sync --frozen
+      - curl -LsSf https://astral.sh/uv/${UV_VERSION}/install.sh | sh
+      - export PATH="$HOME/.local/bin:$PATH"
+      - uv sync --frozen
   script:
-    - uv run pytest --cov --cov-report=term-missing
+      - uv run pytest --cov --cov-report=term-missing
 
 typescript-test:
   stage: test
   image: oven/bun:${BUN_VERSION}
   script:
-    - bun install --frozen-lockfile
-    - bun test --coverage
+      - bun install --frozen-lockfile
+      - bun test --coverage
 ```
 
 ## Development Workflow
@@ -1026,24 +1027,28 @@ ruff check . --fix --diff
 ## Best Practices
 
 ### 1. Version Management
+
 - Pin exact versions for all tools (Bun, uv, Ruff, Python)
 - Use lockfiles (`bun.lockb`, `uv.lock`) for reproducible builds
 - Commit lockfiles to version control
 - Pin Ruff version to avoid unexpected rule changes
 
 ### 2. Code Organization
+
 - Keep Python and TypeScript code in separate directories
 - Share types through JSON Schema or Protocol Buffers
 - Use workspace features for internal packages
 - Leverage Ruff's hierarchical configuration for monorepos
 
 ### 3. Linting and Formatting Strategy
+
 - **TypeScript/JavaScript**: Use Biome for unified linting and formatting
 - **Python**: Use Ruff for all linting and formatting needs
 - **Consistency**: Align line length (100 chars) across both tools
 - **Pre-commit**: Use hooks to enforce standards before commits
 
 ### 4. The Astral Ecosystem Advantage
+
 Since both uv and Ruff are created by Astral, they work seamlessly together:
 ```bash
 # Install Ruff via uv for perfect integration
@@ -1058,24 +1063,28 @@ uvx ruff check --statistics
 ```
 
 ### 5. Testing Strategy
+
 - Write integration tests that test both languages together
 - Use property-based testing for shared data structures
 - Maintain >80% code coverage for both languages
 - Use Ruff's flake8-pytest-style rules for consistent test structure
 
 ### 6. Security
+
 - Use `trustedDependencies` in Bun for postinstall scripts
 - Regular dependency updates with `uv lock --upgrade`
 - Enable Biome's security rules for JavaScript
 - Enable Ruff's security rules (S, TRY) for Python
 
 ### 7. Performance Monitoring
+
 - Use Bun's built-in benchmarking for TypeScript
 - Profile Python code with `py-spy` or `scalene`
 - Monitor build times in CI
 - Use Ruff's `--statistics` flag to identify frequently violated rules
 
 ### 8. Editor Integration
+
 Configure your editor for maximum productivity:
 
 **VS Code settings.json**:
@@ -1247,6 +1256,7 @@ uv sync
 This setup provides a modern, performant, and maintainable foundation for dual-language projects. The combination creates an optimal development environment for 2025 and beyond:
 
 ### The Rust-Powered Stack
+
 All four primary tools are built with Rust, providing unprecedented speed:
 - **Bun**: JavaScript runtime and bundler (Zig/C++, but Rust-like performance)
 - **Biome**: TypeScript/JavaScript linter and formatter
@@ -1254,12 +1264,14 @@ All four primary tools are built with Rust, providing unprecedented speed:
 - **Ruff**: Python linter and formatter
 
 ### Performance Metrics
+
 - Ruff is 150-200x faster than Flake8, scanning 250k lines in ~0.2s instead of ~20s
 - uv is 10-100x faster than pip with parallel package installation
 - Bun executes TypeScript 40x faster than Node.js
 - Biome formats and lints JavaScript 20x faster than ESLint + Prettier
 
 ### The Astral Advantage
+
 Both uv and Ruff are created by Astral, ensuring:
 - Seamless integration between Python tooling
 - Consistent philosophy and user experience
@@ -1267,6 +1279,7 @@ Both uv and Ruff are created by Astral, ensuring:
 - Shared performance optimizations and caching strategies
 
 ### Tool Unification
+
 Ruff replaces Flake8 (plus dozens of plugins), Black, isort, pydocstyle, pyupgrade, autoflake, and more, all while executing tens or hundreds of times faster. This means:
 - Fewer dependencies to manage
 - Consistent code style enforcement
@@ -1274,6 +1287,7 @@ Ruff replaces Flake8 (plus dozens of plugins), Black, isort, pydocstyle, pyupgra
 - Dramatically faster CI/CD pipelines
 
 ### Development Experience
+
 The setup prioritizes developer happiness:
 - Sub-second linting and formatting for both languages
 - Real-time feedback with watch modes

@@ -1,4 +1,5 @@
 # React 19.1 Migration Workflow - Journal Application
+
 ## Optimized Implementation Guide with Risk Mitigation
 
 ---
@@ -6,6 +7,7 @@
 ## 🎯 Migration Overview
 
 ### Current State Analysis
+
 - **React Version**: 18.3.1 (already at intermediate step)
 - **TypeScript**: 5.6.2 (compatible with React 19)
 - **Vite**: 5.4.6 (needs update to 6.0+)
@@ -14,11 +16,12 @@
 - **CI/CD**: GitHub Actions with Bun 1.2.21
 - **Linting**: Biome 2.2.2 (needs ESLint supplement for React Compiler only)
 - **Editors in Use**: 
-  - CodeMirror 6 (fully compatible with React 19)
-  - Monaco Editor (fully compatible with React 19)
+      - CodeMirror 6 (fully compatible with React 19)
+      - Monaco Editor (fully compatible with React 19)
 - **Note**: TipTap references in stories/types are stale and should be removed
 
 ### Migration Strategy
+
 - **Timeline**: 8-10 days (optimized from 12)
 - **Approach**: Risk-mitigated with multiple escape hatches
 - **Key Principle**: Test compatibility before upgrading dependencies
@@ -28,6 +31,7 @@
 ## 🔬 Phase 0: Smoke Test Migration (Day 0 - 3 hours)
 
 ### Create Minimal Test App
+
 ```bash
 # Create test app outside main repo
 mkdir ~/react19-test && cd ~/react19-test
@@ -63,6 +67,7 @@ echo "## React 19 Migration Issues" > migration-issues.md
 ```
 
 ### Validate Compatibility
+
 1. Test basic app functionality
 2. Test CodeMirror rendering
 3. Test Storybook 8.2.1 with React 19
@@ -74,6 +79,7 @@ echo "## React 19 Migration Issues" > migration-issues.md
 ## 📋 Pre-Migration Setup
 
 ### Create Three Parallel Worktrees
+
 ```bash
 cd /home/verlyn13/Projects/verlyn13/journal
 
@@ -88,6 +94,7 @@ git worktree add worktrees/wt-react-19-rollback feature/react-19-rollback
 ```
 
 ### Comprehensive Baseline Capture
+
 ```bash
 cd worktrees/wt-react-19-minimal/apps/web
 
@@ -125,6 +132,7 @@ node scripts/capture-baseline.js
 ```
 
 ### Dependency Audit
+
 ```bash
 # Check for deprecated patterns
 grep -r "PropTypes" src/ || echo "✓ No PropTypes found"
@@ -147,6 +155,7 @@ sed -i '/@tiptap/d' src/types/ui/editor.ts
 ## 🚀 Phase 1-2: Foundation & Testing Baseline (Days 1-2)
 
 ### Validation Gates Setup
+
 Create `scripts/validate-migration.sh`:
 ```bash
 #!/bin/bash
@@ -180,6 +189,7 @@ echo "✅ All validation gates passed"
 ```
 
 ### Performance Monitoring Setup
+
 ```typescript
 // src/utils/performance-monitor.ts
 export class PerformanceMonitor {
@@ -214,6 +224,7 @@ export class PerformanceMonitor {
 ## 🔄 Phase 3-4: Single-Shot Core Migration (Days 3-4)
 
 ### Coordinated Update (All Together)
+
 ```bash
 cd worktrees/wt-react-19-minimal/apps/web
 
@@ -295,6 +306,7 @@ export default defineConfig({
 ```
 
 ### Update Root Rendering
+
 ```typescript
 // src/main.tsx
 import { StrictMode } from 'react';
@@ -322,6 +334,7 @@ root.render(
 ```
 
 ### Fix Common Issues
+
 ```bash
 # Fix empty useRef calls
 find src -type f -name "*.tsx" -o -name "*.ts" | xargs sed -i 's/useRef()/useRef(null)/g'
@@ -331,6 +344,7 @@ find src -type f -name "*.tsx" | xargs sed -i 's/ref={current => \(.*\)}/ref={cu
 ```
 
 ### Immediate Validation
+
 ```bash
 # Run all tests
 bun run quality:all
@@ -348,6 +362,7 @@ bun run dev
 ## 🛠️ Phase 5-6: Tooling Compatibility (Days 5-6)
 
 ### Test Storybook 8.2.1 First
+
 ```bash
 # Try running existing Storybook with React 19
 bun run storybook
@@ -359,6 +374,7 @@ echo "Warnings: ..." >> migration-notes.md
 ```
 
 ### Only If Storybook Breaks
+
 ```bash
 # Try minimal upgrade to 8.6.x (NOT 9.x)
 bun add --dev @storybook/react@^8.6.0 @storybook/react-vite@^8.6.0
@@ -374,6 +390,7 @@ EOF
 ```
 
 ### Add ESLint for React Compiler Only
+
 ```bash
 # Install minimal ESLint setup
 bun add --dev eslint eslint-plugin-react-compiler
@@ -400,6 +417,7 @@ EOF
 ## 🎭 Phase 7-8: Progressive Enhancement (Days 7-8)
 
 ### Feature Flag Infrastructure
+
 ```typescript
 // src/config/feature-flags.ts
 export const FEATURES = {
@@ -495,6 +513,7 @@ export function JournalForm() {
 ```
 
 ### Deploy to Staging
+
 ```bash
 # Build with features disabled
 ENABLE_REACT_COMPILER=false bun run build
@@ -515,6 +534,7 @@ REACT_19_USE_HOOK=true bun run build
 ## ⚡ Phase 9-10: Optimization & Polish (Days 9-10)
 
 ### Enable React Compiler (Development Only)
+
 ```bash
 # Test in development first
 ENABLE_REACT_COMPILER=true bun run dev
@@ -525,6 +545,7 @@ ENABLE_REACT_COMPILER=true bun run dev
 ```
 
 ### Performance Comparison
+
 ```typescript
 // scripts/performance-compare.js
 import baseline from './baseline-metrics.json';
@@ -548,6 +569,7 @@ console.log('Bundle Size Delta:',
 ```
 
 ### Final Optimization Checklist
+
 - [ ] Remove all console.log statements
 - [ ] Verify no development warnings in production build
 - [ ] Check bundle size is within 5% of baseline
@@ -561,6 +583,7 @@ console.log('Bundle Size Delta:',
 ## 🔄 CI/CD Pipeline Updates
 
 ### Parallel Validation Strategy
+
 ```yaml
 # .github/workflows/web-tests.yml
 name: Web Tests
@@ -576,8 +599,8 @@ jobs:
     runs-on: ubuntu-latest
     if: github.ref != 'refs/heads/feature/react-19-minimal'
     steps:
-      - uses: actions/checkout@v4
-      - name: Test with React 18
+            - uses: actions/checkout@v4
+            - name: Test with React 18
         run: |
           cd apps/web
           bun install
@@ -591,8 +614,8 @@ jobs:
       matrix:
         compiler: [true, false]
     steps:
-      - uses: actions/checkout@v4
-      - name: Test React 19 (compiler=${{ matrix.compiler }})
+            - uses: actions/checkout@v4
+            - name: Test React 19 (compiler=${{ matrix.compiler }})
         env:
           ENABLE_REACT_COMPILER: ${{ matrix.compiler }}
         run: |
@@ -606,7 +629,7 @@ jobs:
     if: success()
     runs-on: ubuntu-latest
     steps:
-      - name: Deploy to staging
+            - name: Deploy to staging
         run: echo "Deploy logic here"
 ```
 
@@ -615,6 +638,7 @@ jobs:
 ## ✅ Validation Gates
 
 ### After Each Phase
+
 ```bash
 #!/bin/bash
 # scripts/phase-validation.sh
@@ -647,6 +671,7 @@ echo "✅ Phase $PHASE validation complete"
 ## 🚨 Rollback Procedures
 
 ### Quick Rollback (< 5 minutes)
+
 ```bash
 # If issues in minimal branch
 cd /home/verlyn13/Projects/verlyn13/journal
@@ -658,6 +683,7 @@ git branch -D feature/react-19-minimal
 ```
 
 ### Partial Rollback (Keep some changes)
+
 ```bash
 # Cherry-pick safe changes
 git checkout main
@@ -672,17 +698,20 @@ git checkout -b feature/react-19-safe
 ## 📊 Success Criteria
 
 ### Phase 1-4: Core Migration
+
 - ✅ Zero regression in existing functionality
 - ✅ All tests passing
 - ✅ Bundle size delta < 5%
 - ✅ No console errors
 
 ### Phase 5-8: Enhancement
+
 - ✅ 90% of new React 19 features accessible
 - ✅ Storybook functional (even if not upgraded)
 - ✅ Performance metrics stable
 
 ### Phase 9-10: Optimization
+
 - ✅ React Compiler validated in development
 - ✅ 10%+ performance improvement (if compiler enabled)
 - ✅ Ready for production deployment
@@ -692,12 +721,14 @@ git checkout -b feature/react-19-safe
 ## ⚠️ Critical Warnings
 
 ### DO NOT Attempt
+
 1. **Server Components with 'use server'** - Requires RSC framework
 2. **Storybook 9 upgrade** - Only if absolutely necessary
 3. **React Compiler in production** - Until thoroughly tested
 4. **All features at once** - Use feature flags
 
 ### DO Focus On
+
 1. **Compatibility first** - Get it working before optimizing
 2. **Incremental validation** - Test after each change
 3. **Escape hatches** - Maintain rollback ability

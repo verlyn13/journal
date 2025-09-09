@@ -4,9 +4,9 @@ description: "Checklist for developers to ensure documentation is updated proper
 category: "Documentation"
 phase: 18
 related_topics:
-  - "Documentation Review Process"
-  - "Documentation Metrics"
-  - "Documentation Testing Process"
+      - "Documentation Review Process"
+      - "Documentation Metrics"
+      - "Documentation Testing Process"
 version: "1.0"
 tags: ["documentation", "checklist", "maintenance", "developer-guide", "best-practices"]
 status: active
@@ -44,33 +44,33 @@ Use this checklist when:
 ### Before Creating a Pull Request
 
 - [ ] **API Documentation**
-  - [ ] Update API reference if endpoints are added, removed, or modified
-  - [ ] Document new parameters, return values, and status codes
-  - [ ] Update API examples to reflect the changes
+      - [ ] Update API reference if endpoints are added, removed, or modified
+      - [ ] Document new parameters, return values, and status codes
+      - [ ] Update API examples to reflect the changes
 
 - [ ] **User-Facing Documentation**
-  - [ ] Update user guides if the change affects user experience
-  - [ ] Add/update screenshots if UI changes are made
-  - [ ] Update FAQs if relevant
+      - [ ] Update user guides if the change affects user experience
+      - [ ] Add/update screenshots if UI changes are made
+      - [ ] Update FAQs if relevant
 
 - [ ] **Developer Documentation**
-  - [ ] Update architecture documentation if component relationships change
-  - [ ] Update data model documentation if database schemas change
-  - [ ] Update setup or configuration guides if environment needs change
+      - [ ] Update architecture documentation if component relationships change
+      - [ ] Update data model documentation if database schemas change
+      - [ ] Update setup or configuration guides if environment needs change
 
 - [ ] **Code Documentation**
-  - [ ] Ensure all new functions/methods have proper docstrings
-  - [ ] Update existing docstrings affected by the changes
-  - [ ] Add comments for complex logic or non-obvious behavior
+      - [ ] Ensure all new functions/methods have proper docstrings
+      - [ ] Update existing docstrings affected by the changes
+      - [ ] Add comments for complex logic or non-obvious behavior
 
 - [ ] **Diagrams and Visual Aids**
-  - [ ] Update sequence diagrams if process flows change
-  - [ ] Update architecture diagrams if component relationships change
-  - [ ] Update data flow diagrams if data paths change
+      - [ ] Update sequence diagrams if process flows change
+      - [ ] Update architecture diagrams if component relationships change
+      - [ ] Update data flow diagrams if data paths change
 
 - [ ] **Run Automated Checks**
-  - [ ] Run Markdown linting on updated documentation
-  - [ ] Validate links in updated documentation
+      - [ ] Run Markdown linting on updated documentation
+      - [ ] Validate links in updated documentation
 
 ## Detailed Guidelines by Change Type
 
@@ -90,56 +90,56 @@ Use this checklist when:
 ```
 
 - **New Endpoints**
-  - Document the endpoint purpose, URL, method, auth requirements
-  - Document request parameters (path, query, body)
-  - Document response format, status codes, and errors
-  - Add example requests and responses
-  - Add the endpoint to any API overview lists
+      - Document the endpoint purpose, URL, method, auth requirements
+      - Document request parameters (path, query, body)
+      - Document response format, status codes, and errors
+      - Add example requests and responses
+      - Add the endpoint to any API overview lists
 
 - **Modified Endpoints**
-  - Update parameter descriptions if behavior changes
-  - Update response format documentation if it changes
-  - Update examples to reflect new behavior
-  - Add migration notes if breaking changes are introduced
+      - Update parameter descriptions if behavior changes
+      - Update response format documentation if it changes
+      - Update examples to reflect new behavior
+      - Add migration notes if breaking changes are introduced
 
 - **Deprecated Endpoints**
-  - Mark the endpoint as deprecated in documentation
-  - Document the recommended alternative
-  - Provide migration examples
+      - Mark the endpoint as deprecated in documentation
+      - Document the recommended alternative
+      - Provide migration examples
 
 ### For Database Changes
 
 - **Schema Changes**
-  - Update data model documentation (`docs/guides/data-model.md`)
-  - Update ERD diagrams if relationships change
-  - Document migration plans for existing data
+      - Update data model documentation (`docs/guides/data-model.md`)
+      - Update ERD diagrams if relationships change
+      - Document migration plans for existing data
 
 - **Query Changes**
-  - Document performance implications of query changes
-  - Update any query examples in developer guides
+      - Document performance implications of query changes
+      - Update any query examples in developer guides
 
 ### For UI Changes
 
 - **New UI Elements**
-  - Update user guide with new feature documentation
-  - Add screenshots of new UI components
-  - Document any new user interactions
+      - Update user guide with new feature documentation
+      - Add screenshots of new UI components
+      - Document any new user interactions
 
 - **Changed Workflows**
-  - Update user guides to reflect new user flows
-  - Update screenshots of changed UI
-  - Consider adding before/after comparisons for significant changes
+      - Update user guides to reflect new user flows
+      - Update screenshots of changed UI
+      - Consider adding before/after comparisons for significant changes
 
 ### For Configuration Changes
 
 - **New Configuration Options**
-  - Document the purpose, default value, and acceptable values
-  - Provide examples of common configurations
-  - Update installation or deployment guides
+      - Document the purpose, default value, and acceptable values
+      - Provide examples of common configurations
+      - Update installation or deployment guides
 
 - **Changed Default Behavior**
-  - Highlight changes that might affect existing deployments
-  - Document migration steps for updating configurations
+      - Highlight changes that might affect existing deployments
+      - Document migration steps for updating configurations
 
 ## Testing Your Documentation Updates
 

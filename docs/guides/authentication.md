@@ -7,9 +7,9 @@ last_updated: "2025-04-08"
 version: "1.0"
 status: active
 related_topics:
-  - "API Reference"
-  - "Data Model"
-  - "User Management"
+      - "API Reference"
+      - "Data Model"
+      - "User Management"
 tags: ["authentication", "security", "flask-login", "user"]
 ---
 
@@ -123,16 +123,16 @@ sequenceDiagram
 
 1. User navigates to `/auth/register`
 2. A registration form is displayed with fields for:
-   - Username
-   - Email
-   - Password
-   - Password confirmation
+- Username
+- Email
+- Password
+- Password confirmation
 3. Upon form submission, the server:
-   - Validates all inputs
-   - Checks for duplicate usernames and emails
-   - Hashes the password using Werkzeug's `generate_password_hash` function
-   - Creates a new User record
-   - Redirects to the login page with a success message
+- Validates all inputs
+- Checks for duplicate usernames and emails
+- Hashes the password using Werkzeug's `generate_password_hash` function
+- Creates a new User record
+- Redirects to the login page with a success message
 
 **Route Details:**
 ```python
@@ -150,15 +150,15 @@ def register():
 
 1. User navigates to `/auth/login`
 2. A login form is displayed with fields for:
-   - Username
-   - Password
-   - "Remember me" checkbox
+- Username
+- Password
+- "Remember me" checkbox
 3. Upon form submission, the server:
-   - Retrieves the user by username
-   - Checks the password against the stored hash
-   - If valid, creates a session for the user using `login_user()`
-   - If "remember me" was checked, sets a long-term session
-   - Redirects to the next page or the index page
+- Retrieves the user by username
+- Checks the password against the stored hash
+- If valid, creates a session for the user using `login_user()`
+- If "remember me" was checked, sets a long-term session
+- Redirects to the next page or the index page
 
 **Route Details:**
 ```python
@@ -176,9 +176,9 @@ def login():
 
 1. User navigates to `/auth/logout`
 2. The server:
-   - Terminates the user's session using `logout_user()`
-   - Displays a confirmation message
-   - Redirects to the index page
+- Terminates the user's session using `logout_user()`
+- Displays a confirmation message
+- Redirects to the index page
 
 **Route Details:**
 ```python

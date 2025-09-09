@@ -4,10 +4,10 @@ category: Tooling
 description: "Guide on setting up and using JSDoc for JavaScript code documentation within the project."
 status: active
 related_topics:
-  - JavaScript
-  - Documentation
-  - JSDoc
-  - Build Pipeline
+      - JavaScript
+      - Documentation
+      - JSDoc
+      - Build Pipeline
 document_id: initial-planning-jsdoc-implementation
 ---
 
@@ -56,10 +56,10 @@ Hence, when someone says "JavaDoc for JavaScript," they usually mean "JSDoc."
      }
    }
    ```
-   - **`source.include`:** Points to your JS source folder(s), e.g. `src/js`.
-   - **`opts.destination`:** Where the generated HTML docs will reside, e.g. `docs/js-api`.
-   - **`opts.template`:** (Optional) The path to a custom template, e.g. [`minami`](https://github.com/Nijikokun/minami) or [`docdash`](https://github.com/clenemt/docdash). You can skip this or use any JSDoc template you prefer.
-   - **`templates.systemName`** and **`templates.theme`** are used by some templates to style or brand the output.
+- **`source.include`:** Points to your JS source folder(s), e.g. `src/js`.
+- **`opts.destination`:** Where the generated HTML docs will reside, e.g. `docs/js-api`.
+- **`opts.template`:** (Optional) The path to a custom template, e.g. [`minami`](https://github.com/Nijikokun/minami) or [`docdash`](https://github.com/clenemt/docdash). You can skip this or use any JSDoc template you prefer.
+- **`templates.systemName`** and **`templates.theme`** are used by some templates to style or brand the output.
 
 3. **Add a script to `package.json`:**
    ```json
@@ -117,13 +117,13 @@ You already have a robust Markdown-based documentation system (e.g., Debugging S
    ```
 
 2. **Access the Generated Documentation**  
-   - The JSDoc documentation is now available at `docs/js-api/index.html`
-   - A guide to using the API documentation is available at [JavaScript API Documentation Guide](../guides/js-api-docs.md)
-   - Standards for writing JSDoc comments are defined in the [JSDoc Standards Guide](../guides/jsdoc-standards.md)
+- The JSDoc documentation is now available at `docs/js-api/index.html`
+- A guide to using the API documentation is available at [JavaScript API Documentation Guide](../guides/js-api-docs.md)
+- Standards for writing JSDoc comments are defined in the [JSDoc Standards Guide](../guides/jsdoc-standards.md)
 
 3. **Continuous Integration**  
-   - If you have a CI pipeline, add a step to run `npm run docs` automatically.  
-   - Optionally, deploy the HTML docs to GitHub Pages or any artifact hosting so your entire team sees updated JS docs.
+- If you have a CI pipeline, add a step to run `npm run docs` automatically.  
+- Optionally, deploy the HTML docs to GitHub Pages or any artifact hosting so your entire team sees updated JS docs.
 
 > **Tip**: Tools like [jsdoc-to-markdown](https://github.com/jsdoc2md/jsdoc-to-markdown) can convert JSDoc comments into Markdown files if you prefer all docs in Markdown rather than HTML.
 
@@ -166,6 +166,7 @@ This setup ensures that:
 ---
 
 ### Final Note
+
 Using "JavaDoc for JavaScript" is almost certainly best done via **JSDoc**. If you truly need the *JavaDoc tool* (the one that ships with the JDK) to parse JavaScript, you'd have to rely on third-party solutions or transpile your JS in odd ways—generally not recommended. JSDoc is simpler, better supported, and widely recognized for JavaScript projects.
 
 ## 8. Implementation in the Flask Journal Project
@@ -173,22 +174,22 @@ Using "JavaDoc for JavaScript" is almost certainly best done via **JSDoc**. If y
 The Flask Journal project has successfully implemented JSDoc documentation:
 
 1. **Installed Dependencies:**  
-   - Added `jsdoc` and `minami` template as dev dependencies
+- Added `jsdoc` and `minami` template as dev dependencies
 
 2. **Configuration:**  
-   - Created `jsdoc.conf.json` at the project root
-   - Added `docs` script to `package.json`
+- Created `jsdoc.conf.json` at the project root
+- Added `docs` script to `package.json`
 
 3. **Documentation Standards:**  
-   - Created [JSDoc Standards Guide](../guides/jsdoc-standards.md) for consistent documentation practices
-   - Applied exemplary JSDoc comments to key JavaScript files:
-     - `src/js/main.js`
-     - `src/js/editor/alpine-component.js`
-     - `src/js/editor/setup.js`
+- Created [JSDoc Standards Guide](../guides/jsdoc-standards.md) for consistent documentation practices
+- Applied exemplary JSDoc comments to key JavaScript files:
+  - `src/js/main.js`
+  - `src/js/editor/alpine-component.js`
+  - `src/js/editor/setup.js`
 
 4. **Generated Documentation:**  
-   - JavaScript API documentation is available at `docs/js-api/index.html`
-   - Created [JavaScript API Documentation Guide](../guides/js-api-docs.md) for navigating the documentation
+- JavaScript API documentation is available at `docs/js-api/index.html`
+- Created [JavaScript API Documentation Guide](../guides/js-api-docs.md) for navigating the documentation
 
 5. **Integration:**  
-   - Updated this implementation guide to link to the generated documentation and standards
+- Updated this implementation guide to link to the generated documentation and standards

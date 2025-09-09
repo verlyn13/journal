@@ -4,8 +4,8 @@ description: "Guidelines and procedures for testing and validating documentation
 category: "Documentation"
 phase: 17
 related_topics:
-  - "Documentation Specialist Role"
-  - "Documentation Templates"
+      - "Documentation Specialist Role"
+      - "Documentation Templates"
 version: "1.0"
 tags: ["documentation", "quality-assurance", "testing", "markdown", "linting"]
 status: active

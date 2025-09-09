@@ -27,19 +27,19 @@ Reference: `apps/api/docs/testing.md` describes test layers, fixtures, and deter
 - Added `nats_capture` fixture to record NATS publications deterministically in integration tests.
 - Added `process_outbox_batch()` to test outbox idempotency in a single-shot manner.
 - Stats endpoint now:
-  - Uses an overridable `_utcnow()` for deterministic tests.
-  - Excludes soft-deleted records from all counters.
+      - Uses an overridable `_utcnow()` for deterministic tests.
+      - Excludes soft-deleted records from all counters.
 - New tests:
-  - Unit: JWT claim logic; markdown/html conversion.
-  - Component: Stats with frozen time; annotated existing API tests as `component`.
-  - Integration: Outbox semantics; pgvector ranking and soft-delete exclusion; embedding worker upserts + reindex idempotency; Alembic schema validation; optional real NATS pubsub/request-reply (gated by env).
+      - Unit: JWT claim logic; markdown/html conversion.
+      - Component: Stats with frozen time; annotated existing API tests as `component`.
+      - Integration: Outbox semantics; pgvector ranking and soft-delete exclusion; embedding worker upserts + reindex idempotency; Alembic schema validation; optional real NATS pubsub/request-reply (gated by env).
 - CI (GitHub Actions):
-  - API Unit+Component: spins up Postgres; runs strict tests with coverage artifacts.
-  - API Integration: spins up Postgres+NATS; runs Alembic; executes integration tests (optionally real NATS) with coverage artifacts.
-  - Web: Vitest with coverage; Playwright job enabled (starts API server, runs E2E, uploads report).
+      - API Unit+Component: spins up Postgres; runs strict tests with coverage artifacts.
+      - API Integration: spins up Postgres+NATS; runs Alembic; executes integration tests (optionally real NATS) with coverage artifacts.
+      - Web: Vitest with coverage; Playwright job enabled (starts API server, runs E2E, uploads report).
 - Developer Experience:
-  - Make targets in `apps/api`: `test-unit`, `test-component`, `test-integration`, `test-all`.
-  - Root Makefile: `test-unit`, `test-component`, `test-integration`, and `quality` (includes lint + tests; E2E opt-in via `RUN_E2E=1`).
+      - Make targets in `apps/api`: `test-unit`, `test-component`, `test-integration`, `test-all`.
+      - Root Makefile: `test-unit`, `test-component`, `test-integration`, and `quality` (includes lint + tests; E2E opt-in via `RUN_E2E=1`).
 
 ---
 
@@ -63,8 +63,8 @@ API tests:
 Web tests:
 - Unit (Vitest): `cd apps/web && bun install && bun run test:coverage`
 - E2E (Playwright):
-  1) Start API: `cd apps/api && uv run fastapi run app/main.py --port 5000`
-  2) In repo root: `npm ci && npx playwright install && npm test`
+        1) Start API: `cd apps/api && uv run fastapi run app/main.py --port 5000`
+        2) In repo root: `npm ci && npx playwright install && npm test`
 
 Root shortcuts:
 - `make test-unit` (API unit + web vitest), `make test-component`, `make test-integration`
@@ -81,11 +81,11 @@ Environment variables:
 ## CI Workflows
 
 - API tests: `.github/workflows/api-tests.yml`
-  - Unit+Component: Postgres service, strict markers, coverage artifacts
-  - Integration: Postgres+NATS services, Alembic upgrade, coverage artifacts, optional real NATS
+      - Unit+Component: Postgres service, strict markers, coverage artifacts
+      - Integration: Postgres+NATS services, Alembic upgrade, coverage artifacts, optional real NATS
 - Web tests: `.github/workflows/web-tests.yml`
-  - Vitest with coverage artifact
-  - Playwright E2E: Starts API server, installs Playwright browsers, uploads report
+      - Vitest with coverage artifact
+      - Playwright E2E: Starts API server, installs Playwright browsers, uploads report
 
 ---
 
@@ -104,7 +104,7 @@ Environment variables:
 2) Expand NATS integration suite (request/reply contracts, reconnect) as needed in non-default runs via env flags.
 3) Add a short CONTRIBUTING testing policy and link to this file and `apps/api/docs/testing.md`.
 4) (Optional) Wire Codecov or upload combined coverage as a badge.
-   - Note: `make e2e` now available at repo root.
+- Note: `make e2e` now available at repo root.
 
 ---
 

@@ -3,27 +3,27 @@ title: "UI/UX Editor Implementation Guide: CodeMirror 6 Integration"
 description: "Detailed guide for implementing the CodeMirror 6 editor component within the Flask Journal system, including setup, architecture, styling, persistence, performance, accessibility, testing, and resource bundling strategy."
 category: "Initial Planning"
 related_topics:
-  - "docs/initial-planning/comprehensive-guide-personal.md"
-  - "docs/initial-planning/mvp-high-level-implementation-guide.md"
+      - "docs/initial-planning/comprehensive-guide-personal.md"
+      - "docs/initial-planning/mvp-high-level-implementation-guide.md"
 version: "1.1" # Updated version due to significant change in resource loading
 tags:
-  - "planning"
-  - "editor"
-  - "codemirror"
-  - "codemirror6"
-  - "markdown"
-  - "latex"
-  - "mathjax"
-  - "alpinejs"
-  - "htmx"
-  - "ui"
-  - "ux"
-  - "frontend"
-  - "bundling"
-  - "rollup"
-  - "flask-assets"
-  - "accessibility"
-  - "testing"
+      - "planning"
+      - "editor"
+      - "codemirror"
+      - "codemirror6"
+      - "markdown"
+      - "latex"
+      - "mathjax"
+      - "alpinejs"
+      - "htmx"
+      - "ui"
+      - "ux"
+      - "frontend"
+      - "bundling"
+      - "rollup"
+      - "flask-assets"
+      - "accessibility"
+      - "testing"
 ---
 
 # UI/UX Editor Implementation Guide: CodeMirror 6 Integration
@@ -644,33 +644,33 @@ Define theme variables in `src/css/base.css` or separate theme files.
 ```css
 /* src/css/base.css (or themes/light.css) */
 :root {
-  --editor-font-family: monospace;
-  --editor-font-size: 1rem;
-  --editor-bg-color: #ffffff;
-  --editor-text-color: #212529;
-  --editor-border-color: #ced4da;
-  --editor-caret-color: #000000;
-  --editor-gutter-bg: #f8f9fa;
-  --editor-gutter-text: #6c757d;
-  --editor-active-gutter-bg: #e9ecef;
-  --editor-active-line-bg: #f1f3f5;
-  --editor-selection-bg: #cfe2ff;
-  --border-radius: 0.25rem;
+      --editor-font-family: monospace;
+      --editor-font-size: 1rem;
+      --editor-bg-color: #ffffff;
+      --editor-text-color: #212529;
+      --editor-border-color: #ced4da;
+      --editor-caret-color: #000000;
+      --editor-gutter-bg: #f8f9fa;
+      --editor-gutter-text: #6c757d;
+      --editor-active-gutter-bg: #e9ecef;
+      --editor-active-line-bg: #f1f3f5;
+      --editor-selection-bg: #cfe2ff;
+      --border-radius: 0.25rem;
   /* Add other variables as needed */
 }
 
 /* Example Dark Theme Variables (in themes/dark.css or using a class/data attribute) */
 /*
 body.dark-theme {
-  --editor-bg-color: #212529;
-  --editor-text-color: #f8f9fa;
-  --editor-border-color: #495057;
-  --editor-caret-color: #ffffff;
-  --editor-gutter-bg: #343a40;
-  --editor-gutter-text: #adb5bd;
-  --editor-active-gutter-bg: #495057;
-  --editor-active-line-bg: #343a40;
-  --editor-selection-bg: #0d6efd;
+      --editor-bg-color: #212529;
+      --editor-text-color: #f8f9fa;
+      --editor-border-color: #495057;
+      --editor-caret-color: #ffffff;
+      --editor-gutter-bg: #343a40;
+      --editor-gutter-text: #adb5bd;
+      --editor-active-gutter-bg: #495057;
+      --editor-active-line-bg: #343a40;
+      --editor-selection-bg: #0d6efd;
 }
 */
 ```
@@ -755,8 +755,8 @@ Instead of loading CodeMirror modules and MathJax from CDNs, we'll bundle assets
 ### Implementation Steps
 
 1.  **Update Dependencies Management (`package.json`)**:
-    *   Create `package.json` in the project root.
-    *   Add dependencies for CodeMirror, MathJax, Rollup, and necessary plugins.
+-   Create `package.json` in the project root.
+-   Add dependencies for CodeMirror, MathJax, Rollup, and necessary plugins.
     ```json
     # package.json (add to project root)
     {
@@ -784,11 +784,11 @@ Instead of loading CodeMirror modules and MathJax from CDNs, we'll bundle assets
       }
     }
     ```
-    *   Run `npm install` to install these dependencies into `node_modules/`. Add `node_modules/` to `.gitignore`.
+-   Run `npm install` to install these dependencies into `node_modules/`. Add `node_modules/` to `.gitignore`.
 
 2.  **Create Rollup Configuration (`rollup.config.js`)**:
-    *   Create `rollup.config.js` in the project root.
-    *   Configure Rollup to bundle JS from `src/js/editor/main.js` and extract CSS.
+-   Create `rollup.config.js` in the project root.
+-   Configure Rollup to bundle JS from `src/js/editor/main.js` and extract CSS.
     ```javascript
     // rollup.config.js
     import resolve from '@rollup/plugin-node-resolve';
@@ -812,7 +812,7 @@ Instead of loading CodeMirror modules and MathJax from CDNs, we'll bundle assets
     ```
 
 3.  **Update MathJax Integration (Use Bundled Version)**:
-    *   Modify `src/js/editor/mathjax-setup.js` to import directly from the installed `mathjax` package instead of loading from CDN.
+-   Modify `src/js/editor/mathjax-setup.js` to import directly from the installed `mathjax` package instead of loading from CDN.
     ```javascript
     // src/js/editor/mathjax-setup.js
     // (Use the updated code provided earlier that imports from 'mathjax/es5/...')
@@ -834,7 +834,7 @@ Instead of loading CodeMirror modules and MathJax from CDNs, we'll bundle assets
     ```
 
 4.  **Create Main Entry Point (`src/js/editor/main.js`)**:
-    *   This file imports all necessary JS modules and CSS.
+-   This file imports all necessary JS modules and CSS.
     ```javascript
     // src/js/editor/main.js
     import { createEditor } from './setup.js';
@@ -871,7 +871,7 @@ Instead of loading CodeMirror modules and MathJax from CDNs, we'll bundle assets
     ```
 
 5.  **Update Flask-Assets Configuration (`journal/__init__.py`)**:
-    *   Configure Flask-Assets to use the bundles generated by Rollup.
+-   Configure Flask-Assets to use the bundles generated by Rollup.
     ```python
     # journal/__init__.py (or wherever Flask app is created)
     from flask_assets import Environment, Bundle
@@ -913,7 +913,7 @@ Instead of loading CodeMirror modules and MathJax from CDNs, we'll bundle assets
     ```
 
 6.  **Update Template to Use Bundled Resources (`editor.html`, `base.html`)**:
-    *   Modify templates to include the Flask-Assets bundles.
+-   Modify templates to include the Flask-Assets bundles.
     ```html
     {# app/templates/base.html - Example Head #}
     <head>
@@ -951,7 +951,7 @@ Instead of loading CodeMirror modules and MathJax from CDNs, we'll bundle assets
     *(Note: Loading logic might vary. Editor JS/CSS should only be loaded on pages where the editor is present).*
 
 7.  **Build Script Integration (`scripts/deploy.sh`)**:
-    *   Ensure the deployment process includes installing Node.js dependencies and running the Rollup build.
+-   Ensure the deployment process includes installing Node.js dependencies and running the Rollup build.
     ```bash
     #!/bin/bash
     echo "Starting deployment..."
@@ -1013,21 +1013,21 @@ Implement comprehensive tests for the editor component:
 -   **Location**: `tests/js/unit/`
 -   **Framework**: Jest or Vitest
 -   **Coverage**:
-    -   Test individual helper functions (`toolbar-actions.js`, `persistence.js`).
-    -   Test MathJax configuration and typesetting calls (mocking `window.MathJax`).
-    -   Test state transitions and logic within the Alpine component (can be tricky, might require integration tests).
+  -   Test individual helper functions (`toolbar-actions.js`, `persistence.js`).
+  -   Test MathJax configuration and typesetting calls (mocking `window.MathJax`).
+  -   Test state transitions and logic within the Alpine component (can be tricky, might require integration tests).
 
 ### Integration Tests
 
 -   **Location**: `tests/js/integration/` (or potentially within Flask integration tests using Selenium/Playwright)
 -   **Framework**: Playwright or Cypress
 -   **Coverage**:
-    -   Simulate user interactions: typing, clicking toolbar buttons, changing modes.
-    -   Verify CodeMirror state updates correctly.
-    -   Verify preview pane renders expected HTML and MathJax output after debounced updates.
-    -   Test draft saving and loading.
-    -   Verify form submission includes the correct editor content.
-    -   Test accessibility features (keyboard navigation, ARIA attributes).
+  -   Simulate user interactions: typing, clicking toolbar buttons, changing modes.
+  -   Verify CodeMirror state updates correctly.
+  -   Verify preview pane renders expected HTML and MathJax output after debounced updates.
+  -   Test draft saving and loading.
+  -   Verify form submission includes the correct editor content.
+  -   Test accessibility features (keyboard navigation, ARIA attributes).
 
 ### Manual Testing
 

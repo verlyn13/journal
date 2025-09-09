@@ -1,9 +1,11 @@
 # Journal Project - Agent Instructions
+
 ## Modern TypeScript/Python Monorepo - September 2025
 
 This project uses a modern monorepo architecture with strict package management and comprehensive testing.
 
 ## Project Structure
+
 ```
 journal/
 ├── apps/
@@ -17,6 +19,7 @@ journal/
 ## Critical Package Management Rules
 
 ### Python (API) - NEVER use pip, poetry, conda
+
 **ALL Python operations in `apps/api/` must use `uv` with virtual environment:**
 - **Virtual env management**: `uv venv`, `uv sync`, `uv lock`
 - **Package operations**: `uv add <package>`, `uv remove <package>`
@@ -28,6 +31,7 @@ journal/
 - **Server**: `uv run fastapi run app/main.py --host 0.0.0.0 --port 5000`
 
 ### TypeScript/JavaScript - Use Bun exclusively (Node 22+ required)
+
 **ALL JS/TS operations must use `bun`:**
 - Root level: `bun install`, `bun run <script>`
 - Web app: `cd apps/web && bun install`, `bun run dev`
@@ -37,16 +41,19 @@ journal/
 ## Development Environment
 
 ### Required Services
+
 Before running tests or development servers:
 ```bash
 cd apps/api && docker compose up -d db nats
 ```
 
 ### Environment Variables
+
 - `TEST_DB_URL=postgresql+asyncpg://journal:journal@localhost:5433/journal_test`
 - `JOURNAL_DB_URL=postgresql+asyncpg://journal:journal@localhost:5433/journal`
 
 ### Quick Development Commands
+
 ```bash
 # Backend development
 cd apps/api && uv run fastapi run app/main.py --host 0.0.0.0 --port 5000
@@ -71,12 +78,14 @@ npm ci && npx playwright install && npm test
 ## Testing Strategy
 
 ### Test Markers
+
 - `@pytest.mark.unit` - Fast, pure logic tests
 - `@pytest.mark.component` - HTTP + DB integration tests  
 - `@pytest.mark.integration` - Full integration with external services
 - `@pytest.mark.e2e` - End-to-end scenarios
 
 ### Coverage Requirements
+
 - Maintain 70%+ test coverage (honest coverage, no cheating)
 - Only exclude integration-heavy modules from coverage
 - All feature code (API endpoints, services, models) must be covered
@@ -84,6 +93,7 @@ npm ci && npx playwright install && npm test
 ## Architecture Principles
 
 ### Backend (apps/api/)
+
 - **Framework**: FastAPI with async/await
 - **Database**: PostgreSQL 16+ with pgvector extension
 - **ORM**: SQLModel (SQLAlchemy + Pydantic)
@@ -93,6 +103,7 @@ npm ci && npx playwright install && npm test
 - **Testing**: pytest with asyncio support
 
 ### Frontend (apps/web/)
+
 - **Framework**: React 19 with TypeScript
 - **Build**: Vite for fast HMR and bundling
 - **Styling**: Tailwind CSS + Shadcn/ui components
@@ -103,6 +114,7 @@ npm ci && npx playwright install && npm test
 ## Code Standards
 
 ### Python Style
+
 - PEP 8 via Ruff (configured in pyproject.toml)
 - Full type hints with SQLModel for ORM
 - Async/await throughout
@@ -110,6 +122,7 @@ npm ci && npx playwright install && npm test
 - Docstrings for public APIs
 
 ### TypeScript Style
+
 - Strict mode, no implicit any
 - Biome for formatting and linting
 - Functional React components with hooks
@@ -142,6 +155,7 @@ npm ci && npx playwright install && npm test
 ## Common Workflows
 
 ### Adding New API Endpoint
+
 1. Define SQLModel schema in `apps/api/app/models/`
 2. Create service layer in `apps/api/app/services/`
 3. Add FastAPI route in `apps/api/app/api/v1/`
@@ -149,12 +163,14 @@ npm ci && npx playwright install && npm test
 5. Update OpenAPI documentation
 
 ### Adding New React Component
+
 1. Create component in `apps/web/src/components/`
 2. Add Storybook story if UI component
 3. Write unit tests alongside component
 4. Update barrel exports if needed
 
 ### Database Changes
+
 1. Modify SQLModel in `apps/api/app/models/`
 2. Generate migration: `cd apps/api && uv run alembic revision --autogenerate -m "description"`
 3. Review generated migration carefully
@@ -163,6 +179,7 @@ npm ci && npx playwright install && npm test
 ## Troubleshooting
 
 ### Common Issues
+
 1. **Import errors**: Check virtual environment activation
 2. **Database connection**: Ensure Docker services are running
 3. **Type errors**: Run `bun run typecheck` or `uv run mypy`
@@ -170,6 +187,7 @@ npm ci && npx playwright install && npm test
 5. **Port conflicts**: Ensure ports 5000, 5173, 5433, 4222 are free
 
 ### Service Dependencies
+
 - **PostgreSQL**: Required for all database operations
 - **NATS**: Required for event streaming (optional for basic testing)
 - **Redis**: Required for session management
@@ -189,6 +207,7 @@ When running as Codex agent in this project:
 ## Codex Configuration
 
 ### Project Bootstrap
+
 To set up or refresh Codex configuration for this project:
 ```bash
 # Read system configuration and create/update project config
@@ -198,6 +217,7 @@ codex "Read ~/Projects/verlyn13/system-setup/PROJECT-AGENT-BOOTSTRAP.md and upda
 ### Model Selection & Usage
 
 #### Available Profiles (from ~/.codex/config.toml)
+
 - **speed** (default): `gpt-5-mini`, fast iteration, routine tasks
 - **depth**: `gpt-5` with high reasoning, complex analysis
 - **permissive**: `gpt-5`, auto-approves successful commands
@@ -205,6 +225,7 @@ codex "Read ~/Projects/verlyn13/system-setup/PROJECT-AGENT-BOOTSTRAP.md and upda
 - **budget**: `gpt-5-mini`, minimal tokens, cost-optimized
 
 #### Profile-Based Execution
+
 ```bash
 # Fast profile (default) - routine tasks, simple fixes
 codex --profile speed "run the test suite and fix any linting errors"
@@ -220,6 +241,7 @@ mise run codex:permissive "scaffold new components"
 ```
 
 ### Mise Integration
+
 The project includes `.mise.toml` with predefined tasks:
 ```bash
 # Quick Codex invocations
@@ -234,6 +256,7 @@ mise run ci          # Simulate CI pipeline locally
 ```
 
 ### Context Inheritance
+
 1. **Global Config**: `~/.codex/config.toml` - Models and profiles
 2. **Global Context**: `~/.codex/AGENTS.md` - System preferences
 3. **Project Context**: `./AGENTS.md` (this file) - Project specifics
@@ -251,9 +274,11 @@ mise run ci          # Simulate CI pipeline locally
 | CI/CD tasks | agent | `codex --profile agent "fix CI pipeline"` |
 
 ### Security Note
+
 API key is retrieved from gopass at `codex/openai/api-key`. Never commit API keys or use environment variables directly.
 
 ## Do Not
+
 - Run `pip install` or `npm install` directly
 - Create files without checking existing patterns  
 - Ignore type errors or linting warnings
@@ -263,6 +288,7 @@ API key is retrieved from gopass at `codex/openai/api-key`. Never commit API key
 - Exclude feature code from test coverage
 
 ## Environment Setup Verification
+
 ```bash
 # Verify all tools are available
 python3 --version    # 3.13.7+

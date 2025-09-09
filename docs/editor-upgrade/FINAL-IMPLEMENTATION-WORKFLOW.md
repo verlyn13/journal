@@ -1,5 +1,7 @@
 # Final Editor Upgrade Implementation Workflow
+
 ## Personal Journal Application - TipTap → CodeMirror/Markdown Migration
+
 ### September 2025 - Pragmatic Approach for Single-User Application
 
 ---

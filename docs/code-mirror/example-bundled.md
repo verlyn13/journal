@@ -59,7 +59,7 @@ Run Rollup directly from the command line:
 
 ```bash
 node_modules/.bin/rollup editor.mjs -f iife -o editor.bundle.js \
-  -p @rollup/plugin-node-resolve
+        -p @rollup/plugin-node-resolve
 ```
 
 Parameters explained:

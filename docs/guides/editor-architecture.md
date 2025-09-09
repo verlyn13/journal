@@ -7,9 +7,9 @@ last_updated: "2025-04-08" # Updated to reflect initialization fix documentation
 version: "1.0"
 status: active
 related_topics:
-  - "Architecture Overview"
-  - "JavaScript API Documentation"
-  - "Frontend Components"
+      - "Architecture Overview"
+      - "JavaScript API Documentation"
+      - "Frontend Components"
 tags: ["editor", "codemirror", "alpine", "javascript", "frontend"]
 ---
 

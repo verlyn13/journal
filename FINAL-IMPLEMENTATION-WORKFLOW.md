@@ -119,21 +119,21 @@ Use these steps to implement without hiccups:
 
 1) Create feature branch: `git checkout -b feat/editor-upgrade`
 2) Phase 2 changes:
-   - Ensure normalization & list gating (done).
-   - Add feature flag; add CodeMirror + ReactMarkdown behind flag.
-   - Add unit tests: mapper and minimal markdown render.
-   - Run:
-     - `bun run typecheck && bun run lint && bun run format`
-     - `cd apps/api && make test`
-     - `bun run test`
+- Ensure normalization & list gating (done).
+- Add feature flag; add CodeMirror + ReactMarkdown behind flag.
+- Add unit tests: mapper and minimal markdown render.
+- Run:
+  - `bun run typecheck && bun run lint && bun run format`
+  - `cd apps/api && make test`
+  - `bun run test`
 3) Phase 3 changes:
-   - Add Turndown and dual-write; DB migration (markdown column); backfill job.
-   - Configure rehype-sanitize schema (see reference doc) for ReactMarkdown.
-   - Update docs.
-   - Run quality gates and Playwright E2E locally.
+- Add Turndown and dual-write; DB migration (markdown column); backfill job.
+- Configure rehype-sanitize schema (see reference doc) for ReactMarkdown.
+- Update docs.
+- Run quality gates and Playwright E2E locally.
 4) Phase 4:
-   - Finalize tests; enable E2E in CI if stable.
-   - Squash commits; open PR with checklist below.
+- Finalize tests; enable E2E in CI if stable.
+- Squash commits; open PR with checklist below.
 
 ## PR Checklist (Reviewer-Visible)
 

@@ -12,21 +12,21 @@ version: "6.0"
 
 ## Table of Contents
 - [CodeMirror Core Extensions Reference](#codemirror-core-extensions-reference)
-  - [Table of Contents](#table-of-contents)
-  - [1. Editing](#1-editing)
-    - [1.1 Whitespace](#11-whitespace)
-    - [1.2 Read-only](#12-read-only)
-    - [1.3 Editing Helpers](#13-editing-helpers)
-  - [2. Presentation](#2-presentation)
-    - [2.1 Styling](#21-styling)
-    - [2.2 Presentation Features](#22-presentation-features)
-    - [2.3 Gutters](#23-gutters)
-    - [2.4 Tooltips](#24-tooltips)
-  - [3. Input Handling](#3-input-handling)
-  - [4. Language](#4-language)
-  - [5. Primitives](#5-primitives)
-  - [6. Transactions](#6-transactions)
-  - [7. Extension Bundles](#7-extension-bundles)
+        - [Table of Contents](#table-of-contents)
+        - [1. Editing](#1-editing)
+        - [1.1 Whitespace](#11-whitespace)
+        - [1.2 Read-only](#12-read-only)
+        - [1.3 Editing Helpers](#13-editing-helpers)
+        - [2. Presentation](#2-presentation)
+        - [2.1 Styling](#21-styling)
+        - [2.2 Presentation Features](#22-presentation-features)
+        - [2.3 Gutters](#23-gutters)
+        - [2.4 Tooltips](#24-tooltips)
+        - [3. Input Handling](#3-input-handling)
+        - [4. Language](#4-language)
+        - [5. Primitives](#5-primitives)
+        - [6. Transactions](#6-transactions)
+        - [7. Extension Bundles](#7-extension-bundles)
 
 ## 1. Editing
 
@@ -96,7 +96,7 @@ Two facets control whether the editor allows modification of its content:
 - **`domEventHandlers`**: Provides handlers for raw browser events
 - **`dropCursor`**: Shows a pseudo-cursor at the current drop point when dragging content
 - **`keymap`**: Facet used to add keymaps to the editor
-  - Built-in keymaps: `standardKeymap`, `defaultKeymap`, `foldKeymap`, `historyKeymap`, `searchKeymap`, `completionKeymap`, `closeBracketsKeymap`, `lintKeymap`
+        - Built-in keymaps: `standardKeymap`, `defaultKeymap`, `foldKeymap`, `historyKeymap`, `searchKeymap`, `completionKeymap`, `closeBracketsKeymap`, `lintKeymap`
 - **`inputHandler`**: Allows functions to intercept and handle user text input
 - **`mouseSelectionStyle`**: Provides hooks for custom handling of mouse selection
 - **`dragMovesSelection`**: Determines when dragging text moves versus copies it

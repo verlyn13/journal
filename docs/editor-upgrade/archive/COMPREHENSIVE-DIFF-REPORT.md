@@ -1,7 +1,9 @@
 # Comprehensive Editor Upgrade Diff/Refactor Report
+
 ## Journal Application - TipTap to CodeMirror/Markdown Migration
 
 ### Executive Summary
+
 This report details the complete transformation from the current TipTap WYSIWYG editor to a HackMD-style markdown-first dual-pane editor using CodeMirror 6 and react-markdown with KaTeX math and syntax highlighting.
 
 ---
@@ -9,6 +11,7 @@ This report details the complete transformation from the current TipTap WYSIWYG 
 ## 1. CURRENT IMPLEMENTATION ANALYSIS
 
 ### 1.1 Technology Stack (Current)
+
 ```
 Editor Core:
 ├── @tiptap/react (2.x) - WYSIWYG framework
@@ -29,6 +32,7 @@ UI Components:
 ```
 
 ### 1.2 Current Editor Features
+
 - **WYSIWYG editing** with rich text formatting
 - **Toolbar-based formatting** (fixed toolbar + bubble menu)
 - **Custom math support** (likely using custom extensions)
@@ -41,6 +45,7 @@ UI Components:
 - **Save button** with Ctrl+S support
 
 ### 1.3 Current Data Flow
+
 ```
 User Input → TipTap Editor → HTML Output → API Save
                 ↓
@@ -52,6 +57,7 @@ User Input → TipTap Editor → HTML Output → API Save
 ## 2. PROPOSED IMPLEMENTATION ANALYSIS
 
 ### 2.1 Technology Stack (Proposed)
+
 ```
 Editor Core:
 ├── @uiw/react-codemirror (4.x) - CodeMirror React wrapper
@@ -69,6 +75,7 @@ Preview/Rendering:
 ```
 
 ### 2.2 Proposed Editor Features
+
 - **Markdown-first editing** (raw markdown source)
 - **Live preview pane** (dual-pane layout)
 - **No toolbar** (keyboard shortcuts only)
@@ -81,6 +88,7 @@ Preview/Rendering:
 - **70ch measure** for optimal reading
 
 ### 2.3 Proposed Data Flow
+
 ```
 User Input → CodeMirror → Markdown Text → react-markdown → Preview
                 ↓                              ↓
@@ -96,6 +104,7 @@ User Input → CodeMirror → Markdown Text → react-markdown → Preview
 ### 3.1 Package Changes
 
 #### Remove Packages
+
 ```bash
 bun remove @tiptap/react @tiptap/starter-kit @tiptap/extension-highlight \
            @tiptap/extension-link @tiptap/extension-placeholder \
@@ -103,6 +112,7 @@ bun remove @tiptap/react @tiptap/starter-kit @tiptap/extension-highlight \
 ```
 
 #### Add Packages
+
 ```bash
 bun add @uiw/react-codemirror @codemirror/lang-markdown \
         @codemirror/theme-one-dark @codemirror/commands \
@@ -113,6 +123,7 @@ bun add @uiw/react-codemirror @codemirror/lang-markdown \
 ### 3.2 File-by-File Changes
 
 #### 3.2.1 DELETE These Files
+
 ```
 apps/web/src/components/editor/
 ├── BubbleToolbar.tsx (56 lines) - No longer needed
@@ -123,6 +134,7 @@ apps/web/src/components/editor/
 ```
 
 #### 3.2.2 CREATE New Files
+
 ```typescript
 // apps/web/src/components/editor/MarkdownEditor.tsx
 // ~250 lines - Main dual-pane editor component
@@ -163,6 +175,7 @@ Component Changes:
 ## 4. API & DATA MIGRATION
 
 ### 4.1 Content Format Changes
+
 ```typescript
 // Current: HTML content
 {
@@ -179,6 +192,7 @@ Component Changes:
 ```
 
 ### 4.2 Database Migration Required
+
 ```sql
 -- Add format column to entries table
 ALTER TABLE entries 
@@ -192,6 +206,7 @@ WHERE format = 'html';
 ```
 
 ### 4.3 API Endpoint Changes
+
 ```typescript
 // apps/api/app/api/v1/entries.py
 class Entry(SQLModel):
@@ -227,6 +242,7 @@ def get_entry_content(entry):
 ## 6. IMPLEMENTATION STEPS (DETAILED)
 
 ### Phase 1: Setup & Dependencies (2 hours)
+
 1. **Install new packages** (15 min)
 2. **Remove old packages** (15 min)
 3. **Update bundle configuration** (30 min)
@@ -234,6 +250,7 @@ def get_entry_content(entry):
 5. **Test build process** (45 min)
 
 ### Phase 2: Core Editor Component (4 hours)
+
 1. **Port SweetSpotMarkdownEditor to TypeScript** (1 hour)
 2. **Integrate with Sanctuary design system** (1 hour)
 3. **Add TypeScript types for all props/state** (30 min)
@@ -241,6 +258,7 @@ def get_entry_content(entry):
 5. **Test basic editing functionality** (1 hour)
 
 ### Phase 3: Feature Parity (6 hours)
+
 1. **Title field integration** (30 min)
 2. **Save functionality with API** (1 hour)
 3. **Auto-save to localStorage** (30 min)
@@ -252,12 +270,14 @@ def get_entry_content(entry):
 9. **Testing all features** (1 hour)
 
 ### Phase 4: Data Migration (4 hours)
+
 1. **Update API models** (30 min)
 2. **Create database migration** (1 hour)
 3. **HTML to Markdown converter** (1.5 hours)
 4. **Test data migration** (1 hour)
 
 ### Phase 5: Polish & Optimization (3 hours)
+
 1. **Responsive design adjustments** (1 hour)
 2. **Performance optimization** (30 min)
 3. **Accessibility testing** (30 min)
@@ -268,19 +288,21 @@ def get_entry_content(entry):
 ## 7. RISK ASSESSMENT & MITIGATION
 
 ### 7.1 High-Risk Areas
+
 1. **User Resistance to Markdown**
-   - Mitigation: Add help documentation, shortcuts guide
-   - Fallback: Keep WYSIWYG option available
+- Mitigation: Add help documentation, shortcuts guide
+- Fallback: Keep WYSIWYG option available
 
 2. **Data Migration Failures**
-   - Mitigation: Backup all data, test on subset first
-   - Fallback: Dual-format support period
+- Mitigation: Backup all data, test on subset first
+- Fallback: Dual-format support period
 
 3. **Mobile Experience Degradation**
-   - Mitigation: Single-pane mode on mobile
-   - Fallback: Keep current editor for mobile
+- Mitigation: Single-pane mode on mobile
+- Fallback: Keep current editor for mobile
 
 ### 7.2 Breaking Changes
+
 - **Content format change** (HTML → Markdown)
 - **API response format change**
 - **localStorage key changes**
@@ -291,6 +313,7 @@ def get_entry_content(entry):
 ## 8. TESTING REQUIREMENTS
 
 ### 8.1 Unit Tests
+
 ```typescript
 // New test files needed:
 - MarkdownEditor.test.tsx
@@ -300,12 +323,14 @@ def get_entry_content(entry):
 ```
 
 ### 8.2 Integration Tests
+
 - Editor state persistence
 - API save/load cycles
 - Format conversion accuracy
 - Preview rendering fidelity
 
 ### 8.3 E2E Tests
+
 - Create entry → Edit → Save → Load
 - Switch between entries
 - Focus mode toggle
@@ -318,6 +343,7 @@ def get_entry_content(entry):
 ## 9. ROLLBACK PLAN
 
 ### 9.1 Feature Flag Implementation
+
 ```typescript
 const FEATURE_FLAGS = {
   USE_MARKDOWN_EDITOR: process.env.REACT_APP_USE_MARKDOWN_EDITOR === 'true'
@@ -330,6 +356,7 @@ const EditorComponent = FEATURE_FLAGS.USE_MARKDOWN_EDITOR
 ```
 
 ### 9.2 Rollback Steps
+
 1. Set feature flag to false
 2. Revert API changes (if deployed)
 3. Keep both editors in codebase temporarily
@@ -341,6 +368,7 @@ const EditorComponent = FEATURE_FLAGS.USE_MARKDOWN_EDITOR
 ## 10. PERFORMANCE METRICS
 
 ### Expected Improvements
+
 - **Initial Load**: -60% bundle size (500KB → 200KB)
 - **Editor Init**: -40% time (TipTap heavy init)
 - **Typing Latency**: -30% (direct text input)
@@ -348,6 +376,7 @@ const EditorComponent = FEATURE_FLAGS.USE_MARKDOWN_EDITOR
 - **Preview Render**: Debounced (180ms)
 
 ### Monitoring Points
+
 - Bundle size analysis
 - First Contentful Paint
 - Time to Interactive
@@ -369,6 +398,7 @@ This migration represents a fundamental shift from WYSIWYG to markdown-first edi
 The migration can be completed in approximately **19 hours of focused development**, with the ability to rollback via feature flags if needed.
 
 ### Recommended Approach
+
 1. Implement behind feature flag
 2. Test with power users first
 3. Provide markdown tutorial/help

@@ -3,23 +3,23 @@ title: "Testing Strategy Guide: Flask Journal System"
 description: "Outlines the testing strategy for the Flask Journal MVP, covering unit, integration, and UI testing approaches using Pytest, fixtures, and specific techniques for Flask, SQLAlchemy, HTMX, etc."
 category: "Testing"
 related_topics:
-  - "Comprehensive Guide: Personal Flask Blog/Journal System"
-  - "Error Handling Guide"
-  - "Deployment Script Improvements Guide"
+      - "Comprehensive Guide: Personal Flask Blog/Journal System"
+      - "Error Handling Guide"
+      - "Deployment Script Improvements Guide"
 version: "1.0"
 tags:
-  - "testing"
-  - "pytest"
-  - "unit testing"
-  - "integration testing"
-  - "ui testing"
-  - "flask"
-  - "sqlalchemy"
-  - "htmx"
-  - "alpinejs"
-  - "fixtures"
-  - "test strategy"
-  - "mvp"
+      - "testing"
+      - "pytest"
+      - "unit testing"
+      - "integration testing"
+      - "ui testing"
+      - "flask"
+      - "sqlalchemy"
+      - "htmx"
+      - "alpinejs"
+      - "fixtures"
+      - "test strategy"
+      - "mvp"
 ---
 
 
@@ -30,28 +30,28 @@ This guide establishes a comprehensive testing approach for your Flask journal a
 ## Table of Contents
 
 - [Testing Strategy Guide for Flask Blog/Journal System](#testing-strategy-guide-for-flask-blogjournal-system)
-  - [Table of Contents](#table-of-contents)
-  - [Unit Testing](#unit-testing)
-    - [Test Structure and Organization](#test-structure-and-organization)
-    - [Service Layer Testing](#service-layer-testing)
-    - [Model Testing](#model-testing)
-    - [Fixtures and Factories](#fixtures-and-factories)
-    - [Authentication/Authorization Testing](#authenticationauthorization-testing)
-  - [Integration Testing](#integration-testing)
-    - [Route Testing](#route-testing)
-    - [Database Integration Testing](#database-integration-testing)
-    - [Session and Cache Testing](#session-and-cache-testing)
-    - [File Upload Testing](#file-upload-testing)
-  - [UI Testing](#ui-testing)
-    - [Template Rendering Tests](#template-rendering-tests)
-    - [HTMX Interaction Testing](#htmx-interaction-testing)
-    - [Alpine.js Component Testing](#alpinejs-component-testing)
-    - [Markdown and LaTeX Rendering Testing](#markdown-and-latex-rendering-testing)
-  - [Test Coverage and CI](#test-coverage-and-ci)
-    - [Coverage Goals and Measurement](#coverage-goals-and-measurement)
-    - [CI Environment Setup](#ci-environment-setup)
-    - [Linting and Code Quality Checks](#linting-and-code-quality-checks)
-    - [Performance Testing](#performance-testing)
+      - [Table of Contents](#table-of-contents)
+      - [Unit Testing](#unit-testing)
+      - [Test Structure and Organization](#test-structure-and-organization)
+      - [Service Layer Testing](#service-layer-testing)
+      - [Model Testing](#model-testing)
+      - [Fixtures and Factories](#fixtures-and-factories)
+      - [Authentication/Authorization Testing](#authenticationauthorization-testing)
+      - [Integration Testing](#integration-testing)
+      - [Route Testing](#route-testing)
+      - [Database Integration Testing](#database-integration-testing)
+      - [Session and Cache Testing](#session-and-cache-testing)
+      - [File Upload Testing](#file-upload-testing)
+      - [UI Testing](#ui-testing)
+      - [Template Rendering Tests](#template-rendering-tests)
+      - [HTMX Interaction Testing](#htmx-interaction-testing)
+      - [Alpine.js Component Testing](#alpinejs-component-testing)
+      - [Markdown and LaTeX Rendering Testing](#markdown-and-latex-rendering-testing)
+      - [Test Coverage and CI](#test-coverage-and-ci)
+      - [Coverage Goals and Measurement](#coverage-goals-and-measurement)
+      - [CI Environment Setup](#ci-environment-setup)
+      - [Linting and Code Quality Checks](#linting-and-code-quality-checks)
+      - [Performance Testing](#performance-testing)
 
 ## Unit Testing
 
@@ -1298,8 +1298,8 @@ class TestEntryTemplates:
         
         This is **bold** and *italic* text.
         
-        - List item 1
-        - List item 2
+      - List item 1
+      - List item 2
         
         [Link](https://example.com)
         
@@ -1853,29 +1853,29 @@ jobs:
         options: --health-cmd="redis-cli ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
     
-    - name: Set up Python
+      - name: Set up Python
       uses: actions/setup-python@v4
       with:
         python-version: '3.10'
         
-    - name: Install dependencies
+      - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; else pip install -r requirements.txt; fi
         pip install pytest pytest-cov black flake8
         
-    - name: Run linting
+      - name: Run linting
       run: |
         flake8 app tests
         black --check app tests
         
-    - name: Run tests with coverage
+      - name: Run tests with coverage
       run: |
         python -m pytest --cov=app --cov-report=xml
         
-    - name: Upload coverage to Codecov
+      - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3
       with:
         file: ./coverage.xml
@@ -1910,27 +1910,27 @@ repos:
 - repo: https://github.com/pre-commit/pre-commit-hooks
   rev: v4.3.0
   hooks:
-  - id: trailing-whitespace
-  - id: end-of-file-fixer
-  - id: check-yaml
-  - id: check-added-large-files
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files
 
 - repo: https://github.com/psf/black
   rev: 22.6.0
   hooks:
-  - id: black
+      - id: black
     args: [--line-length=100]
 
 - repo: https://github.com/pycqa/flake8
   rev: 5.0.4
   hooks:
-  - id: flake8
+      - id: flake8
     additional_dependencies: [flake8-docstrings]
 
 - repo: https://github.com/pycqa/isort
   rev: 5.10.1
   hooks:
-  - id: isort
+      - id: isort
 ```
 
 ### Performance Testing

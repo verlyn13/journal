@@ -1,4 +1,5 @@
 # Bulletproof Implementation Plan
+
 ## Correct-by-Construction Approach for Editor Migration
 
 ### Philosophy: Write Once, Test to Confirm (Not Fix)
@@ -10,6 +11,7 @@
 Before writing ANY component code, verify:
 
 ### 1. Type Contracts First
+
 ```typescript
 // Define all interfaces BEFORE implementation
 interface MarkdownEditorProps {
@@ -31,6 +33,7 @@ interface SanitizationSchema {
 ```
 
 ### 2. Data Flow Verification
+
 ```mermaid
 graph LR
   A[HTML Entry] --> B[Turndown Service]
@@ -46,6 +49,7 @@ graph LR
 ```
 
 ### 3. Security Boundaries
+
 - **Input**: HTML from database (potentially unsafe)
 - **Conversion**: Turndown (safe - outputs markdown string)
 - **Editing**: CodeMirror (safe - text only)
@@ -457,6 +461,7 @@ checkBundleSize();
 ## Phase Implementation with Quality Gates
 
 ### Phase 2: Feature-Flagged Implementation
+
 ```bash
 # Step 1: Implement types and utilities
 ✓ Type definitions complete
@@ -479,6 +484,7 @@ bun run quality:all
 ```
 
 ### Phase 3: Data Layer
+
 ```bash
 # Step 1: Database migration
 ✓ Migration script reviewed
@@ -501,6 +507,7 @@ bun run quality:all
 ```
 
 ### Phase 4: Production Readiness
+
 ```bash
 # Step 1: E2E tests
 ✓ User flow: Create entry
@@ -556,6 +563,7 @@ After implementation:
 ## Common Pitfalls to Avoid
 
 ### 1. Don't Trust Input
+
 ```typescript
 // BAD
 function convert(html) {
@@ -577,6 +585,7 @@ function convert(html: unknown): ConversionResult {
 ```
 
 ### 2. Don't Mix Concerns
+
 ```typescript
 // BAD - Component does too much
 function Editor({ entry, onSave }) {
@@ -595,6 +604,7 @@ function Preview({ content }) {
 ```
 
 ### 3. Don't Skip Validation
+
 ```typescript
 // BAD
 <ReactMarkdown>{content}</ReactMarkdown>
@@ -617,6 +627,7 @@ function Preview({ content }) {
 ## Success Metrics
 
 ### Technical
+
 - Zero console errors
 - Zero TypeScript errors
 - Zero lint warnings
@@ -625,6 +636,7 @@ function Preview({ content }) {
 - Memory stable over time
 
 ### Functional
+
 - HTML converts correctly
 - Math renders properly
 - Code highlights work
@@ -633,6 +645,7 @@ function Preview({ content }) {
 - Both editors coexist
 
 ### Process
+
 - No "fix after test" cycles
 - No regression bugs
 - Clean git history

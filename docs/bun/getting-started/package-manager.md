@@ -293,13 +293,13 @@ jobs:
     name: build-app
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repo
+            - name: Checkout repo
         uses: actions/checkout@v4
-      - name: Install bun
+            - name: Install bun
         uses: oven-sh/setup-bun@v2
-      - name: Install dependencies
+            - name: Install dependencies
         run: bun install
-      - name: Build app
+            - name: Build app
         run: bun run build
 
 ```
@@ -321,13 +321,13 @@ jobs:
     name: build-app
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repo
+            - name: Checkout repo
         uses: actions/checkout@v4
-      - name: Install bun
+            - name: Install bun
         uses: oven-sh/setup-bun@v2
-      - name: Install dependencies
+            - name: Install dependencies
         run: bun ci
-      - name: Build app
+            - name: Build app
         run: bun run build
 
 ```

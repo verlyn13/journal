@@ -3,9 +3,9 @@ title: "CI/CD Workflow Guide"
 description: "Comprehensive guide to the Journal project's CI/CD workflow and GitHub configuration"
 category: "Development Guides"
 related_topics:
-  - "Documentation Review Process"
-  - "Documentation Testing Process"
-  - "Markdown Linting Guide"
+      - "Documentation Review Process"
+      - "Documentation Testing Process"
+      - "Markdown Linting Guide"
 version: "1.0"
 status: "active"
 tags: ["ci-cd", "workflow", "github", "automation", "documentation"]
@@ -124,9 +124,9 @@ To maintain code quality, configure branch protection rules for the `main` branc
 1. Go to Settings > Branches > Add rule
 2. Set "Branch name pattern" to `main`
 3. Enable:
-   - Require pull request reviews before merging
-   - Require status checks to pass before merging
-   - Require branches to be up to date before merging
+- Require pull request reviews before merging
+- Require status checks to pass before merging
+- Require branches to be up to date before merging
 
 ### 5.4. Using the GitHub CLI (`gh`)
 

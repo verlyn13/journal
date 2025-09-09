@@ -16,24 +16,24 @@ Phase 14 of the Flask Journal project, focused on establishing the documentation
 This phase successfully achieved its goals as outlined in the [Phase 14 Implementation Plan](@docs/implementation/14-phase-fourteen-documentation-foundation.md). The **Documentation Specialist** executed the following key tasks:
 
 1.  **Documentation Inventory & Assessment:**
-    *   A comprehensive inventory and assessment of project documentation was created and stored in `docs/audits/`.
-    *   Key findings and priorities for future enhancement were documented in `docs/audits/documentation-assessment-report.md`.
+-   A comprehensive inventory and assessment of project documentation was created and stored in `docs/audits/`.
+-   Key findings and priorities for future enhancement were documented in `docs/audits/documentation-assessment-report.md`.
 2.  **JSDoc Implementation Setup:**
-    *   JSDoc was installed and configured (`jsdoc.conf.json`).
-    *   An `npm run docs` script was added to `package.json`.
-    *   A JSDoc standards guide was created (`docs/guides/jsdoc-standards.md`).
-    *   Exemplary JSDoc comments were added to key JavaScript files.
-    *   Initial API documentation was generated into `docs/js-api/`.
-    *   Relevant planning documents were updated with links to the new resources and generated docs.
+-   JSDoc was installed and configured (`jsdoc.conf.json`).
+-   An `npm run docs` script was added to `package.json`.
+-   A JSDoc standards guide was created (`docs/guides/jsdoc-standards.md`).
+-   Exemplary JSDoc comments were added to key JavaScript files.
+-   Initial API documentation was generated into `docs/js-api/`.
+-   Relevant planning documents were updated with links to the new resources and generated docs.
 
 ## Deliverables
 
-*   Documentation Inventory & Assessment Report (`docs/audits/`)
-*   JSDoc Configuration (`jsdoc.conf.json`, `package.json` update)
-*   JSDoc Standards Guide (`docs/guides/jsdoc-standards.md`)
-*   Generated API Documentation (`docs/js-api/`)
-*   JavaScript API Documentation Guide (`docs/guides/js-api-docs.md`)
-*   Updated links in related Markdown files.
+-   Documentation Inventory & Assessment Report (`docs/audits/`)
+-   JSDoc Configuration (`jsdoc.conf.json`, `package.json` update)
+-   JSDoc Standards Guide (`docs/guides/jsdoc-standards.md`)
+-   Generated API Documentation (`docs/js-api/`)
+-   JavaScript API Documentation Guide (`docs/guides/js-api-docs.md`)
+-   Updated links in related Markdown files.
 
 ## Outcome
 

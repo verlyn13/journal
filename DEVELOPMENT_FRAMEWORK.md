@@ -1,7 +1,9 @@
 # Journal Project - Complete Development Framework
+
 ## Modern Monorepo Architecture with FastAPI + Vite
 
 ### Table of Contents
+
 - [Overview](#overview)
 - [Architecture](#architecture)
 - [Development Setup](#development-setup)
@@ -105,11 +107,11 @@ The project uses a **workspace-based monorepo** approach:
 ### Prerequisites
 
 1. **System Requirements**
-   - Node.js 20+ (for compatibility)
-   - Bun 1.2.21+ (primary JS runtime)
-   - Python 3.11+ (backend)
-   - Docker & Docker Compose (infrastructure)
-   - PostgreSQL 16+ (if running locally)
+- Node.js 20+ (for compatibility)
+- Bun 1.2.21+ (primary JS runtime)
+- Python 3.11+ (backend)
+- Docker & Docker Compose (infrastructure)
+- PostgreSQL 16+ (if running locally)
 
 2. **Install Bun**
    ```bash
@@ -194,6 +196,7 @@ uv run <command>         # Run in venv context
 ### Frontend Build Pipeline
 
 #### Legacy Bundle (Rollup)
+
 ```bash
 # Development watch mode
 bun run dev
@@ -216,6 +219,7 @@ bun run build:verbose
   - Manifest generation for cache busting
 
 #### Modern Web App (Vite)
+
 ```bash
 # Development server
 bun run web:dev         # Runs on http://localhost:5173
@@ -252,24 +256,24 @@ bun run api:worker      # Embedding consumer
 ### Test Categories
 
 1. **Unit Tests** (Python)
-   - Framework: pytest
-   - Coverage target: 85%+
-   - Location: `apps/api/tests/`
+- Framework: pytest
+- Coverage target: 85%+
+- Location: `apps/api/tests/`
 
 2. **E2E Tests** (Playwright)
-   - Browsers: Chrome, Firefox, Safari
-   - Viewports: Desktop, Mobile, Tablet
-   - Location: `tests/`
+- Browsers: Chrome, Firefox, Safari
+- Viewports: Desktop, Mobile, Tablet
+- Location: `tests/`
 
 3. **Visual Regression**
-   - Project: `visual`
-   - Baseline screenshots
-   - Pixel-perfect comparisons
+- Project: `visual`
+- Baseline screenshots
+- Pixel-perfect comparisons
 
 4. **Accessibility Tests**
-   - Project: `a11y`
-   - axe-core integration
-   - WCAG 2.1 compliance
+- Project: `a11y`
+- axe-core integration
+- WCAG 2.1 compliance
 
 ### Running Tests
 
@@ -314,31 +318,31 @@ bun run test:ui         # Playwright UI mode
 **Job: build-test**
 
 1. **Environment Setup**
-   - Ubuntu latest
-   - Bun 1.2.21
-   - Python 3.13.7 via uv
-   - Playwright browsers
+- Ubuntu latest
+- Bun 1.2.21
+- Python 3.13.7 via uv
+- Playwright browsers
 
 2. **Dependency Installation**
-   - Frozen lockfile installs
-   - Cached dependencies
+- Frozen lockfile installs
+- Cached dependencies
 
 3. **Quality Checks**
-   - Biome CI with GitHub reporter
-   - TypeScript type checking
-   - Ruff linting with GitHub annotations
-   - Ruff format check
-   - MyPy type checking
+- Biome CI with GitHub reporter
+- TypeScript type checking
+- Ruff linting with GitHub annotations
+- Ruff format check
+- MyPy type checking
 
 4. **Testing**
-   - pytest with 80% coverage requirement
-   - Playwright accessibility tests
-   - Playwright visual tests
+- pytest with 80% coverage requirement
+- Playwright accessibility tests
+- Playwright visual tests
 
 5. **Build Artifacts**
-   - Storybook static build
-   - Coverage reports
-   - Test results
+- Storybook static build
+- Coverage reports
+- Test results
 
 ### Deployment Strategy
 
@@ -379,13 +383,13 @@ bun run api:db:revision m="description"  # Create migration
    ```
 
 2. **Commit Convention**
-   - `feat:` New features
-   - `fix:` Bug fixes
-   - `docs:` Documentation
-   - `style:` Formatting
-   - `refactor:` Code restructuring
-   - `test:` Test changes
-   - `chore:` Maintenance
+- `feat:` New features
+- `fix:` Bug fixes
+- `docs:` Documentation
+- `style:` Formatting
+- `refactor:` Code restructuring
+- `test:` Test changes
+- `chore:` Maintenance
 
 ### Code Review Process
 
@@ -575,76 +579,76 @@ ORDER BY pg_total_relation_size(relid) DESC;
 ### Frontend Optimization
 
 1. **Code Splitting**
-   - Dynamic imports for routes
-   - Lazy loading for heavy components
-   - Vendor chunk optimization
+- Dynamic imports for routes
+- Lazy loading for heavy components
+- Vendor chunk optimization
 
 2. **Asset Optimization**
-   - Image lazy loading
-   - WebP/AVIF formats
-   - Critical CSS inlining
+- Image lazy loading
+- WebP/AVIF formats
+- Critical CSS inlining
 
 3. **Caching Strategy**
-   - Content-hash based filenames
-   - Long-term browser caching
-   - Service worker for offline
+- Content-hash based filenames
+- Long-term browser caching
+- Service worker for offline
 
 ### Backend Optimization
 
 1. **Database**
-   - Connection pooling
-   - Query optimization with EXPLAIN
-   - Proper indexing strategy
-   - pgvector for similarity search
+- Connection pooling
+- Query optimization with EXPLAIN
+- Proper indexing strategy
+- pgvector for similarity search
 
 2. **Caching**
-   - Redis for session data
-   - Query result caching
-   - Static file caching
+- Redis for session data
+- Query result caching
+- Static file caching
 
 3. **Async Operations**
-   - Background tasks with workers
-   - Event-driven architecture
-   - WebSocket for real-time updates
+- Background tasks with workers
+- Event-driven architecture
+- WebSocket for real-time updates
 
 ## Security Considerations
 
 1. **Authentication & Authorization**
-   - JWT with refresh tokens
-   - Role-based access control
-   - Secure password hashing (bcrypt)
+- JWT with refresh tokens
+- Role-based access control
+- Secure password hashing (bcrypt)
 
 2. **Input Validation**
-   - Pydantic models for API
-   - Zod schemas for frontend
-   - SQL injection prevention
+- Pydantic models for API
+- Zod schemas for frontend
+- SQL injection prevention
 
 3. **Security Headers**
-   - CORS configuration
-   - CSP headers
-   - Rate limiting
+- CORS configuration
+- CSP headers
+- Rate limiting
 
 4. **Secrets Management**
-   - Environment variables
-   - Never commit secrets
-   - Rotate regularly
+- Environment variables
+- Never commit secrets
+- Rotate regularly
 
 ## Monitoring & Observability
 
 1. **Logging**
-   - Structured JSON logging
-   - Log levels (DEBUG, INFO, WARNING, ERROR)
-   - Correlation IDs for tracing
+- Structured JSON logging
+- Log levels (DEBUG, INFO, WARNING, ERROR)
+- Correlation IDs for tracing
 
 2. **Metrics**
-   - OpenTelemetry instrumentation
-   - Custom business metrics
-   - Performance monitoring
+- OpenTelemetry instrumentation
+- Custom business metrics
+- Performance monitoring
 
 3. **Error Tracking**
-   - Comprehensive error handling
-   - Stack trace preservation
-   - User-friendly error messages
+- Comprehensive error handling
+- Stack trace preservation
+- User-friendly error messages
 
 ## Troubleshooting
 
@@ -684,23 +688,23 @@ ORDER BY pg_total_relation_size(relid) DESC;
 ## Contributing Guidelines
 
 1. **Code Style**
-   - Follow existing patterns
-   - Use type hints/annotations
-   - Write self-documenting code
-   - Add tests for new features
+- Follow existing patterns
+- Use type hints/annotations
+- Write self-documenting code
+- Add tests for new features
 
 2. **Pull Request Process**
-   - Create feature branch
-   - Write descriptive commits
-   - Update documentation
-   - Ensure CI passes
-   - Request review
+- Create feature branch
+- Write descriptive commits
+- Update documentation
+- Ensure CI passes
+- Request review
 
 3. **Testing Requirements**
-   - Unit tests for logic
-   - Integration tests for APIs
-   - E2E tests for critical paths
-   - Maintain coverage above 80%
+- Unit tests for logic
+- Integration tests for APIs
+- E2E tests for critical paths
+- Maintain coverage above 80%
 
 ## Future Roadmap
 

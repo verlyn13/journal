@@ -68,13 +68,13 @@ Here’s a clean, up-to-date `package.json` for **Aug 29, 2025** that keeps your
 
 ### Notable version bumps (with sources)
 
-* Rollup `^4.48.1` (latest 3 days ago). ([npm][1])
-* `@rollup/plugin-commonjs` `^28.0.6`. ([npm][2])
-* `@rollup/plugin-node-resolve` `^16.0.1`. ([npm][3])
-* `@rollup/plugin-terser` current line remains `^0.4.4` (still the maintained plugin; the old `rollup-plugin-terser` is deprecated). ([npm][4], [GitHub][5])
-* `markdownlint-cli` `^0.45.0`. ([npm][6])
-* CodeMirror packages: `@codemirror/view` `^6.38.1`, `state` `^6.5.2`, `language` `^6.11.3`, `lang-markdown` `^6.3.4`, metapackage `codemirror` `^6.0.2`. ([npm][7])
-* `marked` updated to `^16.2.1` (released Aug 27, 2025). ([GitHub][8])
+- Rollup `^4.48.1` (latest 3 days ago). ([npm][1])
+- `@rollup/plugin-commonjs` `^28.0.6`. ([npm][2])
+- `@rollup/plugin-node-resolve` `^16.0.1`. ([npm][3])
+- `@rollup/plugin-terser` current line remains `^0.4.4` (still the maintained plugin; the old `rollup-plugin-terser` is deprecated). ([npm][4], [GitHub][5])
+- `markdownlint-cli` `^0.45.0`. ([npm][6])
+- CodeMirror packages: `@codemirror/view` `^6.38.1`, `state` `^6.5.2`, `language` `^6.11.3`, `lang-markdown` `^6.3.4`, metapackage `codemirror` `^6.0.2`. ([npm][7])
+- `marked` updated to `^16.2.1` (released Aug 27, 2025). ([GitHub][8])
 
 > Optional cleanup: if you’re not actually using **TaffyDB** at runtime, remove it—Minami (your JSDoc theme) mentions Taffy internally, but your app doesn’t need `taffydb` as a dependency. ([GitHub][9])
 
@@ -91,8 +91,8 @@ This keeps Rollup and PostCSS, swaps JSDoc➡TypeDoc, and produces declarations 
 npm i -D typescript tslib @rollup/plugin-typescript rollup-plugin-dts typedoc
 ```
 
-* TypeScript 5.9 is current (Aug 2025). Use `^5.9.x`. ([GitHub][10])
-* `rollup-plugin-dts` ≥6.1.0 supports Rollup 4. ([Yarn][11])
+- TypeScript 5.9 is current (Aug 2025). Use `^5.9.x`. ([GitHub][10])
+- `rollup-plugin-dts` ≥6.1.0 supports Rollup 4. ([Yarn][11])
 
 **package.json deltas for TS phase (add when you’re ready):**
 
@@ -140,7 +140,7 @@ A pragmatic config for browser bundles (ESNext modules) that still plays nicely 
 }
 ```
 
-* Keep `"noEmit": true` for the main build (Rollup handles output). Use the DTS Rollup step to emit `.d.ts` bundles. ([Yarn][11])
+- Keep `"noEmit": true` for the main build (Rollup handles output). Use the DTS Rollup step to emit `.d.ts` bundles. ([Yarn][11])
 
 ### 2) Update `rollup.config.mjs` (JS → TS build)
 
@@ -169,7 +169,7 @@ export default {
 };
 ```
 
-* Node ≥18 is OK here per plugin requirements. ([npm][2])
+- Node ≥18 is OK here per plugin requirements. ([npm][2])
 
 ### 3) Add a DTS bundling config
 
@@ -192,30 +192,30 @@ npm run build
 npm run build:types
 ```
 
-* `rollup-plugin-dts` v6+ targets Rollup 3/4 and TS ≥4.5. ([Yarn][11])
+- `rollup-plugin-dts` v6+ targets Rollup 3/4 and TS ≥4.5. ([Yarn][11])
 
 ### 4) Swap JSDoc → TypeDoc (optional but recommended for TS)
 
-* Replace the `docs` script with TypeDoc, which reads TypeScript types/JSdoc and generates HTML/Markdown docs. (Changelog/docs show modern TS support.) ([TypeDoc][13])
-* If you prefer to keep JSDoc for prose, you can run both (TypeScript for types, JSDoc for guides). TS itself supports JSDoc annotations too. ([TypeScript][14])
+- Replace the `docs` script with TypeDoc, which reads TypeScript types/JSdoc and generates HTML/Markdown docs. (Changelog/docs show modern TS support.) ([TypeDoc][13])
+- If you prefer to keep JSDoc for prose, you can run both (TypeScript for types, JSDoc for guides). TS itself supports JSDoc annotations too. ([TypeScript][14])
 
 ### 5) Code moves
 
-* Rename your entry to `src/index.ts` and convert modules incrementally:
+- Rename your entry to `src/index.ts` and convert modules incrementally:
 
-  * Add file-level types (parameters/returns).
-  * For CodeMirror v6 and Alpine.js you usually **don’t** need `@types/*`; both ship types or don’t need them.
-  * If you expose any public API, export those types so TypeDoc and the `.d.ts` bundle include them.
+  - Add file-level types (parameters/returns).
+  - For CodeMirror v6 and Alpine.js you usually **don’t** need `@types/*`; both ship types or don’t need them.
+  - If you expose any public API, export those types so TypeDoc and the `.d.ts` bundle include them.
 
 ### 6) Runtime + Flask wiring (unchanged)
 
-* Keep `rollup-plugin-output-manifest` so Flask can read hashed filenames as you do now.
-* Your CSS pipeline (PostCSS + Autoprefixer + cssnano) stays the same; the PostCSS plugin remains 4.0.2. ([npm][15])
+- Keep `rollup-plugin-output-manifest` so Flask can read hashed filenames as you do now.
+- Your CSS pipeline (PostCSS + Autoprefixer + cssnano) stays the same; the PostCSS plugin remains 4.0.2. ([npm][15])
 
 ### 7) Nice-to-haves (later)
 
-* Add `browserslist` if you want Autoprefixer targeting to be explicit.
-* Consider `markdownlint-cli2` later if you want a faster, config-driven Markdown lint experience; your current `markdownlint-cli` is fine and current. ([npm][6], [GitHub][16])
+- Add `browserslist` if you want Autoprefixer targeting to be explicit.
+- Consider `markdownlint-cli2` later if you want a faster, config-driven Markdown lint experience; your current `markdownlint-cli` is fine and current. ([npm][6], [GitHub][16])
 
 ---
 

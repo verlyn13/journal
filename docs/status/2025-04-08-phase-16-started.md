@@ -23,21 +23,21 @@ As outlined in the [Phase 16 Implementation Plan](@docs/implementation/16-phase-
 The following tasks have been delegated to the **Documentation Specialist**:
 
 1.  **Python Docstring Standardization:**
-    *   Define and document Python docstring standards (e.g., in `docs/guides/python-docstring-standards.md`).
-    *   Systematically review and update docstrings in key Python modules (models, forms, core logic).
-    *   Investigate and report on potential docstring automation/validation tools.
+-   Define and document Python docstring standards (e.g., in `docs/guides/python-docstring-standards.md`).
+-   Systematically review and update docstrings in key Python modules (models, forms, core logic).
+-   Investigate and report on potential docstring automation/validation tools.
 2.  **Visual Documentation Addition:**
-    *   Identify key areas for visual documentation (architecture, flows, data model).
-    *   Choose and document a diagramming approach (e.g., Mermaid).
-    *   Create and integrate diagrams into relevant Markdown documents.
+-   Identify key areas for visual documentation (architecture, flows, data model).
+-   Choose and document a diagramming approach (e.g., Mermaid).
+-   Create and integrate diagrams into relevant Markdown documents.
 
 ## Expected Outcome
 
 By the end of this phase, we expect to have:
 
-*   Established standards for Python docstrings and applied them to key parts of the codebase.
-*   A set of visual diagrams integrated into the documentation, clarifying complex system aspects.
-*   An understanding of potential tools for maintaining docstring quality.
+-   Established standards for Python docstrings and applied them to key parts of the codebase.
+-   A set of visual diagrams integrated into the documentation, clarifying complex system aspects.
+-   An understanding of potential tools for maintaining docstring quality.
 
 ---
 

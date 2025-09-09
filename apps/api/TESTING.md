@@ -101,16 +101,19 @@ uv run pytest -m "not slow"          # Skip slow tests
 ### External Services
 
 #### PostgreSQL + pgvector
+
 - Required for integration tests
 - Start with: `docker compose up -d db`
 - Migrations applied automatically
 
 #### NATS (Optional)
+
 - Mocked by default using `nats_capture` fixture
 - Real NATS tests: `RUN_REAL_NATS=1 uv run pytest tests/integration/test_nats_*.py`
 - Start with: `docker compose up -d nats`
 
 #### Redis (Optional)
+
 - Mocked in tests
 - Start with: `docker compose up -d redis`
 
@@ -127,6 +130,7 @@ Key fixtures in `conftest.py`:
 ## Coverage Requirements
 
 ### Minimum Standards
+
 - **Overall**: 85% minimum (currently 79%)
 - **New Features**: Must include tests
 - **Critical Paths**: 100% coverage expected
@@ -210,6 +214,7 @@ class TestFeatureName:
 ### Common Patterns
 
 #### Testing API Endpoints
+
 ```python
 async def test_endpoint_success(client: AsyncClient, auth_headers: dict):
     response = await client.get("/api/v1/entries", headers=auth_headers)
@@ -217,6 +222,7 @@ async def test_endpoint_success(client: AsyncClient, auth_headers: dict):
 ```
 
 #### Testing Database Operations
+
 ```python
 async def test_db_operation(db_session: AsyncSession):
     from app.infra.models import Entry
@@ -230,6 +236,7 @@ async def test_db_operation(db_session: AsyncSession):
 ```
 
 #### Testing Async Workers
+
 ```python
 async def test_worker_processing():
     from app.workers.embedding_consumer import EmbeddingConsumer
@@ -264,21 +271,21 @@ pre-commit run --all-files
 ### Common Issues
 
 1. **Database Connection Errors**
-   - Ensure PostgreSQL is running: `docker compose up -d db`
-   - Check connection string in environment
+- Ensure PostgreSQL is running: `docker compose up -d db`
+- Check connection string in environment
 
 2. **Test Discovery Issues**
-   - Clear pytest cache: `rm -rf .pytest_cache`
-   - Ensure test files start with `test_`
+- Clear pytest cache: `rm -rf .pytest_cache`
+- Ensure test files start with `test_`
 
 3. **Async Test Errors**
-   - Use `@pytest.mark.asyncio` decorator
-   - Use `AsyncClient` for HTTP tests
-   - Use `AsyncSession` for database tests
+- Use `@pytest.mark.asyncio` decorator
+- Use `AsyncClient` for HTTP tests
+- Use `AsyncSession` for database tests
 
 4. **Coverage Not Updating**
-   - Clear coverage data: `rm .coverage`
-   - Regenerate: `uv run pytest --cov=app`
+- Clear coverage data: `rm .coverage`
+- Regenerate: `uv run pytest --cov=app`
 
 ### Debug Mode
 
@@ -314,6 +321,7 @@ When reorganizing tests:
 ## Quality Testing Initiative
 
 ### Quality-Focused Test Files
+
 Quality tests added to improve test coverage with meaningful scenarios:
 
 - `tests/api/test_entries_quality.py` - Real-world entry API scenarios
@@ -322,6 +330,7 @@ Quality tests added to improve test coverage with meaningful scenarios:
 - `tests/integration/test_workflows_quality.py` - Complete user workflows
 
 ### Implementation Gaps Discovered
+
 See [IMPLEMENTATION_GAPS.md](./IMPLEMENTATION_GAPS.md) for detailed documentation of issues found through quality testing, including:
 - Concurrent database operation conflicts
 - Missing automatic embedding generation
@@ -329,6 +338,7 @@ See [IMPLEMENTATION_GAPS.md](./IMPLEMENTATION_GAPS.md) for detailed documentatio
 - Pagination parameter inconsistencies
 
 ### Quality Test Adjustments
+
 Tests were adjusted to match actual implementation behavior:
 - Concurrent updates changed to sequential (session conflict workaround)
 - Manual embedding generation added for search tests
@@ -340,12 +350,14 @@ Tests were adjusted to match actual implementation behavior:
 For the current Phase 4 (Dual-write Integration):
 
 ### Markdown Migration Tests
+
 - Located in `tests/integration/test_markdown_migration.py`
 - Verify dual-write saves both HTML and Markdown
 - Test backward compatibility
 - Test content format negotiation via headers
 
 ### Key Phase 4 Test Scenarios
+
 1. **Dual-write**: Creating/updating entries saves both formats
 2. **Header Negotiation**: `X-Editor-Mode` header controls response format
 3. **Backward Compatibility**: Legacy clients get HTML by default

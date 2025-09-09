@@ -1,5 +1,7 @@
 # V2 Comprehensive Editor Migration Diff Report
+
 ## TipTap WYSIWYG → CodeMirror/Markdown Dual-Pane Editor
+
 ### Based on Actual Codebase Analysis & editor-upgrade-v2.md Specifications
 
 Generated: September 2025  
@@ -34,6 +36,7 @@ Current implementation consists of:
 ### 1.1 JournalEditor.tsx (397 lines → ~450 lines estimated)
 
 #### Current Implementation
+
 ```typescript
 // Current: TipTap-based WYSIWYG
 import { EditorContent, useEditor } from "@tiptap/react";
@@ -66,6 +69,7 @@ const editor = useEditor({
 ```
 
 #### Target Implementation
+
 ```typescript
 // Target: Dual-pane Markdown editor
 import CodeMirror from '@uiw/react-codemirror';
@@ -118,6 +122,7 @@ const renderMarkdown = (content: string) => {
 ### 1.2 BubbleToolbar.tsx (523 lines → REMOVED)
 
 #### Current Implementation
+
 - Complex floating toolbar with 523 lines
 - Link editor component (163-290)
 - Highlight color picker
@@ -125,6 +130,7 @@ const renderMarkdown = (content: string) => {
 - Math insertion
 
 #### Target Implementation
+
 - **REMOVED ENTIRELY**
 - Replaced by Markdown syntax in CodeMirror
 - User types markdown directly: `**bold**`, `_italic_`, `[link](url)`
@@ -137,6 +143,7 @@ const renderMarkdown = (content: string) => {
 ### 1.3 CodeBlockMonaco Extension (→ Native Markdown Code Blocks)
 
 #### Current Implementation
+
 ```typescript
 // Custom Monaco integration for code blocks
 export const CodeBlockMonaco = Node.create({
@@ -147,6 +154,7 @@ export const CodeBlockMonaco = Node.create({
 ```
 
 #### Target Implementation
+
 ```markdown
 # In CodeMirror (user types):
 ```javascript
@@ -155,7 +163,8 @@ function example() {
 }
 ```
 
-# Rendered in preview via rehype-highlight:
+# Rendered in preview via rehype-highlight
+
 <ReactMarkdown
     rehypePlugins={[
         [rehypeHighlight, { detect: true }]
@@ -185,6 +194,7 @@ export const MathInline = Node.create({
 ```
 
 #### Target Implementation
+
 ```typescript
 // Integrated in Markdown pipeline
 <ReactMarkdown
@@ -207,11 +217,13 @@ export const MathInline = Node.create({
 ### 1.5 SlashCommands Extension (→ Markdown Snippets)
 
 #### Current Implementation
+
 - Complex command palette with categories
 - Template insertion system
 - ~300+ lines of slash command logic
 
 #### Target Implementation
+
 ```typescript
 // Simplified snippet system in CodeMirror
 const snippets = [
@@ -235,6 +247,7 @@ import { snippetCompletion } from '@codemirror/autocomplete';
 ### 2.1 Database Migration Plan
 
 #### Current State
+
 ```sql
 -- Current entries table
 CREATE TABLE entries (
@@ -246,6 +259,7 @@ CREATE TABLE entries (
 ```
 
 #### Migration Process
+
 ```python
 # apps/api/app/migrations/convert_html_to_markdown.py
 from turndown import Turndown
@@ -288,6 +302,7 @@ def migrate_entries_to_markdown(db: Session):
 ```
 
 #### Rollback Strategy
+
 ```python
 def rollback_to_html(db: Session, entry_id: UUID):
     """Rollback individual entry to HTML if needed"""
@@ -321,6 +336,7 @@ const EditorComponent = features.markdownEditor.enabled
 ## Part 3: Bundle Size Analysis
 
 ### Current Bundle Impact
+
 ```
 TipTap Core:          ~200KB
 Monaco Editor:        ~2MB (lazy loaded but still huge)
@@ -331,6 +347,7 @@ Total:               ~2.55MB
 ```
 
 ### Target Bundle Impact
+
 ```
 CodeMirror Core:      ~150KB
 Markdown Extensions:  ~30KB
@@ -345,6 +362,7 @@ Savings:             ~1.95MB (76% reduction)
 ```
 
 ### Bundle Optimization Strategy
+
 ```javascript
 // Lazy load the editor
 const MarkdownEditor = lazy(() => import('./MarkdownEditor'));
@@ -375,12 +393,14 @@ export default {
 ### 4.1 XSS Prevention
 
 #### Current Vulnerability
+
 ```typescript
 // Current: TipTap renders HTML directly
 <div dangerouslySetInnerHTML={{ __html: editor.getHTML() }} />
 ```
 
 #### Secured Implementation
+
 ```typescript
 // Target: All content sanitized
 import DOMPurify from 'dompurify';
@@ -402,6 +422,7 @@ const renderSafeMarkdown = (content: string) => {
 ```
 
 ### 4.2 Content Security Policy
+
 ```typescript
 // apps/web/index.html
 <meta http-equiv="Content-Security-Policy" 
@@ -418,11 +439,13 @@ const renderSafeMarkdown = (content: string) => {
 ### 5.1 Line Break Handling (Critical UX Fix)
 
 #### Current Behavior
+
 - Single Enter = new paragraph (`<p>`)
 - Shift+Enter = line break (`<br>`)
 - Users confused by invisible formatting
 
 #### Target Behavior with remark-breaks
+
 ```typescript
 // Natural line break handling
 import remarkBreaks from 'remark-breaks';
@@ -452,6 +475,7 @@ Second line"
 | Math | Button | Type `$math$` |
 
 ### 5.3 Migration Messaging
+
 ```typescript
 // Show migration banner for affected users
 const MigrationBanner = () => (
@@ -472,6 +496,7 @@ const MigrationBanner = () => (
 ## Part 6: Testing Strategy
 
 ### 6.1 Unit Tests
+
 ```typescript
 // apps/web/src/components/editor/__tests__/MarkdownEditor.test.tsx
 describe('MarkdownEditor', () => {
@@ -496,6 +521,7 @@ describe('MarkdownEditor', () => {
 ```
 
 ### 6.2 Integration Tests
+
 ```typescript
 // E2E test for migration flow
 test('existing HTML entries display correctly', async ({ page }) => {
@@ -514,6 +540,7 @@ test('existing HTML entries display correctly', async ({ page }) => {
 ```
 
 ### 6.3 Performance Tests
+
 ```typescript
 // Measure bundle size changes
 describe('Bundle Size', () => {
@@ -535,30 +562,35 @@ describe('Bundle Size', () => {
 ## Part 7: Implementation Timeline
 
 ### Phase 1: Foundation (Week 1-2)
+
 - [ ] Set up CodeMirror with markdown mode
 - [ ] Implement Turndown HTML→Markdown conversion
 - [ ] Add remark-breaks for line break handling
 - [ ] Create basic split-pane layout
 
 ### Phase 2: Feature Parity (Week 3-4)
+
 - [ ] Implement markdown preview with react-markdown
 - [ ] Add math support (remark-math/rehype-katex)
 - [ ] Set up syntax highlighting (rehype-highlight)
 - [ ] Add DOMPurify sanitization
 
 ### Phase 3: Migration (Week 5-6)
+
 - [ ] Create database migration scripts
 - [ ] Implement feature flags
 - [ ] Add fallback to old editor
 - [ ] Set up A/B testing
 
 ### Phase 4: Testing & Optimization (Week 7-8)
+
 - [ ] Comprehensive testing suite
 - [ ] Bundle size optimization
 - [ ] Performance testing
 - [ ] Security audit
 
 ### Phase 5: Rollout (Week 9-10)
+
 - [ ] 10% rollout to beta users
 - [ ] Monitor metrics and feedback
 - [ ] Fix issues and optimize
@@ -569,16 +601,19 @@ describe('Bundle Size', () => {
 ## Part 8: Risk Assessment
 
 ### High Risk Items
+
 1. **Data Loss**: Mitigated by keeping original HTML, dual-format storage
 2. **User Confusion**: Mitigated by migration banner, help docs, classic mode
 3. **Performance Regression**: Mitigated by lazy loading, code splitting
 
 ### Medium Risk Items
+
 1. **Math Rendering Issues**: Test extensively with complex equations
 2. **Mobile Experience**: Ensure touch-friendly markdown editing
 3. **Accessibility**: Maintain ARIA labels and keyboard navigation
 
 ### Low Risk Items
+
 1. **Bundle Size**: Already measured, 76% reduction expected
 2. **Security**: DOMPurify is battle-tested
 3. **Browser Compatibility**: CodeMirror 6 supports all modern browsers
@@ -588,6 +623,7 @@ describe('Bundle Size', () => {
 ## Part 9: Rollback Plan
 
 ### Immediate Rollback (< 1 hour)
+
 ```typescript
 // Feature flag disable
 process.env.VITE_MARKDOWN_EDITOR = 'false';
@@ -595,6 +631,7 @@ process.env.VITE_MARKDOWN_EDITOR = 'false';
 ```
 
 ### Data Rollback (< 1 day)
+
 ```sql
 -- Revert to HTML content
 UPDATE entries 
@@ -603,6 +640,7 @@ WHERE content_format = 'dual';
 ```
 
 ### Complete Rollback (< 1 week)
+
 ```bash
 # Revert git commits
 git revert <markdown-editor-commits>
@@ -619,18 +657,21 @@ pg_restore -d journal backup_before_migration.sql
 ## Part 10: Success Metrics
 
 ### Technical Metrics
+
 - **Bundle Size**: < 600KB (currently 2.55MB)
 - **Initial Load**: < 2s on 3G (currently 5s)
 - **Editor Init**: < 100ms (currently 500ms)
 - **Memory Usage**: < 50MB (currently 200MB with Monaco)
 
 ### User Metrics
+
 - **Adoption Rate**: > 80% stay on new editor
 - **Support Tickets**: < 5% increase
 - **User Satisfaction**: > 4.0/5.0 rating
 - **Performance Perception**: > 70% say "faster"
 
 ### Business Metrics
+
 - **Storage Costs**: 30% reduction (Markdown smaller than HTML)
 - **CDN Costs**: 50% reduction (smaller bundles)
 - **Development Velocity**: 2x faster feature development

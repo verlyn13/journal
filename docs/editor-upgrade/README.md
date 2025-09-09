@@ -1,4 +1,5 @@
 # Editor Upgrade Documentation
+
 ## TipTap → CodeMirror/Markdown Migration
 
 This folder contains the final implementation plan and reference materials for migrating from TipTap WYSIWYG to a CodeMirror/Markdown dual-pane editor.

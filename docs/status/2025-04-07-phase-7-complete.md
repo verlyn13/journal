@@ -21,16 +21,16 @@ The implementation of UI/UX enhancements is complete. The application now featur
 
 **Key Activities:**
 
-*   Updated `base.html` and `main.css` to support and style categorized flash messages.
-*   Added general CSS improvements for layout, typography, navigation, forms, and buttons in `main.css`.
-*   Added specific styling for tags in `main.css`.
-*   Updated form templates to use a CSS class for error messages instead of inline styles.
+-   Updated `base.html` and `main.css` to support and style categorized flash messages.
+-   Added general CSS improvements for layout, typography, navigation, forms, and buttons in `main.css`.
+-   Added specific styling for tags in `main.css`.
+-   Updated form templates to use a CSS class for error messages instead of inline styles.
 
 **Next Steps:**
 
-*   Plan the next phase of development (if any).
+-   Plan the next phase of development (if any).
 
 **Relevant Documentation:**
 
-*   [Phase 7 Implementation Plan](@docs/implementation/07-phase-seven-ui-ux.md)
-*   [Phase 7 Summary](@docs/implementation/07-phase-seven-summary.md)
+-   [Phase 7 Implementation Plan](@docs/implementation/07-phase-seven-ui-ux.md)
+-   [Phase 7 Summary](@docs/implementation/07-phase-seven-summary.md)

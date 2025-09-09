@@ -220,18 +220,18 @@ This builds the production bundle and verifies size constraints.
 The dual-write tests verify:
 
 1. **Markdown Mode**:
-   - Sends `markdown_content` field when saving
-   - Sets `content_version: 2` for markdown entries
-   - Includes `X-Editor-Mode: markdown` header
+- Sends `markdown_content` field when saving
+- Sets `content_version: 2` for markdown entries
+- Includes `X-Editor-Mode: markdown` header
 
 2. **Legacy Mode**:
-   - Only sends HTML content
-   - No markdown-specific fields
-   - Maintains backward compatibility
+- Only sends HTML content
+- No markdown-specific fields
+- Maintains backward compatibility
 
 3. **Header Negotiation**:
-   - API respects `X-Editor-Mode` header
-   - Returns appropriate format based on client preference
+- API respects `X-Editor-Mode` header
+- Returns appropriate format based on client preference
 
 ## Continuous Integration
 
@@ -252,20 +252,20 @@ GitHub Actions workflow includes:
 ### Common Issues
 
 1. **Test Timeout**
-   - Increase timeout: `{ timeout: 5000 }`
-   - Check for unresolved promises
+- Increase timeout: `{ timeout: 5000 }`
+- Check for unresolved promises
 
 2. **Module Import Errors**
-   - Clear cache: `rm -rf node_modules/.vite`
-   - Reinstall: `bun install`
+- Clear cache: `rm -rf node_modules/.vite`
+- Reinstall: `bun install`
 
 3. **React Testing Library Queries**
-   - Use `screen.debug()` to see rendered output
-   - Prefer accessible queries (getByRole, getByLabelText)
+- Use `screen.debug()` to see rendered output
+- Prefer accessible queries (getByRole, getByLabelText)
 
 4. **Mock Not Working**
-   - Ensure mock is before component import
-   - Clear module cache between tests
+- Ensure mock is before component import
+- Clear module cache between tests
 
 ### Debug Mode
 

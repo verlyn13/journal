@@ -7,9 +7,9 @@ last_updated: "2025-04-08"
 version: "1.0"
 status: active
 related_topics:
-  - "Data Model"
-  - "Authentication"
-  - "Request Lifecycle"
+      - "Data Model"
+      - "Authentication"
+      - "Request Lifecycle"
 tags: ["architecture", "flask", "blueprints", "SQLAlchemy", "components"]
 ---
 

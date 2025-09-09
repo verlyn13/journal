@@ -1,4 +1,5 @@
 # Vitest Migration Impact Analysis
+
 ## Current State & Migration Plan
 
 ---
@@ -6,16 +7,19 @@
 ## Current Testing Setup Analysis
 
 ### What We Found
+
 - **Minimal Jest footprint**: Only 2 references found
 - **Already using Vitest**: `@testing-library/jest-dom/vitest` import shows Vitest is already in use
 - **Not a big refactor**: This is actually a small cleanup, not a major migration
 
 ### Current Dependencies
+
 ```json
 "@testing-library/jest-dom": "^6.8.0"  // Has Vitest support
 ```
 
 ### Current Test Setup
+
 ```typescript
 // src/test-setup.ts
 import '@testing-library/jest-dom/vitest';  // Already Vitest-compatible
@@ -37,6 +41,7 @@ This is **NOT a big refactor**. The project is already using Vitest. We just nee
 ## Safe Migration Plan (Low Risk)
 
 ### Phase 1: Audit Current Setup (5 minutes)
+
 ```bash
 # Check current Vitest version
 cd apps/web
@@ -50,6 +55,7 @@ find src -name "*.test.*" -o -name "*.spec.*" | wc -l
 ```
 
 ### Phase 2: Update Dependencies (10 minutes)
+
 ```bash
 # Update to latest Vitest
 bun add -D vitest@latest @vitest/ui@latest
@@ -62,6 +68,7 @@ bun add -D @testing-library/react@latest @testing-library/user-event@latest
 ```
 
 ### Phase 3: Verify Configuration (5 minutes)
+
 ```typescript
 // Ensure vitest.config.ts or vite.config.ts has test config
 export default defineConfig({
@@ -74,6 +81,7 @@ export default defineConfig({
 ```
 
 ### Phase 4: Run Tests (2 minutes)
+
 ```bash
 # Verify everything works
 bun run test
@@ -83,13 +91,15 @@ bun run test
 
 ## What This Is NOT
 
-### Not Required:
+### Not Required
+
 - ❌ Rewriting test files
 - ❌ Changing test syntax
 - ❌ Major refactoring
 - ❌ Breaking changes
 
-### What It Is:
+### What It Is
+
 - ✅ Version update
 - ✅ Config cleanup
 - ✅ Small optimization
@@ -146,6 +156,7 @@ git commit -m "chore: update vitest to latest"
 ```
 
 ### Step 2: Only If Needed
+
 If any issues arise:
 ```bash
 # Check for breaking changes
@@ -167,7 +178,8 @@ The Vitest update is:
 - Won't affect our Markdown editor implementation
 - Actually helps by ensuring testing is ready
 
-### Recommended Timing:
+### Recommended Timing
+
 1. **Do Vitest update first** (15 minutes)
 2. **Then continue with editor Phase 2**
 3. **Write new tests with latest Vitest**
@@ -184,7 +196,8 @@ What we discovered:
 - No code changes required
 - 15-minute task, not multi-day refactor
 
-### Action Items:
+### Action Items
+
 1. ✅ Update Vitest to latest (15 min)
 2. ✅ Continue with editor migration as planned
 3. ✅ Write new tests using updated Vitest

@@ -7,9 +7,9 @@ updated_date: "2025-04-08"
 version: "1.0"
 status: active
 related_topics:
-  - "Documentation Standards"
-  - "Architecture Overview"
-  - "Data Model"
+      - "Documentation Standards"
+      - "Architecture Overview"
+      - "Data Model"
 tags: ["documentation", "diagrams", "mermaid", "architecture", "visualization"]
 ---
 

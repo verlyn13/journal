@@ -7,9 +7,9 @@ updated_date: "2025-04-08"
 version: "1.0"
 status: active
 related_topics:
-  - "Documentation Standards"
-  - "JSDoc Standards Guide"
-  - "Code Quality"
+      - "Documentation Standards"
+      - "JSDoc Standards Guide"
+      - "Code Quality"
 tags: ["documentation", "standards", "python", "docstrings", "sphinx"]
 ---
 

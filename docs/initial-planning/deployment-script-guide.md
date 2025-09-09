@@ -3,24 +3,24 @@ title: "Deployment Script Improvements Guide: Flask Journal System"
 description: "Guide detailing robust deployment practices, including error handling, rollback mechanisms, health checks, security, and configuration management for the Flask Journal MVP."
 category: "Deployment"
 related_topics:
-  - "Comprehensive Guide: Personal Flask Blog/Journal System"
-  - "Systemd Service Configuration" # Placeholder, assuming this doc exists/will exist
-  - "Testing Strategy Guide"
+      - "Comprehensive Guide: Personal Flask Blog/Journal System"
+      - "Systemd Service Configuration" # Placeholder, assuming this doc exists/will exist
+      - "Testing Strategy Guide"
 version: "1.0"
 tags:
-  - "deployment"
-  - "scripting"
-  - "bash" # Assuming bash scripts, adjust if needed
-  - "systemd"
-  - "flask"
-  - "gunicorn"
-  - "rollback"
-  - "health checks"
-  - "security"
-  - "configuration management"
-  - "logging"
-  - "mvp"
-  - "operations"
+      - "deployment"
+      - "scripting"
+      - "bash" # Assuming bash scripts, adjust if needed
+      - "systemd"
+      - "flask"
+      - "gunicorn"
+      - "rollback"
+      - "health checks"
+      - "security"
+      - "configuration management"
+      - "logging"
+      - "mvp"
+      - "operations"
 ---
 
 
@@ -31,27 +31,27 @@ This guide establishes robust deployment practices for maintaining your Flask jo
 ## Table of Contents
 
 - [Deployment Script Improvements Guide for Flask Blog/Journal System](#deployment-script-improvements-guide-for-flask-blogjournal-system)
-  - [Table of Contents](#table-of-contents)
-  - [Error Handling](#error-handling)
-    - [Detecting and Responding to Failures](#detecting-and-responding-to-failures)
-    - [Validation of Post-Deployment State](#validation-of-post-deployment-state)
-    - [Deployment Logging](#deployment-logging)
-    - [Exit Codes and Error Messaging](#exit-codes-and-error-messaging)
-  - [Rollback Mechanisms](#rollback-mechanisms)
-    - [Database Migration Rollback](#database-migration-rollback)
-    - [Code Version Rollback](#code-version-rollback)
-    - [Static Asset Recovery](#static-asset-recovery)
-    - [Configuration Rollback](#configuration-rollback)
-  - [Health Checks](#health-checks)
-    - [Application Health Check](#application-health-check)
-    - [Database Verification](#database-verification)
-    - [Cache and Session Verification](#cache-and-session-verification)
-    - [Deployment Status Notification](#deployment-status-notification)
-  - [Security Considerations](#security-considerations)
-    - [Secret Management](#secret-management)
-    - [File Permission Handling](#file-permission-handling)
-    - [Service User Constraints](#service-user-constraints)
-    - [Secure Backup Handling](#secure-backup-handling)
+      - [Table of Contents](#table-of-contents)
+      - [Error Handling](#error-handling)
+      - [Detecting and Responding to Failures](#detecting-and-responding-to-failures)
+      - [Validation of Post-Deployment State](#validation-of-post-deployment-state)
+      - [Deployment Logging](#deployment-logging)
+      - [Exit Codes and Error Messaging](#exit-codes-and-error-messaging)
+      - [Rollback Mechanisms](#rollback-mechanisms)
+      - [Database Migration Rollback](#database-migration-rollback)
+      - [Code Version Rollback](#code-version-rollback)
+      - [Static Asset Recovery](#static-asset-recovery)
+      - [Configuration Rollback](#configuration-rollback)
+      - [Health Checks](#health-checks)
+      - [Application Health Check](#application-health-check)
+      - [Database Verification](#database-verification)
+      - [Cache and Session Verification](#cache-and-session-verification)
+      - [Deployment Status Notification](#deployment-status-notification)
+      - [Security Considerations](#security-considerations)
+      - [Secret Management](#secret-management)
+      - [File Permission Handling](#file-permission-handling)
+      - [Service User Constraints](#service-user-constraints)
+      - [Secure Backup Handling](#secure-backup-handling)
 
 ## Error Handling
 

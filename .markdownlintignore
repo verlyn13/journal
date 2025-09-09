@@ -3,6 +3,12 @@ docs/_generated/
 docs/biome/
 docs/bun/
 docs/code-mirror/
+docs/external/
+docs/third-party/
+
+# Exclude API documentation  
+apps/api/docs/
+apps/api/htmlcov/
 
 # Exclude node_modules and other dependencies
 node_modules/
@@ -20,7 +26,3 @@ coverage/
 # Exclude vendor documentation
 vendor/
 **/vendor/
-
-# Exclude any third-party documentation
-docs/external/
-docs/third-party/

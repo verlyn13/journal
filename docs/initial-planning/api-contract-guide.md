@@ -3,9 +3,9 @@ title: "API Contract Guide: Flask Journal System"
 description: "Defines standards for internal API endpoints, including design principles, request/response formats, authentication, and documentation for the Flask Journal MVP."
 category: "Project Planning"
 related_topics:
-  - "Flask Journal MVP Scope Definition"
-  - "Error Handling Guide"
-  - "Authentication/Authorization" # Conceptual link
+      - "Flask Journal MVP Scope Definition"
+      - "Error Handling Guide"
+      - "Authentication/Authorization" # Conceptual link
 version: "1.0"
 tags: ["api", "contract", "flask", "json", "rest", "standards", "design", "mvp", "planning"]
 ---
@@ -17,39 +17,39 @@ This guide establishes standards for the internal API endpoints that support UI 
 ## Table of Contents
 
 - [API Contract Guide for Flask Blog/Journal System](#api-contract-guide-for-flask-blogjournal-system)
-  - [Table of Contents](#table-of-contents)
-  - [API Design Principles](#api-design-principles)
-    - [URL Structure](#url-structure)
-    - [HTTP Verb Usage](#http-verb-usage)
-    - [Query Parameter Conventions](#query-parameter-conventions)
-    - [Status Codes](#status-codes)
-  - [Request/Response Formats](#requestresponse-formats)
-    - [Standard JSON Structure](#standard-json-structure)
-    - [Error Response Format](#error-response-format)
-    - [Pagination Format](#pagination-format)
-    - [Filtering and Sorting Conventions](#filtering-and-sorting-conventions)
-  - [Authentication/Authorization](#authenticationauthorization)
-    - [Authentication Mechanism](#authentication-mechanism)
-    - [Required Headers](#required-headers)
-    - [Permission Checking](#permission-checking)
-    - [Rate Limiting Implementation](#rate-limiting-implementation)
-  - [Documentation Standards](#documentation-standards)
-    - [Inline Documentation](#inline-documentation)
-    - [API Reference Documentation](#api-reference-documentation)
-    - [Example Request/Response](#example-requestresponse)
-  - [API Examples (Conceptual)](#api-examples-conceptual)
-    - [Get API Token](#get-api-token)
-    - [List Entries](#list-entries)
-    - [Get Single Entry](#get-single-entry)
-    - [Create Entry](#create-entry)
-    - [Update Entry](#update-entry)
-    - [Delete Entry](#delete-entry)
-  - [Error Examples](#error-examples)
-    - [Authentication Error](#authentication-error)
-    - [Validation Error](#validation-error)
-    - [Resource Not Found](#resource-not-found)
-    - [Permission Denied](#permission-denied)
-    - [Rate Limit Exceeded](#rate-limit-exceeded)
+      - [Table of Contents](#table-of-contents)
+      - [API Design Principles](#api-design-principles)
+      - [URL Structure](#url-structure)
+      - [HTTP Verb Usage](#http-verb-usage)
+      - [Query Parameter Conventions](#query-parameter-conventions)
+      - [Status Codes](#status-codes)
+      - [Request/Response Formats](#requestresponse-formats)
+      - [Standard JSON Structure](#standard-json-structure)
+      - [Error Response Format](#error-response-format)
+      - [Pagination Format](#pagination-format)
+      - [Filtering and Sorting Conventions](#filtering-and-sorting-conventions)
+      - [Authentication/Authorization](#authenticationauthorization)
+      - [Authentication Mechanism](#authentication-mechanism)
+      - [Required Headers](#required-headers)
+      - [Permission Checking](#permission-checking)
+      - [Rate Limiting Implementation](#rate-limiting-implementation)
+      - [Documentation Standards](#documentation-standards)
+      - [Inline Documentation](#inline-documentation)
+      - [API Reference Documentation](#api-reference-documentation)
+      - [Example Request/Response](#example-requestresponse)
+      - [API Examples (Conceptual)](#api-examples-conceptual)
+      - [Get API Token](#get-api-token)
+      - [List Entries](#list-entries)
+      - [Get Single Entry](#get-single-entry)
+      - [Create Entry](#create-entry)
+      - [Update Entry](#update-entry)
+      - [Delete Entry](#delete-entry)
+      - [Error Examples](#error-examples)
+      - [Authentication Error](#authentication-error)
+      - [Validation Error](#validation-error)
+      - [Resource Not Found](#resource-not-found)
+      - [Permission Denied](#permission-denied)
+      - [Rate Limit Exceeded](#rate-limit-exceeded)
 
 ## API Design Principles
 

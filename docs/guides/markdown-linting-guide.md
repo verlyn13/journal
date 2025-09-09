@@ -4,8 +4,8 @@ description: "Guide for setting up and using Markdown linting and link validatio
 category: "Documentation"
 phase: 17
 related_topics:
-  - "Documentation Testing Process"
-  - "Documentation Specialist Role"
+      - "Documentation Testing Process"
+      - "Documentation Specialist Role"
 version: "1.0"
 tags: ["documentation", "quality-assurance", "linting", "markdown", "tools"]
 status: active

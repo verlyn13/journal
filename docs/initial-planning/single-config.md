@@ -15,9 +15,9 @@ Below is a **practical recommendation** that fits your project setup and avoids 
 
 1. **Remove** any line like `import '../css/main.css'` from your `main.js`.
 2. **Use** a single `rollup.config.js` (or `.cjs`) that sets up:
-   - **`input`**: an object with `{ main: 'src/js/main.js', styles: 'src/css/main.css' }`
-   - **`postcss({ extract: true })`**: so the CSS is written as a separate file
-   - **`outputManifest`** plugin: to produce a single manifest referencing both
+- **`input`**: an object with `{ main: 'src/js/main.js', styles: 'src/css/main.css' }`
+- **`postcss({ extract: true })`**: so the CSS is written as a separate file
+- **`outputManifest`** plugin: to produce a single manifest referencing both
 
 ### Example `rollup.config.js`
 
@@ -70,25 +70,25 @@ export default {
 ### How This Works
 
 - **Two named entries**:  
-  - “`main`” -> `src/js/main.js` (your Alpine and editor code)  
-  - “`styles`” -> `src/css/main.css` (your core stylesheet)  
+      - “`main`” -> `src/js/main.js` (your Alpine and editor code)  
+      - “`styles`” -> `src/css/main.css` (your core stylesheet)  
 
 - **PostCSS Extract**:  
-  - Because `extract: true`, Rollup will generate a hashed CSS file for the “styles” entry.  
-  - The manifest plugin sees these outputs (e.g. `main.abc123.js` and `styles.def456.css`) and writes them to `manifest.json`.  
+      - Because `extract: true`, Rollup will generate a hashed CSS file for the “styles” entry.  
+      - The manifest plugin sees these outputs (e.g. `main.abc123.js` and `styles.def456.css`) and writes them to `manifest.json`.  
 
 - **No Extra Imports**:  
-  - You do **not** need `import '.../main.css'` inside `main.js`—the “styles” entry covers that file.  
-  - If you have multiple CSS files, you can either `@import` them inside `main.css` or add more named entries if you truly want multiple final CSS bundles.
+      - You do **not** need `import '.../main.css'` inside `main.js`—the “styles” entry covers that file.  
+      - If you have multiple CSS files, you can either `@import` them inside `main.css` or add more named entries if you truly want multiple final CSS bundles.
 
 ---
 
 ## After the Build
 
 1. **Run** `npm run build` and check `journal/static/gen/`. You should see something like:
-   - `main.abc123.js`  
-   - `styles.def456.css`  
-   - `manifest.json`  
+- `main.abc123.js`  
+- `styles.def456.css`  
+- `manifest.json`  
 
 2. **Look** at the `manifest.json` contents. It likely has:
    ```json

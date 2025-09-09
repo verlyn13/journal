@@ -6,14 +6,14 @@ heck yes — let’s ship a FastAPI backend that feels like September-2025, not 
 
 ## Why this stack (quick receipts)
 
-* **FastAPI** now emits **OpenAPI 3.1 by default** and ships a first-party CLI (`fastapi dev/run`). It plays perfectly with **Pydantic v2**. ([FastAPI][1], [Pydantic][2])
-* **SQLAlchemy 2.x async** with **psycopg 3** (or `asyncpg`) is the modern PG path. ([SQLAlchemy][3], [PyPI][4])
-* **SQLModel 0.0.24 (Mar 7 2025)** is alive, Python 3.13-ready, and a natural fit with FastAPI/Pydantic. ([GitHub][5])
-* **OpenTelemetry** auto-/manual instrumentation for FastAPI is mature and easy to enable. ([OpenTelemetry Python Contrib][6], [OpenTelemetry][7])
-* **Strawberry GraphQL** integrates cleanly with FastAPI if/when you add a GraphQL facade. ([Redis][8])
-* **pgvector** is the simplest, most portable vector store for semantic search (lives inside Postgres). ([FastAPI][9])
-* **NATS JetStream** (nats-py v2.11+) is a lightweight event bus for outbox → stream patterns. ([DevDocs][10])
-* **Temporal** Python SDK is production-ready for durable workflows when you need them. ([PyPI][11])
+- **FastAPI** now emits **OpenAPI 3.1 by default** and ships a first-party CLI (`fastapi dev/run`). It plays perfectly with **Pydantic v2**. ([FastAPI][1], [Pydantic][2])
+- **SQLAlchemy 2.x async** with **psycopg 3** (or `asyncpg`) is the modern PG path. ([SQLAlchemy][3], [PyPI][4])
+- **SQLModel 0.0.24 (Mar 7 2025)** is alive, Python 3.13-ready, and a natural fit with FastAPI/Pydantic. ([GitHub][5])
+- **OpenTelemetry** auto-/manual instrumentation for FastAPI is mature and easy to enable. ([OpenTelemetry Python Contrib][6], [OpenTelemetry][7])
+- **Strawberry GraphQL** integrates cleanly with FastAPI if/when you add a GraphQL facade. ([Redis][8])
+- **pgvector** is the simplest, most portable vector store for semantic search (lives inside Postgres). ([FastAPI][9])
+- **NATS JetStream** (nats-py v2.11+) is a lightweight event bus for outbox → stream patterns. ([DevDocs][10])
+- **Temporal** Python SDK is production-ready for durable workflows when you need them. ([PyPI][11])
 
 ---
 
@@ -87,11 +87,11 @@ dependencies = [
 ]
 ```
 
-* FastAPI 0.116.x, OpenAPI 3.1, and the `fastapi` CLI are current. ([PyPI][12], [FastAPI][1])
-* SQLModel 0.0.24 released Mar 7 2025. ([GitHub][5])
-* OTel 1.36.0 is the June/July 2025 line. ([OpenTelemetry Python Contrib][6])
-* `nats-py` 2.11+ has the JetStream fixes you’ll want. ([DevDocs][10])
-* Auth choices reference **PyJWT** and **Authlib**. ([release-monitoring.org][13], [docs.authlib.org][14])
+- FastAPI 0.116.x, OpenAPI 3.1, and the `fastapi` CLI are current. ([PyPI][12], [FastAPI][1])
+- SQLModel 0.0.24 released Mar 7 2025. ([GitHub][5])
+- OTel 1.36.0 is the June/July 2025 line. ([OpenTelemetry Python Contrib][6])
+- `nats-py` 2.11+ has the JetStream fixes you’ll want. ([DevDocs][10])
+- Auth choices reference **PyJWT** and **Authlib**. ([release-monitoring.org][13], [docs.authlib.org][14])
 
 > Tip: consider **Astral’s `uv`** to initialize and run (`uv add fastapi --extra standard`; `fastapi dev app/main.py`). ([Astral Docs][15])
 
@@ -200,8 +200,8 @@ A small **relay** task reads unpublished events and publishes to **NATS JetStrea
 
 ## Vector search (pgvector)
 
-* Enable once per DB: `CREATE EXTENSION IF NOT EXISTS vector;`
-* Add `embedding vector(1536)` to a `entry_embeddings` table and keep it in sync via events.
+- Enable once per DB: `CREATE EXTENSION IF NOT EXISTS vector;`
+- Add `embedding vector(1536)` to a `entry_embeddings` table and keep it in sync via events.
   pgvector docs show install/index options (HNSW/IVFFlat). ([FastAPI][9])
 
 ---
@@ -276,16 +276,16 @@ FastAPI’s WebSocket support is first-class; you can auth/room-broadcast with s
 
 ## Auth (JWT + optional OIDC)
 
-* **Local**: PyJWT to mint short-lived access tokens + refresh tokens (Redis session store).
-* **OIDC**: Use **Authlib** to integrate with Google/Microsoft if you want SSO later. ([release-monitoring.org][13], [docs.authlib.org][14])
-* FastAPI’s security docs show OAuth2 Password Flow + scopes if you want RBAC baked into tokens. ([GitHub][19])
+- **Local**: PyJWT to mint short-lived access tokens + refresh tokens (Redis session store).
+- **OIDC**: Use **Authlib** to integrate with Google/Microsoft if you want SSO later. ([release-monitoring.org][13], [docs.authlib.org][14])
+- FastAPI’s security docs show OAuth2 Password Flow + scopes if you want RBAC baked into tokens. ([GitHub][19])
 
 ---
 
 ## Search & GraphQL (optional)
 
-* **REST search**: PG full-text + pgvector; build a hybrid rank (`ts_rank_cd` + cosine sim). ([FastAPI][9])
-* **GraphQL**: Mount Strawberry at `/graphql` with `strawberry.fastapi.GraphQLRouter(schema)`. ([Redis][8])
+- **REST search**: PG full-text + pgvector; build a hybrid rank (`ts_rank_cd` + cosine sim). ([FastAPI][9])
+- **GraphQL**: Mount Strawberry at `/graphql` with `strawberry.fastapi.GraphQLRouter(schema)`. ([Redis][8])
 
 ---
 
@@ -308,19 +308,19 @@ uv run fastapi dev app/main.py   # hot reload
 
 ## Production checklist (opinionated)
 
-* **ASGI server**: `uvicorn` behind your ingress/LB. Consider Granian if you need extra throughput; Uvicorn remains the standard. ([FastAPI][21])
-* **DB**: Postgres 15/16; enable pgvector; use **PgBouncer**; partition events by month. ([FastAPI][9])
-* **Observability**: OTel → OTLP (Tempo/Jaeger/etc.); scrape Prom metrics via exporter; error tracking with Sentry. ([OpenTelemetry][7])
-* **Eventing**: Outbox → NATS JetStream; consumers update projections/search indices. ([DevDocs][10])
-* **API**: OpenAPI 3.1; keep `x-trace-id` flowing; use response models (Pydantic v2). ([FastAPI][1])
+- **ASGI server**: `uvicorn` behind your ingress/LB. Consider Granian if you need extra throughput; Uvicorn remains the standard. ([FastAPI][21])
+- **DB**: Postgres 15/16; enable pgvector; use **PgBouncer**; partition events by month. ([FastAPI][9])
+- **Observability**: OTel → OTLP (Tempo/Jaeger/etc.); scrape Prom metrics via exporter; error tracking with Sentry. ([OpenTelemetry][7])
+- **Eventing**: Outbox → NATS JetStream; consumers update projections/search indices. ([DevDocs][10])
+- **API**: OpenAPI 3.1; keep `x-trace-id` flowing; use response models (Pydantic v2). ([FastAPI][1])
 
 ---
 
 ## Small things that save big time (2025 patterns)
 
-* **Async SQLAlchemy** (`create_async_engine`) + **asyncpg** dialect for end-to-end async I/O. ([SQLAlchemy][3])
-* **psycopg LISTEN/NOTIFY** if you want PG-native change signals for local dev. ([psycopg.org][22])
-* **OpenAPI niceties**: you can extend/override schema bits (logos, tags, examples) directly in FastAPI. ([FastAPI][23])
+- **Async SQLAlchemy** (`create_async_engine`) + **asyncpg** dialect for end-to-end async I/O. ([SQLAlchemy][3])
+- **psycopg LISTEN/NOTIFY** if you want PG-native change signals for local dev. ([psycopg.org][22])
+- **OpenAPI niceties**: you can extend/override schema bits (logos, tags, examples) directly in FastAPI. ([FastAPI][23])
 
 ---
 

@@ -7,11 +7,11 @@ date_created: "YYYY-MM-DD"
 last_updated: "YYYY-MM-DD"
 time_required: "X minutes/hours"
 prerequisites:
-  - "Prerequisite 1"
-  - "Prerequisite 2"
+      - "Prerequisite 1"
+      - "Prerequisite 2"
 related_tutorials:
-  - "Related Tutorial 1"
-  - "Related Tutorial 2"
+      - "Related Tutorial 1"
+      - "Related Tutorial 2"
 tags: ["tutorial", "how-to", "specific-functionality"]
 ---
 

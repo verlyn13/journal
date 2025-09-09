@@ -5,24 +5,28 @@ A comprehensive authentication system with WebAuthn/Passkeys support and multipl
 ## Features
 
 ### 🔐 WebAuthn/Passkeys
+
 - Platform authenticator support (Face ID, Touch ID, Windows Hello)
 - Secure, passwordless authentication
 - Multiple passkey management per user
 - Automatic fallback for unsupported devices
 
 ### 🔄 OAuth Providers
+
 - Google authentication
 - GitHub authentication  
 - Apple Sign In
 - Automatic provider availability detection
 
 ### 📧 Magic Link
+
 - Email-based authentication fallback
 - Secure token generation
 - Configurable expiration times
 - Real-time verification status
 
 ### 🎯 Smart Fallback Chain
+
 1. Try Passkeys (if supported)
 2. Try OAuth providers (in order of availability)
 3. Fall back to Magic Link
@@ -146,6 +150,7 @@ function SessionManager() {
 ### Hooks
 
 #### `useAuth(apiBaseUrl?: string)`
+
 Main authentication hook providing auth state and methods.
 
 **Returns:**
@@ -161,6 +166,7 @@ Main authentication hook providing auth state and methods.
 - `on(event, handler)`: Subscribe to auth events
 
 #### `usePasskeySupport()`
+
 Check if the device supports WebAuthn.
 
 **Returns:**
@@ -168,6 +174,7 @@ Check if the device supports WebAuthn.
 - `checking`: Loading state
 
 #### `usePasskeys(user)`
+
 Manage user's passkeys.
 
 **Returns:**
@@ -179,6 +186,7 @@ Manage user's passkeys.
 - `renamePasskey(id, name)`: Update passkey name
 
 #### `useOAuthProviders()`
+
 Manage OAuth provider connections.
 
 **Returns:**
@@ -188,6 +196,7 @@ Manage OAuth provider connections.
 - `disconnectProvider(provider)`: Remove OAuth connection
 
 #### `useSessionRefresh(session)`
+
 Handle session refresh logic.
 
 **Returns:**
@@ -197,6 +206,7 @@ Handle session refresh logic.
 ### Components
 
 #### `<AuthButton />`
+
 Pre-built authentication button with dropdown options.
 
 **Props:**
@@ -206,6 +216,7 @@ Pre-built authentication button with dropdown options.
 - `preferredMethod`: Default auth method
 
 #### `<PasskeyManager />`
+
 Complete passkey management interface.
 
 ## Architecture
@@ -239,16 +250,19 @@ graph TD
 ## Browser Support
 
 ### Passkeys
+
 - Chrome 67+ (Windows, macOS, Android)
 - Safari 14+ (macOS, iOS)
 - Edge 79+
 - Firefox 60+ (limited support)
 
 ### OAuth
+
 - All modern browsers
 - Popup blockers must be disabled
 
 ### Magic Links
+
 - All browsers with email access
 
 ## Testing

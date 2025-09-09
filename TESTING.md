@@ -75,24 +75,28 @@ bun run quality:all
 ## Test Categories
 
 ### 1. Unit Tests
+
 - **Purpose**: Test pure functions and business logic
 - **Location**: `tests/unit/` (API), `src/utils/__tests__/` (Web)
 - **Speed**: < 1 second
 - **Dependencies**: None (all mocked)
 
 ### 2. Integration Tests
+
 - **Purpose**: Test component interactions
 - **Location**: `tests/integration/` (API), `src/__tests__/integration/` (Web)
 - **Speed**: < 10 seconds
 - **Dependencies**: Database, mocked external services
 
 ### 3. API Tests
+
 - **Purpose**: Test HTTP endpoints
 - **Location**: `tests/api/` (API only)
 - **Speed**: < 5 seconds
 - **Dependencies**: Test database, mocked auth
 
 ### 4. E2E Tests
+
 - **Purpose**: Full user workflows
 - **Location**: `tests/e2e/` (API), Playwright tests (Web)
 - **Speed**: < 30 seconds
@@ -103,12 +107,14 @@ bun run quality:all
 The current Phase 4 (Dual-write Integration) includes specific test requirements:
 
 ### Backend (API)
+
 - ✅ Dual-write saves both HTML and Markdown formats
 - ✅ Content format negotiation via headers
 - ✅ Backward compatibility maintained
 - ✅ Migration script tested
 
 ### Frontend (Web)
+
 - ✅ Markdown editor integration tested
 - ✅ Dual-write on save verified
 - ✅ Header negotiation confirmed
@@ -128,13 +134,13 @@ Tests run automatically on:
 test:
   runs-on: ubuntu-latest
   steps:
-    - uses: actions/checkout@v4
-    - name: Backend Tests
+  - uses: actions/checkout@v4
+  - name: Backend Tests
       run: |
         cd apps/api
         uv sync
         uv run pytest --cov=app
-    - name: Frontend Tests
+  - name: Frontend Tests
       run: |
         cd apps/web
         bun install
@@ -225,8 +231,8 @@ bun run quality:all
    ```
 
 2. **Test Timeouts**
-   - Increase timeout in test: `{ timeout: 5000 }`
-   - Check for unresolved promises
+- Increase timeout in test: `{ timeout: 5000 }`
+- Check for unresolved promises
 
 3. **Bundle Size Exceeded**
    ```bash

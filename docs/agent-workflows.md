@@ -93,15 +93,15 @@ Claude Code can connect to hundreds of external tools and data sources through t
 ```bash
 # Add GitHub integration for issue tracking
 claude mcp add github --env GITHUB_TOKEN=$GITHUB_TOKEN \
-  -- npx -y github-mcp-server
+      -- npx -y github-mcp-server
 
 # Add PostgreSQL for database operations
 claude mcp add postgres --env DATABASE_URL=$DATABASE_URL \
-  -- npx -y postgres-mcp-server
+      -- npx -y postgres-mcp-server
 
 # Add Sentry for error monitoring
 claude mcp add sentry --env SENTRY_AUTH_TOKEN=$SENTRY_TOKEN \
-  -- npx -y sentry-mcp-server
+      -- npx -y sentry-mcp-server
 ```
 
 ### Project-Scoped MCP Configuration (.mcp.json)
@@ -234,13 +234,13 @@ jobs:
   ai-review:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+            - uses: actions/checkout@v4
 
-      - name: Install AI Tools
+            - name: Install AI Tools
         run: |
           npm install -g @anthropic-ai/claude-code @openai/codex
 
-      - name: Automated Code Review
+            - name: Automated Code Review
         run: |
           claude --quiet --non-interactive \
             "Review the changes in this PR and check for:
@@ -296,12 +296,14 @@ codex > "Update all dependencies in pyproject.toml and package.json to latest co
 ## Best Practices & Warnings
 
 ### Critical Don'ts
+
 - NEVER use pip when uv is available
 - Don't use localStorage/sessionStorage in artifacts (blocked in Claude.ai)
 - Avoid using Bun for installing Claude Code (known Windows issues)
 - Never skip pre-commit hooks when AI tools want to commit
 
 ### Essential Do's
+
 - Always use `--dangerously-skip-permissions` for trusted workflows
 - Configure CLAUDE.md for every project
 - Use MCP servers for external integrations

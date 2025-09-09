@@ -23,24 +23,24 @@ As outlined in the [Phase 14 Implementation Plan](@docs/implementation/14-phase-
 The following tasks have been delegated to the **Documentation Specialist**:
 
 1.  **Documentation Inventory & Assessment:**
-    *   Create an inventory spreadsheet of all `.md` files in `docs/`.
-    *   Assess documents against AI-consumable standards.
-    *   Identify priorities for future enhancement.
-    *   Produce an inventory report summarizing findings.
+-   Create an inventory spreadsheet of all `.md` files in `docs/`.
+-   Assess documents against AI-consumable standards.
+-   Identify priorities for future enhancement.
+-   Produce an inventory report summarizing findings.
 2.  **JSDoc Implementation Setup:**
-    *   Install and configure JSDoc.
-    *   Add `npm run docs` script.
-    *   Create a JSDoc standards guide.
-    *   Implement initial JSDoc comments in key JS files.
-    *   Generate and link initial API documentation.
+-   Install and configure JSDoc.
+-   Add `npm run docs` script.
+-   Create a JSDoc standards guide.
+-   Implement initial JSDoc comments in key JS files.
+-   Generate and link initial API documentation.
 
 ## Expected Outcome
 
 By the end of this phase, we expect to have:
 
-*   A clear understanding of the current documentation landscape and a prioritized list for improvements.
-*   A functional JSDoc setup capable of generating API documentation from source code comments.
-*   Established standards for JSDoc usage within the project.
+-   A clear understanding of the current documentation landscape and a prioritized list for improvements.
+-   A functional JSDoc setup capable of generating API documentation from source code comments.
+-   Established standards for JSDoc usage within the project.
 
 ---
 

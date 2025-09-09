@@ -3,87 +3,87 @@ title: "Comprehensive Guide: Personal Flask Blog/Journal System"
 description: "A complete architecture and implementation plan for a personal Flask-based blog/journal system, covering structure, data models, auth, frontend, backend, deployment, security, and testing for a Fedora/systemd environment."
 category: "System Design" # Changed from "Project Planning" to better reflect the content
 related_topics:
-  - "Flask Journal MVP Scope Definition"
-  - "API Contract Guide"
-  - "Testing Strategy Guide" # Renamed for consistency
-  - "Deployment Script Improvements Guide" # Renamed for consistency
-  - "Error Handling Guide"
-  - "State Management Guide"
-  - "Implementing the Agentic Workflow with Roo Code" # Added reference
+      - "Flask Journal MVP Scope Definition"
+      - "API Contract Guide"
+      - "Testing Strategy Guide" # Renamed for consistency
+      - "Deployment Script Improvements Guide" # Renamed for consistency
+      - "Error Handling Guide"
+      - "State Management Guide"
+      - "Implementing the Agentic Workflow with Roo Code" # Added reference
 version: "1.0"
 tags:
   # Core Technologies
-  - "flask"
-  - "sqlalchemy"
-  - "sqlite"
-  - "redis"
-  - "htmx"
-  - "alpinejs"
-  - "jinja2"
-  - "werkzeug"
+      - "flask"
+      - "sqlalchemy"
+      - "sqlite"
+      - "redis"
+      - "htmx"
+      - "alpinejs"
+      - "jinja2"
+      - "werkzeug"
   # Flask Extensions
-  - "flask-login"
-  - "flask-wtf"
-  - "flask-session"
-  - "flask-migrate"
-  - "flask-assets"
-  - "flask-compress"
-  - "flask-talisman"
+      - "flask-login"
+      - "flask-wtf"
+      - "flask-session"
+      - "flask-migrate"
+      - "flask-assets"
+      - "flask-compress"
+      - "flask-talisman"
   # Deployment & Ops
-  - "systemd"
-  - "gunicorn"
-  - "deployment"
-  - "logging"
-  - "backup"
-  - "system administration"
-  - "fedora"
+      - "systemd"
+      - "gunicorn"
+      - "deployment"
+      - "logging"
+      - "backup"
+      - "system administration"
+      - "fedora"
   # Architecture & Design
-  - "architecture"
-  - "system design"
-  - "project structure"
-  - "mvp"
-  - "service layer"
-  - "data model"
-  - "frontend architecture"
-  - "backend architecture"
-  - "api design"
-  - "lean and mean"
-  - "personal project"
+      - "architecture"
+      - "system design"
+      - "project structure"
+      - "mvp"
+      - "service layer"
+      - "data model"
+      - "frontend architecture"
+      - "backend architecture"
+      - "api design"
+      - "lean and mean"
+      - "personal project"
   # Features & Concepts
-  - "authentication"
-  - "authorization"
-  - "sessions"
-  - "password management"
-  - "crud"
-  - "forms"
-  - "markdown"
-  - "mathjax"
-  - "latex"
-  - "state management"
-  - "data synchronization"
-  - "conflict resolution"
-  - "error handling"
-  - "progressive enhancement"
+      - "authentication"
+      - "authorization"
+      - "sessions"
+      - "password management"
+      - "crud"
+      - "forms"
+      - "markdown"
+      - "mathjax"
+      - "latex"
+      - "state management"
+      - "data synchronization"
+      - "conflict resolution"
+      - "error handling"
+      - "progressive enhancement"
   # Security
-  - "security"
-  - "argon2"
-  - "csrf"
-  - "csp"
-  - "xss protection"
-  - "input validation"
-  - "file permissions"
+      - "security"
+      - "argon2"
+      - "csrf"
+      - "csp"
+      - "xss protection"
+      - "input validation"
+      - "file permissions"
   # Performance
-  - "performance optimization"
-  - "caching"
-  - "database optimization"
-  - "frontend optimization"
+      - "performance optimization"
+      - "caching"
+      - "database optimization"
+      - "frontend optimization"
   # Testing
-  - "testing"
-  - "pytest"
-  - "unit testing"
-  - "integration testing"
-  - "ui testing"
-  - "test strategy"
+      - "testing"
+      - "pytest"
+      - "unit testing"
+      - "integration testing"
+      - "ui testing"
+      - "test strategy"
 ---
 
 # Comprehensive Guide: Personal Flask Blog/Journal System
@@ -93,76 +93,76 @@ This guide presents a complete architecture and implementation plan for a person
 ## Table of Contents
 
 - [Comprehensive Guide: Personal Flask Blog/Journal System](#comprehensive-guide-personal-flask-blogjournal-system)
-  - [Table of Contents](#table-of-contents)
-  - [System Overview](#system-overview)
-  - [Architecture](#architecture)
-    - [Project Structure](#project-structure)
-    - [Frontend Architecture](#frontend-architecture)
-      - [1. User Interface Layer](#1-user-interface-layer)
-      - [2. Interaction Layer](#2-interaction-layer)
-      - [3. State Management](#3-state-management)
-    - [Backend Architecture](#backend-architecture)
-      - [1. Data Access Layer](#1-data-access-layer)
-      - [2. Service Layer](#2-service-layer)
-      - [3. API Layer](#3-api-layer)
-      - [4. Presentation Layer](#4-presentation-layer)
-  - [Data Models](#data-models)
-    - [User \& Authentication Models](#user--authentication-models)
-    - [Content Models](#content-models)
-    - [Relationship Models](#relationship-models)
-  - [Authentication System](#authentication-system)
-    - [User Registration \& Login](#user-registration--login)
-    - [Password Management](#password-management)
-    - [Session Handling](#session-handling)
-    - [Authorization](#authorization)
-  - [Data Flow \& Routing](#data-flow--routing)
-    - [Input Processing](#input-processing)
-    - [Form Handling](#form-handling)
-    - [API Endpoints](#api-endpoints)
-    - [Error Handling](#error-handling)
-  - [Frontend Implementation](#frontend-implementation)
-    - [HTMX + Alpine.js Integration](#htmx--alpinejs-integration)
-    - [LaTeX Rendering with MathJax](#latex-rendering-with-mathjax)
-    - [Template Structure](#template-structure)
-    - [Static Files Organization](#static-files-organization)
-    - [UI Components](#ui-components)
-  - [Backend Implementation](#backend-implementation)
-    - [Service Layer](#service-layer)
-    - [Database Integration](#database-integration)
-    - [Business Logic](#business-logic)
-    - [LaTeX Rendering with MathJax](#latex-rendering-with-mathjax-1)
-    - [Template Structure](#template-structure-1)
-    - [Static Files Organization](#static-files-organization-1)
-    - [UI Components](#ui-components-1)
-  - [Backend Implementation](#backend-implementation-1)
-    - [Service Layer](#service-layer-1)
-    - [Database Integration](#database-integration-1)
-    - [Business Logic](#business-logic-1)
-    - [Error Handling](#error-handling-1)
-  - [State Management](#state-management)
-    - [Client-Side State](#client-side-state)
-    - [Server-Side State](#server-side-state)
-    - [Data Synchronization](#data-synchronization)
-  - [System Administration](#system-administration)
-    - [Deployment Process](#deployment-process)
-    - [Systemd Service Configuration](#systemd-service-configuration)
-    - [Logging Setup](#logging-setup)
-    - [Backup Strategy](#backup-strategy)
-  - [Security Considerations](#security-considerations)
-    - [Authentication Security](#authentication-security)
-    - [Data Protection](#data-protection)
-    - [Input Validation](#input-validation)
-    - [File Permission Handling](#file-permission-handling)
-  - [Performance Optimizations](#performance-optimizations)
-    - [Caching Strategy](#caching-strategy)
-    - [Database Optimization](#database-optimization)
-    - [Frontend Optimization](#frontend-optimization)
-  - [Testing Strategy](#testing-strategy)
-    - [Unit Testing](#unit-testing)
-    - [Integration Testing](#integration-testing)
-    - [UI Testing](#ui-testing)
-    - [Integration Testing](#integration-testing-1)
-    - [UI Testing](#ui-testing-1)
+      - [Table of Contents](#table-of-contents)
+      - [System Overview](#system-overview)
+      - [Architecture](#architecture)
+      - [Project Structure](#project-structure)
+      - [Frontend Architecture](#frontend-architecture)
+            - [1. User Interface Layer](#1-user-interface-layer)
+            - [2. Interaction Layer](#2-interaction-layer)
+            - [3. State Management](#3-state-management)
+      - [Backend Architecture](#backend-architecture)
+            - [1. Data Access Layer](#1-data-access-layer)
+            - [2. Service Layer](#2-service-layer)
+            - [3. API Layer](#3-api-layer)
+            - [4. Presentation Layer](#4-presentation-layer)
+      - [Data Models](#data-models)
+      - [User \& Authentication Models](#user--authentication-models)
+      - [Content Models](#content-models)
+      - [Relationship Models](#relationship-models)
+      - [Authentication System](#authentication-system)
+      - [User Registration \& Login](#user-registration--login)
+      - [Password Management](#password-management)
+      - [Session Handling](#session-handling)
+      - [Authorization](#authorization)
+      - [Data Flow \& Routing](#data-flow--routing)
+      - [Input Processing](#input-processing)
+      - [Form Handling](#form-handling)
+      - [API Endpoints](#api-endpoints)
+      - [Error Handling](#error-handling)
+      - [Frontend Implementation](#frontend-implementation)
+      - [HTMX + Alpine.js Integration](#htmx--alpinejs-integration)
+      - [LaTeX Rendering with MathJax](#latex-rendering-with-mathjax)
+      - [Template Structure](#template-structure)
+      - [Static Files Organization](#static-files-organization)
+      - [UI Components](#ui-components)
+      - [Backend Implementation](#backend-implementation)
+      - [Service Layer](#service-layer)
+      - [Database Integration](#database-integration)
+      - [Business Logic](#business-logic)
+      - [LaTeX Rendering with MathJax](#latex-rendering-with-mathjax-1)
+      - [Template Structure](#template-structure-1)
+      - [Static Files Organization](#static-files-organization-1)
+      - [UI Components](#ui-components-1)
+      - [Backend Implementation](#backend-implementation-1)
+      - [Service Layer](#service-layer-1)
+      - [Database Integration](#database-integration-1)
+      - [Business Logic](#business-logic-1)
+      - [Error Handling](#error-handling-1)
+      - [State Management](#state-management)
+      - [Client-Side State](#client-side-state)
+      - [Server-Side State](#server-side-state)
+      - [Data Synchronization](#data-synchronization)
+      - [System Administration](#system-administration)
+      - [Deployment Process](#deployment-process)
+      - [Systemd Service Configuration](#systemd-service-configuration)
+      - [Logging Setup](#logging-setup)
+      - [Backup Strategy](#backup-strategy)
+      - [Security Considerations](#security-considerations)
+      - [Authentication Security](#authentication-security)
+      - [Data Protection](#data-protection)
+      - [Input Validation](#input-validation)
+      - [File Permission Handling](#file-permission-handling)
+      - [Performance Optimizations](#performance-optimizations)
+      - [Caching Strategy](#caching-strategy)
+      - [Database Optimization](#database-optimization)
+      - [Frontend Optimization](#frontend-optimization)
+      - [Testing Strategy](#testing-strategy)
+      - [Unit Testing](#unit-testing)
+      - [Integration Testing](#integration-testing)
+      - [UI Testing](#ui-testing)
+      - [Integration Testing](#integration-testing-1)
+      - [UI Testing](#ui-testing-1)
 
 ## System Overview
 
@@ -241,77 +241,84 @@ project/
 The frontend is organized into three main layers:
 
 #### 1. User Interface Layer
+
 - **Responsibility**: Present journal entries and provide navigation
 - **Technologies**: HTML, CSS, Jinja2 templates
 - **Components**:
-  - Entry list view (homepage)
-  - Single entry view
-  - Editor interface
-  - Search results interface
-  - Navigation components
-  - Responsive layouts
+      - Entry list view (homepage)
+      - Single entry view
+      - Editor interface
+      - Search results interface
+      - Navigation components
+      - Responsive layouts
 
 #### 2. Interaction Layer
+
 - **Responsibility**: Handle user input and client-side logic
 - **Technologies**: HTMX, Alpine.js
 - **Components**:
-  - Form handling with client-side validation
-  - Markdown editor with preview
-  - Auto-save functionality
-  - Search interface
-  - Tag management
-  - LaTeX rendering with MathJax
+      - Form handling with client-side validation
+      - Markdown editor with preview
+      - Auto-save functionality
+      - Search interface
+      - Tag management
+      - LaTeX rendering with MathJax
 
 #### 3. State Management
+
 - **Responsibility**: Maintain UI state and handle transitions
 - **Technologies**: Alpine.js, localStorage
 - **Components**:
-  - Editor state (edit/preview/split modes)
-  - Theme preferences
-  - Draft auto-saving
-  - Form validation states
-  - Modal and dropdown states
+      - Editor state (edit/preview/split modes)
+      - Theme preferences
+      - Draft auto-saving
+      - Form validation states
+      - Modal and dropdown states
 
 ### Backend Architecture
 
 The backend is structured into four main layers:
 
 #### 1. Data Access Layer
+
 - **Responsibility**: Define, store, and retrieve application data
 - **Technologies**: SQLAlchemy, SQLite
 - **Components**:
-  - ORM models (User, Entry, Tag)
-  - Query operations
-  - Migration management with Alembic
-  - Transaction handling
+      - ORM models (User, Entry, Tag)
+      - Query operations
+      - Migration management with Alembic
+      - Transaction handling
 
 #### 2. Service Layer
+
 - **Responsibility**: Implement business logic
 - **Technologies**: Python classes
 - **Components**:
-  - Authentication services
-  - Entry management services
-  - Markdown processing
-  - Draft handling
-  - Search functionality
+      - Authentication services
+      - Entry management services
+      - Markdown processing
+      - Draft handling
+      - Search functionality
 
 #### 3. API Layer
+
 - **Responsibility**: Expose endpoints for UI operations
 - **Technologies**: Flask routes, Blueprint
 - **Components**:
-  - RESTful routes for CRUD operations
-  - Response formatting
-  - Error handling
-  - Input validation
+      - RESTful routes for CRUD operations
+      - Response formatting
+      - Error handling
+      - Input validation
 
 #### 4. Presentation Layer
+
 - **Responsibility**: Render templates and handle user interaction
 - **Technologies**: Flask, Jinja2
 - **Components**:
-  - Route handlers
-  - Template rendering
-  - Session management
-  - Form processing
+      - Route handlers
+      - Template rendering
+      - Session management
+      - Form processing
 
 ## Data Models
 
@@ -434,6 +441,7 @@ class Tag(db.Model):
 ```
 
 ### Relationship Models
+
 (Implicitly defined via `db.relationship` and the `entry_tags` association table above).
 
 ## Authentication System
@@ -645,6 +653,7 @@ def logout():
 ```
 
 ### Password Management
+
 -   **Hashing:** Use `werkzeug.security.generate_password_hash` with a strong method like `argon2` (as shown in `User.set_password`).
 -   **Verification:** Use `werkzeug.security.check_password_hash` (as shown in `User.check_password`).
 -   **Reset:** Implement a secure password reset flow (e.g., email with time-limited, single-use tokens) - *Potentially beyond MVP, confirm scope.*
@@ -691,6 +700,7 @@ def logout():
 ```
 
 ### Session Handling
+
 -   Use `Flask-Login` for managing user sessions.
 -   Configure `SECRET_KEY` properly.
 -   Use Redis for server-side session storage via `Flask-Session` for better scalability and persistence than default client-side cookies.
@@ -773,6 +783,7 @@ def load_user(user_id):
 ```
 
 ### Authorization
+
 -   Use `flask_login.login_required` decorator for routes requiring login.
 -   Implement ownership checks in service layer or via decorators for actions modifying specific resources (e.g., editing/deleting entries).
 
@@ -811,10 +822,12 @@ def load_user(user_id):
 ## Data Flow & Routing
 
 ### Input Processing
+
 -   Use Flask's `request` object (`request.args`, `request.form`, `request.get_json()`).
 -   Perform validation early.
 
 ### Form Handling
+
 -   Use `Flask-WTF` for form creation and validation.
 -   Handle CSRF protection (enabled by default with Flask-WTF).
 
@@ -833,6 +846,7 @@ def load_user(user_id):
 ```
 
 ### API Endpoints
+
 -   Defined using Flask Blueprints (e.g., `api_bp`).
 -   Follow RESTful principles outlined in [API Contract Guide](./api-contract-guide.md).
 -   Use JSON for request/response bodies.
@@ -873,6 +887,7 @@ def load_user(user_id):
 ```
 
 ### Error Handling
+
 -   Define custom exception classes (e.g., `ValidationError`, `AuthorizationError`, `ResourceNotFoundError`).
 -   Use Flask's `@app.errorhandler()` or `@blueprint.errorhandler()` decorators to register handlers.
 -   Handlers should return consistent JSON error responses using the `api_error` helper.
@@ -984,10 +999,11 @@ def load_user(user_id):
 ## Frontend Implementation
 
 ### HTMX + Alpine.js Integration
+
 -   **HTMX:** Use for partial page updates triggered by user actions (form submissions, button clicks). Server returns HTML fragments.
-    -   `hx-post`, `hx-get`, `hx-swap`, `hx-target`, `hx-trigger`.
+  -   `hx-post`, `hx-get`, `hx-swap`, `hx-target`, `hx-trigger`.
 -   **Alpine.js:** Use for client-side interactivity, UI state management (dropdowns, modals, editor state), and reacting to HTMX events.
-    -   `x-data`, `x-show`, `x-on`, `x-bind`, `$store`, `$dispatch`.
+  -   `x-data`, `x-show`, `x-on`, `x-bind`, `$store`, `$dispatch`.
 
 ```html
 <!-- Example: HTMX form submission with Alpine state -->
@@ -1014,6 +1030,7 @@ def load_user(user_id):
 ```
 
 ### LaTeX Rendering with MathJax
+
 -   Include MathJax configuration and library in `base.html`.
 -   Ensure Markdown processing on the backend preserves LaTeX syntax (e.g., `$..$`, `$$..$$`).
 -   Trigger MathJax rendering after HTMX swaps content into the DOM.
@@ -1086,15 +1103,18 @@ def load_user(user_id):
 ```
 
 ### Template Structure
+
 -   Use Jinja2 inheritance (`base.html`, `{% extends %}`, `{% block %}`).
 -   Organize templates by feature (`auth/`, `entries/`).
 -   Create reusable partials/components (`components/`).
 
 ### Static Files Organization
+
 -   Standard Flask `static/` folder structure (`css/`, `js/`, `img/`).
 -   Consider using `Flask-Assets` for bundling and minification (potentially post-MVP).
 
 ### UI Components
+
 -   Define reusable HTML/Jinja2 partials in `templates/components/`.
 -   Use Alpine.js for component-specific logic within these partials.
 
@@ -1121,6 +1141,7 @@ def load_user(user_id):
 ## Backend Implementation
 
 ### Service Layer
+
 -   Encapsulate business logic in service classes (`AuthService`, `EntryService`, `DraftService`).
 -   Services interact with data models and perform operations.
 -   Return consistent result objects (e.g., `OperationResult`) indicating success/failure and data/errors.
@@ -1276,6 +1297,7 @@ def load_user(user_id):
 ```
 
 ### Database Integration
+
 -   Use `Flask-SQLAlchemy` for ORM and session management.
 -   Use `Flask-Migrate` (Alembic) for database schema migrations.
 -   Define models in `app/models/`.
@@ -1315,6 +1337,7 @@ def load_user(user_id):
 ```
 
 ### Business Logic
+
 -   Resides primarily within the Service Layer.
 -   Handles validation (beyond basic form validation), calculations, state transitions, and coordination between models.
 

@@ -29,16 +29,16 @@ This guide provides solutions for common issues you might encounter while using 
 **Possible causes and solutions:**
 
 1. **Username already taken**
-   - Choose a different username
+- Choose a different username
 
 2. **Invalid email format**
-   - Ensure your email follows the standard format (e.g., name@example.com)
+- Ensure your email follows the standard format (e.g., name@example.com)
 
 3. **Password too short**
-   - Create a password with at least 8 characters
+- Create a password with at least 8 characters
 
 4. **Passwords don't match**
-   - Make sure the password and confirmation fields match exactly
+- Make sure the password and confirmation fields match exactly
 
 ### Email Verification Issues
 
@@ -266,21 +266,21 @@ This guide provides solutions for common issues you might encounter while using 
 If you're experiencing issues not covered in this guide, try these general debugging steps:
 
 1. **Check the browser console for errors**
-   - Press F12 in most browsers to open developer tools
-   - Navigate to the Console tab to see JavaScript errors
+- Press F12 in most browsers to open developer tools
+- Navigate to the Console tab to see JavaScript errors
 
 2. **Review server logs**
-   - If self-hosting, check the terminal where the Flask server is running
-   - Look for error messages or exceptions
+- If self-hosting, check the terminal where the Flask server is running
+- Look for error messages or exceptions
 
 3. **Try an incognito/private browsing window**
-   - This bypasses cached content and browser extensions
+- This bypasses cached content and browser extensions
 
 4. **Test with a different browser**
-   - Issues specific to one browser can help identify the problem
+- Issues specific to one browser can help identify the problem
 
 5. **Clear browser data**
-   - Clear cookies, cache, and local storage
+- Clear cookies, cache, and local storage
 
 If you've tried these solutions and still experience issues, please:
 

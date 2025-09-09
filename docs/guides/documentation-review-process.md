@@ -4,9 +4,9 @@ description: "Formal process for reviewing and approving documentation changes a
 category: "Documentation"
 phase: 18
 related_topics:
-  - "Documentation Testing Process"
-  - "Documentation Update Checklist"
-  - "Documentation Specialist Role"
+      - "Documentation Testing Process"
+      - "Documentation Update Checklist"
+      - "Documentation Specialist Role"
 version: "1.0"
 tags: ["documentation", "review", "process", "pull-request", "quality-control"]
 status: active

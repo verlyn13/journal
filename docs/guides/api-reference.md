@@ -7,8 +7,8 @@ last_updated: "2025-04-08"
 version: "1.0"
 status: active
 related_topics:
-  - "Authentication"
-  - "Data Model"
+      - "Authentication"
+      - "Data Model"
 tags: ["api", "reference", "endpoints", "flask"]
 ---
 
@@ -140,9 +140,9 @@ async function previewMarkdown(markdownText) {
 **Notes:**
 
 - This endpoint uses the Python `markdown` library with the following extensions enabled:
-  - `markdown.extensions.tables`
-  - `markdown.extensions.fenced_code`
-  - `markdown.extensions.extra`
+      - `markdown.extensions.tables`
+      - `markdown.extensions.fenced_code`
+      - `markdown.extensions.extra`
 - The endpoint is protected by `login_required` to prevent unauthorized usage
 - Empty strings or null values for `text` will return an empty HTML result
 

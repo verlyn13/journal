@@ -7,9 +7,9 @@ last_updated: "2025-04-08"
 version: "1.0"
 status: active
 related_topics:
-  - "API Reference"
-  - "Data Model"
-  - "Documentation Standards"
+      - "API Reference"
+      - "Data Model"
+      - "Documentation Standards"
 tags: ["documentation", "templates", "standards", "guidelines"]
 ---
 

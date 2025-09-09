@@ -3,22 +3,22 @@ title: "Error Handling Guide: Flask Journal System"
 description: "Defines a consistent approach to error handling across the Flask Journal MVP, covering service layer exceptions, UI display, logging, and monitoring."
 category: "System Design"
 related_topics:
-  - "Comprehensive Guide: Personal Flask Blog/Journal System"
-  - "API Contract Guide"
-  - "Testing Strategy Guide"
+      - "Comprehensive Guide: Personal Flask Blog/Journal System"
+      - "API Contract Guide"
+      - "Testing Strategy Guide"
 version: "1.0"
 tags:
-  - "error handling"
-  - "exceptions"
-  - "logging"
-  - "monitoring"
-  - "flask"
-  - "htmx"
-  - "service layer"
-  - "ui"
-  - "system design"
-  - "mvp"
-  - "robustness"
+      - "error handling"
+      - "exceptions"
+      - "logging"
+      - "monitoring"
+      - "flask"
+      - "htmx"
+      - "service layer"
+      - "ui"
+      - "system design"
+      - "mvp"
+      - "robustness"
 ---
 
 
@@ -27,23 +27,24 @@ tags:
 This guide establishes a consistent approach to error handling throughout the Flask journal application. Following the "lean and mean" philosophy, we'll implement robust error handling with minimal dependencies.
 
 ## Table of Contents
+
 - [Error Handling Guide for Flask Blog/Journal System](#error-handling-guide-for-flask-blogjournal-system)
-  - [Table of Contents](#table-of-contents)
-  - [Service Layer Error Handling](#service-layer-error-handling)
-    - [Custom Exception Hierarchy](#custom-exception-hierarchy)
-    - [Standardized Result Objects](#standardized-result-objects)
-    - [Transaction Management](#transaction-management)
-    - [Expected vs. Unexpected Errors](#expected-vs-unexpected-errors)
-  - [UI Error Display](#ui-error-display)
-    - [Form Validation Errors](#form-validation-errors)
-    - [Flash Message Categorization](#flash-message-categorization)
-    - [HTMX Error Handling](#htmx-error-handling)
-    - [Graceful Degradation](#graceful-degradation)
-  - [Logging and Monitoring](#logging-and-monitoring)
-    - [Structured Logging Format](#structured-logging-format)
-    - [Error Severity Classification](#error-severity-classification)
-    - [Context Inclusion](#context-inclusion)
-    - [Systemd Journald Integration](#systemd-journald-integration)
+      - [Table of Contents](#table-of-contents)
+      - [Service Layer Error Handling](#service-layer-error-handling)
+      - [Custom Exception Hierarchy](#custom-exception-hierarchy)
+      - [Standardized Result Objects](#standardized-result-objects)
+      - [Transaction Management](#transaction-management)
+      - [Expected vs. Unexpected Errors](#expected-vs-unexpected-errors)
+      - [UI Error Display](#ui-error-display)
+      - [Form Validation Errors](#form-validation-errors)
+      - [Flash Message Categorization](#flash-message-categorization)
+      - [HTMX Error Handling](#htmx-error-handling)
+      - [Graceful Degradation](#graceful-degradation)
+      - [Logging and Monitoring](#logging-and-monitoring)
+      - [Structured Logging Format](#structured-logging-format)
+      - [Error Severity Classification](#error-severity-classification)
+      - [Context Inclusion](#context-inclusion)
+      - [Systemd Journald Integration](#systemd-journald-integration)
 
 ## Service Layer Error Handling
 
@@ -1153,15 +1154,15 @@ FOLLOW=false
 # Parse command line arguments
 while [[ $# -gt 0 ]]; do
     case $1 in
-        -n|--lines)
+      -n|--lines)
             LINES="$2"
             shift 2
             ;;
-        -p|--priority)
+      -p|--priority)
             PRIORITY="$2"
             shift 2
             ;;
-        -f|--follow)
+      -f|--follow)
             FOLLOW=true
             shift
             ;;

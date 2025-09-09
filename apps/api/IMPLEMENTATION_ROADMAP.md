@@ -3,9 +3,11 @@
 Based on the architectural analysis of test failures, this roadmap provides a phased approach to fixing the systemic issues while maintaining backward compatibility.
 
 ## Phase 1: Critical Fixes (Sprint 1)
+
 *Goal: Fix data consistency and immediate bugs without breaking changes*
 
 ### 1.1 Add Optimistic Locking (2 days)
+
 ```python
 # Migration: Add version column
 class Entry(SQLModel):
@@ -23,6 +25,7 @@ async def update_entry(entry_id: UUID, updates: dict, expected_version: int):
 **Testing**: Add concurrent update tests
 
 ### 1.2 Fix Content Response Structure (3 days)
+
 ```python
 # Add computed fields to response
 def _entry_response(row: Entry, prefer_md: bool) -> dict:
@@ -44,6 +47,7 @@ def _entry_response(row: Entry, prefer_md: bool) -> dict:
 **Testing**: Update response validation tests
 
 ### 1.3 Queue-Based Embedding Generation (3 days)
+
 ```python
 # Add to entry creation
 async def create_entry(...):
@@ -68,9 +72,11 @@ async def process_entry_created(event):
 **Testing**: Mock queue in tests, verify event publishing
 
 ## Phase 2: Architectural Foundation (Sprint 2-3)
+
 *Goal: Establish patterns for scalability and maintainability*
 
 ### 2.1 Implement Repository Pattern (1 week)
+
 ```python
 # Abstract database operations
 class EntryRepository:
@@ -94,6 +100,7 @@ async def create_entry(
 **Testing**: Unit tests for repository, integration tests for API
 
 ### 2.2 Add Caching Layer (1 week)
+
 ```python
 class CachedEntryRepository:
     def __init__(self, repo: EntryRepository, cache: Redis):
@@ -121,6 +128,7 @@ class CachedEntryRepository:
 **Testing**: Test cache hits/misses, invalidation
 
 ### 2.3 Event Bus Implementation (1 week)
+
 ```python
 class EventBus:
     def __init__(self):
@@ -146,9 +154,11 @@ async def on_entry_created(data):
 **Testing**: Unit tests for event bus, integration tests for handlers
 
 ## Phase 3: Content Processing Pipeline (Sprint 4-5)
+
 *Goal: Robust content handling with security*
 
 ### 3.1 Markdown Parser with AST (1 week)
+
 ```python
 # Replace string manipulation with proper parser
 from markdown import Markdown
@@ -187,6 +197,7 @@ class SafeMarkdownProcessor:
 **Testing**: Extensive content conversion tests
 
 ### 3.2 Content Security Policy (3 days)
+
 ```python
 # Sanitize all HTML content
 from bleach import clean
@@ -219,9 +230,11 @@ class ContentSanitizer:
 **Testing**: Security-focused tests with malicious input
 
 ## Phase 4: Search Enhancement (Sprint 6)
+
 *Goal: Robust search with graceful degradation*
 
 ### 4.1 Hybrid Search Service (1 week)
+
 ```python
 class HybridSearchService:
     async def search(self, query: str, options: SearchOptions) -> SearchResults:
@@ -266,6 +279,7 @@ class HybridSearchService:
 **Testing**: Test various search scenarios
 
 ### 4.2 Embedding Service with Fallbacks (3 days)
+
 ```python
 class EmbeddingService:
     def __init__(self):
@@ -291,9 +305,11 @@ class EmbeddingService:
 **Testing**: Test provider failures and fallbacks
 
 ## Phase 5: Domain-Driven Refactoring (Sprint 7-8)
+
 *Goal: Clean architecture for long-term maintainability*
 
 ### 5.1 Domain Layer (2 weeks)
+
 ```python
 # Domain entities with business logic
 class Entry:
@@ -337,6 +353,7 @@ class Content:
 **Testing**: Unit tests for domain logic
 
 ### 5.2 Application Services (1 week)
+
 ```python
 # Use cases as application services
 class CreateEntryUseCase:
@@ -368,25 +385,27 @@ class CreateEntryUseCase:
 ## Monitoring and Metrics
 
 ### Key Metrics to Track
+
 1. **Performance**
-   - API response times (p50, p95, p99)
-   - Database query times
-   - Cache hit rates
-   - Embedding generation times
+- API response times (p50, p95, p99)
+- Database query times
+- Cache hit rates
+- Embedding generation times
 
 2. **Reliability**
-   - Error rates by endpoint
-   - Concurrent update conflicts
-   - Search success rates
-   - Background job failures
+- Error rates by endpoint
+- Concurrent update conflicts
+- Search success rates
+- Background job failures
 
 3. **Business**
-   - Entries created per day
-   - Search queries per day
-   - Active users
-   - Content processing times
+- Entries created per day
+- Search queries per day
+- Active users
+- Content processing times
 
 ### Implementation
+
 ```python
 # OpenTelemetry integration
 from opentelemetry import trace, metrics
@@ -408,12 +427,14 @@ async def create_entry(...):
 ## Risk Mitigation
 
 ### Backward Compatibility
+
 - All changes are additive in Phase 1
 - Version API endpoints (/api/v2) for breaking changes
 - Maintain old endpoints during transition
 - Feature flags for gradual rollout
 
 ### Testing Strategy
+
 1. **Unit Tests**: Domain logic, utilities
 2. **Integration Tests**: API endpoints, database
 3. **Contract Tests**: API compatibility
@@ -421,6 +442,7 @@ async def create_entry(...):
 5. **Security Tests**: Content sanitization
 
 ### Rollback Plan
+
 - Database migrations are reversible
 - Feature flags for instant disable
 - Blue-green deployment for zero-downtime rollback
@@ -441,6 +463,7 @@ async def create_entry(...):
 ## Success Criteria
 
 ### Technical
+
 - ✅ All quality tests passing
 - ✅ 85%+ code coverage maintained
 - ✅ <200ms p95 API response time
@@ -448,6 +471,7 @@ async def create_entry(...):
 - ✅ 100% search availability (with fallbacks)
 
 ### Business
+
 - ✅ No breaking changes for existing clients
 - ✅ Improved search relevance (measured by click-through)
 - ✅ Reduced support tickets for data issues

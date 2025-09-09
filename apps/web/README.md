@@ -3,22 +3,26 @@
 Modern Sanctuary-themed journal editor built with React 18, TypeScript, Tailwind CSS 4, Tiptap, and Monaco.
 
 ## Prerequisites
+
 - Bun installed
 - Node 18+ (for tooling)
 
 ## Install
+
 ```
 cd apps/web
 bun install
 ```
 
 ## Development
+
 ```
 bun run dev
 ```
 Open http://localhost:5173 (or Playwright config uses 5174).
 
 ## Storybook
+
 - Dev: `bun run storybook` (http://localhost:6006)
 - Build: `bun run build-storybook`
 
@@ -29,6 +33,7 @@ Stories live alongside components under `src/components/**`. The root-level Stor
 **See [TESTING.md](TESTING.md) for complete testing documentation.**
 
 ### Quick Start
+
 ```bash
 # Run all tests
 bun test
@@ -41,25 +46,30 @@ bun run quality:all
 ```
 
 ### Current Status
+
 - **Test Framework**: Vitest 3.2.4
 - **Tests**: 7 passing, 3 skipped
 - **Bundle Size**: 1318KB (under 1500KB limit ✅)
 
 ### Playwright E2E (Optional)
+
 - Install browsers: `npx playwright install --with-deps`
 - Run E2E tests: `bunx playwright test`
 - Uses port 5174 (keep free or adjust `playwright.config.ts`)
 
 ## Theme (Dawn/Dusk)
+
 - Toggle in Sidebar (persists in localStorage as `journal:theme`)
 - Uses Tailwind 4 tokens in `tailwind.config.js` and CSS variables in `src/index.css`
 
 ## Code Style
+
 - TypeScript strict mode
 - Tailwind 4 utility-first styling
 - Biome config available at repo root (`.biome.json`); run `bunx biome check --write` at project root for formatting/lint (if installed).
 
 ## Notes
+
 - Monaco languages are populated dynamically (50+ supported) and merged with seed list.
 - Slash menu exposes test ids for E2E stability.
 

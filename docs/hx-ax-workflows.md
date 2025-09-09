@@ -7,12 +7,14 @@ Modern UI/UX development in 2025 requires seamless collaboration between human d
 ## Core Principles
 
 ### For Human Experience (HX)
+
 1. **Visual-First Development**: Humans need to see changes immediately
 2. **Intuitive Patterns**: Follow established conventions (Material Design, Apple HIG)
 3. **Rapid Iteration**: Hot reload, instant feedback, visual debugging
 4. **Accessibility by Default**: WCAG 2.2 AA compliance built into workflows
 
 ### For Agent Experience (AX)
+
 1. **Structured Data**: JSON schemas, TypeScript interfaces, semantic HTML
 2. **Deterministic Outputs**: Predictable component generation
 3. **Test-Driven UI**: Visual regression tests as specifications
@@ -21,16 +23,19 @@ Modern UI/UX development in 2025 requires seamless collaboration between human d
 ## Technology Stack
 
 ### Frontend Framework
+
 - **HTMX 2.0**: Server-driven interactivity without SPA complexity
 - **Alpine.js 3.14**: Lightweight reactivity for client-side state
 - **Tailwind CSS 3.4**: Utility-first styling with design tokens
 
 ### Build & Development Tools
+
 - **Vite 5.4**: Lightning-fast HMR and build times
 - **Playwright 1.46**: Cross-browser testing and visual regression
 - **Storybook 8.3**: Component documentation and testing
 
 ### AI Integration
+
 - **MCP Puppeteer Server**: Visual validation and screenshot generation
 - **Claude Vision API**: Design-to-code conversion
 - **GitHub Copilot**: Inline code suggestions
@@ -40,6 +45,7 @@ Modern UI/UX development in 2025 requires seamless collaboration between human d
 ### 1. Component Development Workflow
 
 #### Human Developer Path
+
 ```bash
 # Start Storybook for visual development
 npm run storybook
@@ -50,6 +56,7 @@ npm run storybook
 ```
 
 #### AI Agent Path
+
 ```bash
 # Claude generates component from specification
 claude --plan > "Create a data table component with sorting, filtering, and pagination"
@@ -93,6 +100,7 @@ claude > "Write Playwright tests for all interaction states"
 ### 3. State Management Patterns
 
 #### Alpine.js Store for Client State
+
 ```javascript
 // journal/static/js/stores/uiStore.js
 export default {
@@ -128,6 +136,7 @@ export default {
 ```
 
 #### HTMX Patterns for Server State
+
 ```html
 <!-- journal/templates/components/data-table.html -->
 <div id="data-table"
@@ -256,10 +265,10 @@ test.describe('Accessibility Tests', () => {
 name: create-component
 description: Generate a new UI component with tests and documentation
 parameters:
-  - name: component_name
+      - name: component_name
     description: Name of the component (PascalCase)
     required: true
-  - name: type
+      - name: type
     description: Component type (form|display|layout|navigation)
     required: true
 ---
@@ -273,12 +282,12 @@ Create a new component named {{component_name}} of type {{type}}:
 5. Add accessibility test at `tests/a11y/{{component_name}}.test.js`
 6. Update components.json registry
 7. Follow these patterns:
-   - Use semantic HTML elements
-   - Include ARIA labels where needed
-   - Support keyboard navigation
-   - Implement loading and error states
-   - Add JSDoc documentation
-   - Export as ES6 module
+  - Use semantic HTML elements
+  - Include ARIA labels where needed
+  - Support keyboard navigation
+  - Implement loading and error states
+  - Add JSDoc documentation
+  - Export as ES6 module
 ```
 
 ### 2. Design-to-Code Command
@@ -289,7 +298,7 @@ Create a new component named {{component_name}} of type {{type}}:
 name: design-to-code
 description: Convert a design file to working component
 parameters:
-  - name: design_url
+      - name: design_url
     description: URL or path to design file
     required: true
 ---
@@ -297,23 +306,23 @@ parameters:
 Convert the design at {{design_url}} to a working component:
 
 1. Analyze the design for:
-   - Layout structure
-   - Color palette
-   - Typography scale
-   - Spacing system
-   - Interactive states
+  - Layout structure
+  - Color palette
+  - Typography scale
+  - Spacing system
+  - Interactive states
 
 2. Generate Tailwind utilities matching the design tokens
 
 3. Create Alpine.js component with:
-   - Proper state management
-   - Event handlers
-   - Data bindings
+  - Proper state management
+  - Event handlers
+  - Data bindings
 
 4. Ensure responsive behavior for:
-   - Mobile (320-767px)
-   - Tablet (768-1023px)
-   - Desktop (1024px+)
+  - Mobile (320-767px)
+  - Tablet (768-1023px)
+  - Desktop (1024px+)
 
 5. Add HTMX attributes for server interactions where appropriate
 ```

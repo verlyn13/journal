@@ -30,6 +30,7 @@ mise run dev:full
 ## 🏗 Architecture
 
 ### Frontend (React + TypeScript)
+
 - **Location**: `apps/web/`
 - **Tech Stack**: React 18, TypeScript, Vite, CodeMirror
 - **Features**: 
@@ -40,6 +41,7 @@ mise run dev:full
   - Hybrid search (keyword + semantic)
 
 ### Backend (FastAPI + PostgreSQL)
+
 - **Location**: `apps/api/`
 - **Tech Stack**: FastAPI, SQLModel, PostgreSQL with pgvector
 - **Features**:
@@ -129,6 +131,7 @@ Run with Bun from the repo root (use Node/npm if preferred):
 ## 🔧 Configuration
 
 ### Frontend Environment
+
 Create `apps/web/.env`:
 ```env
 VITE_API_URL=http://127.0.0.1:5000/api
@@ -136,6 +139,7 @@ VITE_GRAPHQL_URL=http://127.0.0.1:8000/graphql
 ```
 
 ### Backend Environment
+
 Create `apps/api/.env`:
 ```env
 JOURNAL_DB_URL=postgresql+asyncpg://journal:journal@localhost:5433/journal
@@ -153,6 +157,7 @@ JOURNAL_JWT_SECRET=your-secret-key-change-in-production
 ## 🧪 Testing
 
 ### Frontend Tests
+
 ```bash
 # Unit tests
 bun run test
@@ -168,6 +173,7 @@ bun run test:visual
 ```
 
 ### Backend Tests
+
 ```bash
 cd apps/api
 
@@ -182,18 +188,21 @@ uv run pytest -m integration
 ## 🛠 Tooling
 
 ### Frontend
+
 - **Biome**: Formatting and linting
 - **TypeScript**: Type checking
 - **Vite**: Build tooling
 - **Playwright**: E2E testing
 
 ### Backend
+
 - **uv**: Python package management
 - **Ruff**: Python linting and formatting
 - **MyPy**: Static type checking
 - **pytest**: Testing framework
 
 ### Pre-commit Hooks
+
 ```bash
 # Frontend
 cd apps/web
@@ -231,6 +240,7 @@ For VS Code users:
 ## 📋 Features
 
 ### Editor Features
+
 - **Markdown Editing**: Native markdown editing with CodeMirror
 - **Live Preview**: Real-time markdown-to-HTML preview
 - **Math Rendering**: LaTeX math with KaTeX (inline: `$x^2$`, block: `$$...$$`)
@@ -239,12 +249,14 @@ For VS Code users:
 - **Dark Mode**: Built-in OneDark theme
 
 ### Search & Discovery
+
 - **Hybrid Search**: Combines keyword and semantic search
 - **Vector Embeddings**: AI-powered content similarity
 - **Full-text Search**: PostgreSQL FTS with ranking
 - **Smart Suggestions**: Auto-complete and recommendations
 
 ### Backend Capabilities
+
 - **Event Sourcing**: Complete audit trail
 - **Background Processing**: Async embedding generation
 - **GraphQL API**: Flexible data queries
@@ -265,6 +277,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for development guidelines.
 - [API Documentation](http://localhost:8000/docs)
 - [Editor Guide](apps/web/EDITOR_GUIDE.md)
 - [Initial Planning](docs/initial-planning/)
+
 ### Roadmap
 
 See `docs/ROADMAP.md` for the live roadmap, branching strategy, testing strategy, and CI/CD.

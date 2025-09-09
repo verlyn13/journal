@@ -23,23 +23,23 @@ As outlined in the [Phase 17 Implementation Plan](@docs/implementation/17-phase-
 The following tasks have been delegated to the **Documentation Specialist**:
 
 1.  **Documentation Testing Implementation:**
-    *   Set up and configure a Markdown linter.
-    *   Investigate and implement link validation.
-    *   Define and document the documentation testing process (`docs/guides/documentation-testing-process.md`).
-    *   Perform an initial validation run on key guides.
+-   Set up and configure a Markdown linter.
+-   Investigate and implement link validation.
+-   Define and document the documentation testing process (`docs/guides/documentation-testing-process.md`).
+-   Perform an initial validation run on key guides.
 2.  **User-Focused Documentation Creation:**
-    *   Create initial versions of user guides within `docs/user-guide/`:
-        *   `README.md` (Core Features Guide)
-        *   `installation.md`
-        *   `faq.md`
-        *   `troubleshooting.md`
+-   Create initial versions of user guides within `docs/user-guide/`:
+  -   `README.md` (Core Features Guide)
+  -   `installation.md`
+  -   `faq.md`
+  -   `troubleshooting.md`
 
 ## Expected Outcome
 
 By the end of this phase, we expect to have:
 
-*   Established tools and processes for ensuring documentation quality (linting, link checking, review process).
-*   A foundational set of guides aimed at helping end-users install, use, and troubleshoot the application.
+-   Established tools and processes for ensuring documentation quality (linting, link checking, review process).
+-   A foundational set of guides aimed at helping end-users install, use, and troubleshoot the application.
 
 ---
 

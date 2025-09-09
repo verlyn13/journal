@@ -4,8 +4,8 @@ description: "Detailed implementation of the CI/CD pipeline using GitHub Actions
 category: "Implementation"
 phase: 18
 related_topics:
-  - "Documentation Testing Process"
-  - "Markdown Linting Guide"
+      - "Documentation Testing Process"
+      - "Markdown Linting Guide"
 version: "1.0"
 status: "active"
 tags: ["implementation", "ci-cd", "github-actions", "automation", "documentation"]
@@ -32,7 +32,7 @@ name: Documentation Checks
 on:
   pull_request:
     paths:
-      - 'docs/**'
+            - 'docs/**'
       # Additional paths...
 jobs:
   lint-and-check-links:
@@ -56,7 +56,7 @@ on:
   push:
     branches: [ main ]
     paths:
-      - '**.py'
+            - '**.py'
       # Additional paths...
 jobs:
   test:
@@ -81,7 +81,7 @@ on:
   push:
     branches: [ main ]
     paths:
-      - 'src/**'
+            - 'src/**'
       # Additional paths...
 jobs:
   build:
@@ -105,7 +105,7 @@ on:
   push:
     branches: [ main ]
     paths:
-      - 'docs/**'
+            - 'docs/**'
       # Additional paths...
 jobs:
   validate-structure:
@@ -128,7 +128,7 @@ on:
   push:
     branches: [ main ]
     paths:
-      - 'docs/**'
+            - 'docs/**'
       # Additional paths...
 jobs:
   build:
@@ -150,7 +150,7 @@ name: Create Release
 on:
   push:
     tags:
-      - 'v*'
+            - 'v*'
 jobs:
   release:
     name: Create Release

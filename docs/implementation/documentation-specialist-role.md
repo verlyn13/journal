@@ -3,10 +3,10 @@ title: "Documentation Specialist Role"
 description: "Detailed guide on the Documentation Specialist's responsibilities, strategies, and tooling for AI-consumable documentation"
 category: "Implementation"
 related_topics:
-  - "JSDoc Implementation"
-  - "Markdown Guidelines"
-  - "Code Documentation"
-  - "AI-Consumable Content"
+      - "JSDoc Implementation"
+      - "Markdown Guidelines"
+      - "Code Documentation"
+      - "AI-Consumable Content"
 version: "1.0"
 tags: ["documentation", "specialist", "JSDoc", "markdown", "semantic-chunking", "metadata", "AI-consumable"]
 ---

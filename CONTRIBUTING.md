@@ -11,11 +11,11 @@ Thank you for your interest in contributing to the Journal project! This documen
   - [Development Workflow](#development-workflow)
   - [Pull Request Process](#pull-request-process)
   - [Coding Standards](#coding-standards)
-    - [Python](#python)
-    - [JavaScript](#javascript)
+  - [Python](#python)
+  - [JavaScript](#javascript)
   - [Documentation Guidelines](#documentation-guidelines)
   - [Testing](#testing)
-    - [Local Workflow Testing with `act`](#local-workflow-testing-with-act)
+  - [Local Workflow Testing with `act`](#local-workflow-testing-with-act)
 
 ## Code of Conduct
 
@@ -49,13 +49,13 @@ We expect all contributors to follow our [Code of Conduct](CODE_OF_CONDUCT.md). 
    ```
 
 3. **Make your changes**:
-   - Write your code
-   - Write or update tests
-   - Write or update documentation
+- Write your code
+- Write or update tests
+- Write or update documentation
 
 4. **Commit your changes**:
-   - Follow [Conventional Commits](https://www.conventionalcommits.org/) format
-   - Example: `feat(editor): add markdown preview toggle button`
+- Follow [Conventional Commits](https://www.conventionalcommits.org/) format
+- Example: `feat(editor): add markdown preview toggle button`
 
 5. **Keep your branch updated**:
    ```bash
@@ -68,21 +68,23 @@ We expect all contributors to follow our [Code of Conduct](CODE_OF_CONDUCT.md). 
 1. **Open a pull request** from your feature branch to the main repository
 2. **Fill out the PR template** with all required information
 3. **Pass all CI checks**:
-   - Python tests must pass
-   - Frontend build must succeed 
-   - Documentation checks must pass
+- Python tests must pass
+- Frontend build must succeed 
+- Documentation checks must pass
 4. **Address review feedback** by making additional commits or amending existing ones
 5. Once approved, your PR will be merged by a maintainer
 
 ## Coding Standards
 
 ### Python
+
 - Follow PEP 8 style guide
 - Write docstrings for all functions, classes, and modules
 - Keep functions small and focused on a single responsibility
 - Add type hints where appropriate
 
 ### JavaScript
+
 - Follow the project's ESLint configuration
 - Use ES6+ features appropriately
 - Document functions using JSDoc comments
@@ -115,20 +117,20 @@ Before submitting a Pull Request, especially if your changes affect GitHub Actio
 1.  **Install `act`**: Follow the installation instructions in the [`act` documentation](https://github.com/nektos/act#installation).
 2.  **Install Docker**: Ensure Docker (or a compatible engine like Podman) is installed and running.
 3.  **Run Workflows Locally**:
-    *   Navigate to the project root directory (`/home/verlyn13/Projects/journal`).
-    *   Simulate a `push` event (runs workflows triggered by push):
+-   Navigate to the project root directory (`/home/verlyn13/Projects/journal`).
+-   Simulate a `push` event (runs workflows triggered by push):
         ```bash
         gh act push
         ```
-    *   Simulate a `pull_request` event:
+-   Simulate a `pull_request` event:
         ```bash
         gh act pull_request
         ```
-    *   Run a specific workflow file:
+-   Run a specific workflow file:
         ```bash
         gh act -W .github/workflows/python-tests.yml
         ```
-    *   Run a specific job within workflows:
+-   Run a specific job within workflows:
         ```bash
         gh act -j build-frontend
         ```

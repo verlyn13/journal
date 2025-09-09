@@ -24,21 +24,21 @@ As outlined in the [Phase 18 Implementation Plan](@docs/implementation/18-phase-
 The following tasks have been delegated to the **Documentation Specialist**:
 
 1.  **Formalize Review Process:**
-    *   Update/create guides (`docs/guides/documentation-testing-process.md` or `docs/guides/documentation-review-process.md`) detailing review steps, responsibilities, and checklists.
+-   Update/create guides (`docs/guides/documentation-testing-process.md` or `docs/guides/documentation-review-process.md`) detailing review steps, responsibilities, and checklists.
 2.  **Plan CI/CD Integration:**
-    *   Create a proposal document (`docs/proposals/ci-cd-documentation-checks.md`) outlining commands, placement, and handling for automated checks.
+-   Create a proposal document (`docs/proposals/ci-cd-documentation-checks.md`) outlining commands, placement, and handling for automated checks.
 3.  **Define Maintenance Strategy:**
-    *   Create a `Documentation Update Checklist` (`docs/guides/documentation-update-checklist.md`).
-    *   Define and document documentation health metrics (`docs/guides/documentation-metrics.md`).
-    *   Outline a process for periodic documentation audits.
+-   Create a `Documentation Update Checklist` (`docs/guides/documentation-update-checklist.md`).
+-   Define and document documentation health metrics (`docs/guides/documentation-metrics.md`).
+-   Outline a process for periodic documentation audits.
 
 ## Expected Outcome
 
 By the end of this phase, we expect to have:
 
-*   Clearly defined processes for reviewing and maintaining documentation as part of the development lifecycle.
-*   A concrete plan for integrating automated documentation checks into the CI/CD pipeline.
-*   Tools (checklists, metrics) to support ongoing documentation maintenance and quality.
+-   Clearly defined processes for reviewing and maintaining documentation as part of the development lifecycle.
+-   A concrete plan for integrating automated documentation checks into the CI/CD pipeline.
+-   Tools (checklists, metrics) to support ongoing documentation maintenance and quality.
 
 ---
 

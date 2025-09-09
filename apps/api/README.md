@@ -88,8 +88,8 @@ A modern FastAPI-based backend for the Journal application, featuring:
   ```bash
   REFRESH=$(curl -s -X POST http://127.0.0.1:8000/api/v1/auth/demo | jq -r .refresh_token)
   curl -s -X POST http://127.0.0.1:8000/api/v1/auth/refresh \
-    -H 'Content-Type: application/json' \
-    -d "{\"refresh_token\":\"$REFRESH\"}" | jq
+  -H 'Content-Type: application/json' \
+  -d "{\"refresh_token\":\"$REFRESH\"}" | jq
   ```
    ```
 
