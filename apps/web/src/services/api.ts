@@ -3,7 +3,7 @@
  * Handles all API calls to the FastAPI backend
  */
 
-import { getAccessToken, setAccessToken, getRefreshToken, setRefreshToken, clearTokens } from './authStore';
+import { getAccessToken as getAT, setAccessToken, getRefreshToken, setRefreshToken, clearTokens } from './authStore';
 import { FLAGS } from '../config/flags';
 
 function normalizeApiBase(raw?: string) {
@@ -68,7 +68,7 @@ export interface SearchResult {
 
 class ApiService {
   private getAccessToken(): string | null {
-    return getAccessToken();
+    return getAT();
   }
 
   private setTokens(tokens: AuthTokens) {
@@ -102,11 +102,19 @@ class ApiService {
       if (token) headers.Authorization = `Bearer ${token}`;
     }
 
-    const config: RequestInit = {
-      ...options,
-      headers,
-    };
-    const response = await fetch(url, config);
+    // Add CSRF header for unsafe methods when cookie mode is on
+    if (FLAGS.AUTH_COOKIE_REFRESH) {
+      const methodUpper = (options.method || 'GET').toUpperCase();
+      if (['POST', 'PUT', 'PATCH', 'DELETE'].includes(methodUpper)) {
+        const csrf = await this.ensureCsrf();
+        if (csrf) headers['X-CSRF-Token'] = csrf;
+      }
+    }
+
+    const config: RequestInit = { ...options, headers };
+    // Include credentials for cookie-mode refresh
+    const withCreds = FLAGS.AUTH_COOKIE_REFRESH ? { credentials: 'include' as const } : {};
+    const response = await fetch(url, { ...config, ...withCreds });
 
     // Handle unauthorized - try to refresh token
     if (response.status === 401 && requireAuth) {
@@ -115,7 +123,7 @@ class ApiService {
       if (refreshed && newToken) {
         headers.Authorization = `Bearer ${newToken}`;
         const retryConfig: RequestInit = { ...options, headers };
-        const retryResponse = await fetch(url, retryConfig);
+        const retryResponse = await fetch(url, { ...retryConfig, ...withCreds });
         if (!retryResponse.ok) throw new Error(`API Error: ${retryResponse.statusText}`);
         if (retryResponse.status === 204) return {} as T;
         return await retryResponse.json();
@@ -137,22 +145,58 @@ class ApiService {
   }
 
   private async refreshToken(): Promise<boolean> {
-    if (!FLAGS.USER_MGMT_ENABLED) return false; // preserve legacy behavior when flag off
-    const refreshToken = getRefreshToken();
-    if (!refreshToken) return false;
+    if (!FLAGS.USER_MGMT_ENABLED) return false;
     try {
+      if (FLAGS.AUTH_COOKIE_REFRESH) {
+        // Cookie-based refresh: no body token, credentials included
+        const tokens = await this.request<{ access_token: string; token_type: string }>(
+          '/v1/auth/refresh',
+          { method: 'POST', body: JSON.stringify({}) },
+          false,
+        );
+        setAccessToken(tokens.access_token || null);
+        return true;
+      }
+      const refreshToken = getRefreshToken();
+      if (!refreshToken) return false;
       const tokens = await this.request<AuthTokens>(
         '/v1/auth/refresh',
         { method: 'POST', body: JSON.stringify({ refresh_token: refreshToken }) },
         false,
       );
-      // Persist rotated refresh token and update in-memory access
       this.setTokens(tokens);
       return true;
     } catch (_error) {
       this.clearTokens();
       return false;
     }
+  }
+
+  private csrfTokenCache: string | null = null;
+
+  private getCsrfFromCookie(): string | null {
+    if (typeof document === 'undefined') return null;
+    const name = 'csrftoken';
+    const m = (`; ${document.cookie}`).split(`; ${name}=`).pop()?.split(';')[0] ?? null;
+    return m;
+  }
+
+  private async ensureCsrf(): Promise<string | null> {
+    if (!FLAGS.AUTH_COOKIE_REFRESH) return null;
+    // Try cache or cookie first
+    this.csrfTokenCache ||= this.getCsrfFromCookie();
+    if (this.csrfTokenCache) return this.csrfTokenCache;
+    try {
+      const res = await fetch(`${API_BASE_URL}/v1/auth/csrf`, { credentials: 'include' });
+      if (res.ok) {
+        const data = await res.json();
+        this.csrfTokenCache = data?.csrfToken ?? this.getCsrfFromCookie();
+        return this.csrfTokenCache;
+      }
+    } catch {
+      /* ignore */
+    }
+    return null;
   }
 
   // Auth endpoints

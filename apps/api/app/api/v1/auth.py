@@ -27,6 +27,7 @@ from app.infra.sessions import (
     revoke_session,
 )
 from app.settings import settings
+from app.infra.auth_counters import login_success, login_fail, refresh_rotated, session_revoked
 
 
 router = APIRouter(prefix="/auth", tags=["auth"])
@@ -53,7 +54,12 @@ class RefreshRequest(BaseModel):
 
 
 @router.post("/login")
-async def login(body: LoginRequest, request: Request, s: AsyncSession = Depends(get_session)) -> dict[str, str]:
+async def login(
+    body: LoginRequest,
+    request: Request,
+    response: Response,
+    s: AsyncSession = Depends(get_session),
+) -> dict[str, str]:
     """Login endpoint supports two modes: demo (flag off) and real (flag on)."""
     if not settings.user_mgmt_enabled:
         # Demo login (existing behavior)
@@ -62,6 +68,7 @@ async def login(body: LoginRequest, request: Request, s: AsyncSession = Depends(
         if (body.username or body.email) == expected_user and body.password == expected_pass:
             user_id = "123e4567-e89b-12d3-a456-426614174000"
         else:
+            login_fail("invalid_credentials")
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
         return {
             "access_token": create_access_token(user_id),
@@ -85,17 +92,27 @@ async def login(body: LoginRequest, request: Request, s: AsyncSession = Depends(
         and (user.is_verified or not settings.auth_require_email_verify)
     )
     if not ok:
+        reason = (
+            "not_verified" if user and not user.is_verified and settings.auth_require_email_verify else "invalid_credentials"
+        )
+        login_fail(reason)
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
 
     # Create server-side session and include rid in refresh
     ua = request.headers.get("user-agent")
     ip = request.client.host if request.client else None
     sess = await create_user_session(s, user.id, ua, ip)
-    return {
-        "access_token": create_access_token(str(user.id), scopes=user.roles),
-        "refresh_token": create_refresh_token(str(user.id), refresh_id=str(sess.refresh_id)),
-        "token_type": "bearer",
-    }
+    access = create_access_token(str(user.id), scopes=user.roles)
+    refresh = create_refresh_token(str(user.id), refresh_id=str(sess.refresh_id))
+    login_success("password")
+    if settings.auth_cookie_refresh:
+        # Cookie-based refresh; set httpOnly refresh cookie and ensure CSRF cookie exists
+        # Max-Age based on refresh TTL in days
+        max_age = settings.refresh_token_days * 24 * 60 * 60
+        set_refresh_cookie(response, refresh, max_age)
+        ensure_csrf_cookie(response, request)
+        return {"access_token": access, "token_type": "bearer"}
+    return {"access_token": access, "refresh_token": refresh, "token_type": "bearer"}
 
 
 @router.post("/register", status_code=202)
@@ -173,14 +190,26 @@ async def demo_login() -> dict[str, str]:
 
 
 @router.post("/refresh")
-async def refresh(body: RefreshRequest, s: AsyncSession = Depends(get_session)) -> dict[str, str]:
+async def refresh(
+    body: RefreshRequest | None = None,
+    request: Request | None = None,
+    response: Response | None = None,
+    s: AsyncSession = Depends(get_session),
+) -> dict[str, str]:
     """Exchange a valid refresh token for a new access token.
 
     Flag off: legacy behavior (no rotation). Flag on: verify, lookup session by rid, rotate.
     """
+    token_src = None
+    if settings.auth_cookie_refresh and request is not None:
+        token_src = request.cookies.get(settings.refresh_cookie_name)
+    if not token_src:
+        if not body:
+            raise HTTPException(status_code=401, detail="Invalid token")
+        token_src = body.refresh_token
     try:
         decoded = jwt.decode(
-            body.refresh_token,
+            token_src,
             settings.jwt_secret,
             algorithms=["HS256"],
             audience=settings.jwt_aud,
@@ -200,7 +229,7 @@ async def refresh(body: RefreshRequest, s: AsyncSession = Depends(get_session)) 
     if not settings.user_mgmt_enabled:
         return {
             "access_token": create_access_token(sub),
-            "refresh_token": body.refresh_token,
+            "refresh_token": token_src,
             "token_type": "bearer",
         }
 
@@ -217,12 +246,16 @@ async def refresh(body: RefreshRequest, s: AsyncSession = Depends(get_session)) 
     new_rid = uuid.uuid4()
     sess.refresh_id = new_rid
     await touch_session(s, sess)
+    refresh_rotated()
 
-    return {
-        "access_token": create_access_token(sub),
-        "refresh_token": create_refresh_token(sub, refresh_id=str(new_rid)),
-        "token_type": "bearer",
-    }
+    access = create_access_token(sub)
+    new_refresh = create_refresh_token(sub, refresh_id=str(new_rid))
+    if settings.auth_cookie_refresh and response is not None:
+        # Set new cookie; do not include refresh in body
+        max_age = settings.refresh_token_days * 24 * 60 * 60
+        set_refresh_cookie(response, new_refresh, max_age)
+        return {"access_token": access, "token_type": "bearer"}
+    return {"access_token": access, "refresh_token": new_refresh, "token_type": "bearer"}
 
 
 @router.get("/me")
@@ -240,17 +273,25 @@ async def logout(
     body: RefreshRequest | None = None,
     user_id: str = Depends(get_current_user),
     s: AsyncSession = Depends(get_session),
+    request: Request | None = None,
+    response: Response | None = None,
 ) -> Response | dict[str, str]:
     # Demo mode: preserve legacy behavior
     if not settings.user_mgmt_enabled:
         return {"message": "Logged out successfully"}
 
-    # Flag on: revoke session by provided refresh token
-    if not body:
-        raise HTTPException(status_code=400, detail="Missing refresh_token")
+    # Flag on: revoke session by provided refresh token (cookie or body)
+    token_src = None
+    if settings.auth_cookie_refresh and request is not None:
+        require_csrf(request)
+        token_src = request.cookies.get(settings.refresh_cookie_name)
+    if not token_src:
+        if not body:
+            raise HTTPException(status_code=400, detail="Missing refresh_token")
+        token_src = body.refresh_token
     try:
         decoded = jwt.decode(
-            body.refresh_token,
+            token_src,
             settings.jwt_secret,
             algorithms=["HS256"],
             audience=settings.jwt_aud,
@@ -263,4 +304,15 @@ async def logout(
     sess = await get_session_by_refresh_id(s, uuid.UUID(decoded["rid"]))
     if sess:
         await revoke_session(s, sess)
+        session_revoked()
+    if settings.auth_cookie_refresh and response is not None:
+        clear_refresh_cookie(response)
+        return Response(status_code=204)
     return Response(status_code=204)
+
+
+@router.get("/csrf")
+async def get_csrf(request: Request, response: Response) -> dict[str, str]:
+    """Ensure a CSRF cookie exists and return the token for clients that need it."""
+    token = ensure_csrf_cookie(response, request)
+    return {"csrfToken": token}
