@@ -10,11 +10,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.infra.models import Entry
 
 
-@pytest.mark.component
+@pytest.mark.component()
 class TestEntriesAPIErrors:
     """Test error handling in entries API."""
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_get_entries_with_pagination(
         self, client: AsyncClient, auth_headers: dict[str, str], db_session: AsyncSession
     ):
@@ -43,7 +43,7 @@ class TestEntriesAPIErrors:
         entries = response.json()
         assert len(entries) == 5  # Only 5 entries left after offset 10
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_update_entry_empty_data(
         self, client: AsyncClient, auth_headers: dict[str, str], sample_entry: Entry
     ):
@@ -59,7 +59,7 @@ class TestEntriesAPIErrors:
         assert data["title"] == sample_entry.title
         assert data["content"] == sample_entry.content
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_update_entry_markdown_conversion(
         self, client: AsyncClient, auth_headers: dict[str, str], sample_entry: Entry
     ):
@@ -83,7 +83,7 @@ class TestEntriesAPIErrors:
         assert "<h1>" in data["content"] or "Heading" in data["content"]
         assert "<strong>" in data["content"] or "bold" in data["content"]
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_update_entry_html_conversion(
         self, client: AsyncClient, auth_headers: dict[str, str], sample_entry: Entry
     ):
@@ -101,7 +101,7 @@ class TestEntriesAPIErrors:
         assert data["content"] == update_data["content"]
         assert data["editor_mode"] == "html"  # Default mode when no header is set
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_update_entry_invalid_uuid(
         self, client: AsyncClient, auth_headers: dict[str, str]
     ):
@@ -113,7 +113,7 @@ class TestEntriesAPIErrors:
         )
         assert response.status_code == 404  # Invalid UUID treated as not found
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_delete_entry_invalid_uuid(
         self, client: AsyncClient, auth_headers: dict[str, str]
     ):
@@ -124,7 +124,7 @@ class TestEntriesAPIErrors:
         )
         assert response.status_code == 404  # Invalid UUID treated as not found
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_create_entry_with_tags(self, client: AsyncClient, auth_headers: dict[str, str]):
         """Test creating entry with tags."""
         entry_data = {
@@ -139,7 +139,7 @@ class TestEntriesAPIErrors:
         assert data["title"] == entry_data["title"]
         # Note: Tags might not be returned if not implemented yet
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_get_entries_with_search_query(
         self, client: AsyncClient, auth_headers: dict[str, str], db_session: AsyncSession
     ):

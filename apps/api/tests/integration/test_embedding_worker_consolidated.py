@@ -33,11 +33,11 @@ class FakeMsg:
         self.naked = True
 
 
-@pytest.mark.integration
+@pytest.mark.integration()
 class TestEmbeddingWorker:
     """Test cases for embedding worker functionality."""
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_embedding_written_on_entry_event(self, monkeypatch, db_session: AsyncSession):
         """Test that embedding is created when entry.created event is received."""
         # Create an entry without embeddings
@@ -82,7 +82,7 @@ class TestEmbeddingWorker:
         )
         assert (res2.scalar() or 0) == 1
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_reindex_job_is_idempotent(self, monkeypatch, db_session: AsyncSession):
         """Test that reindex operation is idempotent."""
         # Seed multiple entries without embeddings
@@ -121,7 +121,7 @@ class TestEmbeddingWorker:
         ).scalar() or 0
         assert cnt2 == cnt
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_worker_connect_disconnect(self, monkeypatch):
         """Test worker connection and disconnection lifecycle."""
         # Mock NATS connection
@@ -147,7 +147,7 @@ class TestEmbeddingWorker:
         await consumer.disconnect()
         mock_nc.close.assert_called_once()
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_worker_connection_failure_handling(self, monkeypatch):
         """Test worker handles connection failures gracefully."""
 
@@ -163,7 +163,7 @@ class TestEmbeddingWorker:
         with pytest.raises(Exception, match="Connection refused"):
             await consumer.connect()
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_worker_handles_unknown_event_type(self, monkeypatch):
         """Test worker handles unknown event types gracefully."""
         consumer = EmbeddingConsumer()
@@ -176,7 +176,7 @@ class TestEmbeddingWorker:
         # Should still ACK unknown events (not retry them)
         assert msg.acked
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_worker_subscription_configuration(self, monkeypatch):
         """Test worker subscribes with correct configuration."""
         subscriptions = []
@@ -230,7 +230,7 @@ class TestEmbeddingWorker:
         assert reindex_sub["manual_ack"] is True
         assert reindex_sub["max_deliver"] == 1
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_worker_handles_entry_with_no_content(
         self, monkeypatch, db_session: AsyncSession
     ):
@@ -265,7 +265,7 @@ class TestEmbeddingWorker:
         # Should create embedding even for empty content
         assert embeddings_created[0][1] == " "  # title + " " + content
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_worker_handles_database_error_during_upsert(
         self, monkeypatch, db_session: AsyncSession
     ):
@@ -299,7 +299,7 @@ class TestEmbeddingWorker:
         assert msg.naked
         assert not msg.acked
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_worker_stop_method(self):
         """Test worker stop method sets running flag."""
         consumer = EmbeddingConsumer()
@@ -309,7 +309,7 @@ class TestEmbeddingWorker:
 
         assert consumer.running is False
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_worker_handles_partial_reindex_failure(
         self, monkeypatch, db_session: AsyncSession
     ):

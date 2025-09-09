@@ -3,8 +3,8 @@ import pytest
 from httpx import AsyncClient
 
 
-@pytest.mark.asyncio
-@pytest.mark.component
+@pytest.mark.asyncio()
+@pytest.mark.component()
 async def test_dual_write_saves_both_formats(client: AsyncClient, auth_headers: dict[str, str]):
     payload = {
         "title": "MD Entry",
@@ -19,8 +19,8 @@ async def test_dual_write_saves_both_formats(client: AsyncClient, auth_headers: 
     assert "<h1>" in data["content"]  # html derived from markdown
 
 
-@pytest.mark.asyncio
-@pytest.mark.component
+@pytest.mark.asyncio()
+@pytest.mark.component()
 async def test_backward_compatibility(client: AsyncClient, auth_headers: dict[str, str]):
     # Default returns HTML
     r = await client.get("/api/v1/entries", headers=auth_headers)
@@ -30,8 +30,8 @@ async def test_backward_compatibility(client: AsyncClient, auth_headers: dict[st
         assert isinstance(items[0]["content"], str)
 
 
-@pytest.mark.asyncio
-@pytest.mark.component
+@pytest.mark.asyncio()
+@pytest.mark.component()
 async def test_new_clients_get_markdown(client: AsyncClient, auth_headers: dict[str, str]):
     headers = {**auth_headers, "X-Content-Format": "markdown"}
     r = await client.get("/api/v1/entries", headers=headers)
@@ -44,8 +44,8 @@ async def test_new_clients_get_markdown(client: AsyncClient, auth_headers: dict[
             assert first["content"] == first["markdown_content"]
 
 
-@pytest.mark.asyncio
-@pytest.mark.integration
+@pytest.mark.asyncio()
+@pytest.mark.integration()
 async def test_backfill_preserves_content(
     client: AsyncClient, auth_headers: dict[str, str], db_session
 ):
