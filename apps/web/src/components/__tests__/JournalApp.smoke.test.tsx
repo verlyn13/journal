@@ -1,6 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import React from 'react';
 
 // Mock API service used by JournalApp
 vi.mock('../../services/api', () => {
@@ -43,4 +42,3 @@ describe('JournalApp smoke', () => {
     expect(await screen.findByText('First')).toBeDefined();
   });
 });
-

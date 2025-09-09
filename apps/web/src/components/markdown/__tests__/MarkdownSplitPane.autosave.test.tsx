@@ -1,6 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import React from 'react';
 
 // Mock the lazy-loaded MarkdownEditor with a simple textarea
 vi.mock('../MarkdownEditor', () => {
@@ -42,4 +41,3 @@ describe('MarkdownSplitPane autosave', () => {
     expect(onSave).toHaveBeenCalledWith({ html: '', markdown: '# New content' });
   });
 });
-
