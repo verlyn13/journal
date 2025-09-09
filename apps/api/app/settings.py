@@ -24,7 +24,6 @@ class Settings(BaseSettings):
     rate_limit_window_seconds: int = 60
     rate_limit_max_attempts: int = 5
 
-    # Cookie/CSRF (M4)
     auth_cookie_refresh: bool = False
     csrf_cookie_name: str = "csrftoken"
     refresh_cookie_name: str = "refresh_token"

@@ -51,4 +51,3 @@ async def test_refresh_rotation_and_logout(client):
     # Refresh with revoked token should fail
     r = await client.post("/api/v1/auth/refresh", json={"refresh_token": refresh2})
     assert r.status_code == 401
-

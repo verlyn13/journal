@@ -17,4 +17,3 @@ def refresh_rotated() -> None:
 
 def session_revoked() -> None:
     inc("auth_revocations_total")
-

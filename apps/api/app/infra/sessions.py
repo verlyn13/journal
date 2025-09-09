@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from datetime import UTC, datetime, timedelta
-from typing import Optional
 from uuid import UUID, uuid4
 
 from sqlalchemy import select
@@ -51,4 +50,3 @@ async def revoke_session(db: AsyncSession, sess: UserSession) -> None:
         sess.revoked_at = _utcnow()
         db.add(sess)
         await db.commit()
-

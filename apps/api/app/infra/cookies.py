@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from secrets import token_urlsafe
+
 from fastapi import HTTPException, Request, Response, status
 
 from app.settings import settings
@@ -47,4 +48,3 @@ def require_csrf(req: Request) -> None:
     header = req.headers.get("x-csrf-token")
     if not cookie or not header or cookie != header:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="CSRF validation failed")
-

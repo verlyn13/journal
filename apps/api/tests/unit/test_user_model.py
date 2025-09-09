@@ -9,4 +9,3 @@ def test_user_defaults() -> None:
     assert u.is_verified is False
     assert isinstance(u.roles, list)
     assert "user" in u.roles
-
