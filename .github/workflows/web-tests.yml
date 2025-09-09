@@ -24,7 +24,7 @@ jobs:
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
         with:
-          bun-version: 1.2.21
+          bun-version: "1.2.21"
 
       - name: Cache bun store
         uses: actions/cache@v4
@@ -42,22 +42,35 @@ jobs:
           echo "Vitest:" && bun x vitest --version
           node -e "console.log('jsdom:', require('jsdom/package.json').version)"
 
+      - name: Create reports directory
+        run: mkdir -p reports
+
       - name: Run Vitest (CI profile)
         env:
           CI: "true"
         run: |
           mkdir -p reports
           bun x vitest run \
-            --coverage \
-            --reporter=default,junit,verbose \
+            --environment=jsdom \
+            --coverage.enabled \
+            --reporter=default \
+            --reporter=junit \
             --outputFile.junit=./reports/junit.xml \
-            --logHeapUsage
+            --bail 1
 
-      - name: Upload coverage
+      - name: Upload unit test reports
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: vitest-coverage
+          name: unit-reports
+          path: |
+            apps/web/reports/junit.xml
+
+      - name: Upload unit coverage
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit-coverage
           path: apps/web/coverage
 
       - name: Upload vitest junit report
@@ -88,7 +101,7 @@ jobs:
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
         with:
-          bun-version: latest
+          bun-version: "1.2.21"
 
       # Python/uv for API + Alembic
       - name: Setup Python

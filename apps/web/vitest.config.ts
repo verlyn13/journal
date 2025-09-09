@@ -10,8 +10,7 @@ export default defineConfig({
   plugins: [react()],
   test: {
     globals: true,
-    // Use a single DOM environment for parity with CI and to avoid env-specific drift
-    environment: 'jsdom',
+    environment: 'jsdom', // Force single environment for consistency
     setupFiles: ['./src/test-setup.ts'],
     include: ['src/**/*.{test,spec}.{ts,tsx}'],
     coverage: {
@@ -39,9 +38,10 @@ export default defineConfig({
     maxConcurrency: 4,
     sequence: {
       shuffle: true,
-      seed: 1337,
+      seed: Date.now()
     },
     testTimeout: 10000,
+    hookTimeout: 10000
   },
   define: {
     'import.meta.env.VITE_EDITOR': JSON.stringify('html')

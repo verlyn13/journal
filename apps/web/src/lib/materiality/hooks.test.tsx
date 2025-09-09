@@ -113,6 +113,7 @@ describe('useGlassSupport', () => {
     const { result } = renderHook(() => useGlassSupport());
 
     await waitFor(() => {
+      expect(result.current.supported).toBeDefined(); // Should be defined
       expect(result.current.supported).toBe(false); // Mocked to false in test-setup (jsdom limitation)
       expect(result.current.fallbackStyles).toEqual({
         backgroundColor: 'rgba(255, 255, 255, 0.95)',
@@ -207,7 +208,7 @@ describe('useMateriality', () => {
 
     // Simulate media query change
     act(() => {
-      if (listener) listener({ matches: true });
+      if (listener) listener({ matches: true } as MediaQueryListEvent);
     });
 
     expect(result.current.reducedMotion).toBe(true);
@@ -273,7 +274,7 @@ describe('useRipple', () => {
       currentTarget: container,
       clientX: 100,
       clientY: 100,
-    } as React.MouseEvent;
+    } as unknown as React.MouseEvent;
 
     // Mock getBoundingClientRect
     container.getBoundingClientRect = vi.fn().mockReturnValue({
@@ -308,7 +309,7 @@ describe('useRipple', () => {
       currentTarget: container,
       clientX: 100,
       clientY: 100,
-    } as React.MouseEvent;
+    } as unknown as React.MouseEvent;
 
     container.getBoundingClientRect = vi.fn().mockReturnValue({
       left: 0,
@@ -340,7 +341,7 @@ describe('useRipple', () => {
       currentTarget: document.createElement('div'),
       clientX: 100,
       clientY: 100,
-    } as React.MouseEvent;
+    } as unknown as React.MouseEvent;
 
     // Should not throw
     expect(() => {

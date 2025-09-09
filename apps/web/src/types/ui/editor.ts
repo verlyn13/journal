@@ -2,6 +2,9 @@
  * UI types for the editor components
  */
 
+// TODO: Uncomment when TipTap is installed
+// import type { Editor } from '@tiptap/react';
+type Editor = any; // Temporary placeholder
 import type { Entry } from '../domain/entry';
 
 // Editor state types

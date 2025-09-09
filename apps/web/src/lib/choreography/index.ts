@@ -1,12 +1,12 @@
 // Choreography System Exports
 
-export * from './types';
+export * from './gestures';
+export * from './hooks';
+export * from './layout';
+export { layoutPresets } from './layout';
 export * from './orchestrator';
 export * from './timeline';
-export * from './gestures';
-export * from './layout';
-export * from './hooks';
 
 // Re-export presets for convenience
 export { presetTimelines } from './timeline';
-export { layoutPresets } from './layout';
+export * from './types';

@@ -2,6 +2,9 @@
  * Type definitions for Slash Commands extension
  */
 
+// TODO: Uncomment when TipTap is installed
+// import type { Editor as TiptapEditor } from '@tiptap/core';
+type TiptapEditor = any; // Temporary placeholder
 
 export interface SlashCommandItem {
   title: string;

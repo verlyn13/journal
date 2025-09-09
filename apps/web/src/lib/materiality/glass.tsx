@@ -117,16 +117,24 @@ export function generateGlassCSS(): string {
 // Check if backdrop-filter is supported
 export function supportsBackdropFilter(): boolean {
   if (typeof window === 'undefined') return false;
+  
+  // Check for test override first
   const override = (window as unknown as { __BACKDROP_SUPPORT_OVERRIDE__?: boolean })
     .__BACKDROP_SUPPORT_OVERRIDE__;
   if (typeof override === 'boolean') return override;
+  
+  // Check CSS.supports
   const css = (
     window as unknown as { CSS?: { supports?: (prop: string, value: string) => boolean } }
   ).CSS;
   const hasCssSupports = !!css && typeof css.supports === 'function';
   if (!hasCssSupports) return false;
-  return (
-    css!.supports!('backdrop-filter', 'blur(1px)') ||
-    css!.supports!('-webkit-backdrop-filter', 'blur(1px)')
-  );
+  
+  try {
+    const supports = css!.supports!('backdrop-filter', 'blur(1px)') ||
+                    css!.supports!('-webkit-backdrop-filter', 'blur(1px)');
+    return Boolean(supports);
+  } catch (e) {
+    return false;
+  }
 }

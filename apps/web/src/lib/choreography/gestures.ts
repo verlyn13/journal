@@ -14,7 +14,7 @@ export interface GestureEvent {
 export class GestureCoordinator {
   private listeners: Map<string, Set<(event: GestureEvent) => void>> = new Map();
   private activeGestures: Map<Element, GestureTracker> = new Map();
-  
+
   constructor(private config: GestureConfig = {}) {
     this.config = {
       threshold: 50,
@@ -27,15 +27,15 @@ export class GestureCoordinator {
   // Attach gesture tracking to element
   attach(element: Element): void {
     if (!this.config.enabled) return;
-    
+
     const tracker = new GestureTracker(element, this.config);
     this.activeGestures.set(element, tracker);
-    
+
     // Set up event listeners
     tracker.on('gesture', (event: GestureEvent) => {
       this.handleGesture(event);
     });
-    
+
     tracker.start();
   }
 
@@ -52,7 +52,7 @@ export class GestureCoordinator {
   private handleGesture(event: GestureEvent): void {
     const listeners = this.listeners.get(event.type);
     if (listeners) {
-      listeners.forEach(listener => listener(event));
+      listeners.forEach((listener) => listener(event));
     }
   }
 
@@ -71,7 +71,7 @@ export class GestureCoordinator {
 
   // Clean up all gestures
   destroy(): void {
-    this.activeGestures.forEach(tracker => tracker.stop());
+    this.activeGestures.forEach((tracker) => tracker.stop());
     this.activeGestures.clear();
     this.listeners.clear();
   }
@@ -86,10 +86,10 @@ class GestureTracker {
   private isPinching = false;
   private initialDistance = 0;
   private listeners: Map<string, (event: GestureEvent) => void> = new Map();
-  
+
   constructor(
     private element: Element,
-    private config: GestureConfig
+    private config: GestureConfig,
   ) {}
 
   start(): void {
@@ -97,7 +97,7 @@ class GestureTracker {
     this.element.addEventListener('touchstart', this.handleTouchStart as EventListener);
     this.element.addEventListener('touchmove', this.handleTouchMove as EventListener);
     this.element.addEventListener('touchend', this.handleTouchEnd as EventListener);
-    
+
     // Mouse events (for desktop)
     this.element.addEventListener('mousedown', this.handleMouseDown as EventListener);
     this.element.addEventListener('mousemove', this.handleMouseMove as EventListener);
@@ -109,7 +109,7 @@ class GestureTracker {
     this.element.removeEventListener('touchstart', this.handleTouchStart as EventListener);
     this.element.removeEventListener('touchmove', this.handleTouchMove as EventListener);
     this.element.removeEventListener('touchend', this.handleTouchEnd as EventListener);
-    
+
     // Remove mouse events
     this.element.removeEventListener('mousedown', this.handleMouseDown as EventListener);
     this.element.removeEventListener('mousemove', this.handleMouseMove as EventListener);
@@ -146,7 +146,7 @@ class GestureTracker {
     if (this.isPinching && e.touches.length === 2) {
       const currentDistance = this.getTouchDistance(e.touches);
       const scale = currentDistance / this.initialDistance;
-      
+
       this.emit({
         type: 'pinch',
         scale,
@@ -185,7 +185,7 @@ class GestureTracker {
       // Check for swipe
       if (distance > (this.config.threshold || 50) && velocity > 0.3) {
         const direction = this.getSwipeDirection(deltaX, deltaY);
-        
+
         if (this.isDirectionAllowed(direction)) {
           this.emit({
             type: 'swipe',
@@ -197,7 +197,7 @@ class GestureTracker {
         }
       }
     }
-    
+
     this.isPinching = false;
   };
 
@@ -213,7 +213,7 @@ class GestureTracker {
       // Mouse is being dragged
       const deltaX = e.clientX - this.startX;
       const deltaY = e.clientY - this.startY;
-      
+
       this.emit({
         type: 'drag',
         distance: Math.sqrt(deltaX * deltaX + deltaY * deltaY),
@@ -257,7 +257,7 @@ class GestureTracker {
   private getSwipeDirection(deltaX: number, deltaY: number): 'up' | 'down' | 'left' | 'right' {
     const absX = Math.abs(deltaX);
     const absY = Math.abs(deltaY);
-    
+
     if (absX > absY) {
       return deltaX > 0 ? 'right' : 'left';
     } else {
@@ -267,11 +267,11 @@ class GestureTracker {
 
   private isDirectionAllowed(direction: 'up' | 'down' | 'left' | 'right'): boolean {
     const { direction: allowedDirection } = this.config;
-    
+
     if (allowedDirection === 'both') return true;
     if (allowedDirection === 'horizontal') return direction === 'left' || direction === 'right';
     if (allowedDirection === 'vertical') return direction === 'up' || direction === 'down';
-    
+
     return false;
   }
 }
