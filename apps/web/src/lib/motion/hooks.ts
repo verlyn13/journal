@@ -47,7 +47,7 @@ export function useReducedMotion(options: ReducedMotionOptions = { strategy: 're
 export function useMotion<T extends HTMLElement = HTMLDivElement>(
   config: MotionConfig = {},
 ): {
-  ref: React.RefObject<T>;
+  ref: React.RefObject<T | null>;
   animate: (to: Partial<CSSStyleDeclaration>) => Promise<void>;
   state: AnimationState;
 } {
@@ -254,7 +254,7 @@ export function useViewTransition(): {
 export function usePresetMotion<T extends HTMLElement = HTMLDivElement>(
   preset: keyof typeof motionPresets,
 ): {
-  ref: React.RefObject<T>;
+  ref: React.RefObject<T | null>;
   trigger: () => Promise<void>;
   state: AnimationState;
 } {

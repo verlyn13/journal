@@ -2,6 +2,59 @@ import '@testing-library/jest-dom/vitest';
 import { cleanup } from '@testing-library/react';
 import { afterEach, vi } from 'vitest';
 
+// Mock localStorage and sessionStorage for React 19 compatibility
+const localStorageMock = (() => {
+  let store: Record<string, string> = {};
+  return {
+    getItem: vi.fn((key: string) => store[key] || null),
+    setItem: vi.fn((key: string, value: string) => { store[key] = value; }),
+    removeItem: vi.fn((key: string) => { delete store[key]; }),
+    clear: vi.fn(() => { store = {}; }),
+    key: vi.fn((index: number) => Object.keys(store)[index] || null),
+    get length() { return Object.keys(store).length; }
+  };
+})();
+
+const sessionStorageMock = (() => {
+  let store: Record<string, string> = {};
+  return {
+    getItem: vi.fn((key: string) => store[key] || null),
+    setItem: vi.fn((key: string, value: string) => { store[key] = value; }),
+    removeItem: vi.fn((key: string) => { delete store[key]; }),
+    clear: vi.fn(() => { store = {}; }),
+    key: vi.fn((index: number) => Object.keys(store)[index] || null),
+    get length() { return Object.keys(store).length; }
+  };
+})();
+
+// Define localStorage and sessionStorage on global scope
+Object.defineProperty(globalThis, 'localStorage', {
+  value: localStorageMock,
+  configurable: true,
+  writable: true,
+});
+
+Object.defineProperty(globalThis, 'sessionStorage', {
+  value: sessionStorageMock,  
+  configurable: true,
+  writable: true,
+});
+
+// Also define on window for browser-style access
+if (typeof window !== 'undefined') {
+  Object.defineProperty(window, 'localStorage', {
+    value: localStorageMock,
+    configurable: true,
+    writable: true,
+  });
+  
+  Object.defineProperty(window, 'sessionStorage', {
+    value: sessionStorageMock,
+    configurable: true, 
+    writable: true,
+  });
+}
+
 // Ensure strong test isolation between files and tests
 afterEach(() => {
   cleanup();
@@ -11,12 +64,9 @@ afterEach(() => {
   if (typeof document !== 'undefined') {
     document.body.innerHTML = '';
   }
-  try {
-    localStorage?.clear?.();
-  } catch {}
-  try {
-    sessionStorage?.clear?.();
-  } catch {}
+  // Clear our mocked storage
+  localStorageMock.clear();
+  sessionStorageMock.clear();
 });
 
 // Mock window.matchMedia defensively

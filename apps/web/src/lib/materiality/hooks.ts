@@ -156,7 +156,7 @@ export function useParallax(
   depth = 1,
   enabled = true,
 ): {
-  ref: React.RefObject<HTMLDivElement>;
+  ref: React.RefObject<HTMLDivElement | null>;
   parallaxStyles: React.CSSProperties;
 } {
   const ref = useRef<HTMLDivElement>(null);
@@ -204,7 +204,7 @@ export function useParallax(
 
 // Hook for ripple effect
 export function useRipple(): {
-  rippleRef: React.RefObject<HTMLDivElement>;
+  rippleRef: React.RefObject<HTMLDivElement | null>;
   createRipple: (e: React.MouseEvent) => void;
 } {
   const rippleRef = useRef<HTMLDivElement>(null);

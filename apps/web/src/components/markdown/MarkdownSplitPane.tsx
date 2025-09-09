@@ -73,8 +73,7 @@ export default function MarkdownSplitPane({ entry, onSave }: Props) {
         }
       })();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [entry?.id, entry]);
+  }, [entry?.id, entry?.content]);
 
   // Debounced autosave when content changes
   useEffect(() => {
