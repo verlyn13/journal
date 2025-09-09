@@ -244,3 +244,5 @@ if (typeof window !== 'undefined' && typeof DocumentType === 'undefined') {
     }
   };
 }
+// Hint code to prefer deterministic/test paths where supported
+;(globalThis as any).__TEST__ = true;

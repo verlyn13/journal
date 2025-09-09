@@ -12,9 +12,11 @@ type EntryLike = {
 type Props = {
   entry?: EntryLike | null;
   onSave?: (payload: { html: string; markdown: string }) => void;
+  /** Optional override for autosave debounce in ms (default 1200) */
+  autosaveMs?: number;
 };
 
-export default function MarkdownSplitPane({ entry, onSave }: Props) {
+export default function MarkdownSplitPane({ entry, onSave, autosaveMs }: Props) {
   const [md, setMd] = useState(entry?.content ?? '# Markdown Editor\n\nStart typing…');
   const [saving, setSaving] = useState(false);
   const [lastSavedAt, setLastSavedAt] = useState<number | null>(null);
@@ -95,7 +97,7 @@ export default function MarkdownSplitPane({ entry, onSave }: Props) {
       } finally {
         setSaving(false);
       }
-    }, 1200);
+    }, typeof autosaveMs === 'number' ? autosaveMs : 1200);
 
     return () => {
       if (saveTimer.current) {

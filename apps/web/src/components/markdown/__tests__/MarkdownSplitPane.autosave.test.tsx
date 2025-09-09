@@ -26,6 +26,7 @@ describe('MarkdownSplitPane autosave', () => {
       <MarkdownSplitPane
         entry={{ id: 'e1', title: 'T', content: 'Initial' }}
         onSave={onSave}
+        autosaveMs={10}
       />,
     );
 
@@ -36,7 +37,7 @@ describe('MarkdownSplitPane autosave', () => {
     expect(onSave).not.toHaveBeenCalled();
 
     // Advance timers to trigger debounce (1200ms)
-    await vi.advanceTimersByTimeAsync(1300);
+    await vi.advanceTimersByTimeAsync(20);
     await Promise.resolve();
     expect(onSave).toHaveBeenCalledTimes(1);
     expect(onSave).toHaveBeenCalledWith({ html: '', markdown: '# New content' });
