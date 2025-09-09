@@ -7,10 +7,10 @@
 const ROLLOUT_CONFIG = {
   reactCompiler: {
     // Percentage of users to enable React Compiler for
-    percentage: parseInt(process.env.REACT_COMPILER_ROLLOUT_PERCENT || '0', 10),
+    percentage: parseInt(import.meta.env.VITE_REACT_COMPILER_ROLLOUT_PERCENT || '0', 10),
     // Force enable/disable via environment
-    forceEnable: process.env.ENABLE_REACT_COMPILER === 'true',
-    forceDisable: process.env.DISABLE_REACT_COMPILER === 'true',
+    forceEnable: import.meta.env.VITE_ENABLE_REACT_COMPILER === 'true',
+    forceDisable: import.meta.env.VITE_DISABLE_REACT_COMPILER === 'true',
   },
 };
 
@@ -60,7 +60,7 @@ export const featureFlags = {
     errorBoundaries: true,
     
     // Enable React DevTools Profiler integration
-    profiler: process.env.NODE_ENV === 'development',
+    profiler: import.meta.env.DEV,
     
     // Use automatic batching optimizations
     automaticBatching: true,
@@ -69,7 +69,7 @@ export const featureFlags = {
     concurrent: true,
     
     // StrictMode behavior (double-render in dev)
-    strictMode: process.env.NODE_ENV === 'development',
+    strictMode: import.meta.env.DEV,
   },
   
   // Performance optimizations
@@ -87,13 +87,13 @@ export const featureFlags = {
   // Development features
   development: {
     // Show performance metrics in dev
-    showMetrics: process.env.NODE_ENV === 'development',
+    showMetrics: import.meta.env.DEV,
     
     // Enable debug logging
-    debugLogging: process.env.DEBUG === 'true',
+    debugLogging: import.meta.env.VITE_DEBUG === 'true',
     
     // React Compiler logging
-    compilerLogging: process.env.REACT_COMPILER_DEBUG === 'true',
+    compilerLogging: import.meta.env.VITE_REACT_COMPILER_DEBUG === 'true',
   },
 } as const;
 
