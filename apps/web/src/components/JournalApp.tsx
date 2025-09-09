@@ -1,4 +1,6 @@
 import React, { Suspense, useCallback, useEffect, useState } from 'react';
+import { FLAGS } from '../config/flags';
+import { subscribe } from '../services/authStore';
 import { useCreateEntry, useDeleteEntry, useEntriesList } from '../hooks/useEntryQueries';
 import api, { type AuthStatus } from '../services/api';
 import EntryList from './layout/EntryList';
@@ -60,29 +62,48 @@ export function JournalApp() {
     return () => window.removeEventListener('keydown', onKeyDown, true);
   }, []);
 
+  // Cross-tab logout handling
+  useEffect(() => {
+    const unsub = subscribe((evt) => {
+      if ((evt as any)?.type === 'logout') {
+        setState((prev) => ({ ...prev, authenticated: false, user: undefined }));
+      }
+    });
+    return unsub;
+  }, []);
+
   // Initialize app and check authentication
   useEffect(() => {
     const initializeApp = async () => {
       try {
-        const authStatus = await api.checkAuthStatus();
-
-        if (!authStatus.authenticated) {
-          // Try demo login for development
-          await api.demoLogin();
-          const newAuthStatus = await api.checkAuthStatus();
-          setState((prev) => ({
-            ...prev,
-            authenticated: newAuthStatus.authenticated,
-            user: newAuthStatus.user,
-            loading: false,
-          }));
-        } else {
+        if (FLAGS.USER_MGMT_ENABLED) {
+          const authStatus = await api.checkAuthStatus();
           setState((prev) => ({
             ...prev,
             authenticated: authStatus.authenticated,
             user: authStatus.user,
             loading: false,
           }));
+        } else {
+          const authStatus = await api.checkAuthStatus();
+          if (!authStatus.authenticated) {
+            // Try demo login for development
+            await api.demoLogin();
+            const newAuthStatus = await api.checkAuthStatus();
+            setState((prev) => ({
+              ...prev,
+              authenticated: newAuthStatus.authenticated,
+              user: newAuthStatus.user,
+              loading: false,
+            }));
+          } else {
+            setState((prev) => ({
+              ...prev,
+              authenticated: authStatus.authenticated,
+              user: authStatus.user,
+              loading: false,
+            }));
+          }
         }
 
         // Entries will be populated via react-query below
@@ -230,25 +251,13 @@ export function JournalApp() {
     );
   }
 
-  // Show authentication required state
-  if (!state.authenticated) {
+  // Show authentication required state (flag-aware)
+  if (!state.authenticated && FLAGS.USER_MGMT_ENABLED) {
     return (
       <div className="min-h-screen bg-sanctuary-bg-primary text-sanctuary-text-primary flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold mb-4">Welcome to Journal</h1>
           <p className="mb-4">Please authenticate to continue</p>
-          <button
-            type="button"
-            onClick={async () => {
-              try {
-                await api.demoLogin();
-                window.location.reload();
-              } catch (_error) {}
-            }}
-            className="bg-sanctuary-accent text-white px-4 py-2 rounded hover:bg-sanctuary-accent/80"
-          >
-            Demo Login
-          </button>
         </div>
       </div>
     );

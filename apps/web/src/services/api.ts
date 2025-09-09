@@ -3,6 +3,9 @@
  * Handles all API calls to the FastAPI backend
  */
 
+import { getAccessToken, setAccessToken, getRefreshToken, setRefreshToken, clearTokens } from './authStore';
+import { FLAGS } from '../config/flags';
+
 function normalizeApiBase(raw?: string) {
   // Remove trailing slashes first
   const trimmed = (raw ?? '/api').trim().replace(/\/+$/, '');
@@ -65,19 +68,16 @@ export interface SearchResult {
 
 class ApiService {
   private getAccessToken(): string | null {
-    return localStorage.getItem('access_token');
+    return getAccessToken();
   }
 
   private setTokens(tokens: AuthTokens) {
-    localStorage.setItem('access_token', tokens.access_token);
-    if (tokens.refresh_token) {
-      localStorage.setItem('refresh_token', tokens.refresh_token);
-    }
+    setAccessToken(tokens.access_token || null);
+    if (tokens.refresh_token) setRefreshToken(tokens.refresh_token);
   }
 
   private clearTokens() {
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('refresh_token');
+    clearTokens();
   }
 
   private async request<T>(
@@ -99,9 +99,7 @@ class ApiService {
     // Add authorization header if token exists and auth is required
     if (requireAuth) {
       const token = this.getAccessToken();
-      if (token) {
-        headers.Authorization = `Bearer ${token}`;
-      }
+      if (token) headers.Authorization = `Bearer ${token}`;
     }
 
     const config: RequestInit = {
@@ -112,24 +110,18 @@ class ApiService {
 
     // Handle unauthorized - try to refresh token
     if (response.status === 401 && requireAuth) {
-      await this.refreshToken();
+      const refreshed = await this.refreshToken();
       const newToken = this.getAccessToken();
-      if (newToken) {
-        // Retry with new token - update the headers
+      if (refreshed && newToken) {
         headers.Authorization = `Bearer ${newToken}`;
-        const retryConfig: RequestInit = {
-          ...options,
-          headers,
-        };
+        const retryConfig: RequestInit = { ...options, headers };
         const retryResponse = await fetch(url, retryConfig);
-        if (!retryResponse.ok) {
-          throw new Error(`API Error: ${retryResponse.statusText}`);
-        }
-        if (retryResponse.status === 204) {
-          return {} as T;
-        }
+        if (!retryResponse.ok) throw new Error(`API Error: ${retryResponse.statusText}`);
+        if (retryResponse.status === 204) return {} as T;
         return await retryResponse.json();
       }
+      this.clearTokens();
+      throw new Error('Unauthorized');
     }
 
     if (!response.ok) {
@@ -144,22 +136,22 @@ class ApiService {
     return await response.json();
   }
 
-  private async refreshToken(): Promise<void> {
-    const refreshToken = localStorage.getItem('refresh_token');
-    if (!refreshToken) return;
-
+  private async refreshToken(): Promise<boolean> {
+    if (!FLAGS.USER_MGMT_ENABLED) return false; // preserve legacy behavior when flag off
+    const refreshToken = getRefreshToken();
+    if (!refreshToken) return false;
     try {
       const tokens = await this.request<AuthTokens>(
         '/v1/auth/refresh',
-        {
-          method: 'POST',
-          body: JSON.stringify({ refresh_token: refreshToken }),
-        },
-        false, // Don't require auth for refresh
+        { method: 'POST', body: JSON.stringify({ refresh_token: refreshToken }) },
+        false,
       );
+      // Persist rotated refresh token and update in-memory access
       this.setTokens(tokens);
+      return true;
     } catch (_error) {
       this.clearTokens();
+      return false;
     }
   }
 
@@ -179,7 +171,16 @@ class ApiService {
 
   async logout(): Promise<void> {
     try {
-      await this.request('/v1/auth/logout', { method: 'POST' });
+      const rt = getRefreshToken();
+      if (FLAGS.USER_MGMT_ENABLED && rt) {
+        await fetch(`${API_BASE_URL}/v1/auth/logout`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ refresh_token: rt }),
+        });
+      } else {
+        await this.request('/v1/auth/logout', { method: 'POST' });
+      }
     } finally {
       this.clearTokens();
     }
