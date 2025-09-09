@@ -163,7 +163,7 @@ git checkout -b refactor/accessibility-base
 ```
 
 ### 1.1 Design Token System
-**Branch:** `refactor/design-tokens`
+**Branch:** `refactor/design-tokens` **✅ COMPLETE (Merged)**
 
 ```typescript
 // packages/design-tokens/src/index.ts
@@ -205,7 +205,7 @@ parallel_tasks:
 ```
 
 ### 1.2 Motion System Architecture
-**Branch:** `refactor/motion-system`
+**Branch:** `refactor/motion-system` **✅ COMPLETE (Merged)**
 
 ```typescript
 // lib/motion/orchestrator.ts
@@ -298,7 +298,7 @@ gantt
 ```
 
 ### 2.1 Stream A: Visual Materiality
-**Branch:** `feat/m1-materiality`
+**Branch:** `feat/m1-materiality` **✅ COMPLETE (Merged PR #14)**
 
 ```typescript
 // Implementation with comprehensive testing
@@ -331,7 +331,7 @@ describe('Materiality Features', () => {
 ```
 
 ### 2.2 Stream B: Motion Choreography
-**Branch:** `feat/m2-choreography`
+**Branch:** `feat/m2-choreography` **✅ COMPLETE (Merged PR #15)**
 
 ```typescript
 // Comprehensive motion testing
@@ -365,7 +365,7 @@ class MotionTestHarness {
 ```
 
 ### 2.3 Stream C: Authentication System
-**Branch:** `feat/m4-auth-passkeys`
+**Branch:** `feat/m4-auth-passkeys` **✅ COMPLETE (Merged PR #16)**
 
 ```typescript
 // WebAuthn implementation with comprehensive fallbacks

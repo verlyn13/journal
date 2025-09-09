@@ -6,8 +6,8 @@
 // Rollout percentages for gradual deployment
 const ROLLOUT_CONFIG = {
   reactCompiler: {
-    // Percentage of users to enable React Compiler for
-    percentage: parseInt(import.meta.env.VITE_REACT_COMPILER_ROLLOUT_PERCENT || '0', 10),
+    // Percentage of users to enable React Compiler for (100% = full rollout)
+    percentage: parseInt(import.meta.env.VITE_REACT_COMPILER_ROLLOUT_PERCENT || '100', 10),
     // Force enable/disable via environment
     forceEnable: import.meta.env.VITE_ENABLE_REACT_COMPILER === 'true',
     forceDisable: import.meta.env.VITE_DISABLE_REACT_COMPILER === 'true',
