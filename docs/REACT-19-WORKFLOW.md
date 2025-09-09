@@ -2,7 +2,7 @@
 
 ## Optimized Implementation Guide with Risk Mitigation
 
----
+***
 
 ## 🎯 Migration Overview
 
@@ -15,9 +15,9 @@
 - **Testing**: Vitest 3.2.4 with jsdom
 - **CI/CD**: GitHub Actions with Bun 1.2.21
 - **Linting**: Biome 2.2.2 (needs ESLint supplement for React Compiler only)
-- **Editors in Use**: 
-      - CodeMirror 6 (fully compatible with React 19)
-      - Monaco Editor (fully compatible with React 19)
+- **Editors in Use**:
+  \- CodeMirror 6 (fully compatible with React 19)
+  \- Monaco Editor (fully compatible with React 19)
 - **Note**: TipTap references in stories/types are stale and should be removed
 
 ### Migration Strategy
@@ -26,7 +26,7 @@
 - **Approach**: Risk-mitigated with multiple escape hatches
 - **Key Principle**: Test compatibility before upgrading dependencies
 
----
+***
 
 ## 🔬 Phase 0: Smoke Test Migration (Day 0 - 3 hours)
 
@@ -74,7 +74,7 @@ echo "## React 19 Migration Issues" > migration-issues.md
 4. Document all warnings/errors
 5. Determine if Storybook upgrade is actually needed
 
----
+***
 
 ## 📋 Pre-Migration Setup
 
@@ -150,13 +150,14 @@ sed -i '/@tiptap/d' src/types/ui/slash-commands.ts
 sed -i '/@tiptap/d' src/types/ui/editor.ts
 ```
 
----
+***
 
 ## 🚀 Phase 1-2: Foundation & Testing Baseline (Days 1-2)
 
 ### Validation Gates Setup
 
 Create `scripts/validate-migration.sh`:
+
 ```bash
 #!/bin/bash
 set -e
@@ -219,7 +220,7 @@ export class PerformanceMonitor {
 }
 ```
 
----
+***
 
 ## 🔄 Phase 3-4: Single-Shot Core Migration (Days 3-4)
 
@@ -241,6 +242,7 @@ npx types-react-codemod@latest preset-19 ./src
 ### Update Configuration Files Simultaneously
 
 **tsconfig.json:**
+
 ```json
 {
   "compilerOptions": {
@@ -270,6 +272,7 @@ npx types-react-codemod@latest preset-19 ./src
 ```
 
 **vite.config.ts:**
+
 ```typescript
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
@@ -357,7 +360,7 @@ bun run dev
 # Check console for React 19 version and any warnings
 ```
 
----
+***
 
 ## 🛠️ Phase 5-6: Tooling Compatibility (Days 5-6)
 
@@ -412,7 +415,7 @@ EOF
 # "lint:compiler": "eslint src --ext .ts,.tsx --max-warnings 0"
 ```
 
----
+***
 
 ## 🎭 Phase 7-8: Progressive Enhancement (Days 7-8)
 
@@ -439,6 +442,7 @@ export function isFeatureEnabled(feature: keyof typeof FEATURES): boolean {
 ### Implement Low-Risk Features First
 
 **1. Document Metadata (Safe)**
+
 ```typescript
 // src/components/JournalPage.tsx
 import { FEATURES } from '@/config/feature-flags';
@@ -460,6 +464,7 @@ export function JournalPage({ entry }: { entry: Entry }) {
 ```
 
 **2. use() Hook (Medium Risk)**
+
 ```typescript
 // src/hooks/useAsyncData.ts
 import { use, Suspense } from 'react';
@@ -478,6 +483,7 @@ export function useJournalEntry(id: string) {
 ```
 
 **3. Form Actions (Higher Risk - No Server Components)**
+
 ```typescript
 // src/components/JournalForm.tsx
 import { useActionState, useOptimistic } from 'react';
@@ -529,7 +535,7 @@ REACT_19_USE_HOOK=true bun run build
 # Test and monitor
 ```
 
----
+***
 
 ## ⚡ Phase 9-10: Optimization & Polish (Days 9-10)
 
@@ -578,7 +584,7 @@ console.log('Bundle Size Delta:',
 - [ ] Test on slow 3G network
 - [ ] Check memory leaks with Chrome DevTools
 
----
+***
 
 ## 🔄 CI/CD Pipeline Updates
 
@@ -633,7 +639,7 @@ jobs:
         run: echo "Deploy logic here"
 ```
 
----
+***
 
 ## ✅ Validation Gates
 
@@ -666,7 +672,7 @@ fi
 echo "✅ Phase $PHASE validation complete"
 ```
 
----
+***
 
 ## 🚨 Rollback Procedures
 
@@ -693,7 +699,7 @@ git cherry-pick <commit-hash> # Pick only safe commits
 git checkout -b feature/react-19-safe
 ```
 
----
+***
 
 ## 📊 Success Criteria
 
@@ -716,7 +722,7 @@ git checkout -b feature/react-19-safe
 - ✅ 10%+ performance improvement (if compiler enabled)
 - ✅ Ready for production deployment
 
----
+***
 
 ## ⚠️ Critical Warnings
 
@@ -734,7 +740,7 @@ git checkout -b feature/react-19-safe
 3. **Escape hatches** - Maintain rollback ability
 4. **Performance monitoring** - Measure everything
 
----
+***
 
 ## 📝 Post-Migration Checklist
 
@@ -745,7 +751,7 @@ git checkout -b feature/react-19-safe
 - [ ] Plan React Compiler production enablement
 - [ ] Consider Storybook 9 for Q2 (if needed)
 
----
+***
 
 **Optimized Timeline**: 8-10 days (vs 12)
 **Risk Level**: Low (with proper validation gates)

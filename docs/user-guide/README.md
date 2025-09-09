@@ -1,10 +1,11 @@
----
+***
+
 title: "Flask Journal User Guide"
 description: "Comprehensive guide to using the Flask Journal application"
 category: "User Documentation"
 version: "1.0"
-tags: ["user-guide", "quickstart", "how-to", "features"]
----
+tags: \["user-guide", "quickstart", "how-to", "features"]
+---------------------------------------------------------
 
 # Flask Journal User Guide
 
@@ -13,22 +14,22 @@ Welcome to Flask Journal, a personal journal application for documenting your th
 ## Table of Contents
 
 - [Flask Journal User Guide](#flask-journal-user-guide)
-      - [Table of Contents](#table-of-contents)
-      - [Getting Started](#getting-started)
-      - [Registration](#registration)
-      - [Login](#login)
-      - [Journal Entries](#journal-entries)
-      - [Creating Entries](#creating-entries)
-      - [Viewing Entries](#viewing-entries)
-      - [Editing Entries](#editing-entries)
-      - [Deleting Entries](#deleting-entries)
-      - [Using the Markdown Editor](#using-the-markdown-editor)
-      - [Basic Formatting](#basic-formatting)
-      - [Advanced Features](#advanced-features)
-      - [Working with Tags](#working-with-tags)
-      - [Adding Tags to Entries](#adding-tags-to-entries)
-      - [Filtering by Tags](#filtering-by-tags)
-      - [Additional Resources](#additional-resources)
+  \- [Table of Contents](#table-of-contents)
+  \- [Getting Started](#getting-started)
+  \- [Registration](#registration)
+  \- [Login](#login)
+  \- [Journal Entries](#journal-entries)
+  \- [Creating Entries](#creating-entries)
+  \- [Viewing Entries](#viewing-entries)
+  \- [Editing Entries](#editing-entries)
+  \- [Deleting Entries](#deleting-entries)
+  \- [Using the Markdown Editor](#using-the-markdown-editor)
+  \- [Basic Formatting](#basic-formatting)
+  \- [Advanced Features](#advanced-features)
+  \- [Working with Tags](#working-with-tags)
+  \- [Adding Tags to Entries](#adding-tags-to-entries)
+  \- [Filtering by Tags](#filtering-by-tags)
+  \- [Additional Resources](#additional-resources)
 
 ## Getting Started
 
@@ -39,10 +40,12 @@ To start using Flask Journal, you'll need to create an account:
 1. Navigate to the application's login page
 2. Click on the "Register" link below the login form
 3. Complete the registration form with:
+
 - Username (required)
 - Email address (required)
 - Password (required, minimum 8 characters)
 - Password confirmation
+
 4. Click "Register" to create your account
 5. You'll be redirected to the login page upon successful registration
 
@@ -64,9 +67,11 @@ To create a new journal entry:
 
 1. From your dashboard, click the "New Entry" button
 2. You'll be taken to the entry editor with:
+
 - Title field
 - Content area (Markdown editor)
 - Tags input field
+
 3. Enter a title for your entry
 4. Write your entry content using Markdown formatting
 5. Add any relevant tags (optional)
@@ -110,8 +115,8 @@ The editor supports standard Markdown syntax:
 - *Italic text*: Surround text with single asterisks (`*italic text*`)
 - [Links](https://example.com): Use the format `[link text](URL)`
 - Lists:
-      - Unordered lists use asterisks, plus, or hyphen symbols (`* item`)
-      - Ordered lists use numbers followed by periods (`1. item`)
+  \- Unordered lists use asterisks, plus, or hyphen symbols (`* item`)
+  \- Ordered lists use numbers followed by periods (`1. item`)
 - Headings: Use hash symbols at the beginning of a line (`# Heading 1`, `## Heading 2`)
 - Blockquotes: Begin a line with a greater-than symbol (`> quoted text`)
 - Code: Surround inline code with backticks (`` `code` ``) or create code blocks with triple backticks
@@ -154,6 +159,6 @@ For more detailed information, please refer to these additional guides:
 - [Frequently Asked Questions](faq.md) - Common questions and answers
 - [Troubleshooting Guide](troubleshooting.md) - Solutions to common issues
 
----
+***
 
 We hope you enjoy using Flask Journal to document your journey. If you encounter any issues or have suggestions for improvement, please refer to our troubleshooting guide or contact support.

@@ -2,7 +2,7 @@
 
 ## Systematic Approach to TypeScript Types in the Journal Project
 
----
+***
 
 ## Core Principles
 
@@ -26,7 +26,7 @@ Utility Types (helpers)
 
 TypeScript strict mode enforced - everything must be typed.
 
----
+***
 
 ## Type Organization Structure
 
@@ -52,7 +52,7 @@ apps/web/src/types/
     └── index.ts      # Utils re-exports
 ```
 
----
+***
 
 ## Type Definition Standards
 
@@ -200,7 +200,7 @@ export function toMarkdown(str: string): Markdown {
 }
 ```
 
----
+***
 
 ## Type Import Strategy
 
@@ -271,7 +271,7 @@ export {
 } from './utils';
 ```
 
----
+***
 
 ## Type Fixing Strategy
 
@@ -356,7 +356,7 @@ function isValidEntry(obj: unknown): obj is Record<string, unknown> {
 }
 ```
 
----
+***
 
 ## Type Error Resolution Workflow
 
@@ -415,7 +415,7 @@ if (isMarkdownEntry(entry)) {
 */
 ```
 
----
+***
 
 ## Testing Types
 
@@ -468,7 +468,7 @@ describe('Type Guards', () => {
 });
 ```
 
----
+***
 
 ## Migration Strategy for Existing Code
 
@@ -530,7 +530,7 @@ const entry = normalizeEntry(apiResponse.data);
 }
 ```
 
----
+***
 
 ## Type System Maintenance
 
@@ -559,7 +559,7 @@ const entry = normalizeEntry(apiResponse.data);
 - Ensure single source of truth
 - Prevent type duplication
 
----
+***
 
 ## Benefits of This Strategy
 
@@ -570,6 +570,6 @@ const entry = normalizeEntry(apiResponse.data);
 5. **Scalable**: Clear hierarchy and organization
 6. **Automated**: Generate from OpenAPI, validate at build
 
----
+***
 
 *This strategy ensures types are assets, not liabilities. Follow it consistently for a maintainable codebase.*

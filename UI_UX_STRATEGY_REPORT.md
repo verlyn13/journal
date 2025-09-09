@@ -11,21 +11,25 @@ The Journal application is a modern web-based journaling platform implementing a
 ### Technology Stack
 
 **Frontend Framework**: React 18.3.1
+
 - Functional components with hooks
 - TypeScript for type safety
 - Component-driven architecture
 
-**Build Tools**: 
+**Build Tools**:
+
 - Vite 5.4.6 for bundling and HMR
 - Rollup for production builds
 - Source maps enabled for debugging
 
 **State Management**:
+
 - React Query (TanStack Query 5.56.2) for server state
 - Local component state with useState/useReducer
 - localStorage for persistent UI preferences
 
 **Development Tools**:
+
 - Storybook 8.2.1 for component isolation and documentation
 - TypeScript 5.6.2 for static typing
 - PostCSS with Autoprefixer for CSS processing
@@ -37,12 +41,14 @@ The Journal application is a modern web-based journaling platform implementing a
 The application implements a dual-theme system called "Sanctuary" with two modes:
 
 **Dawn Mode (Light)**:
+
 - Primary Background: #F5F3F0 (Sand)
 - Secondary Background: #EAE8E3 (Off-white)
 - Text Primary: #41454c (Slate Gray)
 - Accent: #A8B5C5 (Stone Blue)
 
 **Dusk Mode (Dark)**:
+
 - Primary Background: #2C303A (Evergreen)
 - Secondary Background: #383D4A (Charcoal)
 - Text Primary: #D4D6D9 (Light Gray)
@@ -51,11 +57,13 @@ The application implements a dual-theme system called "Sanctuary" with two modes
 ### Typography
 
 **Font Stack**:
+
 - UI/Headings: Inter (sans-serif)
 - Body Text: Lora (serif) - optimized for readability
 - Code: JetBrains Mono (monospace)
 
 **Metrics**:
+
 - Line Height: 1.7 for optimal readability
 - Maximum Measure: 70ch for comfortable reading width
 - Responsive sizing with rem units
@@ -63,14 +71,17 @@ The application implements a dual-theme system called "Sanctuary" with two modes
 ### Spacing & Layout
 
 **Grid System**: CSS Grid with three-column layout
+
 - Sidebar: 260px fixed width
 - Entry List: 1fr flexible
 - Editor: 480px-720px responsive
 
 **Spacing Scale**: Based on 4px grid
+
 - Custom values: 18 (72px), 22 (88px) for generous padding
 
-**Border Radius**: 
+**Border Radius**:
+
 - Standard: 16px (2xl)
 - Large: 20px (3xl)
 
@@ -79,12 +90,14 @@ The application implements a dual-theme system called "Sanctuary" with two modes
 ### Core Components
 
 **1. JournalApp (Root Component)**
+
 - Manages authentication state
 - Orchestrates three-pane layout
 - Handles entry selection and saving
 - Implements responsive grid system
 
 **2. Editor System**
+
 - **TipTap Integration**: Rich text editing with extensions
   - StarterKit (basic formatting)
   - Link handling
@@ -102,6 +115,7 @@ The application implements a dual-theme system called "Sanctuary" with two modes
   - Highlight color picker
 
 **3. FocusMode Component**
+
 - Distraction-free writing environment
 - 70ch width constraint for optimal reading
 - Animated transitions (300ms cubic-bezier)
@@ -111,6 +125,7 @@ The application implements a dual-theme system called "Sanctuary" with two modes
 - Radial gradient overlay for visual calm
 
 **4. Sidebar Component**
+
 - Quick access navigation
 - Real-time statistics display
 - Notebook organization
@@ -119,6 +134,7 @@ The application implements a dual-theme system called "Sanctuary" with two modes
 - API integration for live data
 
 **5. EntryList Component**
+
 - Chronological entry display
 - Selection state management
 - Loading states
@@ -129,12 +145,14 @@ The application implements a dual-theme system called "Sanctuary" with two modes
 ### Tailwind CSS v4.1.12
 
 **Configuration**:
+
 - Custom color palette (Sanctuary theme)
 - Extended spacing and typography
 - Forms and Typography plugins
 - Dark mode via class strategy
 
 **Utility-First Approach**:
+
 - Inline utility classes for rapid development
 - Component-specific CSS modules for complex styles
 - Custom CSS for third-party library overrides
@@ -142,12 +160,14 @@ The application implements a dual-theme system called "Sanctuary" with two modes
 ### CSS Architecture
 
 **Token System** (`tokens.css`):
+
 - CSS custom properties for theming
 - Centralized color definitions
 - Typography variables
 - Radius and elevation tokens
 
 **Component Styles**:
+
 - BubbleToolbar.css: Floating toolbar styles
 - SlashCommands.css: Command palette styles
 - CodeBlockMonaco.css: Code editor integration
@@ -157,6 +177,7 @@ The application implements a dual-theme system called "Sanctuary" with two modes
 ### Server State (React Query)
 
 **Query Keys Strategy**:
+
 ```typescript
 const keys = {
   list: ["entries"] as const,
@@ -165,6 +186,7 @@ const keys = {
 ```
 
 **Caching Configuration**:
+
 - Stale time: 30 seconds
 - Background refetching enabled
 - Optimistic updates for mutations
@@ -172,12 +194,14 @@ const keys = {
 ### Local State Management
 
 **Component State**:
+
 - Selection state in JournalApp
 - Focus mode toggle with persistence
 - Theme preference with localStorage
 - Editor content state
 
 **Persistent State**:
+
 - Theme preference: `journal:theme`
 - Focus mode: `journal:focus`
 - Cross-tab synchronization via storage events
@@ -216,12 +240,14 @@ const keys = {
 ## Animation & Motion
 
 **Transition System**:
+
 - Duration: 240ms standard, 300ms for major transitions
 - Timing: `cubic-bezier(0.4, 0, 0.2, 1)` (Sanctuary easing)
 - Properties: opacity, transform, colors
 - GPU-accelerated animations
 
 **Interactive Elements**:
+
 - Scale on click (95% active, 105% hover)
 - Color transitions on state change
 - Smooth focus mode transitions

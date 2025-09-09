@@ -1,25 +1,27 @@
----
+***
+
 title: "Tutorial Title"
 description: "Brief description of what this tutorial teaches"
 category: "Tutorials"
 difficulty: "beginner|intermediate|advanced"
-date_created: "YYYY-MM-DD"
-last_updated: "YYYY-MM-DD"
-time_required: "X minutes/hours"
+date\_created: "YYYY-MM-DD"
+last\_updated: "YYYY-MM-DD"
+time\_required: "X minutes/hours"
 prerequisites:
-      - "Prerequisite 1"
-      - "Prerequisite 2"
-related_tutorials:
-      - "Related Tutorial 1"
-      - "Related Tutorial 2"
-tags: ["tutorial", "how-to", "specific-functionality"]
----
+\- "Prerequisite 1"
+\- "Prerequisite 2"
+related\_tutorials:
+\- "Related Tutorial 1"
+\- "Related Tutorial 2"
+tags: \["tutorial", "how-to", "specific-functionality"]
+-------------------------------------------------------
 
 # Tutorial: Task Name
 
 ## Overview
 
 Brief introduction (1-2 paragraphs) explaining:
+
 - What this tutorial will teach
 - What the reader will accomplish
 - Why this task/feature is useful
@@ -118,6 +120,7 @@ def test_solution():
 ```
 
 Expected output:
+
 ```
 All tests passed!
 ```
@@ -129,26 +132,31 @@ List common issues that might occur during this tutorial and their solutions.
 ### Issue: Specific Error Message
 
 **Possible causes:**
+
 - Cause 1
 - Cause 2
 
 **Solutions:**
+
 - Solution 1
 - Solution 2
 
 ### Issue: Another Specific Error Message
 
 **Possible causes:**
+
 - Cause 1
 - Cause 2
 
 **Solutions:**
+
 - Solution 1
 - Solution 2
 
 ## Extensions and Variations
 
 Optional section describing:
+
 - How to extend this solution for other use cases
 - Variations for different environments
 - Advanced options or configurations

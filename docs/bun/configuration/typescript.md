@@ -1,11 +1,11 @@
 # TYPESCRIPT
 
-*Source: https://bun.sh/docs/typescript*
+*Source: <https://bun.sh/docs/typescript>*
 *Fetched: 2025-08-30T00:47:26.759Z*
 
----
+***
 
-To install the TypeScript definitions for Bun&#x27;s built-in APIs, install `@types/bun`.
+To install the TypeScript definitions for Bun's built-in APIs, install `@types/bun`.
 
 ```
 bun add -d @types/bun # dev dependency
@@ -20,7 +20,7 @@ console.log(Bun.version);
 
 ## [Suggested `compilerOptions`](#suggested-compileroptions)
 
-Bun supports things like top-level await, JSX, and extensioned `.ts` imports, which TypeScript doesn&#x27;t allow by default. Below is a set of recommended `compilerOptions` for a Bun project, so you can use these features without seeing compiler warnings from TypeScript.
+Bun supports things like top-level await, JSX, and extensioned `.ts` imports, which TypeScript doesn't allow by default. Below is a set of recommended `compilerOptions` for a Bun project, so you can use these features without seeing compiler warnings from TypeScript.
 
 ```
 {

@@ -26,6 +26,7 @@ This plan upgrades the Journal editor safely, with explicit backend/frontend con
 - Define quality gates and CI commands.
 
 Deliverables:
+
 - `FINAL-IMPLEMENTATION-WORKFLOW.md` (this file)
 - `reference/security-and-corrections.md`
 - `reference/example-implementation.jsx`
@@ -39,6 +40,7 @@ Deliverables:
 - Render pipeline: `ReactMarkdown + rehype-sanitize (+ rehype-katex, rehype-highlight)`.
 
 Deliverables:
+
 - Parallel editor toggled by flag; legacy editor untouched.
 - Unit tests for mapper and basic markdown rendering pipeline.
 
@@ -50,6 +52,7 @@ Deliverables:
 - Security: rely on rehype-sanitize in render pipeline; do not use DOMPurify.
 
 Deliverables:
+
 - Dual storage (HTML + Markdown), backfill script ready, feature-flag still on.
 - Sanitization pipeline integrated in ReactMarkdown.
 
@@ -70,6 +73,7 @@ Deliverables:
 - Security headers (optional): `X-Content-Type-Options: nosniff`, `Referrer-Policy`; CSP can be introduced after render audit.
 
 Risks & mitigations:
+
 - XSS → sanitize during render via rehype-sanitize with an allowlist schema (client-side ReactMarkdown).
 - Data divergence (HTML vs Markdown) → dual-write during transition; backfill; add feature-flag fallback.
 
@@ -117,8 +121,9 @@ Acceptance: CI must be green; zero console errors; basic editor flows pass E2E.
 
 Use these steps to implement without hiccups:
 
-1) Create feature branch: `git checkout -b feat/editor-upgrade`
-2) Phase 2 changes:
+1. Create feature branch: `git checkout -b feat/editor-upgrade`
+2. Phase 2 changes:
+
 - Ensure normalization & list gating (done).
 - Add feature flag; add CodeMirror + ReactMarkdown behind flag.
 - Add unit tests: mapper and minimal markdown render.
@@ -126,12 +131,16 @@ Use these steps to implement without hiccups:
   - `bun run typecheck && bun run lint && bun run format`
   - `cd apps/api && make test`
   - `bun run test`
-3) Phase 3 changes:
+
+3. Phase 3 changes:
+
 - Add Turndown and dual-write; DB migration (markdown column); backfill job.
 - Configure rehype-sanitize schema (see reference doc) for ReactMarkdown.
 - Update docs.
 - Run quality gates and Playwright E2E locally.
-4) Phase 4:
+
+4. Phase 4:
+
 - Finalize tests; enable E2E in CI if stable.
 - Squash commits; open PR with checklist below.
 

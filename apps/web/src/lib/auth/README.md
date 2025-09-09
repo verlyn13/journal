@@ -14,7 +14,7 @@ A comprehensive authentication system with WebAuthn/Passkeys support and multipl
 ### 🔄 OAuth Providers
 
 - Google authentication
-- GitHub authentication  
+- GitHub authentication
 - Apple Sign In
 - Automatic provider availability detection
 
@@ -154,6 +154,7 @@ function SessionManager() {
 Main authentication hook providing auth state and methods.
 
 **Returns:**
+
 - `isAuthenticated`: Boolean indicating auth status
 - `isLoading`: Loading state
 - `user`: Current user object
@@ -170,6 +171,7 @@ Main authentication hook providing auth state and methods.
 Check if the device supports WebAuthn.
 
 **Returns:**
+
 - `supported`: Boolean for passkey support
 - `checking`: Loading state
 
@@ -178,6 +180,7 @@ Check if the device supports WebAuthn.
 Manage user's passkeys.
 
 **Returns:**
+
 - `passkeys`: Array of registered passkeys
 - `loading`: Loading state
 - `error`: Error message
@@ -190,6 +193,7 @@ Manage user's passkeys.
 Manage OAuth provider connections.
 
 **Returns:**
+
 - `providers`: Array of provider status
 - `loading`: Loading state
 - `connectProvider(provider)`: Initiate OAuth flow
@@ -200,6 +204,7 @@ Manage OAuth provider connections.
 Handle session refresh logic.
 
 **Returns:**
+
 - `refreshing`: Refresh in progress
 - `refreshSession()`: Manually refresh session
 
@@ -210,6 +215,7 @@ Handle session refresh logic.
 Pre-built authentication button with dropdown options.
 
 **Props:**
+
 - `className`: Additional CSS classes
 - `onSuccess`: Success callback
 - `onError`: Error callback

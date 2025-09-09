@@ -7,6 +7,7 @@ This configuration optimizes Claude Code CLI (v2025.9) for a modern TypeScript/P
 ## 📍 Project Roadmap
 
 **IMPORTANT**: Always consult `docs/ROADMAP.md` for current development priorities, phases, and acceptance criteria. The roadmap is the source of truth for:
+
 - Current phase objectives (Phase 1: Foundations & Polish)
 - Parallel workstreams and task ownership
 - PR process and quality gates
@@ -34,6 +35,7 @@ journal/
 **NEVER use pip, pip-tools, poetry, or conda directly**
 
 All Python operations in `apps/api/`:
+
 - Install: `cd apps/api && uv add <package>`
 - Remove: `cd apps/api && uv remove <package>`
 - Sync: `cd apps/api && uv sync --frozen`
@@ -96,6 +98,7 @@ bun run api:db:revision m="msg"  # Create new migration
 ### Task Management
 
 Use TodoWrite tool for:
+
 - Multi-step implementations
 - Complex refactoring
 - Bug fix workflows
@@ -234,6 +237,7 @@ Use TodoWrite tool for:
 ## Environment Variables
 
 Required for development:
+
 - `DATABASE_URL`: PostgreSQL connection
 - `REDIS_URL`: Redis connection
 - `JWT_SECRET`: Authentication secret

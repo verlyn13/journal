@@ -16,6 +16,7 @@ The journal now uses a powerful markdown editor with side-by-side preview, combi
 #### Math Support (KaTeX)
 
 Write mathematical expressions using LaTeX syntax:
+
 - **Inline Math**: Use single dollar signs `$x^2 + y^2 = z^2$`
 - **Block Math**: Use double dollar signs for display math
   ```
@@ -27,6 +28,7 @@ Write mathematical expressions using LaTeX syntax:
 #### Code Blocks
 
 Full syntax highlighting for code blocks:
+
 ````markdown
 ```javascript
 function hello() {
@@ -99,6 +101,7 @@ Supports all major programming languages with automatic syntax detection.
 ### Split Pane View
 
 The editor provides a split-pane interface:
+
 - **Left Pane**: Markdown editor with syntax highlighting
 - **Right Pane**: Live preview with formatted output
 - **Resizable**: Drag the divider to adjust pane sizes
@@ -107,6 +110,7 @@ The editor provides a split-pane interface:
 ### Keyboard Shortcuts
 
 **Editor Navigation:**
+
 - Standard text editing shortcuts work as expected
 - `Ctrl+Z` → Undo
 - `Ctrl+Shift+Z` → Redo
@@ -132,7 +136,7 @@ The editor provides a split-pane interface:
 
 #### Daily Journal Entry
 
-```markdown
+````markdown
 # Daily Entry - January 4, 2025
 
 ## Morning Thoughts
@@ -148,12 +152,13 @@ Progress on feature implementation...
 def improved_function():
     # Better implementation
     pass
-```
+````
 
 ## Evening Reflection
 
 Today was productive because...
-```
+
+````
 
 #### Technical Notes
 ```markdown
@@ -169,6 +174,6 @@ $$
 
 ## Solution
 Implement a more efficient algorithm...
-```
+````
 
 The markdown editor provides a perfect balance between simplicity and power, allowing you to focus on content while maintaining rich formatting capabilities.

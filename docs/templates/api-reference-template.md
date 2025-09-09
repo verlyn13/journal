@@ -1,19 +1,20 @@
----
+***
+
 title: "API Endpoint Name"
 description: "Brief description of what this API endpoint does"
 category: "API Reference"
-date_created: "YYYY-MM-DD"
-last_updated: "YYYY-MM-DD"
+date\_created: "YYYY-MM-DD"
+last\_updated: "YYYY-MM-DD"
 status: draft
-api_version: "v1"
-related_endpoints:
-      - "Related Endpoint 1"
-      - "Related Endpoint 2"
+api\_version: "v1"
+related\_endpoints:
+\- "Related Endpoint 1"
+\- "Related Endpoint 2"
 security:
-      - "Authentication Required: Yes/No"
-      - "Authorization Level: Any special permissions needed"
-tags: ["api", "endpoint", "specific-functionality"]
----
+\- "Authentication Required: Yes/No"
+\- "Authorization Level: Any special permissions needed"
+tags: \["api", "endpoint", "specific-functionality"]
+----------------------------------------------------
 
 # API Endpoint: `endpoint_path`
 
@@ -23,29 +24,29 @@ Brief description of the endpoint's purpose and functionality (1-2 paragraphs). 
 
 ## Endpoint Details
 
-| Attribute | Value |
-|-----------|-------|
-| **URL** | `/api/v1/endpoint_path` |
-| **Method** | `GET`/`POST`/`PUT`/`DELETE` |
-| **Auth Required** | Yes/No |
-| **Rate Limits** | Any applicable rate limits |
-| **Permissions** | Required permissions (if any) |
+| Attribute         | Value                         |
+| ----------------- | ----------------------------- |
+| **URL**           | `/api/v1/endpoint_path`       |
+| **Method**        | `GET`/`POST`/`PUT`/`DELETE`   |
+| **Auth Required** | Yes/No                        |
+| **Rate Limits**   | Any applicable rate limits    |
+| **Permissions**   | Required permissions (if any) |
 
 ## Request Parameters
 
 ### URL Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `param1` | string | Yes | Description of parameter |
-| `param2` | integer | No | Description of parameter |
+| Parameter | Type    | Required | Description              |
+| --------- | ------- | -------- | ------------------------ |
+| `param1`  | string  | Yes      | Description of parameter |
+| `param2`  | integer | No       | Description of parameter |
 
 ### Query Parameters
 
-| Parameter | Type | Required | Default | Description |
-|-----------|------|----------|---------|-------------|
-| `param1` | string | No | `default` | Description of parameter |
-| `param2` | boolean | No | `false` | Description of parameter |
+| Parameter | Type    | Required | Default   | Description              |
+| --------- | ------- | -------- | --------- | ------------------------ |
+| `param1`  | string  | No       | `default` | Description of parameter |
+| `param2`  | boolean | No       | `false`   | Description of parameter |
 
 ### Request Body
 
@@ -61,11 +62,11 @@ For `POST`/`PUT`/`PATCH` requests, describe the expected request body format.
 }
 ```
 
-| Property | Type | Required | Description |
-|----------|------|----------|-------------|
-| `property1` | string | Yes | Description of property |
-| `property2` | integer | No | Description of property |
-| `nestedObject.nestedProperty` | string | No | Description of nested property |
+| Property                      | Type    | Required | Description                    |
+| ----------------------------- | ------- | -------- | ------------------------------ |
+| `property1`                   | string  | Yes      | Description of property        |
+| `property2`                   | integer | No       | Description of property        |
+| `nestedObject.nestedProperty` | string  | No       | Description of nested property |
 
 ## Response
 
@@ -84,12 +85,12 @@ For `POST`/`PUT`/`PATCH` requests, describe the expected request body format.
 }
 ```
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `result` | string | Always "success" for successful responses |
-| `data.id` | integer | Unique identifier for the resource |
-| `data.name` | string | Name of the resource |
-| `data.createdAt` | string (ISO 8601) | Creation timestamp |
+| Field            | Type              | Description                               |
+| ---------------- | ----------------- | ----------------------------------------- |
+| `result`         | string            | Always "success" for successful responses |
+| `data.id`        | integer           | Unique identifier for the resource        |
+| `data.name`      | string            | Name of the resource                      |
+| `data.createdAt` | string (ISO 8601) | Creation timestamp                        |
 
 ### Error Responses
 

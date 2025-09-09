@@ -1,40 +1,41 @@
----
+***
+
 title: CodeMirror System Guide
 description: "The official CodeMirror 6 system guide, explaining the core architecture, modularity, state management, update cycle, view layer, commands, and extension system."
 category: "CodeMirror Reference"
 status: active
-tags: ["codemirror", "reference", "guide", "architecture", "state", "view", "extensions"]
+tags: \["codemirror", "reference", "guide", "architecture", "state", "view", "extensions"]
 version: "6.0"
----
-
+--------------
 
 # CodeMirror Reference Guide
 
 ## Table of Contents
+
 - [CodeMirror Reference Guide](#codemirror-reference-guide)
-        - [Table of Contents](#table-of-contents)
-        - [1. Architecture Overview](#1-architecture-overview)
-        - [1.1 Modularity](#11-modularity)
-        - [1.2 Functional Core, Imperative Shell](#12-functional-core-imperative-shell)
-        - [2. State and Updates](#2-state-and-updates)
-        - [2.1 Document Offsets](#21-document-offsets)
-        - [2.2 Data Model](#22-data-model)
-        - [2.3 Document Changes](#23-document-changes)
-        - [2.4 Selection](#24-selection)
-        - [2.5 Configuration](#25-configuration)
-        - [2.6 Facets](#26-facets)
-        - [2.7 Transactions](#27-transactions)
-        - [3. The View](#3-the-view)
-        - [3.1 Viewport](#31-viewport)
-        - [3.2 Update Cycle](#32-update-cycle)
-        - [3.3 DOM Structure](#33-dom-structure)
-        - [3.4 Styles and Themes](#34-styles-and-themes)
-        - [4. Commands](#4-commands)
-        - [5. Extending CodeMirror](#5-extending-codemirror)
-        - [5.1 State Fields](#51-state-fields)
-        - [5.2 Affecting the View](#52-affecting-the-view)
-        - [5.3 Decorating the Document](#53-decorating-the-document)
-        - [5.4 Extension Architecture](#54-extension-architecture)
+  \- [Table of Contents](#table-of-contents)
+  \- [1. Architecture Overview](#1-architecture-overview)
+  \- [1.1 Modularity](#11-modularity)
+  \- [1.2 Functional Core, Imperative Shell](#12-functional-core-imperative-shell)
+  \- [2. State and Updates](#2-state-and-updates)
+  \- [2.1 Document Offsets](#21-document-offsets)
+  \- [2.2 Data Model](#22-data-model)
+  \- [2.3 Document Changes](#23-document-changes)
+  \- [2.4 Selection](#24-selection)
+  \- [2.5 Configuration](#25-configuration)
+  \- [2.6 Facets](#26-facets)
+  \- [2.7 Transactions](#27-transactions)
+  \- [3. The View](#3-the-view)
+  \- [3.1 Viewport](#31-viewport)
+  \- [3.2 Update Cycle](#32-update-cycle)
+  \- [3.3 DOM Structure](#33-dom-structure)
+  \- [3.4 Styles and Themes](#34-styles-and-themes)
+  \- [4. Commands](#4-commands)
+  \- [5. Extending CodeMirror](#5-extending-codemirror)
+  \- [5.1 State Fields](#51-state-fields)
+  \- [5.2 Affecting the View](#52-affecting-the-view)
+  \- [5.3 Decorating the Document](#53-decorating-the-document)
+  \- [5.4 Extension Architecture](#54-extension-architecture)
 
 ## 1. Architecture Overview
 
@@ -170,6 +171,7 @@ console.log(tr.state.doc.toString()) // "!o!"
 One range is marked as the main one, which is reflected in the browser's DOM selection.
 
 Helper methods:
+
 - `changeByRange`: Apply an operation to every selection range separately
 - `replaceSelection`: Replace all selection ranges with some text
 
@@ -432,6 +434,7 @@ const docSizePlugin = ViewPlugin.fromClass(class {
 ```
 
 View plugins should:
+
 - Not hold non-derived state
 - Work as shallow views over data in editor state
 - Define a destroy method if they modify the editor
@@ -446,11 +449,13 @@ Decorations influence how the document looks:
 4. **Line decorations**: Add attributes to line elements
 
 Decorations:
+
 - Are provided through a facet
 - Are kept in immutable sets
 - Can be mapped across changes or rebuilt on updates
 
 Two ways to provide decorations:
+
 - Directly (by putting range set in facet)
 - Indirectly (providing function from view to range set)
 
@@ -459,6 +464,7 @@ Two ways to provide decorations:
 ### 5.4 Extension Architecture
 
 To create editor functionality, often combine different extension types:
+
 - State fields for state
 - Base themes for styling
 - View plugins for input/output
@@ -466,12 +472,14 @@ To create editor functionality, often combine different extension types:
 - Facets for configuration
 
 Best practices:
+
 - Export functions that return extension values
 - Consider what happens when extension is included multiple times
 - Use deduplication for static extension values
 - For configurable extensions, use module-private facets
 
 When multiple instances have different configurations:
+
 - Define a strategy for reconciling them
 - Use facets with combining functions
 - Either reconcile configurations or throw errors when impossible

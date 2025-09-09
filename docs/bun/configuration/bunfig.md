@@ -1,17 +1,17 @@
 # BUNFIG
 
-*Source: https://bun.sh/docs/runtime/bunfig*
+*Source: <https://bun.sh/docs/runtime/bunfig>*
 *Fetched: 2025-08-30T00:47:26.634Z*
 
----
+***
 
-Bun&#x27;s behavior can be configured using its configuration file, `bunfig.toml`.
+Bun's behavior can be configured using its configuration file, `bunfig.toml`.
 
 In general, Bun relies on pre-existing configuration files like `package.json` and `tsconfig.json` to configure its behavior. `bunfig.toml` is only necessary for configuring Bun-specific things. This file is optional, and Bun will work out of the box without it.
 
 ## [Global vs. local](#global-vs-local)
 
-In general, it&#x27;s recommended to add a `bunfig.toml` file to your project root, alongside your `package.json`.
+In general, it's recommended to add a `bunfig.toml` file to your project root, alongside your `package.json`.
 
 To configure Bun globally, you can also create a `.bunfig.toml` file at one of the following paths:
 
@@ -22,7 +22,7 @@ If both a global and local `bunfig` are detected, the results are shallow-merged
 
 ## [Runtime](#runtime)
 
-Bun&#x27;s runtime behavior is configured using top-level fields in the `bunfig.toml` file.
+Bun's runtime behavior is configured using top-level fields in the `bunfig.toml` file.
 
 ### [`preload`](#preload)
 
@@ -88,7 +88,7 @@ The `define` field allows you to replace certain global identifiers with constan
 
 ### [`loader`](#loader)
 
-Configure how Bun maps file extensions to loaders. This is useful for loading files that aren&#x27;t natively supported by Bun.
+Configure how Bun maps file extensions to loaders. This is useful for loading files that aren't natively supported by Bun.
 
 ```
 [loader]
@@ -116,7 +116,7 @@ Bun supports the following loaders:
 
 ### [`telemetry`](#telemetry)
 
-The `telemetry` field permit to enable/disable the analytics records. Bun records bundle timings (so we can answer with data, "is Bun getting faster?") and feature usage (e.g., "are people actually using macros?"). The request body size is about 60 bytes, so it&#x27;s not a lot of data. By default the telemetry is enabled. Equivalent of `DO_NOT_TRACK` env variable.
+The `telemetry` field permit to enable/disable the analytics records. Bun records bundle timings (so we can answer with data, "is Bun getting faster?") and feature usage (e.g., "are people actually using macros?"). The request body size is about 60 bytes, so it's not a lot of data. By default the telemetry is enabled. Equivalent of `DO_NOT_TRACK` env variable.
 
 ```
 telemetry = false
@@ -336,7 +336,7 @@ saveTextLockfile = false
 
 ### [`install.auto`](#install-auto)
 
-To configure Bun&#x27;s package auto-install behavior. Default `"auto"` — when no `node_modules` folder is found, Bun will automatically install dependencies on the fly during execution.
+To configure Bun's package auto-install behavior. Default `"auto"` — when no `node_modules` folder is found, Bun will automatically install dependencies on the fly during execution.
 
 ```
 [install]
@@ -346,7 +346,7 @@ auto = "auto"
 
 Valid values are:
 
-ValueDescription`"auto"`Resolve modules from local `node_modules` if it exists. Otherwise, auto-install dependencies on the fly.`"force"`Always auto-install dependencies, even if `node_modules` exists.`"disable"`Never auto-install dependencies.`"fallback"`Check local `node_modules` first, then auto-install any packages that aren&#x27;t found. You can enable this from the CLI with `bun -i`.### [`install.frozenLockfile`](#install-frozenlockfile)
+ValueDescription`"auto"`Resolve modules from local `node_modules` if it exists. Otherwise, auto-install dependencies on the fly.`"force"`Always auto-install dependencies, even if `node_modules` exists.`"disable"`Never auto-install dependencies.`"fallback"`Check local `node_modules` first, then auto-install any packages that aren't found. You can enable this from the CLI with `bun -i`.### [`install.frozenLockfile`](#install-frozenlockfile)
 
 When true, `bun install` will not update `bun.lock`. Default `false`. If `package.json` and the existing `bun.lock` are not in agreement, this will error.
 
@@ -358,7 +358,7 @@ frozenLockfile = false
 
 ### [`install.dryRun`](#install-dryrun)
 
-Whether `bun install` will actually install dependencies. Default `false`. When true, it&#x27;s equivalent to setting `--dry-run` on all `bun install` commands.
+Whether `bun install` will actually install dependencies. Default `false`. When true, it's equivalent to setting `--dry-run` on all `bun install` commands.
 
 ```
 [install]
@@ -534,13 +534,13 @@ ValueDescription`"hoisted"`Link dependencies in a shared `node_modules` director
 
 The `bun run` command can be configured under the `[run]` section. These apply to the `bun run` command and the `bun` command when running a file or executable or script.
 
-Currently, `bunfig.toml` isn&#x27;t always automatically loaded for `bun run` in a local project (it does check for a global `bunfig.toml`), so you might still need to pass `-c` or `-c=bunfig.toml` to use these settings.
+Currently, `bunfig.toml` isn't always automatically loaded for `bun run` in a local project (it does check for a global `bunfig.toml`), so you might still need to pass `-c` or `-c=bunfig.toml` to use these settings.
 
-### [`run.shell` - use the system shell or Bun&#x27;s shell](#run-shell-use-the-system-shell-or-bun-s-shell)
+### [`run.shell` - use the system shell or Bun's shell](#run-shell-use-the-system-shell-or-bun-s-shell)
 
 The shell to use when running package.json scripts via `bun run` or `bun`. On Windows, this defaults to `"bun"` and on other platforms it defaults to `"system"`.
 
-To always use the system shell instead of Bun&#x27;s shell (default behavior unless Windows):
+To always use the system shell instead of Bun's shell (default behavior unless Windows):
 
 ```
 [run]
@@ -549,7 +549,7 @@ shell = "system"
 
 ```
 
-To always use Bun&#x27;s shell instead of the system shell:
+To always use Bun's shell instead of the system shell:
 
 ```
 [run]

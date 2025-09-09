@@ -2,7 +2,7 @@
 
 ## Modern Testing Strategy for Journal Application
 
----
+***
 
 ## Why Vitest Over Jest
 
@@ -13,7 +13,7 @@
 5. **Compatible API** - Easy migration from Jest
 6. **Better performance** - Faster test runs
 
----
+***
 
 ## Installation & Configuration
 
@@ -141,7 +141,7 @@ global.ResizeObserver = vi.fn().mockImplementation(() => ({
 }
 ```
 
----
+***
 
 ## Testing Patterns for Editor Migration
 
@@ -224,7 +224,7 @@ describe('MarkdownEditor', () => {
 
 ### 2. Sanitization Tests
 
-```typescript
+````typescript
 // apps/web/src/components/markdown/__tests__/MarkdownPreview.test.tsx
 import { describe, it, expect } from 'vitest';
 import { render } from '@testing-library/react';
@@ -270,11 +270,11 @@ describe('MarkdownPreview - Security', () => {
     expect(container.querySelector('.hljs')).toBeInTheDocument();
   });
 });
-```
+````
 
 ### 3. Conversion Tests
 
-```typescript
+````typescript
 // apps/web/src/utils/__tests__/markdown-converter.test.ts
 import { describe, it, expect } from 'vitest';
 import { convertHtmlToMarkdown } from '../markdown-converter';
@@ -348,7 +348,7 @@ describe('HTML to Markdown Conversion', () => {
     expect(result.markdown).toBe('```javascript\nconst x = 42;\n```');
   });
 });
-```
+````
 
 ### 4. Type Guard Tests
 
@@ -518,7 +518,7 @@ describe('Performance', () => {
 });
 ```
 
----
+***
 
 ## Test Execution Strategy
 
@@ -555,7 +555,7 @@ bun run quality:test
     files: ./apps/web/coverage/coverage-final.json
 ```
 
----
+***
 
 ## Coverage Requirements
 
@@ -573,7 +573,7 @@ bun run quality:test
 - Type guards
 - Error boundaries
 
----
+***
 
 ## Debugging Tests
 
@@ -597,7 +597,7 @@ bun run test --reporter=verbose
 bun run test:coverage --reporter=verbose
 ```
 
----
+***
 
 ## Migration from Jest
 
@@ -622,7 +622,7 @@ const mockFn = vi.fn();
 vi.mock('./module');
 ```
 
----
+***
 
 ## Benefits Over Jest
 
@@ -632,6 +632,6 @@ vi.mock('./module');
 4. **Type safety**: Better TypeScript integration
 5. **Vite alignment**: Same config system
 
----
+***
 
 *This Vitest setup ensures fast, reliable testing without deprecated dependencies.*

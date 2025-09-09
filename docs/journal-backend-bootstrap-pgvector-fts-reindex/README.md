@@ -47,7 +47,6 @@ make fmt        # ruff format .
 make test       # pytest -q
 ```
 
-
 ## Semantic Search (pgvector)
 
 This project ships with `pgvector` via the `pgvector/pgvector:pg16` image. The initial migration enables the extension and creates the `entry_embeddings` table with a `vector(1536)` column and an IVFFlat index (cosine).
@@ -62,6 +61,7 @@ This project ships with `pgvector` via the `pgvector/pgvector:pg16` image. The i
 
 - Mounts at `/graphql`
 - Query:
+
 ```graphql
 query {
   searchEntries(q: "morning notes", k: 5, alpha: 0.6) {
@@ -78,16 +78,18 @@ query {
 - Default: `JOURNAL_EMBED_PROVIDER=fake` (deterministic, no network)
 - OpenAI: set `JOURNAL_EMBED_PROVIDER=openai` and `OPENAI_API_KEY`, optionally `JOURNAL_EMBED_MODEL`
 
-
 ## Full‑text Search Upgrade
 
 We now index **title (weight A)** and **JSON `content` (weight B)** using:
+
 ```sql
 setweight(to_tsvector('english', coalesce(title,'')), 'A')
 ||
 setweight(jsonb_to_tsvector('english', content, '["string"]'), 'B')
 ```
+
 Run:
+
 ```bash
 alembic upgrade head  # ensures 0002_fts_json
 ```
@@ -95,13 +97,17 @@ alembic upgrade head  # ensures 0002_fts_json
 ## Embedding Worker
 
 Start the NATS embedding worker (consumes `journal.entry` + `journal.reindex`):
+
 ```bash
 uv run python -m app.workers.embedding_consumer
 ```
+
 Trigger a full reindex:
+
 ```bash
 curl -X POST http://127.0.0.1:8000/api/v1/admin/reindex-embeddings
 ```
+
 Optionally pass `{"batch": 500}` in the body.
 
 ### Provider

@@ -27,16 +27,19 @@ def _entry_response(row: Any, prefer_md: bool) -> dict:
 #### Architectural Issues
 
 1. **Inconsistent Content Representation**
+
 - The `content` field polymorphically returns either HTML or Markdown based on headers
 - This violates the Single Responsibility Principle
 - Clients can't reliably process the content without checking `editor_mode`
 
 2. **Missing Computed Fields**
+
 - `word_count` exists in the database but isn't exposed in the API
 - No content length tracking or metrics
 - No way for clients to display reading time estimates
 
 3. **Dual-Write Without Dual-Read**
+
 - System writes both HTML and Markdown
 - But only returns one format at a time
 - Creates information asymmetry
@@ -95,6 +98,7 @@ Test failure: `test_special_characters_escaped_properly`
 #### Current Architecture
 
 The markdown-to-HTML conversion uses string manipulation with incomplete escaping:
+
 ```python
 def markdown_to_html(md: str) -> str:
     # Uses html.escape but then manipulates strings
@@ -106,16 +110,19 @@ def markdown_to_html(md: str) -> str:
 #### Architectural Issues
 
 1. **Mixing Escaping Levels**
+
 - HTML escaping applied early
 - Then string manipulation potentially breaks it
 - No clear escaping boundary
 
 2. **No AST Representation**
+
 - Direct string-to-string conversion
 - No intermediate representation
 - Can't validate or transform safely
 
 3. **Security Vulnerabilities**
+
 - Potential XSS if escaping is broken
 - No Content Security Policy integration
 - No sanitization layer
@@ -175,16 +182,19 @@ async def semantic_search(s: AsyncSession, q: str, k: int = 10):
 #### Architectural Issues
 
 1. **No Automatic Embedding Generation**
+
 - New entries have no embeddings
 - Requires manual API call per entry
 - Creates orphaned entries invisible to search
 
 2. **Tight Coupling**
+
 - Search directly depends on embeddings table
 - No fallback mechanism
 - All-or-nothing approach
 
 3. **No Event-Driven Processing**
+
 - Synchronous embedding generation blocks requests
 - No retry mechanism for failures
 - No batch processing capability
@@ -273,16 +283,19 @@ async def update_entry(session: AsyncSession, entry: Entry):
 #### Architectural Issues
 
 1. **No Optimistic Locking**
+
 - Last-write-wins behavior
 - Silent data loss possible
 - No conflict detection
 
 2. **Session Scope Issues**
+
 - Session lifecycle not properly managed
 - No isolation level configuration
 - Default transaction boundaries
 
 3. **No Concurrency Control**
+
 - No version fields for optimistic locking
 - No row-level locking strategy
 - No conflict resolution mechanism
@@ -457,6 +470,7 @@ class EntryReadModel:
 ## Conclusion
 
 The test failures reveal that the current architecture has fundamental issues with:
+
 - **Data Consistency**: No concurrency control
 - **Scalability**: Synchronous processing, no caching
 - **Maintainability**: Tight coupling, mixed responsibilities

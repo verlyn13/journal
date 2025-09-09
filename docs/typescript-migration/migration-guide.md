@@ -2,7 +2,7 @@
 
 *Last Updated: 2025-08-30T00:47:27.106Z*
 
----
+***
 
 Here’s a clean, up-to-date `package.json` for **Aug 29, 2025** that keeps your current toolchain (Rollup + PostCSS + JSDoc) intact so you can upgrade safely before moving to TypeScript.
 
@@ -84,7 +84,7 @@ Here’s a clean, up-to-date `package.json` for **Aug 29, 2025** that keeps your
 
 > Optional cleanup: if you’re not actually using **TaffyDB** at runtime, remove it—Minami (your JSDoc theme) mentions Taffy internally, but your app doesn’t need `taffydb` as a dependency. ([GitHub][9])
 
----
+***
 
 ## Migration plan: “pure TypeScript” with minimal churn
 
@@ -223,7 +223,7 @@ npm run build:types
 - Add `browserslist` if you want Autoprefixer targeting to be explicit.
 - Consider `markdownlint-cli2` later if you want a faster, config-driven Markdown lint experience; your current `markdownlint-cli` is fine and current. ([npm][6], [GitHub][16])
 
----
+***
 
 ## Quick upgrade commands
 
@@ -236,19 +236,33 @@ npm i @codemirror/view@^6.38.1 @codemirror/state@^6.5.2 @codemirror/language@^6.
 If you want me to spit out the matching `tsconfig.json`, `rollup.config.mjs`, and `rollup.config.dts.mjs` files customized to your repo layout (and Flask static paths), I can generate those next.
 
 [1]: https://www.npmjs.com/package/rollup?utm_source=chatgpt.com "rollup"
-[2]: https://www.npmjs.com/package/%40rollup/plugin-commonjs?utm_source=chatgpt.com "rollup/plugin-commonjs"
-[3]: https://www.npmjs.com/package/%40rollup/plugin-node-resolve?utm_source=chatgpt.com "rollup/plugin-node-resolve"
-[4]: https://www.npmjs.com/package/%40rollup/plugin-terser?utm_source=chatgpt.com "rollup/plugin-terser"
-[5]: https://github.com/gka/chroma.js/issues/324?utm_source=chatgpt.com "rollup-plugin-terser has been deprecated · Issue #324"
-[6]: https://www.npmjs.com/package/markdownlint-cli?utm_source=chatgpt.com "markdownlint-cli"
-[7]: https://www.npmjs.com/package/rollup-plugin-output-manifest?utm_source=chatgpt.com "rollup-plugin-output-manifest - NPM"
-[8]: https://github.com/markedjs/marked/releases?utm_source=chatgpt.com "Releases · markedjs/marked"
-[9]: https://github.com/nijikokun/minami "GitHub - nijikokun/minami:  Clean and minimal JSDoc 3 Template / Theme"
-[10]: https://github.com/nijikokun/minami?utm_source=chatgpt.com "Minami - Clean and minimal JSDoc 3 Template / Theme"
-[11]: https://classic.yarnpkg.com/en/package/rollup-plugin-dts?utm_source=chatgpt.com "rollup-plugin-dts"
-[12]: https://github.com/rollup/plugins?utm_source=chatgpt.com "The one-stop shop for official Rollup plugins"
-[13]: https://typedoc.org/documents/Changelog.html?utm_source=chatgpt.com "Changelog"
-[14]: https://www.typescriptlang.org/docs/handbook/jsdoc-supported-types.html?utm_source=chatgpt.com "Documentation - JSDoc Reference"
-[15]: https://www.npmjs.com/package/rollup-plugin-postcss?utm_source=chatgpt.com "rollup-plugin-postcss"
-[16]: https://github.com/DavidAnson/markdownlint-cli2?utm_source=chatgpt.com "DavidAnson/markdownlint-cli2"
 
+[2]: https://www.npmjs.com/package/%40rollup/plugin-commonjs?utm_source=chatgpt.com "rollup/plugin-commonjs"
+
+[3]: https://www.npmjs.com/package/%40rollup/plugin-node-resolve?utm_source=chatgpt.com "rollup/plugin-node-resolve"
+
+[4]: https://www.npmjs.com/package/%40rollup/plugin-terser?utm_source=chatgpt.com "rollup/plugin-terser"
+
+[5]: https://github.com/gka/chroma.js/issues/324?utm_source=chatgpt.com "rollup-plugin-terser has been deprecated · Issue #324"
+
+[6]: https://www.npmjs.com/package/markdownlint-cli?utm_source=chatgpt.com "markdownlint-cli"
+
+[7]: https://www.npmjs.com/package/rollup-plugin-output-manifest?utm_source=chatgpt.com "rollup-plugin-output-manifest - NPM"
+
+[8]: https://github.com/markedjs/marked/releases?utm_source=chatgpt.com "Releases · markedjs/marked"
+
+[9]: https://github.com/nijikokun/minami "GitHub - nijikokun/minami:  Clean and minimal JSDoc 3 Template / Theme"
+
+[10]: https://github.com/nijikokun/minami?utm_source=chatgpt.com "Minami - Clean and minimal JSDoc 3 Template / Theme"
+
+[11]: https://classic.yarnpkg.com/en/package/rollup-plugin-dts?utm_source=chatgpt.com "rollup-plugin-dts"
+
+[12]: https://github.com/rollup/plugins?utm_source=chatgpt.com "The one-stop shop for official Rollup plugins"
+
+[13]: https://typedoc.org/documents/Changelog.html?utm_source=chatgpt.com "Changelog"
+
+[14]: https://www.typescriptlang.org/docs/handbook/jsdoc-supported-types.html?utm_source=chatgpt.com "Documentation - JSDoc Reference"
+
+[15]: https://www.npmjs.com/package/rollup-plugin-postcss?utm_source=chatgpt.com "rollup-plugin-postcss"
+
+[16]: https://github.com/DavidAnson/markdownlint-cli2?utm_source=chatgpt.com "DavidAnson/markdownlint-cli2"

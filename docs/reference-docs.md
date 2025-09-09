@@ -5,6 +5,7 @@ A comprehensive documentation fetching and management system for **Biome v2.2.2*
 ## 🎯 Overview
 
 This documentation system provides automated tools to:
+
 - **Fetch** essential documentation from official Biome and Bun sources
 - **Organize** docs into a clean, navigable structure
 - **Convert** markdown to HTML for better viewing
@@ -145,7 +146,7 @@ make fresh
 ### Biome v2.2.2
 
 - **Getting Started Guide**
-- **Configuration Guide** 
+- **Configuration Guide**
 - **Migration Guide**
 - **Configuration Reference**
 - **Linter Rules**
@@ -287,6 +288,7 @@ fi
 ### Issue: Fetch fails with timeout
 
 **Solution**: Increase retry count in `fetch-docs.ts`:
+
 ```typescript
 await fetchPage(url, retries = 5)  // Increase retries
 ```
@@ -294,6 +296,7 @@ await fetchPage(url, retries = 5)  // Increase retries
 ### Issue: HTML conversion requires pandoc
 
 **Solution**: Install pandoc:
+
 ```bash
 # macOS
 brew install pandoc
@@ -308,16 +311,17 @@ choco install pandoc
 ### Issue: Permission denied
 
 **Solution**: Make scripts executable:
+
 ```bash
 chmod +x fetch-docs.ts docs.sh
 ```
 
 ## 📊 Performance
 
-- **Fetch Time**: ~10-30 seconds for all docs
-- **Storage**: ~5-10 MB for complete documentation
+- **Fetch Time**: \~10-30 seconds for all docs
+- **Storage**: \~5-10 MB for complete documentation
 - **Search**: Instant grep-based search
-- **Conversion**: ~5 seconds for HTML generation
+- **Conversion**: \~5 seconds for HTML generation
 
 ## 🤝 Contributing
 
@@ -336,9 +340,9 @@ MIT License - Use freely in your projects
 
 Always refer to the official sources for the most current information:
 
-- **Biome**: [https://biomejs.dev](https://biomejs.dev)
-- **Bun**: [https://bun.sh/docs](https://bun.sh/docs)
+- **Biome**: <https://biomejs.dev>
+- **Bun**: <https://bun.sh/docs>
 
----
+***
 
 *Generated for Biome v2.2.2 and Bun 1.2.21*

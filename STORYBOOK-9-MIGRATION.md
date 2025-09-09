@@ -9,7 +9,7 @@
 
 ## Compatibility Issues Found
 
-- ❌ storybook-addon-performance@0.17.3 (depends on ^7.6.10)
+- ❌ storybook-addon-performance\@0.17.3 (depends on ^7.6.10)
 - ✅ @storybook/addon-essentials
 - ✅ @storybook/addon-a11y
 - ✅ @storybook/react
@@ -30,7 +30,7 @@
 - [ ] Run automated migration with `npx storybook@latest upgrade`
 - [ ] Update configuration files to v9 format
 - [ ] Fix breaking changes in main.ts
-- [ ] Update preview.ts configuration
+- [ ] Update preview\.ts configuration
 
 ### Phase 3: Story Updates
 
@@ -106,6 +106,7 @@ export const MyStory: Story = {
 ## Rollback Plan
 
 If migration fails:
+
 1. `git checkout main`
 2. `git branch -D storybook-9-migration`
 3. `bun install` to restore dependencies

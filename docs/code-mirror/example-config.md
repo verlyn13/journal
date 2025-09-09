@@ -1,16 +1,17 @@
----
+***
+
 title: "Example Configuration (Flask Journal)"
 description: "Example CodeMirror configuration as implemented in the Flask Journal project."
 category: "CodeMirror Examples"
-date_created: "2025-04-08"
-last_updated: "2025-04-08"
+date\_created: "2025-04-08"
+last\_updated: "2025-04-08"
 version: "1.0"
 status: active
-tags: ["codemirror", "configuration", "example", "setup", "flask-journal"]
-related_topics:
-        - "CodeMirror Integration Guide"
-        - "Editor Architecture"
----
+tags: \["codemirror", "configuration", "example", "setup", "flask-journal"]
+related\_topics:
+\- "CodeMirror Integration Guide"
+\- "Editor Architecture"
+------------------------
 
 # Example Configuration (Flask Journal)
 
@@ -87,6 +88,7 @@ function createJournalEditor(parentElement, initialDoc = "", onChangeCallbackFn 
 ```
 
 This configuration provides:
+
 - Basic editing features (line numbers, history, highlighting).
 - Standard keybindings.
 - Markdown language support with syntax highlighting for code blocks.

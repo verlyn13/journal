@@ -2,7 +2,7 @@
 
 ## Current State & Migration Plan
 
----
+***
 
 ## Current Testing Setup Analysis
 
@@ -25,7 +25,7 @@
 import '@testing-library/jest-dom/vitest';  // Already Vitest-compatible
 ```
 
----
+***
 
 ## Migration Impact: MINIMAL
 
@@ -36,7 +36,7 @@ This is **NOT a big refactor**. The project is already using Vitest. We just nee
 3. **Remove any Jest remnants**
 4. **Add proper typing**
 
----
+***
 
 ## Safe Migration Plan (Low Risk)
 
@@ -87,7 +87,7 @@ export default defineConfig({
 bun run test
 ```
 
----
+***
 
 ## What This Is NOT
 
@@ -104,36 +104,36 @@ bun run test
 - ✅ Config cleanup
 - ✅ Small optimization
 
----
+***
 
 ## Risk Assessment
 
 ### Risk Level: **LOW**
 
-| Aspect | Risk | Mitigation |
-|--------|------|------------|
-| Existing tests | None | Already Vitest-compatible |
-| Dependencies | Minimal | Only updating versions |
-| Syntax | None | No syntax changes needed |
-| CI/CD | None | Same test commands |
-| Development | None | Same workflow |
+| Aspect         | Risk    | Mitigation                |
+| -------------- | ------- | ------------------------- |
+| Existing tests | None    | Already Vitest-compatible |
+| Dependencies   | Minimal | Only updating versions    |
+| Syntax         | None    | No syntax changes needed  |
+| CI/CD          | None    | Same test commands        |
+| Development    | None    | Same workflow             |
 
----
+***
 
 ## Decision Matrix
 
 ### Should We Do This Now?
 
-| Factor | Score | Reason |
-|--------|-------|---------|
-| Urgency | Low | Current setup works |
-| Effort | Minimal | < 30 minutes |
-| Risk | Low | Already using Vitest |
-| Benefit | Medium | Cleaner deps, latest features |
+| Factor  | Score   | Reason                        |
+| ------- | ------- | ----------------------------- |
+| Urgency | Low     | Current setup works           |
+| Effort  | Minimal | < 30 minutes                  |
+| Risk    | Low     | Already using Vitest          |
+| Benefit | Medium  | Cleaner deps, latest features |
 
 **Recommendation**: YES, but as a **quick cleanup**, not a major task.
 
----
+***
 
 ## Actual Implementation Steps
 
@@ -158,6 +158,7 @@ git commit -m "chore: update vitest to latest"
 ### Step 2: Only If Needed
 
 If any issues arise:
+
 ```bash
 # Check for breaking changes
 npm info vitest versions
@@ -166,13 +167,14 @@ npm info vitest versions
 https://github.com/vitest-dev/vitest/releases
 ```
 
----
+***
 
 ## What About Our Editor Migration?
 
 ### Impact on Editor Work: **NONE**
 
 The Vitest update is:
+
 - Independent of editor migration
 - Can be done before, during, or after
 - Won't affect our Markdown editor implementation
@@ -184,13 +186,14 @@ The Vitest update is:
 2. **Then continue with editor Phase 2**
 3. **Write new tests with latest Vitest**
 
----
+***
 
 ## Conclusion
 
 **This is not the big refactor you were concerned about.**
 
 What we discovered:
+
 - Project already uses Vitest
 - Only needs version update
 - No code changes required
@@ -204,6 +207,6 @@ What we discovered:
 
 The "jest" references we found are actually Vitest-compatible imports. This is a simple version update, not a migration.
 
----
+***
 
 *Updated: September 2025*

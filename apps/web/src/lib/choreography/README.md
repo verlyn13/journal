@@ -224,6 +224,7 @@ await orchestrator.play('entry-create');
 ### Reduced Motion
 
 The system automatically respects `prefers-reduced-motion`:
+
 - Animations are skipped and final states applied instantly
 - Gesture thresholds are increased
 - Transitions use instant changes instead of animations

@@ -66,11 +66,11 @@ bun run quality:all
 
 ## Coverage Requirements
 
-| Component | Required | Current | Status |
-|-----------|----------|---------|--------|
-| Backend API | 85% | 79% | ⚠️ Needs improvement |
-| Frontend Web | 80% | N/A | 🚧 In progress |
-| E2E Tests | N/A | N/A | 📝 Planned |
+| Component    | Required | Current | Status               |
+| ------------ | -------- | ------- | -------------------- |
+| Backend API  | 85%      | 79%     | ⚠️ Needs improvement |
+| Frontend Web | 80%      | N/A     | 🚧 In progress       |
+| E2E Tests    | N/A      | N/A     | 📝 Planned           |
 
 ## Test Categories
 
@@ -123,6 +123,7 @@ The current Phase 4 (Dual-write Integration) includes specific test requirements
 ## CI/CD Integration
 
 Tests run automatically on:
+
 - Pull request creation/update
 - Pushes to main branch
 - Scheduled nightly runs
@@ -231,6 +232,7 @@ bun run quality:all
    ```
 
 2. **Test Timeouts**
+
 - Increase timeout in test: `{ timeout: 5000 }`
 - Check for unresolved promises
 
@@ -261,11 +263,12 @@ bun run quality:all
 ## Contact
 
 For testing questions or improvements:
+
 - Create an issue in the repository
 - Tag with `testing` label
 - Include test output and coverage reports
 
----
+***
 
 *Last Updated: September 2025*
 *Minimum Coverage: 85% (Backend), 80% (Frontend)*

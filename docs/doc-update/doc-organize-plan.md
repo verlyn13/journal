@@ -1,5 +1,4 @@
-
------
+***
 
 ## Workflow: Implementing a Containerized Repository Scanning System
 
@@ -12,7 +11,7 @@ Before you begin, ensure you have the following installed on your host machine:
 - **Docker and Docker Compose:** For running the containerized tools.
 - **`treequery` CLI:** A locally installed binary for structural code queries. (This is the one tool we run outside the main Compose pipeline for simplicity, as it lacks a maintained official image).
 
------
+***
 
 ### Step 1: Directory & File Structure
 
@@ -23,7 +22,7 @@ First, create the necessary directories in your project's root to hold configura
 mkdir -p .scanner/rules/semgrep .scanner/rules/treesitter .scanner/scripts
 ```
 
------
+***
 
 ### Step 2: Create Ignore Files
 
@@ -63,7 +62,7 @@ build/
 docs/build/
 ```
 
------
+***
 
 ### Step 3: Define the Scanners (`docker-compose.yml`)
 
@@ -166,7 +165,7 @@ services:
             - gitleaks
 ```
 
------
+***
 
 ### Step 4: Create Analysis Rules
 
@@ -219,7 +218,7 @@ rules:
 ) @fastapi_route
 ```
 
------
+***
 
 ### Step 5: Implement the Hardened Merge Script
 
@@ -369,24 +368,24 @@ if __name__ == "__main__":
 
 ```
 
------
+***
 
 ### Step 6: Execute the Scan
 
 The workflow is now a simple two-command process.
 
-1.  **Run the `treequery` scan (local binary):**
+1. **Run the `treequery` scan (local binary):**
 
-    ```bash
-    treequery --query .scanner/rules/treesitter/fastapi_router.scm --repo . --json > .scanner/ts_fastapi.json
-    ```
+   ```bash
+   treequery --query .scanner/rules/treesitter/fastapi_router.scm --repo . --json > .scanner/ts_fastapi.json
+   ```
 
-2.  **Run the containerized pipeline:**
-    The `--profile scan` flag tells Compose to only run services marked with `profiles: ["scan"]`, ignoring your `dev` service.
+2. **Run the containerized pipeline:**
+   The `--profile scan` flag tells Compose to only run services marked with `profiles: ["scan"]`, ignoring your `dev` service.
 
-    ```bash
-    docker compose --profile scan run --rm merge-results
-    ```
+   ```bash
+   docker compose --profile scan run --rm merge-results
+   ```
 
 This command will automatically:
 
@@ -395,7 +394,7 @@ This command will automatically:
 - Run the `merge-results` service to execute the Python script.
 - Clean up the containers when finished.
 
------
+***
 
 ### Step 7: Use the Output
 

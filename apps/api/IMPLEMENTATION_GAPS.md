@@ -16,21 +16,23 @@ This document tracks implementation gaps and limitations discovered while creati
 **Issue**: New entries don't automatically get embeddings generated, breaking semantic search.
 **Impact**: High - semantic search returns empty results for new entries
 **Current Workaround**: Manually call `/entries/{id}/embed` endpoint
-**Fix Required**: 
+**Fix Required**:
+
 - Option 1: Generate embeddings synchronously on entry creation
 - Option 2: Implement background worker to process entry events
 
-### 3. Missing word_count Field in API Responses
+### 3. Missing word\_count Field in API Responses
 
-**Issue**: API doesn't return word_count field despite it being in the database model.
+**Issue**: API doesn't return word\_count field despite it being in the database model.
 **Impact**: Medium - clients can't display word counts
-**Fix Required**: Add word_count to entry response serialization
+**Fix Required**: Add word\_count to entry response serialization
 
 ## Feature Limitations
 
 ### 4. Basic Markdown to HTML Conversion
 
 **Issue**: The conversion functions have several limitations:
+
 - Italic syntax (*text*) not converted when mixed with bold
 - Nested lists not properly handled
 - Blockquotes converted as plain text with ">" prefix
@@ -43,6 +45,7 @@ This document tracks implementation gaps and limitations discovered while creati
 ### 5. HTML to Markdown Conversion Is Lossy
 
 **Issue**: Converting HTML back to markdown loses formatting:
+
 - Complex structures simplified
 - Nested elements flattened
 - Some markdown syntax not recreated
@@ -80,7 +83,7 @@ This document tracks implementation gaps and limitations discovered while creati
 
 ### 10. Content Version Migration Path Unclear
 
-**Issue**: No clear migration path from content_version 1 (HTML) to 2 (Markdown).
+**Issue**: No clear migration path from content\_version 1 (HTML) to 2 (Markdown).
 **Impact**: Medium - existing entries remain in old format
 **Fix Required**: Batch migration script or on-demand conversion
 
@@ -104,7 +107,7 @@ This document tracks implementation gaps and limitations discovered while creati
 
 1. Fix concurrent update handling with proper session management
 2. Implement automatic embedding generation on entry creation
-3. Add word_count to API responses
+3. Add word\_count to API responses
 
 ### Short-term Improvements
 
@@ -121,6 +124,7 @@ This document tracks implementation gaps and limitations discovered while creati
 ## Testing Notes
 
 These issues were discovered through quality-focused testing that emphasized:
+
 - Real-world usage scenarios
 - Error conditions and edge cases
 - Data consistency across operations

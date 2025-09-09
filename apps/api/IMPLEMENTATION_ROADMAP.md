@@ -387,18 +387,21 @@ class CreateEntryUseCase:
 ### Key Metrics to Track
 
 1. **Performance**
+
 - API response times (p50, p95, p99)
 - Database query times
 - Cache hit rates
 - Embedding generation times
 
 2. **Reliability**
+
 - Error rates by endpoint
 - Concurrent update conflicts
 - Search success rates
 - Background job failures
 
 3. **Business**
+
 - Entries created per day
 - Search queries per day
 - Active users
@@ -450,13 +453,13 @@ async def create_entry(...):
 
 ## Timeline Summary
 
-| Phase | Duration | Key Deliverables |
-|-------|----------|------------------|
-| Phase 1 | 1 sprint | Optimistic locking, fixed responses, async embeddings |
-| Phase 2 | 2 sprints | Repository pattern, caching, event bus |
-| Phase 3 | 2 sprints | Secure content processing, sanitization |
-| Phase 4 | 1 sprint | Enhanced search with fallbacks |
-| Phase 5 | 2 sprints | Domain-driven architecture |
+| Phase   | Duration  | Key Deliverables                                      |
+| ------- | --------- | ----------------------------------------------------- |
+| Phase 1 | 1 sprint  | Optimistic locking, fixed responses, async embeddings |
+| Phase 2 | 2 sprints | Repository pattern, caching, event bus                |
+| Phase 3 | 2 sprints | Secure content processing, sanitization               |
+| Phase 4 | 1 sprint  | Enhanced search with fallbacks                        |
+| Phase 5 | 2 sprints | Domain-driven architecture                            |
 
 **Total Duration**: 8 sprints (16 weeks)
 

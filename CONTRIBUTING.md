@@ -34,7 +34,7 @@ We expect all contributors to follow our [Code of Conduct](CODE_OF_CONDUCT.md). 
    ```bash
    # Install Python dependencies
    pip install -r requirements.txt
-   
+
    # Install Node.js dependencies
    npm install
    ```
@@ -43,17 +43,19 @@ We expect all contributors to follow our [Code of Conduct](CODE_OF_CONDUCT.md). 
    ```bash
    # Run Flask development server
    python run.py
-   
+
    # In a separate terminal, run frontend build watcher
    npm run dev
    ```
 
 3. **Make your changes**:
+
 - Write your code
 - Write or update tests
 - Write or update documentation
 
 4. **Commit your changes**:
+
 - Follow [Conventional Commits](https://www.conventionalcommits.org/) format
 - Example: `feat(editor): add markdown preview toggle button`
 
@@ -68,9 +70,11 @@ We expect all contributors to follow our [Code of Conduct](CODE_OF_CONDUCT.md). 
 1. **Open a pull request** from your feature branch to the main repository
 2. **Fill out the PR template** with all required information
 3. **Pass all CI checks**:
+
 - Python tests must pass
-- Frontend build must succeed 
+- Frontend build must succeed
 - Documentation checks must pass
+
 4. **Address review feedback** by making additional commits or amending existing ones
 5. Once approved, your PR will be merged by a maintainer
 
@@ -114,34 +118,35 @@ We expect all contributors to follow our [Code of Conduct](CODE_OF_CONDUCT.md). 
 
 Before submitting a Pull Request, especially if your changes affect GitHub Actions workflows (`.github/workflows/`), you should test the workflows locally using [`act`](https://github.com/nektos/act). This helps catch errors early and reduces CI failures.
 
-1.  **Install `act`**: Follow the installation instructions in the [`act` documentation](https://github.com/nektos/act#installation).
-2.  **Install Docker**: Ensure Docker (or a compatible engine like Podman) is installed and running.
-3.  **Run Workflows Locally**:
--   Navigate to the project root directory (`/home/verlyn13/Projects/journal`).
--   Simulate a `push` event (runs workflows triggered by push):
-        ```bash
-        gh act push
-        ```
--   Simulate a `pull_request` event:
-        ```bash
-        gh act pull_request
-        ```
--   Run a specific workflow file:
-        ```bash
-        gh act -W .github/workflows/python-tests.yml
-        ```
--   Run a specific job within workflows:
-        ```bash
-        gh act -j build-frontend
-        ```
-4.  **Provide Secrets (If Needed)**: If workflows require secrets (like `GITHUB_TOKEN`), provide them securely using the `-s` flag or a `.secrets` file. Refer to the [act Reference Guide](docs/guides/act-reference.md) for details.
-    ```bash
-    # Example: Prompt securely for GITHUB_TOKEN
-    gh act -s GITHUB_TOKEN
-    ```
-5.  **Review Output**: Check the `act` output for any errors or unexpected behavior in your workflows.
+1. **Install `act`**: Follow the installation instructions in the [`act` documentation](https://github.com/nektos/act#installation).
+2. **Install Docker**: Ensure Docker (or a compatible engine like Podman) is installed and running.
+3. **Run Workflows Locally**:
+
+- Navigate to the project root directory (`/home/verlyn13/Projects/journal`).
+- Simulate a `push` event (runs workflows triggered by push):
+  `bash
+      gh act push
+      `
+- Simulate a `pull_request` event:
+  `bash
+      gh act pull_request
+      `
+- Run a specific workflow file:
+  `bash
+      gh act -W .github/workflows/python-tests.yml
+      `
+- Run a specific job within workflows:
+  `bash
+      gh act -j build-frontend
+      `
+
+4. **Provide Secrets (If Needed)**: If workflows require secrets (like `GITHUB_TOKEN`), provide them securely using the `-s` flag or a `.secrets` file. Refer to the [act Reference Guide](docs/guides/act-reference.md) for details.
+   ```bash
+   # Example: Prompt securely for GITHUB_TOKEN
+   gh act -s GITHUB_TOKEN
+   ```
+5. **Review Output**: Check the `act` output for any errors or unexpected behavior in your workflows.
 
 Consult the full [act Reference Guide](docs/guides/act-reference.md) for advanced usage, including custom runner images, event payloads, and matrix testing.
-
 
 Thank you for contributing to Journal!

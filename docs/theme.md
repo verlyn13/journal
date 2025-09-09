@@ -1,11 +1,8 @@
-
 ### **Theme: Sanctuary**
 
 The **Sanctuary** theme transforms the journaling application into a tranquil, personal haven. Every element is crafted to reduce cognitive load and create an atmosphere of quiet contemplation, making the act of writing feel effortless and inviting. The aesthetic is minimalist yet warm, inspired by natural landscapes and the quiet moments of dawn and dusk.
 
-
-
----
+***
 
 ### **🎨 Color Palettes**
 
@@ -31,7 +28,7 @@ Creates a cozy, intimate, and focused environment, perfect for evening reflectio
 - **Accent Color (`#D4AF8B`):** A warm, elegant Burnished Gold. Used for selected states, active icons, and links, providing a touch of warmth and luxury.
 - **Subtle Accent / Highlights (`#505668`):** A muted, deep Slate Blue for hover states and subtle UI details.
 
----
+***
 
 ### **✒️ Typography**
 
@@ -42,7 +39,7 @@ Typography is central to the Sanctuary theme, chosen to make writing a pleasure 
 - **Body Text (Serif): `Lora`**
   - A classic, well-balanced serif with gentle curves that is perfect for long-form reading. It renders beautifully on screens, reducing eye strain and adding a touch of literary elegance to the user's entries.
 
----
+***
 
 ### **📐 Layout, Spacing, & Iconography**
 
@@ -50,7 +47,7 @@ Typography is central to the Sanctuary theme, chosen to make writing a pleasure 
 - **Spacing:** A consistent 8px grid system is used for all margins, padding, and positioning to ensure visual harmony and rhythm throughout the application.
 - **Iconography:** Icons are **minimalist and line-based (outline style)**, using a consistent, thin stroke weight. They are functional but unobtrusive, ensuring the user's content remains the hero of the experience.
 
----
+***
 
 ### **✨ Micro-interactions & Animations**
 

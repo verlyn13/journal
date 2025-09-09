@@ -1,9 +1,9 @@
 # SQL
 
-*Source: https://bun.sh/docs/api/sqlite*
+*Source: <https://bun.sh/docs/api/sqlite>*
 *Fetched: 2025-08-30T00:47:26.887Z*
 
----
+***
 
 Bun natively implements a high-performance [SQLite3](https://www.sqlite.org/) driver. To use it import from the built-in `bun:sqlite` module.
 
@@ -62,7 +62,7 @@ const db = new Database("mydb.sqlite", { readonly: true });
 
 ```
 
-To create the database if the file doesn&#x27;t exist:
+To create the database if the file doesn't exist:
 
 ```
 import { Database } from "bun:sqlite";
@@ -159,7 +159,7 @@ import { Database } from "bun:sqlite";
 
 ### [`.serialize()`](#serialize)
 
-`bun:sqlite` supports SQLite&#x27;s built-in mechanism for [serializing](https://www.sqlite.org/c3ref/serialize.html) and [deserializing](https://www.sqlite.org/c3ref/deserialize.html) databases to and from memory.
+`bun:sqlite` supports SQLite's built-in mechanism for [serializing](https://www.sqlite.org/c3ref/serialize.html) and [deserializing](https://www.sqlite.org/c3ref/deserialize.html) databases to and from memory.
 
 ```
 const olddb = new Database("mydb.sqlite");
@@ -189,7 +189,7 @@ const query = db.prepare("SELECT * FROM foo WHERE bar = ?");
 
 ## [WAL mode](#wal-mode)
 
-SQLite supports [write-ahead log mode](https://www.sqlite.org/wal.html) (WAL) which dramatically improves performance, especially in situations with many concurrent readers and a single writer. It&#x27;s broadly recommended to enable WAL mode for most typical applications.
+SQLite supports [write-ahead log mode](https://www.sqlite.org/wal.html) (WAL) which dramatically improves performance, especially in situations with many concurrent readers and a single writer. It's broadly recommended to enable WAL mode for most typical applications.
 
 To enable WAL mode, run this pragma query at the beginning of your application:
 
@@ -206,7 +206,7 @@ On macOS, WAL files may be persistent by default. This is not a bug, it is how m
 
 ## [Statements](#statements)
 
-A `Statement` is a *prepared query*, which means it&#x27;s been parsed and compiled into an efficient binary form. It can be executed multiple times in a performant way.
+A `Statement` is a *prepared query*, which means it's been parsed and compiled into an efficient binary form. It can be executed multiple times in a performant way.
 
 Create a statement with the `.query` method on your `Database` instance.
 
@@ -307,7 +307,7 @@ query.run();
 
 ```
 
-Internally, this calls [`sqlite3_reset`](https://www.sqlite.org/capi3ref.html#sqlite3_reset) and calls [`sqlite3_step`](https://www.sqlite.org/capi3ref.html#sqlite3_step) once. Stepping through all the rows is not necessary when you don&#x27;t care about the results.
+Internally, this calls [`sqlite3_reset`](https://www.sqlite.org/capi3ref.html#sqlite3_reset) and calls [`sqlite3_step`](https://www.sqlite.org/capi3ref.html#sqlite3_step) once. Stepping through all the rows is not necessary when you don't care about the results.
 
 Since Bun v1.1.14, `.run()` returns an object with two properties: `lastInsertRowid` and `changes`.
 
@@ -337,7 +337,7 @@ console.log(first.isMarvel); // => true
 
 ```
 
-As a performance optimization, the class constructor is not called, default initializers are not run, and private fields are not accessible. This is more like using `Object.create` than `new`. The class&#x27;s prototype is assigned to the object, methods are attached, and getters/setters are set up, but the constructor is not called.
+As a performance optimization, the class constructor is not called, default initializers are not run, and private fields are not accessible. This is more like using `Object.create` than `new`. The class's prototype is assigned to the object, methods are attached, and getters/setters are set up, but the constructor is not called.
 
 The database columns are set as properties on the class instance.
 
@@ -421,28 +421,28 @@ Internally, this calls [`sqlite3_expanded_sql`](https://www.sqlite.org/capi3ref.
 
 Queries can contain parameters. These can be numerical (`?1`) or named (`$param` or `:param` or `@param`). Bind values to these parameters when executing the query:
 
-QueryResultsQuery```
-const query = db.query("SELECT * FROM foo WHERE bar = $bar");
+QueryResultsQuery\`\`\`
+const query = db.query("SELECT \* FROM foo WHERE bar = $bar");
 const results = query.all({
-  $bar: "bar",
+$bar: "bar",
 });
 
-```
+````
 
 Results```
 [
   { "$bar": "bar" }
 ]
 
-```
+````
 
 Numbered (positional) parameters work too:
 
-QueryResultsQuery```
+QueryResultsQuery\`\`\`
 const query = db.query("SELECT ?1, ?2");
 const results = query.all("hello", "goodbye");
 
-```
+````
 
 Results```
 [
@@ -452,7 +452,7 @@ Results```
   }
 ]
 
-```
+````
 
 ## [Integers](#integers)
 
@@ -526,7 +526,7 @@ const insertCats = db.transaction(cats => {
 
 ```
 
-At this stage, we haven&#x27;t inserted any cats! The call to `db.transaction()` returns a new function (`insertCats`) that *wraps* the function that executes the queries.
+At this stage, we haven't inserted any cats! The call to `db.transaction()` returns a new function (`insertCats`) that *wraps* the function that executes the queries.
 
 To execute the transaction, call this function. All arguments will be passed through to the wrapped function; the return value of the wrapped function will be returned by the transaction function. The wrapped function also has access to the `this` context as defined where the transaction is executed.
 
@@ -608,7 +608,7 @@ db.loadExtension("myext");
 
 For macOS users
 
-**MacOS users** By default, macOS ships with Apple&#x27;s proprietary build of SQLite, which doesn&#x27;t support extensions. To use extensions, you&#x27;ll need to install a vanilla build of SQLite.
+**MacOS users** By default, macOS ships with Apple's proprietary build of SQLite, which doesn't support extensions. To use extensions, you'll need to install a vanilla build of SQLite.
 
 ```
 brew install sqlite

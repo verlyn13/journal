@@ -1,15 +1,16 @@
----
+***
+
 title: "Documentation Specialist Role"
 description: "Detailed guide on the Documentation Specialist's responsibilities, strategies, and tooling for AI-consumable documentation"
 category: "Implementation"
-related_topics:
-      - "JSDoc Implementation"
-      - "Markdown Guidelines"
-      - "Code Documentation"
-      - "AI-Consumable Content"
+related\_topics:
+\- "JSDoc Implementation"
+\- "Markdown Guidelines"
+\- "Code Documentation"
+\- "AI-Consumable Content"
 version: "1.0"
-tags: ["documentation", "specialist", "JSDoc", "markdown", "semantic-chunking", "metadata", "AI-consumable"]
----
+tags: \["documentation", "specialist", "JSDoc", "markdown", "semantic-chunking", "metadata", "AI-consumable"]
+-------------------------------------------------------------------------------------------------------------
 
 # Documentation Specialist Role
 
@@ -87,7 +88,7 @@ When improving markdown files, follow these principles:
 ### Reference Resources
 
 - [JSDoc Official Documentation](https://jsdoc.app/)
-- [Markdown Guide](https://www.markdownguide.org/) 
+- [Markdown Guide](https://www.markdownguide.org/)
 - [Documentation Best Practices](https://documentation.divio.com/)
 
 ## Collaboration Guidelines
@@ -127,6 +128,6 @@ Phase 3: Core API documentation enhancement
 Phase 4: Tutorial and guide development
 Phase 5: Ongoing maintenance and refinement
 
----
+***
 
 This role definition aims to ensure that all Flask Journal documentation meets the highest standards for both human and AI consumption, supporting long-term project maintainability and accessibility.

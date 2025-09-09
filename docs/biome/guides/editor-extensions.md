@@ -1,13 +1,15 @@
 # EDITOR EXTENSIONS
 
-*Source: https://biomejs.dev/guides/editors/first-party-extensions*
+*Source: <https://biomejs.dev/guides/editors/first-party-extensions>*
 *Fetched: 2025-08-30T00:47:25.746Z*
 
----
+***
 
 # First-party extensions
 
-        These are extensions that are maintained by the Biome team and part of the [Biome organization](https://github.com/biomejs).
+```
+    These are extensions that are maintained by the Biome team and part of the [Biome organization](https://github.com/biomejs).
+```
 
 ### VS Code
 
@@ -73,4 +75,6 @@ To install the Biome IntelliJ plugin, head over to [official plugin page](https:
 
 Read more in the [reference page](/reference/zed).
 
-     Copyright (c) 2023-present Biome Developers and Contributors.
+```
+ Copyright (c) 2023-present Biome Developers and Contributors.
+```

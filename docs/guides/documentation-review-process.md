@@ -1,16 +1,17 @@
----
+***
+
 title: "Documentation Review Process"
 description: "Formal process for reviewing and approving documentation changes alongside code development"
 category: "Documentation"
 phase: 18
-related_topics:
-      - "Documentation Testing Process"
-      - "Documentation Update Checklist"
-      - "Documentation Specialist Role"
+related\_topics:
+\- "Documentation Testing Process"
+\- "Documentation Update Checklist"
+\- "Documentation Specialist Role"
 version: "1.0"
-tags: ["documentation", "review", "process", "pull-request", "quality-control"]
+tags: \["documentation", "review", "process", "pull-request", "quality-control"]
 status: active
----
+--------------
 
 # Documentation Review Process
 
@@ -65,13 +66,13 @@ Documentation-related PRs should include:
 
 ### Review Assignments
 
-| Change Type | Primary Reviewer | Secondary Reviewer |
-|-------------|------------------|-------------------|
-| Technical documentation | Domain specialist | Documentation specialist |
-| API documentation | Backend developer | API consumer representative |
-| UI/UX documentation | Frontend developer | Designer or UX specialist |
-| Developer guides | Peer developer | Documentation specialist |
-| User documentation | Documentation specialist | Product manager or user representative |
+| Change Type             | Primary Reviewer         | Secondary Reviewer                     |
+| ----------------------- | ------------------------ | -------------------------------------- |
+| Technical documentation | Domain specialist        | Documentation specialist               |
+| API documentation       | Backend developer        | API consumer representative            |
+| UI/UX documentation     | Frontend developer       | Designer or UX specialist              |
+| Developer guides        | Peer developer           | Documentation specialist               |
+| User documentation      | Documentation specialist | Product manager or user representative |
 
 ### Review Timeline
 

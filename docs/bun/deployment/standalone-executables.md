@@ -1,20 +1,21 @@
 # STANDALONE EXECUTABLES
 
-*Source: https://bun.sh/docs/bundler/executables*
+*Source: <https://bun.sh/docs/bundler/executables>*
 *Fetched: 2025-08-30T00:47:27.095Z*
 
----
+***
 
-Bun&#x27;s bundler implements a `--compile` flag for generating a standalone binary from a TypeScript or JavaScript file.
+Bun's bundler implements a `--compile` flag for generating a standalone binary from a TypeScript or JavaScript file.
 
-bashcli.ts```
+bashcli.ts\`\`\`
 bun build ./cli.ts --compile --outfile mycli
-```
+
+````
 
 cli.ts```
 console.log("Hello world!");
 
-```
+````
 
 This bundles `cli.ts` into an executable that can be executed directly:
 
@@ -28,7 +29,7 @@ All imported files and packages are bundled into the executable, along with a co
 
 ## [Cross-compile to other platforms](#cross-compile-to-other-platforms)
 
-The `--target` flag lets you compile your standalone executable for a different operating system, architecture, or version of Bun than the machine you&#x27;re running `bun build` on.
+The `--target` flag lets you compile your standalone executable for a different operating system, architecture, or version of Bun than the machine you're running `bun build` on.
 
 To build for Linux x64 (most servers):
 
@@ -83,9 +84,9 @@ bun build --compile --target=bun-darwin-x64 ./path/to/my/app.ts --outfile myapp
 
 #### Supported targets
 
-The order of the `--target` flag does not matter, as long as they&#x27;re delimited by a `-`.
+The order of the `--target` flag does not matter, as long as they're delimited by a `-`.
 
---targetOperating SystemArchitectureModernBaselineLibcbun-linux-x64Linuxx64✅✅glibcbun-linux-arm64Linuxarm64✅N/Aglibcbun-windows-x64Windowsx64✅✅-bun-windows-arm64Windowsarm64❌❌-bun-darwin-x64macOSx64✅✅-bun-darwin-arm64macOSarm64✅N/A-bun-linux-x64-muslLinuxx64✅✅muslbun-linux-arm64-muslLinuxarm64✅N/AmuslOn x64 platforms, Bun uses SIMD optimizations which require a modern CPU supporting AVX2 instructions. The `-baseline` build of Bun is for older CPUs that don&#x27;t support these optimizations. Normally, when you install Bun we automatically detect which version to use but this can be harder to do when cross-compiling since you might not know the target CPU. You usually don&#x27;t need to worry about it on Darwin x64, but it is relevant for Windows x64 and Linux x64. If you or your users see `"Illegal instruction"` errors, you might need to use the baseline version.
+\--targetOperating SystemArchitectureModernBaselineLibcbun-linux-x64Linuxx64✅✅glibcbun-linux-arm64Linuxarm64✅N/Aglibcbun-windows-x64Windowsx64✅✅-bun-windows-arm64Windowsarm64❌❌-bun-darwin-x64macOSx64✅✅-bun-darwin-arm64macOSarm64✅N/A-bun-linux-x64-muslLinuxx64✅✅muslbun-linux-arm64-muslLinuxarm64✅N/AmuslOn x64 platforms, Bun uses SIMD optimizations which require a modern CPU supporting AVX2 instructions. The `-baseline` build of Bun is for older CPUs that don't support these optimizations. Normally, when you install Bun we automatically detect which version to use but this can be harder to do when cross-compiling since you might not know the target CPU. You usually don't need to worry about it on Darwin x64, but it is relevant for Windows x64 and Linux x64. If you or your users see `"Illegal instruction"` errors, you might need to use the baseline version.
 
 ## [Build-time constants](#build-time-constants)
 
@@ -101,9 +102,9 @@ For comprehensive examples and advanced patterns, see the [Build-time constants 
 
 ## [Deploying to production](#deploying-to-production)
 
-Compiled executables reduce memory usage and improve Bun&#x27;s start time.
+Compiled executables reduce memory usage and improve Bun's start time.
 
-Normally, Bun reads and transpiles JavaScript and TypeScript files on `import` and `require`. This is part of what makes so much of Bun "just work", but it&#x27;s not free. It costs time and memory to read files from disk, resolve file paths, parse, transpile, and print source code.
+Normally, Bun reads and transpiles JavaScript and TypeScript files on `import` and `require`. This is part of what makes so much of Bun "just work", but it's not free. It costs time and memory to read files from disk, resolve file paths, parse, transpile, and print source code.
 
 With compiled executables, you can move that cost from runtime to build-time.
 
@@ -125,7 +126,7 @@ bun build --compile --minify --sourcemap --bytecode ./path/to/my/app.ts --outfil
 
 Using bytecode compilation, `tsc` starts 2x faster:
 
-[](https://github.com/user-attachments/assets/dc8913db-01d2-48f8-a8ef-ac4e984f9763)Bytecode compilation moves parsing overhead for large input files from runtime to bundle time. Your app starts faster, in exchange for making the `bun build` command a little slower. It doesn&#x27;t obscure source code.
+[](https://github.com/user-attachments/assets/dc8913db-01d2-48f8-a8ef-ac4e984f9763)Bytecode compilation moves parsing overhead for large input files from runtime to bundle time. Your app starts faster, in exchange for making the `bun build` command a little slower. It doesn't obscure source code.
 
 **Experimental:** Bytecode compilation is an experimental feature introduced in Bun v1.1.30. Only `cjs` format is supported (which means no top-level-await). Let us know if you run into any issues!
 
@@ -141,7 +142,7 @@ The `--bytecode` argument enables bytecode compilation. Every time you run JavaS
 
 New in Bun v1.2.16
 
-You can run a standalone executable as if it were the `bun` CLI itself by setting the `BUN_BE_BUN=1` environment variable. When this variable is set, the executable will ignore its bundled entrypoint and instead expose all the features of Bun&#x27;s CLI.
+You can run a standalone executable as if it were the `bun` CLI itself by setting the `BUN_BE_BUN=1` environment variable. When this variable is set, the executable will ignore its bundled entrypoint and instead expose all the features of Bun's CLI.
 
 For example, consider an executable compiled from a simple script:
 
@@ -194,22 +195,22 @@ This is useful for building CLI tools on top of Bun that may need to install pac
 
 New in Bun v1.2.17
 
-Bun&#x27;s `--compile` flag can create standalone executables that contain both server and client code, making it ideal for full-stack applications. When you import an HTML file in your server code, Bun automatically bundles all frontend assets (JavaScript, CSS, etc.) and embeds them into the executable. When Bun sees the HTML import on the server, it kicks off a frontend build process to bundle JavaScript, CSS, and other assets.
+Bun's `--compile` flag can create standalone executables that contain both server and client code, making it ideal for full-stack applications. When you import an HTML file in your server code, Bun automatically bundles all frontend assets (JavaScript, CSS, etc.) and embeds them into the executable. When Bun sees the HTML import on the server, it kicks off a frontend build process to bundle JavaScript, CSS, and other assets.
 
-server.tsindex.htmlapp.jsstyles.cssserver.ts```
+server.tsindex.htmlapp.jsstyles.cssserver.ts\`\`\`
 import { serve } from "bun";
 import index from "./index.html";
 
 const server = serve({
-  routes: {
-    "/": index,
-    "/api/hello": { GET: () => Response.json({ message: "Hello from API" }) },
-  },
+routes: {
+"/": index,
+"/api/hello": { GET: () => Response.json({ message: "Hello from API" }) },
+},
 });
 
 console.log(`Server running at http://localhost:${server.port}`);
 
-```
+````
 
 index.html```
 
@@ -222,19 +223,19 @@ index.html```
 
 
 
-```
+````
 
-app.js```
+app.js\`\`\`
 console.log("Hello from the client!");
 
-```
+````
 
 styles.css```
 body {
   background-color: #f0f0f0;
 }
 
-```
+````
 
 To build this into a single executable:
 
@@ -263,7 +264,7 @@ For more details on building full-stack applications with Bun, see the [full-sta
 
 ## [Worker](#worker)
 
-To use workers in a standalone executable, add the worker&#x27;s entrypoint to the CLI arguments:
+To use workers in a standalone executable, add the worker's entrypoint to the CLI arguments:
 
 ```
 bun build --compile ./index.ts ./my-worker.ts --outfile myapp
@@ -283,9 +284,9 @@ new Worker(new URL("./my-worker.ts", import.meta.url).href);
 
 As of Bun v1.1.25, when you add multiple entrypoints to a standalone executable, they will be bundled separately into the executable.
 
-In the future, we may automatically detect usages of statically-known paths in `new Worker(path)` and then bundle those into the executable, but for now, you&#x27;ll need to add it to the shell command manually like the above example.
+In the future, we may automatically detect usages of statically-known paths in `new Worker(path)` and then bundle those into the executable, but for now, you'll need to add it to the shell command manually like the above example.
 
-If you use a relative path to a file not included in the standalone executable, it will attempt to load that path from disk relative to the current working directory of the process (and then error if it doesn&#x27;t exist).
+If you use a relative path to a file not included in the standalone executable, it will attempt to load that path from disk relative to the current working directory of the process (and then error if it doesn't exist).
 
 ## [SQLite](#sqlite)
 
@@ -300,7 +301,7 @@ console.log(db.query("select * from users LIMIT 1").get());
 
 ```
 
-That means if the executable is located at `/usr/bin/hello`, the user&#x27;s terminal is located at `/home/me/Desktop`, it will look for `/home/me/Desktop/my.db`.
+That means if the executable is located at `/usr/bin/hello`, the user's terminal is located at `/home/me/Desktop`, it will look for `/home/me/Desktop/my.db`.
 
 ```
 $ cd /home/me/Desktop
@@ -328,7 +329,7 @@ export default {
 
 ```
 
-Embedded files can be read using `Bun.file`&#x27;s functions or the Node.js `fs.readFile` function (in `"node:fs"`).
+Embedded files can be read using `Bun.file`'s functions or the Node.js `fs.readFile` function (in `"node:fs"`).
 
 For example, to read the contents of the embedded file:
 
@@ -353,7 +354,7 @@ console.log(myEmbeddedDb.query("select * from users LIMIT 1").get());
 
 ```
 
-This database is read-write, but all changes are lost when the executable exits (since it&#x27;s stored in memory).
+This database is read-write, but all changes are lost when the executable exits (since it's stored in memory).
 
 ### [Embed N-API Addons](#embed-n-api-addons)
 
@@ -366,7 +367,7 @@ console.log(addon.hello());
 
 ```
 
-Unfortunately, if you&#x27;re using `@mapbox/node-pre-gyp` or other similar tools, you&#x27;ll need to make sure the `.node` file is directly required or it won&#x27;t bundle correctly.
+Unfortunately, if you're using `@mapbox/node-pre-gyp` or other similar tools, you'll need to make sure the `.node` file is directly required or it won't bundle correctly.
 
 ### [Embed directories](#embed-directories)
 
@@ -426,7 +427,7 @@ bun build --compile --asset-naming="[name].[ext]" ./index.ts
 
 ## [Minification](#minification)
 
-To trim down the size of the executable a little, pass `--minify` to `bun build --compile`. This uses Bun&#x27;s minifier to reduce the code size. Overall though, Bun&#x27;s binary is still way too big and we need to make it smaller.
+To trim down the size of the executable a little, pass `--minify` to `bun build --compile`. This uses Bun's minifier to reduce the code size. Overall though, Bun's binary is still way too big and we need to make it smaller.
 
 ## [Using Bun.build() API](#using-bun-build-api)
 
@@ -554,36 +555,42 @@ codesign --deep --force -vvvv --sign "XXXXXXXXXX" ./myapp
 
 We recommend including an `entitlements.plist` file with JIT permissions.
 
-entitlements.plist```
+entitlements.plist\`\`\`
 
-    com.apple.security.cs.allow-jit
+```
+com.apple.security.cs.allow-jit
 
-    com.apple.security.cs.allow-unsigned-executable-memory
+com.apple.security.cs.allow-unsigned-executable-memory
 
-    com.apple.security.cs.disable-executable-page-protection
+com.apple.security.cs.disable-executable-page-protection
 
-    com.apple.security.cs.allow-dyld-environment-variables
+com.apple.security.cs.allow-dyld-environment-variables
 
-    com.apple.security.cs.disable-library-validation
-
+com.apple.security.cs.disable-library-validation
+```
 
 ```
 
 To codesign with JIT support, pass the `--entitlements` flag to `codesign`.
 
 ```
+
 codesign --deep --force -vvvv --sign "XXXXXXXXXX" --entitlements entitlements.plist ./myapp
+
 ```
 
 After codesigning, verify the executable:
 
 ```
+
 codesign -vvv --verify ./myapp
-```
 
 ```
+```
+
 ./myapp: valid on disk
 ./myapp: satisfies its Designated Requirement
+
 ```
 
 Codesign support requires Bun v1.2.4 or newer.
@@ -597,3 +604,4 @@ Currently, the `--compile` flag can only accept a single entrypoint at a time an
 - `--public-path`
 - `--target=node` or `--target=browser`
 - `--no-bundle` - we always bundle everything into the executable.
+```

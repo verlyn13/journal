@@ -1,4 +1,3 @@
-
 # What to change (and why)
 
 ## 1) Rendering pipeline: finalize the unified stack (math, GFM, breaks, safety)
@@ -129,11 +128,11 @@ export default defineConfig({
 
 ## 9) Regression tests that actually catch issues
 
-- **Unit**: math parsing (\$ vs \$\$), code-block lang insertion, wordcount (exclude code/math).
+- **Unit**: math parsing ($ vs $$), code-block lang insertion, wordcount (exclude code/math).
 - **Integration**: draft recovery; HTML→MD conversion idempotence on common TipTap blocks.
 - **E2E**: create → type → render → Ctrl+S save → reload → verify. Include cases for tables, task lists, inline vs display math, and long docs.
 
----
+***
 
 # File-by-file adjustments (delta from your diff)
 
@@ -156,7 +155,7 @@ Docs for each plugin are current and stable. ([remarkjs.github.io][1], [npm][4],
 - Replace `JournalEditor.tsx` with a thin wrapper that mounts your **SweetSpotMarkdownEditor** (the canvas file I provided) and passes `value`, `onChange`, and save handlers.
 - Keep your **FocusMode** exactly as-is; the preview already adheres to **70ch** and a generous line-height.
 
----
+***
 
 # Known edge cases (and fixes)
 
@@ -165,7 +164,7 @@ Docs for each plugin are current and stable. ([remarkjs.github.io][1], [npm][4],
 - **Language class for highlighting** → your fence autofill writes \`\`\`ts so `rehype-highlight` applies `language-ts` and skips auto-detect. ([npm][10])
 - **Math parsing in tables/footnotes** → supported; if you see any oddities, make sure `remark-math` runs **before** `rehype-katex`. ([GitHub][2])
 
----
+***
 
 # Rollout plan (low risk)
 
@@ -174,7 +173,7 @@ Docs for each plugin are current and stable. ([remarkjs.github.io][1], [npm][4],
 3. Migrate the rest; keep a 1–2 week fallback period where HTML is converted on read only if `format==='html'`.
 4. Remove TipTap code after you hit 95%+ markdown entries and support requests are quiet.
 
----
+***
 
 # What you’ll end up with
 
@@ -185,19 +184,33 @@ Docs for each plugin are current and stable. ([remarkjs.github.io][1], [npm][4],
 If you’d like, I can push a patched version of **SweetSpotMarkdownEditor.tsx** that includes `remark-breaks`, a `sanitizeSchema` you can toggle on later, and the `useMutation` save wiring.
 
 [1]: https://remarkjs.github.io/react-markdown/?utm_source=chatgpt.com "react-markdown"
-[2]: https://github.com/remarkjs/remark-math?utm_source=chatgpt.com "remark and rehype plugins to support math"
-[3]: https://www.npmjs.com/package/rehype-katex?utm_source=chatgpt.com "rehype-katex"
-[4]: https://www.npmjs.com/package/remark-gfm?utm_source=chatgpt.com "remark-gfm"
-[5]: https://unifiedjs.com/learn/recipe/remark-table/?utm_source=chatgpt.com "Support tables in remark - unified"
-[6]: https://github.com/remarkjs/remark-breaks?utm_source=chatgpt.com "remarkjs/remark-breaks: plugin to add ..."
-[7]: https://github.com/rehypejs/rehype-sanitize?utm_source=chatgpt.com "rehypejs/rehype-sanitize: plugin to sanitize HTML"
-[8]: https://www.pullrequest.com/blog/secure-markdown-rendering-in-react-balancing-flexibility-and-safety/?utm_source=chatgpt.com "Secure Markdown Rendering in React"
-[9]: https://github.com/rehypejs/rehype-highlight?utm_source=chatgpt.com "rehypejs/rehype-highlight: plugin to highlight code blocks"
-[10]: https://www.npmjs.com/package/rehype-highlight/v/4.0.1?utm_source=chatgpt.com "rehype-highlight"
-[11]: https://highlightjs.readthedocs.io/en/latest/readme.html?utm_source=chatgpt.com "highlight.js 11.9.0 documentation"
-[12]: https://katex.org/docs/options.html?utm_source=chatgpt.com "Options"
-[13]: https://github.com/mixmark-io/turndown?utm_source=chatgpt.com "mixmark-io/turndown: 🛏 An HTML to Markdown converter ..."
-[14]: https://www.npmjs.com/package/turndown/v/4.0.0-rc.1?utm_source=chatgpt.com "turndown"
-[15]: https://www.npmjs.com/package/vite-bundle-visualizer?utm_source=chatgpt.com "vite-bundle-visualizer"
-[16]: https://katex.org/docs/supported.html?utm_source=chatgpt.com "Supported Functions"
 
+[2]: https://github.com/remarkjs/remark-math?utm_source=chatgpt.com "remark and rehype plugins to support math"
+
+[3]: https://www.npmjs.com/package/rehype-katex?utm_source=chatgpt.com "rehype-katex"
+
+[4]: https://www.npmjs.com/package/remark-gfm?utm_source=chatgpt.com "remark-gfm"
+
+[5]: https://unifiedjs.com/learn/recipe/remark-table/?utm_source=chatgpt.com "Support tables in remark - unified"
+
+[6]: https://github.com/remarkjs/remark-breaks?utm_source=chatgpt.com "remarkjs/remark-breaks: plugin to add ..."
+
+[7]: https://github.com/rehypejs/rehype-sanitize?utm_source=chatgpt.com "rehypejs/rehype-sanitize: plugin to sanitize HTML"
+
+[8]: https://www.pullrequest.com/blog/secure-markdown-rendering-in-react-balancing-flexibility-and-safety/?utm_source=chatgpt.com "Secure Markdown Rendering in React"
+
+[9]: https://github.com/rehypejs/rehype-highlight?utm_source=chatgpt.com "rehypejs/rehype-highlight: plugin to highlight code blocks"
+
+[10]: https://www.npmjs.com/package/rehype-highlight/v/4.0.1?utm_source=chatgpt.com "rehype-highlight"
+
+[11]: https://highlightjs.readthedocs.io/en/latest/readme.html?utm_source=chatgpt.com "highlight.js 11.9.0 documentation"
+
+[12]: https://katex.org/docs/options.html?utm_source=chatgpt.com "Options"
+
+[13]: https://github.com/mixmark-io/turndown?utm_source=chatgpt.com "mixmark-io/turndown: 🛏 An HTML to Markdown converter ..."
+
+[14]: https://www.npmjs.com/package/turndown/v/4.0.0-rc.1?utm_source=chatgpt.com "turndown"
+
+[15]: https://www.npmjs.com/package/vite-bundle-visualizer?utm_source=chatgpt.com "vite-bundle-visualizer"
+
+[16]: https://katex.org/docs/supported.html?utm_source=chatgpt.com "Supported Functions"

@@ -1,19 +1,19 @@
 # PACKAGE MANAGER
 
-*Source: https://bun.sh/docs/cli/install*
+*Source: <https://bun.sh/docs/cli/install>*
 *Fetched: 2025-08-30T00:47:26.655Z*
 
----
+***
 
-The `bun` CLI contains a Node.js-compatible package manager designed to be a dramatically faster replacement for `npm`, `yarn`, and `pnpm`. It&#x27;s a standalone tool that will work in pre-existing Node.js projects; if your project has a `package.json`, `bun install` can help you speed up your workflow.
+The `bun` CLI contains a Node.js-compatible package manager designed to be a dramatically faster replacement for `npm`, `yarn`, and `pnpm`. It's a standalone tool that will work in pre-existing Node.js projects; if your project has a `package.json`, `bun install` can help you speed up your workflow.
 
 **⚡️ 25x faster** — Switch from `npm install` to `bun install` in any Node.js project to make your installations up to 25x faster.
 
 [](https://user-images.githubusercontent.com/709451/147004342-571b6123-17a9-49a2-8bfd-dcfc5204047e.png)For Linux users
 
-The recommended minimum Linux Kernel version is 5.6. If you&#x27;re on Linux kernel 5.1 - 5.5, `bun install` will work, but HTTP requests will be slow due to a lack of support for io_uring&#x27;s `connect()` operation.
+The recommended minimum Linux Kernel version is 5.6. If you're on Linux kernel 5.1 - 5.5, `bun install` will work, but HTTP requests will be slow due to a lack of support for io\_uring's `connect()` operation.
 
-If you&#x27;re using Ubuntu 20.04, here&#x27;s how to install a [newer kernel](https://wiki.ubuntu.com/Kernel/LTSEnablementStack):
+If you're using Ubuntu 20.04, here's how to install a [newer kernel](https://wiki.ubuntu.com/Kernel/LTSEnablementStack):
 
 ```
 # If this returns a version >= 5.6, you don't need to do anything
@@ -41,7 +41,7 @@ bun install
 Running `bun install` will:
 
 - **Install** all `dependencies`, `devDependencies`, and `optionalDependencies`. Bun will install `peerDependencies` by default.
-- **Run** your project&#x27;s `{pre|post}install` and `{pre|post}prepare` scripts at the appropriate time. For security reasons Bun *does not execute* lifecycle scripts of installed dependencies.
+- **Run** your project's `{pre|post}install` and `{pre|post}prepare` scripts at the appropriate time. For security reasons Bun *does not execute* lifecycle scripts of installed dependencies.
 - **Write** a `bun.lock` lockfile to the project root.
 
 ## [Logging](#logging)
@@ -82,14 +82,14 @@ bun install --concurrent-scripts 5
 
 Bun supports `"workspaces"` in package.json. For complete documentation refer to [Package manager > Workspaces](https://bun.com/docs/install/workspaces).
 
-package.json```
+package.json\`\`\`
 {
-  "name": "my-app",
-  "version": "1.0.0",
-  "workspaces": ["packages/*"],
-  "dependencies": {
-    "preact": "^10.5.13"
-  }
+"name": "my-app",
+"version": "1.0.0",
+"workspaces": \["packages/\*"],
+"dependencies": {
+"preact": "^10.5.13"
+}
 }
 
 ```
@@ -99,21 +99,25 @@ package.json```
 In a monorepo, you can install the dependencies for a subset of packages using the `--filter` flag.
 
 ```
+
 # Install dependencies for all workspaces except `pkg-c`
-```
 
 ```
+```
+
 bun install --filter '!pkg-c'
-```
 
+```
 ```
 
 # Install dependencies for only `pkg-a` in `./packages/pkg-a`
-```
 
 ```
-bun install --filter './packages/pkg-a'
 ```
+
+bun install --filter './packages/pkg-a'
+
+````
 
 For more information on filtering with `bun install`, refer to [Package Manager > Filtering](https://bun.com/docs/cli/filter#bun-install-and-bun-outdated)
 
@@ -131,7 +135,7 @@ package.json```
     "bar": "~4.4.0"
   }
 }
-```
+````
 
 ## [Global packages](#global-packages)
 
@@ -170,7 +174,7 @@ For reproducible installs, use `--frozen-lockfile`. This will install the exact 
 bun install --frozen-lockfile
 ```
 
-For more information on Bun&#x27;s lockfile `bun.lock`, refer to [Package manager > Lockfile](https://bun.com/docs/install/lockfile).
+For more information on Bun's lockfile `bun.lock`, refer to [Package manager > Lockfile](https://bun.com/docs/install/lockfile).
 
 ## [Omitting dependencies](#omitting-dependencies)
 
@@ -197,7 +201,7 @@ bun install --omit=dev --omit=peer --omit=optional
 
 ## [Dry run](#dry-run)
 
-To perform a dry run (i.e. don&#x27;t actually install anything):
+To perform a dry run (i.e. don't actually install anything):
 
 ```
 bun install --dry-run
@@ -207,16 +211,16 @@ bun install --dry-run
 
 Bun supports installing dependencies from Git, GitHub, and local or remotely-hosted tarballs. For complete documentation refer to [Package manager > Git, GitHub, and tarball dependencies](https://bun.com/docs/cli/add).
 
-package.json```
+package.json\`\`\`
 {
-  "dependencies": {
-    "dayjs": "git+https://github.com/iamkun/dayjs.git",
-    "lodash": "git+ssh://github.com/lodash/lodash.git#4.17.21",
-    "moment": "git@github.com:moment/moment.git",
-    "zod": "github:colinhacks/zod",
-    "react": "https://registry.npmjs.org/react/-/react-18.2.0.tgz",
-    "bun-types": "npm:@types/bun"
-  }
+"dependencies": {
+"dayjs": "git+<https://github.com/iamkun/dayjs.git>",
+"lodash": "git+ssh://github.com/lodash/lodash.git#4.17.21",
+"moment": "<git@github.com>:moment/moment.git",
+"zod": "github:colinhacks/zod",
+"react": "<https://registry.npmjs.org/react/-/react-18.2.0.tgz>",
+"bun-types": "npm:@types/bun"
+}
 }
 
 ```
@@ -230,7 +234,9 @@ Bun supports two package installation strategies that determine how dependencies
 The traditional npm/Yarn approach that flattens dependencies into a shared `node_modules` directory:
 
 ```
+
 bun install --linker hoisted
+
 ```
 
 ### [Isolated installs](#isolated-installs)
@@ -238,7 +244,9 @@ bun install --linker hoisted
 A pnpm-like approach that creates strict dependency isolation to prevent phantom dependencies:
 
 ```
+
 bun install --linker isolated
+
 ```
 
 Isolated installs create a central package store in `node_modules/.bun/` with symlinks in the top-level `node_modules`. This ensures packages can only access their declared dependencies.
@@ -250,37 +258,48 @@ For complete documentation on isolated installs, refer to [Package manager > Iso
 The default behavior of `bun install` can be configured in `bunfig.toml`. The default values are shown below.
 
 ```
-[install]
+
+\[install]
 
 # whether to install optionalDependencies
+
 optional = true
 
 # whether to install devDependencies
+
 dev = true
 
 # whether to install peerDependencies
+
 peer = true
 
 # equivalent to `--production` flag
+
 production = false
 
 # equivalent to `--save-text-lockfile` flag
+
 saveTextLockfile = false
 
 # equivalent to `--frozen-lockfile` flag
+
 frozenLockfile = false
 
 # equivalent to `--dry-run` flag
+
 dryRun = false
 
 # equivalent to `--concurrent-scripts` flag
+
 concurrentScripts = 16 # (cpu count or GOMAXPROCS) x2
 
 # installation strategy: "hoisted" or "isolated"
+
 # default: "hoisted"
+
 linker = "hoisted"
 
-```
+````
 
 ## [CI/CD](#ci-cd)
 
@@ -302,7 +321,7 @@ jobs:
             - name: Build app
         run: bun run build
 
-```
+````
 
 For CI/CD environments that want to enforce reproducible builds, use `bun ci` to fail the build if the package.json is out of sync with the lockfile:
 
@@ -310,25 +329,25 @@ For CI/CD environments that want to enforce reproducible builds, use `bun ci` to
 bun ci
 ```
 
-This is equivalent to `bun install --frozen-lockfile`. It installs exact versions from `bun.lock` and fails if `package.json` doesn&#x27;t match the lockfile. To use `bun ci` or `bun install --frozen-lockfile`, you must commit `bun.lock` to version control.
+This is equivalent to `bun install --frozen-lockfile`. It installs exact versions from `bun.lock` and fails if `package.json` doesn't match the lockfile. To use `bun ci` or `bun install --frozen-lockfile`, you must commit `bun.lock` to version control.
 
 And instead of running `bun install`, run `bun ci`.
 
-.github/workflows/release.yml```
+.github/workflows/release.yml\`\`\`
 name: bun-types
 jobs:
-  build:
-    name: build-app
-    runs-on: ubuntu-latest
-    steps:
-            - name: Checkout repo
-        uses: actions/checkout@v4
-            - name: Install bun
-        uses: oven-sh/setup-bun@v2
-            - name: Install dependencies
-        run: bun ci
-            - name: Build app
-        run: bun run build
+build:
+name: build-app
+runs-on: ubuntu-latest
+steps:
+\- name: Checkout repo
+uses: actions/checkout\@v4
+\- name: Install bun
+uses: oven-sh/setup-bun\@v2
+\- name: Install dependencies
+run: bun ci
+\- name: Build app
+run: bun run build
 
 ```
 
@@ -363,3 +382,4 @@ $bun install <name>@<version>### Flags
 -h,--helpPrint this help menu### Examples
 
 Install the dependencies for the current projectbun installSkip devDependenciesbun install --productionFull documentation is available at https://bun.sh/docs/cli/install.
+```

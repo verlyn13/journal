@@ -1,11 +1,12 @@
----
+***
+
 title: CodeMirror Quick Reference
 category: reference
-topics: ["codemirror", "editor", "javascript", "quick-start"]
+topics: \["codemirror", "editor", "javascript", "quick-start"]
 version: "6.0"
-last_updated: "2025-04-08"
+last\_updated: "2025-04-08"
 description: "Provides concise code examples for common CodeMirror 6 operations relevant to the Journal application, such as setup, content manipulation, events, styling, and Markdown support."
----
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # CodeMirror Quick Reference Guide
 

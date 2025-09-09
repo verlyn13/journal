@@ -27,7 +27,7 @@ The `archive/` folder contains earlier analysis documents that led to the final 
 ## Key Decisions
 
 - **Stack**: CodeMirror 6 + react-markdown
-- **Bundle Target**: ~600KB (from 2.55MB)
+- **Bundle Target**: \~600KB (from 2.55MB)
 - **Timeline**: 2-3 weeks (personal app scale)
 - **Migration**: On-the-fly HTML→Markdown conversion
 - **Rollback**: Simple localStorage flag toggle

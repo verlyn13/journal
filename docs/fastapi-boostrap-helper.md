@@ -5,25 +5,33 @@ See /home/verlyn13/Projects/verlyn13/journal/docs/journal-backend-bootstrap-pgve
 - **pgvector integration**
 
   - Switched Docker to `pgvector/pgvector:pg16`.
+
   - Alembic migration `0001_initial.py` that:
 
   - `CREATE EXTENSION vector`
+
   - Creates `entries` (with a generated `fts` column + GIN index)
+
   - Creates `event_store`
+
   - Creates `entry_embeddings (embedding vector(1536))` + IVFFlat index
 - **Embedding provider abstraction**
 
   - `app/infra/embeddings.py` with `get_embedding(text)`:
 
   - `JOURNAL_EMBED_PROVIDER=fake` (default, deterministic, no network)
+
   - `JOURNAL_EMBED_PROVIDER=openai` (uses `OPENAI_API_KEY`, model via `JOURNAL_EMBED_MODEL`)
 - **Hybrid + semantic search**
 
   - `app/infra/search_pgvector.py`: SQL for hybrid scoring and vector-only.
+
   - `app/api/v1/search.py`:
 
   - `GET  /api/v1/search?q=...&k=&alpha=` (hybrid: vector + FTS on title)
+
   - `POST /api/v1/search/semantic` with `{ "q": "...", "k": 10 }`
+
   - `POST /api/v1/entries/{entry_id}/embed` to upsert an embedding for an Entry.
 - **GraphQL**
 
@@ -81,4 +89,3 @@ curl -s -X POST http://127.0.0.1:8000/api/v1/search/semantic -H "Content-Type: a
 - GraphQL currently exposes search only; we can add mutations and subscriptions for live collab next.
 
 Want me to upgrade FTS to index the JSON content blocks and add a proper “reindex all embeddings” job (Temporal or NATS consumers)?
-

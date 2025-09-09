@@ -38,9 +38,9 @@ mise run setup        # Complete project setup
 
 ### 1. Global Configuration
 
-- **~/.codex/config.toml** - Global Codex settings with profiles
-- **~/.codex/AGENTS.md** - Personal coding preferences
-- **~/.config/mise/config.toml** - Global tool versions
+- **\~/.codex/config.toml** - Global Codex settings with profiles
+- **\~/.codex/AGENTS.md** - Personal coding preferences
+- **\~/.config/mise/config.toml** - Global tool versions
 
 ### 2. Project Configuration
 
@@ -50,17 +50,18 @@ mise run setup        # Complete project setup
 
 ## Available Profiles
 
-| Profile | Model | Use Case | Approval |
-|---------|-------|----------|----------|
-| **speed** | gpt-5-mini | Quick fixes, routine tasks | on-request |
-| **depth** | gpt-5 | Complex analysis, architecture | on-request |
-| **permissive** | gpt-5 | Rapid iteration | on-failure |
-| **agent** | gpt-5-mini | CI/CD automation | on-failure |
-| **budget** | gpt-5-mini | Cost-optimized tasks | on-request |
+| Profile        | Model      | Use Case                       | Approval   |
+| -------------- | ---------- | ------------------------------ | ---------- |
+| **speed**      | gpt-5-mini | Quick fixes, routine tasks     | on-request |
+| **depth**      | gpt-5      | Complex analysis, architecture | on-request |
+| **permissive** | gpt-5      | Rapid iteration                | on-failure |
+| **agent**      | gpt-5-mini | CI/CD automation               | on-failure |
+| **budget**     | gpt-5-mini | Cost-optimized tasks           | on-request |
 
 ## Project Structure Context
 
 The AGENTS.md file provides Codex with:
+
 - Full project architecture (monorepo with apps/api and apps/web)
 - Development commands and workflows
 - Testing strategy and markers
@@ -119,10 +120,13 @@ The AGENTS.md file provides Codex with:
 
 1. Use **speed** profile for routine tasks
 2. Switch to **depth** profile for:
+
 - Complex debugging
 - Architecture decisions
 - Performance optimization
+
 3. Use **permissive** profile for:
+
 - Dependency updates
 - Scaffolding
 - Rapid prototyping
@@ -130,6 +134,7 @@ The AGENTS.md file provides Codex with:
 ## Refreshing Configuration
 
 To update Codex configuration based on latest system patterns:
+
 ```bash
 codex "Read ~/Projects/verlyn13/system-setup/PROJECT-AGENT-BOOTSTRAP.md and update project configuration"
 ```
@@ -148,7 +153,7 @@ codex "Read ~/Projects/verlyn13/system-setup/PROJECT-AGENT-BOOTSTRAP.md and upda
 - Run `mise tasks` to see all available tasks
 - Use `codex --help` for CLI options
 
----
+***
 
 **Last Updated**: September 2025
 **Python**: 3.13.7+

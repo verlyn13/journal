@@ -4,17 +4,17 @@
 
 ### September 2025 - Pragmatic Approach for Single-User Application
 
----
+***
 
 ## Context & Scope
 
-**Application**: Personal journal with single user (no production users to migrate)  
-**Current Stack**: TipTap WYSIWYG (~2.55MB bundle) with Monaco, Math, SlashCommands  
-**Target Stack**: CodeMirror 6 + react-markdown (~600KB bundle)  
-**Timeline**: 2-3 weeks total (not 10 weeks - this is a personal project)  
-**Risk Level**: Low (single user, can rollback anytime)  
+**Application**: Personal journal with single user (no production users to migrate)\
+**Current Stack**: TipTap WYSIWYG (\~2.55MB bundle) with Monaco, Math, SlashCommands\
+**Target Stack**: CodeMirror 6 + react-markdown (\~600KB bundle)\
+**Timeline**: 2-3 weeks total (not 10 weeks - this is a personal project)\
+**Risk Level**: Low (single user, can rollback anytime)
 
----
+***
 
 ## Phase 1: Core Implementation (3-4 days)
 
@@ -296,7 +296,7 @@ def downgrade():
     op.drop_column('entries', 'content_markdown')
 ```
 
----
+***
 
 ## Phase 2: Integration & Testing (2-3 days)
 
@@ -432,7 +432,7 @@ if __name__ == "__main__":
     migrate_entries()
 ```
 
----
+***
 
 ## Phase 3: Optimization & Cleanup (2-3 days)
 
@@ -597,7 +597,7 @@ describe('MarkdownEditor', () => {
 });
 ```
 
----
+***
 
 ## Phase 4: Switchover (1 day)
 
@@ -628,7 +628,7 @@ bun run build
 # Verify size reduction
 ```
 
----
+***
 
 ## Rollback Plan (if needed)
 
@@ -646,7 +646,7 @@ git revert <commit-hash>
 bun install
 ```
 
----
+***
 
 ## Key Decisions for Personal Use
 
@@ -657,7 +657,7 @@ bun install
 5. **Minimal backend changes**: Add format field, keep it simple
 6. **Quick timeline**: 2 weeks not 10 weeks
 
----
+***
 
 ## Success Criteria
 
@@ -668,7 +668,7 @@ bun install
 - [ ] Save/load cycle works
 - [ ] Can switch back to old editor if needed
 
----
+***
 
 ## Next Actions
 
@@ -677,6 +677,6 @@ bun install
 3. **This week**: Use in parallel, fix any issues
 4. **Next week**: Switch fully to Markdown, remove TipTap
 
----
+***
 
 *This is a pragmatic approach for a personal journal. We're not overthinking it - just building a better editor that's lighter and more maintainable.*

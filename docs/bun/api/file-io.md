@@ -1,11 +1,11 @@
 # FILE IO
 
-*Source: https://bun.sh/docs/api/file-io*
+*Source: <https://bun.sh/docs/api/file-io>*
 *Fetched: 2025-08-30T00:47:27.017Z*
 
----
+***
 
-**Note** — The `Bun.file` and `Bun.write` APIs documented on this page are heavily optimized and represent the recommended way to perform file-system tasks using Bun. For operations that are not yet available with `Bun.file`, such as `mkdir` or `readdir`, you can use Bun&#x27;s [nearly complete](https://bun.com/docs/runtime/nodejs-apis#node-fs) implementation of the [`node:fs`](https://nodejs.org/api/fs.html) module.
+**Note** — The `Bun.file` and `Bun.write` APIs documented on this page are heavily optimized and represent the recommended way to perform file-system tasks using Bun. For operations that are not yet available with `Bun.file`, such as `mkdir` or `readdir`, you can use Bun's [nearly complete](https://bun.com/docs/runtime/nodejs-apis#node-fs) implementation of the [`node:fs`](https://nodejs.org/api/fs.html) module.
 
 Bun provides a set of optimized APIs for reading and writing files.
 
@@ -102,7 +102,7 @@ All possible permutations are handled using the fastest available system calls o
 
 See syscalls
 
-OutputInputSystem callPlatformfilefilecopy_file_rangeLinuxfilepipesendfileLinuxpipepipespliceLinuxterminalfilesendfileLinuxterminalterminalsendfileLinuxsocketfile or pipesendfile (if http, not https)Linuxfile (doesn&#x27;t exist)file (path)clonefilemacOSfile (exists)filefcopyfilemacOSfileBlob or stringwritemacOSfileBlob or stringwriteLinuxTo write a string to disk:
+OutputInputSystem callPlatformfilefilecopy\_file\_rangeLinuxfilepipesendfileLinuxpipepipespliceLinuxterminalfilesendfileLinuxterminalterminalsendfileLinuxsocketfile or pipesendfile (if http, not https)Linuxfile (doesn't exist)file (path)clonefilemacOSfile (exists)filefcopyfilemacOSfileBlob or stringwritemacOSfileBlob or stringwriteLinuxTo write a string to disk:
 
 ```
 const data = `It was the best of times, it was the worst of times.`;
@@ -172,7 +172,7 @@ writer.flush(); // write buffer to disk
 
 ```
 
-The buffer will also auto-flush when the `FileSink`&#x27;s *high water mark* is reached; that is, when its internal buffer is full. This value can be configured.
+The buffer will also auto-flush when the `FileSink`'s *high water mark* is reached; that is, when its internal buffer is full. This value can be configured.
 
 ```
 const file = Bun.file("output.txt");
@@ -199,7 +199,7 @@ writer.ref();
 
 ## [Directories](#directories)
 
-Bun&#x27;s implementation of `node:fs` is fast, and we haven&#x27;t implemented a Bun-specific API for reading directories just yet. For now, you should use `node:fs` for working with directories in Bun.
+Bun's implementation of `node:fs` is fast, and we haven't implemented a Bun-specific API for reading directories just yet. For now, you should use `node:fs` for working with directories in Bun.
 
 ### [Reading directories (readdir)](#reading-directories-readdir)
 
@@ -240,7 +240,7 @@ await mkdir("path/to/dir", { recursive: true });
 
 The following is a 3-line implementation of the Linux `cat` command.
 
-cat.ts```
+cat.ts\`\`\`
 // Usage
 // $ bun ./cat.ts ./path-to-file
 
@@ -254,7 +254,9 @@ await Bun.write(Bun.stdout, Bun.file(path));
 To run the file:
 
 ```
+
 bun ./cat.ts ./path-to-file
+
 ```
 
 It runs 2x faster than GNU `cat` for large files on Linux.
@@ -262,46 +264,48 @@ It runs 2x faster than GNU `cat` for large files on Linux.
 [](/images/cat.jpg)## [Reference](#reference)
 
 ```
+
 interface Bun {
-  stdin: BunFile;
-  stdout: BunFile;
-  stderr: BunFile;
+stdin: BunFile;
+stdout: BunFile;
+stderr: BunFile;
 
-  file(path: string | number | URL, options?: { type?: string }): BunFile;
+file(path: string | number | URL, options?: { type?: string }): BunFile;
 
-  write(
-    destination: string | number | BunFile | URL,
-    input:
-      | string
-      | Blob
-      | ArrayBuffer
-      | SharedArrayBuffer
-      | TypedArray
-      | Response,
-  ): Promise;
+write(
+destination: string | number | BunFile | URL,
+input:
+\| string
+\| Blob
+\| ArrayBuffer
+\| SharedArrayBuffer
+\| TypedArray
+\| Response,
+): Promise;
 }
 
 interface BunFile {
-  readonly size: number;
-  readonly type: string;
+readonly size: number;
+readonly type: string;
 
-  text(): Promise;
-  stream(): ReadableStream;
-  arrayBuffer(): Promise;
-  json(): Promise;
-  writer(params: { highWaterMark?: number }): FileSink;
-  exists(): Promise;
+text(): Promise;
+stream(): ReadableStream;
+arrayBuffer(): Promise;
+json(): Promise;
+writer(params: { highWaterMark?: number }): FileSink;
+exists(): Promise;
 }
 
 export interface FileSink {
-  write(
-    chunk: string | ArrayBufferView | ArrayBuffer | SharedArrayBuffer,
-  ): number;
-  flush(): number | Promise;
-  end(error?: Error): number | Promise;
-  start(options?: { highWaterMark?: number }): void;
-  ref(): void;
-  unref(): void;
+write(
+chunk: string | ArrayBufferView | ArrayBuffer | SharedArrayBuffer,
+): number;
+flush(): number | Promise;
+end(error?: Error): number | Promise;
+start(options?: { highWaterMark?: number }): void;
+ref(): void;
+unref(): void;
 }
 
+```
 ```

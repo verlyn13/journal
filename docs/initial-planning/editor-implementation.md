@@ -1,44 +1,45 @@
----
+***
+
 title: "UI/UX Editor Implementation Guide: CodeMirror 6 Integration"
 description: "Detailed guide for implementing the CodeMirror 6 editor component within the Flask Journal system, including setup, architecture, styling, persistence, performance, accessibility, testing, and resource bundling strategy."
 category: "Initial Planning"
-related_topics:
-      - "docs/initial-planning/comprehensive-guide-personal.md"
-      - "docs/initial-planning/mvp-high-level-implementation-guide.md"
+related\_topics:
+\- "docs/initial-planning/comprehensive-guide-personal.md"
+\- "docs/initial-planning/mvp-high-level-implementation-guide.md"
 version: "1.1" # Updated version due to significant change in resource loading
 tags:
-      - "planning"
-      - "editor"
-      - "codemirror"
-      - "codemirror6"
-      - "markdown"
-      - "latex"
-      - "mathjax"
-      - "alpinejs"
-      - "htmx"
-      - "ui"
-      - "ux"
-      - "frontend"
-      - "bundling"
-      - "rollup"
-      - "flask-assets"
-      - "accessibility"
-      - "testing"
----
+\- "planning"
+\- "editor"
+\- "codemirror"
+\- "codemirror6"
+\- "markdown"
+\- "latex"
+\- "mathjax"
+\- "alpinejs"
+\- "htmx"
+\- "ui"
+\- "ux"
+\- "frontend"
+\- "bundling"
+\- "rollup"
+\- "flask-assets"
+\- "accessibility"
+\- "testing"
+------------
 
 # UI/UX Editor Implementation Guide: CodeMirror 6 Integration
 
 ## Table of Contents
 
-1.  [Overview & Integration](#overview--integration)
-2.  [CodeMirror 6 Setup](#codemirror-6-setup)
-3.  [Editor UI Architecture](#editor-ui-architecture)
-4.  [Toolbar Implementation](#toolbar-implementation)
-5.  [Markdown & LaTeX Support](#markdown--latex-support)
-6.  [Styling & Theme Implementation](#styling--theme-implementation)
-7.  [State Management & Persistence](#state-management--persistence)
-8.  [Performance Considerations](#performance-considerations)
-9.  [Resource Bundling Strategy](#resource-bundling-strategy) <!-- Updated TOC entry -->
+1. [Overview & Integration](#overview--integration)
+2. [CodeMirror 6 Setup](#codemirror-6-setup)
+3. [Editor UI Architecture](#editor-ui-architecture)
+4. [Toolbar Implementation](#toolbar-implementation)
+5. [Markdown & LaTeX Support](#markdown--latex-support)
+6. [Styling & Theme Implementation](#styling--theme-implementation)
+7. [State Management & Persistence](#state-management--persistence)
+8. [Performance Considerations](#performance-considerations)
+9. [Resource Bundling Strategy](#resource-bundling-strategy) <!-- Updated TOC entry -->
 10. [Accessibility Guidelines](#accessibility-guidelines)
 11. [Testing Strategy](#testing-strategy)
 
@@ -61,12 +62,12 @@ app/templates/entries/
 
 ### Technical Stack
 
--   **CodeMirror 6**: Core editor functionality
--   **Alpine.js**: State management and reactivity
--   **HTMX**: Server interactions without page reloads
--   **MathJax**: LaTeX rendering in preview pane
--   **Rollup**: JavaScript/CSS bundling
--   **Flask-Assets**: Asset management and delivery
+- **CodeMirror 6**: Core editor functionality
+- **Alpine.js**: State management and reactivity
+- **HTMX**: Server interactions without page reloads
+- **MathJax**: LaTeX rendering in preview pane
+- **Rollup**: JavaScript/CSS bundling
+- **Flask-Assets**: Asset management and delivery
 
 ## CodeMirror 6 Setup
 
@@ -152,10 +153,10 @@ The editor UI follows a layered architecture:
 
 ### Component Layers
 
-1.  **Editor Container**: Manages overall layout and mode switching (Alpine.js)
-2.  **Toolbar**: Provides formatting controls and toggles (HTML + Alpine.js)
-3.  **Editor Instance**: CodeMirror 6 editing area (Managed by Alpine.js)
-4.  **Preview Pane**: Renders Markdown with MathJax support (HTML + Alpine.js)
+1. **Editor Container**: Manages overall layout and mode switching (Alpine.js)
+2. **Toolbar**: Provides formatting controls and toggles (HTML + Alpine.js)
+3. **Editor Instance**: CodeMirror 6 editing area (Managed by Alpine.js)
+4. **Preview Pane**: Renders Markdown with MathJax support (HTML + Alpine.js)
 
 ### HTML Structure
 
@@ -412,7 +413,7 @@ The toolbar follows a minimal, focused design with just the essential controls.
 
 ### Markdown Insertion Functions
 
-```javascript
+````javascript
 // src/js/editor/toolbar-actions.js
 import { EditorSelection } from "@codemirror/state";
 
@@ -475,7 +476,7 @@ export function insertMarkdownSyntax(editorView, type) {
 }
 
 // Note: calculateNewSelection helper is integrated into createTransaction logic
-```
+````
 
 ## Markdown & LaTeX Support
 
@@ -569,6 +570,7 @@ export function typesetMath(elementId) {
 }
 
 ```
+
 *(Note: MathJax font loading might still require a CDN or self-hosting setup, even when bundling the core library).*
 
 ## Styling & Theme Implementation
@@ -682,11 +684,12 @@ Leverage Alpine.js for UI state (mode, loading flags) and `localStorage` for sim
 ### UI State (Alpine.js)
 
 The `editor` Alpine component manages:
--   `mode`: Current view ('edit', 'split', 'preview'). Persisted in `localStorage`.
--   `content`: Current editor text content.
--   `preview`: Rendered HTML preview.
--   `isPreviewLoading`: Flag for preview loading state.
--   `editorView`: Reference to the CodeMirror `EditorView` instance.
+
+- `mode`: Current view ('edit', 'split', 'preview'). Persisted in `localStorage`.
+- `content`: Current editor text content.
+- `preview`: Rendered HTML preview.
+- `isPreviewLoading`: Flag for preview loading state.
+- `editorView`: Reference to the CodeMirror `EditorView` instance.
 
 ### Persistent Document State
 
@@ -733,16 +736,17 @@ export class EditorPersistence {
   }
 }
 ```
+
 Integrate `EditorPersistence` into the Alpine component's `init` method and the `onChange` callback. Clear the draft upon successful form submission.
 
 ## Performance Considerations
 
 ### Editor Performance Optimizations
 
--   **Debounce Preview Updates**: Use `Alpine.debounce` to limit frequent API calls for preview rendering.
--   **Lazy Loading**: CodeMirror 6 is modular; only load necessary language modes and extensions. Bundling helps manage this.
--   **Efficient DOM Updates**: Alpine.js handles reactive updates efficiently. Ensure preview updates only replace necessary content.
--   **Large Document Handling**: CodeMirror 6 is designed for performance, but monitor for lag with very large entries. Consider server-side pagination or chunking for extreme cases (likely beyond MVP).
+- **Debounce Preview Updates**: Use `Alpine.debounce` to limit frequent API calls for preview rendering.
+- **Lazy Loading**: CodeMirror 6 is modular; only load necessary language modes and extensions. Bundling helps manage this.
+- **Efficient DOM Updates**: Alpine.js handles reactive updates efficiently. Ensure preview updates only replace necessary content.
+- **Large Document Handling**: CodeMirror 6 is designed for performance, but monitor for lag with very large entries. Consider server-side pagination or chunking for extreme cases (likely beyond MVP).
 
 ### Resource Loading Strategy
 
@@ -754,236 +758,243 @@ Instead of loading CodeMirror modules and MathJax from CDNs, we'll bundle assets
 
 ### Implementation Steps
 
-1.  **Update Dependencies Management (`package.json`)**:
--   Create `package.json` in the project root.
--   Add dependencies for CodeMirror, MathJax, Rollup, and necessary plugins.
-    ```json
-    # package.json (add to project root)
-    {
-      "name": "journal-editor",
-      "version": "1.0.0",
-      "private": true,
-      "scripts": {
-        "build": "rollup -c",
-        "watch": "rollup -c -w"
-      },
-      "dependencies": {
-        "@codemirror/state": "^6.2.0",
-        "@codemirror/view": "^6.9.3",
-        "@codemirror/language": "^6.6.0",
-        "@codemirror/commands": "^6.2.3",
-        "@codemirror/language-data": "^6.2.0",
-        "@codemirror/lang-markdown": "^6.1.0",
-        "mathjax": "^3.2.2"
-      },
-      "devDependencies": {
-        "@rollup/plugin-node-resolve": "^15.0.1", // Updated plugin name
-        "@rollup/plugin-terser": "^0.4.0", // Updated plugin name
-        "rollup": "^3.20.0",
-        "rollup-plugin-css-only": "^4.3.0" // For extracting CSS
-      }
+1. **Update Dependencies Management (`package.json`)**:
+
+- Create `package.json` in the project root.
+- Add dependencies for CodeMirror, MathJax, Rollup, and necessary plugins.
+  ```json
+  # package.json (add to project root)
+  {
+    "name": "journal-editor",
+    "version": "1.0.0",
+    "private": true,
+    "scripts": {
+      "build": "rollup -c",
+      "watch": "rollup -c -w"
+    },
+    "dependencies": {
+      "@codemirror/state": "^6.2.0",
+      "@codemirror/view": "^6.9.3",
+      "@codemirror/language": "^6.6.0",
+      "@codemirror/commands": "^6.2.3",
+      "@codemirror/language-data": "^6.2.0",
+      "@codemirror/lang-markdown": "^6.1.0",
+      "mathjax": "^3.2.2"
+    },
+    "devDependencies": {
+      "@rollup/plugin-node-resolve": "^15.0.1", // Updated plugin name
+      "@rollup/plugin-terser": "^0.4.0", // Updated plugin name
+      "rollup": "^3.20.0",
+      "rollup-plugin-css-only": "^4.3.0" // For extracting CSS
     }
-    ```
--   Run `npm install` to install these dependencies into `node_modules/`. Add `node_modules/` to `.gitignore`.
+  }
+  ```
+- Run `npm install` to install these dependencies into `node_modules/`. Add `node_modules/` to `.gitignore`.
 
-2.  **Create Rollup Configuration (`rollup.config.js`)**:
--   Create `rollup.config.js` in the project root.
--   Configure Rollup to bundle JS from `src/js/editor/main.js` and extract CSS.
-    ```javascript
-    // rollup.config.js
-    import resolve from '@rollup/plugin-node-resolve';
-    import terser from '@rollup/plugin-terser';
-    import css from 'rollup-plugin-css-only';
+2. **Create Rollup Configuration (`rollup.config.js`)**:
 
-    export default {
-      input: 'src/js/editor/main.js', // Entry point for JS
-      output: {
-        file: 'journal/static/gen/editor.bundle.js', // Output bundled JS
-        format: 'iife', // Immediately Invoked Function Expression for browser
-        name: 'JournalEditor', // Global variable name (optional)
-        sourcemap: true // Generate source maps for debugging
-      },
-      plugins: [
-        resolve(), // Resolves node_modules imports
-        css({ output: 'editor.bundle.css' }), // Extract CSS to this file in the output dir
-        terser() // Minify JS output
-      ]
-    };
-    ```
+- Create `rollup.config.js` in the project root.
+- Configure Rollup to bundle JS from `src/js/editor/main.js` and extract CSS.
+  ```javascript
+  // rollup.config.js
+  import resolve from '@rollup/plugin-node-resolve';
+  import terser from '@rollup/plugin-terser';
+  import css from 'rollup-plugin-css-only';
 
-3.  **Update MathJax Integration (Use Bundled Version)**:
--   Modify `src/js/editor/mathjax-setup.js` to import directly from the installed `mathjax` package instead of loading from CDN.
-    ```javascript
-    // src/js/editor/mathjax-setup.js
-    // (Use the updated code provided earlier that imports from 'mathjax/es5/...')
-    import { tex } from 'mathjax/es5/input/tex';
-    import { chtml } from 'mathjax/es5/output/chtml';
-    import { RegisterHTMLHandler } from 'mathjax/es5/handlers/html';
-    import { AllPackages } from 'mathjax/es5/input/tex/AllPackages';
-    import { liteAdaptor } from 'mathjax/es5/adaptors/liteAdaptor';
+  export default {
+    input: 'src/js/editor/main.js', // Entry point for JS
+    output: {
+      file: 'journal/static/gen/editor.bundle.js', // Output bundled JS
+      format: 'iife', // Immediately Invoked Function Expression for browser
+      name: 'JournalEditor', // Global variable name (optional)
+      sourcemap: true // Generate source maps for debugging
+    },
+    plugins: [
+      resolve(), // Resolves node_modules imports
+      css({ output: 'editor.bundle.css' }), // Extract CSS to this file in the output dir
+      terser() // Minify JS output
+    ]
+  };
+  ```
 
-    export function initMathJax() {
-      // ... (rest of the initMathJax function as defined previously) ...
-      console.log("MathJax configured for manual typesetting using bundled components.");
-      return Promise.resolve(window.MathJax);
-    }
+3. **Update MathJax Integration (Use Bundled Version)**:
 
-    export function typesetMath(elementId) {
-      // ... (typesetMath function as defined previously) ...
-    }
-    ```
+- Modify `src/js/editor/mathjax-setup.js` to import directly from the installed `mathjax` package instead of loading from CDN.
+  ```javascript
+  // src/js/editor/mathjax-setup.js
+  // (Use the updated code provided earlier that imports from 'mathjax/es5/...')
+  import { tex } from 'mathjax/es5/input/tex';
+  import { chtml } from 'mathjax/es5/output/chtml';
+  import { RegisterHTMLHandler } from 'mathjax/es5/handlers/html';
+  import { AllPackages } from 'mathjax/es5/input/tex/AllPackages';
+  import { liteAdaptor } from 'mathjax/es5/adaptors/liteAdaptor';
 
-4.  **Create Main Entry Point (`src/js/editor/main.js`)**:
--   This file imports all necessary JS modules and CSS.
-    ```javascript
-    // src/js/editor/main.js
-    import { createEditor } from './setup.js';
-    import { initMathJax, typesetMath } from './mathjax-setup.js';
-    import { EditorPersistence } from './persistence.js';
-    import { insertMarkdownSyntax } from './toolbar-actions.js';
-    // Import Alpine component setup if it's in a separate file
-    // import './alpine-component.js';
+  export function initMathJax() {
+    // ... (rest of the initMathJax function as defined previously) ...
+    console.log("MathJax configured for manual typesetting using bundled components.");
+    return Promise.resolve(window.MathJax);
+  }
 
-    // Import CSS - Rollup with css-only plugin will handle extraction
-    import '../../css/base.css';
-    import '../../css/components/editor.css';
-    import '../../css/components/toolbar.css';
-    import '../../css/components/buttons.css';
+  export function typesetMath(elementId) {
+    // ... (typesetMath function as defined previously) ...
+  }
+  ```
 
-    // Initialize Alpine component (assuming it's defined globally or initialized elsewhere)
-    // Ensure Alpine.js itself is loaded, potentially via Flask-Assets or another bundle
+4. **Create Main Entry Point (`src/js/editor/main.js`)**:
 
-    // Pre-initialize MathJax (configuration only)
-    initMathJax();
+- This file imports all necessary JS modules and CSS.
+  ```javascript
+  // src/js/editor/main.js
+  import { createEditor } from './setup.js';
+  import { initMathJax, typesetMath } from './mathjax-setup.js';
+  import { EditorPersistence } from './persistence.js';
+  import { insertMarkdownSyntax } from './toolbar-actions.js';
+  // Import Alpine component setup if it's in a separate file
+  // import './alpine-component.js';
 
-    // Expose necessary functions to the global scope or Alpine component
-    // If using Alpine, functions like insertMarkdownSyntax, typesetMath might be called
-    // from within the Alpine component's scope directly after importing them there.
-    // Alternatively, attach them to window if needed globally.
-    window.JournalEditor = {
-        createEditor,
-        EditorPersistence,
-        insertMarkdownSyntax, // Make available for toolbar buttons if not using Alpine directly
-        typesetMath // Make available for preview updates
-    };
+  // Import CSS - Rollup with css-only plugin will handle extraction
+  import '../../css/base.css';
+  import '../../css/components/editor.css';
+  import '../../css/components/toolbar.css';
+  import '../../css/components/buttons.css';
 
-    console.log("Journal Editor main script loaded.");
-    ```
+  // Initialize Alpine component (assuming it's defined globally or initialized elsewhere)
+  // Ensure Alpine.js itself is loaded, potentially via Flask-Assets or another bundle
 
-5.  **Update Flask-Assets Configuration (`journal/__init__.py`)**:
--   Configure Flask-Assets to use the bundles generated by Rollup.
-    ```python
-    # journal/__init__.py (or wherever Flask app is created)
-    from flask_assets import Environment, Bundle
-    # ... other imports ...
+  // Pre-initialize MathJax (configuration only)
+  initMathJax();
 
-    assets = Environment()
+  // Expose necessary functions to the global scope or Alpine component
+  // If using Alpine, functions like insertMarkdownSyntax, typesetMath might be called
+  // from within the Alpine component's scope directly after importing them there.
+  // Alternatively, attach them to window if needed globally.
+  window.JournalEditor = {
+      createEditor,
+      EditorPersistence,
+      insertMarkdownSyntax, // Make available for toolbar buttons if not using Alpine directly
+      typesetMath // Make available for preview updates
+  };
 
-    def create_app(config_name='default'):
-        app = Flask(__name__)
-        # ... other app configuration ...
+  console.log("Journal Editor main script loaded.");
+  ```
 
-        # Initialize Flask-Assets
-        assets.init_app(app)
+5. **Update Flask-Assets Configuration (`journal/__init__.py`)**:
 
-        # Define asset bundles using the output from Rollup
-        # Note: Rollup handles JS bundling and CSS extraction. Flask-Assets now just serves these.
-        # If you have other CSS/JS not part of the editor bundle, define separate bundles.
+- Configure Flask-Assets to use the bundles generated by Rollup.
+  ```python
+  # journal/__init__.py (or wherever Flask app is created)
+  from flask_assets import Environment, Bundle
+  # ... other imports ...
 
-        js_editor_bundle = Bundle(
-            'gen/editor.bundle.js', # The single JS file generated by Rollup
-            # filters='jsmin', # Optional: Apply further minification if needed (Terser in Rollup already does this)
-            output='gen/packed.editor.%(version)s.js' # Add versioning
-        )
+  assets = Environment()
 
-        css_editor_bundle = Bundle(
-            'gen/editor.bundle.css', # The single CSS file extracted by Rollup
-            # filters='cssmin', # Optional: Minify further if needed
-            output='gen/packed.editor.%(version)s.css' # Add versioning
-        )
+  def create_app(config_name='default'):
+      app = Flask(__name__)
+      # ... other app configuration ...
 
-        # Register bundles
-        assets.register('js_editor', js_editor_bundle)
-        assets.register('css_editor', css_editor_bundle)
+      # Initialize Flask-Assets
+      assets.init_app(app)
 
-        # Register blueprints, extensions, etc.
-        # ...
+      # Define asset bundles using the output from Rollup
+      # Note: Rollup handles JS bundling and CSS extraction. Flask-Assets now just serves these.
+      # If you have other CSS/JS not part of the editor bundle, define separate bundles.
 
-        return app
-    ```
+      js_editor_bundle = Bundle(
+          'gen/editor.bundle.js', # The single JS file generated by Rollup
+          # filters='jsmin', # Optional: Apply further minification if needed (Terser in Rollup already does this)
+          output='gen/packed.editor.%(version)s.js' # Add versioning
+      )
 
-6.  **Update Template to Use Bundled Resources (`editor.html`, `base.html`)**:
--   Modify templates to include the Flask-Assets bundles.
-    ```html
-    {# app/templates/base.html - Example Head #}
-    <head>
-      {# ... other head elements ... #}
-      {% block head_css %}
-        {# Include main CSS bundle if you have one #}
-        {# {% assets "css_main" %} <link rel="stylesheet" href="{{ ASSET_URL }}"> {% endassets %} #}
+      css_editor_bundle = Bundle(
+          'gen/editor.bundle.css', # The single CSS file extracted by Rollup
+          # filters='cssmin', # Optional: Minify further if needed
+          output='gen/packed.editor.%(version)s.css' # Add versioning
+      )
 
-        {# Include editor CSS bundle specifically where the editor is used #}
-        {% if request.endpoint in ['main.new_entry', 'main.edit_entry'] %} {# Example condition #}
-          {% assets "css_editor" %}
-            <link rel="stylesheet" href="{{ ASSET_URL }}">
-          {% endassets %}
-        {% endif %}
-      {% endblock %}
-    </head>
+      # Register bundles
+      assets.register('js_editor', js_editor_bundle)
+      assets.register('css_editor', css_editor_bundle)
 
-    {# app/templates/base.html - Example End of Body #}
-    <body>
-      {# ... main content ... #}
+      # Register blueprints, extensions, etc.
+      # ...
 
-      {# Load Alpine.js (e.g., from static or another bundle) #}
-      {# <script src="{{ url_for('static', filename='js/alpine.min.js') }}" defer></script> #}
+      return app
+  ```
 
-      {# Load Editor JS bundle specifically where needed #}
+6. **Update Template to Use Bundled Resources (`editor.html`, `base.html`)**:
+
+- Modify templates to include the Flask-Assets bundles.
+  ```html
+  {# app/templates/base.html - Example Head #}
+  <head>
+    {# ... other head elements ... #}
+    {% block head_css %}
+      {# Include main CSS bundle if you have one #}
+      {# {% assets "css_main" %} <link rel="stylesheet" href="{{ ASSET_URL }}"> {% endassets %} #}
+
+      {# Include editor CSS bundle specifically where the editor is used #}
       {% if request.endpoint in ['main.new_entry', 'main.edit_entry'] %} {# Example condition #}
-        {% assets "js_editor" %}
-          <script src="{{ ASSET_URL }}"></script>
+        {% assets "css_editor" %}
+          <link rel="stylesheet" href="{{ ASSET_URL }}">
         {% endassets %}
       {% endif %}
+    {% endblock %}
+  </head>
 
-      {% block scripts %}{% endblock %}
-    </body>
-    ```
-    *(Note: Loading logic might vary. Editor JS/CSS should only be loaded on pages where the editor is present).*
+  {# app/templates/base.html - Example End of Body #}
+  <body>
+    {# ... main content ... #}
 
-7.  **Build Script Integration (`scripts/deploy.sh`)**:
--   Ensure the deployment process includes installing Node.js dependencies and running the Rollup build.
-    ```bash
-    #!/bin/bash
-    echo "Starting deployment..."
+    {# Load Alpine.js (e.g., from static or another bundle) #}
+    {# <script src="{{ url_for('static', filename='js/alpine.min.js') }}" defer></script> #}
 
-    # Navigate to project root (adjust path if necessary)
-    # cd /path/to/your/journal-app
+    {# Load Editor JS bundle specifically where needed #}
+    {% if request.endpoint in ['main.new_entry', 'main.edit_entry'] %} {# Example condition #}
+      {% assets "js_editor" %}
+        <script src="{{ ASSET_URL }}"></script>
+      {% endassets %}
+    {% endif %}
 
-    echo "Pulling latest changes..."
-    git pull origin main # Or your deployment branch
+    {% block scripts %}{% endblock %}
+  </body>
+  ```
+  *(Note: Loading logic might vary. Editor JS/CSS should only be loaded on pages where the editor is present).*
 
-    echo "Setting up Python environment..."
-    source .venv/bin/activate
-    pip install -r requirements.txt
+7. **Build Script Integration (`scripts/deploy.sh`)**:
 
-    echo "Setting up Node.js environment and building assets..."
-    # Check if npm is available
-    if ! command -v npm &> /dev/null
-    then
-        echo "npm could not be found. Please install Node.js and npm."
-        exit 1
-    fi
-    npm install       # Install frontend dependencies
-    npm run build     # Run Rollup build script defined in package.json
+- Ensure the deployment process includes installing Node.js dependencies and running the Rollup build.
+  ```bash
+  #!/bin/bash
+  echo "Starting deployment..."
 
-    echo "Applying database migrations..."
-    flask db upgrade
+  # Navigate to project root (adjust path if necessary)
+  # cd /path/to/your/journal-app
 
-    echo "Restarting application service..."
-    sudo systemctl restart journal # Or your service name
+  echo "Pulling latest changes..."
+  git pull origin main # Or your deployment branch
 
-    echo "Deployment finished."
-    ```
+  echo "Setting up Python environment..."
+  source .venv/bin/activate
+  pip install -r requirements.txt
+
+  echo "Setting up Node.js environment and building assets..."
+  # Check if npm is available
+  if ! command -v npm &> /dev/null
+  then
+      echo "npm could not be found. Please install Node.js and npm."
+      exit 1
+  fi
+  npm install       # Install frontend dependencies
+  npm run build     # Run Rollup build script defined in package.json
+
+  echo "Applying database migrations..."
+  flask db upgrade
+
+  echo "Restarting application service..."
+  sudo systemctl restart journal # Or your service name
+
+  echo "Deployment finished."
+  ```
 
 This bundled approach provides better performance, reliability, offline capability, security, and version control compared to using CDNs, aligning well with the project's philosophy.
 
@@ -991,18 +1002,18 @@ This bundled approach provides better performance, reliability, offline capabili
 
 Ensure the editor is accessible:
 
--   **Keyboard Navigation**: All toolbar controls and editor functions must be keyboard accessible. CodeMirror 6 has good base support; ensure custom elements are navigable.
--   **Screen Reader Support**: Use appropriate ARIA attributes (`aria-label`, `aria-pressed`, `role`) on toolbar buttons and editor panes. CodeMirror provides some ARIA support; verify its effectiveness.
--   **Focus Management**: Ensure logical focus order when navigating between the toolbar, editor, and preview pane. Programmatically manage focus when necessary (e.g., after inserting Markdown).
--   **Color Contrast**: Adhere to WCAG AA contrast ratios for text, UI elements, and syntax highlighting in both light and dark themes.
--   **Alternative Text**: Provide descriptive `alt` text for image previews or ensure Markdown content includes accessible descriptions.
+- **Keyboard Navigation**: All toolbar controls and editor functions must be keyboard accessible. CodeMirror 6 has good base support; ensure custom elements are navigable.
+- **Screen Reader Support**: Use appropriate ARIA attributes (`aria-label`, `aria-pressed`, `role`) on toolbar buttons and editor panes. CodeMirror provides some ARIA support; verify its effectiveness.
+- **Focus Management**: Ensure logical focus order when navigating between the toolbar, editor, and preview pane. Programmatically manage focus when necessary (e.g., after inserting Markdown).
+- **Color Contrast**: Adhere to WCAG AA contrast ratios for text, UI elements, and syntax highlighting in both light and dark themes.
+- **Alternative Text**: Provide descriptive `alt` text for image previews or ensure Markdown content includes accessible descriptions.
 
 ### Implementation Details
 
--   Add `aria-label` attributes to icon-only buttons in `toolbar.html`.
--   Use `aria-pressed` for toggle buttons (like mode switcher).
--   Add `aria-live="polite"` to the preview pane (`editor.html`) so screen readers announce updates.
--   Test thoroughly with keyboard-only navigation and screen readers (NVDA, VoiceOver, JAWS).
+- Add `aria-label` attributes to icon-only buttons in `toolbar.html`.
+- Use `aria-pressed` for toggle buttons (like mode switcher).
+- Add `aria-live="polite"` to the preview pane (`editor.html`) so screen readers announce updates.
+- Test thoroughly with keyboard-only navigation and screen readers (NVDA, VoiceOver, JAWS).
 
 ## Testing Strategy
 
@@ -1010,28 +1021,28 @@ Implement comprehensive tests for the editor component:
 
 ### Unit Tests
 
--   **Location**: `tests/js/unit/`
--   **Framework**: Jest or Vitest
--   **Coverage**:
-  -   Test individual helper functions (`toolbar-actions.js`, `persistence.js`).
-  -   Test MathJax configuration and typesetting calls (mocking `window.MathJax`).
-  -   Test state transitions and logic within the Alpine component (can be tricky, might require integration tests).
+- **Location**: `tests/js/unit/`
+- **Framework**: Jest or Vitest
+- **Coverage**:
+- Test individual helper functions (`toolbar-actions.js`, `persistence.js`).
+- Test MathJax configuration and typesetting calls (mocking `window.MathJax`).
+- Test state transitions and logic within the Alpine component (can be tricky, might require integration tests).
 
 ### Integration Tests
 
--   **Location**: `tests/js/integration/` (or potentially within Flask integration tests using Selenium/Playwright)
--   **Framework**: Playwright or Cypress
--   **Coverage**:
-  -   Simulate user interactions: typing, clicking toolbar buttons, changing modes.
-  -   Verify CodeMirror state updates correctly.
-  -   Verify preview pane renders expected HTML and MathJax output after debounced updates.
-  -   Test draft saving and loading.
-  -   Verify form submission includes the correct editor content.
-  -   Test accessibility features (keyboard navigation, ARIA attributes).
+- **Location**: `tests/js/integration/` (or potentially within Flask integration tests using Selenium/Playwright)
+- **Framework**: Playwright or Cypress
+- **Coverage**:
+- Simulate user interactions: typing, clicking toolbar buttons, changing modes.
+- Verify CodeMirror state updates correctly.
+- Verify preview pane renders expected HTML and MathJax output after debounced updates.
+- Test draft saving and loading.
+- Verify form submission includes the correct editor content.
+- Test accessibility features (keyboard navigation, ARIA attributes).
 
 ### Manual Testing
 
--   Test across different browsers (Chrome, Firefox, Safari).
--   Verify usability with complex Markdown and LaTeX examples.
--   Check performance with large documents.
--   Perform accessibility checks using screen readers and keyboard navigation.
+- Test across different browsers (Chrome, Firefox, Safari).
+- Verify usability with complex Markdown and LaTeX examples.
+- Check performance with large documents.
+- Perform accessibility checks using screen readers and keyboard navigation.

@@ -1,4 +1,3 @@
-
 # **A Strategic Blueprint for the Modern Journaling Application**
 
 ## **Section 1: The Philosophy of an Elegant Journaling Experience**
@@ -40,14 +39,14 @@ The visual design of a journaling app is not decorative; it is functional. It mu
 
 **Table 1: Competitive UI/UX Feature Matrix**
 
-| Feature | Bear | Day One | Notion | Proposed App |
-| :---- | :---- | :---- | :---- | :---- |
-| **Core Editor** | Markdown-first, seamless, inline media | Rich text, less fluid, attachment-focused | Block-based, highly flexible, database-centric | Block-based, Markdown-first, slash commands, seamless media |
-| **Organization** | Nested tags | Separate journals, tags, map view | Pages, databases, links | Hybrid tag/folder system, calendar view, map view |
-| **Onboarding** | Minimal, self-discovery | Standard signup flow | Personalized, value-driven, guided success | Personalized, AI-prompted first entry |
-| **Journaling Features** | Limited (writing app focus) | Extensive (On This Day, location, weather, templates) | None (general purpose) | Extensive, but optional (On This Day, templates, AI insights) |
-| **Aesthetics** | Minimalist, elegant, themeable (Apple Design Award winner) | Dated, grid-based, cluttered | Utilitarian, clean, highly customizable | Minimalist, elegant, calming color palettes, beautiful typography |
-| **Privacy** | End-to-end encryption (Pro), local-first | Cloud-based, concerns over key recovery | Cloud-based, enterprise-focused | Privacy-first, local-first architecture, optional E2EE |
+| Feature                 | Bear                                                       | Day One                                               | Notion                                         | Proposed App                                                      |
+| :---------------------- | :--------------------------------------------------------- | :---------------------------------------------------- | :--------------------------------------------- | :---------------------------------------------------------------- |
+| **Core Editor**         | Markdown-first, seamless, inline media                     | Rich text, less fluid, attachment-focused             | Block-based, highly flexible, database-centric | Block-based, Markdown-first, slash commands, seamless media       |
+| **Organization**        | Nested tags                                                | Separate journals, tags, map view                     | Pages, databases, links                        | Hybrid tag/folder system, calendar view, map view                 |
+| **Onboarding**          | Minimal, self-discovery                                    | Standard signup flow                                  | Personalized, value-driven, guided success     | Personalized, AI-prompted first entry                             |
+| **Journaling Features** | Limited (writing app focus)                                | Extensive (On This Day, location, weather, templates) | None (general purpose)                         | Extensive, but optional (On This Day, templates, AI insights)     |
+| **Aesthetics**          | Minimalist, elegant, themeable (Apple Design Award winner) | Dated, grid-based, cluttered                          | Utilitarian, clean, highly customizable        | Minimalist, elegant, calming color palettes, beautiful typography |
+| **Privacy**             | End-to-end encryption (Pro), local-first                   | Cloud-based, concerns over key recovery               | Cloud-based, enterprise-focused                | Privacy-first, local-first architecture, optional E2EE            |
 
 ## **Section 2: Architecting the Core Writing Experience**
 
@@ -67,7 +66,7 @@ An evaluation of the leading headless RTE frameworks reveals a clear choice:
 With Tiptap as the foundation, the focus shifts to implementing a suite of features that define a modern writing experience.
 
 - **Block-Based Editing:** Adopting a block-based paradigm, inspired by Notion, is crucial. In this model, every piece of content—a paragraph, a heading, an image, a list item—is a discrete, manipulable block. This structure provides immense flexibility, allowing users to intuitively reorder content with drag-and-drop functionality and transform one block type into another (e.g., changing a paragraph into a blockquote).16 This modular approach makes content creation feel more like building with digital LEGOs than typing on a static page.
-- **Seamless Markdown and Slash Commands:** The editor must provide a first-class Markdown experience, allowing users to format text using familiar syntax like \*italic\* or \#\# Heading 2 without lifting their hands from the keyboard.1 This core functionality should be augmented with
+- **Seamless Markdown and Slash Commands:** The editor must provide a first-class Markdown experience, allowing users to format text using familiar syntax like \*italic\* or ## Heading 2 without lifting their hands from the keyboard.1 This core functionality should be augmented with
   **slash commands**. Typing a / should invoke a context-aware menu that allows the user to quickly insert blocks or apply formatting (e.g., /table, /image, /todo). This feature, prominent in modern editors like CKEditor 5, dramatically speeds up the writing process and makes advanced features easily discoverable.18
 - **Advanced Content Types:** To be a truly versatile journaling tool, the editor must support more than just text.
   - **Tables:** The implementation should go beyond basic HTML tables to include advanced features that enhance data presentation, such as column alignment controls (left, center, right) and the ability to mix alignment patterns for improved readability of complex data.20
@@ -76,14 +75,14 @@ With Tiptap as the foundation, the focus shifts to implementing a suite of featu
 
 **Table 2: Rich Text Editor (RTE) Framework Comparison**
 
-| Criteria | Tiptap | Lexical | ProseMirror |
-| :---- | :---- | :---- | :---- |
-| **Ease of Use** | High-level API abstracts complexity; excellent developer experience. | Modern API, but less mature and requires more boilerplate. | Low-level toolkit; steep learning curve and complex setup. |
-| **Extensibility** | Highly extensible via a rich ecosystem of official and community plugins. | Extensible node-based architecture, but smaller ecosystem. | The most extensible, but requires deep understanding of its core modules. |
-| **Collaboration** | Excellent support via Yjs and commercial services like Tiptap Cloud. | Supports Yjs, but lacks pure decorations, complicating cursor implementation. | Excellent support via Yjs, but requires manual implementation. |
-| **Maturity** | Mature, widely adopted, and stable. | Actively developed by Meta, but newer and pre-1.0. | Very mature and battle-tested; the foundation for many editors. |
-| **Performance** | Excellent, with tree-shakable packages to keep bundle size small. | High performance, but core package is heavier than Tiptap. | Excellent; designed for efficient document updates. |
-| **Key Differentiator** | The ideal balance of power (from ProseMirror) and developer-friendliness. | Backed by Meta with a focus on performance and cross-platform use. | A foundational toolkit for building highly custom, complex editors from the ground up. |
+| Criteria               | Tiptap                                                                    | Lexical                                                                       | ProseMirror                                                                            |
+| :--------------------- | :------------------------------------------------------------------------ | :---------------------------------------------------------------------------- | :------------------------------------------------------------------------------------- |
+| **Ease of Use**        | High-level API abstracts complexity; excellent developer experience.      | Modern API, but less mature and requires more boilerplate.                    | Low-level toolkit; steep learning curve and complex setup.                             |
+| **Extensibility**      | Highly extensible via a rich ecosystem of official and community plugins. | Extensible node-based architecture, but smaller ecosystem.                    | The most extensible, but requires deep understanding of its core modules.              |
+| **Collaboration**      | Excellent support via Yjs and commercial services like Tiptap Cloud.      | Supports Yjs, but lacks pure decorations, complicating cursor implementation. | Excellent support via Yjs, but requires manual implementation.                         |
+| **Maturity**           | Mature, widely adopted, and stable.                                       | Actively developed by Meta, but newer and pre-1.0.                            | Very mature and battle-tested; the foundation for many editors.                        |
+| **Performance**        | Excellent, with tree-shakable packages to keep bundle size small.         | High performance, but core package is heavier than Tiptap.                    | Excellent; designed for efficient document updates.                                    |
+| **Key Differentiator** | The ideal balance of power (from ProseMirror) and developer-friendliness. | Backed by Meta with a focus on performance and cross-platform use.            | A foundational toolkit for building highly custom, complex editors from the ground up. |
 
 ## **Section 3: Crafting a Modern, Performant Technology Stack**
 
@@ -94,7 +93,7 @@ The selection of a technology stack is a critical architectural decision that in
 The front-end architecture will embrace a modern paradigm that favors server-side logic and lightweight client-side enhancement over complex, state-heavy Single-Page Applications (SPAs).
 
 - **Styling with Tailwind CSS:** For styling, Tailwind CSS is the superior choice over component-based frameworks like Bootstrap. While Bootstrap offers pre-built components that can accelerate initial prototyping, they often lead to a generic "Bootstrap look" and require writing cumbersome CSS overrides to achieve a custom design.24 Tailwind's utility-first approach provides a set of low-level utility classes that are composed directly in the HTML. This grants granular control over every aspect of the design, enabling the creation of a truly bespoke and elegant user interface without writing a single line of custom CSS. Furthermore, Tailwind's build process purges all unused styles, resulting in exceptionally small production CSS files, which is a significant performance benefit.24
-- **The HTMX \+ Alpine.js Paradigm:** This combination represents a powerful, modern approach to building interactive web applications. It retains the simplicity and robustness of server-rendered applications while delivering the smooth, dynamic user experience of an SPA.
+- **The HTMX + Alpine.js Paradigm:** This combination represents a powerful, modern approach to building interactive web applications. It retains the simplicity and robustness of server-rendered applications while delivering the smooth, dynamic user experience of an SPA.
   - **HTMX for Server Communication:** HTMX extends standard HTML with attributes that enable AJAX requests directly from any element. When a user interacts with an element (e.g., clicks a button), HTMX sends a request to the server, which responds not with JSON, but with a fragment of HTML. HTMX then intelligently swaps this new HTML into the designated part of the page.25 This hypermedia-driven approach keeps application state and rendering logic on the server, dramatically simplifying the front-end codebase and eliminating the need for complex client-side state management.27
   - **Alpine.js for Client-Side Finesse:** While HTMX handles server interactions, Alpine.js provides the tools for purely client-side interactivity. It offers a lightweight, declarative syntax, similar to Vue.js, for handling UI state like toggling dropdowns, managing modal visibility, or handling form inputs directly in the markup.27 This fills the gaps where a full server round-trip is unnecessary, creating a seamless user experience. The framework supports local component state, nested data contexts, and even global stores for managing state across different parts of the page.33
   - **Animations and Transitions:** An elegant UI requires smooth transitions. HTMX facilitates this by adding CSS classes during its request lifecycle (e.g., htmx-swapping, htmx-added). By pairing these classes with standard CSS transitions, it is possible to create sophisticated animations like fade-ins and fade-outs without writing any JavaScript.34
@@ -117,19 +116,19 @@ While Flask is a capable and beloved microframework, its synchronous architectur
 The database should be viewed not as a simple data store, but as a powerful and extensible data platform. PostgreSQL is the ideal choice due to its proven robustness, rich feature set, and strong support for advanced functionalities.
 
 - **Implementing Full-Text Search:** Before layering on more complex AI-driven search, a powerful baseline can be established using PostgreSQL's native full-text search capabilities. This provides a fast, language-aware search that is far superior to simple LIKE queries. The implementation involves:
-        1. Creating a dedicated column of type tsvector to store a processed, indexable representation of the journal entry text.44
-        2. Using the to\_tsvector() and to\_tsquery() functions with the @@ match operator to perform searches.45
-        3. Creating a GIN (Generalized Inverted Index) on the tsvector column to ensure queries are highly performant.44
-        4. Setting up a database trigger that automatically updates the tsvector column whenever a journal entry is created or updated, ensuring the search index is always current.44
+  1\. Creating a dedicated column of type tsvector to store a processed, indexable representation of the journal entry text.44
+  2\. Using the to\_tsvector() and to\_tsquery() functions with the @@ match operator to perform searches.45
+  3\. Creating a GIN (Generalized Inverted Index) on the tsvector column to ensure queries are highly performant.44
+  4\. Setting up a database trigger that automatically updates the tsvector column whenever a journal entry is created or updated, ensuring the search index is always current.44
 - **Schema and Migration Strategy:** A robust database migration strategy is essential for managing schema changes over the application's lifecycle. The combination of SQLAlchemy as the Object-Relational Mapper (ORM) and Flask-Migrate (which uses Alembic under the hood) provides a powerful solution. This toolkit allows for the initialization of a migration repository and the automatic generation and application of migration scripts based on changes to the SQLAlchemy models.48 This process also facilitates migrating from a simpler database like SQLite during early development to a production-grade PostgreSQL instance, primarily by updating the database connection URI and carefully managing any data type inconsistencies between the two systems.49
 
 **Table 3: Back-End Framework Performance Benchmark**
 
-| Framework | Architecture | Requests/Sec (Benchmark) | Key Features | Ideal Use Case |
-| :---- | :---- | :---- | :---- | :---- |
-| **FastAPI** | ASGI (Asynchronous) | \> 20,000 | Native async/await, Pydantic validation, auto-generated docs | High-performance APIs, microservices, AI/ML applications |
-| **Flask** | WSGI (Synchronous) | \~4,000 \- 5,000 | Minimalist, unopinionated, large extension ecosystem | MVPs, dashboards, traditional web applications |
-| **Quart** | ASGI (Asynchronous) | \~17,000 \- 26,000 | Flask-compatible API, async support | Migrating existing Flask apps to async, Flask developers needing async |
+| Framework   | Architecture        | Requests/Sec (Benchmark) | Key Features                                                 | Ideal Use Case                                                         |
+| :---------- | :------------------ | :----------------------- | :----------------------------------------------------------- | :--------------------------------------------------------------------- |
+| **FastAPI** | ASGI (Asynchronous) | > 20,000                 | Native async/await, Pydantic validation, auto-generated docs | High-performance APIs, microservices, AI/ML applications               |
+| **Flask**   | WSGI (Synchronous)  | \~4,000 - 5,000          | Minimalist, unopinionated, large extension ecosystem         | MVPs, dashboards, traditional web applications                         |
+| **Quart**   | ASGI (Asynchronous) | \~17,000 - 26,000        | Flask-compatible API, async support                          | Migrating existing Flask apps to async, Flask developers needing async |
 
 Note: Benchmark figures are illustrative, based on data from various sources 39, and can vary based on hardware and test conditions.
 
@@ -169,9 +168,9 @@ Beyond search, LLMs can be used to proactively analyze journal entries to surfac
 
 - **Automatic Summarization and Tagging:** For long, free-form entries, an LLM can be prompted to generate a concise, abstractive summary, capturing the key themes and ideas.58 This same process can be used to suggest a list of relevant tags, helping the user to better organize their thoughts with minimal effort.
 - **Sentiment Analysis Over Time:** By analyzing the emotional tone of each entry, the application can provide users with a powerful tool for emotional self-awareness. This is implemented by:
-        1. **Preprocessing:** Using a library like NLTK to clean and prepare the text of each entry by tokenizing it, removing common stop words, and reducing words to their root form (lemmatization).59
-        2. **Analysis:** Applying a sentiment analysis model, such as NLTK's VADER or the TextBlob library, to each processed entry. This assigns a polarity score (positive, negative, neutral) and a subjectivity score.60
-        3. **Visualization:** Storing these sentiment scores along with the entry's timestamp in the database. This data can then be used to generate charts and graphs that visualize the user's emotional trends over time, helping them identify patterns related to seasons, events, or other life circumstances.60
+  1\. **Preprocessing:** Using a library like NLTK to clean and prepare the text of each entry by tokenizing it, removing common stop words, and reducing words to their root form (lemmatization).59
+  2\. **Analysis:** Applying a sentiment analysis model, such as NLTK's VADER or the TextBlob library, to each processed entry. This assigns a polarity score (positive, negative, neutral) and a subjectivity score.60
+  3\. **Visualization:** Storing these sentiment scores along with the entry's timestamp in the database. This data can then be used to generate charts and graphs that visualize the user's emotional trends over time, helping them identify patterns related to seasons, events, or other life circumstances.60
 
 ### **4.4 AI-Powered Reflection: Generating Personalized Prompts**
 
@@ -184,14 +183,14 @@ This is achieved through sophisticated prompt engineering. By feeding summaries 
 This capability for context-aware prompting, as explored in studies like MindScape, can significantly enhance user engagement and the therapeutic benefits of journaling by guiding users to reflect on specific, relevant aspects of their lives.62 The process involves crafting detailed system prompts that define the AI's persona (e.g., a supportive, inquisitive guide) and providing few-shot examples to steer its output toward thoughtful, open-ended questions.66
 **Table 4: Vector Database Decision Framework**
 
-| Factor | Pinecone | Chroma |
-| :---- | :---- | :---- |
-| **Hosting Model** | Fully managed cloud service (SaaS). | Open-source, self-hosted, or embedded in-app. |
-| **Scalability** | Managed horizontal and vertical scaling with minimal effort. | Manual scaling required; best suited for moderate data volumes. |
-| **Developer Experience** | Streamlined SDKs, minimal infrastructure overhead. | Excellent for local development and prototyping; requires DevOps for production. |
-| **Cost** | Pay-as-you-go pricing with a free tier; can become expensive at scale. | Free to use (open source); costs are for self-hosting infrastructure. |
-| **Ecosystem** | Enterprise-focused, with features for security and advanced AI workflows. | Strong open-source community with a plugin-rich ecosystem for customization. |
-| **Best For** | Production applications requiring high performance, real-time updates, and managed infrastructure. | Prototyping, local development, and projects where full control and cost minimization are priorities. |
+| Factor                   | Pinecone                                                                                           | Chroma                                                                                                |
+| :----------------------- | :------------------------------------------------------------------------------------------------- | :---------------------------------------------------------------------------------------------------- |
+| **Hosting Model**        | Fully managed cloud service (SaaS).                                                                | Open-source, self-hosted, or embedded in-app.                                                         |
+| **Scalability**          | Managed horizontal and vertical scaling with minimal effort.                                       | Manual scaling required; best suited for moderate data volumes.                                       |
+| **Developer Experience** | Streamlined SDKs, minimal infrastructure overhead.                                                 | Excellent for local development and prototyping; requires DevOps for production.                      |
+| **Cost**                 | Pay-as-you-go pricing with a free tier; can become expensive at scale.                             | Free to use (open source); costs are for self-hosting infrastructure.                                 |
+| **Ecosystem**            | Enterprise-focused, with features for security and advanced AI workflows.                          | Strong open-source community with a plugin-rich ecosystem for customization.                          |
+| **Best For**             | Production applications requiring high performance, real-time updates, and managed infrastructure. | Prototyping, local development, and projects where full control and cost minimization are priorities. |
 
 ## **Section 5: From Development to Deployment: A Scalable Operations Blueprint**
 
@@ -213,28 +212,28 @@ A step-by-step process for containerizing the FastAPI application involves creat
 3. **Install Dependencies:** Copy the requirements.txt file into the container first and then run pip install. This leverages Docker's layer caching; dependencies will only be re-installed if the requirements.txt file changes, speeding up subsequent builds.69
    Dockerfile
    COPY requirements.txt requirements.txt
-   RUN pip install \-r requirements.txt
+   RUN pip install -r requirements.txt
 
 4. **Copy Application Code:** Copy the rest of the application source code into the working directory.69
    Dockerfile
    COPY..
 
-5. **Expose the Port:** Inform Docker that the container listens on a specific network port at runtime. For FastAPI with Uvicorn, this is typically port 8000\.68
+5. **Expose the Port:** Inform Docker that the container listens on a specific network port at runtime. For FastAPI with Uvicorn, this is typically port 8000.68
    Dockerfile
    EXPOSE 8000
 
 6. **Define the Start Command:** Specify the command to run when the container starts. This should use a production-grade ASGI server like Uvicorn, configured to listen on all network interfaces (0.0.0.0).69
    Dockerfile
-   CMD \["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"\]
+   CMD \["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
 
-With this Dockerfile in the project root, the container image can be built with the command docker build \-t journal-app. and tested locally using docker run \-p 8000:8000 journal-app.68
+With this Dockerfile in the project root, the container image can be built with the command docker build -t journal-app. and tested locally using docker run -p 8000:8000 journal-app.68
 
 ### **5.2 Deploying to a Serverless Platform: Cloud Run vs. Fargate**
 
 Serverless container platforms are the ideal deployment target for this application. They abstract away all server management, automatically scale based on incoming traffic (including scaling to zero when there is no traffic to save costs), and operate on a pay-per-use model. This allows a solo developer or small team to achieve high availability and scalability without a dedicated DevOps team.70
 Two leading platforms are Google Cloud Run and AWS Fargate:
 
-- **Google Cloud Run:** This platform is distinguished by its simplicity and superior developer experience. It is a fully managed environment that can run any container. Deployment can be as simple as a single command (gcloud run deploy \--source.), which instructs Cloud Run to build the container image from the source code, push it to a registry, and deploy it as a publicly accessible service.71 Its request-based billing model and generous free tier make it extremely cost-effective for applications with variable or low traffic, which is typical for a personal journal app.70
+- **Google Cloud Run:** This platform is distinguished by its simplicity and superior developer experience. It is a fully managed environment that can run any container. Deployment can be as simple as a single command (gcloud run deploy --source.), which instructs Cloud Run to build the container image from the source code, push it to a registry, and deploy it as a publicly accessible service.71 Its request-based billing model and generous free tier make it extremely cost-effective for applications with variable or low traffic, which is typical for a personal journal app.70
 - **AWS Fargate:** Fargate is the serverless compute engine for Amazon's Elastic Container Service (ECS) and Elastic Kubernetes Service (EKS). It is a powerful and highly scalable option deeply integrated into the vast AWS ecosystem. However, its deployment process is significantly more complex than Cloud Run's, typically requiring the manual configuration of an ECS cluster, task definitions, service definitions, and an Application Load Balancer.70 While its raw compute prices can be lower at very high scale, the overall cost and operational complexity are higher, especially for smaller projects.70
 
 For a new project led by a small team or solo developer, **Google Cloud Run is the clear recommendation**. Its streamlined deployment workflow, simpler pricing model, and excellent developer experience allow for faster iteration and lower operational friction, enabling the focus to remain on product development.
@@ -295,74 +294,74 @@ By following this blueprint, the resulting application will be more than just an
 
 #### **Works cited**
 
-1. Bear \- Markdown Notes, accessed August 31, 2025, [https://bear.app/](https://bear.app/)
-2. Bear 2 or Day One for journaling? : r/bearapp \- Reddit, accessed August 31, 2025, [https://www.reddit.com/r/bearapp/comments/17hokl4/bear\_2\_or\_day\_one\_for\_journaling/](https://www.reddit.com/r/bearapp/comments/17hokl4/bear_2_or_day_one_for_journaling/)
-3. Overview — making journaling a habit | by Prerak Arya | Bootcamp \- Medium, accessed August 31, 2025, [https://medium.com/design-bootcamp/making-journaling-a-habit-ux-case-study-e804c3a90aee](https://medium.com/design-bootcamp/making-journaling-a-habit-ux-case-study-e804c3a90aee)
-4. UX Design Tutorial: User Onboarding Best Practices That Actually Work (Notion Case Study), accessed August 31, 2025, [https://www.youtube.com/watch?v=Ug\_EMizZaGk](https://www.youtube.com/watch?v=Ug_EMizZaGk)
-5. 50 Logo Color Combinations to Inspire Your Design \- Looka, accessed August 31, 2025, [https://looka.com/blog/logo-color-combinations/](https://looka.com/blog/logo-color-combinations/)
-6. Journalingapp designs, themes, templates and downloadable graphic elements on Dribbble, accessed August 31, 2025, [https://dribbble.com/tags/journalingapp](https://dribbble.com/tags/journalingapp)
-7. Browse thousands of Journal App images for design inspiration | Dribbble, accessed August 31, 2025, [https://dribbble.com/search/journal-app](https://dribbble.com/search/journal-app)
-8. Journal UI designs, themes, templates and downloadable graphic elements on Dribbble, accessed August 31, 2025, [https://dribbble.com/tags/journal-ui](https://dribbble.com/tags/journal-ui)
-9. Diary App designs, themes, templates and downloadable graphic elements on Dribbble, accessed August 31, 2025, [https://dribbble.com/tags/diary-app](https://dribbble.com/tags/diary-app)
-10. Browse thousands of UI Journal images for design inspiration | Dribbble, accessed August 31, 2025, [https://dribbble.com/search/ui-journal](https://dribbble.com/search/ui-journal)
-11. Browse thousands of Journal App Design images for design inspiration | Dribbble, accessed August 31, 2025, [https://dribbble.com/search/journal-app-design](https://dribbble.com/search/journal-app-design)
-12. Headless vs. WYSIWYG editors in JavaScript: The 2025 landscape \- Nutrient SDK, accessed August 31, 2025, [https://www.nutrient.io/blog/headless-vs-wysiwyg/](https://www.nutrient.io/blog/headless-vs-wysiwyg/)
-13. Top 10 Rich Text Editors Tools in 2025: Features, Pros, Cons ..., accessed August 31, 2025, [https://www.cotocus.com/blog/top-10-rich-text-editors-tools-in-2025-features-pros-cons-comparison/](https://www.cotocus.com/blog/top-10-rich-text-editors-tools-in-2025-features-pros-cons-comparison/)
-14. Comparing different ProseMirror react implementations, accessed August 31, 2025, [https://discuss.prosemirror.net/t/comparing-different-prosemirror-react-implementations/8209](https://discuss.prosemirror.net/t/comparing-different-prosemirror-react-implementations/8209)
-15. Which rich text editor framework should you choose in 2025 ..., accessed August 31, 2025, [https://liveblocks.io/blog/which-rich-text-editor-framework-should-you-choose-in-2025](https://liveblocks.io/blog/which-rich-text-editor-framework-should-you-choose-in-2025)
-16. Block Editor \- dotcms.dev Homepage, accessed August 31, 2025, [https://dev.dotcms.com/docs/block-editor](https://dev.dotcms.com/docs/block-editor)
-17. Basic Syntax \- Markdown Guide, accessed August 31, 2025, [https://www.markdownguide.org/basic-syntax/](https://www.markdownguide.org/basic-syntax/)
-18. Slash Menu in EJ2 JavaScript Rich text editor control | Syncfusion, accessed August 31, 2025, [https://ej2.syncfusion.com/javascript/documentation/rich-text-editor/slash-menu](https://ej2.syncfusion.com/javascript/documentation/rich-text-editor/slash-menu)
-19. Slash commands | CKEditor 5 Documentation, accessed August 31, 2025, [https://ckeditor.com/docs/ckeditor5/latest/features/slash-commands.html](https://ckeditor.com/docs/ckeditor5/latest/features/slash-commands.html)
-20. Advanced Markdown Tables: Complete Guide to Formatting, Styling, and Enhanced Features \- Blog, accessed August 31, 2025, [https://blog.markdowntools.com/posts/markdown-tables-advanced-features-and-styling-guide](https://blog.markdowntools.com/posts/markdown-tables-advanced-features-and-styling-guide)
-21. Top 10 Codemirror Alternatives & Competitors in 2025 \- G2, accessed August 31, 2025, [https://www.g2.com/products/codemirror/competitors/alternatives](https://www.g2.com/products/codemirror/competitors/alternatives)
-22. CodeMirror Alternatives \- JavaScript Editors | LibHunt, accessed August 31, 2025, [https://js.libhunt.com/codemirror-alternatives](https://js.libhunt.com/codemirror-alternatives)
-23. EmbedPress \- Embed Anything Within Your WordPress Site, accessed August 31, 2025, [https://embedpress.com/](https://embedpress.com/)
-24. Tailwind CSS vs Bootstrap: Which Framework is Better for Your ..., accessed August 31, 2025, [https://froala.com/blog/general/tailwind-css-vs-bootstrap-which-framework-is-better-for-your-project/](https://froala.com/blog/general/tailwind-css-vs-bootstrap-which-framework-is-better-for-your-project/)
-25. HTMX \+ Alpine.JS \- CommCare HQ Style Guide (Bootstrap 5), accessed August 31, 2025, [https://www.commcarehq.org/styleguide/b5/htmx\_alpine/](https://www.commcarehq.org/styleguide/b5/htmx_alpine/)
-26. How to Build Lightweight, Server-Driven Web Apps with htmx \- Strapi, accessed August 31, 2025, [https://strapi.io/blog/build-server-driven-web-apps-with-htmx](https://strapi.io/blog/build-server-driven-web-apps-with-htmx)
-27. Using Alpine.js In HTMX \- Ben Nadel, accessed August 31, 2025, [https://www.bennadel.com/blog/4787-using-alpine-js-in-htmx.htm](https://www.bennadel.com/blog/4787-using-alpine-js-in-htmx.htm)
-28. Wanted to build with HTMX \+ alpine.js, now just using HTMX \- Reddit, accessed August 31, 2025, [https://www.reddit.com/r/htmx/comments/1ifgkwv/wanted\_to\_build\_with\_htmx\_alpinejs\_now\_just\_using/](https://www.reddit.com/r/htmx/comments/1ifgkwv/wanted_to_build_with_htmx_alpinejs_now_just_using/)
-29. BUILDING A MODERN WEB APP WITH HTMX \+ ALPINEJS \- NashTech Blog, accessed August 31, 2025, [https://blog.nashtechglobal.com/building-a-modern-web-app-with-htmx-alpinejs/](https://blog.nashtechglobal.com/building-a-modern-web-app-with-htmx-alpinejs/)
-30. Beyond htmx: building modern Django apps with Alpine AJAX \- Loopwerk, accessed August 31, 2025, [https://www.loopwerk.io/articles/2025/alpine-ajax-django/](https://www.loopwerk.io/articles/2025/alpine-ajax-django/)
-31. Start Here — Alpine.js, accessed August 31, 2025, [https://alpinejs.dev/start-here](https://alpinejs.dev/start-here)
-32. Master Alpine.js: The Minimalist JavaScript Framework Revolutionizing Modern Web Development | by M.F.M Fazrin | Jul, 2025, accessed August 31, 2025, [https://mfmfazrin.medium.com/master-alpine-js-the-minimalist-javascript-framework-revolutionizing-modern-web-development-1e56934189cc](https://mfmfazrin.medium.com/master-alpine-js-the-minimalist-javascript-framework-revolutionizing-modern-web-development-1e56934189cc)
-33. Local state \- Alpine.js, accessed August 31, 2025, [https://alpinejs.dev/essentials/state](https://alpinejs.dev/essentials/state)
-34. htmx \~ Examples \~ Animations, accessed August 31, 2025, [https://htmx.org/examples/animations/](https://htmx.org/examples/animations/)
-35. Shoelace vs. Bootstrap feature and pricing comparison \- Wappalyzer, accessed August 31, 2025, [https://www.wappalyzer.com/compare/shoelace-vs-bootstrap/](https://www.wappalyzer.com/compare/shoelace-vs-bootstrap/)
-36. The Snuggle Is Real: How Font Awesome and Shoelace Are on a Mission to Make Dev Work Easier, accessed August 31, 2025, [https://blog.fontawesome.com/font-awesome-and-shoelace/](https://blog.fontawesome.com/font-awesome-and-shoelace/)
-37. Usage \- Shoelace, accessed August 31, 2025, [https://shoelace.style/getting-started/usage](https://shoelace.style/getting-started/usage)
-38. Shoelace: A forward-thinking library of web components., accessed August 31, 2025, [https://shoelace.style/](https://shoelace.style/)
-39. FastAPI vs Flask: Key Differences, Performance, and Use Cases ..., accessed August 31, 2025, [https://www.codecademy.com/article/fastapi-vs-flask-key-differences-performance-and-use-cases](https://www.codecademy.com/article/fastapi-vs-flask-key-differences-performance-and-use-cases)
-40. Python: Why Quart Might Be the Better Choice over FastAPI \- DEV ..., accessed August 31, 2025, [https://dev.to/mechcloud\_academy/python-why-quart-might-be-the-better-choice-over-fastapi-398b](https://dev.to/mechcloud_academy/python-why-quart-might-be-the-better-choice-over-fastapi-398b)
-41. Best Python Frameworks for Scalable Web App Development in 2025 \- Zestminds, accessed August 31, 2025, [https://www.zestminds.com/blog/best-python-frameworks-web-app-2025/](https://www.zestminds.com/blog/best-python-frameworks-web-app-2025/)
-42. FastAPI vs. Flask: Python web frameworks comparison and tutorial \- Contentful, accessed August 31, 2025, [https://www.contentful.com/blog/fastapi-vs-flask/](https://www.contentful.com/blog/fastapi-vs-flask/)
-43. FastAPI is usually the right choice : r/Python \- Reddit, accessed August 31, 2025, [https://www.reddit.com/r/Python/comments/1ljrsti/fastapi\_is\_usually\_the\_right\_choice/](https://www.reddit.com/r/Python/comments/1ljrsti/fastapi_is_usually_the_right_choice/)
-44. SQLAlchemy and full text searching in postgresql \- Hamon ..., accessed August 31, 2025, [https://hamon.in/blog/sqlalchemy-and-full-text-searching-in-postgresql/](https://hamon.in/blog/sqlalchemy-and-full-text-searching-in-postgresql/)
-45. PostgreSQL Full-text Search \- Neon, accessed August 31, 2025, [https://neon.com/postgresql/postgresql-indexes/postgresql-full-text-search](https://neon.com/postgresql/postgresql-indexes/postgresql-full-text-search)
-46. Documentation: 17: 12.3. Controlling Text Search \- PostgreSQL, accessed August 31, 2025, [https://www.postgresql.org/docs/current/textsearch-controls.html](https://www.postgresql.org/docs/current/textsearch-controls.html)
-47. Postgres Full Text Search | The Gnar Company, accessed August 31, 2025, [https://www.thegnar.com/blog/postgres-full-text-search](https://www.thegnar.com/blog/postgres-full-text-search)
-48. Flask-Migrate — Flask-Migrate documentation, accessed August 31, 2025, [https://flask-migrate.readthedocs.io/](https://flask-migrate.readthedocs.io/)
-49. Moving Data from SQLite to PostgreSQL: 2 Easy Methods | Hevo, accessed August 31, 2025, [https://hevodata.com/learn/sqlite-to-postgresql/](https://hevodata.com/learn/sqlite-to-postgresql/)
-50. How to convert SQLite SQL dump file to PostgreSQL? \- Stack Overflow, accessed August 31, 2025, [https://stackoverflow.com/questions/4581727/how-to-convert-sqlite-sql-dump-file-to-postgresql](https://stackoverflow.com/questions/4581727/how-to-convert-sqlite-sql-dump-file-to-postgresql)
-51. LLM \+ RAG: Creating an AI-Powered File Reader Assistant | Towards Data Science, accessed August 31, 2025, [https://towardsdatascience.com/llm-rag-creating-an-ai-powered-file-reader-assistant/](https://towardsdatascience.com/llm-rag-creating-an-ai-powered-file-reader-assistant/)
-52. From Entries to Insights: Building an AI-Powered Journal Assistant with RAG | by Ike Stevens, accessed August 31, 2025, [https://ikestevens27.medium.com/from-entries-to-insights-building-an-ai-powered-journal-assistant-with-rag-0b61292f8914](https://ikestevens27.medium.com/from-entries-to-insights-building-an-ai-powered-journal-assistant-with-rag-0b61292f8914)
-53. Journaling with large language models: a novel UX paradigm for AI-driven personal health management \- Frontiers, accessed August 31, 2025, [https://www.frontiersin.org/journals/artificial-intelligence/articles/10.3389/frai.2025.1567580/full](https://www.frontiersin.org/journals/artificial-intelligence/articles/10.3389/frai.2025.1567580/full)
-54. Journaling with large language models: a novel UX paradigm for AI-driven personal health management \- PMC, accessed August 31, 2025, [https://pmc.ncbi.nlm.nih.gov/articles/PMC12234568/](https://pmc.ncbi.nlm.nih.gov/articles/PMC12234568/)
-55. What is vector search? Better search with ML | Elastic, accessed August 31, 2025, [https://www.elastic.co/what-is/vector-search](https://www.elastic.co/what-is/vector-search)
-56. Build a semantic search engine \- Python LangChain, accessed August 31, 2025, [https://python.langchain.com/docs/tutorials/retrievers/](https://python.langchain.com/docs/tutorials/retrievers/)
-57. Pinecone vs Chroma: Comparing Two Leading Vector Databases ..., accessed August 31, 2025, [https://www.scoutos.com/blog/pinecone-vs-chroma-comparing-two-leading-vector-databases](https://www.scoutos.com/blog/pinecone-vs-chroma-comparing-two-leading-vector-databases)
-58. A Comprehensive Survey on Automatic Text Summarization with Exploration of LLM-Based Methods \- arXiv, accessed August 31, 2025, [https://arxiv.org/html/2403.02901v2](https://arxiv.org/html/2403.02901v2)
-59. NLTK Sentiment Analysis Tutorial: Text Mining & Analysis in Python ..., accessed August 31, 2025, [https://www.datacamp.com/tutorial/text-analytics-beginners-nltk](https://www.datacamp.com/tutorial/text-analytics-beginners-nltk)
-60. Daily Diary with Sentiment Analysis \- ijsret, accessed August 31, 2025, [https://ijsret.com/wp-content/uploads/2025/01/IJSRET\_V11\_issue1\_134.pdf](https://ijsret.com/wp-content/uploads/2025/01/IJSRET_V11_issue1_134.pdf)
-61. Sentiment Analysis Using Python \- Analytics Vidhya, accessed August 31, 2025, [https://www.analyticsvidhya.com/blog/2022/07/sentiment-analysis-using-python/](https://www.analyticsvidhya.com/blog/2022/07/sentiment-analysis-using-python/)
-62. Free AI Journal Prompts generator \- Meminto Stories, accessed August 31, 2025, [https://meminto.com/meminto-ai-tools/best-free-ai-journal-prompts-generator/](https://meminto.com/meminto-ai-tools/best-free-ai-journal-prompts-generator/)
-63. AI Journal Prompt Generator | Taskade, accessed August 31, 2025, [https://www.taskade.com/generate/ai/journal-prompt](https://www.taskade.com/generate/ai/journal-prompt)
-64. MindScape Study: Integrating LLM and Behavioral Sensing for Personalized AI-Driven Journaling Experiences \- PMC \- PubMed Central, accessed August 31, 2025, [https://pmc.ncbi.nlm.nih.gov/articles/PMC11634059/](https://pmc.ncbi.nlm.nih.gov/articles/PMC11634059/)
-65. Contextual AI Journaling: Integrating LLM and Time Series Behavioral Sensing Technology to Promote Self-Reflection and Well-being using the MindScape App, accessed August 31, 2025, [https://pmc.ncbi.nlm.nih.gov/articles/PMC11275533/](https://pmc.ncbi.nlm.nih.gov/articles/PMC11275533/)
-66. Creative writing with LLMs, part 1: Prompting for fiction \- GreaterWrong, accessed August 31, 2025, [https://www.greaterwrong.com/posts/D9MHrR8GrgSbXMqtB/creative-writing-with-llms-part-1-prompting-for-fiction](https://www.greaterwrong.com/posts/D9MHrR8GrgSbXMqtB/creative-writing-with-llms-part-1-prompting-for-fiction)
-67. Prompt Engineering Showcase: Your Best Practical LLM Prompting Hacks, accessed August 31, 2025, [https://community.openai.com/t/prompt-engineering-showcase-your-best-practical-llm-prompting-hacks/1267113](https://community.openai.com/t/prompt-engineering-showcase-your-best-practical-llm-prompting-hacks/1267113)
-68. Comprehensive Handbook to Dockerize Flask App, accessed August 31, 2025, [https://cloud.folio3.com/blog/dockerize-flask-application/](https://cloud.folio3.com/blog/dockerize-flask-application/)
-69. Dockerize your Flask App \- GeeksforGeeks, accessed August 31, 2025, [https://www.geeksforgeeks.org/dockerize-your-flask-app/](https://www.geeksforgeeks.org/dockerize-your-flask-app/)
-70. Comparing Prices: AWS Fargate vs Azure Container Apps vs ..., accessed August 31, 2025, [https://sliplane.io/blog/comparing-prices-aws-fargate-vs-azure-container-apps-vs-google-cloud-run](https://sliplane.io/blog/comparing-prices-aws-fargate-vs-azure-container-apps-vs-google-cloud-run)
-71. Quickstart: Deploy a Python (Flask) web app to Google Cloud with Cloud Run, accessed August 31, 2025, [https://cloud.google.com/run/docs/quickstarts/build-and-deploy/deploy-python-service](https://cloud.google.com/run/docs/quickstarts/build-and-deploy/deploy-python-service)
+1. Bear - Markdown Notes, accessed August 31, 2025, <https://bear.app/>
+2. Bear 2 or Day One for journaling? : r/bearapp - Reddit, accessed August 31, 2025, <https://www.reddit.com/r/bearapp/comments/17hokl4/bear_2_or_day_one_for_journaling/>
+3. Overview — making journaling a habit | by Prerak Arya | Bootcamp - Medium, accessed August 31, 2025, <https://medium.com/design-bootcamp/making-journaling-a-habit-ux-case-study-e804c3a90aee>
+4. UX Design Tutorial: User Onboarding Best Practices That Actually Work (Notion Case Study), accessed August 31, 2025, <https://www.youtube.com/watch?v=Ug_EMizZaGk>
+5. 50 Logo Color Combinations to Inspire Your Design - Looka, accessed August 31, 2025, <https://looka.com/blog/logo-color-combinations/>
+6. Journalingapp designs, themes, templates and downloadable graphic elements on Dribbble, accessed August 31, 2025, <https://dribbble.com/tags/journalingapp>
+7. Browse thousands of Journal App images for design inspiration | Dribbble, accessed August 31, 2025, <https://dribbble.com/search/journal-app>
+8. Journal UI designs, themes, templates and downloadable graphic elements on Dribbble, accessed August 31, 2025, <https://dribbble.com/tags/journal-ui>
+9. Diary App designs, themes, templates and downloadable graphic elements on Dribbble, accessed August 31, 2025, <https://dribbble.com/tags/diary-app>
+10. Browse thousands of UI Journal images for design inspiration | Dribbble, accessed August 31, 2025, <https://dribbble.com/search/ui-journal>
+11. Browse thousands of Journal App Design images for design inspiration | Dribbble, accessed August 31, 2025, <https://dribbble.com/search/journal-app-design>
+12. Headless vs. WYSIWYG editors in JavaScript: The 2025 landscape - Nutrient SDK, accessed August 31, 2025, <https://www.nutrient.io/blog/headless-vs-wysiwyg/>
+13. Top 10 Rich Text Editors Tools in 2025: Features, Pros, Cons ..., accessed August 31, 2025, <https://www.cotocus.com/blog/top-10-rich-text-editors-tools-in-2025-features-pros-cons-comparison/>
+14. Comparing different ProseMirror react implementations, accessed August 31, 2025, <https://discuss.prosemirror.net/t/comparing-different-prosemirror-react-implementations/8209>
+15. Which rich text editor framework should you choose in 2025 ..., accessed August 31, 2025, <https://liveblocks.io/blog/which-rich-text-editor-framework-should-you-choose-in-2025>
+16. Block Editor - dotcms.dev Homepage, accessed August 31, 2025, <https://dev.dotcms.com/docs/block-editor>
+17. Basic Syntax - Markdown Guide, accessed August 31, 2025, <https://www.markdownguide.org/basic-syntax/>
+18. Slash Menu in EJ2 JavaScript Rich text editor control | Syncfusion, accessed August 31, 2025, <https://ej2.syncfusion.com/javascript/documentation/rich-text-editor/slash-menu>
+19. Slash commands | CKEditor 5 Documentation, accessed August 31, 2025, <https://ckeditor.com/docs/ckeditor5/latest/features/slash-commands.html>
+20. Advanced Markdown Tables: Complete Guide to Formatting, Styling, and Enhanced Features - Blog, accessed August 31, 2025, <https://blog.markdowntools.com/posts/markdown-tables-advanced-features-and-styling-guide>
+21. Top 10 Codemirror Alternatives & Competitors in 2025 - G2, accessed August 31, 2025, <https://www.g2.com/products/codemirror/competitors/alternatives>
+22. CodeMirror Alternatives - JavaScript Editors | LibHunt, accessed August 31, 2025, <https://js.libhunt.com/codemirror-alternatives>
+23. EmbedPress - Embed Anything Within Your WordPress Site, accessed August 31, 2025, <https://embedpress.com/>
+24. Tailwind CSS vs Bootstrap: Which Framework is Better for Your ..., accessed August 31, 2025, <https://froala.com/blog/general/tailwind-css-vs-bootstrap-which-framework-is-better-for-your-project/>
+25. HTMX + Alpine.JS - CommCare HQ Style Guide (Bootstrap 5), accessed August 31, 2025, <https://www.commcarehq.org/styleguide/b5/htmx_alpine/>
+26. How to Build Lightweight, Server-Driven Web Apps with htmx - Strapi, accessed August 31, 2025, <https://strapi.io/blog/build-server-driven-web-apps-with-htmx>
+27. Using Alpine.js In HTMX - Ben Nadel, accessed August 31, 2025, <https://www.bennadel.com/blog/4787-using-alpine-js-in-htmx.htm>
+28. Wanted to build with HTMX + alpine.js, now just using HTMX - Reddit, accessed August 31, 2025, <https://www.reddit.com/r/htmx/comments/1ifgkwv/wanted_to_build_with_htmx_alpinejs_now_just_using/>
+29. BUILDING A MODERN WEB APP WITH HTMX + ALPINEJS - NashTech Blog, accessed August 31, 2025, <https://blog.nashtechglobal.com/building-a-modern-web-app-with-htmx-alpinejs/>
+30. Beyond htmx: building modern Django apps with Alpine AJAX - Loopwerk, accessed August 31, 2025, <https://www.loopwerk.io/articles/2025/alpine-ajax-django/>
+31. Start Here — Alpine.js, accessed August 31, 2025, <https://alpinejs.dev/start-here>
+32. Master Alpine.js: The Minimalist JavaScript Framework Revolutionizing Modern Web Development | by M.F.M Fazrin | Jul, 2025, accessed August 31, 2025, <https://mfmfazrin.medium.com/master-alpine-js-the-minimalist-javascript-framework-revolutionizing-modern-web-development-1e56934189cc>
+33. Local state - Alpine.js, accessed August 31, 2025, <https://alpinejs.dev/essentials/state>
+34. htmx \~ Examples \~ Animations, accessed August 31, 2025, <https://htmx.org/examples/animations/>
+35. Shoelace vs. Bootstrap feature and pricing comparison - Wappalyzer, accessed August 31, 2025, <https://www.wappalyzer.com/compare/shoelace-vs-bootstrap/>
+36. The Snuggle Is Real: How Font Awesome and Shoelace Are on a Mission to Make Dev Work Easier, accessed August 31, 2025, <https://blog.fontawesome.com/font-awesome-and-shoelace/>
+37. Usage - Shoelace, accessed August 31, 2025, <https://shoelace.style/getting-started/usage>
+38. Shoelace: A forward-thinking library of web components., accessed August 31, 2025, <https://shoelace.style/>
+39. FastAPI vs Flask: Key Differences, Performance, and Use Cases ..., accessed August 31, 2025, <https://www.codecademy.com/article/fastapi-vs-flask-key-differences-performance-and-use-cases>
+40. Python: Why Quart Might Be the Better Choice over FastAPI - DEV ..., accessed August 31, 2025, <https://dev.to/mechcloud_academy/python-why-quart-might-be-the-better-choice-over-fastapi-398b>
+41. Best Python Frameworks for Scalable Web App Development in 2025 - Zestminds, accessed August 31, 2025, <https://www.zestminds.com/blog/best-python-frameworks-web-app-2025/>
+42. FastAPI vs. Flask: Python web frameworks comparison and tutorial - Contentful, accessed August 31, 2025, <https://www.contentful.com/blog/fastapi-vs-flask/>
+43. FastAPI is usually the right choice : r/Python - Reddit, accessed August 31, 2025, <https://www.reddit.com/r/Python/comments/1ljrsti/fastapi_is_usually_the_right_choice/>
+44. SQLAlchemy and full text searching in postgresql - Hamon ..., accessed August 31, 2025, <https://hamon.in/blog/sqlalchemy-and-full-text-searching-in-postgresql/>
+45. PostgreSQL Full-text Search - Neon, accessed August 31, 2025, <https://neon.com/postgresql/postgresql-indexes/postgresql-full-text-search>
+46. Documentation: 17: 12.3. Controlling Text Search - PostgreSQL, accessed August 31, 2025, <https://www.postgresql.org/docs/current/textsearch-controls.html>
+47. Postgres Full Text Search | The Gnar Company, accessed August 31, 2025, <https://www.thegnar.com/blog/postgres-full-text-search>
+48. Flask-Migrate — Flask-Migrate documentation, accessed August 31, 2025, <https://flask-migrate.readthedocs.io/>
+49. Moving Data from SQLite to PostgreSQL: 2 Easy Methods | Hevo, accessed August 31, 2025, <https://hevodata.com/learn/sqlite-to-postgresql/>
+50. How to convert SQLite SQL dump file to PostgreSQL? - Stack Overflow, accessed August 31, 2025, <https://stackoverflow.com/questions/4581727/how-to-convert-sqlite-sql-dump-file-to-postgresql>
+51. LLM + RAG: Creating an AI-Powered File Reader Assistant | Towards Data Science, accessed August 31, 2025, <https://towardsdatascience.com/llm-rag-creating-an-ai-powered-file-reader-assistant/>
+52. From Entries to Insights: Building an AI-Powered Journal Assistant with RAG | by Ike Stevens, accessed August 31, 2025, <https://ikestevens27.medium.com/from-entries-to-insights-building-an-ai-powered-journal-assistant-with-rag-0b61292f8914>
+53. Journaling with large language models: a novel UX paradigm for AI-driven personal health management - Frontiers, accessed August 31, 2025, <https://www.frontiersin.org/journals/artificial-intelligence/articles/10.3389/frai.2025.1567580/full>
+54. Journaling with large language models: a novel UX paradigm for AI-driven personal health management - PMC, accessed August 31, 2025, <https://pmc.ncbi.nlm.nih.gov/articles/PMC12234568/>
+55. What is vector search? Better search with ML | Elastic, accessed August 31, 2025, <https://www.elastic.co/what-is/vector-search>
+56. Build a semantic search engine - Python LangChain, accessed August 31, 2025, <https://python.langchain.com/docs/tutorials/retrievers/>
+57. Pinecone vs Chroma: Comparing Two Leading Vector Databases ..., accessed August 31, 2025, <https://www.scoutos.com/blog/pinecone-vs-chroma-comparing-two-leading-vector-databases>
+58. A Comprehensive Survey on Automatic Text Summarization with Exploration of LLM-Based Methods - arXiv, accessed August 31, 2025, <https://arxiv.org/html/2403.02901v2>
+59. NLTK Sentiment Analysis Tutorial: Text Mining & Analysis in Python ..., accessed August 31, 2025, <https://www.datacamp.com/tutorial/text-analytics-beginners-nltk>
+60. Daily Diary with Sentiment Analysis - ijsret, accessed August 31, 2025, <https://ijsret.com/wp-content/uploads/2025/01/IJSRET_V11_issue1_134.pdf>
+61. Sentiment Analysis Using Python - Analytics Vidhya, accessed August 31, 2025, <https://www.analyticsvidhya.com/blog/2022/07/sentiment-analysis-using-python/>
+62. Free AI Journal Prompts generator - Meminto Stories, accessed August 31, 2025, <https://meminto.com/meminto-ai-tools/best-free-ai-journal-prompts-generator/>
+63. AI Journal Prompt Generator | Taskade, accessed August 31, 2025, <https://www.taskade.com/generate/ai/journal-prompt>
+64. MindScape Study: Integrating LLM and Behavioral Sensing for Personalized AI-Driven Journaling Experiences - PMC - PubMed Central, accessed August 31, 2025, <https://pmc.ncbi.nlm.nih.gov/articles/PMC11634059/>
+65. Contextual AI Journaling: Integrating LLM and Time Series Behavioral Sensing Technology to Promote Self-Reflection and Well-being using the MindScape App, accessed August 31, 2025, <https://pmc.ncbi.nlm.nih.gov/articles/PMC11275533/>
+66. Creative writing with LLMs, part 1: Prompting for fiction - GreaterWrong, accessed August 31, 2025, <https://www.greaterwrong.com/posts/D9MHrR8GrgSbXMqtB/creative-writing-with-llms-part-1-prompting-for-fiction>
+67. Prompt Engineering Showcase: Your Best Practical LLM Prompting Hacks, accessed August 31, 2025, <https://community.openai.com/t/prompt-engineering-showcase-your-best-practical-llm-prompting-hacks/1267113>
+68. Comprehensive Handbook to Dockerize Flask App, accessed August 31, 2025, <https://cloud.folio3.com/blog/dockerize-flask-application/>
+69. Dockerize your Flask App - GeeksforGeeks, accessed August 31, 2025, <https://www.geeksforgeeks.org/dockerize-your-flask-app/>
+70. Comparing Prices: AWS Fargate vs Azure Container Apps vs ..., accessed August 31, 2025, <https://sliplane.io/blog/comparing-prices-aws-fargate-vs-azure-container-apps-vs-google-cloud-run>
+71. Quickstart: Deploy a Python (Flask) web app to Google Cloud with Cloud Run, accessed August 31, 2025, <https://cloud.google.com/run/docs/quickstarts/build-and-deploy/deploy-python-service>

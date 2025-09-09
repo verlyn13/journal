@@ -9,7 +9,7 @@ This roadmap captures where we’re going and how we’ll get there — keeping 
 - Local‑first Safety: Instant local saves; graceful offline; conflict awareness.
 - Extensible & Private: Markdown as the canonical format; exportable; future smart features are private‑by‑design.
 
----
+***
 
 ## Current Baseline (Done)
 
@@ -21,7 +21,7 @@ This roadmap captures where we’re going and how we’ll get there — keeping 
 - Metrics: `/metrics` endpoint with minimal Prom counters.
 - CI ready: unit + component + integration with services; NATS tests flagged.
 
----
+***
 
 ## Phase 1 — Foundations & Polish (UX first)
 
@@ -57,11 +57,12 @@ Goals: lock the daily writing experience; no clutter; keyboard‑first. Ship in 
 - A11y pass (labels/ids/contrast/keyboard reachability).
 
 Acceptance
+
 - Layout toggles remembered; rail collapses elegantly; headings render and navigate smoothly.
 - Vim toggle works; markdown/code/math editing is smooth; folding intuitive.
 - Exports MD/HTML; dusk/dawn themes hold across components.
 
----
+***
 
 ## Phase 1.5 — Quick Wins (1–2 sessions)
 
@@ -71,7 +72,7 @@ Acceptance
 - Inline task surfacing into a Today drawer.
 - Snapshot banner (“Snapshot: Sep 3, 8:42 PM”).
 
----
+***
 
 ## Phase 2 — Organization & Publishing Foundations
 
@@ -81,7 +82,7 @@ Acceptance
 - Blog draft export: static artifact with file tree (`YYYY/MM/slug/index.md` + assets).
 - Export to PDF (headless Chromium) and later DOCX (Pandoc path behind flag).
 
----
+***
 
 ## Phase 3 — Reliability, Offline & Backfill
 
@@ -90,7 +91,7 @@ Acceptance
 - Conflict awareness: banner with diff; simple merge UI.
 - Encryption at rest for local cache; optional passphrase notebooks (design doc).
 
----
+***
 
 ## Phase 4 — Smart Autocomplete Foundations (Private)
 
@@ -98,7 +99,7 @@ Acceptance
 - Local embeddings per notebook; style profiles (“scholarly,” “story,” “lecture”).
 - Ethical guardrails: never send text outside without explicit opt‑in; log completions.
 
----
+***
 
 ## Workstreams & Parallelization
 
@@ -113,7 +114,7 @@ We’ll keep PRs small, scoped, and parallelizable:
 
 Each workstream ships behind a short‑lived feature branch and tiny PRs (see Git below).
 
----
+***
 
 ## Branching, PR & Merge Management
 
@@ -121,39 +122,40 @@ Each workstream ships behind a short‑lived feature branch and tiny PRs (see Gi
 - Feature branches: `feature/<scope>-<short-desc>` (e.g., `feature/ui-entries-rail`).
 - Commit messages: Conventional Commits (`feat:`, `fix:`, `chore:`); scoped and atomic.
 - PRs:
-      - Template enforced (see checklist below).
-      - Small scope (≤ 300 lines ideally); reviewer assigned; CI must pass.
-      - Link to roadmap item; include before/after screenshots (UI) and test notes.
-      - Merge strategy: squash; delete branch; create follow‑up issues for leftovers.
+  \- Template enforced (see checklist below).
+  \- Small scope (≤ 300 lines ideally); reviewer assigned; CI must pass.
+  \- Link to roadmap item; include before/after screenshots (UI) and test notes.
+  \- Merge strategy: squash; delete branch; create follow‑up issues for leftovers.
 - Release tags: semantic version tags at milestones; changelog generated from commits.
 
 PR Checklist
+
 - [ ] Conventional title & clear scope
 - [ ] Lint/format/typecheck pass
 - [ ] Unit/component tests added/updated
 - [ ] Integration tests (if endpoint/worker touched)
 - [ ] A11y verified for new controls
-- [ ] Docs updated (README/RUNNING_THE_APP/ROADMAP if needed)
+- [ ] Docs updated (README/RUNNING\_THE\_APP/ROADMAP if needed)
 
----
+***
 
 ## Testing, Linting, Formatting & Quality Gates
 
 - Frontend
-      - Vitest unit tests; React Testing Library for components; Playwright E2E (optional lanes).
-      - Biome formatting/linting.
-      - Coverage target: ≥ 80% for unit/components (excluding story/demo code).
+  \- Vitest unit tests; React Testing Library for components; Playwright E2E (optional lanes).
+  \- Biome formatting/linting.
+  \- Coverage target: ≥ 80% for unit/components (excluding story/demo code).
 - Backend
-      - Pytest: unit, component (API+DB), integration (services). NATS tests behind flags.
-      - Ruff linting; formatter; mypy optional on API surface.
-      - Coverage target: ≥ 75% (honest coverage; exclude integration glue).
+  \- Pytest: unit, component (API+DB), integration (services). NATS tests behind flags.
+  \- Ruff linting; formatter; mypy optional on API surface.
+  \- Coverage target: ≥ 75% (honest coverage; exclude integration glue).
 - CI Gates (GitHub Actions)
-      - Lint & format (fail on error). Typecheck passes.
-      - Unit + component tests on every PR; integration on main or label.
-      - Flags: `RUN_REAL_NATS=1` for NATS lanes; `OUTBOX_RETRY_ENABLED=1` lane for retry/DLQ.
-      - Artifact upload: coverage reports, playwright traces.
+  \- Lint & format (fail on error). Typecheck passes.
+  \- Unit + component tests on every PR; integration on main or label.
+  \- Flags: `RUN_REAL_NATS=1` for NATS lanes; `OUTBOX_RETRY_ENABLED=1` lane for retry/DLQ.
+  \- Artifact upload: coverage reports, playwright traces.
 
----
+***
 
 ## Observability & Performance
 
@@ -162,7 +164,7 @@ PR Checklist
 - Perf budgets: keystroke latency < 10ms p95; initial editor ready < 800ms dev.
 - Dev HUD: optional toggle showing keystroke latency/diff size (dev only).
 
----
+***
 
 ## Security & Privacy
 
@@ -170,7 +172,7 @@ PR Checklist
 - Data: sanitize input, strict Content Security, CORS limited in dev only.
 - Privacy: future smart features opt‑in; clear disclosure; no external sending by default.
 
----
+***
 
 ## Risks & Mitigations
 
@@ -179,7 +181,7 @@ PR Checklist
 - Retry storms: bounded retries, jitter, circuit breaker; DLQ visibility.
 - Scope creep: small PRs, flags, roadmap ownership.
 
----
+***
 
 ## Phase 1.5 — Concrete Tasks (Shortlist)
 
@@ -196,11 +198,10 @@ PR Checklist
 
 Each task: 1 short branch → PR → CI → merge.
 
----
+***
 
 ## Ownership & Process
 
 - Roadmap updates: PRs to this doc; reviewers: design + lead dev.
 - Weekly cadence: short planning check‑in; status updates inline here.
-- Docs: RUNNING_THE_APP.md and README kept current; changelog per milestone.
-
+- Docs: RUNNING\_THE\_APP.md and README kept current; changelog per milestone.

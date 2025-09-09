@@ -37,4 +37,3 @@ fastapi dev app/main.py
 - **Make targets**: `make up|down|dev|migrate|upgrade|lint|fmt|test`
 
 Want me to add pgvector embeddings + a hybrid search endpoint, or wire GraphQL at `/graphql` next?
-

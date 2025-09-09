@@ -1,13 +1,13 @@
 # HTTP SERVER
 
-*Source: https://bun.sh/docs/api/http*
+*Source: <https://bun.sh/docs/api/http>*
 *Fetched: 2025-08-30T00:47:26.987Z*
 
----
+***
 
 The page primarily documents the Bun-native `Bun.serve` API. Bun also implements [`fetch`](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) and the Node.js [`http`](https://nodejs.org/api/http.html) and [`https`](https://nodejs.org/api/https.html) modules.
 
-These modules have been re-implemented to use Bun&#x27;s fast internal HTTP infrastructure. Feel free to use these modules directly; frameworks like [Express](https://expressjs.com/) that depend on these modules should work out of the box. For granular compatibility information, see [Runtime > Node.js APIs](https://bun.com/docs/runtime/nodejs-apis).
+These modules have been re-implemented to use Bun's fast internal HTTP infrastructure. Feel free to use these modules directly; frameworks like [Express](https://expressjs.com/) that depend on these modules should work out of the box. For granular compatibility information, see [Runtime > Node.js APIs](https://bun.com/docs/runtime/nodejs-apis).
 
 To start a high-performance HTTP server with a clean API, the recommended approach is [`Bun.serve`](#start-a-server-bun-serve).
 
@@ -56,10 +56,11 @@ Bun.serve({
 Routes in `Bun.serve()` receive a `BunRequest` (which extends [`Request`](https://developer.mozilla.org/en-US/docs/Web/API/Request)) and return a [`Response`](https://developer.mozilla.org/en-US/docs/Web/API/Response) or `Promise<Response>`. This makes it easier to use the same code for both sending & receiving HTTP requests.
 
 ```
+
 // Simplified for brevity
 interface BunRequest extends Request {
-  params: Record;
-  readonly cookies: CookieMap;
+params: Record;
+readonly cookies: CookieMap;
 }
 
 ```
@@ -69,16 +70,17 @@ interface BunRequest extends Request {
 You can use async/await in route handlers to return a `Promise<Response>`.
 
 ```
+
 import { sql, serve } from "bun";
 
 serve({
-  port: 3001,
-  routes: {
-    "/api/version": async () => {
-      const [version] = await sql`SELECT version()`;
-      return Response.json(version);
-    },
-  },
+port: 3001,
+routes: {
+"/api/version": async () => {
+const \[version] = await sql`SELECT version()`;
+return Response.json(version);
+},
+},
 });
 
 ```
@@ -88,19 +90,20 @@ serve({
 You can also return a `Promise<Response>` from a route handler.
 
 ```
+
 import { sql, serve } from "bun";
 
 serve({
-  routes: {
-    "/api/version": () => {
-      return new Promise(resolve => {
-        setTimeout(async () => {
-          const [version] = await sql`SELECT version()`;
-          resolve(Response.json(version));
-        }, 100);
-      });
-    },
-  },
+routes: {
+"/api/version": () => {
+return new Promise(resolve => {
+setTimeout(async () => {
+const \[version] = await sql`SELECT version()`;
+resolve(Response.json(version));
+}, 100);
+});
+},
+},
 });
 
 ```
@@ -110,24 +113,28 @@ serve({
 TypeScript parses route parameters when passed as a string literal, so that your editor will show autocomplete when accessing `request.params`.
 
 ```
+
 import type { BunRequest } from "bun";
 
 Bun.serve({
-  routes: {
-    // TypeScript knows the shape of params when passed as a string literal
-    "/orgs/:orgId/repos/:repoId": req => {
-      const { orgId, repoId } = req.params;
-      return Response.json({ orgId, repoId });
-    },
+routes: {
+// TypeScript knows the shape of params when passed as a string literal
+"/orgs/:orgId/repos/:repoId": req => {
+const { orgId, repoId } = req.params;
+return Response.json({ orgId, repoId });
+},
 
-    "/orgs/:orgId/repos/:repoId/settings": (
-      // optional: you can explicitly pass a type to BunRequest:
-      req: BunRequest,
-    ) => {
-      const { orgId, repoId } = req.params;
-      return Response.json({ orgId, repoId });
-    },
-  },
+```
+"/orgs/:orgId/repos/:repoId/settings": (
+  // optional: you can explicitly pass a type to BunRequest:
+  req: BunRequest,
+) => {
+  const { orgId, repoId } = req.params;
+  return Response.json({ orgId, repoId });
+},
+```
+
+},
 });
 
 ```
@@ -139,26 +146,30 @@ Percent-encoded route parameter values are automatically decoded. Unicode charac
 Routes can also be `Response` objects (without the handler function). Bun.serve() optimizes it for zero-allocation dispatch - perfect for health checks, redirects, and fixed content:
 
 ```
+
 Bun.serve({
-  routes: {
-    // Health checks
-    "/health": new Response("OK"),
-    "/ready": new Response("Ready", {
-      headers: {
-        // Pass custom headers
-        "X-Ready": "1",
-      },
-    }),
+routes: {
+// Health checks
+"/health": new Response("OK"),
+"/ready": new Response("Ready", {
+headers: {
+// Pass custom headers
+"X-Ready": "1",
+},
+}),
 
-    // Redirects
-    "/blog": Response.redirect("https://bun.com/blog"),
+```
+// Redirects
+"/blog": Response.redirect("https://bun.com/blog"),
 
-    // API responses
-    "/api/config": Response.json({
-      version: "1.0.0",
-      env: "production",
-    }),
-  },
+// API responses
+"/api/config": Response.json({
+  version: "1.0.0",
+  env: "production",
+}),
+```
+
+},
 });
 
 ```
@@ -172,14 +183,18 @@ Static route responses are cached for the lifetime of the server object. To relo
 When serving files in routes, there are two distinct behaviors depending on whether you buffer the file content or serve it directly:
 
 ```
-Bun.serve({
-  routes: {
-    // Static route - content is buffered in memory at startup
-    "/logo.png": new Response(await Bun.file("./logo.png").bytes()),
 
-    // File route - content is read from filesystem on each request
-    "/download.zip": new Response(Bun.file("./download.zip")),
-  },
+Bun.serve({
+routes: {
+// Static route - content is buffered in memory at startup
+"/logo.png": new Response(await Bun.file("./logo.png").bytes()),
+
+```
+// File route - content is read from filesystem on each request
+"/download.zip": new Response(Bun.file("./download.zip")),
+```
+
+},
 });
 
 ```
@@ -233,27 +248,31 @@ Both route types automatically adjust status codes:
 - **File routes only**: Missing or inaccessible files return `404 Not Found`
 
 ```
-const server = Bun.serve({
-  static: {
-    "/api/time": new Response(new Date().toISOString()),
-  },
 
-  fetch(req) {
-    return new Response("404!");
-  },
+const server = Bun.serve({
+static: {
+"/api/time": new Response(new Date().toISOString()),
+},
+
+fetch(req) {
+return new Response("404!");
+},
 });
 
 // Update the time every second.
 setInterval(() => {
-  server.reload({
-    static: {
-      "/api/time": new Response(new Date().toISOString()),
-    },
+server.reload({
+static: {
+"/api/time": new Response(new Date().toISOString()),
+},
 
-    fetch(req) {
-      return new Response("404!");
-    },
-  });
+```
+fetch(req) {
+  return new Response("404!");
+},
+```
+
+});
 }, 1000);
 
 ```
@@ -263,18 +282,19 @@ Reloading routes only impact the next request. In-flight requests continue to us
 To simplify error handling, static routes do not support streaming response bodies from `ReadableStream` or an `AsyncIterator`. Fortunately, you can still buffer the response in memory first:
 
 ```
-const time = await fetch("https://api.example.com/v1/data");
+
+const time = await fetch("<https://api.example.com/v1/data>");
 // Buffer the response in memory first.
 const blob = await time.blob();
 
 const server = Bun.serve({
-  static: {
-    "/api/data": new Response(blob),
-  },
+static: {
+"/api/data": new Response(blob),
+},
 
-  fetch(req) {
-    return new Response("404!");
-  },
+fetch(req) {
+return new Response("404!");
+},
 });
 
 ```
@@ -289,14 +309,15 @@ Routes are matched in order of specificity:
 4. $1
 
 ```
+
 Bun.serve({
-  routes: {
-    // Most specific first
-    "/api/users/me": () => new Response("Current user"),
-    "/api/users/:id": req => new Response(`User ${req.params.id}`),
-    "/api/*": () => new Response("API catch-all"),
-    "/*": () => new Response("Global catch-all"),
-  },
+routes: {
+// Most specific first
+"/api/users/me": () => new Response("Current user"),
+"/api/users/:id": req => new Response(`User ${req.params.id}`),
+"/api/*": () => new Response("API catch-all"),
+"/*": () => new Response("Global catch-all"),
+},
 });
 
 ```
@@ -306,22 +327,23 @@ Bun.serve({
 Route handlers can be specialized by HTTP method:
 
 ```
+
 Bun.serve({
-  routes: {
-    "/api/posts": {
-      // Different handlers per method
-      GET: () => new Response("List posts"),
-      POST: async req => {
-        const post = await req.json();
-        return Response.json({ id: crypto.randomUUID(), ...post });
-      },
-      PUT: async req => {
-        const updates = await req.json();
-        return Response.json({ updated: true, ...updates });
-      },
-      DELETE: () => new Response(null, { status: 204 }),
-    },
-  },
+routes: {
+"/api/posts": {
+// Different handlers per method
+GET: () => new Response("List posts"),
+POST: async req => {
+const post = await req.json();
+return Response.json({ id: crypto.randomUUID(), ...post });
+},
+PUT: async req => {
+const updates = await req.json();
+return Response.json({ updated: true, ...updates });
+},
+DELETE: () => new Response(null, { status: 204 }),
+},
+},
 });
 
 ```
@@ -331,10 +353,11 @@ You can pass any of the following methods:
 MethodUsecase example`GET`Fetch a resource`HEAD`Check if a resource exists`OPTIONS`Get allowed HTTP methods (CORS)`DELETE`Delete a resource`PATCH`Update a resource`POST`Create a resource`PUT`Update a resourceWhen passing a function instead of an object, all methods will be handled by that function:
 
 ```
+
 const server = Bun.serve({
-  routes: {
-    "/api/version": () => Response.json({ version: "1.0.0" }),
-  },
+routes: {
+"/api/version": () => Response.json({ version: "1.0.0" }),
+},
 });
 
 await fetch(new URL("/api/version", server.url));
@@ -348,17 +371,18 @@ await fetch(new URL("/api/version", server.url), { method: "PUT" });
 Update routes without server restarts using `server.reload()`:
 
 ```
+
 const server = Bun.serve({
-  routes: {
-    "/api/version": () => Response.json({ version: "1.0.0" }),
-  },
+routes: {
+"/api/version": () => Response.json({ version: "1.0.0" }),
+},
 });
 
 // Deploy new routes without downtime
 server.reload({
-  routes: {
-    "/api/version": () => Response.json({ version: "2.0.0" }),
-  },
+routes: {
+"/api/version": () => Response.json({ version: "2.0.0" }),
+},
 });
 
 ```
@@ -368,23 +392,24 @@ server.reload({
 Bun provides structured error handling for routes:
 
 ```
+
 Bun.serve({
-  routes: {
-    // Errors are caught automatically
-    "/api/risky": () => {
-      throw new Error("Something went wrong");
-    },
-  },
-  // Global error handler
-  error(error) {
-    console.error(error);
-    return new Response(`Internal Error: ${error.message}`, {
-      status: 500,
-      headers: {
-        "Content-Type": "text/plain",
-      },
-    });
-  },
+routes: {
+// Errors are caught automatically
+"/api/risky": () => {
+throw new Error("Something went wrong");
+},
+},
+// Global error handler
+error(error) {
+console.error(error);
+return new Response(`Internal Error: ${error.message}`, {
+status: 500,
+headers: {
+"Content-Type": "text/plain",
+},
+});
+},
 });
 
 ```
@@ -398,15 +423,16 @@ Bun supports importing HTML files directly into your server code, enabling full-
 **Production (`bun build`):** When building with `bun build --target=bun`, the `import index from "./index.html"` statement resolves to a pre-built manifest object containing all bundled client assets. `Bun.serve` consumes this manifest to serve optimized assets with zero runtime bundling overhead. This is ideal for deploying to production.
 
 ```
+
 import myReactSinglePageApp from "./index.html";
 
 Bun.serve({
-  routes: {
-    "/": myReactSinglePageApp,
-  },
+routes: {
+"/": myReactSinglePageApp,
+},
 });
 
-```
+````
 
 HTML imports don&#x27;t just serve HTML — it&#x27;s a full-featured frontend bundler, transpiler, and toolkit built using Bun&#x27;s [bundler](https://bun.com/docs/bundler), JavaScript transpiler and CSS parser. You can use this to build full-featured frontends with React, TypeScript, Tailwind CSS, and more.
 
@@ -473,14 +499,14 @@ Bun.serve({
   },
 });
 
-```
+````
 
-types.ts```
+types.ts\`\`\`
 export interface Post {
-  id: string;
-  title: string;
-  content: string;
-  created_at: string;
+id: string;
+title: string;
+content: string;
+created\_at: string;
 }
 
 ```
@@ -494,13 +520,14 @@ export interface Post {
 The `fetch` handler handles incoming requests that weren&#x27;t matched by any route. It receives a [`Request`](https://developer.mozilla.org/en-US/docs/Web/API/Request) object and returns a [`Response`](https://developer.mozilla.org/en-US/docs/Web/API/Response) or [`Promise<Response>`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise).
 
 ```
+
 Bun.serve({
-  fetch(req) {
-    const url = new URL(req.url);
-    if (url.pathname === "/") return new Response("Home page!");
-    if (url.pathname === "/blog") return new Response("Blog!");
-    return new Response("404!");
-  },
+fetch(req) {
+const url = new URL(req.url);
+if (url.pathname === "/") return new Response("Home page!");
+if (url.pathname === "/blog") return new Response("Blog!");
+return new Response("404!");
+},
 });
 
 ```
@@ -508,14 +535,15 @@ Bun.serve({
 The `fetch` handler supports async/await:
 
 ```
+
 import { sleep, serve } from "bun";
 serve({
-  async fetch(req) {
-    const start = performance.now();
-    await sleep(10);
-    const end = performance.now();
-    return new Response(`Slept for ${end - start}ms`);
-  },
+async fetch(req) {
+const start = performance.now();
+await sleep(10);
+const end = performance.now();
+return new Response(`Slept for ${end - start}ms`);
+},
 });
 
 ```
@@ -523,11 +551,12 @@ serve({
 Promise-based responses are also supported:
 
 ```
+
 Bun.serve({
-  fetch(req) {
-    // Forward the request to another server.
-    return fetch("https://example.com");
-  },
+fetch(req) {
+// Forward the request to another server.
+return fetch("<https://example.com>");
+},
 });
 
 ```
@@ -535,12 +564,13 @@ Bun.serve({
 You can also access the `Server` object from the `fetch` handler. It&#x27;s the second argument passed to the `fetch` function.
 
 ```
+
 // `server` is passed in as the second argument to `fetch`.
 const server = Bun.serve({
-  fetch(req, server) {
-    const ip = server.requestIP(req);
-    return new Response(`Your IP is ${ip}`);
-  },
+fetch(req, server) {
+const ip = server.requestIP(req);
+return new Response(`Your IP is ${ip}`);
+},
 });
 
 ```
@@ -550,12 +580,13 @@ const server = Bun.serve({
 To configure which port and hostname the server will listen on, set `port` and `hostname` in the options object.
 
 ```
+
 Bun.serve({
-  port: 8080, // defaults to $BUN_PORT, $PORT, $NODE_PORT otherwise 3000
-  hostname: "mydomain.com", // defaults to "0.0.0.0"
-  fetch(req) {
-    return new Response("404!");
-  },
+port: 8080, // defaults to $BUN\_PORT, $PORT, $NODE\_PORT otherwise 3000
+hostname: "mydomain.com", // defaults to "0.0.0.0"
+fetch(req) {
+return new Response("404!");
+},
 });
 
 ```
@@ -563,11 +594,12 @@ Bun.serve({
 To randomly select an available port, set `port` to `0`.
 
 ```
+
 const server = Bun.serve({
-  port: 0, // random port
-  fetch(req) {
-    return new Response("404!");
-  },
+port: 0, // random port
+fetch(req) {
+return new Response("404!");
+},
 });
 
 // server.port is the randomly selected port
@@ -578,8 +610,9 @@ console.log(server.port);
 You can view the chosen port by accessing the `port` property on the server object, or by accessing the `url` property.
 
 ```
+
 console.log(server.port); // 3000
-console.log(server.url); // http://localhost:3000
+console.log(server.url); // <http://localhost:3000>
 
 ```
 
@@ -590,25 +623,33 @@ Bun supports several options and environment variables to configure the default 
 - `--port` CLI flag
 
 ```
+
 bun --port=4002 server.ts
+
 ```
 
 - `BUN_PORT` environment variable
 
 ```
-BUN_PORT=4002 bun server.ts
+
+BUN\_PORT=4002 bun server.ts
+
 ```
 
 - `PORT` environment variable
 
 ```
+
 PORT=4002 bun server.ts
+
 ```
 
 - `NODE_PORT` environment variable
 
 ```
-NODE_PORT=4002 bun server.ts
+
+NODE\_PORT=4002 bun server.ts
+
 ```
 
 ### [Unix domain sockets](#unix-domain-sockets)
@@ -616,11 +657,12 @@ NODE_PORT=4002 bun server.ts
 To listen on a [unix domain socket](https://en.wikipedia.org/wiki/Unix_domain_socket), pass the `unix` option with the path to the socket.
 
 ```
+
 Bun.serve({
-  unix: "/tmp/my-socket.sock", // path to socket
-  fetch(req) {
-    return new Response(`404!`);
-  },
+unix: "/tmp/my-socket.sock", // path to socket
+fetch(req) {
+return new Response(`404!`);
+},
 });
 
 ```
@@ -630,11 +672,12 @@ Bun.serve({
 Bun supports Linux abstract namespace sockets. To use an abstract namespace socket, prefix the `unix` path with a null byte.
 
 ```
+
 Bun.serve({
-  unix: "\0my-abstract-socket", // abstract namespace socket
-  fetch(req) {
-    return new Response(`404!`);
-  },
+unix: "\0my-abstract-socket", // abstract namespace socket
+fetch(req) {
+return new Response(`404!`);
+},
 });
 
 ```
@@ -646,11 +689,12 @@ Unlike unix domain sockets, abstract namespace sockets are not bound to the file
 To activate development mode, set `development: true`.
 
 ```
+
 Bun.serve({
-  development: true,
-  fetch(req) {
-    throw new Error("woops!");
-  },
+development: true,
+fetch(req) {
+throw new Error("woops!");
+},
 });
 
 ```
@@ -662,17 +706,18 @@ In development mode, Bun will surface errors in-browser with a built-in error pa
 To handle server-side errors, implement an `error` handler. This function should return a `Response` to serve to the client when an error occurs. This response will supersede Bun&#x27;s default error page in `development` mode.
 
 ```
+
 Bun.serve({
-  fetch(req) {
-    throw new Error("woops!");
-  },
-  error(error) {
-    return new Response(`${error}\n${error.stack}`, {
-      headers: {
-        "Content-Type": "text/html",
-      },
-    });
-  },
+fetch(req) {
+throw new Error("woops!");
+},
+error(error) {
+return new Response(`${error}\n${error.stack}`, {
+headers: {
+"Content-Type": "text/html",
+},
+});
+},
 });
 
 ```
@@ -682,10 +727,11 @@ Bun.serve({
 The call to `Bun.serve` returns a `Server` object. To stop the server, call the `.stop()` method.
 
 ```
+
 const server = Bun.serve({
-  fetch() {
-    return new Response("Bun!");
-  },
+fetch() {
+return new Response("Bun!");
+},
 });
 
 server.stop();
@@ -697,34 +743,37 @@ server.stop();
 Bun supports TLS out of the box, powered by [BoringSSL](https://boringssl.googlesource.com/boringssl). Enable TLS by passing in a value for `key` and `cert`; both are required to enable TLS.
 
 ```
-Bun.serve({
-  fetch(req) {
-    return new Response("Hello!!!");
-  },
 
-  tls: {
-    key: Bun.file("./key.pem"),
-    cert: Bun.file("./cert.pem"),
-  }
+Bun.serve({
+fetch(req) {
+return new Response("Hello!!!");
+},
+
+tls: {
+key: Bun.file("./key.pem"),
+cert: Bun.file("./cert.pem"),
+}
 });
+
 ```
 
 The `key` and `cert` fields expect the *contents* of your TLS key and certificate, *not a path to it*. This can be a string, `BunFile`, `TypedArray`, or `Buffer`.
 
 ```
-Bun.serve({
-  fetch() {},
 
-  tls: {
-    // BunFile
-    key: Bun.file("./key.pem"),
-    // Buffer
-    key: fs.readFileSync("./key.pem"),
-    // string
-    key: fs.readFileSync("./key.pem", "utf8"),
-    // array of above
-    key: [Bun.file("./key1.pem"), Bun.file("./key2.pem")],
-  },
+Bun.serve({
+fetch() {},
+
+tls: {
+// BunFile
+key: Bun.file("./key.pem"),
+// Buffer
+key: fs.readFileSync("./key.pem"),
+// string
+key: fs.readFileSync("./key.pem", "utf8"),
+// array of above
+key: \[Bun.file("./key1.pem"), Bun.file("./key2.pem")],
+},
 });
 
 ```
@@ -732,43 +781,48 @@ Bun.serve({
 If your private key is encrypted with a passphrase, provide a value for `passphrase` to decrypt it.
 
 ```
-Bun.serve({
-  fetch(req) {
-    return new Response("Hello!!!");
-  },
 
-  tls: {
-    key: Bun.file("./key.pem"),
-    cert: Bun.file("./cert.pem"),
-    passphrase: "my-secret-passphrase",
-  }
+Bun.serve({
+fetch(req) {
+return new Response("Hello!!!");
+},
+
+tls: {
+key: Bun.file("./key.pem"),
+cert: Bun.file("./cert.pem"),
+passphrase: "my-secret-passphrase",
+}
 });
+
 ```
 
 Optionally, you can override the trusted CA certificates by passing a value for `ca`. By default, the server will trust the list of well-known CAs curated by Mozilla. When `ca` is specified, the Mozilla list is overwritten.
 
 ```
+
 Bun.serve({
-  fetch(req) {
-    return new Response("Hello!!!");
-  },
-  tls: {
-    key: Bun.file("./key.pem"), // path to TLS key
-    cert: Bun.file("./cert.pem"), // path to TLS cert
-    ca: Bun.file("./ca.pem"), // path to root CA certificate
-  }
+fetch(req) {
+return new Response("Hello!!!");
+},
+tls: {
+key: Bun.file("./key.pem"), // path to TLS key
+cert: Bun.file("./cert.pem"), // path to TLS cert
+ca: Bun.file("./ca.pem"), // path to root CA certificate
+}
 });
+
 ```
 
 To override Diffie-Hellman parameters:
 
 ```
+
 Bun.serve({
-  // ...
-  tls: {
-    // other config
-    dhParamsFile: "/path/to/dhparams.pem", // path to Diffie Hellman parameters
-  },
+// ...
+tls: {
+// other config
+dhParamsFile: "/path/to/dhparams.pem", // path to Diffie Hellman parameters
+},
 });
 
 ```
@@ -778,12 +832,13 @@ Bun.serve({
 To configure the server name indication (SNI) for the server, set the `serverName` field in the `tls` object.
 
 ```
+
 Bun.serve({
-  // ...
-  tls: {
-    // ... other config
-    serverName: "my-server.com", // SNI
-  },
+// ...
+tls: {
+// ... other config
+serverName: "my-server.com", // SNI
+},
 });
 
 ```
@@ -791,20 +846,21 @@ Bun.serve({
 To allow multiple server names, pass an array of objects to `tls`, each with a `serverName` field.
 
 ```
+
 Bun.serve({
-  // ...
-  tls: [
-    {
-      key: Bun.file("./key1.pem"),
-      cert: Bun.file("./cert1.pem"),
-      serverName: "my-server1.com",
-    },
-    {
-      key: Bun.file("./key2.pem"),
-      cert: Bun.file("./cert2.pem"),
-      serverName: "my-server2.com",
-    },
-  ],
+// ...
+tls: \[
+{
+key: Bun.file("./key1.pem"),
+cert: Bun.file("./cert1.pem"),
+serverName: "my-server1.com",
+},
+{
+key: Bun.file("./key2.pem"),
+cert: Bun.file("./cert2.pem"),
+serverName: "my-server2.com",
+},
+],
 });
 
 ```
@@ -814,16 +870,17 @@ Bun.serve({
 To configure the idle timeout, set the `idleTimeout` field in Bun.serve.
 
 ```
-Bun.serve({
-  // 10 seconds:
-  idleTimeout: 10,
 
-  fetch(req) {
-    return new Response("Bun!");
-  },
+Bun.serve({
+// 10 seconds:
+idleTimeout: 10,
+
+fetch(req) {
+return new Response("Bun!");
+},
 });
 
-```
+````
 
 This is the maximum amount of time a connection is allowed to be idle before the server closes it. A connection is idling if there is no data sent or received.
 
@@ -840,7 +897,7 @@ export default {
   },
 } satisfies Serve;
 
-```
+````
 
 Instead of passing the server options into `Bun.serve`, `export default` it. This file can be executed as-is; when Bun sees a file with a `default` export containing a `fetch` handler, it passes it into `Bun.serve` under the hood.
 
@@ -918,7 +975,7 @@ server.ref();
 
 ### [server.reload() - Hot reload handlers](#server-reload-hot-reload-handlers)
 
-Update the server&#x27;s handlers without restarting:
+Update the server's handlers without restarting:
 
 ```
 const server = Bun.serve({
@@ -1182,26 +1239,26 @@ Bun.serve({
 
 Below are Bun and Node.js implementations of a simple HTTP server that responds `Bun!` to each incoming `Request`.
 
-BunNodeBun```
+BunNodeBun\`\`\`
 Bun.serve({
-  fetch(req: Request) {
-    return new Response("Bun!");
-  },
-  port: 3000,
+fetch(req: Request) {
+return new Response("Bun!");
+},
+port: 3000,
 });
 
-```
+````
 
 Node```
 require("http")
   .createServer((req, res) => res.end("Bun!"))
   .listen(8080);
 
-```
+````
 
 The `Bun.serve` server can handle roughly 2.5x more requests per second than Node.js on Linux.
 
-RuntimeRequests per secondNode 16~64,000Bun~160,000[](https://user-images.githubusercontent.com/709451/162389032-fc302444-9d03-46be-ba87-c12bd8ce89a0.png)## [Reference](#reference)
+RuntimeRequests per secondNode 16~~64,000Bun~~160,000[](https://user-images.githubusercontent.com/709451/162389032-fc302444-9d03-46be-ba87-c12bd8ce89a0.png)## [Reference](#reference)
 
 See TypeScript definitions
 

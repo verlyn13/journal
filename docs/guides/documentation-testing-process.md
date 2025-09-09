@@ -1,15 +1,16 @@
----
+***
+
 title: "Documentation Testing Process"
 description: "Guidelines and procedures for testing and validating documentation quality"
 category: "Documentation"
 phase: 17
-related_topics:
-      - "Documentation Specialist Role"
-      - "Documentation Templates"
+related\_topics:
+\- "Documentation Specialist Role"
+\- "Documentation Templates"
 version: "1.0"
-tags: ["documentation", "quality-assurance", "testing", "markdown", "linting"]
+tags: \["documentation", "quality-assurance", "testing", "markdown", "linting"]
 status: active
----
+--------------
 
 # Documentation Testing Process
 
@@ -42,6 +43,7 @@ Our markdownlint configuration (.markdownlint.json) includes the following setti
 ```
 
 This configuration:
+
 - Enforces a line length of 120 characters for regular text (excluding code blocks and tables)
 - Allows duplicate headings in different sections
 - Permits HTML elements when necessary
@@ -105,7 +107,7 @@ For technical documentation:
 
 For complex documentation, consider using AI-assisted validation:
 
-1. Provide the documentation to an AI assistant with a prompt like: "Based solely on this documentation, explain how to [perform a specific task]"
+1. Provide the documentation to an AI assistant with a prompt like: "Based solely on this documentation, explain how to \[perform a specific task]"
 2. Review the AI's response to identify potential gaps or unclear sections
 3. Ask the AI to summarize the key points to verify the documentation conveys its intended message
 

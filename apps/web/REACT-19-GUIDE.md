@@ -18,6 +18,7 @@ This application has been successfully migrated to React 19.1.0 with opt-in Reac
 #### Error Boundaries (Enabled by Default)
 
 The app now uses React 19's improved error handling:
+
 ```typescript
 createRoot(el, {
   onUncaughtError: (error, errorInfo) => {
@@ -34,6 +35,7 @@ createRoot(el, {
 The React Compiler automatically optimizes your components without manual memoization.
 
 **To enable:**
+
 ```bash
 # Development
 ENABLE_REACT_COMPILER=true bun run dev
@@ -48,6 +50,7 @@ ENABLE_REACT_COMPILER=true bun run build
 ### 3. Feature Flags
 
 Feature flags are configured in `src/config/feature-flags.ts`:
+
 - React Compiler (opt-in via env var)
 - Error boundaries (enabled)
 - Automatic batching (enabled)
@@ -84,6 +87,7 @@ ENABLE_REACT_COMPILER=true bun run dev
 ### ESLint Integration
 
 The React Compiler ESLint plugin helps identify optimization opportunities:
+
 ```bash
 # Run linting with React Compiler rules
 bun run lint
@@ -118,15 +122,18 @@ bun add -D babel-plugin-react-compiler@beta eslint-plugin-react-compiler@beta
 ### Phase 3: Update Configuration
 
 1. Update `tsconfig.json`:
+
 - Set `target: "ES2022"`
 - Set `jsx: "react-jsx"`
 - Consider relaxing strict settings if needed
 
 2. Update `vite.config.ts`:
+
 - Add React Compiler configuration (see our vite.config.ts)
 - Update build target to ES2022
 
 3. Update root rendering (main.tsx):
+
 - Add error boundary callbacks to createRoot
 
 ### Phase 4: Testing
@@ -142,6 +149,7 @@ bun add -D babel-plugin-react-compiler@beta eslint-plugin-react-compiler@beta
 ### TypeScript Errors
 
 **Issue**: Ref type errors after migration
+
 ```typescript
 // Before (React 18)
 const ref: RefObject<HTMLDivElement> = useRef(null);
@@ -166,6 +174,7 @@ const ref: RefObject<HTMLDivElement | null> = useRef(null);
 ## Rollback Plan
 
 If issues arise:
+
 1. Switch back to main branch
 2. Restore package.json from backup
 3. Run `bun install`
@@ -180,6 +189,7 @@ If issues arise:
 ## Support
 
 For questions or issues related to the React 19 migration:
+
 1. Check the migration issues log
 2. Review feature flags configuration
 3. Test with/without React Compiler enabled

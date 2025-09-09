@@ -1,4 +1,3 @@
-
 ## Executive Summary
 
 As of August 2025, Claude Code runs locally in your terminal and talks directly to model APIs without requiring a backend server or remote code index, while OpenAI Codex CLI is an open‑source command‑line tool that brings the power of our latest reasoning models directly to your terminal. Both tools have matured significantly, with 72.7% accuracy on SWE-bench for Claude Code and codex-1, a version of OpenAI o3 optimized for software engineering powering Codex.
@@ -255,6 +254,7 @@ jobs:
 ### 1. The Three-Tool Orchestra
 
 For complex UI/UX work, combine:
+
 1. **Claude Code** for architecture and logic
 2. **Codex CLI** for rapid iteration and SwiftUI/React components
 3. **MCP Puppeteer server** for visual validation
@@ -313,6 +313,7 @@ codex > "Update all dependencies in pyproject.toml and package.json to latest co
 ## ROI & Productivity Metrics
 
 Based on community reports:
+
 - **90% reduction in CI pipeline duration** (from 20 minutes to 2 minutes)
 - **5x productivity gains** for full-stack development
 - **80% reduction in security triage workload** with Semgrep integration

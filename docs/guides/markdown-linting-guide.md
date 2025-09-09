@@ -1,15 +1,16 @@
----
+***
+
 title: "Markdown Linting and Link Validation Guide"
 description: "Guide for setting up and using Markdown linting and link validation tools for the Flask Journal documentation"
 category: "Documentation"
 phase: 17
-related_topics:
-      - "Documentation Testing Process"
-      - "Documentation Specialist Role"
+related\_topics:
+\- "Documentation Testing Process"
+\- "Documentation Specialist Role"
 version: "1.0"
-tags: ["documentation", "quality-assurance", "linting", "markdown", "tools"]
+tags: \["documentation", "quality-assurance", "linting", "markdown", "tools"]
 status: active
----
+--------------
 
 # Markdown Linting and Link Validation Guide
 
@@ -48,6 +49,7 @@ Create a `.markdownlint.json` file in the project root with the following conten
 ```
 
 This configuration:
+
 - Enforces a line length of 120 characters for regular text (excluding code blocks and tables)
 - Allows duplicate headings in different sections
 - Permits HTML elements when necessary
@@ -105,6 +107,7 @@ Create a `.markdown-link-check.json` file in the project root with the following
 ```
 
 This configuration:
+
 - Ignores localhost URLs and fragment identifiers
 - Replaces `@docs/` references with `docs/` for proper path resolution
 - Sets a 5-second timeout for link checking
@@ -188,6 +191,6 @@ These tools form a key part of the [Documentation Testing Process](documentation
 
 When incorporated into a continuous integration workflow, these tools can automatically verify documentation quality for each change, ensuring consistent standards across the project.
 
----
+***
 
 By following this guide, you can efficiently validate and maintain the quality of Markdown documentation across the Flask Journal project.

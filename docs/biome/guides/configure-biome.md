@@ -1,19 +1,23 @@
 # CONFIGURE BIOME
 
-*Source: https://biomejs.dev/guides/configure-biome*
+*Source: <https://biomejs.dev/guides/configure-biome>*
 *Fetched: 2025-08-30T00:47:25.464Z*
 
----
+***
 
 # Configure Biome
 
-        This guide will help you to understand how to configure Biome.
+```
+    This guide will help you to understand how to configure Biome.
+```
+
 It explains the structure of a Biome configuration file and how Biome resolves its configuration.
 If you are already familiar with the configuration, you may want to take a look at the [configuration reference](/reference/configuration/), which details all the options available.
 Biome allows you to customize its behavior using CLI options or a configuration file named `biome.json` or `biome.jsonc`.
 We recommend that you create a configuration file for each project.
 This ensures that each team member has the same configuration in the CLI and in any editor that allows Biome integration.
 Many of the options available in a configuration file are also available in the CLI.
+
 ## Configuration file structure
 
 [Section titled “Configuration file structure”](#configuration-file-structure)
@@ -23,9 +27,10 @@ Because Biome is a toolchain, its configuration is organized around the tools it
 provides. At the moment, Biome provides three tools: the formatter, the linter
 and the assist. All of these tools are enabled by default. You can disable one
 or several of them using the `&#x3C;tool>.enabled` field:
-biome.json```
-1{2  "$schema": "https://biomejs.dev/schemas/2.0.5/schema.json",3  "formatter": {4    "enabled": false5  },6  "linter": {7    "enabled": false8  },9  "assist": {10    "enabled": false11  }12}
-```
+biome.json\`\`\`
+1{2  "$schema": "<https://biomejs.dev/schemas/2.0.5/schema.json",3>  "formatter": {4    "enabled": false5  },6  "linter": {7    "enabled": false8  },9  "assist": {10    "enabled": false11  }12}
+
+````
 
 Options that apply to more than one language are placed in the corresponding tool field.
 Language-specific options of a tool are placed under a `&#x3C;language>.&#x3C;tool>` field.
@@ -36,12 +41,13 @@ Also, we set the JavaScript-specific option `quoteStyle` in `javascript.formatte
 We disabled the formatter for JSON files.
 biome.jsonc```
 1{2  "formatter": {3    "indentStyle": "space", // default is `tab`4    "lineWidth": 100 // default is `80`5  },6  "javascript": {7    "formatter": {8      "quoteStyle": "single", // default is `double`9      "lineWidth": 120 // override `formatter.lineWidth`10    }11  },12  "json": {13    "formatter": {14      "enabled": false15    }16  }17}
-```
+````
 
 Note
 
 Biome refers to all variants of the JavaScript language as `javascript`.
 This includes TypeScript, JSX and TSX.
+
 ## Configuration file resolution
 
 [Section titled “Configuration file resolution”](#configuration-file-resolution)
@@ -54,14 +60,17 @@ Here’s an example:
 
 Directoryapp/
 Directorybackend/
+
 - biome.json
 - package.json
 
 Directoryfrontend/
 Directorylegacy/
+
 - package.json
 
 Directorynew/
+
 - package.json
 
 biome.json
@@ -85,6 +94,7 @@ Note
 By default, Biome always ignores some files that are said to be **protected files**.
 This means that no diagnostics will be ever emitted by Biome for those files.
 At the moment, the following files are protected:
+
 - `composer.lock`
 
 - `npm-shrinkwrap.json`
@@ -99,9 +109,10 @@ At the moment, the following files are protected:
 The first way to control which files and folders are processed by Biome is to
 list them in the CLI. In the following command, we only format `file1.js` and
 all the files in the `src` folder, because folders are recursively traversed.
-Terminal window```
+Terminal window\`\`\`
 1biome format file1.js src/
-```
+
+````
 
 Caution
 
@@ -131,13 +142,14 @@ Let’s take the following configuration, where we want to include only JavaScri
 the `src/` folder, the `test/` folder, and ignore files that have `.min.js` in their name:
 biome.json```
 1{2  "files": {3    "includes": ["src/**/*.js", "test/**/*.js", "!**/*.min.js"]4  },5  "linter": {6    "includes": ["**", "!test/**"]7  }8}
-```
+````
 
 And run the following command:
 
-Terminal window```
+Terminal window\`\`\`
 1biome format test/
-```
+
+````
 
 The command will format the files that end with the `.js` extension and don’t
 end with the `.min.js` extension from the `test/` folder.
@@ -147,7 +159,7 @@ If we run the following command, no files are linted because files inside the
 `test/` folder are explicitly ignored for the linter.
 Terminal window```
 1biome lint test/
-```
+````
 
 Caution
 
@@ -156,6 +168,7 @@ specific `&#x3C;tool>.includes` fields. Any file or folder that doesn’t match
 `files.includes` is excluded from use by any of Biome’s tools. This means that
 any tool-specific `includes` field can never match a file that doesn’t also
 match `files.includes`.
+
 #### Exclude files via configuration
 
 [Section titled “Exclude files via configuration”](#exclude-files-via-configuration)
@@ -165,8 +178,9 @@ Before listing the negated globs, **they must be preceded by the `**` pattern**.
 
 In the following example, we tell Biome to include all files, except those in
 any `dist/` folder, as well as those that end with `.generated.js`:
-biome.json```
-1{2  "files": {3    "includes": [4      "**",5      "!**/dist",6      "!**/*.generated.js"7    ]8  }9}
+biome.json\`\`\`
+1{2  "files": {3    "includes": \[4      "**",5      "!**/dist",6      "!\*\*/\*.generated.js"7    ]8  }9}
+
 ```
 
 ### Control files via VCS
@@ -266,3 +280,4 @@ The following files are parsed as `JSON` files with the options `json.parser.all
 - `typescript.json`
 
      Copyright (c) 2023-present Biome Developers and Contributors.
+```

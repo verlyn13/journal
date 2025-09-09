@@ -1,15 +1,15 @@
 # WEBSOCKETS
 
-*Source: https://bun.sh/docs/api/websockets*
+*Source: <https://bun.sh/docs/api/websockets>*
 *Fetched: 2025-08-30T00:47:27.024Z*
 
----
+***
 
 `Bun.serve()` supports server-side WebSockets, with on-the-fly compression, TLS support, and a Bun-native publish-subscribe API.
 
-**⚡️ 7x more throughput** — Bun&#x27;s WebSockets are fast. For a [simple chatroom](https://github.com/oven-sh/bun/tree/main/bench/websocket-server/README.md) on Linux x64, Bun can handle 7x more requests per second than Node.js + [`"ws"`](https://github.com/websockets/ws).
+**⚡️ 7x more throughput** — Bun's WebSockets are fast. For a [simple chatroom](https://github.com/oven-sh/bun/tree/main/bench/websocket-server/README.md) on Linux x64, Bun can handle 7x more requests per second than Node.js + [`"ws"`](https://github.com/websockets/ws).
 
-Messages sent per secondRuntimeClients~700,000(`Bun.serve`) Bun v0.2.1 (x64)16~100,000(`ws`) Node v18.10.0 (x64)16Internally Bun&#x27;s WebSocket implementation is built on [uWebSockets](https://github.com/uNetworking/uWebSockets).
+Messages sent per secondRuntimeClients~~700,000(`Bun.serve`) Bun v0.2.1 (x64)16~~100,000(`ws`) Node v18.10.0 (x64)16Internally Bun's WebSocket implementation is built on [uWebSockets](https://github.com/uNetworking/uWebSockets).
 
 ## [Start a WebSocket server](#start-a-websocket-server)
 
@@ -151,11 +151,11 @@ Bun.serve({
 
 To connect to this server from the browser, create a new `WebSocket`.
 
-browser.js```
-const socket = new WebSocket("ws://localhost:3000/chat");
+browser.js\`\`\`
+const socket = new WebSocket("ws\://localhost:3000/chat");
 
 socket.addEventListener("message", event => {
-  console.log(event.data);
+console.log(event.data);
 })
 
 ```
@@ -167,37 +167,41 @@ socket.addEventListener("message", event => {
 Bun&#x27;s `ServerWebSocket` implementation implements a native publish-subscribe API for topic-based broadcasting. Individual sockets can `.subscribe()` to a topic (specified with a string identifier) and `.publish()` messages to all other subscribers to that topic (excluding itself). This topic-based broadcast API is similar to [MQTT](https://en.wikipedia.org/wiki/MQTT) and [Redis Pub/Sub](https://redis.io/topics/pubsub).
 
 ```
-const server = Bun.serve({
-  fetch(req, server) {
-    const url = new URL(req.url);
-    if (url.pathname === "/chat") {
-      console.log(`upgrade!`);
-      const username = getUsernameFromReq(req);
-      const success = server.upgrade(req, { data: { username } });
-      return success
-        ? undefined
-        : new Response("WebSocket upgrade error", { status: 400 });
-    }
 
-    return new Response("Hello world");
-  },
-  websocket: {
-    open(ws) {
-      const msg = `${ws.data.username} has entered the chat`;
-      ws.subscribe("the-group-chat");
-      server.publish("the-group-chat", msg);
-    },
-    message(ws, message) {
-      // this is a group chat
-      // so the server re-broadcasts incoming message to everyone
-      server.publish("the-group-chat", `${ws.data.username}: ${message}`);
-    },
-    close(ws) {
-      const msg = `${ws.data.username} has left the chat`;
-      ws.unsubscribe("the-group-chat");
-      server.publish("the-group-chat", msg);
-    },
-  },
+const server = Bun.serve({
+fetch(req, server) {
+const url = new URL(req.url);
+if (url.pathname === "/chat") {
+console.log(`upgrade!`);
+const username = getUsernameFromReq(req);
+const success = server.upgrade(req, { data: { username } });
+return success
+? undefined
+: new Response("WebSocket upgrade error", { status: 400 });
+}
+
+```
+return new Response("Hello world");
+```
+
+},
+websocket: {
+open(ws) {
+const msg = `${ws.data.username} has entered the chat`;
+ws.subscribe("the-group-chat");
+server.publish("the-group-chat", msg);
+},
+message(ws, message) {
+// this is a group chat
+// so the server re-broadcasts incoming message to everyone
+server.publish("the-group-chat", `${ws.data.username}: ${message}`);
+},
+close(ws) {
+const msg = `${ws.data.username} has left the chat`;
+ws.unsubscribe("the-group-chat");
+server.publish("the-group-chat", msg);
+},
+},
 });
 
 console.log(`Listening on ${server.hostname}:${server.port}`);
@@ -207,10 +211,11 @@ console.log(`Listening on ${server.hostname}:${server.port}`);
 Calling `.publish(data)` will send the message to all subscribers of a topic *except* the socket that called `.publish()`. To send a message to all subscribers of a topic, use the `.publish()` method on the `Server` instance.
 
 ```
+
 const server = Bun.serve({
-  websocket: {
-    // ...
-  },
+websocket: {
+// ...
+},
 });
 
 // listen for some external event
@@ -223,12 +228,13 @@ server.publish("the-group-chat", "Hello world");
 Per-message [compression](https://websockets.readthedocs.io/en/stable/topics/compression.html) can be enabled with the `perMessageDeflate` parameter.
 
 ```
+
 Bun.serve({
-  fetch(req, server) {}, // upgrade logic
-  websocket: {
-    // enable compression and decompression
-    perMessageDeflate: true,
-  },
+fetch(req, server) {}, // upgrade logic
+websocket: {
+// enable compression and decompression
+perMessageDeflate: true,
+},
 });
 
 ```
@@ -236,6 +242,7 @@ Bun.serve({
 Compression can be enabled for individual messages by passing a `boolean` as the second argument to `.send()`.
 
 ```
+
 ws.send("Hello world", true);
 
 ```
@@ -257,13 +264,17 @@ This gives you better control over backpressure in your server.
 By default, Bun will close a WebSocket connection if it is idle for 120 seconds. This can be configured with the `idleTimeout` parameter.
 
 ```
-Bun.serve({
-  fetch(req, server) {}, // upgrade logic
-  websocket: {
-    idleTimeout: 60, // 60 seconds
 
-    // ...
-  },
+Bun.serve({
+fetch(req, server) {}, // upgrade logic
+websocket: {
+idleTimeout: 60, // 60 seconds
+
+```
+// ...
+```
+
+},
 });
 
 ```
@@ -271,13 +282,17 @@ Bun.serve({
 Bun will also close a WebSocket connection if it receives a message that is larger than 16 MB. This can be configured with the `maxPayloadLength` parameter.
 
 ```
-Bun.serve({
-  fetch(req, server) {}, // upgrade logic
-  websocket: {
-    maxPayloadLength: 1024 * 1024, // 1 MB
 
-    // ...
-  },
+Bun.serve({
+fetch(req, server) {}, // upgrade logic
+websocket: {
+maxPayloadLength: 1024 \* 1024, // 1 MB
+
+```
+// ...
+```
+
+},
 });
 
 ```
@@ -287,7 +302,8 @@ Bun.serve({
 Bun implements the `WebSocket` class. To create a WebSocket client that connects to a `ws://` or `wss://` server, create an instance of `WebSocket`, as you would in the browser.
 
 ```
-const socket = new WebSocket("ws://localhost:3000");
+
+const socket = new WebSocket("ws\://localhost:3000");
 
 ```
 
@@ -296,10 +312,11 @@ In browsers, the cookies that are currently set on the page will be sent with th
 For convenience, Bun lets you setting custom headers directly in the constructor. This is a Bun-specific extension of the `WebSocket` standard. *This will not work in browsers.*
 
 ```
-const socket = new WebSocket("ws://localhost:3000", {
-  headers: {
-    // custom headers
-  },
+
+const socket = new WebSocket("ws\://localhost:3000", {
+headers: {
+// custom headers
+},
 });
 
 ```
@@ -307,6 +324,7 @@ const socket = new WebSocket("ws://localhost:3000", {
 To add event listeners to the socket:
 
 ```
+
 // message is received
 socket.addEventListener("message", event => {});
 
@@ -324,76 +342,81 @@ socket.addEventListener("error", event => {});
 ## [Reference](#reference)
 
 ```
+
 namespace Bun {
-  export function serve(params: {
-    fetch: (req: Request, server: Server) => Response | Promise;
-    websocket?: {
-      message: (
-        ws: ServerWebSocket,
-        message: string | ArrayBuffer | Uint8Array,
-      ) => void;
-      open?: (ws: ServerWebSocket) => void;
-      close?: (ws: ServerWebSocket, code: number, reason: string) => void;
-      error?: (ws: ServerWebSocket, error: Error) => void;
-      drain?: (ws: ServerWebSocket) => void;
+export function serve(params: {
+fetch: (req: Request, server: Server) => Response | Promise;
+websocket?: {
+message: (
+ws: ServerWebSocket,
+message: string | ArrayBuffer | Uint8Array,
+) => void;
+open?: (ws: ServerWebSocket) => void;
+close?: (ws: ServerWebSocket, code: number, reason: string) => void;
+error?: (ws: ServerWebSocket, error: Error) => void;
+drain?: (ws: ServerWebSocket) => void;
 
-      maxPayloadLength?: number; // default: 16 * 1024 * 1024 = 16 MB
-      idleTimeout?: number; // default: 120 (seconds)
-      backpressureLimit?: number; // default: 1024 * 1024 = 1 MB
-      closeOnBackpressureLimit?: boolean; // default: false
-      sendPings?: boolean; // default: true
-      publishToSelf?: boolean; // default: false
+```
+  maxPayloadLength?: number; // default: 16 * 1024 * 1024 = 16 MB
+  idleTimeout?: number; // default: 120 (seconds)
+  backpressureLimit?: number; // default: 1024 * 1024 = 1 MB
+  closeOnBackpressureLimit?: boolean; // default: false
+  sendPings?: boolean; // default: true
+  publishToSelf?: boolean; // default: false
 
-      perMessageDeflate?:
-        | boolean
-        | {
-            compress?: boolean | Compressor;
-            decompress?: boolean | Compressor;
-          };
-    };
-  }): Server;
+  perMessageDeflate?:
+    | boolean
+    | {
+        compress?: boolean | Compressor;
+        decompress?: boolean | Compressor;
+      };
+};
+```
+
+}): Server;
 }
 
 type Compressor =
-  | `"disable"`
-  | `"shared"`
-  | `"dedicated"`
-  | `"3KB"`
-  | `"4KB"`
-  | `"8KB"`
-  | `"16KB"`
-  | `"32KB"`
-  | `"64KB"`
-  | `"128KB"`
-  | `"256KB"`;
+\| `"disable"`
+\| `"shared"`
+\| `"dedicated"`
+\| `"3KB"`
+\| `"4KB"`
+\| `"8KB"`
+\| `"16KB"`
+\| `"32KB"`
+\| `"64KB"`
+\| `"128KB"`
+\| `"256KB"`;
 
 interface Server {
-  pendingWebSockets: number;
-  publish(
-    topic: string,
-    data: string | ArrayBufferView | ArrayBuffer,
-    compress?: boolean,
-  ): number;
-  upgrade(
-    req: Request,
-    options?: {
-      headers?: HeadersInit;
-      data?: any;
-    },
-  ): boolean;
+pendingWebSockets: number;
+publish(
+topic: string,
+data: string | ArrayBufferView | ArrayBuffer,
+compress?: boolean,
+): number;
+upgrade(
+req: Request,
+options?: {
+headers?: HeadersInit;
+data?: any;
+},
+): boolean;
 }
 
 interface ServerWebSocket {
-  readonly data: any;
-  readonly readyState: number;
-  readonly remoteAddress: string;
-  send(message: string | ArrayBuffer | Uint8Array, compress?: boolean): number;
-  close(code?: number, reason?: string): void;
-  subscribe(topic: string): void;
-  unsubscribe(topic: string): void;
-  publish(topic: string, message: string | ArrayBuffer | Uint8Array): void;
-  isSubscribed(topic: string): boolean;
-  cork(cb: (ws: ServerWebSocket) => void): void;
+readonly data: any;
+readonly readyState: number;
+readonly remoteAddress: string;
+send(message: string | ArrayBuffer | Uint8Array, compress?: boolean): number;
+close(code?: number, reason?: string): void;
+subscribe(topic: string): void;
+unsubscribe(topic: string): void;
+publish(topic: string, message: string | ArrayBuffer | Uint8Array): void;
+isSubscribed(topic: string): boolean;
+cork(cb: (ws: ServerWebSocket) => void): void;
 }
 
+```
 ```

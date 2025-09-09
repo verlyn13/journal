@@ -1,10 +1,11 @@
----
+***
+
 title: "Flask Journal Troubleshooting Guide"
 description: "Solutions for common issues encountered when using the Flask Journal application"
 category: "User Documentation"
 version: "1.0"
-tags: ["troubleshooting", "errors", "solutions", "fixes", "help"]
----
+tags: \["troubleshooting", "errors", "solutions", "fixes", "help"]
+------------------------------------------------------------------
 
 # Troubleshooting Guide
 
@@ -29,15 +30,19 @@ This guide provides solutions for common issues you might encounter while using 
 **Possible causes and solutions:**
 
 1. **Username already taken**
+
 - Choose a different username
 
 2. **Invalid email format**
-- Ensure your email follows the standard format (e.g., name@example.com)
+
+- Ensure your email follows the standard format (e.g., <name@example.com>)
 
 3. **Password too short**
+
 - Create a password with at least 8 characters
 
 4. **Passwords don't match**
+
 - Make sure the password and confirmation fields match exactly
 
 ### Email Verification Issues
@@ -266,20 +271,25 @@ This guide provides solutions for common issues you might encounter while using 
 If you're experiencing issues not covered in this guide, try these general debugging steps:
 
 1. **Check the browser console for errors**
+
 - Press F12 in most browsers to open developer tools
 - Navigate to the Console tab to see JavaScript errors
 
 2. **Review server logs**
+
 - If self-hosting, check the terminal where the Flask server is running
 - Look for error messages or exceptions
 
 3. **Try an incognito/private browsing window**
+
 - This bypasses cached content and browser extensions
 
 4. **Test with a different browser**
+
 - Issues specific to one browser can help identify the problem
 
 5. **Clear browser data**
+
 - Clear cookies, cache, and local storage
 
 If you've tried these solutions and still experience issues, please:
@@ -289,6 +299,6 @@ If you've tried these solutions and still experience issues, please:
 3. Document the steps to reproduce the issue
 4. Contact support with this information
 
----
+***
 
 For issues related to installation or development, please also refer to the [Installation Guide](installation.md) and project documentation.

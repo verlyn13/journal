@@ -1,10 +1,11 @@
----
+***
+
 title: "Flask Journal FAQs"
 description: "Frequently asked questions about using the Flask Journal application"
 category: "User Documentation"
 version: "1.0"
-tags: ["faq", "questions", "help", "support"]
----
+tags: \["faq", "questions", "help", "support"]
+----------------------------------------------
 
 # Frequently Asked Questions
 
@@ -36,6 +37,7 @@ On the login page, click the "Forgot Password" link and follow the instructions 
 ### How do I delete my account?
 
 To delete your account:
+
 1. Log in to your account
 2. Navigate to your profile settings
 3. Scroll to the bottom and click "Delete Account"
@@ -66,6 +68,7 @@ Once an entry is deleted, it cannot be recovered directly through the user inter
 ### What Markdown syntax is supported?
 
 The editor supports standard Markdown syntax, including:
+
 - Headings (# Heading)
 - Formatting (bold, italic, strikethrough)
 - Links and images
@@ -109,6 +112,7 @@ Tags are automatically removed from the system when they are no longer associate
 ### Can I rename a tag?
 
 There isn't a direct "rename tag" function. To effectively rename a tag:
+
 1. Edit each entry that uses the old tag
 2. Replace the old tag with the new tag name
 3. Save each entry
@@ -140,6 +144,7 @@ The standard web version requires an internet connection. However, you can set u
 ### Which browsers are supported?
 
 Flask Journal supports modern browsers, including:
+
 - Chrome (latest 2 versions)
 - Firefox (latest 2 versions)
 - Safari (latest 2 versions)
@@ -155,6 +160,6 @@ Currently, there is no dedicated mobile app. However, the web interface is respo
 
 Bugs and feature requests can be submitted through the project's GitHub issues page or by contacting support directly.
 
----
+***
 
 If you have a question not answered here, please refer to the [Troubleshooting Guide](troubleshooting.md) or contact support for assistance.

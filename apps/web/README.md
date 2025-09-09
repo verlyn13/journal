@@ -19,11 +19,12 @@ bun install
 ```
 bun run dev
 ```
-Open http://localhost:5173 (or Playwright config uses 5174).
+
+Open <http://localhost:5173> (or Playwright config uses 5174).
 
 ## Storybook
 
-- Dev: `bun run storybook` (http://localhost:6006)
+- Dev: `bun run storybook` (<http://localhost:6006>)
 - Build: `bun run build-storybook`
 
 Stories live alongside components under `src/components/**`. The root-level Storybook is deprecated.
@@ -77,18 +78,21 @@ bun run quality:all
 
 This frontend talks to the FastAPI backend in `apps/api`.
 
-1) Start the API:
+1. Start the API:
+
 ```bash
 cd ../api
 make setup   # starts Postgres(5433), Redis(6380), NATS(4222) and runs migrations
 make dev     # API at http://127.0.0.1:8000
 ```
 
-2) Configure API URL (create `.env` in `apps/web`):
+2. Configure API URL (create `.env` in `apps/web`):
+
 ```env
 VITE_API_URL=http://127.0.0.1:8000/api
 ```
 
-3) Demo login in development:
+3. Demo login in development:
+
 - Use demo credentials `demo` / `demo123` in the app login form, or
 - Obtain tokens directly from `POST /api/v1/auth/demo` and store `access_token`/`refresh_token` in localStorage (for manual testing).

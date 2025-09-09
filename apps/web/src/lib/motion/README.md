@@ -174,6 +174,7 @@ function AccessibleAnimation() {
 ## Easing Functions
 
 30+ easing functions including:
+
 - Standard: `linear`, `ease`, `easeIn`, `easeOut`, `easeInOut`
 - Polynomial: `easeInCubic`, `easeOutQuart`, `easeInOutQuint`
 - Trigonometric: `easeInSine`, `easeOutSine`, `easeInOutSine`

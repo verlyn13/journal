@@ -21,4 +21,3 @@ This backend exposes minimal Prometheus-style metrics at `/metrics`.
 - Retries and DLQ mark `{result="error"}` / `{result="retry"}` / `outbox_dlq_total`
 
 > Note: Implemented as a lightweight in-process collector (no external deps). Replace with a full Prom client later.
-

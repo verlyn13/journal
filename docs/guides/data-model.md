@@ -1,17 +1,18 @@
----
+***
+
 title: "Data Model Guide"
 description: "Comprehensive documentation of the Flask Journal data models and relationships"
 category: "Guides"
-date_created: "2025-04-08"
-last_updated: "2025-04-08"
+date\_created: "2025-04-08"
+last\_updated: "2025-04-08"
 version: "1.0"
 status: active
-related_topics:
-      - "API Reference"
-      - "Authentication"
-      - "Database Schema"
-tags: ["data-model", "database", "sqlalchemy", "orm"]
----
+related\_topics:
+\- "API Reference"
+\- "Authentication"
+\- "Database Schema"
+tags: \["data-model", "database", "sqlalchemy", "orm"]
+------------------------------------------------------
 
 # Data Model Guide
 
@@ -72,18 +73,18 @@ The `User` model represents registered users of the application and serves as th
 
 **Fields:**
 
-| Field | Type | Constraints | Description |
-|-------|------|------------|-------------|
-| `id` | Integer | Primary Key | Unique identifier for the user |
-| `username` | String(64) | Unique, Indexed, Not Null | User's login name |
-| `email` | String(120) | Unique, Indexed, Not Null | User's email address |
-| `password_hash` | String(256) | | Securely hashed password |
+| Field           | Type        | Constraints               | Description                    |
+| --------------- | ----------- | ------------------------- | ------------------------------ |
+| `id`            | Integer     | Primary Key               | Unique identifier for the user |
+| `username`      | String(64)  | Unique, Indexed, Not Null | User's login name              |
+| `email`         | String(120) | Unique, Indexed, Not Null | User's email address           |
+| `password_hash` | String(256) |                           | Securely hashed password       |
 
 **Relationships:**
 
-| Relationship | Type | Target Model | Description |
-|--------------|------|-------------|-------------|
-| `entries` | One-to-Many | `Entry` | Journal entries created by this user |
+| Relationship | Type        | Target Model | Description                          |
+| ------------ | ----------- | ------------ | ------------------------------------ |
+| `entries`    | One-to-Many | `Entry`      | Journal entries created by this user |
 
 **Special Methods:**
 
@@ -137,20 +138,20 @@ The `Entry` model represents journal entries created by users.
 
 **Fields:**
 
-| Field | Type | Constraints | Description |
-|-------|------|------------|-------------|
-| `id` | Integer | Primary Key | Unique identifier for the entry |
-| `title` | String(140) | Not Null | Title of the journal entry |
-| `body` | Text | Not Null | Main content of the journal entry |
-| `timestamp` | DateTime | Indexed | When the entry was created, default to UTC now |
-| `user_id` | Integer | Foreign Key, Not Null | References the user who created this entry |
+| Field       | Type        | Constraints           | Description                                    |
+| ----------- | ----------- | --------------------- | ---------------------------------------------- |
+| `id`        | Integer     | Primary Key           | Unique identifier for the entry                |
+| `title`     | String(140) | Not Null              | Title of the journal entry                     |
+| `body`      | Text        | Not Null              | Main content of the journal entry              |
+| `timestamp` | DateTime    | Indexed               | When the entry was created, default to UTC now |
+| `user_id`   | Integer     | Foreign Key, Not Null | References the user who created this entry     |
 
 **Relationships:**
 
-| Relationship | Type | Target Model | Description |
-|--------------|------|-------------|-------------|
-| `author` | Many-to-One | `User` | User who created this entry (backref from User.entries) |
-| `tags` | Many-to-Many | `Tag` | Tags associated with this entry |
+| Relationship | Type         | Target Model | Description                                             |
+| ------------ | ------------ | ------------ | ------------------------------------------------------- |
+| `author`     | Many-to-One  | `User`       | User who created this entry (backref from User.entries) |
+| `tags`       | Many-to-Many | `Tag`        | Tags associated with this entry                         |
 
 **Usage Example:**
 
@@ -192,17 +193,17 @@ The `Tag` model represents tags that can be applied to journal entries, allowing
 
 **Fields:**
 
-| Field | Type | Constraints | Description |
-|-------|------|------------|-------------|
-| `id` | Integer | Primary Key | Unique identifier for the tag |
-| `name` | String(50) | Unique, Not Null | Name of the tag |
-| `created_at` | DateTime | | When the tag was created, default to UTC now |
+| Field        | Type       | Constraints      | Description                                  |
+| ------------ | ---------- | ---------------- | -------------------------------------------- |
+| `id`         | Integer    | Primary Key      | Unique identifier for the tag                |
+| `name`       | String(50) | Unique, Not Null | Name of the tag                              |
+| `created_at` | DateTime   |                  | When the tag was created, default to UTC now |
 
 **Relationships:**
 
-| Relationship | Type | Target Model | Description |
-|--------------|------|-------------|-------------|
-| `entries` | Many-to-Many | `Entry` | Entries associated with this tag (backref from Entry.tags) |
+| Relationship | Type         | Target Model | Description                                                |
+| ------------ | ------------ | ------------ | ---------------------------------------------------------- |
+| `entries`    | Many-to-Many | `Entry`      | Entries associated with this tag (backref from Entry.tags) |
 
 **Usage Example:**
 
@@ -243,10 +244,10 @@ This table manages the many-to-many relationship between entries and tags.
 
 **Fields:**
 
-| Field | Type | Constraints | Description |
-|-------|------|------------|-------------|
+| Field      | Type    | Constraints              | Description         |
+| ---------- | ------- | ------------------------ | ------------------- |
 | `entry_id` | Integer | Primary Key, Foreign Key | References an entry |
-| `tag_id` | Integer | Primary Key, Foreign Key | References a tag |
+| `tag_id`   | Integer | Primary Key, Foreign Key | References a tag    |
 
 **Implementation:**
 
@@ -262,6 +263,7 @@ entry_tags = db.Table('entry_tags',
 ### One-to-Many Relationships
 
 **User to Entries:**
+
 - A User can have many Entries
 - Each Entry belongs to exactly one User
 - Navigation: `user.entries` or `entry.author`
@@ -269,6 +271,7 @@ entry_tags = db.Table('entry_tags',
 ### Many-to-Many Relationships
 
 **Entries to Tags:**
+
 - An Entry can have many Tags
 - A Tag can be applied to many Entries
 - Navigation: `entry.tags` or `tag.entries`
@@ -278,6 +281,7 @@ entry_tags = db.Table('entry_tags',
 ### Common Query Patterns
 
 **Retrieving a User's Entries (newest first):**
+
 ```python
 entries = Entry.query.filter_by(author=current_user)\
                     .order_by(Entry.timestamp.desc())\
@@ -285,6 +289,7 @@ entries = Entry.query.filter_by(author=current_user)\
 ```
 
 **Finding Entries with a Specific Tag:**
+
 ```python
 entries = Entry.query.join(Entry.tags)\
                     .filter(Tag.id == tag.id)\
@@ -293,6 +298,7 @@ entries = Entry.query.join(Entry.tags)\
 ```
 
 **Processing Tags from a Comma-Separated String:**
+
 ```python
 def process_tags(tag_string):
     if not tag_string:
@@ -342,11 +348,13 @@ The application stores timestamps in UTC (naive datetime objects) using `datetim
 As the application evolves, you may need to modify the database schema. Flask-Migrate (based on Alembic) is used for managing database migrations.
 
 **Creating a Migration:**
+
 ```bash
 flask db migrate -m "Description of changes"
 ```
 
 **Applying Migrations:**
+
 ```bash
 flask db upgrade
 ```

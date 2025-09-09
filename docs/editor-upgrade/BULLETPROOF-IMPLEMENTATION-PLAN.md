@@ -4,7 +4,7 @@
 
 ### Philosophy: Write Once, Test to Confirm (Not Fix)
 
----
+***
 
 ## Pre-Implementation Verification Checklist
 
@@ -56,7 +56,7 @@ graph LR
 - **Rendering**: react-markdown → rehype-sanitize (makes safe)
 - **Storage**: Markdown string (safe by nature)
 
----
+***
 
 ## Implementation Workflow with Built-in Correctness
 
@@ -338,7 +338,7 @@ export function MarkdownSplitPane({ entry, onSave }: MarkdownSplitPaneProps) {
 }
 ```
 
----
+***
 
 ## Testing Strategy: Confirm Correctness, Not Find Bugs
 
@@ -374,7 +374,7 @@ describe('Markdown Converter', () => {
 });
 ```
 
-```typescript
+````typescript
 // apps/web/src/components/markdown/__tests__/sanitization.test.ts
 describe('Sanitization Schema', () => {
   it('allows KaTeX classes', () => {
@@ -402,9 +402,9 @@ describe('Sanitization Schema', () => {
     expect(container.querySelector('[class*="hljs"]')).toBeInTheDocument();
   });
 });
-```
+````
 
----
+***
 
 ## Build & Quality Pipeline
 
@@ -456,7 +456,7 @@ function checkBundleSize() {
 checkBundleSize();
 ```
 
----
+***
 
 ## Phase Implementation with Quality Gates
 
@@ -526,7 +526,7 @@ bun run quality:all
 ✓ Developer notes
 ```
 
----
+***
 
 ## Correctness Checklist
 
@@ -558,7 +558,7 @@ After implementation:
 - [ ] Documentation complete
 - [ ] Rollback tested
 
----
+***
 
 ## Common Pitfalls to Avoid
 
@@ -622,7 +622,7 @@ function Preview({ content }) {
 </ReactMarkdown>
 ```
 
----
+***
 
 ## Success Metrics
 
@@ -652,6 +652,6 @@ function Preview({ content }) {
 - Documented decisions
 - Reviewable PRs
 
----
+***
 
 *This plan ensures correctness by construction. Follow it step by step, and the implementation will be right the first time.*

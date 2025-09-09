@@ -1,17 +1,18 @@
----
+***
+
 title: "Request Lifecycle"
 description: "Documentation of the request lifecycle in the Flask Journal application"
 category: "Guides"
-date_created: "2025-04-08"
-last_updated: "2025-04-08"
+date\_created: "2025-04-08"
+last\_updated: "2025-04-08"
 version: "1.0"
 status: active
-related_topics:
-      - "Architecture Overview"
-      - "Authentication"
-      - "API Reference"
-tags: ["request", "lifecycle", "middleware", "flask", "werkzeug"]
----
+related\_topics:
+\- "Architecture Overview"
+\- "Authentication"
+\- "API Reference"
+tags: \["request", "lifecycle", "middleware", "flask", "werkzeug"]
+------------------------------------------------------------------
 
 # Request Lifecycle
 
@@ -150,12 +151,12 @@ Each request goes through several layers of processing within the Flask applicat
 #### 4.6 Response Generation
 
 - For HTML responses:
-      - Jinja2 templates are rendered with the provided context
-      - Template inheritance and includes are processed
-      - HTML is generated
+  \- Jinja2 templates are rendered with the provided context
+  \- Template inheritance and includes are processed
+  \- HTML is generated
 - For API responses:
-      - JSON data is serialized
-      - Appropriate content type headers are set
+  \- JSON data is serialized
+  \- Appropriate content type headers are set
 
 #### 4.7 Response Processing
 

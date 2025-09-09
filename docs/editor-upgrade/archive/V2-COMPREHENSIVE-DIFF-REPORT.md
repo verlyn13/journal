@@ -4,16 +4,17 @@
 
 ### Based on Actual Codebase Analysis & editor-upgrade-v2.md Specifications
 
-Generated: September 2025  
-Scope: Complete migration analysis with security, performance, and UX considerations  
-Current Implementation: TipTap with Monaco, Math, SlashCommands extensions  
-Target Implementation: CodeMirror 6 with Markdown, react-markdown rendering  
+Generated: September 2025\
+Scope: Complete migration analysis with security, performance, and UX considerations\
+Current Implementation: TipTap with Monaco, Math, SlashCommands extensions\
+Target Implementation: CodeMirror 6 with Markdown, react-markdown rendering
 
----
+***
 
 ## Executive Summary
 
 This report provides a comprehensive diff between the current TipTap-based implementation and the proposed CodeMirror/Markdown dual-pane editor, incorporating refinements from editor-upgrade-v2.md including:
+
 - **Turndown service** for HTML-to-Markdown conversion
 - **remark-breaks** for intuitive line break handling
 - **Security hardening** with DOMPurify
@@ -23,17 +24,18 @@ This report provides a comprehensive diff between the current TipTap-based imple
 ### Critical Findings from Actual Codebase
 
 Current implementation consists of:
+
 - **2,576 lines** of editor code across 12 components
 - **TipTap extensions**: StarterKit, Link, Highlight, Typography, Placeholder
 - **Custom extensions**: CodeBlockMonaco (Monaco Editor integration), MathInline/MathBlock (KaTeX), SlashCommands
 - **UI Components**: BubbleToolbar (523 lines), JournalEditor (397 lines)
-- **Bundle impact**: TipTap (~200KB) + Monaco (~2MB) + KaTeX (~300KB)
+- **Bundle impact**: TipTap (\~200KB) + Monaco (\~2MB) + KaTeX (\~300KB)
 
----
+***
 
 ## Part 1: Component-by-Component Diff Analysis
 
-### 1.1 JournalEditor.tsx (397 lines → ~450 lines estimated)
+### 1.1 JournalEditor.tsx (397 lines → \~450 lines estimated)
 
 #### Current Implementation
 
@@ -113,11 +115,12 @@ const renderMarkdown = (content: string) => {
 ```
 
 **Diff Summary:**
+
 - **+50 lines** for dual-pane layout logic
 - **+30 lines** for Turndown conversion setup
 - **+20 lines** for security sanitization
 - **-100 lines** removing TipTap configuration
-- **Net change: ~0 lines** but significant structural change
+- **Net change: \~0 lines** but significant structural change
 
 ### 1.2 BubbleToolbar.tsx (523 lines → REMOVED)
 
@@ -137,6 +140,7 @@ const renderMarkdown = (content: string) => {
 - Better keyboard-driven workflow
 
 **Diff Summary:**
+
 - **-523 lines** complete removal
 - **Major UX change** from mouse-driven to keyboard-driven
 
@@ -155,22 +159,23 @@ export const CodeBlockMonaco = Node.create({
 
 #### Target Implementation
 
-```markdown
+````markdown
 # In CodeMirror (user types):
 ```javascript
 function example() {
     return "Native markdown code blocks";
 }
-```
+````
 
 # Rendered in preview via rehype-highlight
 
-<ReactMarkdown
-    rehypePlugins={[
-        [rehypeHighlight, { detect: true }]
-    ]}
+\<ReactMarkdown
+rehypePlugins={\[
+\[rehypeHighlight, { detect: true }]
+]}
 />
-```
+
+````
 
 **Diff Summary:**
 - **-500+ lines** of Monaco integration code
@@ -191,7 +196,7 @@ export const MathInline = Node.create({
         };
     }
 });
-```
+````
 
 #### Target Implementation
 
@@ -210,8 +215,9 @@ export const MathInline = Node.create({
 ```
 
 **Diff Summary:**
+
 - **-119 lines** of custom math node code
-- **Preserved KaTeX** rendering (~300KB stays)
+- **Preserved KaTeX** rendering (\~300KB stays)
 - **Simpler integration** via remark/rehype plugins
 
 ### 1.5 SlashCommands Extension (→ Markdown Snippets)
@@ -220,7 +226,7 @@ export const MathInline = Node.create({
 
 - Complex command palette with categories
 - Template insertion system
-- ~300+ lines of slash command logic
+- \~300+ lines of slash command logic
 
 #### Target Implementation
 
@@ -236,11 +242,12 @@ import { snippetCompletion } from '@codemirror/autocomplete';
 ```
 
 **Diff Summary:**
+
 - **-300+ lines** of slash command UI
 - **+50 lines** for snippet system
 - **Better performance** with native CodeMirror completions
 
----
+***
 
 ## Part 2: Data Migration Strategy
 
@@ -331,7 +338,7 @@ const EditorComponent = features.markdownEditor.enabled
     : JournalEditor;
 ```
 
----
+***
 
 ## Part 3: Bundle Size Analysis
 
@@ -386,7 +393,7 @@ export default {
 };
 ```
 
----
+***
 
 ## Part 4: Security Considerations
 
@@ -432,7 +439,7 @@ const renderSafeMarkdown = (content: string) => {
                img-src 'self' data: https:;">
 ```
 
----
+***
 
 ## Part 5: User Experience Migration
 
@@ -464,15 +471,15 @@ Second line"
 
 ### 5.2 Keyboard Shortcuts Migration
 
-| Action | Current (TipTap) | Target (CodeMirror) |
-|--------|-----------------|---------------------|
-| Bold | Ctrl+B | Type `**text**` |
-| Italic | Ctrl+I | Type `_text_` |
-| Link | Ctrl+K | Type `[text](url)` |
-| Save | Ctrl+S | Ctrl+S (preserved) |
-| Heading | Toolbar button | Type `# Heading` |
-| Code | Ctrl+` | Type `` `code` `` |
-| Math | Button | Type `$math$` |
+| Action  | Current (TipTap) | Target (CodeMirror) |
+| ------- | ---------------- | ------------------- |
+| Bold    | Ctrl+B           | Type `**text**`     |
+| Italic  | Ctrl+I           | Type `_text_`       |
+| Link    | Ctrl+K           | Type `[text](url)`  |
+| Save    | Ctrl+S           | Ctrl+S (preserved)  |
+| Heading | Toolbar button   | Type `# Heading`    |
+| Code    | Ctrl+\`          | Type `` `code` ``   |
+| Math    | Button           | Type `$math$`       |
 
 ### 5.3 Migration Messaging
 
@@ -491,7 +498,7 @@ const MigrationBanner = () => (
 );
 ```
 
----
+***
 
 ## Part 6: Testing Strategy
 
@@ -557,7 +564,7 @@ describe('Bundle Size', () => {
 });
 ```
 
----
+***
 
 ## Part 7: Implementation Timeline
 
@@ -596,7 +603,7 @@ describe('Bundle Size', () => {
 - [ ] Fix issues and optimize
 - [ ] Gradual rollout to 100%
 
----
+***
 
 ## Part 8: Risk Assessment
 
@@ -618,7 +625,7 @@ describe('Bundle Size', () => {
 2. **Security**: DOMPurify is battle-tested
 3. **Browser Compatibility**: CodeMirror 6 supports all modern browsers
 
----
+***
 
 ## Part 9: Rollback Plan
 
@@ -652,7 +659,7 @@ pg_restore -d journal backup_before_migration.sql
 ./deploy.sh v1.2.3
 ```
 
----
+***
 
 ## Part 10: Success Metrics
 
@@ -676,7 +683,7 @@ pg_restore -d journal backup_before_migration.sql
 - **CDN Costs**: 50% reduction (smaller bundles)
 - **Development Velocity**: 2x faster feature development
 
----
+***
 
 ## Conclusion
 
@@ -692,6 +699,6 @@ The V2 plan's additions (Turndown, remark-breaks, security hardening) address th
 
 **Recommendation**: Proceed with Phase 1 implementation while maintaining the current editor in parallel. Use feature flags for gradual rollout and maintain dual-format storage for safe rollback.
 
----
+***
 
 *End of V2 Comprehensive Diff Report*

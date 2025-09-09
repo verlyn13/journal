@@ -29,11 +29,13 @@ Successfully migrated from React 18 to React 19.1.1 on September 9, 2025.
 ### 1. Event Handling Updates
 
 **Before (React 18):**
+
 ```jsx
 <button onClick={handleClick}>Click me</button>
 ```
 
 **After (React 19):**
+
 ```jsx
 // Moved click handlers to parent elements for better event delegation
 <div onClick={handleClick} className="cursor-pointer">
@@ -44,6 +46,7 @@ Successfully migrated from React 18 to React 19.1.1 on September 9, 2025.
 ### 2. Error Boundaries Enhanced
 
 **Added to createRoot:**
+
 ```jsx
 const root = createRoot(el, {
   onUncaughtError: (error, errorInfo) => {
@@ -113,7 +116,7 @@ ENABLE_REACT_COMPILER=false bun run dev
 ### Key Metrics to Watch
 
 1. **First Contentful Paint (FCP)**: Target < 1.2s
-2. **Largest Contentful Paint (LCP)**: Target < 2.5s  
+2. **Largest Contentful Paint (LCP)**: Target < 2.5s
 3. **Cumulative Layout Shift (CLS)**: Target < 0.1
 4. **Bundle Size**: Currently 4.3% smaller than React 18
 
@@ -131,7 +134,7 @@ console.log(`React ${React.version} - Compiler ${
 ### Positive Changes
 
 - **Faster entry selection**: Immediate visual feedback
-- **Smoother animations**: Better frame rate consistency  
+- **Smoother animations**: Better frame rate consistency
 - **Cleaner error messages**: More helpful development warnings
 - **Better memory management**: Less garbage collection pauses
 
@@ -164,6 +167,7 @@ console.log(`React ${React.version} - Compiler ${
 ## 🔄 Rollback Plan
 
 If issues arise:
+
 ```bash
 # Emergency rollback to React 18
 git checkout main
@@ -172,6 +176,7 @@ bun run dev
 ```
 
 **Rollback triggers:**
+
 - Error rate increase > 0.1%
 - Performance regression > 10%
 - Critical user-facing bugs
@@ -180,7 +185,7 @@ bun run dev
 ## ✨ Migration Success Indicators
 
 - ✅ Dev server running without errors
-- ✅ Entry management working smoothly  
+- ✅ Entry management working smoothly
 - ✅ No breaking changes in user workflow
 - ✅ Bundle size optimization achieved (4.3% smaller)
 - ✅ React Compiler ready for opt-in testing

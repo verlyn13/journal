@@ -1,12 +1,12 @@
----
+***
+
 title: CodeMirror Tab Handling Example
 description: "Explains CodeMirror's default Tab key behavior, accessibility considerations, and how to configure Tab for indentation while maintaining keyboard navigation."
 category: "CodeMirror Examples"
 status: active
-tags: ["codemirror", "example", "tab", "indentation", "accessibility", "keyboard"]
+tags: \["codemirror", "example", "tab", "indentation", "accessibility", "keyboard"]
 version: "6.0"
----
-
+--------------
 
 # CodeMirror Tab Handling Guide
 
@@ -37,9 +37,10 @@ CodeMirror provides two built-in escape mechanisms even when Tab is configured f
 1. **Escape followed by Tab**: Pressing Escape and then immediately pressing Tab will always allow the user to exit the editor (the Tab press won't be handled by the editor)
 
 2. **Toggle Tab Focus Mode**: The default keymap binds:
+
    - `Ctrl-m` on most platforms
    - `Shift-Alt-m` on macOS
-   
+
    This toggles "tab focus mode" which temporarily disables Tab key handling, allowing normal keyboard navigation
 
 ## Configuring Tab for Indentation
@@ -70,6 +71,7 @@ const editor = new EditorView({
 ```
 
 With this configuration:
+
 - Tab will indent the current line or selection
 - Shift-Tab will un-indent
 - The escape mechanisms described above will still function
@@ -79,9 +81,9 @@ With this configuration:
 If you decide to enable Tab for indentation, follow these best practices:
 
 1. **Document the escape mechanisms** in your application's help or documentation
-   
+
 2. **Provide visible indicators** about Tab handling when appropriate
-   
+
 3. **Consider adding a toggle** that allows users to enable/disable Tab handling according to their preferences
 
 4. **Test keyboard navigation flow** to ensure users can still navigate your interface

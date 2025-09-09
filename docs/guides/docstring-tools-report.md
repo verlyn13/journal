@@ -1,17 +1,18 @@
----
+***
+
 title: "Python Docstring Tools Report"
 description: "Evaluation of tools for Python docstring validation, generation, and enforcement"
 category: "Documentation"
-created_date: "2025-04-08"
-updated_date: "2025-04-08" 
+created\_date: "2025-04-08"
+updated\_date: "2025-04-08"
 version: "1.0"
 status: "draft"
-related_topics:
-      - "Python Docstring Standards"
-      - "Documentation Quality"
-      - "Code Quality"
-tags: ["documentation", "tools", "python", "docstrings", "automation"]
----
+related\_topics:
+\- "Python Docstring Standards"
+\- "Documentation Quality"
+\- "Code Quality"
+tags: \["documentation", "tools", "python", "docstrings", "automation"]
+-----------------------------------------------------------------------
 
 # Python Docstring Tools Report
 
@@ -36,16 +37,19 @@ The ideal docstring tooling for Flask Journal should:
 **Description**: A static analysis tool for checking compliance with Python docstring conventions.
 
 **Pros**:
+
 - Checks PEP 257 compliance
 - Configurable through `.pydocstyle` config files
 - Can be integrated with flake8
 - Actively maintained
 
 **Cons**:
+
 - Limited Google-style docstring support in default configuration
 - Focuses on format rather than content quality
 
 **Integration Example**:
+
 ```bash
 # Basic usage
 pydocstyle journal/
@@ -63,17 +67,20 @@ ignore = D107,D203,D212
 **Description**: Documentation generator that can extract documentation from docstrings.
 
 **Pros**:
+
 - Generates comprehensive HTML documentation
 - Native support for Google-style docstrings with napoleon extension
 - Creates rich, navigable documentation
 - Industry standard
 
 **Cons**:
+
 - Setup complexity
 - Requires additional configuration for optimal results
 - Not primarily a validation tool
 
 **Integration Example**:
+
 ```bash
 # Installation
 pip install sphinx sphinx-rtd-theme sphinx-autodoc-typehints
@@ -92,16 +99,19 @@ napoleon_google_docstring = True
 **Description**: Checks Python code base for missing docstrings.
 
 **Pros**:
+
 - Simple focus on docstring coverage
 - Generates coverage reports
 - Configurable via pyproject.toml
 - Can fail builds when coverage falls below threshold
 
 **Cons**:
+
 - Only checks presence, not quality or format
 - No content validation
 
 **Integration Example**:
+
 ```bash
 # Basic usage
 interrogate -v journal/
@@ -128,16 +138,19 @@ color = true
 **Description**: Creates, updates, and converts docstrings in existing Python files.
 
 **Pros**:
+
 - Can automatically add docstring templates based on function signatures
 - Supports Google, NumPy, and reStructuredText formats
 - Can convert between formats
 
 **Cons**:
+
 - Not actively maintained
 - Limited configuration options
 - Requires review of generated content
 
 **Integration Example**:
+
 ```bash
 # Generate Google-style docstrings
 pyment -o google -w my_file.py
@@ -151,15 +164,18 @@ pyment -o google -w journal/**/*.py
 **Description**: A flake8 plugin that includes pydocstyle checks.
 
 **Pros**:
+
 - Integrates docstring checks with other linting
 - Can be used with existing flake8 configurations
 - Works with pre-commit hooks
 
 **Cons**:
+
 - Same limitations as pydocstyle
 - Requires specific configuration for Google style
 
 **Integration Example**:
+
 ```bash
 # Installation
 pip install flake8-docstrings
@@ -176,16 +192,19 @@ ignore = D107,D203,D212
 **Description**: Tool to automatically format docstrings to conform to PEP 257.
 
 **Pros**:
+
 - Automatically fixes formatting issues
 - Can be run on entire directories
 - Handles indentation and whitespace correctly
 
 **Cons**:
+
 - Limited to PEP 257 formatting, not Google-style specifics
 - No content validation
 - Doesn't add missing docstrings
 
 **Integration Example**:
+
 ```bash
 # Format a single file
 docformatter --in-place my_file.py
@@ -211,23 +230,28 @@ Based on the evaluation, we recommend implementing a combined approach:
    ```
 
 2. **Configuration Files**:
+
 - Create `.flake8` for flake8/pydocstyle configuration
 - Create `docs/sphinx/conf.py` for Sphinx configuration
 - Add interrogate settings to existing `pyproject.toml`
 
 3. **Integration with Development Workflow**:
+
 - Add docstring validation to pre-commit hooks
 - Set up docstring coverage as part of CI/CD pipeline
 - Create Sphinx documentation generation command
 
 4. **Example CI/CD Addition**:
    ```yaml
-- name: Check docstring coverage
-     run: interrogate -v journal/ --fail-under=90
-     
-- name: Build API documentation
-     run: cd docs/sphinx && make html
    ```
+
+- name: Check docstring coverage
+  run: interrogate -v journal/ --fail-under=90
+
+- name: Build API documentation
+  run: cd docs/sphinx && make html
+  ```
+  ```
 
 ## Conclusion
 

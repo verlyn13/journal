@@ -118,11 +118,13 @@ The tokens are integrated with Tailwind CSS for seamless usage:
 ### Colors
 
 **Dawn Mode (Light Theme)**
+
 - Background: Sand tones (#f5f3f0, #eae8e3, #dde3ea)
 - Text: Dark grays (#41454c, #6b7280)
 - Accent: Stone blue (#a8b5c5, #8fa5b8)
 
-**Dusk Mode (Dark Theme)**  
+**Dusk Mode (Dark Theme)**
+
 - Background: Deep blues and grays (#2c303a, #383d4a, #505668)
 - Text: Light grays (#d4d6d9, #9ca3af)
 - Accent: Burnished gold (#d4af8b, #c19b76)
@@ -130,19 +132,22 @@ The tokens are integrated with Tailwind CSS for seamless usage:
 ### Spacing
 
 8px base unit with systematic scale:
+
 - `xs`: 4px, `sm`: 8px, `md`: 16px, `lg`: 24px, `xl`: 32px, `2xl`: 48px
 - Custom: `18` (72px), `22` (88px) for generous spacing
 
 ### Elevation
 
 Three-tier shadow system for depth:
+
 - `sm`: Subtle lift for cards
-- `md`: Modal and dropdown shadows  
+- `md`: Modal and dropdown shadows
 - `lg`: High-emphasis overlays
 
 ### Motion
 
 Purposeful animation timing:
+
 - `panel`: Material-inspired panel animations
 - `emphasis`: Attention-drawing motions
 - `standard`: General transitions (200ms)
@@ -151,6 +156,7 @@ Purposeful animation timing:
 ### Typography
 
 Three font stacks:
+
 - `ui`: Inter (interface elements)
 - `content`: Lora (reading content)
 - `code`: JetBrains Mono (code blocks)
@@ -158,6 +164,7 @@ Three font stacks:
 ### Breakpoints
 
 Mobile-first responsive design:
+
 - `mobile`: 0px, `tablet`: 768px, `desktop`: 1280px, `wide`: 1920px
 
 ## Advanced Usage

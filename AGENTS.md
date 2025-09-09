@@ -21,6 +21,7 @@ journal/
 ### Python (API) - NEVER use pip, poetry, conda
 
 **ALL Python operations in `apps/api/` must use `uv` with virtual environment:**
+
 - **Virtual env management**: `uv venv`, `uv sync`, `uv lock`
 - **Package operations**: `uv add <package>`, `uv remove <package>`
 - **Development sync**: `uv sync --all-extras --dev`
@@ -33,6 +34,7 @@ journal/
 ### TypeScript/JavaScript - Use Bun exclusively (Node 22+ required)
 
 **ALL JS/TS operations must use `bun`:**
+
 - Root level: `bun install`, `bun run <script>`
 - Web app: `cd apps/web && bun install`, `bun run dev`
 - Never use npm or yarn for package management
@@ -43,6 +45,7 @@ journal/
 ### Required Services
 
 Before running tests or development servers:
+
 ```bash
 cd apps/api && docker compose up -d db nats
 ```
@@ -80,7 +83,7 @@ npm ci && npx playwright install && npm test
 ### Test Markers
 
 - `@pytest.mark.unit` - Fast, pure logic tests
-- `@pytest.mark.component` - HTTP + DB integration tests  
+- `@pytest.mark.component` - HTTP + DB integration tests
 - `@pytest.mark.integration` - Full integration with external services
 - `@pytest.mark.e2e` - End-to-end scenarios
 
@@ -196,6 +199,7 @@ npm ci && npx playwright install && npm test
 ## Agent Permissions & Constraints
 
 When running as Codex agent in this project:
+
 - **Sandbox**: `danger-full-access` (filesystem, network, processes)
 - **Approvals**: `never` (non-interactive execution)
 - **Timeout**: 15 minutes (for long operations like Playwright install)
@@ -209,6 +213,7 @@ When running as Codex agent in this project:
 ### Project Bootstrap
 
 To set up or refresh Codex configuration for this project:
+
 ```bash
 # Read system configuration and create/update project config
 codex "Read ~/Projects/verlyn13/system-setup/PROJECT-AGENT-BOOTSTRAP.md and update project configuration"
@@ -216,7 +221,7 @@ codex "Read ~/Projects/verlyn13/system-setup/PROJECT-AGENT-BOOTSTRAP.md and upda
 
 ### Model Selection & Usage
 
-#### Available Profiles (from ~/.codex/config.toml)
+#### Available Profiles (from \~/.codex/config.toml)
 
 - **speed** (default): `gpt-5-mini`, fast iteration, routine tasks
 - **depth**: `gpt-5` with high reasoning, complex analysis
@@ -243,6 +248,7 @@ mise run codex:permissive "scaffold new components"
 ### Mise Integration
 
 The project includes `.mise.toml` with predefined tasks:
+
 ```bash
 # Quick Codex invocations
 mise run codex:fast "quick fix"     # Uses speed profile
@@ -264,14 +270,14 @@ mise run ci          # Simulate CI pipeline locally
 
 ### Recommended Usage by Task Type
 
-| Task Type | Profile | Example |
-|-----------|---------|---------|
-| Bug fixes | speed | `codex "fix the failing test"` |
-| New features | speed/depth | `codex "add user profile endpoint"` |
-| Refactoring | depth | `codex --profile depth "refactor service layer"` |
-| Architecture | depth | `codex --profile depth "design event system"` |
-| Dependency updates | permissive | `codex --profile permissive "update packages"` |
-| CI/CD tasks | agent | `codex --profile agent "fix CI pipeline"` |
+| Task Type          | Profile     | Example                                          |
+| ------------------ | ----------- | ------------------------------------------------ |
+| Bug fixes          | speed       | `codex "fix the failing test"`                   |
+| New features       | speed/depth | `codex "add user profile endpoint"`              |
+| Refactoring        | depth       | `codex --profile depth "refactor service layer"` |
+| Architecture       | depth       | `codex --profile depth "design event system"`    |
+| Dependency updates | permissive  | `codex --profile permissive "update packages"`   |
+| CI/CD tasks        | agent       | `codex --profile agent "fix CI pipeline"`        |
 
 ### Security Note
 
@@ -280,7 +286,7 @@ API key is retrieved from gopass at `codex/openai/api-key`. Never commit API key
 ## Do Not
 
 - Run `pip install` or `npm install` directly
-- Create files without checking existing patterns  
+- Create files without checking existing patterns
 - Ignore type errors or linting warnings
 - Commit without running tests
 - Use synchronous code in async contexts

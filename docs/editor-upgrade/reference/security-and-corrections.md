@@ -46,7 +46,7 @@ Make the divider a focusable **separator** with `aria-orientation="vertical"` an
 
 `remark-breaks` turns soft newlines into `<br>`—that’s the intended “natural line break” UX you want. Note this diverges from semantic HTML and CommonMark, by design. Document that behavior for users. ([unified][11])
 
----
+***
 
 # Recommended “drop-in” renderer setup (safe by default)
 
@@ -104,21 +104,21 @@ export function MarkdownPreview({ markdown }: { markdown: string }) {
 - The KaTeX/rehype-sanitize schema follows the plugin’s own security note. ([npm][2])
 - Style the preview with Tailwind’s Typography plugin (`prose`), which is designed for HTML you don’t fully control (Markdown output). ([GitHub][13])
 
----
+***
 
 # Editor (CodeMirror 6) setup notes
 
 - Use `@uiw/react-codemirror` with `@codemirror/lang-markdown`; add helpers: `@codemirror/autocomplete` for snippet completions (e.g., code fence language suggestions after typing \`\`\`), and `@codemirror/closebrackets` for nicer typing. ([Forge Lyon 1][14], [CodeMirror][15], [npm][16])
 - Keep the language “autofill” lightweight: when the user types \`\`\` and a letter, show a completion list of your supported languages (don’t rely on highlight autodetect). The CodeMirror autocomplete docs show how to write custom `CompletionSource` or `snippetCompletion`. ([CodeMirror][15])
 
----
+***
 
 # Data migration corrections
 
 - **Server conversion**: If backend is FastAPI/Python, use `markdownify` (or similar) to convert HTML→MD on the server, or run a one-off Node script using **TurndownService**. Don’t import JS Turndown in Python. ([GitHub][5])
 - Store `format: "markdown"` and keep original HTML for rollback during the transition (your plan already does this—good).
 
----
+***
 
 # CSP hardening (concrete example)
 
@@ -139,7 +139,7 @@ Content-Security-Policy:
 
 Tune `connect-src` for your API endpoints; add `report-uri`/`report-to` when you’re ready. This aligns with MDN & OWASP guidance and avoids permissive `'unsafe-inline'`. ([MDN Web Docs][6], [OWASP Cheat Sheet Series][7])
 
----
+***
 
 # UX polish (quick wins)
 
@@ -147,7 +147,7 @@ Tune `connect-src` for your API endpoints; add `report-uri`/`report-to` when you
 - **Keyboard**: keep your current `Ctrl/Cmd+S` and **add** focus toggles for the split (give the splitter a `tabIndex=0` and arrow-key resize per ARIA “Window Splitter”). ([W3C][8])
 - **Mobile**: default to single-pane (editor ↔ preview toggle) and persist the last mode.
 
----
+***
 
 # Small correctness fixes in the V2 doc
 
@@ -156,14 +156,14 @@ Tune `connect-src` for your API endpoints; add `report-uri`/`report-to` when you
 - `rehype-highlight` option: document that `detect` defaults to `false` and that you’re intentionally keeping it off for stability and size. ([GitHub][3])
 - KaTeX: call out that the CSS and fonts must be present; otherwise math renders incorrectly. ([KaTeX][4])
 
----
+***
 
 # Performance notes
 
 - Your savings estimate looks directionally right. For predictable bundles, import only the highlight “common” languages or a hand-picked set and keep `detect: false`. ([GitHub][3])
 - Lazy-load the editor component and (optionally) the preview pipeline; Vite will tree-shake ESM modules well.
 
----
+***
 
 ## Bottom line
 
@@ -178,19 +178,33 @@ Proceed with the V2 approach, but make these changes before rollout:
 If you want, I can turn the above into the exact `MarkdownPreview.tsx`, CM6 setup, and a one-time migration script for your stack.
 
 [1]: https://www.npmjs.com/package/react-markdown/v/8.0.6?utm_source=chatgpt.com "react-markdown - npm"
-[2]: https://www.npmjs.com/package/rehype-katex/v/6.0.3 "rehype-katex - npm"
-[3]: https://github.com/rehypejs/rehype-highlight "GitHub - rehypejs/rehype-highlight: plugin to highlight code blocks"
-[4]: https://katex.org/docs/browser.html?utm_source=chatgpt.com "Browser"
-[5]: https://github.com/matthewwithanm/python-markdownify?utm_source=chatgpt.com "matthewwithanm/python-markdownify: Convert HTML to ..."
-[6]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CSP?utm_source=chatgpt.com "Content Security Policy (CSP) - MDN"
-[7]: https://cheatsheetseries.owasp.org/cheatsheets/Content_Security_Policy_Cheat_Sheet.html?utm_source=chatgpt.com "Content Security Policy Cheat Sheet"
-[8]: https://www.w3.org/WAI/ARIA/apg/patterns/windowsplitter/?utm_source=chatgpt.com "Window Splitter Pattern | APG | WAI"
-[9]: https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Roles/separator_role?utm_source=chatgpt.com "ARIA: separator role - MDN"
-[10]: https://www.npmjs.com/package/rehype-katex?utm_source=chatgpt.com "rehype-katex"
-[11]: https://unifiedjs.com/explore/package/remark-github/?utm_source=chatgpt.com "remark-github - unified"
-[12]: https://mdxjs.com/guides/gfm/?utm_source=chatgpt.com "GitHub flavored markdown (GFM)"
-[13]: https://github.com/tailwindlabs/tailwindcss-typography?utm_source=chatgpt.com "tailwindlabs/tailwindcss-typography"
-[14]: https://forge.univ-lyon1.fr/p2210733/portfolio/-/blob/main/node_modules/rehype-raw/readme.md?ref_type=heads&utm_source=chatgpt.com "node_modules/rehype-raw/readme.md · main"
-[15]: https://codemirror.net/examples/autocompletion/?utm_source=chatgpt.com "Example: Autocompletion"
-[16]: https://www.npmjs.com/package/%40codemirror/closebrackets?utm_source=chatgpt.com "codemirror/closebrackets"
 
+[2]: https://www.npmjs.com/package/rehype-katex/v/6.0.3 "rehype-katex - npm"
+
+[3]: https://github.com/rehypejs/rehype-highlight "GitHub - rehypejs/rehype-highlight: plugin to highlight code blocks"
+
+[4]: https://katex.org/docs/browser.html?utm_source=chatgpt.com "Browser"
+
+[5]: https://github.com/matthewwithanm/python-markdownify?utm_source=chatgpt.com "matthewwithanm/python-markdownify: Convert HTML to ..."
+
+[6]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CSP?utm_source=chatgpt.com "Content Security Policy (CSP) - MDN"
+
+[7]: https://cheatsheetseries.owasp.org/cheatsheets/Content_Security_Policy_Cheat_Sheet.html?utm_source=chatgpt.com "Content Security Policy Cheat Sheet"
+
+[8]: https://www.w3.org/WAI/ARIA/apg/patterns/windowsplitter/?utm_source=chatgpt.com "Window Splitter Pattern | APG | WAI"
+
+[9]: https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Roles/separator_role?utm_source=chatgpt.com "ARIA: separator role - MDN"
+
+[10]: https://www.npmjs.com/package/rehype-katex?utm_source=chatgpt.com "rehype-katex"
+
+[11]: https://unifiedjs.com/explore/package/remark-github/?utm_source=chatgpt.com "remark-github - unified"
+
+[12]: https://mdxjs.com/guides/gfm/?utm_source=chatgpt.com "GitHub flavored markdown (GFM)"
+
+[13]: https://github.com/tailwindlabs/tailwindcss-typography?utm_source=chatgpt.com "tailwindlabs/tailwindcss-typography"
+
+[14]: https://forge.univ-lyon1.fr/p2210733/portfolio/-/blob/main/node_modules/rehype-raw/readme.md?ref_type=heads&utm_source=chatgpt.com "node_modules/rehype-raw/readme.md · main"
+
+[15]: https://codemirror.net/examples/autocompletion/?utm_source=chatgpt.com "Example: Autocompletion"
+
+[16]: https://www.npmjs.com/package/%40codemirror/closebrackets?utm_source=chatgpt.com "codemirror/closebrackets"

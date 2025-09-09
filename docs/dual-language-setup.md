@@ -269,7 +269,7 @@ uv python pin 3.13.7
 
 ### Root pyproject.toml
 
-```toml
+````toml
 [project]
 name = "monorepo"
 version = "0.1.0"
@@ -512,7 +512,7 @@ dev = [
 [tool.ruff.lint.extend-per-file-ignores]
 "*/migrations/*.py" = ["E501", "D"]  # Alembic migrations
 "*/conftest.py" = ["F401", "F403"]   # pytest fixtures
-```
+````
 
 ## Ruff Integration: The Astral Synergy
 
@@ -580,6 +580,7 @@ repos:
 Ruff is monorepo-friendly, with hierarchical and cascading configuration. You can have a root configuration and override it in subdirectories:
 
 **Root ruff.toml**:
+
 ```toml
 # Global configuration
 line-length = 100
@@ -590,6 +591,7 @@ select = ["E", "F", "UP", "B", "SIM", "I"]
 ```
 
 **apps/api/.ruff.toml** (service-specific overrides):
+
 ```toml
 # Inherit from parent
 extend = "../../ruff.toml"
@@ -609,6 +611,7 @@ extend-select = ["ASYNC", "FA"]  # async and future annotations
 Create a shared schema that both TypeScript and Python can use:
 
 **packages/shared-types/schemas/user.json**
+
 ```json
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
@@ -624,6 +627,7 @@ Create a shared schema that both TypeScript and Python can use:
 ```
 
 Generate TypeScript types using Bun:
+
 ```typescript
 // packages/ts-lib/src/generate-types.ts
 import { SQL } from "bun";
@@ -635,6 +639,7 @@ const generateTypes = async () => {
 ```
 
 Generate Python types using uv:
+
 ```python
 # packages/python-lib/src/generate_types.py
 from pathlib import Path
@@ -649,6 +654,7 @@ def generate_types():
 ### 2. Cross-Language Communication
 
 **Using Bun's native capabilities:**
+
 ```typescript
 // apps/web/src/api/client.ts
 export class APIClient {
@@ -679,6 +685,7 @@ export class APIClient {
 ### 3. Unified Testing Strategy
 
 **TypeScript Testing with Bun:**
+
 ```typescript
 // apps/web/tests/api.test.ts
 import { expect, test, describe, beforeAll } from "bun:test";
@@ -700,6 +707,7 @@ describe("API Integration", () => {
 ```
 
 **Python Testing with uv:**
+
 ```python
 # apps/api/tests/test_endpoints.py
 import pytest
@@ -950,12 +958,14 @@ ruff check --isolated                 # Ignore all configuration
 ### Bun Optimizations
 
 1. **Native YAML Support**: Leverage Bun 1.2.21's built-in YAML parser
+
 ```typescript
 import config from "./config.yaml";
 // No additional parsing needed
 ```
 
 2. **Bun.SQL for Database Access**:
+
 ```typescript
 import { SQL } from "bun";
 
@@ -982,6 +992,7 @@ const users = await db`SELECT * FROM users WHERE active = ${true}`;
 Ruff is 150-200x faster than traditional Python linters. It can lint and format large codebases (250k+ lines) in under 0.2 seconds.
 
 1. **Single Tool Replacement**: Ruff replaces multiple tools (Black, isort, Flake8, pydocstyle, pyupgrade, autoflake, and more)
+
 ```bash
 # Before: Multiple tools, multiple passes, slower
 black . && isort . && flake8 . && pydocstyle .
@@ -991,6 +1002,7 @@ ruff check . --fix && ruff format .
 ```
 
 2. **Watch Mode for Development**: Use Ruff's watch mode for instant feedback
+
 ```bash
 # Terminal 1: Watch for linting issues
 uv run ruff check . --watch
@@ -999,6 +1011,7 @@ uv run ruff check . --watch
 ```
 
 3. **Incremental Checking**: Ruff caches results and only checks changed files
+
 ```bash
 # First run: checks all files
 ruff check .  # 0.2s for 250k lines
@@ -1010,6 +1023,7 @@ ruff check .  # <0.01s for unchanged codebase
 4. **Parallel Processing**: Ruff uses Rust's parallelism to check multiple files simultaneously
 
 5. **Smart Fix Application**: Ruff can apply multiple fixes in a single pass
+
 ```bash
 # Apply all safe fixes at once
 ruff check . --fix
@@ -1050,6 +1064,7 @@ ruff check . --fix --diff
 ### 4. The Astral Ecosystem Advantage
 
 Since both uv and Ruff are created by Astral, they work seamlessly together:
+
 ```bash
 # Install Ruff via uv for perfect integration
 uv tool install ruff@0.12.11
@@ -1088,6 +1103,7 @@ uvx ruff check --statistics
 Configure your editor for maximum productivity:
 
 **VS Code settings.json**:
+
 ```json
 {
   // Biome for TypeScript/JavaScript
@@ -1119,6 +1135,7 @@ Configure your editor for maximum productivity:
 ### Python 3.13.7 Features
 
 1. **Free-threaded Mode** (Experimental):
+
 ```python
 # Enable with PYTHON_GIL=0 environment variable
 import sys
@@ -1132,12 +1149,14 @@ print(f"GIL enabled: {sys._is_gil_enabled()}")
 ### Bun 1.2.21 Features
 
 1. **Native YAML Support**:
+
 ```typescript
 import config from "./config.yml";
 // Automatically parsed
 ```
 
 2. **500x Faster postMessage**:
+
 ```typescript
 // In workers
 self.postMessage(largeString); // Optimized for strings
@@ -1154,6 +1173,7 @@ self.postMessage(largeString); // Optimized for strings
 ### Ruff 0.12.11 Advanced Features
 
 1. **Preview Rules**: Enable cutting-edge linting rules
+
 ```toml
 [tool.ruff]
 preview = true  # Enable preview rules
@@ -1163,6 +1183,7 @@ select = ["FURB", "PERF", "LOG"]  # Modern rule sets
 ```
 
 2. **Automatic Import Sorting**: Ruff includes isort functionality
+
 ```python
 # Before Ruff format
 from typing import Dict
@@ -1179,6 +1200,7 @@ from api.models import User
 ```
 
 3. **Type Annotation Improvements**: Ruff can automatically upgrade type hints
+
 ```python
 # Before (Python 3.9 style)
 from typing import List, Dict, Optional
@@ -1192,6 +1214,7 @@ def process(items: list[str]) -> dict[str, int | None]:
 ```
 
 4. **Security Scanning**: Built-in security rules
+
 ```python
 # Ruff detects and warns about:
 import pickle  # S403: pickle is unsafe
@@ -1199,6 +1222,7 @@ exec(user_input)  # S102: exec usage
 ```
 
 5. **Performance Suggestions**: Ruff identifies performance anti-patterns
+
 ```python
 # Before
 result = []
@@ -1210,6 +1234,7 @@ result = [transform(item) for item in items]
 ```
 
 6. **Notebook Support**: Native Jupyter notebook linting
+
 ```bash
 # Lint Jupyter notebooks directly
 ruff check notebook.ipynb
@@ -1217,6 +1242,7 @@ ruff format notebook.ipynb
 ```
 
 7. **Editor Protocol Support**: Ruff Language Server for real-time feedback
+
 ```bash
 # Run Ruff as a language server
 ruff server
@@ -1228,7 +1254,7 @@ ruff server
 
 1. **Bun Installation on Windows**: Use PowerShell with admin rights
 2. **uv Python Version**: Ensure Python 3.13.7 is available for your platform
-3. **Biome Performance**: Use `experimentalScannerIgnores` for large node_modules
+3. **Biome Performance**: Use `experimentalScannerIgnores` for large node\_modules
 
 ### Debug Commands
 
@@ -1258,6 +1284,7 @@ This setup provides a modern, performant, and maintainable foundation for dual-l
 ### The Rust-Powered Stack
 
 All four primary tools are built with Rust, providing unprecedented speed:
+
 - **Bun**: JavaScript runtime and bundler (Zig/C++, but Rust-like performance)
 - **Biome**: TypeScript/JavaScript linter and formatter
 - **uv**: Python package and project manager
@@ -1265,7 +1292,7 @@ All four primary tools are built with Rust, providing unprecedented speed:
 
 ### Performance Metrics
 
-- Ruff is 150-200x faster than Flake8, scanning 250k lines in ~0.2s instead of ~20s
+- Ruff is 150-200x faster than Flake8, scanning 250k lines in \~0.2s instead of \~20s
 - uv is 10-100x faster than pip with parallel package installation
 - Bun executes TypeScript 40x faster than Node.js
 - Biome formats and lints JavaScript 20x faster than ESLint + Prettier
@@ -1273,6 +1300,7 @@ All four primary tools are built with Rust, providing unprecedented speed:
 ### The Astral Advantage
 
 Both uv and Ruff are created by Astral, ensuring:
+
 - Seamless integration between Python tooling
 - Consistent philosophy and user experience
 - Monorepo-friendly design with hierarchical configuration
@@ -1281,6 +1309,7 @@ Both uv and Ruff are created by Astral, ensuring:
 ### Tool Unification
 
 Ruff replaces Flake8 (plus dozens of plugins), Black, isort, pydocstyle, pyupgrade, autoflake, and more, all while executing tens or hundreds of times faster. This means:
+
 - Fewer dependencies to manage
 - Consistent code style enforcement
 - Single configuration source
@@ -1289,6 +1318,7 @@ Ruff replaces Flake8 (plus dozens of plugins), Black, isort, pydocstyle, pyupgra
 ### Development Experience
 
 The setup prioritizes developer happiness:
+
 - Sub-second linting and formatting for both languages
 - Real-time feedback with watch modes
 - Consistent tooling across the entire stack

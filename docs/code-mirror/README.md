@@ -1,11 +1,12 @@
----
+***
+
 title: CodeMirror Documentation Index
 category: reference
-topics: ["codemirror", "editor", "javascript"]
+topics: \["codemirror", "editor", "javascript"]
 version: "6.0"
-last_updated: "2025-04-08"
+last\_updated: "2025-04-08"
 description: "Index page for the CodeMirror 6 documentation, providing links to reference manuals, system guides, examples, and extension references relevant to the Journal project."
----
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # CodeMirror Documentation Index
 
@@ -44,14 +45,14 @@ Practical examples demonstrating key functionality:
 
 ## Key Concepts Map
 
-| Concept | Primary Document | Related Documents |
-|---------|------------------|-------------------|
-| Editor State | [Reference Manual Part 1](./reference-manual-part1.md) | [System Guide](./system-guide.md) |
-| View Components | [Reference Manual Part 2](./reference-manual-part2.md) | [Styling Example](./example-styling.md) |
-| Transactions | [Reference Manual Part 1](./reference-manual-part1.md) | [System Guide](./system-guide.md) |
-| Extensions | [Extensions Reference](./extensions-reference.md) | [System Guide](./system-guide.md) |
-| Theming | [Styling Example](./example-styling.md) | [Reference Manual Part 2](./reference-manual-part2.md) |
-| Accessibility | [Tab Handling Example](./example-tab-handling.md) | [Reference Manual Part 4](./reference-manual-part4.md) |
+| Concept         | Primary Document                                       | Related Documents                                      |
+| --------------- | ------------------------------------------------------ | ------------------------------------------------------ |
+| Editor State    | [Reference Manual Part 1](./reference-manual-part1.md) | [System Guide](./system-guide.md)                      |
+| View Components | [Reference Manual Part 2](./reference-manual-part2.md) | [Styling Example](./example-styling.md)                |
+| Transactions    | [Reference Manual Part 1](./reference-manual-part1.md) | [System Guide](./system-guide.md)                      |
+| Extensions      | [Extensions Reference](./extensions-reference.md)      | [System Guide](./system-guide.md)                      |
+| Theming         | [Styling Example](./example-styling.md)                | [Reference Manual Part 2](./reference-manual-part2.md) |
+| Accessibility   | [Tab Handling Example](./example-tab-handling.md)      | [Reference Manual Part 4](./reference-manual-part4.md) |
 
 ## Integration with Journal Project
 

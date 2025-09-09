@@ -7,11 +7,13 @@ In August 2025, the observability landscape has matured significantly with OpenT
 Python's logging landscape in 2025 centers around **structlog 25.4.0**, which has achieved full compatibility with Python 3.13.7's enhanced error messages and free-threaded build mode. The library now includes native support for Python's new `merge_extra` LoggerAdapter functionality and colorized exception tracebacks, providing exceptional developer experience while maintaining production performance of **80,000 requests per second**.
 
 Installation with uv 0.8.14 leverages parallel dependency resolution for optimal speed:
+
 ```bash
 uv add structlog "structlog[dev]" rich
 ```
 
 The recommended production configuration integrates seamlessly with Ruff 0.12.11's enhanced logging rules:
+
 ```python
 import structlog
 import os
@@ -48,6 +50,7 @@ Ruff 0.12.11 provides automated enforcement of logging best practices through sp
 For TypeScript projects running on Bun 1.2.21, **Pino emerges as the clear performance leader** with 85,000 requests per second - 5x faster than Winston. Bun's native optimizations for JSON serialization and file I/O operations make it particularly well-suited for high-throughput logging scenarios.
 
 The optimal Bun configuration leverages native APIs while maintaining compatibility:
+
 ```typescript
 import pino from 'pino';
 import { v4 as uuidv4 } from 'uuid';
@@ -78,7 +81,8 @@ const logger = pino({
 export default logger;
 ```
 
-Biome 2.2.2 integration ensures code quality through sophisticated error handling rules. While Biome's type inference currently covers ~75% of TypeScript error patterns, it effectively enforces critical patterns like proper Error object throwing and promise handling:
+Biome 2.2.2 integration ensures code quality through sophisticated error handling rules. While Biome's type inference currently covers \~75% of TypeScript error patterns, it effectively enforces critical patterns like proper Error object throwing and promise handling:
+
 ```json
 {
   "linter": {
@@ -108,6 +112,7 @@ OpenTelemetry has achieved **production maturity** with version 1.7.0 of OTLP, f
 Modern structured logging in 2025 prioritizes **JSON format with OTLP transmission** for observability platforms. Organizations implement sophisticated correlation tracking using W3C Trace Context standard (128-bit trace IDs) alongside UUID v4 correlation IDs for request tracing. This dual approach enables seamless integration between application logs and distributed tracing systems.
 
 Cost optimization becomes critical as data volumes explode. Smart sampling strategies reduce costs by 60-80% while maintaining observability quality:
+
 ```python
 class LogSampler:
     def __init__(self):
@@ -129,6 +134,7 @@ class LogSampler:
 ```
 
 For TypeScript, AsyncLocalStorage provides elegant correlation tracking:
+
 ```typescript
 import { AsyncLocalStorage } from 'async_hooks';
 const correlationStorage = new AsyncLocalStorage<{ correlationId: string }>();
@@ -148,6 +154,7 @@ export const loggingMiddleware = (req, res, next) => {
 Monorepo architectures in 2025 benefit from **shared error type packages** that standardize error handling across Python and TypeScript services. Teams using Nx or Turborepo create centralized error definitions with consistent serialization formats, enabling seamless cross-service error propagation.
 
 The recommended structure maintains language-specific implementations while sharing common error codes:
+
 ```typescript
 // packages/shared-errors/src/index.ts
 export enum ErrorCode {

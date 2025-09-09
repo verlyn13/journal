@@ -1,17 +1,18 @@
----
+***
+
 title: "Architecture Overview"
 description: "High-level overview of the Flask Journal application architecture and component interactions"
 category: "Guides"
-date_created: "2025-04-08"
-last_updated: "2025-04-08"
+date\_created: "2025-04-08"
+last\_updated: "2025-04-08"
 version: "1.0"
 status: active
-related_topics:
-      - "Data Model"
-      - "Authentication"
-      - "Request Lifecycle"
-tags: ["architecture", "flask", "blueprints", "SQLAlchemy", "components"]
----
+related\_topics:
+\- "Data Model"
+\- "Authentication"
+\- "Request Lifecycle"
+tags: \["architecture", "flask", "blueprints", "SQLAlchemy", "components"]
+--------------------------------------------------------------------------
 
 # Architecture Overview
 
@@ -144,11 +145,11 @@ This approach allows for easier testing and multiple instance creation.
 
 The application is modularized using Flask blueprints:
 
-| Blueprint | Purpose | Location |
-|-----------|---------|----------|
-| Auth Blueprint | User authentication | `journal/auth/` |
+| Blueprint      | Purpose                    | Location        |
+| -------------- | -------------------------- | --------------- |
+| Auth Blueprint | User authentication        | `journal/auth/` |
 | Main Blueprint | Core journal functionality | `journal/main/` |
-| API Blueprint | REST API endpoints | `journal/api/` |
+| API Blueprint  | REST API endpoints         | `journal/api/`  |
 
 Each blueprint encapsulates a specific area of functionality, with its own routes, templates, and forms.
 
@@ -156,11 +157,11 @@ Each blueprint encapsulates a specific area of functionality, with its own route
 
 The application uses SQLAlchemy ORM models to represent database entities:
 
-| Model | Purpose | Location |
-|-------|---------|----------|
-| User | User authentication information | `journal/models/user.py` |
+| Model | Purpose                          | Location                  |
+| ----- | -------------------------------- | ------------------------- |
+| User  | User authentication information  | `journal/models/user.py`  |
 | Entry | Journal entries created by users | `journal/models/entry.py` |
-| Tag | Tags for categorizing entries | `journal/models/tag.py` |
+| Tag   | Tags for categorizing entries    | `journal/models/tag.py`   |
 
 These models define the database schema, relationships, and business logic for their respective entities.
 
@@ -168,24 +169,24 @@ These models define the database schema, relationships, and business logic for t
 
 The application leverages several Flask extensions:
 
-| Extension | Purpose |
-|-----------|---------|
-| Flask-SQLAlchemy | ORM for database access |
-| Flask-Login | User session management |
-| Flask-Migrate | Database migration support |
-| Flask-WTF | Form handling and CSRF protection |
+| Extension        | Purpose                           |
+| ---------------- | --------------------------------- |
+| Flask-SQLAlchemy | ORM for database access           |
+| Flask-Login      | User session management           |
+| Flask-Migrate    | Database migration support        |
+| Flask-WTF        | Form handling and CSRF protection |
 
 ### 5. Frontend Components
 
 The frontend is built with:
 
-| Component | Purpose |
-|-----------|---------|
+| Component        | Purpose                                  |
+| ---------------- | ---------------------------------------- |
 | Jinja2 Templates | HTML rendering with template inheritance |
-| Rollup.js | JavaScript module bundling |
-| Alpine.js | Declarative JavaScript framework |
-| Markdown | Content formatting |
-| CodeMirror | Rich text editor |
+| Rollup.js        | JavaScript module bundling               |
+| Alpine.js        | Declarative JavaScript framework         |
+| Markdown         | Content formatting                       |
+| CodeMirror       | Rich text editor                         |
 
 ### 6. Asset Pipeline
 
@@ -254,14 +255,14 @@ The architecture is designed with several extension points:
 
 ## Technology Stack
 
-| Layer | Technologies |
-|-------|--------------|
-| Frontend | HTML, CSS, JavaScript, Alpine.js, CodeMirror |
-| Backend | Python, Flask, Jinja2 |
-| Database | SQLAlchemy ORM, SQLite (dev), PostgreSQL (prod) |
-| Build Tools | Rollup.js, npm |
-| Deployment | Gunicorn, Systemd, Nginx |
-| Testing | Pytest, pytest-cov |
+| Layer       | Technologies                                    |
+| ----------- | ----------------------------------------------- |
+| Frontend    | HTML, CSS, JavaScript, Alpine.js, CodeMirror    |
+| Backend     | Python, Flask, Jinja2                           |
+| Database    | SQLAlchemy ORM, SQLite (dev), PostgreSQL (prod) |
+| Build Tools | Rollup.js, npm                                  |
+| Deployment  | Gunicorn, Systemd, Nginx                        |
+| Testing     | Pytest, pytest-cov                              |
 
 ## Conclusion
 

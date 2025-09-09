@@ -33,7 +33,7 @@ mise run dev:full
 
 - **Location**: `apps/web/`
 - **Tech Stack**: React 18, TypeScript, Vite, CodeMirror
-- **Features**: 
+- **Features**:
   - Markdown editor with live preview (CodeMirror)
   - Math rendering with KaTeX
   - Code syntax highlighting (rehype-highlight)
@@ -115,7 +115,7 @@ Run with Bun from the repo root (use Node/npm if preferred):
 
 - API
   - `bun run api:setup` — start Postgres (5433), Redis (6380), NATS (4222) and run migrations
-  - `bun run api:dev` — start FastAPI dev server (http://127.0.0.1:8000)
+  - `bun run api:dev` — start FastAPI dev server (<http://127.0.0.1:8000>)
   - `bun run api:test` — run API tests via pytest
   - `bun run api:lint` — lint/format API code (ruff)
   - `bun run api:db:upgrade` — apply DB migrations (alembic via uv)
@@ -124,7 +124,7 @@ Run with Bun from the repo root (use Node/npm if preferred):
   - `bun run api:worker` — start embedding consumer worker
 
 - Web
-  - `bun run web:dev` — start frontend dev server (http://localhost:5173)
+  - `bun run web:dev` — start frontend dev server (<http://localhost:5173>)
   - `bun run web:build` — build frontend assets
   - `bun run web:preview` — preview built frontend
 
@@ -133,6 +133,7 @@ Run with Bun from the repo root (use Node/npm if preferred):
 ### Frontend Environment
 
 Create `apps/web/.env`:
+
 ```env
 VITE_API_URL=http://127.0.0.1:5000/api
 VITE_GRAPHQL_URL=http://127.0.0.1:8000/graphql
@@ -141,6 +142,7 @@ VITE_GRAPHQL_URL=http://127.0.0.1:8000/graphql
 ### Backend Environment
 
 Create `apps/api/.env`:
+
 ```env
 JOURNAL_DB_URL=postgresql+asyncpg://journal:journal@localhost:5433/journal
 JOURNAL_REDIS_URL=redis://localhost:6380/0
@@ -150,9 +152,9 @@ JOURNAL_JWT_SECRET=your-secret-key-change-in-production
 
 ## 📖 API Documentation
 
-- **OpenAPI/Swagger**: http://127.0.0.1:8000/docs
-- **ReDoc**: http://127.0.0.1:8000/redoc
-- **GraphQL Playground**: http://127.0.0.1:8000/graphql
+- **OpenAPI/Swagger**: <http://127.0.0.1:8000/docs>
+- **ReDoc**: <http://127.0.0.1:8000/redoc>
+- **GraphQL Playground**: <http://127.0.0.1:8000/graphql>
 
 ## 🧪 Testing
 
@@ -232,6 +234,7 @@ docker run -p 3000:3000 journal-web
 ### Using DevContainers
 
 For VS Code users:
+
 1. Install "Dev Containers" extension
 2. Open project in VS Code
 3. `Cmd/Ctrl + Shift + P` → "Dev Containers: Reopen in Container"

@@ -62,55 +62,55 @@ The Journal application is a full-stack web application built for personal journ
 
 ### Backend Technologies
 
-| Technology | Version | Purpose |
-|------------|---------|---------|
-| Python | 3.12+ | Core programming language |
-| Flask | 3.1.0 | Web application framework |
-| SQLAlchemy | 2.0.36 | ORM and database toolkit |
-| Flask-Login | 0.6.3 | User session management |
-| Flask-WTF | 1.2.1 | Form handling and CSRF protection |
-| WTForms | 3.2.1 | Form validation and rendering |
-| python-dotenv | 1.0.1 | Environment variable management |
-| email-validator | 2.2.0 | Email validation for forms |
-| Markdown | 3.7 | Markdown to HTML conversion |
-| Werkzeug | 3.1.3 | WSGI utilities |
+| Technology      | Version | Purpose                           |
+| --------------- | ------- | --------------------------------- |
+| Python          | 3.12+   | Core programming language         |
+| Flask           | 3.1.0   | Web application framework         |
+| SQLAlchemy      | 2.0.36  | ORM and database toolkit          |
+| Flask-Login     | 0.6.3   | User session management           |
+| Flask-WTF       | 1.2.1   | Form handling and CSRF protection |
+| WTForms         | 3.2.1   | Form validation and rendering     |
+| python-dotenv   | 1.0.1   | Environment variable management   |
+| email-validator | 2.2.0   | Email validation for forms        |
+| Markdown        | 3.7     | Markdown to HTML conversion       |
+| Werkzeug        | 3.1.3   | WSGI utilities                    |
 
 ### Frontend Technologies
 
-| Technology | Version | Purpose |
-|------------|---------|---------|
-| Bootstrap | 5.3.0 | CSS framework for responsive design |
-| Bootstrap Icons | 1.11.0 | Icon library |
-| HTMX | 2.0.0 | Dynamic HTML updates without JavaScript |
-| Alpine.js | 3.14.9 | Lightweight reactive framework |
-| CodeMirror | 6.0.2 | Code editor for Markdown |
-| MathJax | 3.x | Mathematical notation rendering |
-| Marked | 16.2.1 | Client-side Markdown parsing |
+| Technology      | Version | Purpose                                 |
+| --------------- | ------- | --------------------------------------- |
+| Bootstrap       | 5.3.0   | CSS framework for responsive design     |
+| Bootstrap Icons | 1.11.0  | Icon library                            |
+| HTMX            | 2.0.0   | Dynamic HTML updates without JavaScript |
+| Alpine.js       | 3.14.9  | Lightweight reactive framework          |
+| CodeMirror      | 6.0.2   | Code editor for Markdown                |
+| MathJax         | 3.x     | Mathematical notation rendering         |
+| Marked          | 16.2.1  | Client-side Markdown parsing            |
 
 ### Build Tools
 
-| Tool | Version | Purpose |
-|------|---------|---------|
-| Bun | 1.2.21 | JavaScript runtime and package manager |
-| Rollup | 4.49.0 | Module bundler for JavaScript |
-| PostCSS | 8.5.6 | CSS transformations |
-| Autoprefixer | 10.4.21 | CSS vendor prefixing |
-| cssnano | 7.1.1 | CSS minification |
-| Terser | via Rollup | JavaScript minification |
-| Biome | 2.2.2 | Linting and formatting |
+| Tool         | Version    | Purpose                                |
+| ------------ | ---------- | -------------------------------------- |
+| Bun          | 1.2.21     | JavaScript runtime and package manager |
+| Rollup       | 4.49.0     | Module bundler for JavaScript          |
+| PostCSS      | 8.5.6      | CSS transformations                    |
+| Autoprefixer | 10.4.21    | CSS vendor prefixing                   |
+| cssnano      | 7.1.1      | CSS minification                       |
+| Terser       | via Rollup | JavaScript minification                |
+| Biome        | 2.2.2      | Linting and formatting                 |
 
 ### Development Tools
 
-| Tool | Version | Purpose |
-|------|---------|---------|
-| Storybook | 8.6.14 | Component development and documentation |
-| Playwright | 1.55.0 | E2E testing framework |
-| pytest | via uv | Python testing framework |
-| JSDoc | 4.0.4 | JavaScript documentation |
-| TypeScript | 5.9.2 | Type checking for JavaScript |
-| uv | Latest | Python package management |
-| Ruff | via uv | Python linting and formatting |
-| mypy | via uv | Python type checking |
+| Tool       | Version | Purpose                                 |
+| ---------- | ------- | --------------------------------------- |
+| Storybook  | 8.6.14  | Component development and documentation |
+| Playwright | 1.55.0  | E2E testing framework                   |
+| pytest     | via uv  | Python testing framework                |
+| JSDoc      | 4.0.4   | JavaScript documentation                |
+| TypeScript | 5.9.2   | Type checking for JavaScript            |
+| uv         | Latest  | Python package management               |
+| Ruff       | via uv  | Python linting and formatting           |
+| mypy       | via uv  | Python type checking                    |
 
 ## Project Structure
 
@@ -217,11 +217,13 @@ def create_app(config_name='config.Config'):
 The application is organized into three main blueprints:
 
 1. **Auth Blueprint** (`/auth`): Handles user authentication
+
 - `/auth/register` - User registration
 - `/auth/login` - User login
 - `/auth/logout` - User logout
 
 2. **Main Blueprint** (`/`): Core journal functionality
+
 - `/` - Homepage/entry list
 - `/new_entry` - Create new entry
 - `/entry/<id>` - View entry
@@ -230,6 +232,7 @@ The application is organized into three main blueprints:
 - `/tag/<name>` - View entries by tag
 
 3. **API Blueprint** (`/api/v1`): RESTful API endpoints
+
 - `/api/v1/markdown/preview` - Markdown preview endpoint
 
 ### Authentication System
@@ -404,10 +407,10 @@ CREATE TABLE entry_tags (
    # Install dependencies
    bun install         # JavaScript dependencies
    uv sync            # Python dependencies
-   
+
    # Build frontend assets
    bun run build
-   
+
    # Initialize database
    uv run python -c "from journal import create_app, db; ..."
    ```
@@ -416,10 +419,10 @@ CREATE TABLE entry_tags (
    ```bash
    # Terminal 1: Flask backend
    uv run python run.py
-   
+
    # Terminal 2: Frontend watch mode
    bun run dev
-   
+
    # Terminal 3: Storybook
    bun run storybook
    ```
@@ -429,6 +432,7 @@ CREATE TABLE entry_tags (
 #### GitHub Actions Workflows
 
 1. **Continuous Integration** (`.github/workflows/ci.yml`):
+
 - Runs on push to main and pull requests
 - Steps:
   - Checkout code
@@ -440,16 +444,19 @@ CREATE TABLE entry_tags (
   - Build assets
 
 2. **GitHub Pages Deployment** (`.github/workflows/pages.yml`):
+
 - Deploys Storybook documentation
 - Triggered on push to main
 - Builds and uploads to GitHub Pages
 
 3. **Accessibility Testing** (`.github/workflows/ax.yml`):
+
 - Runs Playwright with axe-core
 - Tests all components for WCAG compliance
 - Generates accessibility reports
 
 4. **HTMX Testing** (`.github/workflows/hx.yml`):
+
 - Tests HTMX interactions
 - Validates partial page updates
 - Ensures progressive enhancement
@@ -457,18 +464,21 @@ CREATE TABLE entry_tags (
 ### Asset Optimization
 
 1. **JavaScript Bundling**:
+
 - Tree shaking to remove unused code
 - Code splitting for optimal loading
 - Minification with Terser
 - Source maps for debugging
 
 2. **CSS Processing**:
+
 - PostCSS for transformations
 - Autoprefixer for browser compatibility
 - cssnano for minification
 - PurgeCSS for removing unused styles (production)
 
 3. **Cache Busting**:
+
 - Content-based hashing for filenames
 - Manifest file for asset mapping
 - Long-term browser caching
@@ -477,10 +487,10 @@ CREATE TABLE entry_tags (
 
 ### Package Management
 
-| Tool | Purpose | Configuration |
-|------|---------|--------------|
-| uv | Python packages | `pyproject.toml` |
-| Bun | JavaScript packages | `package.json` |
+| Tool      | Purpose                      | Configuration         |
+| --------- | ---------------------------- | --------------------- |
+| uv        | Python packages              | `pyproject.toml`      |
+| Bun       | JavaScript packages          | `package.json`        |
 | pip-tools | Python dependency resolution | `requirements.in/txt` |
 
 ### Code Quality Tools
@@ -559,18 +569,21 @@ CREATE TABLE entry_tags (
 ### Test Categories
 
 1. **Unit Tests** (`tests/unit/`):
+
 - Model validation
 - Form processing
 - Utility functions
 - Component logic
 
 2. **Integration Tests** (`tests/integration/`):
+
 - Database operations
 - Authentication flow
 - API endpoints
 - Template rendering
 
 3. **End-to-End Tests** (`tests/e2e/`):
+
 - User workflows
 - Cross-browser testing
 - Accessibility testing
@@ -618,7 +631,7 @@ addopts = "-v --tb=short --strict-markers"
 
 ### Content Security
 
-- **XSS Prevention**: 
+- **XSS Prevention**:
   - Jinja2 auto-escaping
   - Markdown sanitization
   - CSP headers (production)
@@ -638,7 +651,7 @@ addopts = "-v --tb=short --strict-markers"
 ### Dependency Security
 
 - **Regular Updates**: Dependabot for automated PRs
-- **Security Audits**: 
+- **Security Audits**:
   - `npm audit` for JavaScript
   - `safety check` for Python
 - **License Compliance**: MIT/BSD compatible only
@@ -648,35 +661,41 @@ addopts = "-v --tb=short --strict-markers"
 ### Backend Optimizations
 
 1. **Database**:
+
 - Indexed foreign keys
 - Query optimization with eager loading
 - Connection pooling (production)
 - Pagination for large datasets
 
 2. **Caching**:
+
 - Template fragment caching
 - Static file caching headers
 - Redis integration ready (production)
 
 3. **Async Support**:
+
 - Async view functions where beneficial
 - Background task queue ready (Celery)
 
 ### Frontend Optimizations
 
 1. **Loading Performance**:
+
 - Critical CSS inlining
 - JavaScript defer/async loading
 - Resource hints (preload, prefetch)
 - Image lazy loading
 
 2. **Runtime Performance**:
+
 - Virtual scrolling for long lists
 - Debounced search inputs
 - Optimistic UI updates with HTMX
 - Web Workers for heavy processing
 
 3. **Bundle Optimization**:
+
 - Code splitting by route
 - Tree shaking unused code
 - Dynamic imports for large features
@@ -685,12 +704,14 @@ addopts = "-v --tb=short --strict-markers"
 ### Monitoring and Analytics
 
 1. **Application Monitoring**:
+
 - Error tracking (Sentry ready)
 - Performance monitoring
 - User analytics (privacy-friendly)
 - Database query analysis
 
 2. **Build Metrics**:
+
 - Bundle size tracking
 - Build time monitoring
 - Dependency size analysis
@@ -709,17 +730,20 @@ addopts = "-v --tb=short --strict-markers"
 
 ### Infrastructure Improvements
 
-1. **Production Deployment**: 
+1. **Production Deployment**:
+
 - Docker containerization
 - Kubernetes orchestration
 - Cloud platform integration (AWS/GCP/Azure)
 
 2. **Database Migration**:
+
 - PostgreSQL for production
 - Alembic for migrations
 - Read replicas for scaling
 
 3. **API Enhancement**:
+
 - RESTful API v2
 - GraphQL endpoint
 - OpenAPI documentation
@@ -728,16 +752,19 @@ addopts = "-v --tb=short --strict-markers"
 ### Developer Experience
 
 1. **Development Environment**:
+
 - Docker Compose setup
 - Devcontainer configuration
 - Hot module replacement
 
 2. **Documentation**:
+
 - API documentation with Swagger
 - Component documentation expansion
 - Video tutorials
 
 3. **Testing Enhancement**:
+
 - Mutation testing
 - Property-based testing
 - Load testing suite
@@ -747,6 +774,7 @@ addopts = "-v --tb=short --strict-markers"
 The Journal web application represents a modern, well-architected solution for personal journaling. It combines the stability and simplicity of server-side rendering with the interactivity of modern JavaScript frameworks. The comprehensive tooling setup ensures code quality, maintainability, and developer productivity.
 
 Key strengths of the current implementation:
+
 - Clean separation of concerns with Flask blueprints
 - Progressive enhancement approach
 - Comprehensive testing strategy
@@ -756,7 +784,7 @@ Key strengths of the current implementation:
 
 The modular architecture and extensive tooling make the application ready for scaling and future enhancements while maintaining code quality and developer experience.
 
----
+***
 
 *Report Generated: August 31, 2025*
 *Version: 1.0.0*

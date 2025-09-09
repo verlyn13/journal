@@ -1,17 +1,18 @@
----
+***
+
 title: "Editor Architecture"
 description: "Documentation of the editor component architecture in the Flask Journal application"
 category: "Guides"
-date_created: "2025-04-08"
-last_updated: "2025-04-08" # Updated to reflect initialization fix documentation
+date\_created: "2025-04-08"
+last\_updated: "2025-04-08" # Updated to reflect initialization fix documentation
 version: "1.0"
 status: active
-related_topics:
-      - "Architecture Overview"
-      - "JavaScript API Documentation"
-      - "Frontend Components"
-tags: ["editor", "codemirror", "alpine", "javascript", "frontend"]
----
+related\_topics:
+\- "Architecture Overview"
+\- "JavaScript API Documentation"
+\- "Frontend Components"
+tags: \["editor", "codemirror", "alpine", "javascript", "frontend"]
+-------------------------------------------------------------------
 
 # Editor Architecture
 
@@ -192,14 +193,14 @@ Data flows through the editor components as follows:
 
 The editor interacts with the server through several API endpoints:
 
-| Endpoint | Method | Purpose |
-|----------|--------|---------|
-| `/api/entries/<id>` | GET | Load an existing entry |
-| `/api/entries/<id>` | PUT | Update an existing entry |
-| `/api/entries` | POST | Create a new entry |
-| `/api/entries/draft` | GET | Retrieve saved draft |
-| `/api/entries/draft` | POST | Save draft |
-| `/api/v1/markdown` | POST | Generate HTML preview (server-side) |
+| Endpoint             | Method | Purpose                             |
+| -------------------- | ------ | ----------------------------------- |
+| `/api/entries/<id>`  | GET    | Load an existing entry              |
+| `/api/entries/<id>`  | PUT    | Update an existing entry            |
+| `/api/entries`       | POST   | Create a new entry                  |
+| `/api/entries/draft` | GET    | Retrieve saved draft                |
+| `/api/entries/draft` | POST   | Save draft                          |
+| `/api/v1/markdown`   | POST   | Generate HTML preview (server-side) |
 
 These endpoints allow the editor to save and load content, storing drafts and published entries.
 

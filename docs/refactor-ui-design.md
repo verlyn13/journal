@@ -2,7 +2,7 @@
 
 > **North Star**: A calm, inviting, “comfortable chair + immortal wooden desk” where words lead and the interface follows. Beautiful by default; powerful on demand. Live LaTeX and code rendering are first‑class.
 
----
+***
 
 ## 0) Executive Summary
 
@@ -14,7 +14,7 @@
   - **Flows**: Onboarding as writing. Distraction‑free sanctum. “River of Time” and “Constellation” views.
   - **AI stance**: “Quiet Librarian”—retrieval on request; no pushy interruptions.
 
----
+***
 
 ## 1) Brand System & Visual Language
 
@@ -43,7 +43,7 @@
 - **Motion**: 180–240ms ease for fades/scale; reduced-motion aware.
 - **Audio (opt‑in)**: page‑turn on new entry; soft “thump” on todo check; warm “click” when entering Focus Mode. Volume gated, fully disableable.
 
----
+***
 
 ## 2) Information Architecture
 
@@ -52,7 +52,7 @@
 - **Views**: List, Calendar, **River of Time** (horizontal stream), **Constellation** (generative map of tags/links).
 - **Organization**: Hybrid tags (#research, #family) + optional notebooks/folders. Smart tags (auto from templates/AI suggestions).
 
----
+***
 
 ## 3) Key Flows
 
@@ -87,7 +87,7 @@
 - Per‑entry: Markdown, PDF, HTML.
 - Bulk: date range + tag filter → zip with front‑matter.
 
----
+***
 
 ## 4) Editor System (Tiptap + Extensions)
 
@@ -116,7 +116,7 @@
 
 - Yjs awareness cursors (color‑blind‑safe); comment threads per block; change history side‑by‑side diff.
 
----
+***
 
 ## 5) Layout & Screens
 
@@ -143,14 +143,14 @@
 
 - Trends over time; tag heatmap; “constellation” canvas; streaks; reading time.
 
----
+***
 
 ## 6) Accessibility & Internationalization
 
 - **A11y**: semantic HTML, ARIA for editor controls; toolbar reachable by keyboard; visible focus; WCAG 2.2 AA contrast; reduced‑motion; captions/alt text required prompts.
 - **I18n**: RTL support; KaTeX with localized numerals where applicable; date/time locales; pluralization.
 
----
+***
 
 ## 7) Privacy, Sync, and Local‑First Architecture
 
@@ -159,14 +159,14 @@
 - **Encryption**: E2EE optional vaults (derived key from passphrase)—AI features disabled on locked vaults; server sees only ciphertext.
 - **Pii minimization**: EXIF strip; per‑entry visibility (private/shared/exported).
 
----
+***
 
 ## 8) Search Architecture
 
 - **Baseline**: Postgres FTS with tsvector column + GIN index; triggers on insert/update.
 - **Semantic (opt‑in)**: Chunk entries, embed (OpenAI or self‑hosted small model), store in pgvector/Chroma; ANN search with filters; RAG prompt builder used only on request.
 
----
+***
 
 ## 9) Performance Budgets
 
@@ -174,7 +174,7 @@
 - Incremental hydration for editor; lazy‑load heavy blocks (Monaco, KaTeX) on first use.
 - Debounced autosave (300–500ms); background rendering worker for KaTeX/preview.
 
----
+***
 
 ## 10) Component & Code Architecture (React/Tailwind/Tiptap)
 
@@ -222,7 +222,7 @@
 
 - BaseKit + History + Placeholder + Link + Table + Image + CodeBlock (custom Monaco) + Math (custom KaTeX) + SlashCommands + DragHandle + TaskList + Callout + Embed.
 
----
+***
 
 ## 11) Acceptance Criteria (MVP)
 
@@ -234,7 +234,7 @@
 6. **Exports**: Markdown/PDF/HTML produce faithful render (math embedded as SVG/HTML; code with highlights).
 7. **A11y**: Keyboard can reach all editor controls; WCAG AA contrast passes; reduced‑motion respected.
 
----
+***
 
 ## 12) Phase Roadmap
 
@@ -251,7 +251,7 @@
 
   - Constellation view, comments, presence cursors, version timelines, E2EE vaults.
 
----
+***
 
 ## 13) QA & Perf Checklist
 
@@ -261,7 +261,7 @@
 - **Search index** rebuild under 1s/1k entries locally.
 - **PDF** export rasterizes math correctly; selectable text remains intact.
 
----
+***
 
 ## 14) Risks & Mitigations
 
@@ -269,7 +269,7 @@
 - **Semantic privacy** → Opt‑in; on‑device embeddings option; redaction rules before sending snippets.
 - **Audio intrusion** → Off by default; master mute; fades ≤ 120ms.
 
----
+***
 
 ## 15) Open Questions
 
@@ -277,7 +277,7 @@
 2. Should “Run code” sandboxes be scoped to JS/Python only, or disabled initially?
 3. Do we include handwriting/ink input on tablets in Phase 2?
 
----
+***
 
 ## 16) Implementation Notes (Dev‑ready)
 
@@ -286,7 +286,7 @@
 - **Data**: Prisma → Postgres; entry.blocks JSONB; FTS via `tsvector` + GIN; optional `pgvector`.
 - **Local**: IndexedDB mirroring with background sync; Yjs docs per entry for future collab.
 
----
+***
 
 ## 17) Spec Snippets
 
@@ -294,16 +294,15 @@
 - **Slash menu commands**: `/daily`, `/lecture-notes`, `/todo`, `/table 3x5`, `/latex`, `/code ts`, `/quote`, `/embed`.
 - **Callouts**: info/warn/tip/quote variants with emoji markers.
 
----
+***
 
 ## 18) Handoff to Design (Figma)
 
 - Provide tokens library, components (Button, Input, Tabs, Toolbar, BubbleMenu, DragHandle, Callout, Chips), layout frames for: List, Calendar, River, Constellation, Focus Mode.
 - Prototype interactions: slash menu, math render, code block lazy‑load, Focus toggle, River scroll.
 
----
+***
 
 ### Final Note
 
 This plan preserves the quiet dignity of a study while delivering the power of a lab. Build the sanctuary first; layer insight second; keep the librarian quiet unless called.
-

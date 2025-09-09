@@ -6,7 +6,7 @@
 
 This report details the complete transformation from the current TipTap WYSIWYG editor to a HackMD-style markdown-first dual-pane editor using CodeMirror 6 and react-markdown with KaTeX math and syntax highlighting.
 
----
+***
 
 ## 1. CURRENT IMPLEMENTATION ANALYSIS
 
@@ -52,7 +52,7 @@ User Input → TipTap Editor → HTML Output → API Save
           localStorage (draft)
 ```
 
----
+***
 
 ## 2. PROPOSED IMPLEMENTATION ANALYSIS
 
@@ -97,7 +97,7 @@ User Input → CodeMirror → Markdown Text → react-markdown → Preview
                                         Rendered HTML
 ```
 
----
+***
 
 ## 3. DETAILED MIGRATION PLAN
 
@@ -150,6 +150,7 @@ apps/web/src/components/editor/
 #### 3.2.3 MODIFY Existing Files
 
 **JournalEditor.tsx → MarkdownJournalEditor.tsx**
+
 ```diff
 - import { EditorContent, useEditor } from "@tiptap/react";
 - import StarterKit from "@tiptap/starter-kit";
@@ -162,6 +163,7 @@ Component Changes:
 ```
 
 **JournalApp.tsx**
+
 ```diff
 - import JournalEditor from "./editor/JournalEditor";
 + import MarkdownJournalEditor from "./editor/MarkdownJournalEditor";
@@ -170,7 +172,7 @@ Component Changes:
 + onSave={(markdown: string, title: string) => ...}
 ```
 
----
+***
 
 ## 4. API & DATA MIGRATION
 
@@ -220,24 +222,24 @@ def get_entry_content(entry):
     return entry.content
 ```
 
----
+***
 
 ## 5. FEATURE COMPARISON MATRIX
 
-| Feature | Current (TipTap) | Proposed (CodeMirror) | Impact |
-|---------|-----------------|----------------------|---------|
-| **Editing Experience** | WYSIWYG | Markdown source | Major UX change |
-| **Toolbar** | Fixed + Bubble | None (shortcuts only) | Simpler, cleaner |
-| **Math Support** | Custom extension | Native KaTeX | Better rendering |
-| **Code Blocks** | Monaco (heavy) | highlight.js (light) | 90% size reduction |
-| **Preview** | In-editor | Split pane | Better separation |
-| **Performance** | Good | Excellent | Faster, lighter |
-| **Bundle Size** | ~500KB | ~200KB | 60% reduction |
-| **Learning Curve** | Low | Medium | Requires markdown knowledge |
-| **Mobile Support** | Good | Limited | Split-pane challenging |
-| **Accessibility** | Good | Excellent | Better keyboard nav |
+| Feature                | Current (TipTap) | Proposed (CodeMirror) | Impact                      |
+| ---------------------- | ---------------- | --------------------- | --------------------------- |
+| **Editing Experience** | WYSIWYG          | Markdown source       | Major UX change             |
+| **Toolbar**            | Fixed + Bubble   | None (shortcuts only) | Simpler, cleaner            |
+| **Math Support**       | Custom extension | Native KaTeX          | Better rendering            |
+| **Code Blocks**        | Monaco (heavy)   | highlight.js (light)  | 90% size reduction          |
+| **Preview**            | In-editor        | Split pane            | Better separation           |
+| **Performance**        | Good             | Excellent             | Faster, lighter             |
+| **Bundle Size**        | \~500KB          | \~200KB               | 60% reduction               |
+| **Learning Curve**     | Low              | Medium                | Requires markdown knowledge |
+| **Mobile Support**     | Good             | Limited               | Split-pane challenging      |
+| **Accessibility**      | Good             | Excellent             | Better keyboard nav         |
 
----
+***
 
 ## 6. IMPLEMENTATION STEPS (DETAILED)
 
@@ -283,21 +285,24 @@ def get_entry_content(entry):
 3. **Accessibility testing** (30 min)
 4. **Cross-browser testing** (1 hour)
 
----
+***
 
 ## 7. RISK ASSESSMENT & MITIGATION
 
 ### 7.1 High-Risk Areas
 
 1. **User Resistance to Markdown**
+
 - Mitigation: Add help documentation, shortcuts guide
 - Fallback: Keep WYSIWYG option available
 
 2. **Data Migration Failures**
+
 - Mitigation: Backup all data, test on subset first
 - Fallback: Dual-format support period
 
 3. **Mobile Experience Degradation**
+
 - Mitigation: Single-pane mode on mobile
 - Fallback: Keep current editor for mobile
 
@@ -308,7 +313,7 @@ def get_entry_content(entry):
 - **localStorage key changes**
 - **Component prop interfaces**
 
----
+***
 
 ## 8. TESTING REQUIREMENTS
 
@@ -338,7 +343,7 @@ def get_entry_content(entry):
 - Math rendering
 - Code highlighting
 
----
+***
 
 ## 9. ROLLBACK PLAN
 
@@ -363,7 +368,7 @@ const EditorComponent = FEATURE_FLAGS.USE_MARKDOWN_EDITOR
 4. Monitor user feedback
 5. Plan incremental migration
 
----
+***
 
 ## 10. PERFORMANCE METRICS
 
@@ -383,7 +388,7 @@ const EditorComponent = FEATURE_FLAGS.USE_MARKDOWN_EDITOR
 - Memory profiling
 - User input latency
 
----
+***
 
 ## CONCLUSION
 
@@ -405,8 +410,8 @@ The migration can be completed in approximately **19 hours of focused developmen
 4. Gradual rollout over 2-4 weeks
 5. Full migration after user acceptance
 
----
+***
 
-*Document Version: 1.0*  
-*Created: 2025-09-01*  
+*Document Version: 1.0*\
+*Created: 2025-09-01*\
 *Author: Claude Code Assistant*

@@ -9,7 +9,7 @@ The Journal API test suite uses pytest with comprehensive coverage across unit, 
 - **Total Tests**: 136 (132 passing, 4 skipped)
 - **Coverage**: 79% (686/836 lines)
 - **Required Coverage**: 85% minimum
-- **Execution Time**: ~15 seconds with coverage
+- **Execution Time**: \~15 seconds with coverage
 
 ## Test Organization
 
@@ -140,18 +140,18 @@ Key fixtures in `conftest.py`:
 
 ### Current Coverage by Module
 
-| Module | Coverage | Status |
-|--------|----------|--------|
-| `app/api/v1/admin.py` | 96% | ✅ Excellent |
-| `app/api/v1/auth.py` | 96% | ✅ Excellent |
-| `app/api/v1/entries.py` | 61% | ⚠️ Needs improvement |
-| `app/api/v1/search.py` | 64% | ⚠️ Needs improvement |
-| `app/api/v1/stats.py` | 82% | ✅ Good |
-| `app/infra/auth.py` | 100% | ✅ Perfect |
-| `app/infra/models.py` | 100% | ✅ Perfect |
-| `app/infra/outbox.py` | 100% | ✅ Perfect |
-| `app/infra/conversion.py` | 75% | ⚠️ Needs improvement |
-| `app/workers/embedding_consumer.py` | 80% | ✅ Good |
+| Module                              | Coverage | Status               |
+| ----------------------------------- | -------- | -------------------- |
+| `app/api/v1/admin.py`               | 96%      | ✅ Excellent          |
+| `app/api/v1/auth.py`                | 96%      | ✅ Excellent          |
+| `app/api/v1/entries.py`             | 61%      | ⚠️ Needs improvement |
+| `app/api/v1/search.py`              | 64%      | ⚠️ Needs improvement |
+| `app/api/v1/stats.py`               | 82%      | ✅ Good               |
+| `app/infra/auth.py`                 | 100%     | ✅ Perfect            |
+| `app/infra/models.py`               | 100%     | ✅ Perfect            |
+| `app/infra/outbox.py`               | 100%     | ✅ Perfect            |
+| `app/infra/conversion.py`           | 75%      | ⚠️ Needs improvement |
+| `app/workers/embedding_consumer.py` | 80%      | ✅ Good               |
 
 ### Generating Coverage Reports
 
@@ -253,6 +253,7 @@ async def test_worker_processing():
 ### GitHub Actions Workflow
 
 Tests run automatically on:
+
 - Pull requests
 - Pushes to main branch
 - Manual workflow dispatch
@@ -271,19 +272,23 @@ pre-commit run --all-files
 ### Common Issues
 
 1. **Database Connection Errors**
+
 - Ensure PostgreSQL is running: `docker compose up -d db`
 - Check connection string in environment
 
 2. **Test Discovery Issues**
+
 - Clear pytest cache: `rm -rf .pytest_cache`
 - Ensure test files start with `test_`
 
 3. **Async Test Errors**
+
 - Use `@pytest.mark.asyncio` decorator
 - Use `AsyncClient` for HTTP tests
 - Use `AsyncSession` for database tests
 
 4. **Coverage Not Updating**
+
 - Clear coverage data: `rm .coverage`
 - Regenerate: `uv run pytest --cov=app`
 
@@ -313,6 +318,7 @@ uv run pytest -s tests/api/test_api_auth.py::TestAuthAPI::test_login_success
 ### Updating Test Organization
 
 When reorganizing tests:
+
 1. Update this documentation
 2. Ensure no tests are lost (check test count)
 3. Verify coverage remains stable
@@ -331,7 +337,8 @@ Quality tests added to improve test coverage with meaningful scenarios:
 
 ### Implementation Gaps Discovered
 
-See [IMPLEMENTATION_GAPS.md](./IMPLEMENTATION_GAPS.md) for detailed documentation of issues found through quality testing, including:
+See [IMPLEMENTATION\_GAPS.md](./IMPLEMENTATION_GAPS.md) for detailed documentation of issues found through quality testing, including:
+
 - Concurrent database operation conflicts
 - Missing automatic embedding generation
 - Basic markdown/HTML conversion limitations
@@ -340,6 +347,7 @@ See [IMPLEMENTATION_GAPS.md](./IMPLEMENTATION_GAPS.md) for detailed documentatio
 ### Quality Test Adjustments
 
 Tests were adjusted to match actual implementation behavior:
+
 - Concurrent updates changed to sequential (session conflict workaround)
 - Manual embedding generation added for search tests
 - Conversion expectations lowered to match basic implementation
@@ -363,7 +371,7 @@ For the current Phase 4 (Dual-write Integration):
 3. **Backward Compatibility**: Legacy clients get HTML by default
 4. **Migration**: Backfill script converts existing HTML to Markdown
 
----
+***
 
 *Last Updated: September 2025*
 *Coverage Target: 85% minimum*

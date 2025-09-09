@@ -214,6 +214,7 @@ POST   /api/v1/ai/generate-insights       # Personal insights from journal data
 #### Core Entities
 
 **User Aggregate**
+
 ```
 User {
   id: UUID (PK)
@@ -241,6 +242,7 @@ UserPreferences {
 ```
 
 **Entry Aggregate**
+
 ```
 Entry {
   id: UUID (PK)
@@ -285,6 +287,7 @@ EntryMetadata {
 ```
 
 **Tag System**
+
 ```
 Tag {
   id: UUID (PK)
@@ -308,6 +311,7 @@ EntryTag {
 ```
 
 **Workspace & Collaboration**
+
 ```
 Workspace {
   id: UUID (PK)
@@ -341,6 +345,7 @@ EntryCollaborator {
 #### Event Sourcing Schema
 
 **Domain Events**
+
 ```
 DomainEvent {
   id: UUID (PK)
@@ -366,8 +371,9 @@ EventMetadata {
 ```
 
 **Event Types**
+
 - `user.registered`
-- `user.email_verified` 
+- `user.email_verified`
 - `user.profile_updated`
 - `entry.created`
 - `entry.updated`

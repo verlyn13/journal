@@ -1,12 +1,12 @@
----
+***
+
 title: CodeMirror Bundling Example (Rollup)
 description: "Explains why bundling is necessary for CodeMirror and provides an example of how to bundle it using Rollup, including optimization strategies."
 category: "CodeMirror Examples"
 status: active
-tags: ["codemirror", "example", "bundling", "rollup", "javascript", "optimization"]
+tags: \["codemirror", "example", "bundling", "rollup", "javascript", "optimization"]
 version: "6.0"
----
-
+--------------
 
 # CodeMirror Bundling Guide: Using Rollup
 
@@ -19,6 +19,7 @@ CodeMirror is distributed as a collection of ES modules that need to be bundled 
 Modern JavaScript libraries like CodeMirror are typically organized as a collection of modules. While browsers can now load ES modules natively, their current dependency resolution mechanisms aren't sophisticated enough to efficiently handle NPM-distributed module collections.
 
 Bundlers solve this problem by:
+
 - Combining multiple JavaScript files into a single file
 - Resolving dependencies correctly
 - Enabling optimization techniques like tree-shaking
@@ -63,6 +64,7 @@ node_modules/.bin/rollup editor.mjs -f iife -o editor.bundle.js \
 ```
 
 Parameters explained:
+
 - `-f iife`: Format output as an "immediately-invoked function expression"
 - `-o editor.bundle.js`: Specify output file
 - `-p @rollup/plugin-node-resolve`: Use the Node.js resolution plugin
@@ -130,8 +132,9 @@ let editor = new EditorView({
 ```
 
 This includes only essential extensions, reducing bundle size significantly:
-- Full bundle: ~1MB → ~400KB (minified) → ~135KB (gzipped)
-- Minimal bundle: ~700KB → ~250KB (minified) → ~75KB (gzipped)
+
+- Full bundle: \~1MB → \~400KB (minified) → \~135KB (gzipped)
+- Minimal bundle: \~700KB → \~250KB (minified) → \~75KB (gzipped)
 
 ### 3. Dynamic Loading
 

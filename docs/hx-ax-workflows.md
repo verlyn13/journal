@@ -398,13 +398,13 @@ def serve_component(filename):
 
 ### 1. Component Testing Matrix
 
-| Test Type | Tool | Frequency | Coverage Target |
-|-----------|------|-----------|-----------------|
-| Unit | Vitest | Every commit | 90% |
-| Integration | Playwright | Every PR | 80% |
-| Visual | Percy/Chromatic | Every PR | All components |
-| Accessibility | axe-core | Every PR | WCAG 2.2 AA |
-| Performance | Lighthouse | Weekly | Score > 90 |
+| Test Type     | Tool            | Frequency    | Coverage Target |
+| ------------- | --------------- | ------------ | --------------- |
+| Unit          | Vitest          | Every commit | 90%             |
+| Integration   | Playwright      | Every PR     | 80%             |
+| Visual        | Percy/Chromatic | Every PR     | All components  |
+| Accessibility | axe-core        | Every PR     | WCAG 2.2 AA     |
+| Performance   | Lighthouse      | Weekly       | Score > 90      |
 
 ### 2. E2E Test Patterns
 
