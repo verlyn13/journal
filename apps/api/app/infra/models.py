@@ -11,6 +11,7 @@ from pydantic import field_validator
 
 # Third-party imports
 from sqlalchemy import JSON, Column, event
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlmodel import Field, SQLModel
 
 
@@ -97,3 +98,51 @@ class ProcessedEvent(SQLModel, table=True):
     processed_at: datetime = Field(default_factory=datetime.utcnow, index=True)
     outcome: str = Field(default="ok")
     attempts: int = Field(default=1)
+
+
+# ==============================
+# User Management Models (flagged rollout)
+# ==============================
+
+
+class User(SQLModel, table=True):
+    """Persistent application user.
+
+    Fields chosen for minimal viable user management with future-proofing:
+    - Unique email, optional username
+    - Optional password_hash (set when password auth is enabled)
+    - Roles as JSON list (JSONB in Postgres) for simple RBAC
+    - Activity and verification flags
+    - Timestamps
+    """
+
+    __tablename__ = "users"
+
+    id: UUID = Field(default_factory=uuid4, primary_key=True, nullable=False)
+    email: str = Field(index=True, unique=True, nullable=False)
+    username: str | None = Field(default=None, index=True)
+    password_hash: str | None = Field(default=None)
+    is_active: bool = Field(default=True, nullable=False)
+    is_verified: bool = Field(default=False, nullable=False)
+    roles: list[str] = Field(default_factory=lambda: ["user"], sa_column=Column(JSONB, nullable=False))
+    created_at: datetime = Field(default_factory=datetime.utcnow, nullable=False, index=True)
+    updated_at: datetime = Field(default_factory=datetime.utcnow, nullable=False)
+
+
+class UserSession(SQLModel, table=True):
+    """Server-side refresh session record.
+
+    Tracks refresh token identity (refresh_id) by UUID, with lifecycle fields for rotation and revocation.
+    """
+
+    __tablename__ = "user_sessions"
+
+    id: UUID = Field(default_factory=uuid4, primary_key=True, nullable=False)
+    user_id: UUID = Field(foreign_key="users.id", index=True, nullable=False)
+    refresh_id: UUID = Field(default_factory=uuid4, unique=True, index=True, nullable=False)
+    user_agent: str | None = None
+    ip_address: str | None = None
+    issued_at: datetime = Field(default_factory=datetime.utcnow, nullable=False, index=True)
+    last_used_at: datetime = Field(default_factory=datetime.utcnow, nullable=False)
+    expires_at: datetime = Field(nullable=False)
+    revoked_at: datetime | None = Field(default=None)
