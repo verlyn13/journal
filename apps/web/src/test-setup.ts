@@ -1,4 +1,7 @@
 import '@testing-library/jest-dom/vitest';
+// Hint to application code that we are in a test environment
+// Enables test-friendly code paths when needed
+(globalThis as unknown as { __TEST__?: boolean }).__TEST__ = true;
 import { cleanup } from '@testing-library/react';
 import { afterEach, vi } from 'vitest';
 
@@ -244,3 +247,7 @@ if (typeof window !== 'undefined' && typeof DocumentType === 'undefined') {
     }
   };
 }
+
+// Mock requestIdleCallback for tests
+(globalThis as any).requestIdleCallback ??= (cb: any) => setTimeout(cb, 0);
+(globalThis as any).cancelIdleCallback ??= (id: any) => clearTimeout(id);

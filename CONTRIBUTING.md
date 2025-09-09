@@ -114,6 +114,19 @@ We expect all contributors to follow our [Code of Conduct](CODE_OF_CONDUCT.md). 
 - E2E (Playwright): from repo root run `make e2e` (starts API, waits for health, runs tests, cleans up)
 - References: see `docs/TESTING_STATUS.md` (status/plan/CI) and `apps/api/docs/testing.md` (detailed guide).
 
+## Pre-commit Hooks
+
+Enable pre-commit to catch issues early and keep formatting consistent.
+
+- Install hooks: `uvx pre-commit install`
+- Run on all files: `pre-commit run --all-files`
+- Hooks included:
+  - detect-private-key, check-merge-conflict, end-of-file-fixer, trailing-whitespace
+  - ruff (lint) and ruff-format for Python
+  - Biome check for JS/TS via `bun run check`
+
+Note: All Python tasks use `uv` in `apps/api/`, and all JS/TS tasks use `bun`.
+
 ### Local Workflow Testing with `act`
 
 Before submitting a Pull Request, especially if your changes affect GitHub Actions workflows (`.github/workflows/`), you should test the workflows locally using [`act`](https://github.com/nektos/act). This helps catch errors early and reduces CI failures.
