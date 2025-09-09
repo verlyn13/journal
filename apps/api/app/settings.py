@@ -24,6 +24,14 @@ class Settings(BaseSettings):
     rate_limit_window_seconds: int = 60
     rate_limit_max_attempts: int = 5
 
+    # Cookie/CSRF (M4)
+    auth_cookie_refresh: bool = False
+    csrf_cookie_name: str = "csrftoken"
+    refresh_cookie_name: str = "refresh_token"
+    cookie_secure_default: bool = True
+    cookie_samesite: str = "lax"  # "lax" | "strict" | "none"
+    cookie_path: str = "/api/v1/auth"
+
     # Demo credentials for development/testing (override via env in real deployments)
     demo_username: str = "demo"
     demo_password: str = ""  # Set JOURNAL_DEMO_PASSWORD in env for non-empty
