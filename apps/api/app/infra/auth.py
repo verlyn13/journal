@@ -47,6 +47,20 @@ def create_refresh_token(sub: str) -> str:
     return jwt.encode(payload, settings.jwt_secret, algorithm="HS256")
 
 
+def create_verify_token(sub: str, minutes: int = 30) -> str:
+    now = _utcnow()
+    payload = {
+        "iss": settings.jwt_iss,
+        "aud": settings.jwt_aud,
+        "iat": int(now.timestamp()),
+        "nbf": int(now.timestamp()),
+        "exp": int((now + timedelta(minutes=minutes)).timestamp()),
+        "sub": sub,
+        "typ": "verify",
+    }
+    return jwt.encode(payload, settings.jwt_secret, algorithm="HS256")
+
+
 def require_user(creds: HTTPAuthorizationCredentials = Depends(bearer_scheme)) -> str:
     if not creds:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Missing auth")

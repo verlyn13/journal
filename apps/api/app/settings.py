@@ -20,6 +20,9 @@ class Settings(BaseSettings):
     auto_embed_mode: str = "event"  # "event" | "inline" | "off"
     # Feature flags
     user_mgmt_enabled: bool = False
+    auth_require_email_verify: bool = True
+    rate_limit_window_seconds: int = 60
+    rate_limit_max_attempts: int = 5
 
     # Demo credentials for development/testing (override via env in real deployments)
     demo_username: str = "demo"
