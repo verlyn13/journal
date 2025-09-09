@@ -15,7 +15,7 @@ def _utcnow() -> datetime:
 
 
 async def create_session(
-    db: AsyncSession, user_id: UUID, ua: Optional[str], ip: Optional[str]
+    db: AsyncSession, user_id: UUID, ua: str | None, ip: str | None
 ) -> UserSession:
     now = _utcnow()
     sess = UserSession(
