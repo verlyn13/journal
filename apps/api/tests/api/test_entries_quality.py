@@ -3,8 +3,6 @@ Quality-focused tests for entry API endpoints.
 These tests focus on real-world scenarios, error handling, and edge cases.
 """
 
-from uuid import uuid4
-
 import pytest
 
 from httpx import AsyncClient

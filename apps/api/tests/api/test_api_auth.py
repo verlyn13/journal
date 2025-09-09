@@ -2,8 +2,6 @@
 Test cases for authentication API endpoints.
 """
 
-from unittest.mock import patch
-
 import pytest
 
 from httpx import AsyncClient

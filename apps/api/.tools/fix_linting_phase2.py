@@ -1,11 +1,9 @@
-#!/usr/bin/env python3
 """Fix critical linting issues for Phase 2 of the migration plan."""
 
 import re
 import sys
 
 from pathlib import Path
-from typing import List, Tuple
 
 
 def fix_ble001_exceptions(content: str, file_path: str) -> str:
@@ -18,7 +16,8 @@ def fix_ble001_exceptions(content: str, file_path: str) -> str:
         (r"except Exception:", "except (OSError, RuntimeError) as exc:"),
     ]
 
-    for pattern, replacement in patterns:
+    for pattern, default_replacement in patterns:
+        replacement = default_replacement
         if "outbox" in file_path or "worker" in file_path:
             # For message processing, keep broader exception handling
             replacement = "except Exception as exc:  # noqa: BLE001"
@@ -92,24 +91,28 @@ def fix_logging_issues(content: str) -> str:
 def process_file(file_path: Path) -> bool:
     """Process a single file and fix linting issues."""
     try:
-        content = file_path.read_text()
+        content = file_path.read_text(encoding="utf-8")
         original = content
+    except Exception as e:  # noqa: BLE001 - tooling script IO
+        print(f"Error reading {file_path}: {e}", file=sys.stderr)
+        return False
 
-        # Apply fixes
-        content = fix_ble001_exceptions(content, str(file_path))
-        content = fix_missing_annotations(content)
-        content = fix_import_organization(content)
-        content = fix_security_issues(content)
-        content = fix_logging_issues(content)
+    # Apply fixes
+    content = fix_ble001_exceptions(content, str(file_path))
+    content = fix_missing_annotations(content)
+    content = fix_import_organization(content)
+    content = fix_security_issues(content)
+    content = fix_logging_issues(content)
 
-        if content != original:
-            file_path.write_text(content)
+    changed = content != original
+    if changed:
+        try:
+            file_path.write_text(content, encoding="utf-8")
             print(f"Fixed: {file_path}")
-            return True
-        return False
-    except Exception as e:
-        print(f"Error processing {file_path}: {e}", file=sys.stderr)
-        return False
+        except Exception as e:  # noqa: BLE001 - tooling script IO
+            print(f"Error writing {file_path}: {e}", file=sys.stderr)
+            return False
+    return changed
 
 
 def main():

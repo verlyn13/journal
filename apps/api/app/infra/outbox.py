@@ -10,11 +10,11 @@ import os
 import random
 
 from collections.abc import AsyncIterator, Callable
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 from typing import Any
 
 # Third-party imports
-from sqlalchemy import select, text, text as _text, update
+from sqlalchemy import func, select, text, text as _text, update
 
 from app.infra.models import Event
 from app.infra.nats_bus import nats_conn
@@ -27,6 +27,51 @@ SUBJECT_MAP = {
 
 
 SessionFactory = Callable[[], AsyncIterator[Any]]
+
+
+async def _publish_rows(s: Any, rows: list[Event], retry_enabled: bool) -> None:
+    """Publish rows to NATS (JetStream if available) and mark as published."""
+    # Support monkeypatched nats_conn that returns a coroutine yielding a context manager
+    ctx = nats_conn()
+    if asyncio.iscoroutine(ctx):  # type: ignore[arg-type]
+        ctx = await ctx  # type: ignore[assignment]
+    async with ctx as nc:  # type: ignore[attr-defined]
+        # Prefer JetStream publish with de-dupe if available
+        js = None
+        try:
+            js = nc.jetstream()
+        except Exception:  # noqa: BLE001 - tolerate missing JetStream
+            js = None
+        for ev in rows:
+            subject = SUBJECT_MAP.get(ev.aggregate_type, "journal.events")
+            payload = json.dumps(
+                {
+                    "id": str(ev.id),
+                    "event_type": ev.event_type,
+                    "event_data": ev.event_data,
+                    "ts": ev.occurred_at.isoformat(),
+                }
+            ).encode("utf-8")
+            try:
+                metrics_inc("outbox_publish_attempts_total", {"stage": "attempt"})
+                if js:
+                    # De-dupe via message id if supported
+                    await js.publish(subject, payload, msg_id=str(ev.id))
+                else:
+                    await nc.publish(subject, payload)
+
+                # Mark as published
+                await s.execute(
+                    update(Event).where(Event.id == ev.id).values(published_at=func.now())
+                )
+                metrics_inc("outbox_publish_attempts_total", {"result": "ok"})
+            except Exception as e:  # noqa: BLE001 - operational resilience
+                # Compute backoff and schedule retry if enabled; otherwise, best-effort log
+                if retry_enabled:
+                    await _schedule_retry_or_dead(s, ev, e, nc)
+                else:
+                    _log_only(e)
+                metrics_inc("outbox_publish_attempts_total", {"result": "error"})
 
 
 async def relay_outbox(session_factory: SessionFactory, poll_seconds: float = 1.0) -> None:
@@ -61,49 +106,9 @@ async def relay_outbox(session_factory: SessionFactory, poll_seconds: float = 1.
                     await asyncio.sleep(poll_seconds)
                     continue
 
-                # Support monkeypatched nats_conn that returns a coroutine yielding a context manager
-                ctx = nats_conn()
-                if asyncio.iscoroutine(ctx):  # type: ignore[arg-type]
-                    ctx = await ctx  # type: ignore[assignment]
-                async with ctx as nc:  # type: ignore[attr-defined]
-                    # Prefer JetStream publish with de-dupe if available
-                    js = None
-                    try:
-                        js = nc.jetstream()
-                    except Exception:
-                        js = None
-                    for ev in rows:
-                        subject = SUBJECT_MAP.get(ev.aggregate_type, "journal.events")
-                        payload = json.dumps({
-                            "id": str(ev.id),
-                            "event_type": ev.event_type,
-                            "event_data": ev.event_data,
-                            "ts": ev.occurred_at.isoformat(),
-                        }).encode("utf-8")
-                        try:
-                            metrics_inc("outbox_publish_attempts_total", {"stage": "attempt"})
-                            if js:
-                                # De-dupe via message id if supported
-                                await js.publish(subject, payload, msg_id=str(ev.id))
-                            else:
-                                await nc.publish(subject, payload)
-
-                            # Mark as published
-                            await s.execute(
-                                update(Event)
-                                .where(Event.id == ev.id)
-                                .values(published_at=datetime.utcnow())
-                            )
-                            metrics_inc("outbox_publish_attempts_total", {"result": "ok"})
-                        except Exception as e:
-                            # Compute backoff and schedule retry if enabled; otherwise, best-effort log
-                            if retry_enabled:
-                                await _schedule_retry_or_dead(s, ev, e, nc)
-                            else:
-                                _log_only(e)
-                            metrics_inc("outbox_publish_attempts_total", {"result": "error"})
+                await _publish_rows(s, rows, retry_enabled)
                 await s.commit()
-        except Exception:
+        except Exception:  # noqa: BLE001 - keep relay running on unexpected errors
             # Back off briefly and try again; non-fatal in dev
             await asyncio.sleep(poll_seconds)
 
@@ -128,7 +133,7 @@ async def process_outbox_batch(session_factory: SessionFactory) -> int:
             js = None
             try:
                 js = nc.jetstream()
-            except Exception:
+            except Exception:  # noqa: BLE001 - tolerate missing JetStream
                 js = None
             for ev in rows:
                 subject = SUBJECT_MAP.get(ev.aggregate_type, "journal.events")
@@ -145,13 +150,11 @@ async def process_outbox_batch(session_factory: SessionFactory) -> int:
                     else:
                         await nc.publish(subject, payload)
                     await s.execute(
-                        update(Event)
-                        .where(Event.id == ev.id)
-                        .values(published_at=datetime.utcnow())
+                        update(Event).where(Event.id == ev.id).values(published_at=func.now())
                     )
                     published += 1
                     metrics_inc("outbox_publish_attempts_total", {"result": "ok"})
-                except Exception as e:
+                except Exception as e:  # noqa: BLE001 - operational resilience
                     if os.getenv("OUTBOX_RETRY_ENABLED", "0") == "1":
                         await _schedule_retry_or_dead(s, ev, e, nc)
                     else:
@@ -175,7 +178,7 @@ def _log_only(error: Exception) -> None:
     logger = logging.getLogger(__name__)
     try:
         logger.warning("outbox publish failed: %r", error)
-    except Exception as exc:
+    except Exception as exc:  # noqa: BLE001 - logging should not fail logic
         logger.debug("logging failed: %s", exc)
 
 
@@ -197,10 +200,10 @@ async def _schedule_retry_or_dead(session: Any, ev: Event, error: Exception, nc:
                 _text("ALTER TABLE events ADD COLUMN IF NOT EXISTS last_error text")
             )
             await session.execute(_text("ALTER TABLE events ADD COLUMN IF NOT EXISTS state text"))
-        except Exception as exc:
+        except Exception as exc:  # noqa: BLE001 - tolerate optional columns
             logging.getLogger(__name__).debug("DDL ensure columns failed or not needed: %s", exc)
         # Read current attempts; if column missing this will fail and we fall back silently
-        now = datetime.utcnow()
+        now = datetime.now(UTC)
         base = float(os.getenv("OUTBOX_RETRY_BASE_SECS", "0.25"))
         factor = float(os.getenv("OUTBOX_RETRY_FACTOR", "2.0"))
         cap = float(os.getenv("OUTBOX_RETRY_MAX_BACKOFF_SECS", "15"))
@@ -218,7 +221,7 @@ async def _schedule_retry_or_dead(session: Any, ev: Event, error: Exception, nc:
                 )
             ).scalar_one()
             attempts = int(row or 0)
-        except Exception as exc:
+        except Exception as exc:  # noqa: BLE001 - attempts column may not exist yet
             logging.getLogger(__name__).debug("attempts fetch failed (assuming 0): %s", exc)
             attempts = 0
 
@@ -245,7 +248,7 @@ async def _schedule_retry_or_dead(session: Any, ev: Event, error: Exception, nc:
                 await session.execute(
                     _text("UPDATE events SET state = 'dead' WHERE id = :id"), {"id": ev.id}
                 )
-            except Exception as exc:
+            except Exception as exc:  # noqa: BLE001 - tolerate optional columns
                 logging.getLogger(__name__).debug(
                     "mark dead state failed (optional column): %s", exc
                 )
@@ -255,7 +258,7 @@ async def _schedule_retry_or_dead(session: Any, ev: Event, error: Exception, nc:
                     js = None
                     try:
                         js = nc.jetstream()
-                    except Exception:
+                    except Exception:  # noqa: BLE001 - tolerate missing JetStream
                         js = None
                     envelope = {
                         "original_subject": SUBJECT_MAP.get(ev.aggregate_type, "journal.events"),
@@ -270,8 +273,8 @@ async def _schedule_retry_or_dead(session: Any, ev: Event, error: Exception, nc:
                     else:
                         await nc.publish("journal.dlq", data)
                     metrics_inc("outbox_dlq_total")
-                except Exception as exc:
+                except Exception as exc:  # noqa: BLE001 - DLQ best-effort
                     logging.getLogger(__name__).debug("DLQ publish best-effort failed: %s", exc)
-    except Exception as exc:
+    except Exception as exc:  # noqa: BLE001 - do not crash relay on bookkeeping failure
         # swallow to avoid crashing outbox relay
         logging.getLogger(__name__).debug("schedule retry failed: %s", exc)

@@ -5,15 +5,11 @@ Combines tests from test_api_admin.py and test_api_admin_extended.py
 
 import json
 
-from datetime import datetime, timedelta
-from unittest.mock import AsyncMock, patch
+from unittest.mock import AsyncMock
 
 import pytest
 
 from httpx import AsyncClient
-from sqlalchemy.ext.asyncio import AsyncSession
-
-from app.infra.models import Entry
 
 
 @pytest.mark.component()

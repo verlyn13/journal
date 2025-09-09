@@ -3,7 +3,6 @@ Unit tests for embedding functionality with mocked OpenAI API.
 """
 
 import importlib
-import os
 
 from unittest.mock import MagicMock, patch
 
@@ -90,10 +89,10 @@ class TestEmbeddings:
         mock_client = MagicMock()
         mock_client.embeddings.create.side_effect = Exception("API Error")
 
-        with patch("openai.OpenAI", return_value=mock_client):
-            # OpenAI provider should raise the error, not fall back
-            with pytest.raises(Exception, match="API Error"):
-                result = get_embedding("test text")
+        with patch("openai.OpenAI", return_value=mock_client), pytest.raises(
+            Exception, match="API Error"
+        ):
+            get_embedding("test text")
 
     @pytest.mark.asyncio()
     async def test_embedding_caching(self, monkeypatch):

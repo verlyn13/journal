@@ -7,16 +7,15 @@ import json
 
 from contextlib import asynccontextmanager, suppress
 from datetime import datetime
-from unittest.mock import AsyncMock, MagicMock
 from uuid import uuid4
 
 import pytest
 
-from sqlalchemy import select, update
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.infra.models import Event
-from app.infra.outbox import SUBJECT_MAP, process_outbox_batch, relay_outbox
+from app.infra.outbox import process_outbox_batch, relay_outbox
 
 
 @pytest.mark.integration()

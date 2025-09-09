@@ -77,7 +77,7 @@ def markdown_to_html(md: str) -> str:
         # Sanitize HTML to prevent XSS
         return bleach.clean(html, tags=_ALLOWED_TAGS, attributes=_ALLOWED_ATTRIBUTES, strip=True)
 
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001 - robust fallback for parsing failures
         # Fallback to escaped plain text if parsing fails
         logging.getLogger(__name__).warning("Markdown parsing failed: %s", e)
         return html_module.escape(md).replace("\n", "<br/>")
@@ -160,7 +160,7 @@ def html_to_markdown(html: str) -> str:
 
         return out.strip()
 
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001 - tolerant fallback for malformed HTML
         # Fallback - return original HTML if conversion fails
         logging.getLogger(__name__).warning("HTML to markdown conversion failed: %s", e)
         return html

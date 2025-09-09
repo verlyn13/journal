@@ -6,8 +6,8 @@ Combines tests from test_embedding_worker.py and test_embedding_worker_extended.
 import asyncio
 import json
 
-from contextlib import asynccontextmanager, suppress
-from unittest.mock import AsyncMock, MagicMock, patch
+from contextlib import suppress
+from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 

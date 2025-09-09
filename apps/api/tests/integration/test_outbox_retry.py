@@ -1,10 +1,7 @@
 """Integration tests for outbox retry scheduling and DLQ (flag-gated)."""
 
-import asyncio
 import json
 import os
-
-from datetime import datetime
 
 import pytest
 

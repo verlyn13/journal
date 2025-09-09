@@ -51,8 +51,8 @@ def require_user(creds: HTTPAuthorizationCredentials = Depends(bearer_scheme)) -
     if not creds:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Missing auth")
     try:
-        # In test mode, allow decoding without enforcing expiration to keep unit tests deterministic.
-        # Production keeps strict expiration validation.
+        # In test mode, allow decoding without enforcing expiration to keep
+        # unit tests deterministic. Production keeps strict expiration validation.
         decoded = jwt.decode(
             creds.credentials,
             settings.jwt_secret,

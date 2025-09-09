@@ -1,6 +1,4 @@
-"""
-Embedding consumer worker that processes entry events and updates embeddings.
-"""
+"""Embedding consumer worker that processes entry events and updates embeddings."""
 
 import asyncio
 import json
@@ -17,7 +15,6 @@ from sqlalchemy import select, text
 from app.infra.db import get_session
 from app.infra.embeddings import RateLimitedError
 from app.infra.models import Entry
-from app.infra.nats_bus import nats_conn
 from app.infra.search_pgvector import upsert_entry_embedding
 from app.settings import settings
 from app.telemetry.metrics_runtime import inc as metrics_inc
@@ -33,6 +30,7 @@ class EmbeddingConsumer:
         self.nc = None
         self.js = None
         self.running = False
+        self._stop = asyncio.Event()
 
     async def connect(self) -> None:
         """Connect to NATS and JetStream with bounded retry and jitter."""
@@ -51,8 +49,8 @@ class EmbeddingConsumer:
                     js = await js
                 self.js = js
                 logger.info("Connected to NATS")
-                return
-            except Exception as e:
+                break
+            except Exception as e:  # noqa: BLE001 - keep retrying on any connection error
                 last_err = e
                 attempt += 1
                 # Exponential backoff with full jitter
@@ -66,15 +64,16 @@ class EmbeddingConsumer:
                     jitter,
                 )
                 await asyncio.sleep(jitter)
-        logger.error("Failed to connect to NATS after %s attempts: %s", max_attempts, last_err)
-        raise last_err
+        if not self.js or not self.nc:
+            logger.error("Failed to connect to NATS after %s attempts: %s", max_attempts, last_err)
+            raise last_err
 
     async def disconnect(self) -> None:
         """Disconnect from NATS."""
         if self.nc and hasattr(self.nc, "close"):
             try:
                 await self.nc.close()
-            except Exception:
+            except Exception:  # noqa: BLE001 - ignore non-critical close errors
                 logger.debug("NC close failed (mock or already closed)")
             logger.info("Disconnected from NATS")
 
@@ -103,7 +102,7 @@ class EmbeddingConsumer:
                         return
 
             # Handle different event types
-            if event_type in ["entry.created", "entry.updated"]:
+            if event_type in {"entry.created", "entry.updated"}:
                 await self._handle_entry_upsert(event_data)
             elif event_type == "entry.deleted":
                 await self._handle_entry_deletion(event_data)
@@ -125,7 +124,7 @@ class EmbeddingConsumer:
                             {"e": event_id, "o": event_type},
                         )
                         await session.commit()
-                    except Exception:
+                    except Exception:  # noqa: BLE001 - best-effort insert for idempotency
                         await session.rollback()
             logger.debug("Processed and acked %s event", event_type)
             metrics_inc("worker_process_total", {"result": "ok", "type": event_type})
@@ -208,7 +207,7 @@ class EmbeddingConsumer:
                 raise
 
     @staticmethod
-    async def _handle_reindex_request(event_data: dict[str, Any]) -> None:
+    async def _handle_reindex_request(_event_data: dict[str, Any]) -> None:
         """Handle bulk reindexing request."""
         logger.info("Starting bulk reindex of embeddings")
 
@@ -247,6 +246,7 @@ class EmbeddingConsumer:
             await self.connect()
 
         self.running = True
+        self._stop.clear()
 
         try:
             # Subscribe to entry events
@@ -269,9 +269,8 @@ class EmbeddingConsumer:
 
             logger.info("Started consuming messages")
 
-            # Keep running until stopped
-            while self.running:
-                await asyncio.sleep(1)
+            # Keep running until stopped without polling
+            await self._stop.wait()
 
         except Exception:
             logger.exception("Error in message consumption")
@@ -282,6 +281,7 @@ class EmbeddingConsumer:
     async def stop(self) -> None:
         """Stop consuming messages."""
         self.running = False
+        self._stop.set()
         logger.info("Stopping message consumption")
 
     async def _publish_dlq(self, envelope: dict, reason: str = "") -> None:
@@ -292,25 +292,25 @@ class EmbeddingConsumer:
                 js = None
                 try:
                     js = self.nc.jetstream()
-                except Exception:
+                except Exception:  # noqa: BLE001 - no JetStream
                     js = None
                 if js:
                     try:
                         await js.publish("journal.dlq", payload)
-                    except Exception:
+                    except Exception:  # noqa: BLE001 - JetStream publish failed, fallback to core
                         # Fallback to core publish if JetStream not available
                         await self.nc.publish("journal.dlq", payload)
                 else:
                     await self.nc.publish("journal.dlq", payload)
             else:
                 # Import within function to honor monkeypatching in tests
-                from app.infra.nats_bus import nats_conn as _nats_conn
+                from app.infra.nats_bus import nats_conn as _nats_conn  # noqa: PLC0415
 
                 async with _nats_conn() as nc:
                     js = None
                     try:
                         js = nc.jetstream()
-                    except Exception:
+                    except Exception:  # noqa: BLE001 - no JetStream
                         js = None
                     if js:
                         await js.publish("journal.dlq", payload)

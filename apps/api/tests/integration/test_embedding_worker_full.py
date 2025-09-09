@@ -6,7 +6,7 @@ import asyncio
 import contextlib
 import json
 
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import AsyncMock
 
 import pytest
 
@@ -204,8 +204,9 @@ async def test_worker_rate_limit_nak(monkeypatch, db_session: AsyncSession):
     async def _yield_session():
         yield db_session
 
-    # Monkeypatch embedding call to simulate RateLimited by raising a generic error
-    # (Worker treats RateLimited explicitly; this simulates via raising RuntimeError and checking NAK path.)
+    # Monkeypatch embedding call to simulate RateLimited by raising a
+    # generic error. The worker treats RateLimited explicitly; this simulates
+    # via raising RuntimeError and checking the NAK path.
     def _raise_rl(_txt):
         raise RuntimeError("RateLimited")
 

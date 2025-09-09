@@ -28,7 +28,7 @@ app = FastAPI(title="Journal API", version="1.0.0")
 # Observability (configurable endpoint)
 try:
     setup_otel("journal-api", settings.otlp_endpoint)
-except Exception as exc:
+except Exception as exc:  # noqa: BLE001 - otel is optional in dev
     # Non-fatal if OTel collector isn't up in dev
     logging.getLogger(__name__).warning("OTel setup skipped: %s", exc)
 
@@ -69,4 +69,5 @@ def _startup() -> None:
     # Background outbox relay publisher (skip in tests)
     if not settings.testing:
         session_maker = sessionmaker_for(build_engine())
-        asyncio.create_task(relay_outbox(session_maker))
+        task = asyncio.create_task(relay_outbox(session_maker))
+        app.state.outbox_task = task

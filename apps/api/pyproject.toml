@@ -279,17 +279,29 @@ convention = "google"
     "S101",   # assert-used
     "PLR2004", # magic-value-comparison
     "ARG",    # unused-arguments (common in fixtures)
+    "ANN",    # type annotation rules relaxed in tests
     "FBT",    # boolean-trap (test parameters)
     "SLF001", # private-member-access
     "D",      # docstrings not needed in tests
+    "DOC",    # relax docstring nitpicks for tests
     "PLR6301", # method-could-be-function (pytest test classes)
     "DTZ003", # allow naive datetime in tests
+    "DTZ001", # datetime without tzinfo allowed in tests
     "BLE001", # allow broad except in tests
+    "PLC0415", # allow imports inside tests when needed
     "RUF029", # async-without-await in test helpers
     "PT001",  # fixture parentheses nits
     "PT018",  # composite assertions
     "T201",   # print used in test output
     "PERF401", # list comprehensions and extend in tests
+    "S105",   # hardcoded-password-strings in test data
+    "S608",   # SQL string construction in tests
+    "PLR6201", # set literal suggestion noise in tests
+    "TRY002",  # require custom exception types
+    "N801",   # class naming in test helpers
+    "PLR1711", # useless return at end of function
+    "PLC1901", # simplify falsey comparisons
+    "PLR0914", # too many locals in big integration tests
 ]
 "alembic/**/*.py" = [
     "D",      # docstrings not needed in migrations

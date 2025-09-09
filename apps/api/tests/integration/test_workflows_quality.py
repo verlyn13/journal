@@ -5,15 +5,12 @@ Tests real user scenarios, error recovery, and system behavior under stress.
 
 import asyncio
 
-from datetime import datetime, timedelta
-
 import pytest
 
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.infra.models import Entry, Event
-from app.infra.outbox import relay_outbox
+from app.infra.models import Entry
 
 
 class TestWorkflowsQuality:
@@ -103,7 +100,7 @@ class TestWorkflowsQuality:
     ):
         """Test system behavior under concurrent user operations."""
 
-        async def create_entry(index: int):
+        async def create_entry(index: int) -> object:
             return await client.post(
                 "/api/v1/entries",
                 json={
@@ -113,10 +110,10 @@ class TestWorkflowsQuality:
                 headers=auth_headers,
             )
 
-        async def search_entries(query: str):
+        async def search_entries(query: str) -> object:
             return await client.get("/api/v1/search", params={"q": query}, headers=auth_headers)
 
-        async def get_stats():
+        async def get_stats() -> object:
             return await client.get("/api/v1/stats", headers=auth_headers)
 
         # Run multiple operations concurrently

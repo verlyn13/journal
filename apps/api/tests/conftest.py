@@ -5,7 +5,7 @@ Test configuration and fixtures for the Journal API.
 import os
 import uuid
 
-from collections.abc import AsyncGenerator, Generator
+from collections.abc import Generator
 
 # Alembic for proper schema and extensions
 from pathlib import Path
@@ -19,10 +19,9 @@ from httpx import ASGITransport, AsyncClient
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncConnection, AsyncEngine, AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
-from sqlmodel import SQLModel
 
 from alembic import command
-from app.infra.db import get_session
+from app.infra.db import build_engine, get_session
 from app.infra.models import Entry
 from app.main import app
 from app.settings import settings
@@ -46,7 +45,6 @@ async def async_engine() -> AsyncEngine:
     engine = create_async_engine(
         TEST_DB_URL,
         pool_pre_ping=True,
-        # echo=True,  # Uncomment for SQL debugging
     )
     try:
         yield engine
@@ -82,7 +80,6 @@ async def bootstrap_schema(async_engine: AsyncEngine):
 
         # Run Alembic in a thread to avoid event loop issues
         import asyncio
-        import threading
 
         def run_alembic():
             cfg = Config(str(Path(__file__).resolve().parents[1] / "alembic.ini"))
@@ -149,11 +146,7 @@ async def request_scoped_session(session_factory, db_connection: AsyncConnection
     finally:
         await session.close()
 
-
 # Note: No more TRUNCATE-based cleanup - using transaction rollback pattern
-
-
-from app.infra.db import build_engine
 
 
 @pytest_asyncio.fixture

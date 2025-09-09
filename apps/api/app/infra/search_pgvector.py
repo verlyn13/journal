@@ -18,7 +18,7 @@ from app.infra.embeddings import get_embedding
 
 
 def _vec_literal(vec: list[float]) -> str:
-    """Render a pgvector literal string: '[v1, v2, ...]'"""
+    """Render a pgvector literal string: '[v1, v2, ...]'."""
     return "[" + ", ".join(f"{v:.8f}" for v in vec) + "]"
 
 
@@ -37,7 +37,7 @@ async def hybrid_search(
     try:
         q_emb = get_embedding(q)
         q_vec = _vec_literal(q_emb)
-    except Exception:
+    except Exception:  # noqa: BLE001 - fall back to keyword search
         # Fall back to keyword-only search if embedding fails
         return await keyword_search(s, q, k)
 
@@ -72,7 +72,7 @@ async def semantic_search(s: AsyncSession, q: str, k: int = 10) -> list[dict[str
     try:
         q_emb = get_embedding(q)
         q_vec = _vec_literal(q_emb)
-    except Exception:
+    except Exception:  # noqa: BLE001 - embedding generation failed
         # Return empty if embedding generation fails
         return []
 
@@ -142,7 +142,7 @@ async def upsert_entry_embedding(s: AsyncSession, entry_id: Any, text_source: st
         )
         await s.execute(sql, {"entry_id": entry_id, "embedding": embedding_str})
         await s.commit()
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001 - tolerate failures, log only
         # Log error but don't fail
         logging.getLogger(__name__).warning(
             "Failed to upsert embedding for entry %s: %s", entry_id, e
