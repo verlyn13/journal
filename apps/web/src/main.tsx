@@ -1,3 +1,4 @@
+import { StrictMode } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createRoot } from 'react-dom/client';
 import JournalApp from './components/JournalApp';
@@ -8,12 +9,44 @@ import './styles/tokens.css';
 function mountReactEditor() {
   const el = document.getElementById('react-editor-root');
   if (!el) return;
-  const root = createRoot(el);
-  const queryClient = new QueryClient();
+  
+  const root = createRoot(el, {
+    onUncaughtError: (error, errorInfo) => {
+      console.error('Uncaught error:', error);
+      // TODO: Send to error tracking service
+    },
+    onCaughtError: (error, errorInfo) => {
+      console.warn('Caught error:', error);
+    }
+  });
+  
+  // Optimized QueryClient for React 19
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        // Prevent excessive re-renders
+        staleTime: 30_000,
+        // Reduce refetch frequency
+        refetchOnWindowFocus: false,
+        // Retry logic
+        retry: 2,
+        retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+      },
+      mutations: {
+        // Ensure mutations complete
+        retry: 1,
+        // Network mode for better offline handling
+        networkMode: 'online',
+      },
+    },
+  });
+  
   root.render(
-    <QueryClientProvider client={queryClient}>
-      <JournalApp />
-    </QueryClientProvider>,
+    <StrictMode>
+      <QueryClientProvider client={queryClient}>
+        <JournalApp />
+      </QueryClientProvider>
+    </StrictMode>
   );
 }
 

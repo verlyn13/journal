@@ -2,13 +2,12 @@
  * Type definitions for Slash Commands extension
  */
 
-import type { Editor as TiptapEditor } from '@tiptap/core';
 
 export interface SlashCommandItem {
   title: string;
   emoji?: string;
   section?: 'Blocks' | 'Templates';
-  command: (props: { editor: TiptapEditor }) => void;
+  command: (props: { editor: any }) => void;
 }
 
 export interface SlashCommandProps {

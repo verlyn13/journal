@@ -141,7 +141,7 @@ export function useTimeline(config?: { duration?: number; ease?: string }): {
 export function useGestures(
   config?: GestureConfig
 ): {
-  ref: React.RefObject<HTMLElement>;
+  ref: React.RefObject<HTMLElement | null>;
   onSwipe: (callback: (event: GestureEvent) => void) => void;
   onPinch: (callback: (event: GestureEvent) => void) => void;
   onTap: (callback: (event: GestureEvent) => void) => void;
@@ -234,7 +234,7 @@ export function useLayoutTransition(): {
 
 // Hook for entrance animations
 export function useEntrance(
-  ref: React.RefObject<HTMLElement>,
+  ref: React.RefObject<HTMLElement | null>,
   options?: {
     delay?: number;
     duration?: number;
@@ -281,7 +281,7 @@ export function useEntrance(
 
 // Hook for exit animations
 export function useExit(
-  ref: React.RefObject<HTMLElement>,
+  ref: React.RefObject<HTMLElement | null>,
   isExiting: boolean,
   options?: {
     duration?: number;
@@ -309,7 +309,7 @@ export function useExit(
 
 // Hook for stagger animations
 export function useStagger(
-  itemsRef: React.RefObject<HTMLElement[]>,
+  itemsRef: React.RefObject<HTMLElement[] | null>,
   options?: {
     stagger?: number;
     duration?: number;

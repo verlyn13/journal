@@ -97,41 +97,66 @@ export function JournalApp() {
   // List entries via react-query (only when authenticated)
   const { data: listData = [], isLoading: listLoading } = useEntriesList(state.authenticated);
 
-  // Handle entry selection
-  const handleSelectEntry = useCallback(async (entryId: string) => {
-    setState((prev) => ({ ...prev, selectedEntryId: entryId }));
+  // Handle entry selection - simplified without async
+  const handleSelectEntry = useCallback((entryId: string) => {
+    console.error('handleSelectEntry ACTUALLY CALLED with:', entryId);
+    console.trace('Call stack');
+    
+    // Immediately update the selection for instant feedback
+    setState((prev) => {
+      console.log('Setting selectedEntryId to:', entryId);
+      return { ...prev, selectedEntryId: entryId };
+    });
 
-    try {
-      const entry = await api.getEntry(entryId);
+    // Load content asynchronously
+    api.getEntry(entryId).then(entry => {
+      console.log('Entry loaded:', entry.id, entry.title);
+      
       // Prefer markdown_content for the markdown editor; convert HTML if needed
       let contentForEditor = entry.markdown_content as unknown as string | undefined;
       if (!contentForEditor && entry.content) {
-        try {
-          const mod = await import('../utils/markdown-converter');
-          const res = mod.convertHtmlToMarkdown(entry.content as unknown as string);
-          contentForEditor = res.markdown || entry.content;
-        } catch {
-          contentForEditor = (entry.content as unknown as string) || '';
-        }
+        import('../utils/markdown-converter').then(mod => {
+          try {
+            const res = mod.convertHtmlToMarkdown(entry.content as unknown as string);
+            contentForEditor = res.markdown || entry.content;
+          } catch {
+            contentForEditor = (entry.content as unknown as string) || '';
+          }
+          
+          setState((prev) => ({
+            ...prev,
+            selectedEntry: {
+              id: entry.id,
+              title: entry.title,
+              content: contentForEditor || '',
+              contentVersion: entry.content_version || 1,
+              version: entry.version,
+            },
+          }));
+          console.log('Entry state updated');
+        });
+      } else {
+        setState((prev) => ({
+          ...prev,
+          selectedEntry: {
+            id: entry.id,
+            title: entry.title,
+            content: contentForEditor || '',
+            contentVersion: entry.content_version || 1,
+            version: entry.version,
+          },
+        }));
+        console.log('Entry state updated');
       }
-      setState((prev) => ({
-        ...prev,
-        selectedEntry: {
-          id: entry.id,
-          title: entry.title,
-          content: contentForEditor || '',
-          contentVersion: entry.content_version || 1,
-          version: entry.version,
-        },
-      }));
-    } catch (_error) {
+    }).catch(_error => {
+      console.error('Failed to load entry:', _error);
       // Reset selection on error
       setState((prev) => ({
         ...prev,
         selectedEntryId: null,
         selectedEntry: null,
       }));
-    }
+    });
   }, []);
 
   // Removed legacy save callback (replaced by MarkdownSplitPane onSave)
@@ -141,9 +166,16 @@ export function JournalApp() {
   const handleDeleteEntry = useCallback(
     async (entryId: string) => {
       try {
-        // Find the entry to get its version for optimistic locking
-        const entry = listData.find((e) => e.id === entryId);
-        const version = entry?.version;
+        // Fetch fresh entry data to get current version (avoid stale version issues)
+        let version: number | undefined;
+        try {
+          const freshEntry = await api.getEntry(entryId);
+          version = freshEntry.version;
+          console.log('Delete: fetched fresh version', { entryId, version });
+        } catch {
+          // If fetch fails, try with no version (server will handle conflict)
+          console.warn('Delete: Could not fetch fresh version, proceeding without version check');
+        }
 
         // Delete with version for optimistic locking
         await deleteEntryMut.mutateAsync({ entryId, version });
@@ -156,11 +188,12 @@ export function JournalApp() {
             selectedEntry: null,
           }));
         }
-      } catch (_error) {
+      } catch (error) {
+        console.error('Delete failed:', error);
         // TODO: Add error notification
       }
     },
-    [deleteEntryMut, listData, state.selectedEntryId],
+    [deleteEntryMut, state.selectedEntryId],
   );
 
   // Handle new entry creation

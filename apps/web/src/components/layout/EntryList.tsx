@@ -18,6 +18,7 @@ export function EntryList({
   onDeleteEntry,
   isLoading,
 }: EntryListProps) {
+  
   const [searchQuery, setSearchQuery] = useState('');
   const [viewMode, setViewMode] = useState<'list' | 'calendar' | 'river'>('list');
 
@@ -148,6 +149,11 @@ export function EntryList({
             {filteredEntries.map((entry) => (
               <div
                 key={entry.id}
+                onClick={() => {
+                  if (onSelectEntry) {
+                    onSelectEntry(entry.id);
+                  }
+                }}
                 className={`
               w-full p-3 rounded-lg text-left transition-all duration-200 group cursor-pointer
               ${
@@ -160,18 +166,15 @@ export function EntryList({
                 {/* Entry Header */}
                 <div className="flex items-start justify-between mb-2">
                   <div className="flex-1 min-w-0">
-                    <button
-                      type="button"
-                      onClick={() => onSelectEntry(entry.id)}
-                      className={`font-medium text-sm truncate bg-transparent p-0 m-0 text-left ${
+                    <span
+                      className={`font-medium text-sm truncate ${
                         selectedEntry === entry.id
                           ? 'text-sanctuary-bg-primary'
                           : 'text-sanctuary-text-primary group-hover:text-sanctuary-text-primary'
                       }`}
-                      aria-label={`Open entry ${entry.title}`}
                     >
                       {entry.title}
-                    </button>
+                    </span>
                     <div
                       className={`flex items-center gap-2 text-xs mt-1 ${
                         selectedEntry === entry.id

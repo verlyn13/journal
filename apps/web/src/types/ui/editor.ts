@@ -2,7 +2,6 @@
  * UI types for the editor components
  */
 
-import type { Editor } from '@tiptap/react';
 import type { Entry } from '../domain/entry';
 
 // Editor state types
@@ -32,18 +31,18 @@ export interface FocusModeProps {
 
 // Bubble toolbar types
 export interface BubbleToolbarProps {
-  editor: Editor | null;
+  editor: any | null;
 }
 
 // Type guard for Editor instance
-export function isEditorReady(editor: Editor | null): editor is Editor {
+export function isEditorReady(editor: any | null): editor is any {
   return editor !== null && !editor.isDestroyed;
 }
 
 // Helper to safely execute editor commands
 export function withEditor<T>(
-  editor: Editor | null,
-  callback: (editor: Editor) => T,
+  editor: any | null,
+  callback: (editor: any) => T,
   defaultValue?: T,
 ): T | undefined {
   if (isEditorReady(editor)) {
