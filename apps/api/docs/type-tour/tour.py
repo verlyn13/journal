@@ -1,6 +1,4 @@
-#!/usr/bin/env python3
-"""
-Interactive Tour of Our Type Safety Journey
+"""Interactive Tour of Our Type Safety Journey.
 
 Run with: python -m docs.type-tour.tour
 
@@ -10,13 +8,11 @@ gained from reducing 78 errors to 3.
 
 import os
 import sys
-from pathlib import Path
-from typing import Any
 
 
 def clear_screen() -> None:
     """Clear the terminal screen."""
-    os.system('cls' if os.name == 'nt' else 'clear')
+    os.system("cls" if os.name == "nt" else "clear")  # noqa: S605
 
 
 def wait_for_input() -> None:
@@ -26,10 +22,10 @@ def wait_for_input() -> None:
 
 def print_section(title: str, content: str) -> None:
     """Print a formatted section."""
-    print(f"\n{'='*60}")
-    print(f" {title}")
-    print(f"{'='*60}")
-    print(content)
+    print(f"\n{'=' * 60}")  # noqa: T201
+    print(f" {title}")  # noqa: T201
+    print(f"{'=' * 60}")  # noqa: T201
+    print(content)  # noqa: T201
 
 
 def tour_stop_1_basic_typing() -> None:
@@ -46,7 +42,7 @@ We started with simple type hints:
 # Before: Ambiguous types
 event_data: Mapped[dict]  # What's in the dict?
 
-# After: Explicit type parameters  
+# After: Explicit type parameters
 event_data: Mapped[dict[str, Any]]  # JSON data structure
 ```
 
@@ -161,12 +157,12 @@ These aren't bugs. They're teachers:
 
 1️⃣ THE DEFENSIVE GUARD (search_pgvector.py:134)
    isinstance() check on typed parameter
-   
+
    TEACHES: Defensive programming > type purity at boundaries
-   
+
 2️⃣ THE ORM PARADOX (backfill_markdown.py:33)
    SQLAlchemy column.is_(None) on Optional[str]
-   
+
    TEACHES: Dynamic features can be more valuable than typing
 
 WHY WE KEEP THEM:
@@ -241,7 +237,7 @@ EXERCISES:
 
 EXTERNAL RESOURCES:
 🔗 PEP 484 - Type Hints
-🔗 PEP 544 - Protocols  
+🔗 PEP 544 - Protocols
 🔗 PEP 647 - TypeGuard
 🔗 mypy documentation
 
@@ -254,7 +250,7 @@ Remember: Every type annotation is a chance to teach.
 def main() -> None:
     """Run the interactive tour."""
     clear_screen()
-    print("""
+    print("""  # noqa: T201
     ╔══════════════════════════════════════════════════════════╗
     ║                                                          ║
     ║           🚀 TYPE SAFETY JOURNEY TOUR 🚀                ║
@@ -262,17 +258,17 @@ def main() -> None:
     ║              From 78 Errors to Wisdom                   ║
     ║                                                          ║
     ╚══════════════════════════════════════════════════════════╝
-    
+
     Welcome to our interactive tour of type safety patterns!
-    
+
     You'll visit 7 stops on our journey from chaos to clarity.
     Each stop teaches a key lesson we learned along the way.
-    
+
     Ready to begin?
-    """)
-    
+    """)  # noqa: T201
+
     wait_for_input()
-    
+
     stops = [
         tour_stop_1_basic_typing,
         tour_stop_2_type_guards,
@@ -282,14 +278,14 @@ def main() -> None:
         tour_stop_6_lessons_learned,
         tour_stop_7_resources,
     ]
-    
+
     for i, stop in enumerate(stops, 1):
         stop()
         if i < len(stops):
-            print(f"\n    [{i}/{len(stops)}] Moving to next stop...")
-    
+            print(f"\n    [{i}/{len(stops)}] Moving to next stop...")  # noqa: T201
+
     clear_screen()
-    print("""
+    print("""  # noqa: T201
     ╔══════════════════════════════════════════════════════════╗
     ║                                                          ║
     ║                    🎉 TOUR COMPLETE! 🎉                 ║
@@ -302,12 +298,12 @@ def main() -> None:
     ║            Now go forth and type wisely! 🚀             ║
     ║                                                          ║
     ╚══════════════════════════════════════════════════════════╝
-    """)
+    """)  # noqa: T201
 
 
 if __name__ == "__main__":
     try:
         main()
     except KeyboardInterrupt:
-        print("\n\n👋 Tour interrupted. Come back anytime!")
+        print("\n\n👋 Tour interrupted. Come back anytime!")  # noqa: T201
         sys.exit(0)
