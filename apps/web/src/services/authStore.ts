@@ -1,11 +1,16 @@
 // Lightweight auth store with cross-tab sync via BroadcastChannel
 
+import { FLAGS } from '../config/flags';
+
 const bc: BroadcastChannel | null =
   typeof window !== 'undefined' && 'BroadcastChannel' in window ? new BroadcastChannel('auth') : null;
 
 let accessToken: string | null = null;
-let refreshToken: string | null =
-  typeof window !== 'undefined' ? window.localStorage.getItem('refresh_token') : null;
+let refreshToken: string | null = (() => {
+  if (FLAGS.AUTH_COOKIE_REFRESH) return null;
+  if (typeof window === 'undefined') return null;
+  return window.localStorage.getItem('refresh_token');
+})();
 
 export function getAccessToken(): string | null {
   return accessToken;
@@ -22,7 +27,7 @@ export function getRefreshToken(): string | null {
 
 export function setRefreshToken(token: string | null): void {
   refreshToken = token;
-  if (typeof window !== 'undefined') {
+  if (!FLAGS.AUTH_COOKIE_REFRESH && typeof window !== 'undefined') {
     if (token) window.localStorage.setItem('refresh_token', token);
     else window.localStorage.removeItem('refresh_token');
   }
@@ -43,4 +48,3 @@ export function subscribe(fn: (evt: unknown) => void): () => void {
 }
 
 export { bc };
-

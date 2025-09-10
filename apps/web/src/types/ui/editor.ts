@@ -4,7 +4,8 @@
 
 // TODO: Uncomment when TipTap is installed
 // import type { Editor } from '@tiptap/react';
-type Editor = unknown; // Temporary placeholder
+// Minimal shape we rely on until TipTap types are present
+export type Editor = { isDestroyed?: boolean } & Record<string, unknown>;
 import type { Entry } from '../domain/entry';
 
 // Editor state types
@@ -39,7 +40,7 @@ export interface BubbleToolbarProps {
 
 // Type guard for Editor instance
 export function isEditorReady(editor: Editor | null): editor is Editor {
-  return editor !== null && !editor.isDestroyed;
+  return !!(editor && editor?.isDestroyed !== true);
 }
 
 // Helper to safely execute editor commands

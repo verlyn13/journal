@@ -17,6 +17,7 @@ from app.infra.auth import (
     create_verify_token,
     get_current_user,
 )
+from app.infra.auth_counters import login_fail, login_success, refresh_rotated, session_revoked
 from app.infra.cookies import (
     clear_refresh_cookie,
     ensure_csrf_cookie,
@@ -74,6 +75,7 @@ async def login(
         if (body.username or body.email) == expected_user and body.password == expected_pass:
             user_id = "123e4567-e89b-12d3-a456-426614174000"
         else:
+            login_fail("invalid_credentials")
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials"
             )
@@ -101,6 +103,12 @@ async def login(
         and (user.is_verified or not settings.auth_require_email_verify)
     )
     if not ok or user is None:  # Type guard: after this check, user is guaranteed non-None
+        reason = (
+            "not_verified"
+            if user and not user.is_verified and settings.auth_require_email_verify
+            else "invalid_credentials"
+        )
+        login_fail(reason)
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
 
     # At this point, user is guaranteed to be non-None due to the check above
@@ -110,6 +118,7 @@ async def login(
     sess = await create_user_session(s, user.id, ua, ip)
     access = create_access_token(str(user.id), scopes=user.roles)
     refresh = create_refresh_token(str(user.id), refresh_id=str(sess.refresh_id))
+    login_success("password")
     if settings.auth_cookie_refresh:
         max_age = settings.refresh_token_days * 24 * 60 * 60
         set_refresh_cookie(response, refresh, max_age)
@@ -258,6 +267,7 @@ async def refresh(
     new_rid = uuid.uuid4()
     sess.refresh_id = new_rid
     await touch_session(s, sess)
+    refresh_rotated()
 
     access_new = create_access_token(sub)
     refresh_new = create_refresh_token(sub, refresh_id=str(new_rid))
@@ -314,6 +324,7 @@ async def logout(
     sess = await get_session_by_refresh_id(s, uuid.UUID(decoded["rid"]))
     if sess:
         await revoke_session(s, sess)
+        session_revoked()
     if settings.auth_cookie_refresh:
         clear_refresh_cookie(response)
     return Response(status_code=204)

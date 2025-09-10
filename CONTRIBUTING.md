@@ -62,8 +62,20 @@ We expect all contributors to follow our [Code of Conduct](CODE_OF_CONDUCT.md). 
 5. **Keep your branch updated**:
    ```bash
    git fetch upstream
-   git rebase upstream/main
-   ```
+    git rebase upstream/main
+    ```
+
+6. **Pre-commit hooks (recommended)**:
+
+Install and enable pre-commit to catch issues locally (merge conflicts, whitespace, ruff):
+
+```
+pipx install pre-commit  # or pip install pre-commit
+pre-commit install
+pre-commit run --all-files
+```
+
+CI also runs these hooks to keep the repo clean.
 
 ## Pull Request Process
 

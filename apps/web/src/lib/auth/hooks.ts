@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { AuthenticationOrchestrator } from './orchestrator';
-import { AuthEventType } from './types';
+import { AuthEventType, AuthErrorCode } from './types';
 import type {
   AuthError,
   AuthEvent,
@@ -82,7 +82,7 @@ export function useAuth(apiBaseUrl?: string) {
     if (!orchestratorRef.current) {
       return {
         success: false,
-        error: { code: 'UNKNOWN_ERROR', message: 'Orchestrator not initialized' },
+        error: { code: AuthErrorCode.UNKNOWN_ERROR, message: 'Orchestrator not initialized' },
         method: 'session',
       };
     }
@@ -136,9 +136,9 @@ export function useAuth(apiBaseUrl?: string) {
       }
     } catch (_error) {
       const authError: AuthError = {
-        code: 'UNKNOWN_ERROR',
+        code: AuthErrorCode.UNKNOWN_ERROR,
         message: 'Authentication failed',
-        details: error,
+        details: _error,
       };
 
       setState((prev) => ({
