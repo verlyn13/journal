@@ -9,6 +9,9 @@ import random
 from typing import Any
 
 import nats
+from nats.aio.client import Client as NatsClient
+from nats.aio.msg import Msg as NatsMessage
+from nats.js import JetStreamContext
 
 from sqlalchemy import select, text
 
@@ -27,8 +30,8 @@ class EmbeddingConsumer:
     """Consumer that processes entry events and updates embeddings."""
 
     def __init__(self) -> None:
-        self.nc = None
-        self.js = None
+        self.nc: NatsClient | None = None
+        self.js: JetStreamContext | None = None
         self.running = False
         self._stop = asyncio.Event()
 
@@ -44,6 +47,7 @@ class EmbeddingConsumer:
         while attempt < max_attempts:
             try:
                 self.nc = await nats.connect(settings.nats_url)
+                # JetStream may be mocked as coroutine in tests
                 js = self.nc.jetstream()
                 if asyncio.iscoroutine(js):  # support mocked async jetstream in tests
                     js = await js
@@ -66,18 +70,20 @@ class EmbeddingConsumer:
                 await asyncio.sleep(jitter)
         if not self.js or not self.nc:
             logger.error("Failed to connect to NATS after %s attempts: %s", max_attempts, last_err)
-            raise last_err
+            if last_err is not None:
+                raise last_err
+            raise RuntimeError("Failed to connect to NATS")
 
     async def disconnect(self) -> None:
         """Disconnect from NATS."""
-        if self.nc and hasattr(self.nc, "close"):
+        if self.nc:
             try:
                 await self.nc.close()
             except Exception:  # noqa: BLE001 - ignore non-critical close errors
                 logger.debug("NC close failed (mock or already closed)")
             logger.info("Disconnected from NATS")
 
-    async def process_entry_event(self, msg: object) -> None:
+    async def process_entry_event(self, msg: NatsMessage) -> None:
         """Process an entry event and update embeddings."""
         try:
             # Parse the event data
@@ -98,7 +104,8 @@ class EmbeddingConsumer:
                         )
                     ).first()
                     if exists:
-                        await msg.ack()
+                        if hasattr(msg, 'ack'):
+                            await msg.ack()
                         return
 
             # Handle different event types
@@ -112,7 +119,8 @@ class EmbeddingConsumer:
                 logger.warning("Unknown event type: %s", event_type)
 
             # Acknowledge the message
-            await msg.ack()
+            if hasattr(msg, 'ack'):
+                await msg.ack()
             # Record processed outcome
             if event_id:
                 async for session in get_session():
@@ -141,17 +149,20 @@ class EmbeddingConsumer:
                     metrics_inc("worker_process_total", {"result": "term", "reason": "poison"})
                     return
             # Default: NAK for redelivery
-            await msg.nak()
+            if hasattr(msg, 'nak'):
+                await msg.nak()
             metrics_inc("worker_process_total", {"result": "retry", "reason": "json"})
         except RateLimitedError:
             logger.warning("Embedding provider rate-limited or circuit open; NAK for redelivery")
-            await msg.nak()
+            if hasattr(msg, 'nak'):
+                await msg.nak()
             metrics_inc("worker_process_total", {"result": "retry", "reason": "ratelimited"})
         except Exception:
             logger.exception("Error processing message")
             # Don't ack on error - let NATS retry
             try:
-                await msg.nak()
+                if hasattr(msg, 'nak'):
+                    await msg.nak()
             except Exception:
                 # If NAK fails (non-JS), swallow to avoid crash
                 logger.exception("Failed to NAK message")
@@ -215,7 +226,7 @@ class EmbeddingConsumer:
             try:
                 # Get all entries that need reindexing
                 result = await session.execute(
-                    select(Entry.id, Entry.title, Entry.content).where(not Entry.is_deleted)
+                    select(Entry.id, Entry.title, Entry.content).where(Entry.is_deleted == False)  # noqa: E712 - SQLAlchemy requires ==
                 )
                 rows = result.fetchall()
 
@@ -250,12 +261,14 @@ class EmbeddingConsumer:
 
         try:
             # Subscribe to entry events
+            if self.js is None:
+                raise RuntimeError("JetStream not initialized")
             await self.js.subscribe(
                 subject="journal.entry.*",
                 queue="embedding_workers",
                 cb=self.process_entry_event,
                 manual_ack=True,
-                max_deliver=int(os.getenv("JS_MAX_DELIVER", "3")),
+                config={"max_deliver": int(os.getenv("JS_MAX_DELIVER", "3"))},
             )
 
             # Subscribe to reindex events
@@ -264,7 +277,7 @@ class EmbeddingConsumer:
                 queue="embedding_workers",
                 cb=self.process_entry_event,
                 manual_ack=True,
-                max_deliver=1,  # Don't retry reindex requests
+                config={"max_deliver": 1},  # Don't retry reindex requests
             )
 
             logger.info("Started consuming messages")
@@ -284,7 +297,7 @@ class EmbeddingConsumer:
         self._stop.set()
         logger.info("Stopping message consumption")
 
-    async def _publish_dlq(self, envelope: dict, reason: str = "") -> None:
+    async def _publish_dlq(self, envelope: dict[str, Any], reason: str = "") -> None:
         """Publish DLQ message with fallback to nats_conn if needed."""
         try:
             payload = json.dumps({**envelope, "reason": reason}).encode("utf-8")
