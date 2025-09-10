@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">13.63% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>3/22</span>
+                <span class='fraction'>22/22</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">66.66% </span>
+                <span class="quiet">Branches</span>
+                <span class='fraction'>2/3</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
-                <span class="quiet">Branches</span>
-                <span class='fraction'>0/0</span>
-            </div>
-        
-            
-            <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/1</span>
+                <span class='fraction'>1/1</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">13.63% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>3/22</span>
+                <span class='fraction'>22/22</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -105,26 +105,26 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { markdown } from '@codemirror/lang-markdown';
 import CodeMirror from '@uiw/react-codemirror';
 import { useMemo } from 'react';
@@ -136,26 +136,26 @@ type Props = {
   height?: string;
 };
 &nbsp;
-<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >export default function MarkdownEditor({</span></span>
-<span class="cstat-no" title="statement not covered" >  value,</span>
-<span class="cstat-no" title="statement not covered" >  onChange,</span>
-<span class="cstat-no" title="statement not covered" >  readOnly = false,</span>
-<span class="cstat-no" title="statement not covered" >  height = '60vh',</span>
-<span class="cstat-no" title="statement not covered" >}: Props) {</span>
-<span class="cstat-no" title="statement not covered" >  const extensions = useMemo(() =&gt; [markdown()], []);</span>
-<span class="cstat-no" title="statement not covered" >  const isDark =</span>
-<span class="cstat-no" title="statement not covered" >    typeof document !== 'undefined' &amp;&amp; document.documentElement.classList.contains('dark');</span>
-<span class="cstat-no" title="statement not covered" >  return (</span>
-<span class="cstat-no" title="statement not covered" >    &lt;CodeMirror</span>
-<span class="cstat-no" title="statement not covered" >      value={value}</span>
-<span class="cstat-no" title="statement not covered" >      height={height}</span>
-<span class="cstat-no" title="statement not covered" >      readOnly={readOnly}</span>
-<span class="cstat-no" title="statement not covered" >      extensions={extensions}</span>
-<span class="cstat-no" title="statement not covered" >      theme={isDark ? 'dark' : 'light'}</span>
-<span class="cstat-no" title="statement not covered" >      onChange={onChange}</span>
-<span class="cstat-no" title="statement not covered" >    /&gt;</span>
+export default function MarkdownEditor({
+  value,
+  onChange,
+  readOnly = false,
+  height = '60vh',
+}: Props) {
+  const extensions = useMemo(() =&gt; [markdown()], []);
+  const isDark =
+    typeof document !== 'undefined' &amp;&amp; document.documentElement.classList.contains('dark');
+  return (
+    &lt;CodeMirror
+      value={value}
+      height={height}
+      readOnly={readOnly}
+      extensions={extensions}
+      theme={<span class="branch-0 cbranch-no" title="branch not covered" >isDark ? 'dark' : '</span>light'}
+      onChange={onChange}
+    /&gt;
   );
-<span class="cstat-no" title="statement not covered" >}</span>
+}
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -163,7 +163,7 @@ type Props = {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-09-10T17:53:19.457Z
+                at 2025-09-10T23:22:32.536Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>

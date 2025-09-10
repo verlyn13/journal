@@ -40,14 +40,16 @@ def clear_refresh_cookie(response: Response) -> None:
     )
 
 
-def ensure_csrf_cookie(response: Response, request: Request) -> None:
-    """Ensure a CSRF cookie is present; set one if missing.
+def ensure_csrf_cookie(response: Response, request: Request) -> str:
+    """Ensure a CSRF cookie is present; set one if missing and return the token.
 
     - Cookie is NOT HttpOnly so client JS can read it and echo in header.
     - Path and security attributes mirror refresh cookie scope.
+    - Returns the CSRF token value (existing or newly generated).
     """
-    if request.cookies.get(settings.csrf_cookie_name):
-        return
+    existing = request.cookies.get(settings.csrf_cookie_name)
+    if existing:
+        return existing
     csrf = token_urlsafe(32)
     response.set_cookie(
         key=settings.csrf_cookie_name,
@@ -58,6 +60,7 @@ def ensure_csrf_cookie(response: Response, request: Request) -> None:
         samesite=validate_cookie_samesite(settings.cookie_samesite),
         path=settings.cookie_path,
     )
+    return csrf
 
 
 def require_csrf(request: Request) -> None:
