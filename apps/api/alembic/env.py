@@ -34,6 +34,8 @@ else:
 
 # Force sync driver (psycopg2) for migrations
 raw_url = config.get_main_option("sqlalchemy.url")
+if raw_url is None:
+    raise ValueError("sqlalchemy.url is not configured")
 url = make_url(raw_url)
 if url.drivername and "postgresql" in url.drivername and "psycopg2" not in url.drivername:
     # Convert asyncpg or any other postgres driver to psycopg2
@@ -85,11 +87,15 @@ def run_migrations_online() -> None:
     # --- begin probe ---
 
     url_str = config.get_main_option("sqlalchemy.url")
+    if url_str is None:
+        raise ValueError("sqlalchemy.url is not configured")
     url = make_url(url_str)
     print(f"[alembic] sqlalchemy.url={url!s}")
     print(f"[alembic] driver={url.drivername}, host={url.host}, database={url.database}")
 
     # Create sync engine
+    if url_str is None:
+        raise ValueError("sqlalchemy.url is not configured")
     connectable = create_engine(url_str, poolclass=pool.NullPool)
 
     with connectable.connect() as connection:
@@ -97,9 +103,10 @@ def run_migrations_online() -> None:
         row = connection.execute(
             text("select current_database(), version(), current_setting('application_name', true)")
         ).first()
-        print(f"[alembic] current_database={row[0]}")
-        print(f"[alembic] postgres_version={row[1][:20]}...")
-        print(f"[alembic] application_name={row[2]}")
+        if row:
+            print(f"[alembic] current_database={row[0]}")
+            print(f"[alembic] postgres_version={row[1][:20]}...")
+            print(f"[alembic] application_name={row[2]}")
         # --- end probe ---
 
         context.configure(

@@ -16,7 +16,10 @@ branch_labels = None
 depends_on = None
 
 
-def _col_exists(conn, table: str, column: str) -> bool:
+from typing import Any
+
+
+def _col_exists(conn: Any, table: str, column: str) -> bool:
     res = conn.exec_driver_sql(
         "SELECT 1 FROM information_schema.columns WHERE table_name=%s AND column_name=%s",
         (table, column),
