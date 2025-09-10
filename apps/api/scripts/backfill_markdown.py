@@ -6,22 +6,27 @@ import logging
 from sqlmodel import select
 
 from app.infra.conversion import html_to_markdown
-from app.infra.db import AsyncSessionLocal
+from sqlalchemy.ext.asyncio import AsyncSession
 from app.infra.models import Entry
 
 
 logger = logging.getLogger(__name__)
 
 
-async def backfill_markdown_content(batch_size: int = 100, dry_run: bool = False):
+async def backfill_markdown_content(batch_size: int = 100, dry_run: bool = False) -> None:
     if dry_run:
         logger.info("DRY RUN MODE - No changes will be saved")
+    from app.infra.db import get_async_engine
+    from sqlalchemy.ext.asyncio import async_sessionmaker
+    
+    engine = get_async_engine()
+    AsyncSessionLocal = async_sessionmaker(bind=engine, class_=AsyncSession, expire_on_commit=False)
     async with AsyncSessionLocal() as s:
         while True:
             rows = (
                 (
                     await s.execute(
-                        select(Entry).where(Entry.markdown_content.is_(None)).limit(batch_size)
+                        select(Entry).where(Entry.markdown_content.is_(None)).limit(batch_size)  # type: ignore[union-attr]
                     )
                 )
                 .scalars()

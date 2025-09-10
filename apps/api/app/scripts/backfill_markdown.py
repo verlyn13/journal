@@ -30,7 +30,7 @@ async def backfill_markdown_content(
     # SELECT entries that need conversion (content_version = 1 and no markdown_content)
     query = (
         select(Entry)
-        .where((Entry.content_version == 1) & (Entry.markdown_content.is_(None)))
+        .where((Entry.content_version == 1) & (Entry.markdown_content.is_(None)))  # type: ignore[union-attr]
         .limit(batch_size)
     )
 
