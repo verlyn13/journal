@@ -13,6 +13,7 @@ import asyncio
 import json
 import logging
 import sys
+from typing import Any
 
 from httpx import AsyncClient
 
@@ -79,7 +80,7 @@ async def _test_entry_creation(client: AsyncClient, headers: dict[str, str]) -> 
 
 
 async def _test_entry_update(
-    client: AsyncClient, headers: dict[str, str], create_resp: object
+    client: AsyncClient, headers: dict[str, str], create_resp: Any
 ) -> int:
     """Test entry update after successful creation."""
     try:
@@ -105,7 +106,7 @@ async def _test_entry_update(
     return 1
 
 
-def _handle_create_error(create_resp: object) -> int:
+def _handle_create_error(create_resp: Any) -> int:
     """Handle entry creation errors."""
     try:
         error_detail = create_resp.json()
@@ -115,7 +116,7 @@ def _handle_create_error(create_resp: object) -> int:
     return 1
 
 
-def _handle_validation_error(update_resp: object) -> int:
+def _handle_validation_error(update_resp: Any) -> int:
     """Handle validation errors during update."""
     try:
         error_detail = update_resp.json()
