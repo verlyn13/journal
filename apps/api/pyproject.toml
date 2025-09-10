@@ -160,12 +160,10 @@ ignore = [
     "D107",    # missing-init-docstring
     
     # SQLModel/Pydantic specific
-    "TC001",   # typing-only-first-party-import
-    "TC002",   # typing-only-third-party-import
-    "TC003",   # typing-only-stdlib-import
+    "TC001",   # typing-only-first-party-import (was TCH001)
+    "TC002",   # typing-only-third-party-import (was TCH002)
+    "TC003",   # typing-only-stdlib-import (was TCH003)
     "RUF012",  # mutable-class-default (Pydantic handles this)
-    
-    # Allow these patterns
     "ANN401",  # any-type (sometimes needed)
     "S101",    # assert-used (fine in tests)
     "TRY003",  # raise-vanilla-args

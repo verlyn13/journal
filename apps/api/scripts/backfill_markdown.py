@@ -3,10 +3,11 @@ from __future__ import annotations
 import asyncio
 import logging
 
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 from sqlmodel import select
 
 from app.infra.conversion import html_to_markdown
-from app.infra.db import get_session
+from app.infra.db import get_async_engine
 from app.infra.models import Entry
 
 
@@ -16,7 +17,10 @@ logger = logging.getLogger(__name__)
 async def backfill_markdown_content(batch_size: int = 100, dry_run: bool = False) -> None:
     if dry_run:
         logger.info("DRY RUN MODE - No changes will be saved")
-    async for s in get_session():
+
+    engine = get_async_engine()
+    async_session_local = async_sessionmaker(bind=engine, class_=AsyncSession, expire_on_commit=False)
+    async with async_session_local() as s:
         while True:
             rows = (
                 (

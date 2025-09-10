@@ -15,7 +15,7 @@ import logging
 import sys
 from typing import Any
 
-from httpx import AsyncClient
+from httpx import ASGITransport, AsyncClient
 
 from app.main import app
 from tests.conftest import auth_headers

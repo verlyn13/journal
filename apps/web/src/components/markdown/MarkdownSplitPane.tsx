@@ -12,7 +12,7 @@ type EntryLike = {
 type Props = {
   entry?: EntryLike | null;
   onSave?: (payload: { html: string; markdown: string }) => void;
-  /** Optional override for autosave debounce in ms (default 1200) */
+  // Optional override for autosave debounce duration (ms). Defaults to 1200ms.
   autosaveMs?: number;
 };
 
@@ -97,7 +97,7 @@ export default function MarkdownSplitPane({ entry, onSave, autosaveMs }: Props) 
       } finally {
         setSaving(false);
       }
-    }, typeof autosaveMs === 'number' ? autosaveMs : 1200);
+    }, typeof autosaveMs === 'number' && Number.isFinite(autosaveMs) ? autosaveMs : 1200);
 
     return () => {
       if (saveTimer.current) {
@@ -105,7 +105,7 @@ export default function MarkdownSplitPane({ entry, onSave, autosaveMs }: Props) 
         saveTimer.current = null;
       }
     };
-  }, [md, onSave, entry]);
+  }, [md, onSave, entry, autosaveMs]);
 
   const saveLabel = useMemo(() => {
     if (saving) return 'Saving…';
