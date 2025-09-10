@@ -32,20 +32,25 @@ We expect all contributors to follow our [Code of Conduct](CODE_OF_CONDUCT.md). 
 
 1. **Set up your development environment**:
    ```bash
-   # Install Python dependencies
-   pip install -r requirements.txt
+   # Backend (Python) — use uv only
+   cd apps/api
+   uv venv --python 3.13  # creates venv if needed
+   uv sync --all-extras --dev
 
-   # Install Node.js dependencies
-   npm install
+   # Frontend (TypeScript) — use bun only
+   cd ../../apps/web
+   bun install
    ```
 
-2. **Run the development server**:
+2. **Run the development servers**:
    ```bash
-   # Run Flask development server
-   python run.py
+   # Backend (FastAPI)
+   cd apps/api
+   uv run fastapi run app/main.py --host 0.0.0.0 --port 5000
 
-   # In a separate terminal, run frontend build watcher
-   npm run dev
+   # Frontend (Vite + React)
+   cd ../web
+   bun run dev
    ```
 
 3. **Make your changes**:
@@ -70,8 +75,11 @@ We expect all contributors to follow our [Code of Conduct](CODE_OF_CONDUCT.md). 
 Install and enable pre-commit to catch issues locally (merge conflicts, whitespace, ruff):
 
 ```
-pipx install pre-commit  # or pip install pre-commit
-pre-commit install
+# Recommended via uvx
+uvx pre-commit install
+# Or with pipx
+pipx install pre-commit && pre-commit install
+
 pre-commit run --all-files
 ```
 

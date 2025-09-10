@@ -2,6 +2,13 @@
 
 This document summarizes the current user/authentication mechanics across the codebase and outlines key considerations for implementing full user management. The goal is to provide an objective, value‑dense reference for next steps, risks, and integration constraints from backend to frontend.
 
+## Status Snapshot (Merged: PR #19, PR #20)
+
+- Cookie-based refresh and CSRF guard are implemented behind flags.
+- Server-side sessions (`UserSession`) with refresh rotation on `/auth/refresh`.
+- Metrics counters are wired for auth flows (success/fail/rotation/revocation).
+- Integration tests cover register/verify/login/refresh/logout and rotation.
+
 ## Executive Summary
 
 - Current auth is a minimal JWT-based demo implementation (no persisted users) with access/refresh tokens and a fixed demo credential flow.
@@ -16,38 +23,26 @@ This document summarizes the current user/authentication mechanics across the co
 
 Backend (FastAPI):
 - Endpoints in `apps/api/app/api/v1/auth.py`:
-  - `POST /api/v1/auth/login`: Demo login using `JOURNAL_DEMO_USERNAME`/`JOURNAL_DEMO_PASSWORD` (defaults to `demo`/`demo123`). Returns access and refresh tokens for a fixed demo UUID.
-  - `POST /api/v1/auth/demo`: Returns tokens for the fixed demo user without credentials (dev convenience).
-  - `POST /api/v1/auth/refresh`: Validates refresh token and issues a new access token; returns the same refresh token (no rotation yet).
-  - `GET /api/v1/auth/me`: Returns a synthetic user profile based on `sub`.
-  - `POST /api/v1/auth/logout`: No server-side session state; returns success response only.
-- Token utilities in `apps/api/app/infra/auth.py`:
-  - HS256 JWT signing with `settings.jwt_secret`; claims include `iss`, `aud`, `iat`, `nbf`, `exp`, `sub`, `typ`.
-  - Access token TTL: `settings.access_token_minutes` (default 15m).
-  - Refresh token TTL: `settings.refresh_token_days` (default 30d).
-  - `require_user` FastAPI dependency (HTTP Bearer) validates JWT and returns `sub` as `user_id`.
-- Feature flag in `apps/api/app/settings.py`: `user_mgmt_enabled: bool = False` (scaffold for future).
-- Authorization usage:
-  - Protected endpoints depend on `require_user`, e.g., `entries`, `stats`, some `admin` routes.
-  - Ownership is implied via `Entry.author_id` set from `user_id` but not enforced across all operations yet.
+  - `POST /api/v1/auth/register`: Creates user; in testing/dev returns `dev_verify_token`.
+  - `POST /api/v1/auth/verify-email`: Marks user verified with a valid token.
+  - `POST /api/v1/auth/login`: Password login (hash verify), creates `UserSession`, returns `{access, refresh}` or cookie when enabled.
+  - `POST /api/v1/auth/refresh`: Validates refresh, looks up session by `rid`, rotates and returns new tokens (or cookie + access only).
+  - `POST /api/v1/auth/logout`: Revokes session and clears refresh cookie (when enabled).
+  - `GET /api/v1/auth/csrf`: Ensures CSRF cookie and returns `{ csrfToken }` for web fallback.
+  - `GET /api/v1/auth/me`: Returns a synthetic profile based on `sub` (roles included in access claims).
+- Cookie-based refresh (flagged): helpers in `app.infra.cookies` set/clear refresh cookie and enforce CSRF via header `X-CSRF-Token`.
+- Sessions: `UserSession` model and helpers in `app.infra.sessions` manage issuance, rotation, revoke.
+- Metrics: counters in `app.infra.auth_counters` instrument login success/fail, refresh rotation, and revocation.
+- Flags: `user_mgmt_enabled`, `auth_cookie_refresh`, `csrf_cookie_name`, `refresh_cookie_name`, cookie attributes in `settings`.
 
 Frontend (React):
-- API service in `apps/web/src/services/api.ts`:
-  - Persists `access_token` and `refresh_token` in `localStorage`.
-  - Attaches `Authorization: Bearer <access_token>` on requests when `requireAuth` is true.
-  - On 401, attempts refresh via `POST /v1/auth/refresh`; if successful, retries original request.
-  - Provides `login`, `logout`, `checkAuthStatus` (calls `/v1/auth/me`), `demoLogin` (dev convenience).
-- App boot in `apps/web/src/components/JournalApp.tsx`:
-  - Calls `checkAuthStatus` on init; if unauthenticated, calls `demoLogin` during development and re-checks.
-  - UI renders unauthenticated state when tokens are absent/invalid.
+- API client persists rotated refresh tokens; in cookie mode, uses `credentials: 'include'` and echoes `X-CSRF-Token` if available.
+- Autosave test seam (`autosaveMs` + `__TEST__`) makes editor tests deterministic.
+- Planned: when cookie mode is on in prod, stop storing refresh in localStorage.
 
-Tests (contracts for future work):
-- `apps/api/tests/integration/test_auth_user_management_scaffold.py` (skipped):
-  - Happy-path login/refresh/logout.
-  - Passkey registration/authentication (WebAuthn) placeholders.
-  - OAuth provider availability and connect flow placeholders.
-- `apps/api/tests/integration/test_permissions_scaffold.py` (skipped):
-  - Ownership enforcement: only entry owner can update/delete.
+Tests:
+- Integration: register/verify/login/refresh/logout + rotation (see `apps/api/tests/integration`).
+- API: CSRF warmup endpoint sanity (see `apps/api/tests/api/test_csrf_endpoint.py`).
 
 ---
 
@@ -236,4 +231,3 @@ Phase 3: Hardening and UX
 - Tests (scaffolds):
   - `apps/api/tests/integration/test_auth_user_management_scaffold.py`
   - `apps/api/tests/integration/test_permissions_scaffold.py`
-

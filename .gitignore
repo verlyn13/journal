@@ -54,6 +54,13 @@ coverage.xml
 # Translations
 *.mo
 *.pot
+# Coverage artifacts
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+apps/api/htmlcov/
+apps/web/coverage/
 
 # Django stuff:
 *.log

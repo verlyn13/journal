@@ -210,6 +210,17 @@ async def demo_login() -> dict[str, str]:
     }
 
 
+@router.get("/csrf")
+async def get_csrf(request: Request, response: Response) -> dict[str, str]:
+    """Return a CSRF token and ensure CSRF cookie is set.
+
+    When cookie-based refresh is enabled, the frontend may call this to warm
+    the CSRF cookie and receive the token to echo in `X-CSRF-Token`.
+    """
+    token = ensure_csrf_cookie(response, request)
+    return {"csrfToken": token}
+
+
 @router.post("/refresh")
 async def refresh(
     request: Request,
