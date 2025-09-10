@@ -5,7 +5,7 @@ Revises: 0005_add_content_metrics
 Create Date: 2025-01-03
 
 """
-from typing import Sequence, Union
+from typing import Any, Sequence, Union
 
 from alembic import op
 import sqlalchemy as sa
