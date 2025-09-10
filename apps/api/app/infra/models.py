@@ -67,7 +67,7 @@ class Event(SQLModel, table=True):
     # Validators
     @field_validator("aggregate_id", mode="before")
     @classmethod
-    def _coerce_aggregate_id(cls, v: object) -> object:  # type: ignore[no-untyped-def]
+    def _coerce_aggregate_id(cls, v: object) -> object:
         """Coerce raw 16-byte values into UUID for compatibility with older tests.
 
         Accepts bytes/bytearray of length 16 and converts to UUID; otherwise returns input.
@@ -82,7 +82,7 @@ class Event(SQLModel, table=True):
 
 # SQLAlchemy-level safeguard for raw bytes assigned via ORM operations/tests
 @event.listens_for(Event, "before_insert")
-def _event_before_insert(mapper: object, connection: object, target: Event) -> None:  # type: ignore[no-untyped-def]
+def _event_before_insert(mapper: object, connection: object, target: Event) -> None:
     try:
         if isinstance(target.aggregate_id, (bytes, bytearray)) and len(target.aggregate_id) == 16:
             target.aggregate_id = UUID(bytes=bytes(target.aggregate_id))
