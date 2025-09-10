@@ -7,7 +7,7 @@ with Mapped[...] typing for full mypy compatibility.
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Optional
+from typing import Any, Optional
 from uuid import UUID, uuid4
 
 from sqlalchemy import ForeignKey, String, Text, Boolean, Integer, JSON
@@ -87,7 +87,7 @@ class Event(Base):
     aggregate_id: Mapped[UUID] = mapped_column(PGUUID(as_uuid=True), index=True, nullable=False)
     aggregate_type: Mapped[str] = mapped_column(String, nullable=False)
     event_type: Mapped[str] = mapped_column(String, nullable=False)
-    event_data: Mapped[dict] = mapped_column(JSON, nullable=False)
+    event_data: Mapped[dict[str, Any]] = mapped_column(JSON, nullable=False)
     occurred_at: Mapped[datetime] = mapped_column(default=datetime.utcnow, index=True, nullable=False)
     published_at: Mapped[Optional[datetime]] = mapped_column(index=True, nullable=True)
     

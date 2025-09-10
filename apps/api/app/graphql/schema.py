@@ -31,8 +31,8 @@ async def _hybrid(s: AsyncSession, q: str, k: int, alpha: float) -> list[SearchH
     hits: list[SearchHit] = []
     for r in rows:
         e = Entry(
-            id=str(r["id"]),
-            author_id=str(r["author_id"]),
+            id=strawberry.ID(str(r["id"])),
+            author_id=strawberry.ID(str(r["author_id"])),
             title=r.get("title", ""),
             content=r.get("content") or "",
             created_at=str(r.get("created_at")),

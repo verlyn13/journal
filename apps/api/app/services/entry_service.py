@@ -63,7 +63,7 @@ async def get_entry_by_id(s: AsyncSession, entry_id: UUID) -> Entry | None:
 
 
 async def list_entries(s: AsyncSession, limit: int | None = None, offset: int = 0) -> list[Entry]:
-    query = select(Entry).where(Entry.is_deleted == False).order_by(Entry.created_at.desc())  # type: ignore[attr-defined] # noqa: E712
+    query = select(Entry).where(Entry.is_deleted == False).order_by(Entry.created_at.desc())  # noqa: E712
     if limit is not None:
         query = query.limit(limit)
     if offset > 0:

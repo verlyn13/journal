@@ -8,6 +8,7 @@ from fastapi import HTTPException, Request, Response, status
 
 # Local Imports
 from app.settings import settings
+from app.types.utilities import validate_cookie_samesite
 
 
 def set_refresh_cookie(response: Response, token: str, max_age: int) -> None:
@@ -22,7 +23,7 @@ def set_refresh_cookie(response: Response, token: str, max_age: int) -> None:
         max_age=max_age,
         httponly=True,
         secure=settings.cookie_secure_default,
-        samesite=settings.cookie_samesite,  # 'lax' | 'strict' | 'none'
+        samesite=validate_cookie_samesite(settings.cookie_samesite),
         path=settings.cookie_path,
     )
 
@@ -35,7 +36,7 @@ def clear_refresh_cookie(response: Response) -> None:
     response.delete_cookie(
         key=settings.refresh_cookie_name,
         path=settings.cookie_path,
-        samesite=settings.cookie_samesite,
+        samesite=validate_cookie_samesite(settings.cookie_samesite),
     )
 
 
@@ -54,7 +55,7 @@ def ensure_csrf_cookie(response: Response, request: Request) -> None:
         max_age=7 * 24 * 60 * 60,  # 7 days
         httponly=False,
         secure=settings.cookie_secure_default,
-        samesite=settings.cookie_samesite,
+        samesite=validate_cookie_samesite(settings.cookie_samesite),
         path=settings.cookie_path,
     )
 

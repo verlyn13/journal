@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 
-from typing import Annotated
+from typing import Annotated, Any
 
 from fastapi import APIRouter, Depends
 from sqlalchemy import text
@@ -51,7 +51,7 @@ async def admin_health(
 
 
 @router.post("/reindex-embeddings")
-async def reindex_embeddings(body: dict | None = None) -> dict[str, str]:
+async def reindex_embeddings(body: dict[str, Any] | None = None) -> dict[str, str]:
     """Trigger a bulk reindexing of all entry embeddings.
 
     Args:

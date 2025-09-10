@@ -43,7 +43,7 @@ async def search_hybrid(
 
 @router.post("/search/semantic")
 async def search_semantic(
-    body: dict, s: Annotated[AsyncSession, Depends(get_session)]
+    body: dict[str, Any], s: Annotated[AsyncSession, Depends(get_session)]
 ) -> list[dict[str, Any]]:
     """Perform semantic search using embeddings.
 

@@ -12,6 +12,7 @@ import nats
 from nats.aio.client import Client as NatsClient
 from nats.aio.msg import Msg as NatsMessage
 from nats.js import JetStreamContext
+from nats.js.api import ConsumerConfig
 
 from sqlalchemy import select, text
 
@@ -268,7 +269,7 @@ class EmbeddingConsumer:
                 queue="embedding_workers",
                 cb=self.process_entry_event,
                 manual_ack=True,
-                config={"max_deliver": int(os.getenv("JS_MAX_DELIVER", "3"))},
+                config=ConsumerConfig(max_deliver=int(os.getenv("JS_MAX_DELIVER", "3"))),
             )
 
             # Subscribe to reindex events
@@ -277,7 +278,7 @@ class EmbeddingConsumer:
                 queue="embedding_workers",
                 cb=self.process_entry_event,
                 manual_ack=True,
-                config={"max_deliver": 1},  # Don't retry reindex requests
+                config=ConsumerConfig(max_deliver=1),  # Don't retry reindex requests
             )
 
             logger.info("Started consuming messages")
