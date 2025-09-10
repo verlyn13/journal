@@ -79,7 +79,7 @@ def _prefer_markdown(request: Request) -> bool:
     return (fmt or "").lower() == "markdown"
 
 
-def _entry_response(row: Entry, prefer_md: bool = False) -> dict:
+def _entry_response(row: Entry, prefer_md: bool = False) -> dict[str, Any]:
     """Create stable entry response with backward compatibility.
 
     Returns:
@@ -160,12 +160,9 @@ async def post_entry(
     """
     html_content = body.content or ""
     md_content = body.markdown_content
-    # Default to 2 when markdown is provided without explicit version
-    version = (
-        body.content_version
-        if body.content_version is not None
-        else (2 if md_content is not None else 1)
-    )
+    # Use provided version or default based on content type
+    # content_version has default=1 in the model, so it's never None
+    version = body.content_version
 
     # Generate HTML from markdown when markdown is provided
     if md_content is not None:
@@ -319,8 +316,8 @@ async def delete_entry(
     try:
         await repo.soft_delete(eid, expected_version)
         await s.commit()
-        # Explicit empty 204 response
-        return Response(status_code=204)
+        # Return None for 204 No Content response
+        return None
 
     except NotFoundError as e:
         raise HTTPException(status_code=404, detail="Entry not found") from e
