@@ -460,8 +460,8 @@ export class AuthenticationOrchestrator {
   }
 
   // Error helper
-  private createError(code: string, details?: unknown): AuthError {
-    const messages: Record<string, string> = {
+  private createError(code: keyof typeof AuthErrorCode, details?: unknown): AuthError {
+    const messages: Record<keyof typeof AuthErrorCode, string> = {
       PASSKEY_NOT_SUPPORTED: 'Passkeys are not supported on this device',
       PASSKEY_REGISTRATION_FAILED: 'Failed to register passkey',
       PASSKEY_AUTHENTICATION_FAILED: 'Failed to authenticate with passkey',
@@ -473,10 +473,7 @@ export class AuthenticationOrchestrator {
       UNKNOWN_ERROR: 'An unknown error occurred',
     };
 
-    const known = (Object.keys(messages) as Array<keyof typeof messages>).includes(
-      code as keyof typeof messages,
-    );
-    const finalCode = (known ? (code as keyof typeof messages) : 'UNKNOWN_ERROR') as keyof typeof messages;
+    const finalCode: keyof typeof AuthErrorCode = code in messages ? code : 'UNKNOWN_ERROR';
     return {
       code: AuthErrorCode[finalCode],
       message: messages[finalCode],

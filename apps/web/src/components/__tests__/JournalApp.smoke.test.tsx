@@ -8,7 +8,13 @@ vi.mock('../../services/api', () => {
       checkAuthStatus: vi.fn(async () => ({ authenticated: true, user: { id: 'u1', email: 'u@test' } })),
       demoLogin: vi.fn(async () => ({ ok: true })),
       getEntry: vi.fn(async (id: string) => ({ id, title: 'Sample', content: '# Hello', version: 1, content_version: 2 })),
-      updateEntry: vi.fn(async (id: string, body: unknown) => ({ id, title: 'Sample', version: 2, content_version: 2, ...body })),
+      updateEntry: vi.fn(async (id: string, body: unknown) => ({
+        id,
+        title: 'Sample',
+        version: 2,
+        content_version: 2,
+        ...(typeof body === 'object' && body !== null ? (body as Record<string, unknown>) : {}),
+      })),
     },
   };
 });
