@@ -37,23 +37,16 @@ def extract_text_for_metrics(content: dict[str, Any] | str | None, markdown: str
         Plain text string for analysis
     """
     # Prefer markdown for metrics as it's closer to user input
-    result: str
     if markdown:
-        result = markdown
-    elif content is None:
-        result = ""
-    elif isinstance(content, str):
-        result = content
-    elif isinstance(content, dict):
-        # Try common content structures
-        if "text" in content:
-            result = str(content["text"])
-        elif "content" in content:
-            result = str(content["content"])
-        else:
-            # Fallback to string representation
-            result = str(content)
-    else:
-        # Fallback for other types
-        result = str(content)
-    return result
+        return markdown
+    if content is None:
+        return ""
+    if isinstance(content, str):
+        return content
+    # Must be dict type based on type annotation
+    if "text" in content:
+        return str(content["text"])
+    if "content" in content:
+        return str(content["content"])
+    # Fallback to string representation
+    return str(content)

@@ -4,12 +4,13 @@ import json
 from httpx import AsyncClient
 
 from app.main import app
-from tests.conftest import get_test_auth_headers
+from tests.conftest import auth_headers
 
 
-async def test_update():
-    async with AsyncClient(app=app, base_url="http://test") as client:
-        headers = await get_test_auth_headers(client)
+async def test_update() -> None:
+    async with AsyncClient(transport=None, base_url="http://test") as client:
+        client.app = app  # type: ignore[attr-defined]
+        headers = await auth_headers(client)
 
         # Create an entry first
         entry_data = {"title": "Test Entry", "content": "Test content"}

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from secrets import token_urlsafe
+from typing import Literal, cast
 
 from fastapi import HTTPException, Request, Response, status
 
@@ -13,7 +14,7 @@ def set_refresh_cookie(resp: Response, value: str, max_age: int) -> None:
         value=value,
         httponly=True,
         secure=settings.cookie_secure_default,
-        samesite=settings.cookie_samesite.capitalize(),
+        samesite=cast(Literal["lax", "strict", "none"], settings.cookie_samesite.lower()),
         path=settings.cookie_path,
         max_age=max_age,
     )
@@ -23,7 +24,7 @@ def clear_refresh_cookie(resp: Response) -> None:
     resp.delete_cookie(
         key=settings.refresh_cookie_name,
         path=settings.cookie_path,
-        samesite=settings.cookie_samesite.capitalize(),
+        samesite=cast(Literal["lax", "strict", "none"], settings.cookie_samesite.lower()),
     )
 
 
@@ -35,7 +36,7 @@ def ensure_csrf_cookie(resp: Response, req: Request) -> str:
         value=val,
         httponly=False,
         secure=settings.cookie_secure_default,
-        samesite=settings.cookie_samesite.capitalize(),
+        samesite=cast(Literal["lax", "strict", "none"], settings.cookie_samesite.lower()),
         path="/",
         max_age=60 * 60 * 24 * 180,
     )

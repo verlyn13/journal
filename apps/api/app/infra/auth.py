@@ -63,8 +63,8 @@ def create_verify_token(sub: str, minutes: int = 30) -> str:
     return jwt.encode(payload, settings.jwt_secret, algorithm="HS256")
 
 
-def require_user(creds: HTTPAuthorizationCredentials = Depends(bearer_scheme)) -> str:
-    if not creds:
+def require_user(creds: HTTPAuthorizationCredentials | None = Depends(bearer_scheme)) -> str:
+    if creds is None:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Missing auth")
     try:
         # In test mode, allow decoding without enforcing expiration to keep
@@ -79,7 +79,7 @@ def require_user(creds: HTTPAuthorizationCredentials = Depends(bearer_scheme)) -
                 "verify_exp": not settings.testing,
             },
         )
-        return decoded["sub"]
+        return str(decoded["sub"])
     except jwt.PyJWTError as e:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token") from e
 
