@@ -24,7 +24,7 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 _CB_ENABLED = os.getenv("EMBED_CB_ENABLED", "0") == "1"
 _CB_OPEN_SECS = float(os.getenv("EMBED_CB_OPEN_SECS", "60"))
 _CB_BUDGET_PER_MIN = int(os.getenv("EMBED_CB_ERROR_BUDGET_PER_MIN", "50"))
-_CB_ERRORS = deque()  # timestamps of recent failures (seconds)
+_CB_ERRORS: deque[float] = deque()  # timestamps of recent failures (seconds)
 _CB_STATE = {"open_until": 0.0}
 
 

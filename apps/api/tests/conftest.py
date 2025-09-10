@@ -21,8 +21,8 @@ from sqlalchemy.ext.asyncio import AsyncConnection, AsyncEngine, AsyncSession, c
 from sqlalchemy.orm import sessionmaker
 
 from alembic import command
-from app.infra.db import build_engine, get_session
 from app.infra.auth import require_user
+from app.infra.db import build_engine, get_session
 from app.infra.models import Entry
 from app.main import app
 from app.settings import settings

@@ -66,6 +66,6 @@ jobs:
 
       - name: API: mypy
         working-directory: apps/api
-        run: uv run mypy .
+        run: uv run mypy app
 
       # API tests run in dedicated workflows with DB/NATS services

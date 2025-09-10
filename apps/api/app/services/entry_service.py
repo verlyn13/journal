@@ -4,13 +4,13 @@ from __future__ import annotations
 from uuid import UUID
 
 # Third-party imports
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlmodel import select
 
 from app.infra.conversion import markdown_to_html
 
 # Local imports
-from app.infra.models import Entry, Event
+from app.infra.sa_models import Entry, Event
 
 
 async def create_entry(
@@ -58,14 +58,14 @@ async def create_entry(
 
 async def get_entry_by_id(s: AsyncSession, entry_id: UUID) -> Entry | None:
     """Get entry by ID, excluding soft-deleted entries."""
-    result = await s.execute(select(Entry).where(Entry.id == entry_id, Entry.is_deleted.is_(False)))
+    result = await s.execute(select(Entry).where(Entry.id == entry_id, Entry.is_deleted == False))  # noqa: E712
     return result.scalar_one_or_none()
 
 
 async def list_entries(s: AsyncSession, limit: int | None = None, offset: int = 0) -> list[Entry]:
-    query = select(Entry).where(not Entry.is_deleted).order_by(Entry.created_at.desc())
+    query = select(Entry).where(Entry.is_deleted == False).order_by(Entry.created_at.desc())  # noqa: E712
     if limit is not None:
         query = query.limit(limit)
     if offset > 0:
         query = query.offset(offset)
-    return (await s.execute(query)).scalars().all()
+    return list((await s.execute(query)).scalars().all())

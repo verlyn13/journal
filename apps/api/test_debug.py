@@ -1,15 +1,16 @@
 import asyncio
 import json
 
-from httpx import AsyncClient
+from httpx import ASGITransport, AsyncClient
 
 from app.main import app
-from tests.conftest import get_test_auth_headers
 
 
-async def test_update():
-    async with AsyncClient(app=app, base_url="http://test") as client:
-        headers = await get_test_auth_headers(client)
+async def test_update() -> None:
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as client:
+        # Simple auth headers for testing
+        headers = {"Authorization": "Bearer test-token"}
 
         # Create an entry first
         entry_data = {"title": "Test Entry", "content": "Test content"}

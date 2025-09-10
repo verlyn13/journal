@@ -1,12 +1,12 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import React from 'react';
 
 import { EntryList } from '../EntryList';
+import type { EntryVm } from '../../../types/entry';
 
 describe('EntryList keyboard accessibility', () => {
-  const entries = [
+  const entries: EntryVm[] = [
     {
       id: 'e1',
       title: 'First Entry',
@@ -22,7 +22,7 @@ describe('EntryList keyboard accessibility', () => {
     const onSelect = vi.fn();
     render(
       <EntryList
-        entries={entries as any}
+        entries={entries}
         selectedEntry={null}
         onSelectEntry={onSelect}
         onCreateEntry={vi.fn()}
@@ -35,4 +35,3 @@ describe('EntryList keyboard accessibility', () => {
     expect(onSelect).toHaveBeenCalledWith('e1');
   });
 });
-

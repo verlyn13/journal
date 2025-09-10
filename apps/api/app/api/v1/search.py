@@ -8,7 +8,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.infra.db import get_session
-from app.infra.models import Entry
+from app.infra.sa_models import Entry
 from app.infra.search_pgvector import hybrid_search, semantic_search, upsert_entry_embedding
 
 
@@ -43,7 +43,7 @@ async def search_hybrid(
 
 @router.post("/search/semantic")
 async def search_semantic(
-    body: dict, s: Annotated[AsyncSession, Depends(get_session)]
+    body: dict[str, Any], s: Annotated[AsyncSession, Depends(get_session)]
 ) -> list[dict[str, Any]]:
     """Perform semantic search using embeddings.
 

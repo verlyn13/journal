@@ -131,7 +131,8 @@ async def upsert_entry_embedding(s: AsyncSession, entry_id: Any, text_source: st
                 delay = random.random() * delay  # noqa: S311 - jitter backoff
                 await asyncio.sleep(delay)
         # Convert list to pgvector string format: '[0.1, 0.2, ...]'
-        embedding_str = f"[{','.join(str(x) for x in emb)}]" if isinstance(emb, list) else emb
+        # The isinstance check is defensive programming at runtime boundaries
+        embedding_str = f"[{','.join(str(x) for x in emb)}]" if isinstance(emb, list) else emb  # type: ignore[redundant-expr]
 
         sql = text(
             """

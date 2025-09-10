@@ -5,7 +5,7 @@ Revises: 0005_add_content_metrics
 Create Date: 2025-01-03
 
 """
-from typing import Sequence, Union
+from typing import Any, Sequence, Union
 
 from alembic import op
 import sqlalchemy as sa
@@ -64,7 +64,7 @@ def downgrade() -> None:
     op.drop_column("entries", "version")
 
 
-def _add_col_if_missing(table: str, column: sa.Column) -> None:
+def _add_col_if_missing(table: str, column: sa.Column[Any]) -> None:
     """Add column only if it doesn't already exist."""
     conn = op.get_bind()
     name = column.name
