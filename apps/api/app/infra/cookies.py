@@ -69,5 +69,6 @@ def require_csrf(request: Request) -> None:
     token_cookie = request.cookies.get(settings.csrf_cookie_name)
     token_header = request.headers.get("x-csrf-token")
     if not token_cookie or not token_header or token_header != token_cookie:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="CSRF token missing or invalid")
-
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN, detail="CSRF token missing or invalid"
+        )

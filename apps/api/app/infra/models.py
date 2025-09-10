@@ -125,7 +125,9 @@ class User(SQLModel, table=True):
     password_hash: str | None = Field(default=None)
     is_active: bool = Field(default=True, nullable=False)
     is_verified: bool = Field(default=False, nullable=False)
-    roles: list[str] = Field(default_factory=lambda: ["user"], sa_column=Column(JSONB, nullable=False))
+    roles: list[str] = Field(
+        default_factory=lambda: ["user"], sa_column=Column(JSONB, nullable=False)
+    )
     created_at: datetime = Field(default_factory=datetime.utcnow, nullable=False, index=True)
     updated_at: datetime = Field(default_factory=datetime.utcnow, nullable=False)
 

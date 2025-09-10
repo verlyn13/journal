@@ -171,6 +171,9 @@ ignore = [
     "ANN401",  # any-type (sometimes needed)
     "S101",    # assert-used (fine in tests)
     "TRY003",  # raise-vanilla-args
+    "TRY004",  # prefer-type-error (stylistic)
+    "TRY300",  # try-consider-else (stylistic)
+    "TRY301",  # raise-within-try (stylistic)
     "EM101",   # raw-string-in-exception
     "EM102",   # f-string-in-exception
     "SLF001",  # private-member-access (needed for tests)

@@ -16,8 +16,8 @@ from app.infra.auto_embed import ensure_embedding_for_entry
 from app.infra.conversion import markdown_to_html
 from app.infra.db import get_session
 from app.infra.metrics import count_words_chars, extract_text_for_metrics
-from app.infra.sa_models import Entry
 from app.infra.repository import ConflictError, EntryRepository, NotFoundError
+from app.infra.sa_models import Entry
 from app.services.entry_service import list_entries
 
 
@@ -300,9 +300,6 @@ async def delete_entry(
 
     Returns 204 No Content on success to match API expectations.
 
-    Returns:
-        None (204 No Content).
-
     Raises:
         HTTPException: If entry not found or version conflict.
     """
@@ -317,7 +314,7 @@ async def delete_entry(
         await repo.soft_delete(eid, expected_version)
         await s.commit()
         # Return None for 204 No Content response
-        return None
+        return
 
     except NotFoundError as e:
         raise HTTPException(status_code=404, detail="Entry not found") from e

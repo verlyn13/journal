@@ -9,11 +9,11 @@ import random
 from typing import Any
 
 import nats
+
 from nats.aio.client import Client as NatsClient
 from nats.aio.msg import Msg as NatsMessage
 from nats.js import JetStreamContext
 from nats.js.api import ConsumerConfig
-
 from sqlalchemy import select, text
 
 from app.infra.db import get_session
@@ -105,7 +105,7 @@ class EmbeddingConsumer:
                         )
                     ).first()
                     if exists:
-                        if hasattr(msg, 'ack'):
+                        if hasattr(msg, "ack"):
                             await msg.ack()
                         return
 
@@ -120,7 +120,7 @@ class EmbeddingConsumer:
                 logger.warning("Unknown event type: %s", event_type)
 
             # Acknowledge the message
-            if hasattr(msg, 'ack'):
+            if hasattr(msg, "ack"):
                 await msg.ack()
             # Record processed outcome
             if event_id:
@@ -150,19 +150,19 @@ class EmbeddingConsumer:
                     metrics_inc("worker_process_total", {"result": "term", "reason": "poison"})
                     return
             # Default: NAK for redelivery
-            if hasattr(msg, 'nak'):
+            if hasattr(msg, "nak"):
                 await msg.nak()
             metrics_inc("worker_process_total", {"result": "retry", "reason": "json"})
         except RateLimitedError:
             logger.warning("Embedding provider rate-limited or circuit open; NAK for redelivery")
-            if hasattr(msg, 'nak'):
+            if hasattr(msg, "nak"):
                 await msg.nak()
             metrics_inc("worker_process_total", {"result": "retry", "reason": "ratelimited"})
         except Exception:
             logger.exception("Error processing message")
             # Don't ack on error - let NATS retry
             try:
-                if hasattr(msg, 'nak'):
+                if hasattr(msg, "nak"):
                     await msg.nak()
             except Exception:
                 # If NAK fails (non-JS), swallow to avoid crash

@@ -3,6 +3,7 @@
 from sqlalchemy import MetaData
 from sqlalchemy.orm import DeclarativeBase
 
+
 # Naming convention for constraints (Alembic migrations)
 convention = {
     "ix": "ix_%(column_0_label)s",
