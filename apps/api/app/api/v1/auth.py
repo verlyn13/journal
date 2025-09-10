@@ -25,7 +25,7 @@ from app.infra.cookies import (
     set_refresh_cookie,
 )
 from app.infra.db import get_session
-from app.infra.models import User
+from app.infra.sa_models import User
 from app.infra.ratelimit import allow
 from app.infra.security import hash_password, verify_password
 from app.infra.sessions import (

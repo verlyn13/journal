@@ -16,7 +16,7 @@ from app.infra.auto_embed import ensure_embedding_for_entry
 from app.infra.conversion import markdown_to_html
 from app.infra.db import get_session
 from app.infra.metrics import count_words_chars, extract_text_for_metrics
-from app.infra.models import Entry
+from app.infra.sa_models import Entry
 from app.infra.repository import ConflictError, EntryRepository, NotFoundError
 from app.services.entry_service import list_entries
 

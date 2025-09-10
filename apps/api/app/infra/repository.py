@@ -8,8 +8,8 @@ from uuid import UUID
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-# Removed unused StaleDataError import
-from app.infra.models import Entry
+# Use SA models for proper typing
+from app.infra.sa_models import Entry
 
 
 class RepositoryError(Exception):

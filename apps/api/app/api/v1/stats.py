@@ -4,13 +4,12 @@ from datetime import UTC, datetime, timedelta
 
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel
-from sqlalchemy import func
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlmodel import select
 
 from app.infra.auth import require_user
 from app.infra.db import get_session
-from app.infra.models import Entry
+from app.infra.sa_models import Entry
 
 
 router = APIRouter(tags=["stats"])
