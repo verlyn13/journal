@@ -9,7 +9,6 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
 from app.settings import settings
-from app.types.utilities import TypedJWT
 
 
 bearer_scheme = HTTPBearer(auto_error=False)
@@ -80,6 +79,10 @@ def require_user(creds: HTTPAuthorizationCredentials | None = Depends(bearer_sch
                 "verify_exp": not settings.testing,
             },
         )
+        sub = decoded.get("sub")
+        if not sub:
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
+        return sub
     except jwt.PyJWTError as e:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token") from e
 
