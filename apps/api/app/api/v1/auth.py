@@ -96,9 +96,10 @@ async def login(
         and verify_password(user.password_hash, body.password)
         and (user.is_verified or not settings.auth_require_email_verify)
     )
-    if not ok:
+    if not ok or user is None:  # Type guard: after this check, user is guaranteed non-None
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
 
+    # At this point, user is guaranteed to be non-None due to the check above
     # Create server-side session and include rid in refresh
     ua = request.headers.get("user-agent")
     ip = request.client.host if request.client else None
@@ -264,14 +265,14 @@ async def get_me(user_id: str = Depends(get_current_user)) -> dict[str, str]:
     }
 
 
-@router.post("/logout", response_model=None)
+@router.post("/logout", response_model=None, status_code=status.HTTP_204_NO_CONTENT)
 async def logout(
     request: Request,
     response: Response,
     body: RefreshRequest | None = None,
     user_id: str = Depends(get_current_user),
     s: AsyncSession = Depends(get_session),
-):
+) -> Response | dict[str, str]:
     # Demo mode: preserve legacy behavior
     if not settings.user_mgmt_enabled:
         return {"message": "Logged out successfully"}

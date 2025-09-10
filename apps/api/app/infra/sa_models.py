@@ -68,6 +68,7 @@ class Entry(Base):
     markdown_content: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     word_count: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
     char_count: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    content_version: Mapped[int] = mapped_column(Integer, default=1, nullable=False)
     created_at: Mapped[datetime] = mapped_column(default=datetime.utcnow, nullable=False, index=True)
     updated_at: Mapped[datetime] = mapped_column(default=datetime.utcnow, nullable=False, index=True)
     is_deleted: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False, index=True)
