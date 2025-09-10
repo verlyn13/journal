@@ -189,9 +189,9 @@ async def demo_login() -> dict[str, str]:
 
 @router.post("/refresh")
 async def refresh(
-    body: RefreshRequest | None = None,
     request: Request,
     response: Response,
+    body: RefreshRequest | None = None,
     s: AsyncSession = Depends(get_session),
 ) -> dict[str, str]:
     """Exchange a valid refresh token for a new access token.
@@ -266,11 +266,11 @@ async def get_me(user_id: str = Depends(get_current_user)) -> dict[str, str]:
 
 @router.post("/logout")
 async def logout(
+    request: Request,
+    response: Response,
     body: RefreshRequest | None = None,
     user_id: str = Depends(get_current_user),
     s: AsyncSession = Depends(get_session),
-    request: Request,
-    response: Response,
 ) -> Response | dict[str, str]:
     # Demo mode: preserve legacy behavior
     if not settings.user_mgmt_enabled:

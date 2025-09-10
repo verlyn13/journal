@@ -30,7 +30,7 @@ describe('MarkdownSplitPane autosave', () => {
 
   it('debounces autosave and sends markdown after specified time', async () => {
     const onSave = vi.fn().mockResolvedValue(undefined);
-    render(
+    const { unmount } = render(
       <MarkdownSplitPane
         entry={{ id: 'e1', title: 'T', content: 'Initial' }}
         onSave={onSave}
@@ -41,20 +41,23 @@ describe('MarkdownSplitPane autosave', () => {
     const editor = await screen.findByLabelText('md-editor');
     
     // Change content
-    await act(async () => {
-      fireEvent.change(editor, { target: { value: '# New content' } });
-    });
+    fireEvent.change(editor, { target: { value: '# New content' } });
 
     // Before debounce period: no save
     expect(onSave).not.toHaveBeenCalled();
 
-    // Advance timers to trigger debounce and flush promises
+    // Advance timers past the debounce period
     await act(async () => {
-      await vi.advanceTimersByTimeAsync(150);
+      vi.advanceTimersByTime(150);
+      // Flush all pending promises
+      await Promise.resolve();
     });
     
-    // Wait for the save to complete
-    await waitFor(() => expect(onSave).toHaveBeenCalledTimes(1), { timeout: 1000 });
+    // The save should have been called
+    expect(onSave).toHaveBeenCalledTimes(1);
     expect(onSave).toHaveBeenCalledWith({ html: '', markdown: '# New content' });
+    
+    // Clean up to avoid timer leaks
+    unmount();
   });
 });
