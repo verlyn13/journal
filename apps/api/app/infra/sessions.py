@@ -6,7 +6,7 @@ from uuid import UUID, uuid4
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.infra.models import UserSession
+from app.infra.sa_models import UserSession
 from app.settings import settings
 
 

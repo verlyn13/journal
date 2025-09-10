@@ -17,7 +17,7 @@ from typing import Any
 from sqlalchemy import func, select, text, text as _text, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.infra.models import Event
+from app.infra.sa_models import Event
 from app.infra.nats_bus import nats_conn
 from app.telemetry.metrics_runtime import inc as metrics_inc
 

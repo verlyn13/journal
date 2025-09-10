@@ -4,13 +4,13 @@ from __future__ import annotations
 from uuid import UUID
 
 # Third-party imports
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlmodel import select
 
 from app.infra.conversion import markdown_to_html
 
 # Local imports
-from app.infra.models import Entry, Event
+from app.infra.sa_models import Entry, Event
 
 
 async def create_entry(

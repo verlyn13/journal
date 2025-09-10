@@ -9,7 +9,7 @@ from uuid import UUID
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.infra.models import Entry
+from app.infra.sa_models import Entry
 from app.infra.search_pgvector import upsert_entry_embedding
 from app.settings import settings
 

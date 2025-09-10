@@ -1,7 +1,7 @@
 """SQLAlchemy 2.0 base configuration with proper typing."""
 
 from sqlalchemy import MetaData
-from sqlalchemy.orm import DeclarativeBase, MappedAsDataclass
+from sqlalchemy.orm import DeclarativeBase
 
 # Naming convention for constraints (Alembic migrations)
 convention = {
@@ -15,9 +15,7 @@ convention = {
 metadata = MetaData(naming_convention=convention)
 
 
-class Base(MappedAsDataclass, DeclarativeBase):
+class Base(DeclarativeBase):
     """Base class for all SQLAlchemy models with SQLAlchemy 2.0 typing."""
 
     metadata = metadata
-    # Enable dataclass behavior but allow SQLAlchemy to handle __init__
-    __init_subclass_kw__ = {"init": False}
