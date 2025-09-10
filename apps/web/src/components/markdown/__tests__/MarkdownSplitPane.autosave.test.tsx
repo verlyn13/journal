@@ -21,43 +21,41 @@ vi.mock('../MarkdownPreview', () => {
 import MarkdownSplitPane from '../MarkdownSplitPane';
 
 describe('MarkdownSplitPane autosave', () => {
-  beforeEach(() => {
-    vi.useFakeTimers();
-  });
-  afterEach(() => {
-    vi.useRealTimers();
-  });
-
   it('debounces autosave and sends markdown after specified time', async () => {
-    const onSave = vi.fn().mockResolvedValue(undefined);
-    const { unmount } = render(
+    const onSave = vi.fn();
+    
+    render(
       <MarkdownSplitPane
         entry={{ id: 'e1', title: 'T', content: 'Initial' }}
         onSave={onSave}
-        autosaveMs={100}
+        autosaveMs={50}  // Short delay for testing
       />,
     );
 
+    // Wait for lazy-loaded components to render and initial save
     const editor = await screen.findByLabelText('md-editor');
     
-    // Change content
-    fireEvent.change(editor, { target: { value: '# New content' } });
-
-    // Before debounce period: no save
-    expect(onSave).not.toHaveBeenCalled();
-
-    // Advance timers past the debounce period
-    await act(async () => {
-      vi.advanceTimersByTime(150);
-      // Flush all pending promises
-      await Promise.resolve();
+    // Wait for initial autosave to complete
+    await waitFor(() => {
+      expect(onSave).toHaveBeenCalledWith({ html: '', markdown: 'Initial' });
     });
     
-    // The save should have been called
-    expect(onSave).toHaveBeenCalledTimes(1);
-    expect(onSave).toHaveBeenCalledWith({ html: '', markdown: '# New content' });
+    // Clear the mock to test the next save
+    onSave.mockClear();
     
-    // Clean up to avoid timer leaks
-    unmount();
+    // Change content - this should trigger the debounced save
+    fireEvent.change(editor, { target: { value: '# New content' } });
+
+    // Immediately after change: no save yet (debouncing)
+    expect(onSave).not.toHaveBeenCalled();
+
+    // Wait for the debounced save to be called
+    await waitFor(
+      () => {
+        expect(onSave).toHaveBeenCalledTimes(1);
+        expect(onSave).toHaveBeenCalledWith({ html: '', markdown: '# New content' });
+      },
+      { timeout: 200 }
+    );
   });
 });
