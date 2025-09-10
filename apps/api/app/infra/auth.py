@@ -79,8 +79,8 @@ def require_user(creds: HTTPAuthorizationCredentials | None = Depends(bearer_sch
                 "verify_exp": not settings.testing,
             },
         )
-        sub = decoded.get("sub")
-        if not sub:
+        sub: str | None = decoded.get("sub")
+        if not sub or not isinstance(sub, str):
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
         return sub
     except jwt.PyJWTError as e:

@@ -85,8 +85,8 @@ class Event(SQLModel, table=True):
 def _event_before_insert(mapper: object, connection: object, target: Event) -> None:
     try:
         # Runtime coercion for tests that might assign raw bytes
-        if isinstance(target.aggregate_id, (bytes, bytearray)) and len(target.aggregate_id) == 16:  # type: ignore[unreachable]
-            target.aggregate_id = UUID(bytes=bytes(target.aggregate_id))  # type: ignore[unreachable]
+        if isinstance(target.aggregate_id, (bytes, bytearray)) and len(target.aggregate_id) == 16:
+            target.aggregate_id = UUID(bytes=bytes(target.aggregate_id))
     except ValueError as exc:
         logging.getLogger(__name__).debug("aggregate_id coercion skipped: %s", exc)
 
