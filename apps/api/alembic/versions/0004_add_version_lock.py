@@ -16,7 +16,7 @@ branch_labels = None
 depends_on = None
 
 
-def upgrade():
+def upgrade() -> None:
     """Add version column with default value of 1 for optimistic locking.
 
     Idempotent: skips if column already exists (e.g., added by later online-safe migration).
@@ -38,6 +38,6 @@ def upgrade():
         op.alter_column("entries", "version", nullable=False, existing_type=sa.Integer())
 
 
-def downgrade():
+def downgrade() -> None:
     """Remove version column."""
     op.drop_column("entries", "version")

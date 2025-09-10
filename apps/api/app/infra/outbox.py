@@ -15,6 +15,7 @@ from typing import Any
 
 # Third-party imports
 from sqlalchemy import func, select, text, text as _text, update
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.infra.models import Event
 from app.infra.nats_bus import nats_conn
@@ -81,7 +82,7 @@ async def relay_outbox(session_factory: SessionFactory, poll_seconds: float = 1.
     """
     while True:
         try:
-            async with session_factory() as s:  # type: AsyncSession
+            async with session_factory() as s:
                 # Flag-gated retry pipeline
                 retry_enabled = os.getenv("OUTBOX_RETRY_ENABLED", "0") == "1"
                 if retry_enabled:

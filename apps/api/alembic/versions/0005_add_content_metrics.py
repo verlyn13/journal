@@ -16,7 +16,7 @@ branch_labels = None
 depends_on = None
 
 
-def upgrade():
+def upgrade() -> None:
     """Add word_count and char_count columns."""
     # Check if columns exist first
     conn = op.get_bind()
@@ -40,7 +40,7 @@ def upgrade():
         op.alter_column("entries", "char_count", server_default=None)
 
 
-def downgrade():
+def downgrade() -> None:
     """Remove content metrics columns."""
     op.drop_column("entries", "word_count")
     op.drop_column("entries", "char_count")

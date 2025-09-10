@@ -59,7 +59,7 @@ class Event(SQLModel, table=True):
     aggregate_id: UUID = Field(index=True)
     aggregate_type: str
     event_type: str
-    event_data: dict = Field(sa_column=Column(JSON, nullable=False))
+    event_data: dict[str, Any] = Field(sa_column=Column(JSON, nullable=False))
     occurred_at: datetime = Field(default_factory=datetime.utcnow, index=True)
     published_at: datetime | None = Field(default=None, index=True)
 
