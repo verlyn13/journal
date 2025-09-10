@@ -9,10 +9,9 @@ import logging
 import os
 import random
 
-from collections.abc import AsyncIterator, Callable
 from contextlib import AbstractAsyncContextManager
 from datetime import UTC, datetime, timedelta
-from typing import Any, Protocol, runtime_checkable
+from typing import Protocol, runtime_checkable
 
 # Third-party imports
 from nats.aio.client import Client as NatsClient
@@ -20,8 +19,8 @@ from nats.js import JetStreamContext
 from sqlalchemy import func, select, text, text as _text, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.infra.sa_models import Event
 from app.infra.nats_bus import nats_conn
+from app.infra.sa_models import Event
 from app.telemetry.metrics_runtime import inc as metrics_inc
 
 
@@ -33,7 +32,7 @@ SUBJECT_MAP = {
 @runtime_checkable
 class SessionFactory(Protocol):
     """Protocol for session factory that returns async context managers."""
-    
+
     def __call__(self) -> AbstractAsyncContextManager[AsyncSession]:
         """Return an async context manager that yields a session."""
         ...
@@ -54,14 +53,12 @@ async def _publish_rows(s: AsyncSession, rows: list[Event], retry_enabled: bool)
             js = None
         for ev in rows:
             subject = SUBJECT_MAP.get(ev.aggregate_type, "journal.events")
-            payload = json.dumps(
-                {
-                    "id": str(ev.id),
-                    "event_type": ev.event_type,
-                    "event_data": ev.event_data,
-                    "ts": ev.occurred_at.isoformat(),
-                }
-            ).encode("utf-8")
+            payload = json.dumps({
+                "id": str(ev.id),
+                "event_type": ev.event_type,
+                "event_data": ev.event_data,
+                "ts": ev.occurred_at.isoformat(),
+            }).encode("utf-8")
             try:
                 metrics_inc("outbox_publish_attempts_total", {"stage": "attempt"})
                 if js:
@@ -193,7 +190,9 @@ def _log_only(error: Exception) -> None:
         logger.debug("logging failed: %s", exc)
 
 
-async def _schedule_retry_or_dead(session: AsyncSession, ev: Event, error: Exception, nc: NatsClient) -> None:
+async def _schedule_retry_or_dead(
+    session: AsyncSession, ev: Event, error: Exception, nc: NatsClient
+) -> None:
     """Best-effort update of retry bookkeeping; tolerant if columns are missing.
 
     Columns: attempts (int), next_attempt_at (timestamptz), last_error (text), state (text)

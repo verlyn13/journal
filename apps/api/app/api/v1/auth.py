@@ -25,8 +25,8 @@ from app.infra.cookies import (
     set_refresh_cookie,
 )
 from app.infra.db import get_session
-from app.infra.sa_models import User
 from app.infra.ratelimit import allow
+from app.infra.sa_models import User
 from app.infra.security import hash_password, verify_password
 from app.infra.sessions import (
     create_session as create_user_session,
@@ -76,7 +76,9 @@ async def login(
             user_id = "123e4567-e89b-12d3-a456-426614174000"
         else:
             login_fail("invalid_credentials")
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials"
+            )
         return {
             "access_token": create_access_token(user_id),
             "refresh_token": create_refresh_token(user_id),
@@ -86,7 +88,9 @@ async def login(
     # Real login (flag on)
     key = f"login:{(body.email or body.username or '').lower()}"
     if not allow(key, settings.rate_limit_max_attempts, settings.rate_limit_window_seconds):
-        raise HTTPException(status_code=status.HTTP_429_TOO_MANY_REQUESTS, detail="Please try again later")
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS, detail="Please try again later"
+        )
 
     stmt = select(User).where(User.email == (body.email or ""))
     res = await s.execute(stmt)
@@ -100,7 +104,9 @@ async def login(
     )
     if not ok or user is None:  # Type guard: after this check, user is guaranteed non-None
         reason = (
-            "not_verified" if user and not user.is_verified and settings.auth_require_email_verify else "invalid_credentials"
+            "not_verified"
+            if user and not user.is_verified and settings.auth_require_email_verify
+            else "invalid_credentials"
         )
         login_fail(reason)
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
@@ -130,15 +136,22 @@ async def register(
 
     key = f"register:{request.client.host if request.client else 'unknown'}"
     if not allow(key, settings.rate_limit_max_attempts, settings.rate_limit_window_seconds):
-        raise HTTPException(status_code=status.HTTP_429_TOO_MANY_REQUESTS, detail="Please try again later")
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS, detail="Please try again later"
+        )
 
     # Do not enumerate existing emails
     res = await s.execute(select(User).where(User.email == body.email))
     existing = res.scalars().first()
     if existing:
-        return {"message": "If this address can register, a verification will be sent.", "dev_verify_token": None}
+        return {
+            "message": "If this address can register, a verification will be sent.",
+            "dev_verify_token": None,
+        }
 
-    user = User(email=body.email, username=body.username, password_hash=hash_password(body.password))
+    user = User(
+        email=body.email, username=body.username, password_hash=hash_password(body.password)
+    )
     s.add(user)
     await s.commit()
     await s.refresh(user)
@@ -151,7 +164,9 @@ async def register(
 
 
 @router.post("/verify-email", status_code=204, response_class=Response)
-async def verify_email(body: VerifyEmailRequest, s: AsyncSession = Depends(get_session)) -> Response:
+async def verify_email(
+    body: VerifyEmailRequest, s: AsyncSession = Depends(get_session)
+) -> Response:
     if not settings.user_mgmt_enabled:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
 

@@ -1,4 +1,3 @@
-
 import strawberry
 
 from sqlalchemy.ext.asyncio import AsyncSession
