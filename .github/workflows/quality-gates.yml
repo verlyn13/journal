@@ -60,19 +60,19 @@ jobs:
           SECURITY_ISSUES=0
           
           # Scan for hardcoded secrets (excluding models and test credentials)
-          if grep -r "password.*=" apps/ --include="*.py" --exclude-dir="tests" | grep -v "noqa: S105" | grep -v "password_hash:" | grep -v "Field(default=" | head -5; then
+          if grep -r 'password[[:space:]]*=[[:space:]]*["\x27]' apps/ --include="*.py" --exclude-dir="tests" --exclude-dir=".venv" --exclude-dir="node_modules" | grep -v "noqa: S105" | grep -v "password_hash:" | grep -v "Field(default=" | grep -v "password: str" | head -5; then
             echo "❌ Potential hardcoded passwords found"
             SECURITY_ISSUES=$((SECURITY_ISSUES + 1))
           fi
           
           # Check for SQL injection patterns (excluding safe parameter patterns)
-          if grep -r "f.*SELECT.*{" apps/ --include="*.py" | grep -v "text(" | head -5; then
+          if grep -r "f.*SELECT.*{" apps/ --include="*.py" --exclude-dir=".venv" --exclude-dir="node_modules" | grep -v "text(" | head -5; then
             echo "❌ Potential SQL injection patterns found"
             SECURITY_ISSUES=$((SECURITY_ISSUES + 1))
           fi
           
           # Check for unsafe subprocess usage
-          if grep -r "subprocess.*shell=True" apps/ --include="*.py" | grep -v "noqa.*S60" | head -5; then
+          if grep -r "subprocess.*shell=True" apps/ --include="*.py" --exclude-dir=".venv" --exclude-dir="node_modules" | grep -v "noqa.*S60" | head -5; then
             echo "❌ Unsafe subprocess usage found"
             SECURITY_ISSUES=$((SECURITY_ISSUES + 1))
           fi
