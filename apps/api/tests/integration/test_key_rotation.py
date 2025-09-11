@@ -5,7 +5,7 @@ from __future__ import annotations
 import asyncio
 
 from datetime import UTC, datetime, timedelta
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import AsyncMock, patch
 
 import pytest
 
@@ -13,7 +13,7 @@ from redis.asyncio import Redis
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.domain.auth.key_manager import KeyManager, KeyMetadata, KeyStatus
-from app.infra.crypto.key_generation import Ed25519KeyGenerator, KeyPair
+from app.infra.crypto.key_generation import Ed25519KeyGenerator
 
 
 @pytest.fixture
@@ -60,7 +60,7 @@ def key_manager(mock_session, mock_redis, mock_infisical):
 class TestKeyRotationScenarios:
     """Test complete key rotation scenarios with overlap windows."""
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_complete_rotation_cycle(self, key_manager, mock_redis, mock_infisical):
         """Test complete key rotation cycle from generation to retirement."""
         # Step 1: Initial key generation
@@ -80,7 +80,7 @@ class TestKeyRotationScenarios:
             "/auth/jwt/next_private_key": next_material.private_key_pem,
         }
 
-        mock_infisical.fetch_secret.side_effect = lambda path: infisical_responses.get(path)
+        mock_infisical.fetch_secret.side_effect = infisical_responses.get
 
         # Mock metadata storage/retrieval
         metadata_storage = {}
@@ -121,7 +121,7 @@ class TestKeyRotationScenarios:
                 KeyStatus.NEXT: next_metadata,
             }
 
-            mock_get_meta.side_effect = lambda status: metadata_responses.get(status)
+            mock_get_meta.side_effect = metadata_responses.get
             mock_gen_next.return_value = new_next_key
 
             # Execute rotation
@@ -142,7 +142,7 @@ class TestKeyRotationScenarios:
             audit_call = mock_audit.call_args[1]
             assert audit_call["event_type"] == "key_rotated"
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_overlap_window_verification(self, key_manager, mock_redis, mock_infisical):
         """Test that overlap window allows both current and next keys for verification."""
         current_key = Ed25519KeyGenerator.generate_key_pair(kid="current-key-123")
@@ -157,7 +157,7 @@ class TestKeyRotationScenarios:
             "/auth/jwt/next_private_key": next_material.private_key_pem,
         }
 
-        mock_infisical.fetch_secret.side_effect = lambda path: infisical_responses.get(path)
+        mock_infisical.fetch_secret.side_effect = infisical_responses.get
 
         # Mock metadata for both keys
         with (
@@ -198,7 +198,7 @@ class TestKeyRotationScenarios:
             verification_keys[0].public_key.verify(current_signature, test_message)
             verification_keys[1].public_key.verify(next_signature, test_message)
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_rotation_failure_recovery(self, key_manager, mock_redis, mock_infisical):
         """Test recovery from rotation failures."""
         # Mock rotation failure
@@ -225,7 +225,7 @@ class TestKeyRotationScenarios:
             assert audit_call["event_type"] == "key_rotation_failed"
             assert "Infisical connection failed" in audit_call["event_data"]["error"]
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_concurrent_rotation_prevention(self, key_manager):
         """Test that concurrent rotations are prevented."""
         # This would typically involve database locks or Redis locks
@@ -258,7 +258,7 @@ class TestKeyRotationScenarios:
             assert success_count == 1, "Exactly one rotation should succeed"
             assert error_count == 1, "One rotation should fail due to concurrency"
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_key_rotation_with_cache_invalidation(
         self, key_manager, mock_redis, mock_infisical
     ):
@@ -300,7 +300,7 @@ class TestKeyRotationScenarios:
             mock_redis.scan.assert_called()
             mock_redis.delete.assert_called()
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_rotation_timing_accuracy(self, key_manager):
         """Test rotation happens at correct intervals."""
         current_time = datetime.now(UTC)
@@ -339,7 +339,7 @@ class TestKeyRotationScenarios:
                 if case["should_rotate"]:
                     assert case["reason"].replace("_", " ") in reason.lower()
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_zero_downtime_rotation(self, key_manager, mock_redis, mock_infisical):
         """Test that rotation provides zero downtime for token verification."""
         # Simulate a complete rotation cycle while maintaining verification capability
@@ -357,7 +357,7 @@ class TestKeyRotationScenarios:
             "/auth/jwt/next_private_key": next_material.private_key_pem,
         }
 
-        mock_infisical.fetch_secret.side_effect = lambda path: infisical_state.get(path)
+        mock_infisical.fetch_secret.side_effect = infisical_state.get
 
         # Mock store to update state
         def store_secret_side_effect(path, value):
@@ -367,7 +367,7 @@ class TestKeyRotationScenarios:
 
         # Track verification keys throughout rotation
         verification_keys_before = []
-        verification_keys_during = []
+        _ = []  # verification_keys_during - unused but kept for clarity
         verification_keys_after = []
 
         with (
@@ -394,7 +394,7 @@ class TestKeyRotationScenarios:
 
             # Get verification keys before rotation
             verification_keys_before = await key_manager.get_verification_keys()
-            before_kids = [key.kid for key in verification_keys_before]
+            _ = [key.kid for key in verification_keys_before]  # before_kids - for debugging
 
             # Execute rotation
             await key_manager.rotate_keys(force=True)
@@ -424,10 +424,12 @@ class TestKeyRotationScenarios:
 
             # Test that tokens signed before rotation can still be verified
             test_message = b"token_payload_test"
-            old_current_signature = current_key.private_key.sign(test_message)
+            _ = current_key.private_key.sign(test_message)  # old_current_signature
 
             # Should be verifiable by the key that was promoted
-            promoted_key = next(key for key in verification_keys_after if key.kid == "next-key-new")
+            _ = next(
+                key for key in verification_keys_after if key.kid == "next-key-new"
+            )  # promoted_key
 
             # The next key can't verify the old current key's signature (different keys)
             # But during overlap window, both keys would be available for verification
@@ -436,7 +438,7 @@ class TestKeyRotationScenarios:
 class TestRotationPerformance:
     """Test rotation performance requirements."""
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_rotation_completion_time(self, key_manager):
         """Test that rotation completes within acceptable time limits."""
         import time
@@ -461,7 +463,7 @@ class TestRotationPerformance:
                 f"Rotation took {rotation_time:.2f}ms, should be under 100ms"
             )
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_verification_keys_retrieval_performance(self, key_manager):
         """Test that verification keys retrieval meets performance requirements."""
         import time
@@ -492,7 +494,7 @@ class TestRotationPerformance:
 class TestRotationErrorHandling:
     """Test error handling during rotation scenarios."""
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_rotation_with_infisical_timeout(self, key_manager, mock_infisical):
         """Test rotation behavior when Infisical times out."""
 
@@ -517,7 +519,7 @@ class TestRotationErrorHandling:
             audit_call = mock_audit.call_args[1]
             assert audit_call["event_type"] == "key_rotation_failed"
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_rotation_with_redis_failure(self, key_manager, mock_redis):
         """Test rotation behavior when Redis operations fail."""
         # Mock Redis failure
@@ -538,13 +540,13 @@ class TestRotationErrorHandling:
             with pytest.raises(RuntimeError):
                 await key_manager.rotate_keys(force=True)
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_partial_rotation_rollback(self, key_manager, mock_infisical):
         """Test rollback when rotation partially fails."""
         # This would be a more complex scenario in real implementation
         # For now, we test that failures are properly logged and state is consistent
 
-        original_current = "original-current-key"
+        _ = "original-current-key"  # original_current - for test context
 
         # Mock partial failure - promotion succeeds but next key generation fails
         promotion_calls = []

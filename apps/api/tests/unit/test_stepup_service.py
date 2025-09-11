@@ -248,5 +248,5 @@ class TestStepUpAuthService:
 
         for action in critical_actions:
             # This will fail if action is not in the Literal type
-            test_action: SensitiveAction = action  # type: ignore
+            test_action: SensitiveAction = action  # type: ignore[assignment]
             assert test_action == action

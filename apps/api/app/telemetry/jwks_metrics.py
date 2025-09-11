@@ -216,18 +216,18 @@ class JWKSMetrics:
         Returns:
             Bucket name
         """
-        if value_ms < 1:
-            return "lt_1ms"
-        if value_ms < 5:
-            return "1_5ms"
-        if value_ms < 10:
-            return "5_10ms"
-        if value_ms < 50:
-            return "10_50ms"
-        if value_ms < 100:
-            return "50_100ms"
-        if value_ms < 500:
-            return "100_500ms"
+        buckets = [
+            (1, "lt_1ms"),
+            (5, "1_5ms"),
+            (10, "5_10ms"),
+            (50, "10_50ms"),
+            (100, "50_100ms"),
+            (500, "100_500ms"),
+        ]
+
+        for threshold, bucket_name in buckets:
+            if value_ms < threshold:
+                return bucket_name
         return "gte_500ms"
 
     @staticmethod

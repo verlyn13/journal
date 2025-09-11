@@ -1,9 +1,13 @@
 from __future__ import annotations
+
 from uuid import uuid4
+
 from fastapi import APIRouter
+
 from app.infra.auth import create_access_token, create_refresh_token
 
 router = APIRouter(prefix="/auth", tags=["auth"])
+
 
 # Demo-only endpoints. Replace with real user storage/auth.
 @router.post("/login")

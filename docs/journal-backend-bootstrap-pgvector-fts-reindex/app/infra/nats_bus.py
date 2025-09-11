@@ -1,8 +1,11 @@
 from __future__ import annotations
-import asyncio
+
 from contextlib import asynccontextmanager
+
 from nats.aio.client import Client as NATS
+
 from app.settings import settings
+
 
 @asynccontextmanager
 async def nats_conn():
@@ -13,6 +16,7 @@ async def nats_conn():
     finally:
         await nc.drain()
         await nc.close()
+
 
 async def publish(subject: str, data: bytes):
     async with nats_conn() as nc:

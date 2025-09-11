@@ -2,12 +2,10 @@
 
 from __future__ import annotations
 
-import asyncio
 import json
 
 from datetime import UTC, datetime, timedelta
-from unittest.mock import AsyncMock, MagicMock, patch
-from uuid import UUID
+from unittest.mock import AsyncMock, patch
 
 import pytest
 
@@ -82,7 +80,7 @@ class TestKeyManager:
         assert key_manager.rotation_warning == KeyManager.DEFAULT_ROTATION_WARNING
         assert isinstance(key_manager.audit_service, AuditService)
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_initialize_key_system_first_time(self, key_manager, mock_redis):
         """Test key system initialization when no keys exist."""
         # Mock no existing current key
@@ -102,7 +100,7 @@ class TestKeyManager:
             mock_init.assert_called_once()
             mock_next.assert_called_once()
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_initialize_key_system_keys_exist(self, key_manager, sample_key_metadata):
         """Test key system initialization when keys already exist."""
         with (
@@ -116,7 +114,7 @@ class TestKeyManager:
             mock_get_current.assert_called_once()
             mock_init.assert_not_called()
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_get_current_signing_key_from_cache(
         self, key_manager, mock_redis, sample_key_pair
     ):
@@ -140,7 +138,7 @@ class TestKeyManager:
             assert result.created_at == sample_key_pair.created_at
             mock_redis.get.assert_called_once()
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_get_current_signing_key_from_infisical(
         self, key_manager, mock_redis, mock_infisical, sample_key_pair
     ):
@@ -164,7 +162,7 @@ class TestKeyManager:
             mock_infisical.fetch_secret.assert_called_once_with("/auth/jwt/current_private_key")
             mock_redis.setex.assert_called_once()
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_get_current_signing_key_not_found(self, key_manager, mock_redis, mock_infisical):
         """Test error when no current signing key is available."""
         # Mock no key found anywhere
@@ -174,7 +172,7 @@ class TestKeyManager:
         with pytest.raises(RuntimeError, match="No current signing key available"):
             await key_manager.get_current_signing_key()
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_get_verification_keys(self, key_manager, sample_key_pair):
         """Test retrieving verification keys including current and next."""
         next_key_pair = Ed25519KeyGenerator.generate_key_pair(kid="2025-02-15-next5678")
@@ -192,7 +190,7 @@ class TestKeyManager:
             assert keys[0].kid == sample_key_pair.kid
             assert keys[1].kid == next_key_pair.kid
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_get_verification_keys_current_only(self, key_manager, sample_key_pair):
         """Test retrieving verification keys when only current key exists."""
         with (
@@ -211,7 +209,7 @@ class TestKeyManager:
 class TestKeyRotation:
     """Test key rotation functionality."""
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_check_rotation_needed_no_key(self, key_manager):
         """Test rotation check when no current key exists."""
         with patch.object(key_manager, "_get_current_key_metadata") as mock_metadata:
@@ -222,7 +220,7 @@ class TestKeyRotation:
             assert needs_rotation is True
             assert "No current key exists" in reason
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_check_rotation_needed_expired_key(self, key_manager):
         """Test rotation check for expired key."""
         old_metadata = KeyMetadata(
@@ -240,7 +238,7 @@ class TestKeyRotation:
             assert needs_rotation is True
             assert "expired" in reason.lower()
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_check_rotation_needed_warning_window(self, key_manager):
         """Test rotation check when in warning window."""
         warning_metadata = KeyMetadata(
@@ -258,7 +256,7 @@ class TestKeyRotation:
             assert needs_rotation is True
             assert "approaching rotation" in reason.lower()
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_check_rotation_needed_not_needed(self, key_manager):
         """Test rotation check when rotation is not needed."""
         fresh_metadata = KeyMetadata(
@@ -276,7 +274,7 @@ class TestKeyRotation:
             assert needs_rotation is False
             assert "not needed" in reason.lower()
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_rotate_keys_success(self, key_manager, sample_key_pair):
         """Test successful key rotation."""
         next_key = Ed25519KeyGenerator.generate_key_pair(kid="next-key-123")
@@ -303,7 +301,7 @@ class TestKeyRotation:
             mock_invalidate.assert_called_once()
             mock_audit.assert_called()
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_rotate_keys_force(self, key_manager, sample_key_pair):
         """Test forced key rotation."""
         next_key = Ed25519KeyGenerator.generate_key_pair(kid="next-key-123")
@@ -312,9 +310,9 @@ class TestKeyRotation:
             patch.object(key_manager, "check_rotation_needed") as mock_check,
             patch.object(key_manager, "_get_next_key") as mock_get_next,
             patch.object(key_manager, "_promote_next_to_current") as mock_promote,
-            patch.object(key_manager, "_generate_next_key") as mock_gen_next,
-            patch.object(key_manager, "_invalidate_key_caches") as mock_invalidate,
-            patch.object(key_manager.audit_service, "log_event") as mock_audit,
+            patch.object(key_manager, "_generate_next_key"),
+            patch.object(key_manager, "_invalidate_key_caches"),
+            patch.object(key_manager.audit_service, "log_event"),
         ):
             mock_get_next.return_value = next_key
 
@@ -324,7 +322,7 @@ class TestKeyRotation:
             mock_check.assert_not_called()  # Should skip check when forced
             mock_promote.assert_called_once()
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_rotate_keys_skipped(self, key_manager):
         """Test key rotation skipped when not needed."""
         with patch.object(key_manager, "check_rotation_needed") as mock_check:
@@ -335,7 +333,7 @@ class TestKeyRotation:
             assert result["status"] == "skipped"
             assert "not needed" in result["reason"]
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_rotate_keys_failure(self, key_manager):
         """Test key rotation failure handling."""
         with (
@@ -433,7 +431,7 @@ class TestKeyMetadata:
 class TestKeyIntegrity:
     """Test key integrity verification."""
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_verify_key_integrity_success(
         self, key_manager, sample_key_pair, mock_redis, mock_infisical
     ):
@@ -458,7 +456,7 @@ class TestKeyIntegrity:
             assert result["cache_consistent"] is True
             assert len(result["issues"]) == 0
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_verify_key_integrity_current_key_invalid(self, key_manager):
         """Test integrity verification with invalid current key."""
         with patch.object(key_manager, "get_current_signing_key") as mock_current:
@@ -469,7 +467,7 @@ class TestKeyIntegrity:
             assert result["current_key_valid"] is False
             assert "Current key invalid" in result["issues"][0]
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_verify_key_integrity_next_key_invalid(self, key_manager, sample_key_pair):
         """Test integrity verification with invalid next key."""
         with (
@@ -484,7 +482,7 @@ class TestKeyIntegrity:
             assert result["next_key_valid"] is False
             assert "No next key available" in result["issues"]
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_verify_key_integrity_cache_inconsistent(
         self, key_manager, sample_key_pair, mock_redis, mock_infisical
     ):
@@ -504,7 +502,7 @@ class TestKeyIntegrity:
 class TestKeyManagerInternalMethods:
     """Test internal methods of KeyManager."""
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_store_key_metadata(self, key_manager, mock_redis, sample_key_metadata):
         """Test storing key metadata in Redis."""
         await key_manager._store_key_metadata(sample_key_metadata)
@@ -515,7 +513,7 @@ class TestKeyManagerInternalMethods:
         assert call_args[0][0] == expected_key
         assert call_args[0][1] == 86400  # 24 hour TTL
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_get_key_metadata_by_status(self, key_manager, mock_redis, sample_key_metadata):
         """Test retrieving key metadata by status."""
         metadata_dict = sample_key_metadata.to_dict()
@@ -527,7 +525,7 @@ class TestKeyManagerInternalMethods:
         assert result.kid == sample_key_metadata.kid
         assert result.status == sample_key_metadata.status
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_get_key_metadata_by_status_not_found(self, key_manager, mock_redis):
         """Test retrieving key metadata when not found."""
         mock_redis.get.return_value = None
@@ -536,7 +534,7 @@ class TestKeyManagerInternalMethods:
 
         assert result is None
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_invalidate_key_caches(self, key_manager, mock_redis):
         """Test invalidating all key-related caches."""
         # Mock scan for pattern matching
@@ -551,7 +549,7 @@ class TestKeyManagerInternalMethods:
         assert mock_redis.scan.called
         assert mock_redis.delete.called
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_generate_and_activate_initial_key(self, key_manager, mock_infisical):
         """Test generating and activating initial key."""
         with (
@@ -565,7 +563,7 @@ class TestKeyManagerInternalMethods:
             mock_store.assert_called_once()
             mock_audit.assert_called_once()
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_promote_next_to_current(self, key_manager, mock_infisical, sample_key_metadata):
         """Test promoting next key to current."""
         key_material = Ed25519KeyGenerator.serialize_key_pair(
@@ -597,7 +595,7 @@ class TestKeyManagerInternalMethods:
 class TestPerformanceRequirements:
     """Test performance requirements for key operations."""
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_key_generation_performance(self):
         """Test key generation meets <10ms requirement."""
         import time
@@ -610,7 +608,7 @@ class TestPerformanceRequirements:
         avg_time = ((end_time - start_time) / 10) * 1000  # Convert to ms
         assert avg_time < 10, f"Average key generation time {avg_time:.2f}ms exceeds 10ms limit"
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_verification_performance(self, sample_key_pair):
         """Test verification meets <1ms requirement."""
         import time
@@ -626,7 +624,7 @@ class TestPerformanceRequirements:
         avg_time = ((end_time - start_time) / 100) * 1000  # Convert to ms
         assert avg_time < 1, f"Average verification time {avg_time:.2f}ms exceeds 1ms limit"
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_serialization_performance(self, sample_key_pair):
         """Test key serialization performance."""
         import time
