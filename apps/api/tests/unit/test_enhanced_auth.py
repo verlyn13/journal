@@ -3,11 +3,10 @@
 from __future__ import annotations
 
 import json
-import os
 
 from datetime import UTC, datetime, timedelta
 from unittest.mock import MagicMock, patch
-from uuid import UUID, uuid4
+from uuid import uuid4
 
 import pytest
 
@@ -47,23 +46,23 @@ class TestSecureTokenService:
         user_id = uuid4()
         session_id = uuid4()
         device_id = uuid4()
-        
+
         token = service_with_cipher.create_encrypted_refresh_token(
             user_id=user_id,
             session_id=session_id,
             device_id=device_id,
             ttl_days=30,
         )
-        
+
         assert token == '{"encrypted": "data"}'
-        
+
         # Verify encrypt was called with correct AAD
         mock_cipher.encrypt.assert_called_once()
         call_args = mock_cipher.encrypt.call_args
         aad = call_args[0][1]  # Second positional argument
         expected_aad = f"user:{user_id}:session:{session_id}".encode()
         assert aad == expected_aad
-        
+
         # Verify payload structure
         payload_json = call_args[0][0]  # First positional argument
         payload = json.loads(payload_json)
@@ -81,13 +80,13 @@ class TestSecureTokenService:
         """Test creating unencrypted refresh token when cipher not available."""
         user_id = uuid4()
         session_id = uuid4()
-        
+
         token = service_without_cipher.create_encrypted_refresh_token(
             user_id=user_id,
             session_id=session_id,
             ttl_days=30,
         )
-        
+
         # Token should be plain JSON
         payload = json.loads(token)
         assert payload["user_id"] == str(user_id)
@@ -102,7 +101,7 @@ class TestSecureTokenService:
         """Test decrypting refresh token."""
         user_id = uuid4()
         session_id = uuid4()
-        
+
         # Setup mock to return valid payload
         valid_payload = {
             "user_id": str(user_id),
@@ -111,18 +110,18 @@ class TestSecureTokenService:
             "token_type": "refresh",
         }
         mock_cipher.decrypt.return_value = json.dumps(valid_payload)
-        
+
         encrypted_token = '{"v": 1, "kid": "key1"}'  # Looks like encrypted
-        
+
         payload = service_with_cipher.decrypt_refresh_token(
             encrypted_token,
             expected_user_id=user_id,
             expected_session_id=session_id,
         )
-        
+
         assert payload["user_id"] == str(user_id)
         assert payload["session_id"] == str(session_id)
-        
+
         # Verify decrypt was called with correct AAD
         mock_cipher.decrypt.assert_called_once()
         call_args = mock_cipher.decrypt.call_args
@@ -143,7 +142,7 @@ class TestSecureTokenService:
             "token_type": "refresh",
         }
         mock_cipher.decrypt.return_value = json.dumps(expired_payload)
-        
+
         with pytest.raises(ValueError, match="Token has expired"):
             service_with_cipher.decrypt_refresh_token('{"encrypted": "token"}')
 
@@ -155,7 +154,7 @@ class TestSecureTokenService:
         """Test decrypting token with wrong user ID raises error."""
         user_id = uuid4()
         wrong_user_id = uuid4()
-        
+
         payload = {
             "user_id": str(user_id),
             "session_id": str(uuid4()),
@@ -163,7 +162,7 @@ class TestSecureTokenService:
             "token_type": "refresh",
         }
         mock_cipher.decrypt.return_value = json.dumps(payload)
-        
+
         with pytest.raises(ValueError, match="User ID mismatch"):
             service_with_cipher.decrypt_refresh_token(
                 '{"encrypted": "token"}',
@@ -178,18 +177,18 @@ class TestSecureTokenService:
         """Test token rotation when needed."""
         mock_cipher.needs_rotation.return_value = True
         mock_cipher.rotate.return_value = '{"new": "token"}'
-        
+
         user_id = uuid4()
         session_id = uuid4()
-        
+
         new_token = service_with_cipher.rotate_token_if_needed(
             '{"old": "token"}',
             user_id,
             session_id,
         )
-        
+
         assert new_token == '{"new": "token"}'
-        
+
         # Verify rotate was called with correct AAD
         mock_cipher.rotate.assert_called_once()
         call_args = mock_cipher.rotate.call_args
@@ -204,13 +203,13 @@ class TestSecureTokenService:
     ) -> None:
         """Test no rotation when not needed."""
         mock_cipher.needs_rotation.return_value = False
-        
+
         result = service_with_cipher.rotate_token_if_needed(
             '{"current": "token"}',
             uuid4(),
             uuid4(),
         )
-        
+
         assert result is None
         mock_cipher.rotate.assert_not_called()
 
@@ -222,22 +221,22 @@ class TestSecureTokenService:
         """Test creating encrypted state token."""
         purpose = "oauth_state"
         data = {"redirect": "/dashboard", "nonce": "abc123"}
-        
+
         token = service_with_cipher.create_state_token(
             purpose=purpose,
             data=data,
             ttl_minutes=10,
         )
-        
+
         assert token == '{"encrypted": "data"}'
-        
+
         # Verify encrypt was called with correct AAD
         mock_cipher.encrypt.assert_called_once()
         call_args = mock_cipher.encrypt.call_args
         aad = call_args[0][1]
         expected_aad = f"state:{purpose}".encode()
         assert aad == expected_aad
-        
+
         # Verify payload structure
         payload_json = call_args[0][0]
         payload = json.loads(payload_json)
@@ -254,21 +253,21 @@ class TestSecureTokenService:
         """Test verifying state token."""
         purpose = "oauth_state"
         data = {"redirect": "/dashboard", "nonce": "abc123"}
-        
+
         valid_payload = {
             "purpose": purpose,
             "data": data,
             "expires_at": (datetime.now(UTC) + timedelta(minutes=5)).isoformat(),
         }
         mock_cipher.decrypt.return_value = json.dumps(valid_payload)
-        
+
         result = service_with_cipher.verify_state_token(
             '{"encrypted": "state"}',
             expected_purpose=purpose,
         )
-        
+
         assert result == data
-        
+
         # Verify decrypt was called with correct AAD
         mock_cipher.decrypt.assert_called_once()
         call_args = mock_cipher.decrypt.call_args
@@ -288,7 +287,7 @@ class TestSecureTokenService:
             "expires_at": (datetime.now(UTC) + timedelta(minutes=5)).isoformat(),
         }
         mock_cipher.decrypt.return_value = json.dumps(payload)
-        
+
         with pytest.raises(ValueError, match="State token purpose mismatch"):
             service_with_cipher.verify_state_token(
                 '{"encrypted": "state"}',
@@ -307,7 +306,7 @@ class TestSecureTokenService:
             "expires_at": (datetime.now(UTC) - timedelta(minutes=1)).isoformat(),
         }
         mock_cipher.decrypt.return_value = json.dumps(payload)
-        
+
         with pytest.raises(ValueError, match="State token has expired"):
             service_with_cipher.verify_state_token(
                 '{"encrypted": "state"}',

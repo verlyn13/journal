@@ -13,7 +13,7 @@ import pytest
 from app.security.token_cipher import KeyConfigError, TokenCipher
 
 
-class TestTokenCipher:
+class TestTokenCipher:  # noqa: PLR0904
     """Test suite for TokenCipher."""
 
     @pytest.fixture
@@ -49,7 +49,7 @@ class TestTokenCipher:
             "key1": base64.urlsafe_b64encode(sample_keys["key1"]).decode().rstrip("="),
             "key2": base64.urlsafe_b64encode(sample_keys["key2"]).decode().rstrip("="),
         }
-        
+
         with patch.dict(os.environ, {
             "AUTH_ENC_KEYS": json.dumps(keys_json),
             "AUTH_ENC_ACTIVE_KID": "key1",
@@ -64,23 +64,22 @@ class TestTokenCipher:
         keys_json = {
             "key1": base64.urlsafe_b64encode(b"tooshort").decode(),
         }
-        
+
         with patch.dict(os.environ, {
             "AUTH_ENC_KEYS": json.dumps(keys_json),
             "AUTH_ENC_ACTIVE_KID": "key1",
-        }):
-            with pytest.raises(KeyConfigError, match="must be 128/192/256-bit"):
-                TokenCipher.from_env()
+        }), pytest.raises(KeyConfigError, match="must be 128/192/256-bit"):
+            TokenCipher.from_env()
 
     def test_encrypt_decrypt_basic(self, cipher: TokenCipher) -> None:
         """Test basic encryption and decryption."""
         plaintext = "Hello, World! This is a secret message."
-        
+
         envelope = cipher.encrypt(plaintext)
         decrypted = cipher.decrypt(envelope)
-        
+
         assert decrypted == plaintext
-        
+
         # Verify envelope structure
         obj = json.loads(envelope)
         assert obj["v"] == 1
@@ -92,12 +91,12 @@ class TestTokenCipher:
         """Test encryption with additional authenticated data."""
         plaintext = "Secret with context"
         aad = b"user_id=123&session=abc"
-        
+
         envelope = cipher.encrypt(plaintext, aad)
         decrypted = cipher.decrypt(envelope, aad)
-        
+
         assert decrypted == plaintext
-        
+
         # Verify AAD is included in envelope
         obj = json.loads(envelope)
         assert "aad" in obj
@@ -107,9 +106,9 @@ class TestTokenCipher:
         plaintext = "Secret with context"
         aad = b"user_id=123"
         wrong_aad = b"user_id=456"
-        
+
         envelope = cipher.encrypt(plaintext, aad)
-        
+
         with pytest.raises(ValueError, match="AAD mismatch"):
             cipher.decrypt(envelope, wrong_aad)
 
@@ -117,9 +116,9 @@ class TestTokenCipher:
         """Test decryption fails when AAD is missing."""
         plaintext = "Secret with context"
         aad = b"user_id=123"
-        
+
         envelope = cipher.encrypt(plaintext, aad)
-        
+
         with pytest.raises(ValueError, match="AAD mismatch"):
             cipher.decrypt(envelope, None)
 
@@ -127,13 +126,15 @@ class TestTokenCipher:
         """Test decryption fails with tampered ciphertext."""
         plaintext = "Original message"
         envelope = cipher.encrypt(plaintext)
-        
+
         # Tamper with ciphertext
         obj = json.loads(envelope)
         obj["ct"] = base64.urlsafe_b64encode(b"tampered").decode().rstrip("=")
         tampered_envelope = json.dumps(obj)
-        
-        with pytest.raises(Exception):  # cryptography raises various exceptions
+
+        from cryptography.exceptions import InvalidTag
+
+        with pytest.raises(InvalidTag):
             cipher.decrypt(tampered_envelope)
 
     def test_decrypt_with_different_key(self, sample_keys: dict[str, bytes]) -> None:
@@ -142,21 +143,21 @@ class TestTokenCipher:
         cipher1 = TokenCipher(keys=sample_keys, active_kid="key1")
         plaintext = "Message encrypted with key1"
         envelope = cipher1.encrypt(plaintext)
-        
+
         # Decrypt with cipher that has key2 active but still has key1
         cipher2 = TokenCipher(keys=sample_keys, active_kid="key2")
         decrypted = cipher2.decrypt(envelope)
-        
+
         assert decrypted == plaintext
 
     def test_decrypt_with_missing_key_fails(self, sample_keys: dict[str, bytes]) -> None:
         """Test decryption fails when key is not available."""
         cipher1 = TokenCipher(keys={"key1": sample_keys["key1"]}, active_kid="key1")
         envelope = cipher1.encrypt("Secret")
-        
+
         # Try to decrypt with cipher that doesn't have key1
         cipher2 = TokenCipher(keys={"key2": sample_keys["key2"]}, active_kid="key2")
-        
+
         with pytest.raises(KeyError, match="Key 'key1' unavailable"):
             cipher2.decrypt(envelope)
 
@@ -164,11 +165,11 @@ class TestTokenCipher:
         """Test detection of envelopes needing rotation."""
         cipher1 = TokenCipher(keys=sample_keys, active_kid="key1")
         envelope_old = cipher1.encrypt("Old message")
-        
+
         # Switch active key
         cipher2 = TokenCipher(keys=sample_keys, active_kid="key2")
         envelope_new = cipher2.encrypt("New message")
-        
+
         assert cipher2.needs_rotation(envelope_old) is True
         assert cipher2.needs_rotation(envelope_new) is False
 
@@ -178,15 +179,15 @@ class TestTokenCipher:
         cipher1 = TokenCipher(keys=sample_keys, active_kid="key1")
         plaintext = "Message to rotate"
         envelope_old = cipher1.encrypt(plaintext)
-        
+
         # Rotate to new key
         cipher2 = TokenCipher(keys=sample_keys, active_kid="key2")
         envelope_new = cipher2.rotate(envelope_old)
-        
+
         # Verify new envelope uses new key
         obj = json.loads(envelope_new)
         assert obj["kid"] == "key2"
-        
+
         # Verify decryption still works
         decrypted = cipher2.decrypt(envelope_new)
         assert decrypted == plaintext
@@ -197,17 +198,17 @@ class TestTokenCipher:
         plaintext = "Message with AAD"
         aad = b"context"
         envelope_old = cipher1.encrypt(plaintext, aad)
-        
+
         cipher2 = TokenCipher(keys=sample_keys, active_kid="key2")
         envelope_new = cipher2.rotate(envelope_old, aad)
-        
+
         decrypted = cipher2.decrypt(envelope_new, aad)
         assert decrypted == plaintext
 
     def test_invalid_envelope_version(self, cipher: TokenCipher) -> None:
         """Test decryption fails with unsupported version."""
         envelope = json.dumps({"v": 2, "kid": "key1", "iv": "x", "ct": "y"})
-        
+
         with pytest.raises(ValueError, match="Unsupported ciphertext version"):
             cipher.decrypt(envelope)
 
@@ -215,7 +216,7 @@ class TestTokenCipher:
         """Test decryption fails with malformed envelope."""
         with pytest.raises(json.JSONDecodeError):
             cipher.decrypt("not json")
-        
+
         with pytest.raises(KeyError):
             cipher.decrypt(json.dumps({"v": 1}))  # Missing kid
 
