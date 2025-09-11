@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 
 from datetime import UTC, datetime
+from typing import Any
 from uuid import UUID
 
 from redis.asyncio import Redis
@@ -131,7 +132,7 @@ class TokenRotationService:
 
         return revoked_count
 
-    async def get_token_rotation_history(self, user_id: UUID, limit: int = 10) -> list[dict]:
+    async def get_token_rotation_history(self, user_id: UUID, limit: int = 10) -> list[dict[str, Any]]:
         """Get recent token rotation history for a user.
 
         Args:

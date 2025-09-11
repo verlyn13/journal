@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import base64
+import binascii
 import secrets
 
 from datetime import UTC, datetime
@@ -319,6 +320,6 @@ class KeyValidation:
             padded_x = x_value + "=" * (4 - missing_padding) if missing_padding else x_value
             decoded = base64.urlsafe_b64decode(padded_x)
             return len(decoded) == 32  # Ed25519 public key is 32 bytes
-        except (ValueError, TypeError, base64.binascii.Error):
+        except (ValueError, TypeError, binascii.Error):
             # Invalid base64 or wrong key size
             return False
