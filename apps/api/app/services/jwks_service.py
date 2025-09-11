@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import logging
 
 from datetime import UTC, datetime, timedelta
 from typing import Any
@@ -13,6 +14,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.domain.auth.key_manager import KeyManager
 from app.infra.crypto.key_generation import Ed25519KeyGenerator
+
+logger = logging.getLogger(__name__)
 
 
 class JWKSService:
@@ -30,7 +33,7 @@ class JWKSService:
         key_manager: KeyManager | None = None,
     ) -> None:
         """Initialize JWKS service.
-        
+
         Args:
             session: Database session
             redis: Redis client for caching
@@ -47,7 +50,7 @@ class JWKSService:
 
     async def get_jwks(self) -> dict[str, Any]:
         """Get the JWKS response with all active public keys.
-        
+
         Returns:
             JWKS response dictionary with keys array
         """
@@ -66,7 +69,7 @@ class JWKSService:
 
     async def get_jwks_with_headers(self) -> tuple[dict[str, Any], dict[str, str]]:
         """Get JWKS response with appropriate HTTP headers for caching.
-        
+
         Returns:
             Tuple of (JWKS response, HTTP headers dict)
         """
@@ -96,7 +99,7 @@ class JWKSService:
 
     async def _build_jwks_response(self) -> dict[str, Any]:
         """Build the JWKS response from current verification keys.
-        
+
         Returns:
             JWKS response dictionary
         """
@@ -116,7 +119,7 @@ class JWKSService:
             jwks_keys.append(jwk)
 
         # Build response with metadata
-        response = {
+        return {
             "keys": jwks_keys,
             "cache_max_age": self.CDN_MAX_AGE,
             "edge_ttl": self.EDGE_TTL,
@@ -124,11 +127,9 @@ class JWKSService:
             "next_rotation_hint": (datetime.now(UTC) + timedelta(days=7)).isoformat(),
         }
 
-        return response
-
     async def _get_cached_jwks(self) -> dict[str, Any] | None:
         """Get cached JWKS response from Redis.
-        
+
         Returns:
             Cached JWKS response or None if not cached
         """
@@ -136,49 +137,37 @@ class JWKSService:
             cached_data = await self.redis.get(self._jwks_cache_key)
             if cached_data:
                 return json.loads(cached_data.decode())
-        except Exception:
+        except (ConnectionError, TimeoutError, ValueError) as e:
             # Cache miss or error, will regenerate
-            pass
+            logger.debug("Cache read failed: %s", e)
 
         return None
 
     async def _cache_jwks_response(self, response: dict[str, Any]) -> None:
         """Cache JWKS response in Redis.
-        
+
         Args:
             response: JWKS response to cache
         """
         try:
             # Cache the response
             response_json = json.dumps(response)
-            await self.redis.setex(
-                self._jwks_cache_key,
-                self.CACHE_TTL,
-                response_json
-            )
+            await self.redis.setex(self._jwks_cache_key, self.CACHE_TTL, response_json)
 
             # Update last modified time
             now = datetime.now(UTC)
-            await self.redis.setex(
-                self._jwks_last_modified_key,
-                self.CACHE_TTL,
-                now.isoformat()
-            )
+            await self.redis.setex(self._jwks_last_modified_key, self.CACHE_TTL, now.isoformat())
 
             # Store ETag
             etag = hashlib.sha256(response_json.encode()).hexdigest()
-            await self.redis.setex(
-                self._jwks_etag_key,
-                self.CACHE_TTL,
-                etag
-            )
-        except Exception:
+            await self.redis.setex(self._jwks_etag_key, self.CACHE_TTL, etag)
+        except (ConnectionError, TimeoutError) as e:
             # Caching failure should not break the response
-            pass
+            logger.warning("Failed to cache JWKS response: %s", e)
 
     async def _get_last_modified(self) -> datetime:
         """Get last modified time for JWKS.
-        
+
         Returns:
             Last modified datetime
         """
@@ -186,8 +175,8 @@ class JWKSService:
             cached_time = await self.redis.get(self._jwks_last_modified_key)
             if cached_time:
                 return datetime.fromisoformat(cached_time.decode())
-        except Exception:
-            pass
+        except (ConnectionError, TimeoutError, ValueError) as e:
+            logger.debug("Failed to get last modified time: %s", e)
 
         # Default to current time if not cached
         return datetime.now(UTC)
@@ -196,20 +185,18 @@ class JWKSService:
         """Invalidate JWKS cache (e.g., after key rotation)."""
         try:
             await self.redis.delete(
-                self._jwks_cache_key,
-                self._jwks_etag_key,
-                self._jwks_last_modified_key
+                self._jwks_cache_key, self._jwks_etag_key, self._jwks_last_modified_key
             )
-        except Exception:
+        except (ConnectionError, TimeoutError) as e:
             # Cache invalidation failure is not critical
-            pass
+            logger.warning("Cache invalidation failed: %s", e)
 
     async def check_etag(self, client_etag: str | None) -> bool:
         """Check if client's ETag matches current JWKS.
-        
+
         Args:
             client_etag: ETag from client's If-None-Match header
-            
+
         Returns:
             True if ETag matches (client has current version)
         """
@@ -223,7 +210,7 @@ class JWKSService:
                 client_etag = client_etag.strip('"')
                 current_etag = current_etag.decode().strip('"')
                 return client_etag == current_etag
-        except Exception:
-            pass
+        except (ConnectionError, TimeoutError, ValueError) as e:
+            logger.debug("Failed to get last modified time: %s", e)
 
         return False

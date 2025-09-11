@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-from collections.abc import AsyncGenerator
 from functools import lru_cache
 
 from redis.asyncio import Redis
@@ -26,11 +25,10 @@ def get_redis_pool() -> Redis:
     )
 
 
-async def get_redis_client() -> AsyncGenerator[Redis, None]:
+def get_redis_client() -> Redis:
     """Dependency injection for Redis client.
 
-    Yields:
+    Returns:
         Redis client instance
     """
-    redis = get_redis_pool()
-    yield redis
+    return get_redis_pool()

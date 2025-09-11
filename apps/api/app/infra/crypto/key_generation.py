@@ -212,7 +212,8 @@ class Ed25519KeyGenerator:
             signature = private_key.sign(test_message)
             public_key.verify(signature, test_message)
             return True
-        except Exception:
+        except (ValueError, TypeError):
+            # Key verification failed
             return False
 
     @staticmethod
@@ -273,8 +274,14 @@ class KeyValidation:
 
         # Validate date part
         try:
-            datetime.strptime(f"{parts[0]}-{parts[1]}-{parts[2]}", "%Y-%m-%d")
-        except ValueError:
+            # Just validate the date format components
+            year = int(parts[0])
+            month = int(parts[1])
+            day = int(parts[2])
+            # Basic range checks
+            if not (2020 <= year <= 2100 and 1 <= month <= 12 and 1 <= day <= 31):
+                return False
+        except (ValueError, TypeError):
             return False
 
         # Validate random suffix (8 hex chars)
@@ -312,5 +319,6 @@ class KeyValidation:
             padded_x = x_value + "=" * (4 - missing_padding) if missing_padding else x_value
             decoded = base64.urlsafe_b64decode(padded_x)
             return len(decoded) == 32  # Ed25519 public key is 32 bytes
-        except Exception:
+        except (ValueError, TypeError, base64.binascii.Error):
+            # Invalid base64 or wrong key size
             return False
