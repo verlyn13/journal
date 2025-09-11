@@ -14,6 +14,7 @@ from app.api.v1 import (
     entries as entries_api,
     search as search_api,
     stats as stats_api,
+    webauthn as webauthn_api,
 )
 from app.graphql.schema import schema
 from app.infra.db import build_engine, sessionmaker_for
@@ -46,6 +47,7 @@ app.add_middleware(
 
 # Routers
 app.include_router(auth_api.router, prefix="/api/v1")
+app.include_router(webauthn_api.router, prefix="/api/v1")
 app.include_router(entries_api.router, prefix="/api/v1")
 app.include_router(admin_api.router, prefix="/api/v1")
 app.include_router(search_api.router, prefix="/api/v1")
