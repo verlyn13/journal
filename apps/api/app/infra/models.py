@@ -4,14 +4,14 @@ import logging
 
 
 # Standard library imports
-from datetime import datetime
+from datetime import UTC, datetime
 from typing import Any
 from uuid import UUID, uuid4
 
 from pydantic import field_validator
 
 # Third-party imports
-from sqlalchemy import JSON, Column, event
+from sqlalchemy import JSON, Column, DateTime, event
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlmodel import Field, SQLModel
 
@@ -129,8 +129,14 @@ class User(SQLModel, table=True):
     roles: list[str] = Field(
         default_factory=lambda: ["user"], sa_column=Column(JSONB, nullable=False)
     )
-    created_at: datetime = Field(default_factory=datetime.utcnow, nullable=False, index=True)
-    updated_at: datetime = Field(default_factory=datetime.utcnow, nullable=False)
+    created_at: datetime = Field(
+        default_factory=lambda: datetime.now(UTC),
+        sa_column=Column(DateTime(timezone=True), nullable=False, index=True)
+    )
+    updated_at: datetime = Field(
+        default_factory=lambda: datetime.now(UTC),
+        sa_column=Column(DateTime(timezone=True), nullable=False)
+    )
 
 
 class UserSession(SQLModel, table=True):
@@ -147,7 +153,18 @@ class UserSession(SQLModel, table=True):
     refresh_id: UUID = Field(default_factory=uuid4, unique=True, index=True, nullable=False)
     user_agent: str | None = None
     ip_address: str | None = None
-    issued_at: datetime = Field(default_factory=datetime.utcnow, nullable=False, index=True)
-    last_used_at: datetime = Field(default_factory=datetime.utcnow, nullable=False)
-    expires_at: datetime = Field(nullable=False)
-    revoked_at: datetime | None = Field(default=None)
+    issued_at: datetime = Field(
+        default_factory=lambda: datetime.now(UTC),
+        sa_column=Column(DateTime(timezone=True), nullable=False, index=True)
+    )
+    last_used_at: datetime = Field(
+        default_factory=lambda: datetime.now(UTC),
+        sa_column=Column(DateTime(timezone=True), nullable=False)
+    )
+    expires_at: datetime = Field(
+        sa_column=Column(DateTime(timezone=True), nullable=False)
+    )
+    revoked_at: datetime | None = Field(
+        default=None,
+        sa_column=Column(DateTime(timezone=True), nullable=True)
+    )

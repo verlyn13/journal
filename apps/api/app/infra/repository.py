@@ -54,24 +54,33 @@ class EntryRepository:
         return entry
 
     async def update_entry(
-        self, entry_id: UUID, data: dict[str, Any], expected_version: int
+        self,
+        entry_id: UUID,
+        data: dict[str, Any],
+        expected_version: int,
+        author_id: UUID | None = None,
     ) -> Entry:
-        """Update entry with optimistic locking.
+        """Update entry with optimistic locking and optional ownership check.
 
         Args:
             entry_id: ID of entry to update
             data: Fields to update (excluding version)
             expected_version: Expected current version
+            author_id: If provided, verify entry belongs to this author
 
         Returns:
             Updated entry
 
         Raises:
-            NotFoundError: Entry doesn't exist
+            NotFoundError: Entry doesn't exist or doesn't belong to author
             ConflictError: Version mismatch (concurrent modification)
         """
         # Get entry with row lock
-        stmt = select(Entry).where(Entry.id == entry_id).with_for_update()
+        conditions = [Entry.id == entry_id]
+        if author_id is not None:
+            conditions.append(Entry.author_id == author_id)
+
+        stmt = select(Entry).where(*conditions).with_for_update()
         result = await self.session.execute(stmt)
         entry = result.scalar_one_or_none()
 
@@ -97,16 +106,25 @@ class EntryRepository:
         await self.session.flush()
         return entry
 
-    async def soft_delete(self, entry_id: UUID, expected_version: int) -> Entry:
-        """Soft delete entry with optimistic locking.
+    async def soft_delete(
+        self, entry_id: UUID, expected_version: int, author_id: UUID | None = None
+    ) -> Entry:
+        """Soft delete entry with optimistic locking and optional ownership check.
 
         Treat already-deleted entries as not found to keep delete idempotent
         from the client's perspective (second delete returns 404).
+
+        Args:
+            entry_id: ID of entry to delete
+            expected_version: Expected current version
+            author_id: If provided, verify entry belongs to this author
         """
         # Lock the row to avoid races
-        result = await self.session.execute(
-            select(Entry).where(Entry.id == entry_id).with_for_update()
-        )
+        conditions = [Entry.id == entry_id]
+        if author_id is not None:
+            conditions.append(Entry.author_id == author_id)
+
+        result = await self.session.execute(select(Entry).where(*conditions).with_for_update())
         entry = result.scalar_one_or_none()
 
         if not entry or entry.is_deleted:

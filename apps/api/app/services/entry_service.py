@@ -56,14 +56,39 @@ async def create_entry(
     return e
 
 
-async def get_entry_by_id(s: AsyncSession, entry_id: UUID) -> Entry | None:
-    """Get entry by ID, excluding soft-deleted entries."""
-    result = await s.execute(select(Entry).where(Entry.id == entry_id, Entry.is_deleted == False))  # noqa: E712
+async def get_entry_by_id(
+    s: AsyncSession, entry_id: UUID, author_id: UUID | None = None
+) -> Entry | None:
+    """Get entry by ID, excluding soft-deleted entries.
+
+    Args:
+        s: Database session
+        entry_id: Entry ID to retrieve
+        author_id: If provided, only return entry if it belongs to this author
+    """
+    conditions = [Entry.id == entry_id, Entry.is_deleted == False]  # noqa: E712
+    if author_id is not None:
+        conditions.append(Entry.author_id == author_id)
+    result = await s.execute(select(Entry).where(*conditions))
     return result.scalar_one_or_none()
 
 
-async def list_entries(s: AsyncSession, limit: int | None = None, offset: int = 0) -> list[Entry]:
-    query = select(Entry).where(Entry.is_deleted == False).order_by(Entry.created_at.desc())  # noqa: E712
+async def list_entries(
+    s: AsyncSession, author_id: UUID | None = None, limit: int | None = None, offset: int = 0
+) -> list[Entry]:
+    """List entries, optionally filtered by author.
+
+    Args:
+        s: Database session
+        author_id: If provided, only return entries for this author
+        limit: Maximum number of entries to return
+        offset: Number of entries to skip
+    """
+    conditions = [Entry.is_deleted == False]  # noqa: E712
+    if author_id is not None:
+        conditions.append(Entry.author_id == author_id)
+
+    query = select(Entry).where(*conditions).order_by(Entry.created_at.desc())
     if limit is not None:
         query = query.limit(limit)
     if offset > 0:

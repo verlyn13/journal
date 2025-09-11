@@ -5,7 +5,9 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", env_prefix="JOURNAL_")
 
     env: str = "dev"
-    db_url: str = "postgresql+asyncpg://journal:journal@localhost:5433/journal"
+    db_url: str = "postgresql+asyncpg://journal:journal@localhost:5433/journal"  # Legacy, kept for compatibility
+    db_url_async: str = "postgresql+asyncpg://journal:journal@localhost:5433/journal"
+    db_url_sync: str = "postgresql+psycopg://journal:journal@localhost:5433/journal"
     redis_url: str = "redis://localhost:6380/0"
     nats_url: str = "nats://localhost:4222"
     otlp_endpoint: str = "http://localhost:4317"
