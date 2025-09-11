@@ -7,7 +7,7 @@ with Mapped[...] typing for full mypy compatibility.
 from __future__ import annotations
 
 from datetime import UTC, datetime
-from typing import Any
+from typing import TYPE_CHECKING, Any
 from uuid import UUID, uuid4
 
 from sqlalchemy import JSON, Boolean, DateTime, ForeignKey, Integer, String, Text
@@ -15,6 +15,9 @@ from sqlalchemy.dialects.postgresql import JSONB, UUID as PGUUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.infra.base import Base
+
+if TYPE_CHECKING:
+    from app.infra.webauthn_models import WebAuthnCredential
 
 
 class User(Base):
@@ -39,6 +42,7 @@ class User(Base):
     # Relationships
     sessions: Mapped[list[UserSession]] = relationship(back_populates="user")
     entries: Mapped[list[Entry]] = relationship(back_populates="author")
+    webauthn_credentials: Mapped[list[WebAuthnCredential]] = relationship(back_populates="user")
 
 
 class UserSession(Base):
