@@ -9,10 +9,17 @@ import secrets
 from typing import Any
 
 import httpx
+from httpx import Auth
 
 
 class PARClient:
     """OAuth 2.1 client with PAR (Pushed Authorization Requests) support."""
+
+    def _get_auth(self) -> tuple[str, str] | None:
+        """Get HTTP auth for OAuth client credentials."""
+        if self.client_secret:
+            return (self.client_id, self.client_secret)
+        return None
 
     def __init__(
         self,
@@ -83,11 +90,10 @@ class PARClient:
 
         par_endpoint = self.meta["pushed_authorization_request_endpoint"]
         async with httpx.AsyncClient(timeout=10.0) as client:
-            auth = (self.client_id, self.client_secret) if self.client_secret else None
             resp = await client.post(
                 par_endpoint,
                 data=params,
-                auth=auth,
+                auth=self._get_auth(),  # type: ignore[arg-type]
                 headers={"Content-Type": "application/x-www-form-urlencoded"},
             )
             resp.raise_for_status()
@@ -130,11 +136,10 @@ class PARClient:
             data["client_secret"] = self.client_secret
 
         async with httpx.AsyncClient(timeout=10.0) as client:
-            auth = (self.client_id, self.client_secret) if self.client_secret else None
             resp = await client.post(
                 token_endpoint,
                 data=data,
-                auth=auth if self.client_secret else None,
+                auth=self._get_auth(),  # type: ignore[arg-type]
                 headers={"Content-Type": "application/x-www-form-urlencoded"},
             )
             resp.raise_for_status()
@@ -167,11 +172,10 @@ class PARClient:
             data["client_secret"] = self.client_secret
 
         async with httpx.AsyncClient(timeout=10.0) as client:
-            auth = (self.client_id, self.client_secret) if self.client_secret else None
             resp = await client.post(
                 token_endpoint,
                 data=data,
-                auth=auth if self.client_secret else None,
+                auth=self._get_auth(),  # type: ignore[arg-type]
                 headers={"Content-Type": "application/x-www-form-urlencoded"},
             )
             resp.raise_for_status()
@@ -205,11 +209,10 @@ class PARClient:
             data["client_secret"] = self.client_secret
 
         async with httpx.AsyncClient(timeout=10.0) as client:
-            auth = (self.client_id, self.client_secret) if self.client_secret else None
             resp = await client.post(
                 revocation_endpoint,
                 data=data,
-                auth=auth if self.client_secret else None,
+                auth=self._get_auth(),  # type: ignore[arg-type]
                 headers={"Content-Type": "application/x-www-form-urlencoded"},
             )
             resp.raise_for_status()

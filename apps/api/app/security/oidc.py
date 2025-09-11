@@ -7,7 +7,7 @@ import time
 from typing import Any
 
 import httpx
-
+from httpx import Auth
 from jose import JWTError, jwt
 
 
@@ -160,11 +160,10 @@ async def introspect_token(
         data["client_secret"] = client_secret
 
     async with httpx.AsyncClient(timeout=10.0) as client:
-        auth = (client_id, client_secret) if client_secret else None
         resp = await client.post(
             introspection_endpoint,
             data=data,
-            auth=auth if client_secret else None,
+            auth=(client_id, client_secret) if client_secret else None,  # type: ignore[arg-type]
             headers={"Content-Type": "application/x-www-form-urlencoded"},
         )
         resp.raise_for_status()

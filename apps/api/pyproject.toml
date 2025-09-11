@@ -50,6 +50,7 @@ dependencies = [
     "python-jose[cryptography]>=3.5.0",
     "pyotp>=2.9.0",
     "httpx>=0.28.1",
+    "types-python-jose>=3.5.0.20250531",
 ]
 
 [tool.uv]
