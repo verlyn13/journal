@@ -11,6 +11,7 @@ import uuid
 from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
+from fastapi.responses import Response as FastAPIResponse
 from pydantic import BaseModel, Field
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -282,12 +283,12 @@ async def list_credentials(
     ]
 
 
-@router.delete("/credentials/{credential_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/credentials/{credential_id}")
 async def delete_credential(
     credential_id: str,
     user: User = Depends(get_current_user),
     session: AsyncSession = Depends(get_session),
-) -> None:
+) -> FastAPIResponse:
     """Delete a WebAuthn credential.
 
     User must have at least one other authentication method remaining.
@@ -322,3 +323,5 @@ async def delete_credential(
         )
 
     await session.commit()
+
+    return FastAPIResponse(status_code=status.HTTP_204_NO_CONTENT)
