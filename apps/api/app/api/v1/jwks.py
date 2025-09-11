@@ -25,16 +25,16 @@ async def get_jwks(
     redis: Redis = Depends(get_redis_client),
 ) -> dict[str, Any]:
     """Get JSON Web Key Set for JWT verification.
-    
+
     This endpoint provides public keys used to verify JWTs issued by this service.
     It includes appropriate caching headers for CDN and edge optimization.
-    
+
     Args:
         response: FastAPI response object for setting headers
         if_none_match: Client's ETag for conditional requests
         session: Database session
         redis: Redis client
-        
+
     Returns:
         JWKS response with public keys
     """
@@ -70,13 +70,13 @@ async def get_openid_configuration(
     response: Response,
 ) -> dict[str, Any]:
     """Get OpenID Connect discovery document.
-    
+
     This provides metadata about the authentication service,
     including the JWKS URI for key discovery.
-    
+
     Args:
         response: FastAPI response object for setting headers
-        
+
     Returns:
         OpenID configuration document
     """
@@ -99,8 +99,15 @@ async def get_openid_configuration(
         "scopes_supported": ["openid", "profile", "email"],
         "token_endpoint_auth_methods_supported": ["client_secret_basic", "client_secret_post"],
         "claims_supported": [
-            "sub", "aud", "exp", "iat", "iss",
-            "email", "email_verified", "name", "preferred_username"
+            "sub",
+            "aud",
+            "exp",
+            "iat",
+            "iss",
+            "email",
+            "email_verified",
+            "name",
+            "preferred_username",
         ],
     }
 
@@ -110,13 +117,13 @@ async def get_jwks_metrics(
     redis: Redis = Depends(get_redis_client),
 ) -> dict[str, Any]:
     """Get JWKS performance metrics.
-    
+
     This endpoint provides performance metrics for the JWKS endpoint,
     including cache hit rates, response times, and key rotation history.
-    
+
     Args:
         redis: Redis client
-        
+
     Returns:
         Metrics summary
     """

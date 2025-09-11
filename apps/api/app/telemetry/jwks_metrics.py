@@ -24,7 +24,7 @@ class JWKSMetrics:
 
     def __init__(self, redis: Redis | None = None) -> None:
         """Initialize metrics collector.
-        
+
         Args:
             redis: Optional Redis client for distributed metrics
         """
@@ -38,7 +38,7 @@ class JWKSMetrics:
         etag_match: bool = False,
     ) -> None:
         """Record JWKS request metrics.
-        
+
         Args:
             cache_hit: Whether response was served from cache
             response_time_ms: Response time in milliseconds
@@ -91,7 +91,7 @@ class JWKSMetrics:
 
     async def record_key_rotation(self, rotated_keys: int) -> None:
         """Record key rotation event.
-        
+
         Args:
             rotated_keys: Number of keys rotated
         """
@@ -101,7 +101,9 @@ class JWKSMetrics:
 
                 # Increment rotation counter
                 pipeline.hincrby(f"{self._metrics_prefix}counters", "key_rotations", 1)
-                pipeline.hincrby(f"{self._metrics_prefix}counters", "total_keys_rotated", rotated_keys)
+                pipeline.hincrby(
+                    f"{self._metrics_prefix}counters", "total_keys_rotated", rotated_keys
+                )
 
                 # Store rotation timestamp
                 pipeline.rpush(
@@ -117,7 +119,7 @@ class JWKSMetrics:
 
     async def get_metrics_summary(self) -> dict[str, Any]:
         """Get summary of JWKS metrics.
-        
+
         Returns:
             Dictionary with metrics summary
         """
@@ -179,7 +181,7 @@ class JWKSMetrics:
     @asynccontextmanager
     async def measure_time(self) -> AsyncGenerator[dict[str, Any], None]:
         """Context manager to measure operation time.
-        
+
         Yields:
             Dictionary to store metrics data
         """
@@ -201,10 +203,10 @@ class JWKSMetrics:
 
     def _get_histogram_bucket(self, value_ms: float) -> str:
         """Get histogram bucket for response time.
-        
+
         Args:
             value_ms: Response time in milliseconds
-            
+
         Returns:
             Bucket name
         """
@@ -224,10 +226,10 @@ class JWKSMetrics:
 
     def _calculate_percentiles(self, histogram: dict[bytes, bytes]) -> dict[str, float]:
         """Calculate response time percentiles from histogram.
-        
+
         Args:
             histogram: Raw histogram data from Redis
-            
+
         Returns:
             Dictionary with percentile values
         """

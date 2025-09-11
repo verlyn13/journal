@@ -38,7 +38,7 @@ class JWKSService:
         self.session = session
         self.redis = redis
         self.key_manager = key_manager or KeyManager(session, redis)
-        
+
         # Cache keys
         self._jwks_cache_key = "auth:jwks:response"
         self._jwks_etag_key = "auth:jwks:etag"
@@ -54,13 +54,13 @@ class JWKSService:
         cached_response = await self._get_cached_jwks()
         if cached_response:
             return cached_response
-        
+
         # Build fresh JWKS response
         jwks_response = await self._build_jwks_response()
-        
+
         # Cache the response
         await self._cache_jwks_response(jwks_response)
-        
+
         return jwks_response
 
     async def get_jwks_with_headers(self) -> tuple[dict[str, Any], dict[str, str]]:
@@ -70,14 +70,14 @@ class JWKSService:
             Tuple of (JWKS response, HTTP headers dict)
         """
         jwks_response = await self.get_jwks()
-        
+
         # Generate ETag from response content
         response_json = json.dumps(jwks_response, sort_keys=True)
         etag = f'"{hashlib.sha256(response_json.encode()).hexdigest()}"'
-        
+
         # Get or set last modified time
         last_modified = await self._get_last_modified()
-        
+
         headers = {
             "Content-Type": "application/json",
             "Cache-Control": f"public, max-age={self.CDN_MAX_AGE}, s-maxage={self.EDGE_TTL}",
@@ -90,7 +90,7 @@ class JWKSService:
             "Cloudflare-CDN-Cache-Control": f"max-age={self.CDN_MAX_AGE}",
             "Vercel-CDN-Cache-Control": f"max-age={self.EDGE_TTL}",
         }
-        
+
         return jwks_response, headers
 
     async def _build_jwks_response(self) -> dict[str, Any]:
@@ -101,19 +101,19 @@ class JWKSService:
         """
         # Get all verification keys from key manager
         verification_keys = await self.key_manager.get_verification_keys()
-        
+
         # Convert keys to JWK format
         jwks_keys = []
         for key_pair in verification_keys:
             # Serialize to get JWK public key
             key_material = Ed25519KeyGenerator.serialize_key_pair(key_pair)
             jwk = key_material.jwk_public
-            
+
             # Add edge optimization hint
             jwk["edge_optimized"] = True
-            
+
             jwks_keys.append(jwk)
-        
+
         # Build response with metadata
         response = {
             "keys": jwks_keys,
@@ -122,7 +122,7 @@ class JWKSService:
             # Optional: Include next rotation hint for clients
             "next_rotation_hint": (datetime.now(UTC) + timedelta(days=7)).isoformat(),
         }
-        
+
         return response
 
     async def _get_cached_jwks(self) -> dict[str, Any] | None:
@@ -138,7 +138,7 @@ class JWKSService:
         except Exception:
             # Cache miss or error, will regenerate
             pass
-        
+
         return None
 
     async def _cache_jwks_response(self, response: dict[str, Any]) -> None:
@@ -155,7 +155,7 @@ class JWKSService:
                 self.CACHE_TTL,
                 response_json
             )
-            
+
             # Update last modified time
             now = datetime.now(UTC)
             await self.redis.setex(
@@ -163,7 +163,7 @@ class JWKSService:
                 self.CACHE_TTL,
                 now.isoformat()
             )
-            
+
             # Store ETag
             etag = hashlib.sha256(response_json.encode()).hexdigest()
             await self.redis.setex(
@@ -187,7 +187,7 @@ class JWKSService:
                 return datetime.fromisoformat(cached_time.decode())
         except Exception:
             pass
-        
+
         # Default to current time if not cached
         return datetime.now(UTC)
 
@@ -214,7 +214,7 @@ class JWKSService:
         """
         if not client_etag:
             return False
-        
+
         try:
             current_etag = await self.redis.get(self._jwks_etag_key)
             if current_etag:
@@ -224,5 +224,5 @@ class JWKSService:
                 return client_etag == current_etag
         except Exception:
             pass
-        
+
         return False

@@ -13,7 +13,7 @@ from app.settings import settings
 @lru_cache(maxsize=1)
 def get_redis_pool() -> Redis:
     """Create and cache Redis connection pool.
-    
+
     Returns:
         Redis client instance with connection pooling
     """
@@ -28,7 +28,7 @@ def get_redis_pool() -> Redis:
 
 async def get_redis_client() -> AsyncGenerator[Redis, None]:
     """Dependency injection for Redis client.
-    
+
     Yields:
         Redis client instance
     """
