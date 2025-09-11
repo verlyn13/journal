@@ -40,7 +40,7 @@ jobs:
   
   security-scan:
     name: Security Baseline
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     outputs:
       has_security_issues: ${{ steps.security.outputs.issues_found }}
@@ -93,7 +93,7 @@ jobs:
   
   api-quality:
     name: API Quality Gates
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: security-scan
     timeout-minutes: 15
     outputs:
@@ -211,7 +211,7 @@ jobs:
   
   web-quality:
     name: Web Quality Gates
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: security-scan
     timeout-minutes: 10
     outputs:
@@ -271,7 +271,7 @@ jobs:
   
   quality-summary:
     name: Quality Gate Summary
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [security-scan, api-quality, web-quality]
     if: always()
     outputs:
@@ -346,7 +346,7 @@ jobs:
   
   performance-gates:
     name: Performance Quality Gates
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: quality-summary
     if: needs.quality-summary.outputs.quality_gate == 'true' && !inputs.skip_performance
     timeout-minutes: 20

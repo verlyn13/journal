@@ -14,7 +14,7 @@ env:
 
 jobs:
   lint-and-format:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     defaults:
       run:
         working-directory: apps/api
@@ -52,7 +52,7 @@ jobs:
         run: uv run mypy app/
 
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     defaults:
       run:
         working-directory: apps/api
@@ -138,7 +138,7 @@ jobs:
         run: uv cache prune --ci
 
   integration-test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [lint-and-format, test]
     defaults:
       run:
@@ -215,7 +215,7 @@ jobs:
           JOURNAL_JWT_SECRET: test-secret-key-for-integration
 
   security-scan:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     defaults:
       run:
         working-directory: apps/api
