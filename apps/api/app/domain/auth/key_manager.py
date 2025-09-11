@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import logging
 
 from datetime import UTC, datetime, timedelta
 from enum import Enum
@@ -13,6 +14,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.domain.auth.audit_service import AuditService
 from app.infra.crypto.key_generation import Ed25519KeyGenerator, KeyPair
+
+
+logger = logging.getLogger(__name__)
 
 
 class KeyStatus(Enum):
@@ -132,10 +136,9 @@ class KeyManager:
                         kid=metadata.kid,
                         created_at=metadata.created_at,
                     )
-            except Exception:
+            except (json.JSONDecodeError, KeyError) as e:
                 # Cache corrupt, fall through to reload
-                # TODO: Log cache corruption for monitoring
-                pass
+                logger.debug(f"Cache read failed, will reload: {e}")
 
         # Load from Infisical and cache
         if self.infisical_client:
@@ -155,7 +158,7 @@ class KeyManager:
                         kid=metadata.kid,
                         created_at=metadata.created_at,
                     )
-            except Exception as e:
+            except (ValueError, KeyError, TypeError) as e:
                 raise RuntimeError(f"Failed to load current signing key: {e}") from e
 
         raise RuntimeError("No current signing key available")
@@ -182,9 +185,9 @@ class KeyManager:
             next_key = await self._get_next_key()
             if next_key:
                 keys.append(next_key)
-        except Exception:
+        except (ValueError, KeyError) as e:
             # Next key not available - this is expected during initial setup
-            pass
+            logger.debug(f"Next key not available: {e}")
 
         return keys
 
@@ -262,7 +265,7 @@ class KeyManager:
                 "overlap_window_minutes": self.overlap_window.total_seconds() / 60,
             }
 
-        except Exception as e:
+        except (ValueError, TypeError, KeyError) as e:
             await self.audit_service.log_event(
                 user_id=UUID("00000000-0000-0000-0000-000000000000"),
                 event_type="key_rotation_failed",
@@ -292,7 +295,7 @@ class KeyManager:
             signature = current_key.private_key.sign(test_data)
             current_key.public_key.verify(signature, test_data)
             results["current_key_valid"] = True
-        except Exception as e:
+        except (ValueError, TypeError) as e:
             results["issues"].append(f"Current key invalid: {e}")
 
         # Check next key
@@ -306,7 +309,7 @@ class KeyManager:
                     results["issues"].append("Next key pair mismatch")
             else:
                 results["issues"].append("No next key available")
-        except Exception as e:
+        except (ValueError, TypeError, KeyError) as e:
             results["issues"].append(f"Next key error: {e}")
 
         # Check cache consistency
@@ -319,7 +322,7 @@ class KeyManager:
                 results["cache_consistent"] = (
                     cached_current.decode() == stored_current if cached_current else False
                 )
-        except Exception as e:
+        except (ConnectionError, TimeoutError, ValueError) as e:
             results["issues"].append(f"Cache consistency error: {e}")
 
         return results
@@ -391,9 +394,9 @@ class KeyManager:
                     kid=metadata.kid,
                     created_at=metadata.created_at,
                 )
-        except Exception:
+        except (ValueError, KeyError, TypeError) as e:
             # Key fetch failed, return None
-            pass
+            logger.debug(f"Key fetch failed: {e}")
 
         return None
 
@@ -433,9 +436,9 @@ class KeyManager:
             try:
                 metadata_dict = json.loads(data.decode())
                 return KeyMetadata.from_dict(metadata_dict)
-            except Exception:
+            except (json.JSONDecodeError, KeyError, TypeError) as e:
                 # Invalid metadata in cache, return None to regenerate
-                pass
+                logger.debug(f"Invalid metadata in cache: {e}")
         return None
 
     async def _store_key_metadata(self, metadata: KeyMetadata) -> None:
