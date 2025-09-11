@@ -16,6 +16,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.infra.base import Base
 
+
 if TYPE_CHECKING:
     from app.infra.webauthn_models import WebAuthnCredential
 

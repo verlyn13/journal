@@ -36,7 +36,7 @@ class Settings(BaseSettings):
     # Demo credentials for development/testing (override via env in real deployments)
     demo_username: str = "demo"
     demo_password: str = ""  # Set JOURNAL_DEMO_PASSWORD in env for non-empty
-    
+
     # WebAuthn/Passkeys configuration
     webauthn_rp_id: str = "localhost"  # Relying Party ID (domain without port)
     webauthn_rp_name: str = "Journal App"  # Display name for the app

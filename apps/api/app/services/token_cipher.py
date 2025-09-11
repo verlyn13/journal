@@ -8,14 +8,17 @@ from __future__ import annotations
 
 import base64
 import json
+import logging
 import os
+
 from datetime import UTC, datetime, timedelta
 from typing import Any
 
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
-from app.settings import settings
+
+logger = logging.getLogger(__name__)
 
 
 class TokenCipher:
@@ -109,8 +112,8 @@ class TokenCipher:
 
             return plaintext.decode("utf-8")
 
-        except Exception:
-            # Decryption failed (wrong key, tampered data, etc.)
+        except (json.JSONDecodeError, KeyError, ValueError):
+            # Decryption failed (wrong key, tampered data, invalid format, etc.)
             return None
 
     def rotate_keys(self) -> bool:
@@ -153,7 +156,8 @@ class TokenCipher:
         keys_json = os.environ.get("JOURNAL_ENCRYPTION_KEYS")
 
         if keys_json:
-            return json.loads(keys_json)
+            loaded_keys: dict[str, dict[str, Any]] = json.loads(keys_json)
+            return loaded_keys
 
         # Generate initial key
         key_id = self._generate_key_id()
@@ -171,8 +175,9 @@ class TokenCipher:
         # In production, save to secure key management service
         # For now, this would need to be manually updated in environment
         keys_json = json.dumps(self.keys)
-        # Log warning about key rotation needed
-        print(f"WARNING: Update JOURNAL_ENCRYPTION_KEYS environment variable: {keys_json}")
+        # In production, this would trigger an alert to update the key in secure storage
+        # For development, log the new keys (would be sent to monitoring service in prod)
+        logger.warning("Key rotation required. Update JOURNAL_ENCRYPTION_KEYS: %s", keys_json)
 
     def _get_current_key_id(self) -> str:
         """Get the ID of the most recent key."""
@@ -207,16 +212,17 @@ class TokenCipher:
         return base64.urlsafe_b64encode(os.urandom(12)).decode("ascii")
 
 
-# Global cipher instance
-_cipher: TokenCipher | None = None
+# Singleton instance holder
+class _CipherHolder:
+    """Holder for singleton cipher instance."""
+    instance: TokenCipher | None = None
 
 
 def get_token_cipher() -> TokenCipher:
     """Get or create the global token cipher instance."""
-    global _cipher
-    if _cipher is None:
-        _cipher = TokenCipher()
-    return _cipher
+    if _CipherHolder.instance is None:
+        _CipherHolder.instance = TokenCipher()
+    return _CipherHolder.instance
 
 
 def encrypt_token(token: str) -> str:
