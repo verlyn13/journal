@@ -19,7 +19,7 @@ class Settings(BaseSettings):
     testing: bool = False
     auto_embed_mode: str = "event"  # "event" | "inline" | "off"
     # Feature flags
-    user_mgmt_enabled: bool = False
+    user_mgmt_enabled: bool = True
     auth_require_email_verify: bool = True
     rate_limit_window_seconds: int = 60
     rate_limit_max_attempts: int = 5

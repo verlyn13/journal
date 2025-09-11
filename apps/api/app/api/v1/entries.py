@@ -19,6 +19,7 @@ from app.infra.metrics import count_words_chars, extract_text_for_metrics
 from app.infra.repository import ConflictError, EntryRepository, NotFoundError
 from app.infra.sa_models import Entry
 from app.services.entry_service import list_entries
+from app.settings import settings
 
 
 router = APIRouter(prefix="/entries", tags=["entries"])
@@ -141,7 +142,9 @@ async def get_entries(
     # Use offset if provided (legacy support), otherwise use skip
     start = offset if offset is not None else skip
 
-    rows = await list_entries(s, limit=limit, offset=start)
+    # When user management is enabled, filter by user ID
+    author_id = UUID(user_id) if settings.user_mgmt_enabled else None
+    rows = await list_entries(s, author_id=author_id, limit=limit, offset=start)
     prefer_md = _prefer_markdown(request)
     return [_entry_response(r, prefer_md) for r in rows]
 
@@ -219,6 +222,10 @@ async def get_entry(
     if not entry or entry.is_deleted:
         raise HTTPException(status_code=404, detail="Entry not found")
 
+    # Check ownership if user management is enabled
+    if settings.user_mgmt_enabled and str(entry.author_id) != user_id:
+        raise HTTPException(status_code=404, detail="Entry not found")
+
     return _entry_response(entry, _prefer_markdown(request))
 
 
@@ -265,7 +272,9 @@ async def update_entry(
         update_data["char_count"] = char_count
 
     try:
-        entry = await repo.update_entry(eid, update_data, body.expected_version)
+        # Pass author_id for ownership check if user management is enabled
+        author_id = UUID(user_id) if settings.user_mgmt_enabled else None
+        entry = await repo.update_entry(eid, update_data, body.expected_version, author_id)
         await s.commit()
 
         # Generate embedding after successful update
@@ -311,7 +320,9 @@ async def delete_entry(
     repo = EntryRepository(s)
 
     try:
-        await repo.soft_delete(eid, expected_version)
+        # Pass author_id for ownership check if user management is enabled
+        author_id = UUID(user_id) if settings.user_mgmt_enabled else None
+        await repo.soft_delete(eid, expected_version, author_id)
         await s.commit()
         # Return None for 204 No Content response
         return
