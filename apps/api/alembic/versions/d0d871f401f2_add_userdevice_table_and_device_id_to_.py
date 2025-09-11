@@ -35,14 +35,14 @@ def upgrade() -> None:
 
     # Add device_id column to user_sessions
     op.add_column('user_sessions', sa.Column('device_id', postgresql.UUID(as_uuid=True), nullable=True))
-    op.create_foreign_key(None, 'user_sessions', 'user_devices', ['device_id'], ['id'], ondelete='SET NULL')
+    op.create_foreign_key('fk_user_sessions_device_id', 'user_sessions', 'user_devices', ['device_id'], ['id'], ondelete='SET NULL')
     op.create_index(op.f('ix_user_sessions_device_id'), 'user_sessions', ['device_id'], unique=False)
 
 
 def downgrade() -> None:
     # Remove device_id from user_sessions
     op.drop_index(op.f('ix_user_sessions_device_id'), table_name='user_sessions')
-    op.drop_constraint(None, 'user_sessions', type_='foreignkey')
+    op.drop_constraint('fk_user_sessions_device_id', 'user_sessions', type_='foreignkey')
     op.drop_column('user_sessions', 'device_id')
     
     # Drop user_devices table
