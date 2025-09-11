@@ -44,6 +44,8 @@ class User(Base):
     sessions: Mapped[list[UserSession]] = relationship(back_populates="user")
     entries: Mapped[list[Entry]] = relationship(back_populates="author")
     webauthn_credentials: Mapped[list[WebAuthnCredential]] = relationship(back_populates="user")
+    devices: Mapped[list[UserDevice]] = relationship(back_populates="user")
+    recovery_codes: Mapped[list[RecoveryCode]] = relationship(back_populates="user")
 
 
 class UserSession(Base):
@@ -53,6 +55,9 @@ class UserSession(Base):
 
     id: Mapped[UUID] = mapped_column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
     user_id: Mapped[UUID] = mapped_column(ForeignKey("users.id"), index=True, nullable=False)
+    device_id: Mapped[UUID | None] = mapped_column(
+        ForeignKey("user_devices.id", ondelete="SET NULL"), index=True, nullable=True
+    )
     refresh_id: Mapped[UUID] = mapped_column(
         PGUUID(as_uuid=True), unique=True, index=True, default=uuid4
     )
@@ -69,6 +74,61 @@ class UserSession(Base):
 
     # Relationships
     user: Mapped[User] = relationship(back_populates="sessions")
+    device: Mapped[UserDevice | None] = relationship(back_populates="sessions")
+
+
+class UserDevice(Base):
+    """User device model for session and device management (no fingerprinting)."""
+
+    __tablename__ = "user_devices"
+
+    id: Mapped[UUID] = mapped_column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
+    user_id: Mapped[UUID] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True, nullable=False)
+
+    # User-provided label, not fingerprint
+    device_name: Mapped[str] = mapped_column(String(100), nullable=False)
+
+    # Metadata for display only
+    browser: Mapped[str | None] = mapped_column(String(100), nullable=True)
+    os: Mapped[str | None] = mapped_column(String(100), nullable=True)
+
+    # Coarse location only (city/region, not precise)
+    location_region: Mapped[str | None] = mapped_column(String(100), nullable=True)
+
+    # Trust and tracking
+    trusted: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    last_seen_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=lambda: datetime.now(UTC), nullable=False
+    )
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=lambda: datetime.now(UTC), nullable=False
+    )
+
+    # Relationships
+    user: Mapped[User] = relationship(back_populates="devices")
+    sessions: Mapped[list[UserSession]] = relationship(back_populates="device")
+
+
+class RecoveryCode(Base):
+    """Recovery code model for account recovery."""
+
+    __tablename__ = "recovery_codes"
+
+    id: Mapped[UUID] = mapped_column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
+    user_id: Mapped[UUID] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True, nullable=False)
+
+    # Hashed recovery code
+    code_hash: Mapped[str] = mapped_column(String(128), nullable=False)
+
+    # Tracking
+    used: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    used_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=lambda: datetime.now(UTC), nullable=False
+    )
+
+    # Relationships
+    user: Mapped[User] = relationship(back_populates="recovery_codes")
 
 
 class Entry(Base):
