@@ -64,12 +64,11 @@ class DeviceService:
 
     async def get_device(self, device_id: UUID, user_id: UUID) -> UserDevice | None:
         """Get a device by ID, ensuring it belongs to the user."""
-        result = await self.session.scalar(
+        return await self.session.scalar(  # type: ignore[no-any-return]
             select(UserDevice)
             .where(UserDevice.id == device_id)
             .where(UserDevice.user_id == user_id)
         )
-        return result
 
     async def update_device_name(
         self, device_id: UUID, user_id: UUID, new_name: str
