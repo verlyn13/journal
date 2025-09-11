@@ -12,6 +12,7 @@ from app.api.v1 import (
     admin as admin_api,
     auth as auth_api,
     entries as entries_api,
+    jwks as jwks_api,
     search as search_api,
     stats as stats_api,
     webauthn as webauthn_api,
@@ -46,6 +47,7 @@ app.add_middleware(
 )
 
 # Routers
+app.include_router(jwks_api.router)  # No prefix, uses /.well-known
 app.include_router(auth_api.router, prefix="/api/v1")
 app.include_router(webauthn_api.router, prefix="/api/v1")
 app.include_router(entries_api.router, prefix="/api/v1")
