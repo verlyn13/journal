@@ -49,6 +49,7 @@ dependencies = [
     "cryptography>=45.0.0",
     "python-jose[cryptography]>=3.5.0",
     "pyotp>=2.9.0",
+    "httpx>=0.28.1",
 ]
 
 [tool.uv]
@@ -146,6 +147,7 @@ ignore = [
     "ARG001",  # unused-function-argument
     "DOC201",  # return-not-documented-in-docstring
     "DOC501",  # raised-exception-missing-from-docstring
+    "DOC502",  # raised-exception-not-explicitly-raised
     "CPY001",  # missing-copyright-notice
     "INP001",  # implicit-namespace-package
     
