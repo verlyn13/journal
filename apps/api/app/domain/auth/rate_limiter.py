@@ -197,8 +197,7 @@ class AuthRateLimiter:
         if action:
             # Reset specific action
             key = self._make_key(action, identifier)
-            result = await self.redis.delete(key)
-            return result
+            return await self.redis.delete(key)
 
         # Reset all actions
         count = 0

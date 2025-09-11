@@ -5,19 +5,14 @@ from __future__ import annotations
 import hashlib
 
 from datetime import UTC, datetime
-from typing import TYPE_CHECKING
 from uuid import UUID
 
 from redis.asyncio import Redis
-from sqlalchemy import select, update
+from sqlalchemy import update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.domain.auth.audit_service import AuditService
 from app.infra.sa_models import UserSession
-
-
-if TYPE_CHECKING:
-    from app.infra.sa_models import User
 
 
 class TokenRotationService:

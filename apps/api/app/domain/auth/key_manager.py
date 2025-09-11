@@ -138,7 +138,7 @@ class KeyManager:
                     )
             except (json.JSONDecodeError, KeyError) as e:
                 # Cache corrupt, fall through to reload
-                logger.debug(f"Cache read failed, will reload: {e}")
+                logger.debug("Cache read failed, will reload: %s", e)
 
         # Load from Infisical and cache
         if self.infisical_client:
@@ -187,7 +187,7 @@ class KeyManager:
                 keys.append(next_key)
         except (ValueError, KeyError) as e:
             # Next key not available - this is expected during initial setup
-            logger.debug(f"Next key not available: {e}")
+            logger.debug("Next key not available: %s", e)
 
         return keys
 
@@ -396,7 +396,7 @@ class KeyManager:
                 )
         except (ValueError, KeyError, TypeError) as e:
             # Key fetch failed, return None
-            logger.debug(f"Key fetch failed: {e}")
+            logger.debug("Key fetch failed: %s", e)
 
         return None
 
@@ -438,7 +438,7 @@ class KeyManager:
                 return KeyMetadata.from_dict(metadata_dict)
             except (json.JSONDecodeError, KeyError, TypeError) as e:
                 # Invalid metadata in cache, return None to regenerate
-                logger.debug(f"Invalid metadata in cache: {e}")
+                logger.debug("Invalid metadata in cache: %s", e)
         return None
 
     async def _store_key_metadata(self, metadata: KeyMetadata) -> None:

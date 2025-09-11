@@ -6,7 +6,7 @@ import base64
 import secrets
 
 from datetime import UTC, datetime, timedelta
-from typing import Any, Literal, Optional
+from typing import Any, Literal
 from uuid import UUID
 
 from redis.asyncio import Redis
@@ -14,7 +14,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.domain.auth.audit_service import AuditService
-from app.infra.sa_models import AuditLogEntry, User
+from app.infra.sa_models import AuditLogEntry
 
 
 SensitiveAction = Literal[
@@ -139,7 +139,7 @@ class StepUpAuthService:
         return True
 
     async def _get_recent_auth(
-        self, user_id: UUID, action: SensitiveAction
+        self, user_id: UUID, _action: SensitiveAction
     ) -> AuditLogEntry | None:
         """Check for recent step-up authentication.
 
