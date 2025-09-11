@@ -3,10 +3,11 @@ import os
 
 from logging.config import fileConfig
 
+
 # Suppress duplicate logging
 logging.getLogger("alembic.runtime.migration").setLevel(logging.WARNING)
 
-from sqlalchemy import create_engine, pool, text
+from sqlalchemy import create_engine, pool
 from sqlmodel import SQLModel
 
 from alembic import context
@@ -14,6 +15,7 @@ from alembic import context
 # Import all models for autogenerate support
 from app.infra.models import Entry, Event, User, UserSession  # noqa: F401
 from app.settings import settings
+
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -66,11 +68,11 @@ def run_migrations_offline() -> None:
 
 def run_migrations_online() -> None:
     """Run migrations in 'online' mode using sync engine."""
-    
+
     url_str = config.get_main_option("sqlalchemy.url")
     if url_str is None:
         raise ValueError("sqlalchemy.url is not configured")
-    
+
     # Create sync engine with psycopg (v3) or psycopg2
     connectable = create_engine(url_str, poolclass=pool.NullPool, future=True)
 

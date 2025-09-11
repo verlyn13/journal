@@ -70,11 +70,9 @@ async def async_engine() -> AsyncEngine:
 @pytest.fixture(scope="session", autouse=True)
 def migrated_db():
     """Run migrations once at session scope using sync Alembic."""
-    # Alembic will use DATABASE_URL_SYNC from environment
     cfg = Config(str(Path(__file__).resolve().parents[1] / "alembic.ini"))
     command.upgrade(cfg, "head")
-    yield
-    # Optional: command.downgrade(cfg, "base")
+    return
 
 
 @pytest_asyncio.fixture
