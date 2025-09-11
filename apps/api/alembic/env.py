@@ -3,47 +3,30 @@ import os
 
 from logging.config import fileConfig
 
-
 # Suppress duplicate logging
 logging.getLogger("alembic.runtime.migration").setLevel(logging.WARNING)
 
 from sqlalchemy import create_engine, pool, text
-from sqlalchemy.engine.url import make_url
 from sqlmodel import SQLModel
 
 from alembic import context
 
 # Import all models for autogenerate support
-from app.infra.models import Entry, Event  # noqa: F401
+from app.infra.models import Entry, Event, User, UserSession  # noqa: F401
 from app.settings import settings
-
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
 
-# Use environment variable override if present, otherwise use settings
+# Use environment variable override if present, otherwise use settings.db_url_sync
 if os.environ.get("DATABASE_URL_SYNC"):
-    override_url = os.environ["DATABASE_URL_SYNC"]
-    config.set_main_option("sqlalchemy.url", override_url)
-    print(f"[alembic] Using DATABASE_URL_SYNC override: {override_url}")
+    db_url_sync = os.environ["DATABASE_URL_SYNC"]
 else:
-    # Use settings
-    config.set_main_option("sqlalchemy.url", settings.db_url)
-    print(f"[alembic] Using settings.db_url: {settings.db_url}")
+    # Use settings.db_url_sync (already in sync format)
+    db_url_sync = settings.db_url_sync
 
-# Force sync driver (psycopg2) for migrations
-raw_url = config.get_main_option("sqlalchemy.url")
-if raw_url is None:
-    raise ValueError("sqlalchemy.url is not configured")
-url = make_url(raw_url)
-if url.drivername and "postgresql" in url.drivername and "psycopg2" not in url.drivername:
-    # Convert asyncpg or any other postgres driver to psycopg2
-    url = url.set(drivername="postgresql+psycopg2")
-    config.set_main_option("sqlalchemy.url", str(url))
-    print(f"[alembic] Converted driver to sync: {url.drivername}")
-else:
-    print(f"[alembic] Using driver: {url.drivername}")
+config.set_main_option("sqlalchemy.url", db_url_sync)
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
@@ -83,39 +66,25 @@ def run_migrations_offline() -> None:
 
 def run_migrations_online() -> None:
     """Run migrations in 'online' mode using sync engine."""
-
-    # --- begin probe ---
-
+    
     url_str = config.get_main_option("sqlalchemy.url")
     if url_str is None:
         raise ValueError("sqlalchemy.url is not configured")
-    url = make_url(url_str)
-    print(f"[alembic] sqlalchemy.url={url!s}")
-    print(f"[alembic] driver={url.drivername}, host={url.host}, database={url.database}")
-
-    # Create sync engine
-    if url_str is None:
-        raise ValueError("sqlalchemy.url is not configured")
-    connectable = create_engine(url_str, poolclass=pool.NullPool)
+    
+    # Create sync engine with psycopg (v3) or psycopg2
+    connectable = create_engine(url_str, poolclass=pool.NullPool, future=True)
 
     with connectable.connect() as connection:
-        # Probe the actual connection
-        row = connection.execute(
-            text("select current_database(), version(), current_setting('application_name', true)")
-        ).first()
-        if row:
-            print(f"[alembic] current_database={row[0]}")
-            print(f"[alembic] postgres_version={row[1][:20]}...")
-            print(f"[alembic] application_name={row[2]}")
-        # --- end probe ---
-
         context.configure(
-            connection=connection, target_metadata=target_metadata, transactional_ddl=True
+            connection=connection,
+            target_metadata=target_metadata,
+            transactional_ddl=True,
+            compare_type=True,
+            version_table_schema="public",
         )
 
         with context.begin_transaction():
             context.run_migrations()
-            connection.commit()  # Explicitly commit
 
     connectable.dispose()
 

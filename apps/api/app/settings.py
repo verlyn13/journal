@@ -5,7 +5,9 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", env_prefix="JOURNAL_")
 
     env: str = "dev"
-    db_url: str = "postgresql+asyncpg://journal:journal@localhost:5433/journal"
+    db_url: str = "postgresql+asyncpg://journal:journal@localhost:5433/journal"  # Legacy, kept for compatibility
+    db_url_async: str = "postgresql+asyncpg://journal:journal@localhost:5433/journal"
+    db_url_sync: str = "postgresql+psycopg://journal:journal@localhost:5433/journal"
     redis_url: str = "redis://localhost:6380/0"
     nats_url: str = "nats://localhost:4222"
     otlp_endpoint: str = "http://localhost:4317"
@@ -19,7 +21,7 @@ class Settings(BaseSettings):
     testing: bool = False
     auto_embed_mode: str = "event"  # "event" | "inline" | "off"
     # Feature flags
-    user_mgmt_enabled: bool = True
+    user_mgmt_enabled: bool = False
     auth_require_email_verify: bool = True
     rate_limit_window_seconds: int = 60
     rate_limit_max_attempts: int = 5

@@ -2,7 +2,6 @@
 
 import logging
 
-from typing import Optional
 from uuid import UUID
 
 from sqlalchemy.exc import IntegrityError
@@ -18,7 +17,7 @@ logger = logging.getLogger(__name__)
 class UserService:
     """Service for user management operations."""
 
-    def __init__(self, session: Session):
+    def __init__(self, session: Session) -> None:
         self.session = session
 
     async def create_user(
@@ -53,12 +52,12 @@ class UserService:
             self.session.commit()
             self.session.refresh(user)
 
-            logger.info(f"Created user {user.id} with email {email}")
+            logger.info("Created user %s with email %s", user.id, email)
             return user
 
         except IntegrityError as e:
             self.session.rollback()
-            logger.warning(f"Failed to create user with email {email}: {e}")
+            logger.warning("Failed to create user with email %s: %s", email, e)
             return None
 
     async def get_user_by_email(self, email: str) -> User | None:
@@ -98,19 +97,19 @@ class UserService:
         user = await self.get_user_by_email(email)
 
         if not user:
-            logger.debug(f"User not found: {email}")
+            logger.debug("User not found: %s", email)
             return None
 
         if not user.is_active:
-            logger.debug(f"User inactive: {email}")
+            logger.debug("User inactive: %s", email)
             return None
 
         if not user.password_hash:
-            logger.debug(f"User has no password set: {email}")
+            logger.debug("User has no password set: %s", email)
             return None
 
         if not verify_password(password, user.password_hash):
-            logger.debug(f"Invalid password for user: {email}")
+            logger.debug("Invalid password for user: %s", email)
             return None
 
         return user
@@ -132,7 +131,7 @@ class UserService:
         self.session.add(user)
         self.session.commit()
 
-        logger.info(f"Marked user {user_id} as verified")
+        logger.info("Marked user %s as verified", user_id)
         return True
 
     async def update_password(self, user_id: UUID, new_password: str) -> bool:
@@ -153,5 +152,5 @@ class UserService:
         self.session.add(user)
         self.session.commit()
 
-        logger.info(f"Updated password for user {user_id}")
+        logger.info("Updated password for user %s", user_id)
         return True

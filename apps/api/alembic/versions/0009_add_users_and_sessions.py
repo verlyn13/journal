@@ -30,10 +30,10 @@ def upgrade() -> None:
             "roles",
             sa.dialects.postgresql.JSONB(astext_type=sa.Text()),
             nullable=False,
-            server_default=sa.text("'[""user""]'"),
+            server_default=sa.text("'[\"user\"]'::jsonb"),
         ),
-        sa.Column("created_at", sa.DateTime(timezone=True), nullable=False, server_default=sa.text("now()")),
-        sa.Column("updated_at", sa.DateTime(timezone=True), nullable=False, server_default=sa.text("now()")),
+        sa.Column("created_at", sa.DateTime(timezone=True), nullable=False, server_default=sa.text("CURRENT_TIMESTAMP")),
+        sa.Column("updated_at", sa.DateTime(timezone=True), nullable=False, server_default=sa.text("CURRENT_TIMESTAMP")),
     )
     op.create_index("ix_users_email", "users", ["email"], unique=True)
     op.create_index("ix_users_username", "users", ["username"], unique=True)
@@ -47,8 +47,8 @@ def upgrade() -> None:
         sa.Column("refresh_id", sa.UUID(), nullable=False),
         sa.Column("user_agent", sa.String(), nullable=True),
         sa.Column("ip_address", sa.String(), nullable=True),
-        sa.Column("issued_at", sa.DateTime(timezone=True), nullable=False, server_default=sa.text("now()")),
-        sa.Column("last_used_at", sa.DateTime(timezone=True), nullable=False, server_default=sa.text("now()")),
+        sa.Column("issued_at", sa.DateTime(timezone=True), nullable=False, server_default=sa.text("CURRENT_TIMESTAMP")),
+        sa.Column("last_used_at", sa.DateTime(timezone=True), nullable=False, server_default=sa.text("CURRENT_TIMESTAMP")),
         sa.Column("expires_at", sa.DateTime(timezone=True), nullable=False),
         sa.Column("revoked_at", sa.DateTime(timezone=True), nullable=True),
     )

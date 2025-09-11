@@ -31,20 +31,34 @@ from app.settings import settings
 # Set testing mode before importing app
 settings.testing = True
 
-TEST_DB_URL = os.getenv(
-    "TEST_DB_URL", "postgresql+asyncpg://journal:journal@localhost:5433/journal_test"
+TEST_DB_URL_ASYNC = os.getenv(
+    "TEST_DB_URL_ASYNC", "postgresql+asyncpg://journal:journal@localhost:5433/journal_test"
+)
+TEST_DB_URL_SYNC = os.getenv(
+    "TEST_DB_URL_SYNC", "postgresql+psycopg://journal:journal@localhost:5433/journal_test"
 )
 
 # Ensure Alembic and the app use the same test database URL
-os.environ["JOURNAL_DB_URL"] = TEST_DB_URL
-settings.db_url = TEST_DB_URL
+os.environ["DATABASE_URL_SYNC"] = TEST_DB_URL_SYNC
+settings.db_url = TEST_DB_URL_ASYNC  # Legacy compatibility
+settings.db_url_async = TEST_DB_URL_ASYNC
+settings.db_url_sync = TEST_DB_URL_SYNC
+
+
+@pytest.fixture(scope="session")
+def event_loop():
+    """Create event loop for the session."""
+    import asyncio
+    loop = asyncio.new_event_loop()
+    yield loop
+    loop.close()
 
 
 @pytest_asyncio.fixture
 async def async_engine() -> AsyncEngine:
     """Create async engine for the test session."""
     engine = create_async_engine(
-        TEST_DB_URL,
+        TEST_DB_URL_ASYNC,
         pool_pre_ping=True,
     )
     try:
@@ -53,47 +67,18 @@ async def async_engine() -> AsyncEngine:
         await engine.dispose()
 
 
-@pytest_asyncio.fixture
-async def bootstrap_schema(async_engine: AsyncEngine):
-    """Ensure database schema is at head revision, idempotently.
-
-    - Skips if Alembic version table already exists (assumes up-to-date for tests).
-    - Runs Alembic upgrade otherwise.
-    """
-    from sqlalchemy import text as _text
-
-    async def _has_alembic_version() -> bool:
-        async with async_engine.begin() as conn:
-            res = await conn.execute(_text("SELECT to_regclass('public.alembic_version')"))
-            row = res.scalar_one_or_none()
-            return row is not None
-
-    exists = await _has_alembic_version()
-    if not exists:
-        # If prior partial runs left stray tables, drop them to avoid duplicate errors
-        async def _drop_stray_tables():
-            async with async_engine.begin() as conn:
-                await conn.execute(
-                    _text("DROP TABLE IF EXISTS entry_embeddings, events, entries CASCADE")
-                )
-
-        await _drop_stray_tables()
-
-        # Run Alembic in a thread to avoid event loop issues
-        import asyncio
-
-        def run_alembic():
-            cfg = Config(str(Path(__file__).resolve().parents[1] / "alembic.ini"))
-            cfg.set_main_option("sqlalchemy.url", TEST_DB_URL)
-            command.upgrade(cfg, "head")
-
-        await asyncio.get_event_loop().run_in_executor(None, run_alembic)
-
+@pytest.fixture(scope="session", autouse=True)
+def migrated_db():
+    """Run migrations once at session scope using sync Alembic."""
+    # Alembic will use DATABASE_URL_SYNC from environment
+    cfg = Config(str(Path(__file__).resolve().parents[1] / "alembic.ini"))
+    command.upgrade(cfg, "head")
     yield
+    # Optional: command.downgrade(cfg, "base")
 
 
 @pytest_asyncio.fixture
-async def db_connection(async_engine: AsyncEngine, bootstrap_schema) -> AsyncConnection:
+async def db_connection(async_engine: AsyncEngine, migrated_db) -> AsyncConnection:
     """One dedicated connection for the test, with an OUTER transaction."""
     conn = await async_engine.connect()
     trans = await conn.begin()  # <-- external transaction
@@ -189,8 +174,9 @@ async def client(request, session_factory, db_connection: AsyncConnection):
                 await session.close()
 
     app.dependency_overrides[get_session] = override_get_session
-    # Always consider requests authenticated in tests
-    app.dependency_overrides[require_user] = lambda: "test-user"
+    # Always consider requests authenticated in tests (unless user_mgmt is enabled)
+    if not settings.user_mgmt_enabled:
+        app.dependency_overrides[require_user] = lambda: "test-user"
     try:
         transport = ASGITransport(app=app)
         async with AsyncClient(transport=transport, base_url="http://test") as c:
