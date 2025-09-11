@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { AuthenticationOrchestrator } from './orchestrator';
-import { AuthEventType, AuthErrorCode } from './types';
 import type {
   AuthError,
   AuthEvent,
@@ -13,6 +12,7 @@ import type {
   AuthUser,
   PasskeyCredential,
 } from './types';
+import { AuthErrorCode, AuthEventType } from './types';
 
 // Main authentication hook
 export function useAuth(apiBaseUrl?: string) {
@@ -60,8 +60,7 @@ export function useAuth(apiBaseUrl?: string) {
           emitEvent({ type: AuthEventType.SESSION_EXPIRED, timestamp: new Date() });
         }
       }
-    } catch (_error) {
-    }
+    } catch (_error) {}
     setState((prev) => ({ ...prev, isLoading: false }));
   }, [emitEvent]);
 

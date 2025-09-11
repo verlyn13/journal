@@ -18,7 +18,6 @@ export function EntryList({
   onDeleteEntry,
   isLoading,
 }: EntryListProps) {
-  
   const [searchQuery, setSearchQuery] = useState('');
   const [viewMode, setViewMode] = useState<'list' | 'calendar' | 'river'>('list');
 

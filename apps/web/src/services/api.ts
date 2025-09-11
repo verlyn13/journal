@@ -3,8 +3,14 @@
  * Handles all API calls to the FastAPI backend
  */
 
-import { getAccessToken as getAT, setAccessToken, getRefreshToken, setRefreshToken, clearTokens } from './authStore';
 import { FLAGS } from '../config/flags';
+import {
+  clearTokens,
+  getAccessToken as getAT,
+  getRefreshToken,
+  setAccessToken,
+  setRefreshToken,
+} from './authStore';
 
 function normalizeApiBase(raw?: string) {
   // Remove trailing slashes first
@@ -177,7 +183,7 @@ class ApiService {
   private getCsrfFromCookie(): string | null {
     if (typeof document === 'undefined') return null;
     const name = 'csrftoken';
-    const m = (`; ${document.cookie}`).split(`; ${name}=`).pop()?.split(';')[0] ?? null;
+    const m = `; ${document.cookie}`.split(`; ${name}=`).pop()?.split(';')[0] ?? null;
     return m;
   }
 

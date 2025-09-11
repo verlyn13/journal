@@ -3,7 +3,9 @@
 import { FLAGS } from '../config/flags';
 
 const bc: BroadcastChannel | null =
-  typeof window !== 'undefined' && 'BroadcastChannel' in window ? new BroadcastChannel('auth') : null;
+  typeof window !== 'undefined' && 'BroadcastChannel' in window
+    ? new BroadcastChannel('auth')
+    : null;
 
 let accessToken: string | null = null;
 let refreshToken: string | null = (() => {

@@ -1,5 +1,5 @@
-import { StrictMode } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import JournalApp from './components/JournalApp';
 import './index.css';
@@ -9,16 +9,16 @@ import './styles/tokens.css';
 function mountReactEditor() {
   const el = document.getElementById('react-editor-root');
   if (!el) return;
-  
-    const root = createRoot(el, {
-      onUncaughtError: (_error, _errorInfo) => {
-        // TODO: Send to error tracking service
-      },
-      onCaughtError: (_error, _errorInfo) => {
-        // TODO: surface to user and/or send to telemetry
-      }
-    });
-  
+
+  const root = createRoot(el, {
+    onUncaughtError: (_error, _errorInfo) => {
+      // TODO: Send to error tracking service
+    },
+    onCaughtError: (_error, _errorInfo) => {
+      // TODO: surface to user and/or send to telemetry
+    },
+  });
+
   // Optimized QueryClient for React 19
   const queryClient = new QueryClient({
     defaultOptions: {
@@ -39,13 +39,13 @@ function mountReactEditor() {
       },
     },
   });
-  
+
   root.render(
     <StrictMode>
       <QueryClientProvider client={queryClient}>
         <JournalApp />
       </QueryClientProvider>
-    </StrictMode>
+    </StrictMode>,
   );
 }
 

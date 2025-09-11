@@ -118,7 +118,11 @@ export const AuthButton: React.FC<AuthButtonProps> = ({
             <p className="font-medium">{user.name || user.email}</p>
             <p className="text-sm text-gray-500">{user.email}</p>
           </div>
-          <button type="button" onClick={logout} className="w-full text-left px-3 py-2 hover:bg-gray-100 rounded">
+          <button
+            type="button"
+            onClick={logout}
+            className="w-full text-left px-3 py-2 hover:bg-gray-100 rounded"
+          >
             Sign Out
           </button>
         </div>

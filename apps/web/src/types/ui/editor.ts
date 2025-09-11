@@ -6,6 +6,7 @@
 // import type { Editor } from '@tiptap/react';
 // Minimal shape we rely on until TipTap types are present
 export type Editor = { isDestroyed?: boolean } & Record<string, unknown>;
+
 import type { Entry } from '../domain/entry';
 
 // Editor state types
