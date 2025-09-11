@@ -15,6 +15,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.domain.auth.key_manager import KeyManager
 from app.infra.crypto.key_generation import Ed25519KeyGenerator
 
+
 logger = logging.getLogger(__name__)
 
 
