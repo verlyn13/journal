@@ -116,10 +116,10 @@ class RecoveryCode(Base):
 
     id: Mapped[UUID] = mapped_column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
     user_id: Mapped[UUID] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True, nullable=False)
-    
+
     # Hashed recovery code
     code_hash: Mapped[str] = mapped_column(String(128), nullable=False)
-    
+
     # Tracking
     used: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     used_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)

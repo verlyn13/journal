@@ -23,10 +23,10 @@ class RecoveryService:
 
     async def generate_recovery_kit(self, user_id: UUID) -> dict[str, Any]:
         """Generate recovery codes and backup info.
-        
+
         Args:
             user_id: User ID to generate codes for
-            
+
         Returns:
             Recovery kit with codes and instructions
         """
@@ -34,11 +34,11 @@ class RecoveryService:
         await self._clear_existing_codes(user_id)
 
         # Generate new codes
-        codes = self.generate_recovery_codes(10)
+        codes = RecoveryService.generate_recovery_codes(10)
 
         # Store hashed codes
         for code in codes:
-            hashed = self.hash_recovery_code(code, user_id)
+            hashed = RecoveryService.hash_recovery_code(code, user_id)
             recovery_code = RecoveryCode(
                 user_id=user_id,
                 code_hash=hashed,
@@ -52,16 +52,17 @@ class RecoveryService:
         return {
             "codes": codes,
             "generated_at": datetime.now(UTC),
-            "instructions": self.get_recovery_instructions(),
+            "instructions": RecoveryService.get_recovery_instructions(),
             "warning": "Store these codes in a safe place. They will not be shown again."
         }
 
-    def generate_recovery_codes(self, count: int = 10) -> list[str]:
+    @staticmethod
+    def generate_recovery_codes(count: int = 10) -> list[str]:
         """Generate high-entropy recovery codes.
-        
+
         Args:
             count: Number of codes to generate
-            
+
         Returns:
             List of formatted recovery codes (XXXX-XXXX)
         """
@@ -72,30 +73,31 @@ class RecoveryService:
             codes.append(f"{code[:4]}-{code[4:8]}")
         return codes
 
-    def hash_recovery_code(self, code: str, user_id: UUID) -> str:
+    @staticmethod
+    def hash_recovery_code(code: str, user_id: UUID) -> str:
         """Hash with user-specific salt.
-        
+
         Args:
             code: Plain text recovery code
             user_id: User ID for salt generation
-            
+
         Returns:
             Hexadecimal hash of the code
         """
         salt = hashlib.sha256(user_id.bytes).digest()
-        return hashlib.pbkdf2_hmac('sha256', code.encode(), salt, 100_000).hex()
+        return hashlib.pbkdf2_hmac("sha256", code.encode(), salt, 100_000).hex()
 
     async def verify_recovery_code(self, user_id: UUID, code: str) -> bool:
         """Verify a recovery code and mark it as used.
-        
+
         Args:
             user_id: User ID
             code: Recovery code to verify
-            
+
         Returns:
             True if code is valid and unused, False otherwise
         """
-        code_hash = self.hash_recovery_code(code, user_id)
+        code_hash = RecoveryService.hash_recovery_code(code, user_id)
 
         # Find the code
         recovery_code = await self.session.scalar(
@@ -117,10 +119,10 @@ class RecoveryService:
 
     async def get_recovery_status(self, user_id: UUID) -> dict[str, Any]:
         """Get recovery code status for a user.
-        
+
         Args:
             user_id: User ID
-            
+
         Returns:
             Recovery status information
         """
@@ -147,10 +149,10 @@ class RecoveryService:
 
     async def revoke_recovery_codes(self, user_id: UUID) -> int:
         """Revoke all recovery codes for a user.
-        
+
         Args:
             user_id: User ID
-            
+
         Returns:
             Number of codes revoked
         """
@@ -158,10 +160,10 @@ class RecoveryService:
 
     async def _clear_existing_codes(self, user_id: UUID) -> int:
         """Clear all existing recovery codes for a user.
-        
+
         Args:
             user_id: User ID
-            
+
         Returns:
             Number of codes deleted
         """
@@ -176,9 +178,10 @@ class RecoveryService:
         await self.session.flush()
         return len(codes)
 
-    def get_recovery_instructions(self) -> dict[str, Any]:
+    @staticmethod
+    def get_recovery_instructions() -> dict[str, Any]:
         """Get recovery instructions for users.
-        
+
         Returns:
             Instructions for using recovery codes
         """

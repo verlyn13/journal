@@ -27,14 +27,14 @@ class DeviceService:
         location_region: str | None = None,
     ) -> UserDevice:
         """Register a new device for a user.
-        
+
         Args:
             user_id: User ID
             device_name: User-provided friendly name for the device
             browser: Browser name for display only (not for fingerprinting)
             os: OS name for display only (not for fingerprinting)
             location_region: Coarse location (city/region, not precise)
-            
+
         Returns:
             Created UserDevice
         """
@@ -157,7 +157,8 @@ class DeviceService:
         await self.session.flush()
         return count
 
-    def format_device_info(self, device: UserDevice) -> dict[str, Any]:
+    @staticmethod
+    def format_device_info(device: UserDevice) -> dict[str, Any]:
         """Format device info for display (privacy-safe)."""
         return {
             "id": str(device.id),

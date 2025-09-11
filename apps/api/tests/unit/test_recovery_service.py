@@ -5,6 +5,7 @@ from __future__ import annotations
 from uuid import uuid4
 
 import pytest
+
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -69,13 +70,13 @@ class TestRecoveryService:
         codes = recovery_service.generate_recovery_codes(5)
 
         assert len(codes) == 5
-        
+
         for code in codes:
             assert len(code) == 9  # XXXX-XXXX
             assert code[4] == "-"
-            # Check that it's alphanumeric (base64 characters)
+            # Check that it contains valid URL-safe characters (base64url)
             clean_code = code.replace("-", "")
-            assert clean_code.isalnum()
+            assert all(c.isalnum() or c in "_-" for c in clean_code)
 
     def test_hash_recovery_code(self, recovery_service: RecoveryService) -> None:
         """Test recovery code hashing."""
@@ -169,7 +170,7 @@ class TestRecoveryService:
         """Test getting recovery status when user has codes."""
         # Generate recovery kit
         kit = await recovery_service.generate_recovery_kit(test_user.id)
-        
+
         # Use one code
         await recovery_service.verify_recovery_code(test_user.id, kit["codes"][0])
 
@@ -244,9 +245,11 @@ class TestRecoveryService:
         is_valid_new = await recovery_service.verify_recovery_code(test_user.id, new_code)
         assert is_valid_new is True
 
-        # Should still have 10 total codes (not 20)
+        # Should still have 10 codes total, with 1 used from the new kit
         status = await recovery_service.get_recovery_status(test_user.id)
-        assert status["total_codes"] == 9  # 10 - 1 used
+        assert status["total_codes"] == 10  # New kit has 10 codes
+        assert status["used_codes"] == 1  # 1 code was used from the new kit
+        assert status["remaining_codes"] == 9  # 9 unused codes remaining
 
     def test_get_recovery_instructions(
         self, recovery_service: RecoveryService
@@ -261,7 +264,7 @@ class TestRecoveryService:
 
         assert isinstance(instructions["steps"], list)
         assert len(instructions["steps"]) > 0
-        
+
         assert "when_to_use" in instructions["usage"]
         assert "how_to_use" in instructions["usage"]
         assert "after_use" in instructions["usage"]

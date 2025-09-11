@@ -6,10 +6,11 @@ from datetime import UTC, datetime
 from uuid import uuid4
 
 import pytest
+
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.domain.auth.device_service import DeviceService
-from app.infra.sa_models import User, UserDevice, UserSession
+from app.infra.sa_models import User, UserSession
 
 
 class TestDeviceService:
@@ -81,6 +82,10 @@ class TestDeviceService:
         device_names = [d.device_name for d in devices]
         assert "iPhone" in device_names
         assert "MacBook" in device_names
+        # Verify specific devices are in the list
+        device_ids = [d.id for d in devices]
+        assert device1.id in device_ids
+        assert device2.id in device_ids
 
     @pytest.mark.asyncio()
     async def test_get_device_with_valid_user(
@@ -133,7 +138,7 @@ class TestDeviceService:
         success = await device_service.update_device_name(
             device.id, test_user.id, "New Name"
         )
-        
+
         assert success is True
 
         updated = await device_service.get_device(device.id, test_user.id)
@@ -151,13 +156,13 @@ class TestDeviceService:
         device = await device_service.register_device(
             test_user.id, "Test Device", "Chrome", "Linux"
         )
-        
+
         assert device.trusted is False
 
         success = await device_service.mark_device_trusted(
             device.id, test_user.id, True
         )
-        
+
         assert success is True
 
         updated = await device_service.get_device(device.id, test_user.id)
@@ -168,7 +173,7 @@ class TestDeviceService:
         success = await device_service.mark_device_trusted(
             device.id, test_user.id, False
         )
-        
+
         assert success is True
 
         updated = await device_service.get_device(device.id, test_user.id)
@@ -198,7 +203,7 @@ class TestDeviceService:
         await db_session.flush()
 
         success = await device_service.delete_device(device.id, test_user.id)
-        
+
         assert success is True
 
         # Device should be deleted
@@ -257,7 +262,7 @@ class TestDeviceService:
 
         # Create multiple sessions
         sessions = []
-        for i in range(3):
+        for _i in range(3):
             session = UserSession(
                 user_id=test_user.id,
                 device_id=device.id,
