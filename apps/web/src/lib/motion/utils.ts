@@ -20,10 +20,7 @@ export function applyMotion(
   // Remove offset property from CSS styles to avoid conflicts with Keyframe type
   const { offset: _offsetFrom, ...fromRest } = from;
   const { offset: _offsetTo, ...toRest } = to;
-  const keyframes: Keyframe[] = [
-    fromRest as unknown as Keyframe,
-    toRest as unknown as Keyframe,
-  ];
+  const keyframes: Keyframe[] = [fromRest as unknown as Keyframe, toRest as unknown as Keyframe];
 
   return element.animate(keyframes, {
     duration,

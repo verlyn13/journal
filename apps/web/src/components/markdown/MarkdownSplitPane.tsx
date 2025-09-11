@@ -90,14 +90,17 @@ export default function MarkdownSplitPane({ entry, onSave, autosaveMs }: Props) 
     }
 
     setSaving(true);
-    saveTimer.current = window.setTimeout(async () => {
-      try {
-        await onSave({ html: '', markdown: md });
-        setLastSavedAt(Date.now());
-      } finally {
-        setSaving(false);
-      }
-    }, typeof autosaveMs === 'number' && Number.isFinite(autosaveMs) ? autosaveMs : 1200);
+    saveTimer.current = window.setTimeout(
+      async () => {
+        try {
+          await onSave({ html: '', markdown: md });
+          setLastSavedAt(Date.now());
+        } finally {
+          setSaving(false);
+        }
+      },
+      typeof autosaveMs === 'number' && Number.isFinite(autosaveMs) ? autosaveMs : 1200,
+    );
 
     return () => {
       if (saveTimer.current) {

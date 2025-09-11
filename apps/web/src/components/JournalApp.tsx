@@ -1,8 +1,8 @@
 import React, { Suspense, useCallback, useEffect, useState } from 'react';
 import { FLAGS } from '../config/flags';
-import { subscribe } from '../services/authStore';
 import { useCreateEntry, useDeleteEntry, useEntriesList } from '../hooks/useEntryQueries';
 import api, { type AuthStatus } from '../services/api';
+import { subscribe } from '../services/authStore';
 import EntryList from './layout/EntryList';
 import Sidebar from './layout/Sidebar';
 
@@ -126,19 +126,33 @@ export function JournalApp() {
     });
 
     // Load content asynchronously
-    api.getEntry(entryId).then(entry => {
-      
-      // Prefer markdown_content for the markdown editor; convert HTML if needed
-      let contentForEditor = entry.markdown_content as unknown as string | undefined;
-      if (!contentForEditor && entry.content) {
-        import('../utils/markdown-converter').then(mod => {
-          try {
-            const res = mod.convertHtmlToMarkdown(entry.content as unknown as string);
-            contentForEditor = res.markdown || entry.content;
-          } catch {
-            contentForEditor = (entry.content as unknown as string) || '';
-          }
-          
+    api
+      .getEntry(entryId)
+      .then((entry) => {
+        // Prefer markdown_content for the markdown editor; convert HTML if needed
+        let contentForEditor = entry.markdown_content as unknown as string | undefined;
+        if (!contentForEditor && entry.content) {
+          import('../utils/markdown-converter').then((mod) => {
+            try {
+              const res = mod.convertHtmlToMarkdown(entry.content as unknown as string);
+              contentForEditor = res.markdown || entry.content;
+            } catch {
+              contentForEditor = (entry.content as unknown as string) || '';
+            }
+
+            setState((prev) => ({
+              ...prev,
+              selectedEntry: {
+                id: entry.id,
+                title: entry.title,
+                content: contentForEditor || '',
+                contentVersion: entry.content_version || 1,
+                version: entry.version,
+              },
+            }));
+            // entry state updated after HTML->Markdown conversion
+          });
+        } else {
           setState((prev) => ({
             ...prev,
             selectedEntry: {
@@ -149,29 +163,17 @@ export function JournalApp() {
               version: entry.version,
             },
           }));
-          // entry state updated after HTML->Markdown conversion
-        });
-      } else {
+          // entry state updated
+        }
+      })
+      .catch((_error) => {
+        // Reset selection on error
         setState((prev) => ({
           ...prev,
-          selectedEntry: {
-            id: entry.id,
-            title: entry.title,
-            content: contentForEditor || '',
-            contentVersion: entry.content_version || 1,
-            version: entry.version,
-          },
+          selectedEntryId: null,
+          selectedEntry: null,
         }));
-        // entry state updated
-      }
-    }).catch(_error => {
-      // Reset selection on error
-      setState((prev) => ({
-        ...prev,
-        selectedEntryId: null,
-        selectedEntry: null,
-      }));
-    });
+      });
   }, []);
 
   // Removed legacy save callback (replaced by MarkdownSplitPane onSave)

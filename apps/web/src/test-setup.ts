@@ -2,6 +2,7 @@ import '@testing-library/jest-dom/vitest';
 // Hint to application code that we are in a test environment
 // Enables test-friendly code paths when needed
 (globalThis as unknown as { __TEST__?: boolean }).__TEST__ = true;
+
 import { cleanup } from '@testing-library/react';
 import { afterEach, vi } from 'vitest';
 
@@ -10,11 +11,19 @@ const localStorageMock = (() => {
   let store: Record<string, string> = {};
   return {
     getItem: vi.fn((key: string) => store[key] || null),
-    setItem: vi.fn((key: string, value: string) => { store[key] = value; }),
-    removeItem: vi.fn((key: string) => { delete store[key]; }),
-    clear: vi.fn(() => { store = {}; }),
+    setItem: vi.fn((key: string, value: string) => {
+      store[key] = value;
+    }),
+    removeItem: vi.fn((key: string) => {
+      delete store[key];
+    }),
+    clear: vi.fn(() => {
+      store = {};
+    }),
     key: vi.fn((index: number) => Object.keys(store)[index] || null),
-    get length() { return Object.keys(store).length; }
+    get length() {
+      return Object.keys(store).length;
+    },
   };
 })();
 
@@ -22,11 +31,19 @@ const sessionStorageMock = (() => {
   let store: Record<string, string> = {};
   return {
     getItem: vi.fn((key: string) => store[key] || null),
-    setItem: vi.fn((key: string, value: string) => { store[key] = value; }),
-    removeItem: vi.fn((key: string) => { delete store[key]; }),
-    clear: vi.fn(() => { store = {}; }),
+    setItem: vi.fn((key: string, value: string) => {
+      store[key] = value;
+    }),
+    removeItem: vi.fn((key: string) => {
+      delete store[key];
+    }),
+    clear: vi.fn(() => {
+      store = {};
+    }),
     key: vi.fn((index: number) => Object.keys(store)[index] || null),
-    get length() { return Object.keys(store).length; }
+    get length() {
+      return Object.keys(store).length;
+    },
   };
 })();
 
@@ -38,7 +55,7 @@ Object.defineProperty(globalThis, 'localStorage', {
 });
 
 Object.defineProperty(globalThis, 'sessionStorage', {
-  value: sessionStorageMock,  
+  value: sessionStorageMock,
   configurable: true,
   writable: true,
 });
@@ -50,10 +67,10 @@ if (typeof window !== 'undefined') {
     configurable: true,
     writable: true,
   });
-  
+
   Object.defineProperty(window, 'sessionStorage', {
     value: sessionStorageMock,
-    configurable: true, 
+    configurable: true,
     writable: true,
   });
 }

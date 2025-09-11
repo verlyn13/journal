@@ -107,7 +107,15 @@
       }
     },
     {
-      "includes": ["*.test.ts", "*.test.tsx", "*.spec.ts", "*.spec.tsx", "apps/web/src/test-setup.ts", "apps/web/src/**/*.test.ts", "apps/web/src/**/*.spec.ts"],
+      "includes": [
+        "*.test.ts",
+        "*.test.tsx",
+        "*.spec.ts",
+        "*.spec.tsx",
+        "apps/web/src/test-setup.ts",
+        "apps/web/src/**/*.test.ts",
+        "apps/web/src/**/*.spec.ts"
+      ],
       "linter": {
         "rules": {
           "suspicious": {

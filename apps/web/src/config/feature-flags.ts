@@ -19,7 +19,7 @@ const hashUserId = (userId: string): number => {
   let hash = 0;
   for (let i = 0; i < userId.length; i++) {
     const char = userId.charCodeAt(i);
-    hash = ((hash << 5) - hash) + char;
+    hash = (hash << 5) - hash + char;
     hash = hash & hash; // Convert to 32-bit integer
   }
   return Math.abs(hash) % 100;
@@ -28,7 +28,7 @@ const hashUserId = (userId: string): number => {
 // Get user ID for feature flag bucketing (fallback to session/local storage)
 const getUserId = (): string => {
   if (typeof window === 'undefined') return 'server';
-  
+
   // Try to get user ID from auth state, fallback to persistent session ID
   let userId = localStorage.getItem('feature-flag-user-id');
   if (!userId) {
@@ -53,45 +53,45 @@ export const featureFlags = {
     if (config.forceEnable) return true;
     return isUserInRollout(config.percentage);
   })(),
-  
+
   // React 19 specific features
   react19: {
     // Use new error boundaries
     errorBoundaries: true,
-    
+
     // Enable React DevTools Profiler integration
     profiler: import.meta.env.DEV,
-    
+
     // Use automatic batching optimizations
     automaticBatching: true,
-    
+
     // Enable concurrent features
     concurrent: true,
-    
+
     // StrictMode behavior (double-render in dev)
     strictMode: import.meta.env.DEV,
   },
-  
+
   // Performance optimizations
   performance: {
     // Lazy load heavy components
     lazyLoading: true,
-    
+
     // Code splitting for routes
     codeSplitting: true,
-    
+
     // Prefetch critical resources
     prefetching: true,
   },
-  
+
   // Development features
   development: {
     // Show performance metrics in dev
     showMetrics: import.meta.env.DEV,
-    
+
     // Enable debug logging
     debugLogging: import.meta.env.VITE_DEBUG === 'true',
-    
+
     // React Compiler logging
     compilerLogging: import.meta.env.VITE_REACT_COMPILER_DEBUG === 'true',
   },

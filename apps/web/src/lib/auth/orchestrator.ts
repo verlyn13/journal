@@ -32,8 +32,7 @@ export class AuthenticationOrchestrator {
         try {
           const result = await this.passkeyAuth();
           if (result.success) return result;
-        } catch (_error) {
-          }
+        } catch (_error) {}
       }
 
       // Try OAuth providers

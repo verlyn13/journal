@@ -1,9 +1,8 @@
-import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-
-import { EntryList } from '../EntryList';
+import { describe, expect, it, vi } from 'vitest';
 import type { EntryVm } from '../../../types/entry';
+import { EntryList } from '../EntryList';
 
 describe('EntryList keyboard accessibility', () => {
   const entries: EntryVm[] = [
