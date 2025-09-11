@@ -7,7 +7,7 @@ import time
 from typing import Any
 
 import httpx
-from httpx import Auth
+
 from jose import JWTError, jwt
 
 

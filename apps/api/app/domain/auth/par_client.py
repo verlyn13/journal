@@ -9,7 +9,6 @@ import secrets
 from typing import Any
 
 import httpx
-from httpx import Auth
 
 
 class PARClient:
