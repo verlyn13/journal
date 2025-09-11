@@ -460,7 +460,7 @@ class RecoveryService:
         return hashlib.pbkdf2_hmac('sha256', code.encode(), salt, 100_000).hex()
 ```
 
-### Phase 4: Privacy Dashboard (Week 2)
+### Phase 4: Privacy Dashboard (Week 2) ✅ COMPLETED (PR #29)
 
 #### Day 5-6: Hash-Chained Audit Log
 
@@ -511,6 +511,175 @@ class AuditLogEntry(Base):
 
         session.add(entry)
         return entry
+```
+
+### Phase 5: Advanced Threat Mitigation (Week 3)
+
+#### Day 1-2: OAuth Token Rotation Detection
+
+```python
+# apps/api/app/domain/auth/token_rotation_service.py
+from typing import Optional
+from uuid import UUID
+import hashlib
+from redis import Redis
+
+class TokenRotationService:
+    """Detect and prevent refresh token reuse attacks (RFC 9700)."""
+    
+    def __init__(self, redis: Redis):
+        self.redis = redis
+        
+    async def check_refresh_token_reuse(
+        self, 
+        token_hash: str, 
+        user_id: UUID
+    ) -> bool:
+        """Detect if a refresh token has been reused."""
+        used_key = f"used_refresh:{token_hash}"
+        
+        if await self.redis.exists(used_key):
+            # SECURITY ALERT: Token reuse detected
+            await self.revoke_all_user_tokens(user_id)
+            await self.log_security_incident(user_id, "refresh_token_reuse")
+            return True
+            
+        # Mark token as used (24hr TTL)
+        await self.redis.setex(used_key, 86400, "1")
+        return False
+        
+    async def revoke_all_user_tokens(self, user_id: UUID):
+        """Revoke all tokens for a user after security incident."""
+        # Revoke all sessions
+        from sqlalchemy import update
+        await self.session.execute(
+            update(UserSession)
+            .where(UserSession.user_id == user_id)
+            .values(revoked_at=datetime.now(UTC))
+        )
+        
+        # Clear OAuth tokens from encrypted storage
+        await self.redis.delete(f"oauth_tokens:{user_id}")
+```
+
+#### Day 3-4: WebAuthn Step-Up Authentication
+
+```python
+# apps/api/app/domain/auth/stepup_service.py
+from datetime import datetime, timedelta
+from typing import Literal
+
+SensitiveAction = Literal[
+    "delete_account", 
+    "export_data", 
+    "change_email",
+    "disable_2fa",
+    "view_recovery_codes"
+]
+
+class StepUpAuthService:
+    """Require fresh WebAuthn authentication for sensitive actions."""
+    
+    FRESH_AUTH_WINDOW = timedelta(minutes=5)
+    
+    async def require_fresh_auth(
+        self,
+        user_id: UUID,
+        action: SensitiveAction,
+        session: AsyncSession
+    ) -> dict:
+        """Generate fresh WebAuthn challenge for step-up."""
+        # Check if user has recent WebAuthn auth
+        recent_auth = await session.scalar(
+            select(AuditLogEntry)
+            .where(
+                AuditLogEntry.user_id == user_id,
+                AuditLogEntry.event_type == "webauthn_verify",
+                AuditLogEntry.created_at > datetime.now(UTC) - self.FRESH_AUTH_WINDOW
+            )
+            .order_by(AuditLogEntry.created_at.desc())
+        )
+        
+        if recent_auth and recent_auth.event_data.get("action") == action:
+            return {"required": False, "recent_auth": recent_auth.created_at}
+            
+        # Generate fresh challenge
+        challenge = secrets.token_bytes(32)
+        await self.redis.setex(
+            f"stepup:{user_id}:{action}",
+            300,  # 5 minute TTL
+            base64.b64encode(challenge).decode()
+        )
+        
+        return {
+            "required": True,
+            "challenge": base64.b64encode(challenge).decode(),
+            "action": action
+        }
+```
+
+#### Day 5-6: Rate Limiting & Brute Force Protection
+
+```python
+# apps/api/app/domain/auth/rate_limiter.py
+from typing import Optional
+import hashlib
+
+class AuthRateLimiter:
+    """Advanced rate limiting for authentication endpoints."""
+    
+    LIMITS = {
+        "login": {"attempts": 5, "window": 300},  # 5 attempts per 5 min
+        "totp": {"attempts": 5, "window": 300},
+        "recovery_code": {"attempts": 3, "window": 600},  # 3 per 10 min
+        "password_reset": {"attempts": 3, "window": 3600},  # 3 per hour
+    }
+    
+    async def check_rate_limit(
+        self,
+        action: str,
+        identifier: str,  # user_id or IP
+        redis: Redis
+    ) -> tuple[bool, Optional[int]]:
+        """Check if action is rate limited."""
+        limit_config = self.LIMITS.get(action)
+        if not limit_config:
+            return True, None
+            
+        key = f"ratelimit:{action}:{hashlib.sha256(identifier.encode()).hexdigest()}"
+        current = await redis.incr(key)
+        
+        if current == 1:
+            await redis.expire(key, limit_config["window"])
+            
+        if current > limit_config["attempts"]:
+            ttl = await redis.ttl(key)
+            return False, ttl
+            
+        return True, None
+        
+    async def record_failed_attempt(
+        self,
+        action: str,
+        user_id: Optional[UUID],
+        ip_address: str,
+        redis: Redis,
+        session: AsyncSession
+    ):
+        """Record failed auth attempt for analysis."""
+        # Track by both user and IP
+        if user_id:
+            await self.check_rate_limit(action, str(user_id), redis)
+        await self.check_rate_limit(action, ip_address, redis)
+        
+        # Log to audit trail
+        if user_id:
+            await AuditService(session).log_event(
+                user_id=user_id,
+                event_type=f"{action}_failed",
+                event_data={"ip": ip_address},
+                ip_address=ip_address
+            )
 ```
 
 ## 🚀 Implementation Schedule
