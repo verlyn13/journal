@@ -215,6 +215,7 @@ class TokenCipher:
 # Singleton instance holder
 class _CipherHolder:
     """Holder for singleton cipher instance."""
+
     instance: TokenCipher | None = None
 
 

@@ -43,9 +43,7 @@ class AuthRateLimiter:
         self.redis = redis
         self.session = session
 
-    async def check_rate_limit(
-        self, action: str, identifier: str
-    ) -> tuple[bool, int | None]:
+    async def check_rate_limit(self, action: str, identifier: str) -> tuple[bool, int | None]:
         """Check if an action is rate limited.
 
         Args:
@@ -97,9 +95,7 @@ class AuthRateLimiter:
 
         # Check user-based limit if user is known
         if user_id:
-            user_allowed, user_ttl = await self.check_rate_limit(
-                action, str(user_id)
-            )
+            user_allowed, user_ttl = await self.check_rate_limit(action, str(user_id))
             if not user_allowed:
                 return False, user_ttl
 
@@ -182,9 +178,7 @@ class AuthRateLimiter:
 
         return False, None
 
-    async def reset_limits(
-        self, identifier: str, action: str | None = None
-    ) -> int:
+    async def reset_limits(self, identifier: str, action: str | None = None) -> int:
         """Reset rate limits for an identifier.
 
         Args:
@@ -207,9 +201,7 @@ class AuthRateLimiter:
 
         return count
 
-    async def get_limit_status(
-        self, identifier: str, action: str
-    ) -> dict[str, Any]:
+    async def get_limit_status(self, identifier: str, action: str) -> dict[str, Any]:
         """Get current rate limit status for an identifier.
 
         Args:

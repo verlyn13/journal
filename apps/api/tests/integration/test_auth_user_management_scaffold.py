@@ -28,9 +28,7 @@ async def test_login_logout_refresh_flow(client: AsyncClient) -> None:
     assert "access_token" in data and "refresh_token" in data
 
     # Refresh access token
-    res2 = await client.post(
-        "/api/v1/auth/refresh", json={"refresh_token": data["refresh_token"]}
-    )
+    res2 = await client.post("/api/v1/auth/refresh", json={"refresh_token": data["refresh_token"]})
     assert res2.status_code == 200
 
     # Logout (invalidate session) - subsequent use of token should fail
@@ -46,9 +44,7 @@ async def test_login_logout_refresh_flow(client: AsyncClient) -> None:
 async def test_passkey_register_and_authenticate(client: AsyncClient) -> None:
     """Register a passkey then authenticate with it."""
     # Begin registration -> verify -> store
-    r1 = await client.post(
-        "/api/v1/auth/webauthn/register/options", json={"userId": "user-1"}
-    )
+    r1 = await client.post("/api/v1/auth/webauthn/register/options", json={"userId": "user-1"})
     assert r1.status_code == 200
     # The rest depends on WebAuthn ceremony; will be mocked in test harness
     assert "challenge" in r1.json()

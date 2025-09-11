@@ -3,11 +3,13 @@
 from __future__ import annotations
 
 import base64
+
 from datetime import UTC, datetime, timedelta
 from unittest.mock import AsyncMock
 from uuid import uuid4
 
 import pytest
+
 from redis.asyncio import Redis
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -25,9 +27,7 @@ class TestStepUpAuthService:
         return AsyncMock(spec=Redis)
 
     @pytest.fixture
-    def stepup_service(
-        self, db_session: AsyncSession, redis_mock: AsyncMock
-    ) -> StepUpAuthService:
+    def stepup_service(self, db_session: AsyncSession, redis_mock: AsyncMock) -> StepUpAuthService:
         """Create StepUpAuthService instance."""
         return StepUpAuthService(db_session, redis_mock)
 
@@ -84,9 +84,7 @@ class TestStepUpAuthService:
             event_data={"action": "delete_account"},
         )
 
-        result = await stepup_service.require_fresh_auth(
-            test_user.id, "delete_account"
-        )
+        result = await stepup_service.require_fresh_auth(test_user.id, "delete_account")
 
         assert result["required"] is False
         assert "recent_auth" in result
@@ -115,9 +113,7 @@ class TestStepUpAuthService:
         db_session.add(entry)
         await db_session.flush()
 
-        result = await stepup_service.require_fresh_auth(
-            test_user.id, "delete_account"
-        )
+        result = await stepup_service.require_fresh_auth(test_user.id, "delete_account")
 
         assert result["required"] is True
         assert "challenge" in result
@@ -140,16 +136,12 @@ class TestStepUpAuthService:
         assert result is True
 
         # Verify challenge was cleared
-        redis_mock.delete.assert_called_once_with(
-            f"stepup:{test_user.id}:export_data"
-        )
+        redis_mock.delete.assert_called_once_with(f"stepup:{test_user.id}:export_data")
 
         # Verify verification was stored
         redis_mock.setex.assert_called()
         verify_call = [
-            c
-            for c in redis_mock.setex.call_args_list
-            if "stepup_verified" in str(c[0][0])
+            c for c in redis_mock.setex.call_args_list if "stepup_verified" in str(c[0][0])
         ]
         assert len(verify_call) > 0
 
@@ -191,9 +183,7 @@ class TestStepUpAuthService:
         """Test step-up verification when no challenge exists."""
         redis_mock.get.return_value = None
 
-        result = await stepup_service.verify_step_up(
-            test_user.id, "export_data", "any_challenge"
-        )
+        result = await stepup_service.verify_step_up(test_user.id, "export_data", "any_challenge")
 
         assert result is False
 

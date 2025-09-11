@@ -82,7 +82,7 @@ def run_mypy() -> tuple[int, list[str], int, int]:
         capture_output=True,
         text=True,
         cwd=Path(__file__).parent.parent,
-        check=False
+        check=False,
     )
 
     lines = result.stdout.strip().split("\n")
@@ -112,7 +112,7 @@ def count_pattern(pattern: str, file_pattern: str = "*.py") -> int:
         capture_output=True,
         text=True,
         cwd=Path(__file__).parent.parent,
-        check=False
+        check=False,
     )
 
     total = 0
@@ -153,7 +153,9 @@ def generate_report() -> TypeHealth:
     typeguard_count = count_pattern("TypeGuard")
 
     # Calculate coverage
-    coverage_percent = ((files_checked - files_with_errors) / files_checked * 100) if files_checked else 0
+    coverage_percent = (
+        ((files_checked - files_with_errors) / files_checked * 100) if files_checked else 0
+    )
 
     # Determine trend
     metrics_file = Path(__file__).parent / ".type_metrics.json"

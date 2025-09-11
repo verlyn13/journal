@@ -63,10 +63,11 @@ class TestOIDCValidation:
         mock_response.json.return_value = jwks_response
         mock_response.raise_for_status = MagicMock()
 
-        with patch("httpx.AsyncClient") as mock_client_class, \
-             patch("app.security.oidc.jwt.get_unverified_header") as mock_header, \
-             patch("app.security.oidc.jwt.decode") as mock_decode:
-
+        with (
+            patch("httpx.AsyncClient") as mock_client_class,
+            patch("app.security.oidc.jwt.get_unverified_header") as mock_header,
+            patch("app.security.oidc.jwt.decode") as mock_decode,
+        ):
             mock_client = AsyncMock()
             mock_client.__aenter__.return_value = mock_client
             mock_client.get.return_value = mock_response
@@ -100,10 +101,11 @@ class TestOIDCValidation:
         mock_response.json.return_value = jwks_response
         mock_response.raise_for_status = MagicMock()
 
-        with patch("httpx.AsyncClient") as mock_client_class, \
-             patch("app.security.oidc.jwt.get_unverified_header") as mock_header, \
-             patch("app.security.oidc.jwt.decode") as mock_decode:
-
+        with (
+            patch("httpx.AsyncClient") as mock_client_class,
+            patch("app.security.oidc.jwt.get_unverified_header") as mock_header,
+            patch("app.security.oidc.jwt.decode") as mock_decode,
+        ):
             mock_client = AsyncMock()
             mock_client.__aenter__.return_value = mock_client
             mock_client.get.return_value = mock_response
@@ -134,10 +136,11 @@ class TestOIDCValidation:
 
         id_token_claims["auth_time"] = int(time.time()) - 7200
 
-        with patch("httpx.AsyncClient") as mock_client_class, \
-             patch("app.security.oidc.jwt.get_unverified_header") as mock_header, \
-             patch("app.security.oidc.jwt.decode") as mock_decode:
-
+        with (
+            patch("httpx.AsyncClient") as mock_client_class,
+            patch("app.security.oidc.jwt.get_unverified_header") as mock_header,
+            patch("app.security.oidc.jwt.decode") as mock_decode,
+        ):
             mock_client = AsyncMock()
             mock_client.__aenter__.return_value = mock_client
             mock_client.get.return_value = mock_response
@@ -165,9 +168,10 @@ class TestOIDCValidation:
         mock_response.json.return_value = jwks_response
         mock_response.raise_for_status = MagicMock()
 
-        with patch("httpx.AsyncClient") as mock_client_class, \
-             patch("app.security.oidc.jwt.get_unverified_header") as mock_header:
-
+        with (
+            patch("httpx.AsyncClient") as mock_client_class,
+            patch("app.security.oidc.jwt.get_unverified_header") as mock_header,
+        ):
             mock_client = AsyncMock()
             mock_client.__aenter__.return_value = mock_client
             mock_client.get.return_value = mock_response

@@ -23,9 +23,7 @@ class TokenRotationService:
         self.redis = redis
         self.audit_service = AuditService(session)
 
-    async def check_refresh_token_reuse(
-        self, token_hash: str, user_id: UUID
-    ) -> bool:
+    async def check_refresh_token_reuse(self, token_hash: str, user_id: UUID) -> bool:
         """Detect if a refresh token has been reused.
 
         Args:
@@ -70,9 +68,7 @@ class TokenRotationService:
             },
         )
 
-    async def _handle_token_reuse_incident(
-        self, user_id: UUID, token_hash: str
-    ) -> None:
+    async def _handle_token_reuse_incident(self, user_id: UUID, token_hash: str) -> None:
         """Handle a detected token reuse incident.
 
         Args:
@@ -127,9 +123,7 @@ class TokenRotationService:
         pattern = f"stepup:{user_id}:*"
         cursor = 0
         while True:
-            cursor, keys = await self.redis.scan(
-                cursor, match=pattern, count=100
-            )
+            cursor, keys = await self.redis.scan(cursor, match=pattern, count=100)
             if keys:
                 await self.redis.delete(*keys)
             if cursor == 0:
@@ -137,9 +131,7 @@ class TokenRotationService:
 
         return revoked_count
 
-    async def get_token_rotation_history(
-        self, user_id: UUID, limit: int = 10
-    ) -> list[dict]:
+    async def get_token_rotation_history(self, user_id: UUID, limit: int = 10) -> list[dict]:
         """Get recent token rotation history for a user.
 
         Args:

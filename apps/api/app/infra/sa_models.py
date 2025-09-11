@@ -85,7 +85,9 @@ class UserDevice(Base):
     __tablename__ = "user_devices"
 
     id: Mapped[UUID] = mapped_column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
-    user_id: Mapped[UUID] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True, nullable=False)
+    user_id: Mapped[UUID] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"), index=True, nullable=False
+    )
 
     # User-provided label, not fingerprint
     device_name: Mapped[str] = mapped_column(String(100), nullable=False)
@@ -117,7 +119,9 @@ class RecoveryCode(Base):
     __tablename__ = "recovery_codes"
 
     id: Mapped[UUID] = mapped_column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
-    user_id: Mapped[UUID] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True, nullable=False)
+    user_id: Mapped[UUID] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"), index=True, nullable=False
+    )
 
     # Hashed recovery code
     code_hash: Mapped[str] = mapped_column(String(128), nullable=False)
@@ -200,7 +204,9 @@ class AuditLogEntry(Base):
     __tablename__ = "audit_log"
 
     id: Mapped[UUID] = mapped_column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
-    user_id: Mapped[UUID] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True, nullable=False)
+    user_id: Mapped[UUID] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"), index=True, nullable=False
+    )
 
     # Event details
     event_type: Mapped[str] = mapped_column(String(50), nullable=False)

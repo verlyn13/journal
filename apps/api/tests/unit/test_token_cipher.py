@@ -50,10 +50,13 @@ class TestTokenCipher:  # noqa: PLR0904
             "key2": base64.urlsafe_b64encode(sample_keys["key2"]).decode().rstrip("="),
         }
 
-        with patch.dict(os.environ, {
-            "AUTH_ENC_KEYS": json.dumps(keys_json),
-            "AUTH_ENC_ACTIVE_KID": "key1",
-        }):
+        with patch.dict(
+            os.environ,
+            {
+                "AUTH_ENC_KEYS": json.dumps(keys_json),
+                "AUTH_ENC_ACTIVE_KID": "key1",
+            },
+        ):
             cipher = TokenCipher.from_env()
             assert cipher.active_kid == "key1"
             assert cipher.has_key("key1")
@@ -65,10 +68,16 @@ class TestTokenCipher:  # noqa: PLR0904
             "key1": base64.urlsafe_b64encode(b"tooshort").decode(),
         }
 
-        with patch.dict(os.environ, {
-            "AUTH_ENC_KEYS": json.dumps(keys_json),
-            "AUTH_ENC_ACTIVE_KID": "key1",
-        }), pytest.raises(KeyConfigError, match="must be 128/192/256-bit"):
+        with (
+            patch.dict(
+                os.environ,
+                {
+                    "AUTH_ENC_KEYS": json.dumps(keys_json),
+                    "AUTH_ENC_ACTIVE_KID": "key1",
+                },
+            ),
+            pytest.raises(KeyConfigError, match="must be 128/192/256-bit"),
+        ):
             TokenCipher.from_env()
 
     def test_encrypt_decrypt_basic(self, cipher: TokenCipher) -> None:

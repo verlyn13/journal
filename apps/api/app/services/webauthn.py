@@ -162,11 +162,14 @@ class WebAuthnService:
             public_key=verification.credential_public_key,
             sign_count=verification.sign_count,
             transports=self._format_transports(
-                credential.response.transports if hasattr(credential.response, "transports") else None
+                credential.response.transports
+                if hasattr(credential.response, "transports")
+                else None
             ),
             aaguid=verification.aaguid,
             nickname=nickname,
-            backup_eligible=verification.credential_device_type in {"single_device", "multi_device"},
+            backup_eligible=verification.credential_device_type
+            in {"single_device", "multi_device"},
             backup_state=verification.credential_backed_up,
         )
 

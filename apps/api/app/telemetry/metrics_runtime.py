@@ -2,8 +2,6 @@ from __future__ import annotations
 
 import threading
 
-from typing import Any
-
 
 _lock = threading.Lock()
 _counters: dict[tuple[str, tuple[tuple[str, str], ...]], float] = {}
@@ -71,7 +69,6 @@ def render_prom() -> str:
                 name = key.split(":")[0]
                 count = len(values)
                 total = sum(values)
-                lines.append(f"{name}_count {count}")
-                lines.append(f"{name}_sum {total}")
+                lines.extend([f"{name}_count {count}", f"{name}_sum {total}"])
 
     return "\n".join(lines) + "\n"

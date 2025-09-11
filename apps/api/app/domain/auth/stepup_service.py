@@ -83,9 +83,7 @@ class StepUpAuthService:
             "required": True,
             "challenge": challenge,
             "action": action,
-            "expires_at": (
-                datetime.now(UTC) + timedelta(seconds=self.CHALLENGE_TTL)
-            ).isoformat(),
+            "expires_at": (datetime.now(UTC) + timedelta(seconds=self.CHALLENGE_TTL)).isoformat(),
         }
 
     async def verify_step_up(
@@ -163,9 +161,7 @@ class StepUpAuthService:
             .limit(1)
         )
 
-    async def _generate_challenge(
-        self, user_id: UUID, action: SensitiveAction
-    ) -> str:
+    async def _generate_challenge(self, user_id: UUID, action: SensitiveAction) -> str:
         """Generate and store a new challenge.
 
         Args:
@@ -185,9 +181,7 @@ class StepUpAuthService:
 
         return challenge
 
-    async def _get_stored_challenge(
-        self, user_id: UUID, action: SensitiveAction
-    ) -> str | None:
+    async def _get_stored_challenge(self, user_id: UUID, action: SensitiveAction) -> str | None:
         """Retrieve a stored challenge.
 
         Args:
@@ -211,9 +205,7 @@ class StepUpAuthService:
         key = f"stepup:{user_id}:{action}"
         await self.redis.delete(key)
 
-    async def _store_verification(
-        self, user_id: UUID, action: SensitiveAction
-    ) -> None:
+    async def _store_verification(self, user_id: UUID, action: SensitiveAction) -> None:
         """Store successful verification for fresh auth window.
 
         Args:

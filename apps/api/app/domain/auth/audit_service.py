@@ -161,9 +161,7 @@ class AuditService:
         result = await self.session.scalars(query)
         return list(result)
 
-    async def get_device_audit_log(
-        self, device_id: UUID, user_id: UUID
-    ) -> list[AuditLogEntry]:
+    async def get_device_audit_log(self, device_id: UUID, user_id: UUID) -> list[AuditLogEntry]:
         """Get audit log entries for a specific device.
 
         Args:

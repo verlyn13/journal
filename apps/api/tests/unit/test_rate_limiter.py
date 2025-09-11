@@ -6,6 +6,7 @@ from unittest.mock import AsyncMock, MagicMock
 from uuid import uuid4
 
 import pytest
+
 from redis.asyncio import Redis
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -27,9 +28,7 @@ class TestAuthRateLimiter:
         return mock
 
     @pytest.fixture
-    def rate_limiter(
-        self, redis_mock: AsyncMock, db_session: AsyncSession
-    ) -> AuthRateLimiter:
+    def rate_limiter(self, redis_mock: AsyncMock, db_session: AsyncSession) -> AuthRateLimiter:
         """Create AuthRateLimiter instance."""
         return AuthRateLimiter(redis_mock, db_session)
 
@@ -73,13 +72,9 @@ class TestAuthRateLimiter:
         assert ttl == 120
 
     @pytest.mark.asyncio()
-    async def test_check_rate_limit_unknown_action(
-        self, rate_limiter: AuthRateLimiter
-    ) -> None:
+    async def test_check_rate_limit_unknown_action(self, rate_limiter: AuthRateLimiter) -> None:
         """Test rate limit check for unknown action."""
-        allowed, ttl = await rate_limiter.check_rate_limit(
-            "unknown_action", "user123"
-        )
+        allowed, ttl = await rate_limiter.check_rate_limit("unknown_action", "user123")
 
         assert allowed is True
         assert ttl is None
@@ -94,9 +89,7 @@ class TestAuthRateLimiter:
         redis_mock.ttl.return_value = 60
 
         user_id = uuid4()
-        allowed, ttl = await rate_limiter.check_combined_limit(
-            "login", user_id, "192.168.1.1"
-        )
+        allowed, ttl = await rate_limiter.check_combined_limit("login", user_id, "192.168.1.1")
 
         assert allowed is False
         assert ttl == 60
@@ -111,9 +104,7 @@ class TestAuthRateLimiter:
         redis_mock.ttl.return_value = 120
 
         user_id = uuid4()
-        allowed, ttl = await rate_limiter.check_combined_limit(
-            "login", user_id, "192.168.1.1"
-        )
+        allowed, ttl = await rate_limiter.check_combined_limit("login", user_id, "192.168.1.1")
 
         assert allowed is False
         assert ttl == 120
@@ -126,9 +117,7 @@ class TestAuthRateLimiter:
         redis_mock.incr.side_effect = [2, 3]  # Both under limits
 
         user_id = uuid4()
-        allowed, ttl = await rate_limiter.check_combined_limit(
-            "login", user_id, "192.168.1.1"
-        )
+        allowed, ttl = await rate_limiter.check_combined_limit("login", user_id, "192.168.1.1")
 
         assert allowed is True
         assert ttl is None

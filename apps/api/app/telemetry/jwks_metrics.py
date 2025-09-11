@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 import time
 
 from collections.abc import AsyncGenerator
@@ -17,6 +18,9 @@ from app.telemetry.metrics_runtime import (
     COUNTER_JWKS_REQUESTS,
     HISTOGRAM_JWKS_RESPONSE_TIME,
 )
+
+
+logger = logging.getLogger(__name__)
 
 
 class JWKSMetrics:
@@ -85,9 +89,9 @@ class JWKSMetrics:
                 )
 
                 await pipeline.execute()
-            except Exception:
+            except (ConnectionError, TimeoutError, ValueError) as e:
                 # Metrics collection failure should not affect service
-                pass
+                logger.debug("Failed to record JWKS metrics: %s", e)
 
     async def record_key_rotation(self, rotated_keys: int) -> None:
         """Record key rotation event.
@@ -114,8 +118,8 @@ class JWKSMetrics:
                 pipeline.ltrim(f"{self._metrics_prefix}rotation_history", -100, -1)
 
                 await pipeline.execute()
-            except Exception:
-                pass
+            except (ConnectionError, TimeoutError, ValueError) as e:
+                logger.debug("Failed to record key rotation: %s", e)
 
     async def get_metrics_summary(self) -> dict[str, Any]:
         """Get summary of JWKS metrics.
@@ -147,7 +151,7 @@ class JWKSMetrics:
             cache_hit_rate = (cache_hits / total_requests * 100) if total_requests > 0 else 0
 
             # Calculate response time percentiles from histogram
-            response_times = self._calculate_percentiles(histogram)
+            response_times = JWKSMetrics._calculate_percentiles(histogram)
 
             return {
                 "total_requests": total_requests,
@@ -161,7 +165,8 @@ class JWKSMetrics:
                 "last_request": last_request.decode() if last_request else None,
                 "recent_rotations": [r.decode() for r in rotation_history],
             }
-        except Exception as e:
+        except (ConnectionError, TimeoutError, ValueError, AttributeError) as e:
+            logger.warning("Failed to get metrics summary: %s", e)
             return {"error": str(e)}
 
     async def reset_metrics(self) -> None:
@@ -175,8 +180,8 @@ class JWKSMetrics:
                     f"{self._metrics_prefix}rotation_history",
                 ]
                 await self.redis.delete(*keys)
-            except Exception:
-                pass
+            except (ConnectionError, TimeoutError, ValueError) as e:
+                logger.debug("Failed to reset metrics: %s", e)
 
     @asynccontextmanager
     async def measure_time(self) -> AsyncGenerator[dict[str, Any], None]:
@@ -201,7 +206,8 @@ class JWKSMetrics:
                 etag_match=metrics_data.get("etag_match", False),
             )
 
-    def _get_histogram_bucket(self, value_ms: float) -> str:
+    @staticmethod
+    def _get_histogram_bucket(value_ms: float) -> str:
         """Get histogram bucket for response time.
 
         Args:
@@ -224,7 +230,8 @@ class JWKSMetrics:
             return "100_500ms"
         return "gte_500ms"
 
-    def _calculate_percentiles(self, histogram: dict[bytes, bytes]) -> dict[str, float]:
+    @staticmethod
+    def _calculate_percentiles(histogram: dict[bytes, bytes]) -> dict[str, float]:
         """Calculate response time percentiles from histogram.
 
         Args:

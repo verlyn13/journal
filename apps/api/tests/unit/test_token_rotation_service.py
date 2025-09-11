@@ -7,6 +7,7 @@ from unittest.mock import AsyncMock, patch
 from uuid import uuid4
 
 import pytest
+
 from redis.asyncio import Redis
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -44,9 +45,7 @@ class TestTokenRotationService:
         return user
 
     @pytest.fixture
-    async def test_session(
-        self, db_session: AsyncSession, test_user: User
-    ) -> UserSession:
+    async def test_session(self, db_session: AsyncSession, test_user: User) -> UserSession:
         """Create test session."""
         session = UserSession(
             id=uuid4(),
@@ -69,15 +68,11 @@ class TestTokenRotationService:
         token_hash = "test_token_hash"
         redis_mock.exists.return_value = False
 
-        result = await token_service.check_refresh_token_reuse(
-            token_hash, test_user.id
-        )
+        result = await token_service.check_refresh_token_reuse(token_hash, test_user.id)
 
         assert result is False  # Not a reuse
         redis_mock.exists.assert_called_once_with(f"used_refresh:{token_hash}")
-        redis_mock.setex.assert_called_once_with(
-            f"used_refresh:{token_hash}", 86400, "1"
-        )
+        redis_mock.setex.assert_called_once_with(f"used_refresh:{token_hash}", 86400, "1")
 
     @pytest.mark.asyncio()
     async def test_check_refresh_token_reuse_detected(
@@ -93,9 +88,7 @@ class TestTokenRotationService:
         redis_mock.exists.return_value = True
         redis_mock.scan.return_value = (0, [])  # No step-up keys
 
-        result = await token_service.check_refresh_token_reuse(
-            token_hash, test_user.id
-        )
+        result = await token_service.check_refresh_token_reuse(token_hash, test_user.id)
 
         assert result is True  # Reuse detected
         redis_mock.exists.assert_called_once_with(f"used_refresh:{token_hash}")
@@ -126,9 +119,7 @@ class TestTokenRotationService:
 
         await token_service.mark_token_rotated(old_hash, new_hash, test_user.id)
 
-        redis_mock.setex.assert_called_once_with(
-            f"rotated:{old_hash}", 86400, new_hash
-        )
+        redis_mock.setex.assert_called_once_with(f"rotated:{old_hash}", 86400, new_hash)
 
     @pytest.mark.asyncio()
     async def test_revoke_all_user_tokens(
@@ -232,6 +223,4 @@ class TestTokenRotationService:
 
         # Verify step-up keys were deleted
         assert redis_mock.scan.call_count == 2
-        redis_mock.delete.assert_any_call(
-            b"stepup:user:delete_account", b"stepup:user:export_data"
-        )
+        redis_mock.delete.assert_any_call(b"stepup:user:delete_account", b"stepup:user:export_data")

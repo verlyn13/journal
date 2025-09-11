@@ -4,19 +4,16 @@ from __future__ import annotations
 
 import base64
 import json
+
 from datetime import UTC, datetime, timedelta
 from unittest.mock import MagicMock, patch
 
 import pytest
+
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import ed25519
 
-from app.infra.crypto.key_generation import (
-    Ed25519KeyGenerator,
-    KeyMaterial,
-    KeyPair,
-    KeyValidation,
-)
+from app.infra.crypto.key_generation import Ed25519KeyGenerator, KeyMaterial, KeyPair, KeyValidation
 
 
 class TestEd25519KeyGenerator:
@@ -74,9 +71,7 @@ class TestEd25519KeyGenerator:
         key_pair = Ed25519KeyGenerator.generate_key_pair()
         key_material = Ed25519KeyGenerator.serialize_key_pair(key_pair)
 
-        loaded_key = Ed25519KeyGenerator.load_private_key_from_pem(
-            key_material.private_key_pem
-        )
+        loaded_key = Ed25519KeyGenerator.load_private_key_from_pem(key_material.private_key_pem)
 
         assert isinstance(loaded_key, ed25519.Ed25519PrivateKey)
         # Verify it's the same key by comparing signatures
@@ -98,9 +93,7 @@ class TestEd25519KeyGenerator:
         key_pair = Ed25519KeyGenerator.generate_key_pair()
         key_material = Ed25519KeyGenerator.serialize_key_pair(key_pair)
 
-        loaded_key = Ed25519KeyGenerator.load_public_key_from_pem(
-            key_material.public_key_pem
-        )
+        loaded_key = Ed25519KeyGenerator.load_public_key_from_pem(key_material.public_key_pem)
 
         assert isinstance(loaded_key, ed25519.Ed25519PublicKey)
         # Verify it's the same key by using it to verify a signature
@@ -118,9 +111,7 @@ class TestEd25519KeyGenerator:
         key_pair = Ed25519KeyGenerator.generate_key_pair()
         key_material = Ed25519KeyGenerator.serialize_key_pair(key_pair)
 
-        loaded_key = Ed25519KeyGenerator.load_private_key_from_raw(
-            key_material.private_key_raw
-        )
+        loaded_key = Ed25519KeyGenerator.load_private_key_from_raw(key_material.private_key_raw)
 
         assert isinstance(loaded_key, ed25519.Ed25519PrivateKey)
 
@@ -134,9 +125,7 @@ class TestEd25519KeyGenerator:
         key_pair = Ed25519KeyGenerator.generate_key_pair()
         key_material = Ed25519KeyGenerator.serialize_key_pair(key_pair)
 
-        loaded_key = Ed25519KeyGenerator.load_public_key_from_raw(
-            key_material.public_key_raw
-        )
+        loaded_key = Ed25519KeyGenerator.load_public_key_from_raw(key_material.public_key_raw)
 
         assert isinstance(loaded_key, ed25519.Ed25519PublicKey)
 
@@ -149,9 +138,7 @@ class TestEd25519KeyGenerator:
         """Test verification of valid key pair."""
         key_pair = Ed25519KeyGenerator.generate_key_pair()
 
-        result = Ed25519KeyGenerator.verify_key_pair(
-            key_pair.private_key, key_pair.public_key
-        )
+        result = Ed25519KeyGenerator.verify_key_pair(key_pair.private_key, key_pair.public_key)
 
         assert result is True
 
@@ -160,9 +147,7 @@ class TestEd25519KeyGenerator:
         key_pair1 = Ed25519KeyGenerator.generate_key_pair()
         key_pair2 = Ed25519KeyGenerator.generate_key_pair()
 
-        result = Ed25519KeyGenerator.verify_key_pair(
-            key_pair1.private_key, key_pair2.public_key
-        )
+        result = Ed25519KeyGenerator.verify_key_pair(key_pair1.private_key, key_pair2.public_key)
 
         assert result is False
 
@@ -201,7 +186,9 @@ class TestEd25519KeyGenerator:
         end_time = time.time()
 
         generation_time = (end_time - start_time) * 1000  # Convert to ms
-        assert generation_time < 10, f"Key generation took {generation_time:.2f}ms, exceeds 10ms limit"
+        assert generation_time < 10, (
+            f"Key generation took {generation_time:.2f}ms, exceeds 10ms limit"
+        )
 
     def test_serialization_roundtrip(self):
         """Test complete serialization and deserialization roundtrip."""
@@ -209,12 +196,8 @@ class TestEd25519KeyGenerator:
         key_material = Ed25519KeyGenerator.serialize_key_pair(original_key_pair)
 
         # Recreate key pair from serialized data
-        loaded_private = Ed25519KeyGenerator.load_private_key_from_pem(
-            key_material.private_key_pem
-        )
-        loaded_public = Ed25519KeyGenerator.load_public_key_from_pem(
-            key_material.public_key_pem
-        )
+        loaded_private = Ed25519KeyGenerator.load_private_key_from_pem(key_material.private_key_pem)
+        loaded_public = Ed25519KeyGenerator.load_public_key_from_pem(key_material.public_key_pem)
 
         # Verify keys work the same
         test_message = b"roundtrip_test_message"
@@ -234,44 +217,44 @@ class TestKeyValidation:
     def test_is_key_expired_not_expired(self):
         """Test key expiration check for non-expired key."""
         recent_time = datetime.now(UTC) - timedelta(days=30)
-        
+
         assert not KeyValidation.is_key_expired(recent_time, max_age_days=60)
 
     def test_is_key_expired_expired(self):
         """Test key expiration check for expired key."""
         old_time = datetime.now(UTC) - timedelta(days=90)
-        
+
         assert KeyValidation.is_key_expired(old_time, max_age_days=60)
 
     def test_validate_kid_format_valid(self):
         """Test KID format validation for valid format."""
         valid_kid = "2025-01-15-abcdef12"
-        
+
         assert KeyValidation.validate_kid_format(valid_kid)
 
     def test_validate_kid_format_invalid_parts(self):
         """Test KID format validation for wrong number of parts."""
         invalid_kid = "2025-01-15"
-        
+
         assert not KeyValidation.validate_kid_format(invalid_kid)
 
     def test_validate_kid_format_invalid_date(self):
         """Test KID format validation for invalid date."""
         invalid_kid = "2025-13-32-abcdef12"  # Invalid month and day
-        
+
         assert not KeyValidation.validate_kid_format(invalid_kid)
 
     def test_validate_kid_format_invalid_suffix(self):
         """Test KID format validation for invalid random suffix."""
         invalid_kid = "2025-01-15-xyz"  # Wrong length
-        
+
         assert not KeyValidation.validate_kid_format(invalid_kid)
 
     def test_validate_jwk_public_valid(self):
         """Test JWK public key validation for valid key."""
         key_pair = Ed25519KeyGenerator.generate_key_pair()
         key_material = Ed25519KeyGenerator.serialize_key_pair(key_pair)
-        
+
         assert KeyValidation.validate_jwk_public(key_material.jwk_public)
 
     def test_validate_jwk_public_missing_fields(self):
@@ -281,7 +264,7 @@ class TestKeyValidation:
             "crv": "Ed25519",
             # Missing kid, use, alg, x
         }
-        
+
         assert not KeyValidation.validate_jwk_public(incomplete_jwk)
 
     def test_validate_jwk_public_wrong_kty(self):
@@ -294,7 +277,7 @@ class TestKeyValidation:
             "alg": "EdDSA",
             "x": "valid_base64url_key",
         }
-        
+
         assert not KeyValidation.validate_jwk_public(invalid_jwk)
 
     def test_validate_jwk_public_invalid_x_value(self):
@@ -307,7 +290,7 @@ class TestKeyValidation:
             "alg": "EdDSA",
             "x": "invalid_base64!",
         }
-        
+
         assert not KeyValidation.validate_jwk_public(invalid_jwk)
 
     def test_jwk_x_value_length(self):
@@ -315,7 +298,7 @@ class TestKeyValidation:
         # Generate valid key and check x value length
         key_pair = Ed25519KeyGenerator.generate_key_pair()
         key_material = Ed25519KeyGenerator.serialize_key_pair(key_pair)
-        
+
         x_value = key_material.jwk_public["x"]
         # Add padding if needed for base64url decoding
         missing_padding = len(x_value) % 4
@@ -324,7 +307,7 @@ class TestKeyValidation:
         else:
             padded_x = x_value
         decoded = base64.urlsafe_b64decode(padded_x)
-        
+
         assert len(decoded) == 32  # Ed25519 public key should be 32 bytes
 
 
@@ -348,10 +331,10 @@ class TestKeyMaterialSerialization:
         """Test JWK public key contains all required fields."""
         key_pair = Ed25519KeyGenerator.generate_key_pair()
         key_material = Ed25519KeyGenerator.serialize_key_pair(key_pair)
-        
+
         jwk = key_material.jwk_public
         required_fields = {"kty", "crv", "kid", "use", "alg", "x"}
-        
+
         assert all(field in jwk for field in required_fields)
         assert jwk["kty"] == "OKP"
         assert jwk["crv"] == "Ed25519"
@@ -375,9 +358,7 @@ class TestKeyMaterialSerialization:
         private_key = serialization.load_pem_private_key(
             key_material.private_key_pem.encode(), password=None
         )
-        public_key = serialization.load_pem_public_key(
-            key_material.public_key_pem.encode()
-        )
+        public_key = serialization.load_pem_public_key(key_material.public_key_pem.encode())
 
         assert isinstance(private_key, ed25519.Ed25519PrivateKey)
         assert isinstance(public_key, ed25519.Ed25519PublicKey)
@@ -389,7 +370,7 @@ class TestSecurityFeatures:
     def test_key_uniqueness(self):
         """Test that generated keys are unique."""
         keys = [Ed25519KeyGenerator.generate_key_pair() for _ in range(10)]
-        
+
         # All KIDs should be unique
         kids = [key.kid for key in keys]
         assert len(set(kids)) == len(kids)
@@ -403,12 +384,10 @@ class TestSecurityFeatures:
         # Ed25519 doesn't have weak keys like RSA, but we can test basic properties
         for _ in range(100):
             key_pair = Ed25519KeyGenerator.generate_key_pair()
-            
+
             # Verify key pair works
-            assert Ed25519KeyGenerator.verify_key_pair(
-                key_pair.private_key, key_pair.public_key
-            )
-            
+            assert Ed25519KeyGenerator.verify_key_pair(key_pair.private_key, key_pair.public_key)
+
             # Private key should not be all zeros
             private_bytes = key_pair.private_key.private_bytes_raw()
             assert private_bytes != b"\x00" * 32
@@ -429,13 +408,11 @@ class TestSecurityFeatures:
     def test_secure_random_entropy(self):
         """Test that secure random generation has good entropy."""
         # Generate multiple random values and check they're different
-        random_values = [
-            Ed25519KeyGenerator.generate_secure_random(32) for _ in range(10)
-        ]
-        
+        random_values = [Ed25519KeyGenerator.generate_secure_random(32) for _ in range(10)]
+
         # All values should be unique
         assert len(set(random_values)) == len(random_values)
-        
+
         # No value should be all zeros
         assert all(value != b"\x00" * 32 for value in random_values)
 
@@ -443,30 +420,30 @@ class TestSecurityFeatures:
     def test_kid_generation_uses_secure_random(self, mock_token_hex):
         """Test that KID generation uses secure randomness."""
         mock_token_hex.return_value = "abcd1234"
-        
+
         kid = Ed25519KeyGenerator._generate_kid()
-        
+
         mock_token_hex.assert_called_once_with(4)
         assert kid.endswith("-abcd1234")
 
     def test_signature_verification_roundtrip(self):
         """Test complete signature verification workflow."""
         key_pair = Ed25519KeyGenerator.generate_key_pair()
-        
+
         # Test data
         messages = [
             b"hello world",
             b"",  # Empty message
             b"a" * 1000,  # Large message
-            "unicode message: 你好世界".encode("utf-8"),
+            "unicode message: 你好世界".encode(),
         ]
-        
+
         for message in messages:
             signature = key_pair.private_key.sign(message)
-            
+
             # Verification should succeed with correct key
             key_pair.public_key.verify(signature, message)
-            
+
             # Verification should fail with wrong message
             with pytest.raises(Exception):
                 key_pair.public_key.verify(signature, message + b"tampered")

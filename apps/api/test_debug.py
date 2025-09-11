@@ -80,9 +80,7 @@ async def _test_entry_creation(client: AsyncClient, headers: dict[str, str]) -> 
         return 1
 
 
-async def _test_entry_update(
-    client: AsyncClient, headers: dict[str, str], create_resp: Any
-) -> int:
+async def _test_entry_update(client: AsyncClient, headers: dict[str, str], create_resp: Any) -> int:
     """Test entry update after successful creation."""
     try:
         entry_id = create_resp.json()["id"]

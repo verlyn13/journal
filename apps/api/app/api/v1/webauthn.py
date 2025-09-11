@@ -33,7 +33,9 @@ router = APIRouter(prefix="/webauthn", tags=["webauthn"])
 class RegistrationOptionsRequest(BaseModel):
     """Request for registration options."""
 
-    nickname: str | None = Field(None, max_length=100, description="User-friendly name for credential")
+    nickname: str | None = Field(
+        None, max_length=100, description="User-friendly name for credential"
+    )
 
 
 class RegistrationOptionsResponse(BaseModel):
@@ -170,9 +172,7 @@ async def authentication_options(
     user_id = None
     if request.email:
         # This is for explicit authentication with email
-        result = await session.scalar(
-            select(User.id).where(User.email == request.email.lower())
-        )
+        result = await session.scalar(select(User.id).where(User.email == request.email.lower()))
         if result:
             user_id = result
 
@@ -226,9 +226,7 @@ async def authentication_verify(
 
         # Create tokens
         access_token = create_access_token(str(user.id))
-        refresh_token = create_refresh_token(
-            str(user.id), refresh_id=str(user_session.refresh_id)
-        )
+        refresh_token = create_refresh_token(str(user.id), refresh_id=str(user_session.refresh_id))
 
         # Set refresh token in secure cookie (30 days)
         set_refresh_cookie(response, refresh_token, max_age=30 * 24 * 60 * 60)
