@@ -46,6 +46,8 @@ class User(Base):
     webauthn_credentials: Mapped[list[WebAuthnCredential]] = relationship(back_populates="user")
     devices: Mapped[list[UserDevice]] = relationship(back_populates="user")
     recovery_codes: Mapped[list[RecoveryCode]] = relationship(back_populates="user")
+    audit_log: Mapped[list[AuditLogEntry]] = relationship(back_populates="user")
+    deletion_request: Mapped[DeletionRequest | None] = relationship(back_populates="user")
 
 
 class UserSession(Base):
@@ -190,3 +192,61 @@ class ProcessedEvent(Base):
     )
     outcome: Mapped[str] = mapped_column(String, default="ok", nullable=False)
     attempts: Mapped[int] = mapped_column(Integer, default=1, nullable=False)
+
+
+class AuditLogEntry(Base):
+    """Hash-chained audit log for tamper evidence."""
+
+    __tablename__ = "audit_log"
+
+    id: Mapped[UUID] = mapped_column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
+    user_id: Mapped[UUID] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True, nullable=False)
+
+    # Event details
+    event_type: Mapped[str] = mapped_column(String(50), nullable=False)
+    event_data: Mapped[dict[str, Any]] = mapped_column(JSON, nullable=False)
+    ip_address: Mapped[str | None] = mapped_column(String(45), nullable=True)
+    user_agent: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    device_id: Mapped[UUID | None] = mapped_column(
+        ForeignKey("user_devices.id", ondelete="SET NULL"), nullable=True
+    )
+
+    # Hash chain for tamper evidence
+    prev_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    entry_hash: Mapped[str] = mapped_column(String(64), unique=True, nullable=False)
+
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=lambda: datetime.now(UTC), nullable=False, index=True
+    )
+
+    # Relationships
+    user: Mapped[User] = relationship(back_populates="audit_log")
+    device: Mapped[UserDevice | None] = relationship()
+
+
+class DeletionRequest(Base):
+    """User deletion requests with undo window."""
+
+    __tablename__ = "deletion_requests"
+
+    id: Mapped[UUID] = mapped_column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
+    user_id: Mapped[UUID] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"), unique=True, nullable=False
+    )
+
+    # Scheduling
+    requested_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=lambda: datetime.now(UTC), nullable=False
+    )
+    scheduled_for: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+
+    # Undo mechanism
+    undo_token: Mapped[str] = mapped_column(String(64), unique=True, nullable=False)
+    undo_expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+
+    # Status tracking
+    cancelled_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    executed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+    # Relationships
+    user: Mapped[User] = relationship(back_populates="deletion_request")
