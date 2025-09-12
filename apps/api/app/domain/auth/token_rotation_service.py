@@ -9,6 +9,7 @@ from typing import Any
 from uuid import UUID
 
 from redis.asyncio import Redis
+from collections.abc import Awaitable as _Awaitable
 from sqlalchemy import update
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -24,6 +25,12 @@ class TokenRotationService:
         self.redis = redis
         self.audit_service = AuditService(session)
 
+    async def _resolve(self, value: Any) -> Any:
+        """Resolve possibly awaitable Redis operations for unit test mocks."""
+        if isinstance(value, _Awaitable) or hasattr(value, "__await__"):
+            return await value  # type: ignore[misc]
+        return value
+
     async def check_refresh_token_reuse(self, token_hash: str, user_id: UUID) -> bool:
         """Detect if a refresh token has been reused.
 
@@ -37,13 +44,13 @@ class TokenRotationService:
         used_key = f"used_refresh:{token_hash}"
 
         # Check if token has been used before
-        if await self.redis.exists(used_key):
+        if await self._resolve(self.redis.exists(used_key)):
             # SECURITY ALERT: Token reuse detected
             await self._handle_token_reuse_incident(user_id, token_hash)
             return True
 
         # Mark token as used with 24hr TTL
-        await self.redis.setex(used_key, 86400, "1")
+        await self._resolve(self.redis.setex(used_key, 86400, "1"))
         return False
 
     async def mark_token_rotated(
@@ -57,7 +64,7 @@ class TokenRotationService:
             user_id: User ID for audit logging
         """
         # Mark old token as rotated
-        await self.redis.setex(f"rotated:{old_token_hash}", 86400, new_token_hash)
+        await self._resolve(self.redis.setex(f"rotated:{old_token_hash}", 86400, new_token_hash))
 
         # Track rotation in audit log
         await self.audit_service.log_event(
@@ -118,17 +125,20 @@ class TokenRotationService:
             f"oauth_access:{user_id}",
         ]
         for key in oauth_keys:
-            await self.redis.delete(key)
+            await self._resolve(self.redis.delete(key))
 
         # Clear any step-up auth challenges
         pattern = f"stepup:{user_id}:*"
         cursor = 0
+        keys_to_delete: list[bytes] = []
         while True:
-            cursor, keys = await self.redis.scan(cursor, match=pattern, count=100)
+            cursor, keys = await self._resolve(self.redis.scan(cursor, match=pattern, count=100))
             if keys:
-                await self.redis.delete(*keys)
+                keys_to_delete.extend(keys)
             if cursor == 0:
                 break
+        if keys_to_delete:
+            await self._resolve(self.redis.delete(*keys_to_delete))
 
         return revoked_count
 
