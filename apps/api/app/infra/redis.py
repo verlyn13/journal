@@ -18,7 +18,7 @@ def get_redis_pool() -> Redis:
         Redis client instance with connection pooling
     """
     return cast(
-        Redis,
+        "Redis",
         Redis.from_url(
             settings.redis_url,
             encoding="utf-8",

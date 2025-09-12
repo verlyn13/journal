@@ -22,11 +22,11 @@ logger = logging.getLogger(__name__)
 
 class SecretsClient(Protocol):
     """Protocol for secrets storage client."""
-    
+
     async def fetch_secret(self, path: str) -> str:
         """Fetch a secret from the storage."""
         ...
-    
+
     async def store_secret(self, path: str, value: str) -> None:
         """Store a secret in the storage."""
         ...

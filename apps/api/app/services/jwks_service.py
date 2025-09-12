@@ -137,7 +137,7 @@ class JWKSService:
         try:
             cached_data = await self.redis.get(self._jwks_cache_key)
             if cached_data:
-                return cast(dict[str, Any], json.loads(cached_data.decode()))
+                return cast("dict[str, Any]", json.loads(cached_data.decode()))
         except (ConnectionError, TimeoutError, ValueError) as e:
             # Cache miss or error, will regenerate
             logger.debug("Cache read failed: %s", e)
@@ -210,7 +210,7 @@ class JWKSService:
                 # Remove quotes if present for comparison
                 client_etag = client_etag.strip('"')
                 current_etag = current_etag.decode().strip('"')
-                return cast(bool, client_etag == current_etag)
+                return cast("bool", client_etag == current_etag)
         except (ConnectionError, TimeoutError, ValueError) as e:
             logger.debug("Failed to get last modified time: %s", e)
 
