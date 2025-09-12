@@ -207,7 +207,6 @@ class VerifierPolicy:
 ACCESS_TOKEN_POLICY = VerifierPolicy(
     allowed_types={"at+jwt"},
     max_token_lifetime=600,  # 10 minutes
-    expected_issuer="https://journal.example.com",
 )
 
 REFRESH_TOKEN_POLICY = VerifierPolicy(
@@ -227,3 +226,19 @@ ID_TOKEN_POLICY = VerifierPolicy(
     max_token_lifetime=3600,  # 1 hour
     required_claims={"iss", "sub", "aud", "exp", "iat", "auth_time", "nonce"},
 )
+
+
+def access_token_policy() -> VerifierPolicy:
+    return ACCESS_TOKEN_POLICY
+
+
+def refresh_token_policy() -> VerifierPolicy:
+    return REFRESH_TOKEN_POLICY
+
+
+def m2m_token_policy() -> VerifierPolicy:
+    return M2M_TOKEN_POLICY
+
+
+def id_token_policy() -> VerifierPolicy:
+    return ID_TOKEN_POLICY

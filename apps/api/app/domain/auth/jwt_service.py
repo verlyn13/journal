@@ -17,13 +17,14 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.domain.auth.audit_service import AuditService
 from app.domain.auth.key_manager import KeyManager
+from app.domain.auth.jwt_verifier_policy import VerifierPolicy, access_token_policy, refresh_token_policy
 from app.services.jwks_service import JWKSService
+from app.settings import settings
 
 logger = logging.getLogger(__name__)
 
 # JWT header constants
 JWT_ALGORITHM = "EdDSA"
-JWT_TYPE = "JWT"
 
 # Token types
 TokenType = Literal["access", "refresh", "m2m", "session"]
@@ -95,7 +96,7 @@ class JWTService:
             # Build JWT header
             header = {
                 "alg": JWT_ALGORITHM,
-                "typ": JWT_TYPE,
+                "typ": self._header_typ_for(token_type),
                 "kid": current_key.kid,
             }
 
@@ -110,6 +111,7 @@ class JWTService:
                 "nbf": int(now.timestamp()),
                 "jti": self._generate_jti(),
                 "type": token_type,
+                "iss": settings.jwt_iss,
             }
 
             # Add optional claims
@@ -118,6 +120,9 @@ class JWTService:
             
             if audience:
                 payload["aud"] = audience
+            else:
+                # Default API audience
+                payload["aud"] = [settings.jwt_aud]
             
             if additional_claims:
                 payload.update(additional_claims)
@@ -183,13 +188,12 @@ class JWTService:
 
             # Decode header
             header = json.loads(self._base64url_decode(header_b64))
-            
-            # Validate header
-            if header.get("alg") != JWT_ALGORITHM:
-                raise ValueError(f"Invalid algorithm: {header.get('alg')}")
-            
-            if header.get("typ") != JWT_TYPE:
-                raise ValueError(f"Invalid token type: {header.get('typ')}")
+
+            # Build verifier policy (RFC 8725/9068)
+            policy = self._build_policy(expected_type=expected_type, expected_audience=expected_audience)
+
+            # Validate header strictly (alg allowlist, typ, forbidden headers, crit)
+            policy.validate_header(header)
 
             # Get kid from header
             kid = header.get("kid")
@@ -221,30 +225,14 @@ class JWTService:
             # Decode payload
             payload = json.loads(self._base64url_decode(payload_b64))
 
-            # Validate claims
-            now = datetime.now(UTC).timestamp()
-            
-            # Check expiration
-            if "exp" in payload:
-                if now >= payload["exp"]:
-                    raise ValueError("Token expired")
-            
-            # Check not before
-            if "nbf" in payload:
-                if now < payload["nbf"]:
-                    raise ValueError("Token not yet valid")
-            
-            # Check token type
+            # Validate claims using policy (iss, sub, aud, exp, nbf/iat with leeway, max lifetime)
+            policy.validate_claims(payload)
+
+            # Check logical token type claim if specified
             if expected_type and payload.get("type") != expected_type:
-                raise ValueError(f"Invalid token type: expected {expected_type}, got {payload.get('type')}")
-            
-            # Check audience
-            if expected_audience:
-                aud = payload.get("aud", [])
-                if isinstance(aud, str):
-                    aud = [aud]
-                if expected_audience not in aud:
-                    raise ValueError(f"Invalid audience: {expected_audience} not in {aud}")
+                raise ValueError(
+                    f"Invalid token type: expected {expected_type}, got {payload.get('type')}"
+                )
             
             # Check scopes
             if required_scopes:
@@ -353,6 +341,38 @@ class JWTService:
             "session": JWTService.DEFAULT_SESSION_TTL,
         }
         return ttl_map.get(token_type, JWTService.DEFAULT_ACCESS_TTL)
+
+    @staticmethod
+    def _header_typ_for(token_type: TokenType) -> str:
+        """Map logical token type to JOSE header 'typ'.
+
+        - Access and m2m tokens use RFC 9068 profile: 'at+jwt'
+        - Refresh/session tokens use generic 'JWT' unless otherwise specified
+        """
+        if token_type in ("access", "m2m"):
+            return "at+jwt"
+        if token_type == "refresh":
+            return "refresh+jwt"
+        return "JWT"
+
+    @staticmethod
+    def _policy_for(expected_type: TokenType | None, expected_audience: str | None) -> VerifierPolicy:
+        """Create a VerifierPolicy based on expected type and audience."""
+        if expected_type == "refresh":
+            policy = refresh_token_policy()
+        else:
+            # Default to access token policy
+            policy = access_token_policy()
+        # Apply issuer and audience expectations
+        policy.expected_issuer = settings.jwt_iss
+        if expected_audience:
+            policy.expected_audiences = {expected_audience}
+        else:
+            policy.expected_audiences = {settings.jwt_aud}
+        return policy
+
+    def _build_policy(self, expected_type: TokenType | None, expected_audience: str | None) -> VerifierPolicy:
+        return self._policy_for(expected_type, expected_audience)
 
     @staticmethod
     def _generate_jti() -> str:

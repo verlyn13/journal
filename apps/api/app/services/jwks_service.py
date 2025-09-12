@@ -84,7 +84,7 @@ class JWKSService:
         last_modified = await self._get_last_modified()
 
         headers = {
-            "Content-Type": "application/json",
+            "Content-Type": "application/jwk-set+json",
             "Cache-Control": f"public, max-age={self.CDN_MAX_AGE}, s-maxage={self.EDGE_TTL}",
             "ETag": etag,
             "Last-Modified": last_modified.strftime("%a, %d %b %Y %H:%M:%S GMT"),

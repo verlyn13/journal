@@ -16,6 +16,7 @@ from app.domain.auth.jwt_service import JWTService
 from app.domain.auth.token_validator import TokenValidator
 from app.infra.db import get_session
 from app.infra.redis import get_redis_client
+from app.settings import settings
 
 logger = logging.getLogger(__name__)
 
@@ -87,7 +88,8 @@ class JWTMiddleware:
             # Verify JWT
             claims = await self.jwt_service.verify_jwt(
                 token,
-                expected_audience="api",  # API audience
+                expected_type="access",
+                expected_audience=settings.jwt_aud,
             )
             
             # Validate claims
