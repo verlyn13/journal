@@ -16,7 +16,17 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.domain.auth.jwt_service import JWTService
 from app.domain.auth.key_manager import KeyManager
 from app.domain.auth.token_validator import TokenValidator
-from app.domain.auth.secrets_provider import InMemorySecretsProvider, SecretsClientAdapter
+class _InMemorySecretsClient:
+    def __init__(self) -> None:
+        self._secrets: dict[str, str] = {}
+
+    async def fetch_secret(self, path: str) -> str:
+        if path not in self._secrets:
+            raise KeyError(f"Secret not found: {path}")
+        return self._secrets[path]
+
+    async def store_secret(self, path: str, value: str) -> None:
+        self._secrets[path] = value
 
 
 class FakeRedis:
@@ -108,7 +118,7 @@ async def db_session() -> AsyncSession:
 
 @pytest_asyncio.fixture
 async def key_manager(db_session: AsyncSession, redis: FakeRedis) -> KeyManager:
-    secrets = SecretsClientAdapter(InMemorySecretsProvider())
+    secrets = _InMemorySecretsClient()
     manager = KeyManager(db_session, redis, infisical_client=secrets)
     # Disable audit logging side effects in unit tests
     async def _no_audit(**kwargs):  # type: ignore[no-untyped-def]
