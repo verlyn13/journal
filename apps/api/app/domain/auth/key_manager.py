@@ -7,7 +7,7 @@ import logging
 
 from datetime import UTC, datetime, timedelta
 from enum import Enum
-from typing import Any, cast
+from typing import Any, Protocol, cast
 from uuid import UUID
 
 from redis.asyncio import Redis
@@ -18,6 +18,18 @@ from app.infra.crypto.key_generation import Ed25519KeyGenerator, KeyPair
 
 
 logger = logging.getLogger(__name__)
+
+
+class SecretsClient(Protocol):
+    """Protocol for secrets storage client."""
+    
+    async def fetch_secret(self, path: str) -> str:
+        """Fetch a secret from the storage."""
+        ...
+    
+    async def store_secret(self, path: str, value: str) -> None:
+        """Store a secret in the storage."""
+        ...
 
 
 class KeyStatus(Enum):
@@ -97,7 +109,7 @@ class KeyManager:
         self,
         session: AsyncSession,
         redis: Redis,
-        infisical_client: object | None = None,  # Will be properly typed later
+        infisical_client: SecretsClient | None = None,
     ) -> None:
         self.session = session
         self.redis = redis

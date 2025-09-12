@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from functools import lru_cache
+from typing import cast
 
 from redis.asyncio import Redis
 
@@ -16,12 +17,15 @@ def get_redis_pool() -> Redis:
     Returns:
         Redis client instance with connection pooling
     """
-    return Redis.from_url(
-        settings.redis_url,
-        encoding="utf-8",
-        decode_responses=False,  # Return bytes for flexibility
-        socket_connect_timeout=5,
-        socket_timeout=5,
+    return cast(
+        Redis,
+        Redis.from_url(
+            settings.redis_url,
+            encoding="utf-8",
+            decode_responses=False,  # Return bytes for flexibility
+            socket_connect_timeout=5,
+            socket_timeout=5,
+        )
     )
 
 
