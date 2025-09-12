@@ -1,4 +1,5 @@
 """Unit tests for token validator."""
+# ruff: noqa: F811
 
 from datetime import UTC, datetime, timedelta
 from uuid import uuid4

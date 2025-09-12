@@ -165,10 +165,7 @@ class TokenValidator:
         # Check wildcard scopes (e.g., "entries:*" matches "entries:read")
         scope_prefix = required_scope.split(":", 1)[0]
         # Do not allow admin:* to satisfy admin:system unless allow_admin is True
-        if not (scope_prefix == "admin" and not allow_admin) and f"{scope_prefix}:*" in token_scopes:
-            return True
-
-        return False
+        return not (scope_prefix == "admin" and not allow_admin) and f"{scope_prefix}:*" in token_scopes
 
     def check_all_scopes(
         self,

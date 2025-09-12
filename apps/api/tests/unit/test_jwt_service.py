@@ -1,4 +1,5 @@
 """Unit tests for JWT service."""
+# ruff: noqa: F811
 
 import json
 
