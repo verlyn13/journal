@@ -197,6 +197,31 @@ class FileSecretsProvider:
             True if secret exists
         """
         return self._get_file_path(path).exists()
+
+
+class SecretsClientAdapter:
+    """Adapter to bridge SecretsProvider to legacy client interface.
+
+    KeyManager currently expects an object exposing `fetch_secret` and
+    `store_secret`. This adapter wraps a `SecretsProvider` and maps the
+    calls accordingly without changing KeyManager.
+    """
+
+    def __init__(self, provider: SecretsProvider) -> None:
+        self._provider = provider
+
+    async def fetch_secret(self, path: str) -> str:
+        return await self._provider.fetch(path)
+
+    async def store_secret(self, path: str, value: str) -> None:
+        await self._provider.store(path, value)
+
+    # Optional helpers
+    async def exists(self, path: str) -> bool:  # type: ignore[override]
+        return await self._provider.exists(path)
+
+    async def delete(self, path: str) -> None:  # type: ignore[override]
+        await self._provider.delete(path)
     
     async def delete(self, path: str) -> None:
         """Delete a secret from file system.

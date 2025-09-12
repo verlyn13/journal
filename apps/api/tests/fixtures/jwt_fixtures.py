@@ -11,6 +11,7 @@ from app.domain.auth.jwt_service import JWTService
 from app.domain.auth.key_manager import KeyManager
 from app.domain.auth.token_validator import TokenValidator
 from app.infra.redis import get_redis_pool
+from app.domain.auth.secrets_provider import InMemorySecretsProvider, SecretsClientAdapter
 
 
 @pytest_asyncio.fixture
@@ -34,21 +35,11 @@ async def redis() -> Redis:
     await client.aclose()
 
 
-class MockSecretsClient:
-    """Mock secrets client for testing."""
-    
+class MockSecretsClient(SecretsClientAdapter):
+    """Backwards-compatible mock via SecretsProvider adapter."""
+
     def __init__(self) -> None:
-        self.secrets: dict[str, str] = {}
-    
-    async def fetch_secret(self, path: str) -> str:
-        """Fetch a secret from storage."""
-        if path not in self.secrets:
-            raise KeyError(f"Secret not found: {path}")
-        return self.secrets[path]
-    
-    async def store_secret(self, path: str, value: str) -> None:
-        """Store a secret in storage."""
-        self.secrets[path] = value
+        super().__init__(InMemorySecretsProvider())
 
 
 @pytest_asyncio.fixture
@@ -67,9 +58,9 @@ async def key_manager(db_session: AsyncSession, redis: Redis) -> KeyManager:
     db_session.add(system_user)
     await db_session.commit()
     
-    # Create key manager with mock secrets client
-    mock_client = MockSecretsClient()
-    manager = KeyManager(db_session, redis, infisical_client=mock_client)
+    # Create key manager with in-memory secrets via adapter
+    secrets_client = MockSecretsClient()
+    manager = KeyManager(db_session, redis, infisical_client=secrets_client)
     await manager.initialize_key_system()
     return manager
 

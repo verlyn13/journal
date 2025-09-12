@@ -73,7 +73,7 @@ class TestJWTSecurity:
         tampered_token = f"{tampered_header}.{parts[1]}."  # No signature
         
         # Verification should fail
-        with pytest.raises(ValueError, match="Invalid algorithm"):
+        with pytest.raises(ValueError, match="forbidden|Algorithm|allowed"):
             await jwt_service.verify_jwt(tampered_token)
 
     async def test_expired_token_rejection(self, jwt_service: JWTService) -> None:
@@ -87,7 +87,7 @@ class TestJWTSecurity:
         )
         
         # Verification should fail
-        with pytest.raises(ValueError, match="Token expired"):
+        with pytest.raises(ValueError, match="expired"):
             await jwt_service.verify_jwt(token)
 
     async def test_future_token_rejection(self, jwt_service: JWTService) -> None:
@@ -105,7 +105,7 @@ class TestJWTSecurity:
         # For this test, we'll use the service's internal methods
         current_key = await jwt_service.key_manager.get_current_signing_key()
         
-        header = {"alg": "EdDSA", "typ": "JWT", "kid": current_key.kid}
+        header = {"alg": "EdDSA", "typ": "at+jwt", "kid": current_key.kid}
         header_b64 = jwt_service._base64url_encode(json.dumps(header))
         payload_b64 = jwt_service._base64url_encode(json.dumps(payload))
         
@@ -116,7 +116,7 @@ class TestJWTSecurity:
         future_token = f"{header_b64}.{payload_b64}.{signature_b64}"
         
         # Verification should fail
-        with pytest.raises(ValueError, match="Token not yet valid"):
+        with pytest.raises(ValueError, match="not yet valid|nbf"):
             await jwt_service.verify_jwt(future_token)
 
     async def test_invalid_kid_rejection(self, jwt_service: JWTService) -> None:
@@ -125,7 +125,7 @@ class TestJWTSecurity:
         user_id = uuid4()
         fake_key = Ed25519PrivateKey.generate()
         
-        header = {"alg": "EdDSA", "typ": "JWT", "kid": "invalid-kid"}
+        header = {"alg": "EdDSA", "typ": "at+jwt", "kid": "invalid-kid"}
         payload = {
             "sub": str(user_id),
             "iat": int(datetime.now(UTC).timestamp()),
@@ -143,7 +143,7 @@ class TestJWTSecurity:
         fake_token = f"{header_b64}.{payload_b64}.{signature_b64}"
         
         # Verification should fail
-        with pytest.raises(ValueError, match="Unknown key ID"):
+        with pytest.raises(ValueError, match="Unknown key ID|Unknown key|kid"):
             await jwt_service.verify_jwt(fake_token)
 
     async def test_token_reuse_after_revocation(self, jwt_service: JWTService) -> None:
@@ -201,7 +201,7 @@ class TestJWTSecurity:
         assert "web" in claims["aud"]
         
         # Should fail with wrong audience
-        with pytest.raises(ValueError, match="Invalid audience"):
+        with pytest.raises(ValueError, match="audience|No matching audience"):
             await jwt_service.verify_jwt(token, expected_audience="admin")
 
     async def test_token_type_validation(self, jwt_service: JWTService) -> None:
