@@ -43,6 +43,40 @@ class FakeRedis:
         # Minimal scan implementation for tests
         return 0, list(self._data.keys())
 
+    # Pipeline support for telemetry tests
+    class _Pipeline:
+        def __init__(self, parent: 'FakeRedis') -> None:
+            self.parent = parent
+
+        def hincrby(self, key: str, field: str, amount: int) -> None:
+            # Represent hash as JSON-like blob in bytes
+            import json
+            raw = self.parent._data.get(key, b"{}")
+            obj = json.loads(raw.decode())
+            obj[field] = int(obj.get(field, 0)) + amount
+            self.parent._data[key] = json.dumps(obj).encode()
+
+        def set(self, key: str, value: str, ex: int | None = None) -> None:  # noqa: ARG002
+            self.parent._data[key] = value.encode()
+
+        def rpush(self, key: str, value: str) -> None:
+            # Store list as JSON array
+            import json
+            raw = self.parent._data.get(key, b"[]")
+            arr = json.loads(raw.decode())
+            arr.append(value)
+            self.parent._data[key] = json.dumps(arr).encode()
+
+        def ltrim(self, key: str, start: int, end: int) -> None:  # noqa: ARG002
+            # No-op for tests
+            return None
+
+        async def execute(self) -> None:
+            return None
+
+    def pipeline(self) -> 'FakeRedis._Pipeline':
+        return FakeRedis._Pipeline(self)
+
 
 class FakeAsyncSession(AsyncSession):
     async def __aenter__(self) -> "FakeAsyncSession":  # type: ignore[override]

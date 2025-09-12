@@ -254,6 +254,10 @@ class JWTService:
             if await self._is_token_revoked(payload.get("jti")):
                 raise ValueError("Token has been revoked")
 
+            # Add header-derived fields for caller convenience
+            payload.setdefault("kid", kid)
+            payload.setdefault("alg", header.get("alg"))
+            payload.setdefault("typ", header.get("typ"))
             return payload
 
         except json.JSONDecodeError as e:

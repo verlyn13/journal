@@ -34,6 +34,7 @@ class JWTMiddleware:
         require_auth: bool = True,
         required_scopes: list[str] | None = None,
         allow_expired_for_refresh: bool = False,
+        expected_token_type: str | None = None,
     ) -> None:
         """Initialize JWT middleware.
 
@@ -49,6 +50,7 @@ class JWTMiddleware:
         self.require_auth = require_auth
         self.required_scopes = required_scopes or []
         self.allow_expired_for_refresh = allow_expired_for_refresh
+        self.expected_token_type = expected_token_type
 
     async def __call__(self, request: Request) -> dict[str, Any] | None:
         """Process JWT authentication for a request.
@@ -88,7 +90,7 @@ class JWTMiddleware:
             # Verify JWT
             claims = await self.jwt_service.verify_jwt(
                 token,
-                expected_type="access",
+                expected_type=self.expected_token_type or "access",
                 expected_audience=settings.jwt_aud,
             )
             
@@ -236,13 +238,15 @@ class RequireAuth:
                 headers={"WWW-Authenticate": "Bearer"},
             )
 
-        # Use middleware for validation
+        # Use middleware for validation; pass expected_type when unambiguous
+        expected_type = self.token_types[0] if len(self.token_types) == 1 else None
         middleware = JWTMiddleware(
             require_auth=True,
             required_scopes=self.scopes,
             allow_expired_for_refresh=self.allow_expired,
+            expected_token_type=expected_type,
         )
-        
+
         claims = await middleware(request)
         
         if not claims:
