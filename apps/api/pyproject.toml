@@ -81,6 +81,8 @@ dev-dependencies = [
     "pytest-xdist>=3.8.0",
     "libcst>=1.8.2",
     "types-bleach>=6.2.0.20250809",
+    "freezegun>=1.5.5",
+    "pytest-freezegun>=0.4.2",
 ]
 
 [project.scripts]

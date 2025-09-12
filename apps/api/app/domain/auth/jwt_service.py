@@ -190,7 +190,17 @@ class JWTService:
             header = json.loads(self._base64url_decode(header_b64))
 
             # Build verifier policy (RFC 8725/9068)
-            policy = self._build_policy(expected_type=expected_type, expected_audience=expected_audience)
+            # If expected_type not provided, infer policy from header.typ
+            inferred_type: TokenType | None = None
+            typ_hdr = header.get("typ")
+            if typ_hdr == "refresh+jwt":
+                inferred_type = "refresh"
+            elif typ_hdr == "at+jwt":
+                inferred_type = "access"
+            policy = self._build_policy(
+                expected_type=expected_type or inferred_type,
+                expected_audience=expected_audience,
+            )
 
             # Validate header strictly (alg allowlist, typ, forbidden headers, crit)
             policy.validate_header(header)

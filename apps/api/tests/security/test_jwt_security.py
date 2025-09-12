@@ -12,7 +12,7 @@ from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
 from app.domain.auth.jwt_service import JWTService
 from app.domain.auth.token_validator import TokenValidator
 from app.infra.crypto.key_generation import Ed25519KeyGenerator
-from tests.fixtures.jwt_fixtures import jwt_service, key_manager, redis, token_validator
+# Use local security conftest fixtures (no DB/Redis)
 
 
 @pytest.mark.asyncio
@@ -83,7 +83,7 @@ class TestJWTSecurity:
         token = await jwt_service.sign_jwt(
             user_id,
             "access",
-            ttl=timedelta(seconds=-1)  # Already expired
+            ttl=timedelta(seconds=-120)  # Already expired, beyond leeway
         )
         
         # Verification should fail
@@ -215,7 +215,7 @@ class TestJWTSecurity:
         assert claims["type"] == "refresh"
         
         # Should fail with wrong type
-        with pytest.raises(ValueError, match="Invalid token type"):
+        with pytest.raises(ValueError, match="Invalid token type|Token type"):
             await jwt_service.verify_jwt(token, expected_type="access")
 
     async def test_jti_uniqueness(self, jwt_service: JWTService) -> None:

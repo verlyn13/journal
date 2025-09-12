@@ -11,6 +11,7 @@ import pytest
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
 
 from app.domain.auth.jwt_service import JWTService
+# Use local security conftest fixtures (no DB/Redis)
 
 
 @pytest.mark.asyncio
@@ -67,4 +68,3 @@ class TestJWTBCP:
     bad = f"{h}.{parts[1]}.{parts[2]}"
     with pytest.raises(ValueError, match="Token type|not allowed|typ"):
       await jwt_service.verify_jwt(bad, expected_type="access")
-
