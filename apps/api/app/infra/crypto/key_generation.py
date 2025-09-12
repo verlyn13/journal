@@ -7,7 +7,7 @@ import binascii
 import secrets
 
 from datetime import UTC, datetime
-from typing import NamedTuple
+from typing import Any, NamedTuple
 
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import ed25519
@@ -31,7 +31,7 @@ class KeyMaterial(NamedTuple):
     public_key_pem: str
     private_key_raw: bytes
     public_key_raw: bytes
-    jwk_public: dict[str, str]
+    jwk_public: dict[str, Any]
     kid: str
     created_at: datetime
 
@@ -289,7 +289,7 @@ class KeyValidation:
         return len(parts[3]) == 8 and all(c in "0123456789abcdef" for c in parts[3])
 
     @staticmethod
-    def validate_jwk_public(jwk: dict[str, str]) -> bool:
+    def validate_jwk_public(jwk: dict[str, Any]) -> bool:
         """Validate JWK public key format.
 
         Args:

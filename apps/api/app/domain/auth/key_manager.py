@@ -7,6 +7,7 @@ import logging
 
 from datetime import UTC, datetime, timedelta
 from enum import Enum
+from typing import Any, cast
 from uuid import UUID
 
 from redis.asyncio import Redis
@@ -61,12 +62,24 @@ class KeyMetadata:
         """Create from dictionary."""
         # Find the enum member by value
         status = next(member for member in KeyStatus if member.value == data["status"])
+
+        # Validate required fields
+        kid = data.get("kid")
+        if not isinstance(kid, str):
+            raise TypeError("kid missing or not a string")
+
+        created_at_raw = data.get("created_at")
+        if not isinstance(created_at_raw, str):
+            raise TypeError("created_at missing or not a string")
+
+        activated_at_raw = data.get("activated_at")
+
         return cls(
-            kid=data["kid"],
+            kid=kid,
             status=status,
-            created_at=datetime.fromisoformat(data["created_at"]),
+            created_at=datetime.fromisoformat(created_at_raw),
             activated_at=(
-                datetime.fromisoformat(data["activated_at"]) if data["activated_at"] else None
+                datetime.fromisoformat(activated_at_raw) if isinstance(activated_at_raw, str) else None
             ),
             expires_at=(datetime.fromisoformat(data["expires_at"]) if data["expires_at"] else None),
         )
@@ -213,7 +226,7 @@ class KeyManager:
 
         return False, "Key rotation not needed"
 
-    async def rotate_keys(self, force: bool = False) -> dict:
+    async def rotate_keys(self, force: bool = False) -> dict[str, Any]:
         """Perform key rotation with overlap window.
 
         Args:
@@ -273,19 +286,20 @@ class KeyManager:
             )
             raise RuntimeError(f"Key rotation failed: {e}") from e
 
-    async def verify_key_integrity(self) -> dict:
+    async def verify_key_integrity(self) -> dict[str, Any]:
         """Verify the integrity of the key system.
 
         Returns:
             Integrity check results
         """
-        results = {
+        results: dict[str, Any] = {
             "current_key_valid": False,
             "next_key_valid": False,
             "keys_synchronized": False,
             "cache_consistent": False,
             "issues": [],
         }
+        issues: list[str] = cast("list[str]", results["issues"])
 
         # Check current key
         try:
@@ -296,7 +310,7 @@ class KeyManager:
             current_key.public_key.verify(signature, test_data)
             results["current_key_valid"] = True
         except (ValueError, TypeError) as e:
-            results["issues"].append(f"Current key invalid: {e}")
+            issues.append(f"Current key invalid: {e}")
 
         # Check next key
         try:
@@ -306,11 +320,11 @@ class KeyManager:
                 if Ed25519KeyGenerator.verify_key_pair(next_key.private_key, next_key.public_key):
                     results["next_key_valid"] = True
                 else:
-                    results["issues"].append("Next key pair mismatch")
+                    issues.append("Next key pair mismatch")
             else:
-                results["issues"].append("No next key available")
+                issues.append("No next key available")
         except (ValueError, TypeError, KeyError) as e:
-            results["issues"].append(f"Next key error: {e}")
+            issues.append(f"Next key error: {e}")
 
         # Check cache consistency
         try:
@@ -323,7 +337,7 @@ class KeyManager:
                     cached_current.decode() == stored_current if cached_current else False
                 )
         except (ConnectionError, TimeoutError, ValueError) as e:
-            results["issues"].append(f"Cache consistency error: {e}")
+            issues.append(f"Cache consistency error: {e}")
 
         return results
 

@@ -5,10 +5,10 @@ from __future__ import annotations
 import logging
 import time
 
-from collections.abc import AsyncGenerator
+from collections.abc import AsyncGenerator, Awaitable
 from contextlib import asynccontextmanager
 from datetime import UTC, datetime
-from typing import Any
+from typing import Any, cast
 
 from redis.asyncio import Redis
 
@@ -132,17 +132,27 @@ class JWKSMetrics:
 
         try:
             # Get all counters
-            counters: dict[bytes, bytes] = await self.redis.hgetall(f"{self._metrics_prefix}counters")  # type: ignore[assignment]
+            counters = await cast(
+                "Awaitable[dict[bytes, bytes]]",
+                self.redis.hgetall(f"{self._metrics_prefix}counters")
+            )
 
             # Get histogram data
-            histogram: dict[bytes, bytes] = await self.redis.hgetall(f"{self._metrics_prefix}histogram")  # type: ignore[assignment]
+            histogram = await cast(
+                "Awaitable[dict[bytes, bytes]]",
+                self.redis.hgetall(f"{self._metrics_prefix}histogram")
+            )
 
             # Get last request time
-            last_request: bytes | None = await self.redis.get(f"{self._metrics_prefix}last_request")  # type: ignore[assignment]
+            last_request = await cast(
+                "Awaitable[bytes | None]",
+                self.redis.get(f"{self._metrics_prefix}last_request")
+            )
 
             # Get recent rotation history
-            rotation_history: list[bytes] = await self.redis.lrange(  # type: ignore[assignment]
-                f"{self._metrics_prefix}rotation_history", -10, -1
+            rotation_history = await cast(
+                "Awaitable[list[bytes]]",
+                self.redis.lrange(f"{self._metrics_prefix}rotation_history", -10, -1)
             )
 
             # Calculate cache hit rate

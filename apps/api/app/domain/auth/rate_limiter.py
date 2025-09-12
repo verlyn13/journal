@@ -4,8 +4,9 @@ from __future__ import annotations
 
 import hashlib
 
+from collections.abc import Awaitable
 from dataclasses import dataclass
-from typing import Any, ClassVar
+from typing import Any, ClassVar, cast
 from uuid import UUID
 
 from redis.asyncio import Redis
@@ -144,13 +145,13 @@ class AuthRateLimiter:
         """
         # Track failures by IP
         ip_key = f"failures:ip:{self._hash_identifier(ip_address)}"
-        await self.redis.hincrby(ip_key, action, 1)
+        await cast("Awaitable[int]", self.redis.hincrby(ip_key, action, 1))
         await self.redis.expire(ip_key, 3600)  # 1 hour TTL
 
         # Track failures by user if known
         if user_id:
             user_key = f"failures:user:{user_id}"
-            await self.redis.hincrby(user_key, action, 1)
+            await cast("Awaitable[int]", self.redis.hincrby(user_key, action, 1))
             await self.redis.expire(user_key, 3600)
 
     async def is_blocked(
@@ -191,7 +192,7 @@ class AuthRateLimiter:
         if action:
             # Reset specific action
             key = self._make_key(action, identifier)
-            return await self.redis.delete(key)
+            return cast("int", await cast("Awaitable[int]", self.redis.delete(key)))
 
         # Reset all actions
         count = 0
