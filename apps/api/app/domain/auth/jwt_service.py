@@ -2,24 +2,32 @@
 
 from __future__ import annotations
 
+import base64
 import json
 import logging
 import time
+import uuid
 
 from datetime import UTC, datetime, timedelta
 from typing import Any, Literal, cast
 from uuid import UUID
 
-from cryptography.hazmat.primitives import serialization
-from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey, Ed25519PublicKey
+from cryptography.exceptions import InvalidSignature
+
+# Note: signing/verification uses keys from KeyManager; direct crypto imports not needed here
 from redis.asyncio import Redis
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.domain.auth.audit_service import AuditService
+from app.domain.auth.jwt_verifier_policy import (
+    VerifierPolicy,
+    access_token_policy,
+    refresh_token_policy,
+)
 from app.domain.auth.key_manager import KeyManager
-from app.domain.auth.jwt_verifier_policy import VerifierPolicy, access_token_policy, refresh_token_policy
 from app.services.jwks_service import JWKSService
 from app.settings import settings
+
 
 logger = logging.getLogger(__name__)
 
@@ -103,7 +111,7 @@ class JWTService:
             # Build JWT payload
             now = datetime.now(UTC)
             exp = now + ttl
-            
+
             payload: dict[str, Any] = {
                 "sub": str(user_id),
                 "iat": int(now.timestamp()),
@@ -117,20 +125,20 @@ class JWTService:
             # Add optional claims
             if scopes:
                 payload["scope"] = " ".join(scopes)
-            
+
             if audience:
                 payload["aud"] = audience
             else:
                 # Default API audience
                 payload["aud"] = [settings.jwt_aud]
-            
+
             if additional_claims:
                 payload.update(additional_claims)
 
             # Encode header and payload
             header_b64 = self._base64url_encode(json.dumps(header))
             payload_b64 = self._base64url_encode(json.dumps(payload))
-            
+
             # Create signature
             signing_input = f"{header_b64}.{payload_b64}".encode()
             signature = current_key.private_key.sign(signing_input)
@@ -154,7 +162,7 @@ class JWTService:
             return jwt_token
 
         except Exception as e:
-            logger.error(f"JWT signing failed: {e}")
+            logger.exception("JWT signing failed")
             raise RuntimeError(f"Failed to sign JWT: {e}") from e
 
     async def verify_jwt(
@@ -187,7 +195,7 @@ class JWTService:
             header_b64, payload_b64, signature_b64 = parts
 
             # Decode header
-            header = json.loads(self._base64url_decode(header_b64))
+            header = cast("dict[str, Any]", json.loads(self._base64url_decode(header_b64)))
 
             # Build verifier policy (RFC 8725/9068)
             # If expected_type not provided, infer policy from header.typ
@@ -212,28 +220,28 @@ class JWTService:
 
             # Get verification keys from JWKS
             verification_keys = await self.key_manager.get_verification_keys()
-            
+
             # Find matching key
             matching_key = None
             for key in verification_keys:
                 if key.kid == kid:
                     matching_key = key
                     break
-            
+
             if not matching_key:
                 raise ValueError(f"Unknown key ID: {kid}")
 
             # Verify signature
             signing_input = f"{header_b64}.{payload_b64}".encode()
             signature = self._base64url_decode(signature_b64)
-            
+
             try:
                 matching_key.public_key.verify(signature, signing_input)
-            except Exception:
-                raise ValueError("Invalid signature")
+            except InvalidSignature as sig_err:
+                raise ValueError("Invalid signature") from sig_err
 
             # Decode payload
-            payload = json.loads(self._base64url_decode(payload_b64))
+            payload = cast("dict[str, Any]", json.loads(self._base64url_decode(payload_b64)))
 
             # Validate claims using policy (iss, sub, aud, exp, nbf/iat with leeway, max lifetime)
             policy.validate_claims(payload)
@@ -243,7 +251,7 @@ class JWTService:
                 raise ValueError(
                     f"Invalid token type: expected {expected_type}, got {payload.get('type')}"
                 )
-            
+
             # Check scopes
             if required_scopes:
                 token_scopes = payload.get("scope", "").split()
@@ -262,9 +270,7 @@ class JWTService:
 
         except json.JSONDecodeError as e:
             raise ValueError(f"Invalid JWT encoding: {e}") from e
-        except Exception as e:
-            if isinstance(e, ValueError):
-                raise
+        except (TypeError, KeyError) as e:
             raise ValueError(f"JWT verification failed: {e}") from e
 
     async def revoke_token(self, jti: str, user_id: UUID | None = None) -> None:
@@ -321,7 +327,7 @@ class JWTService:
         try:
             # Try to verify the token
             payload = await self.verify_jwt(token)
-            
+
             return {
                 "active": True,
                 "sub": payload.get("sub"),
@@ -339,11 +345,11 @@ class JWTService:
             }
 
     @staticmethod
-    def _get_default_ttl(token_type: TokenType) -> timedelta:
+    def _get_default_ttl(ttype: TokenType) -> timedelta:
         """Get default TTL for a token type.
 
         Args:
-            token_type: Type of token
+            ttype: Type of token
 
         Returns:
             Default TTL for the token type
@@ -354,29 +360,25 @@ class JWTService:
             "m2m": JWTService.DEFAULT_M2M_TTL,
             "session": JWTService.DEFAULT_SESSION_TTL,
         }
-        return ttl_map.get(token_type, JWTService.DEFAULT_ACCESS_TTL)
+        return ttl_map.get(ttype, JWTService.DEFAULT_ACCESS_TTL)
 
     @staticmethod
-    def _header_typ_for(token_type: TokenType) -> str:
+    def _header_typ_for(ttype: TokenType) -> str:
         """Map logical token type to JOSE header 'typ'.
 
         - Access and m2m tokens use RFC 9068 profile: 'at+jwt'
         - Refresh/session tokens use generic 'JWT' unless otherwise specified
         """
-        if token_type in ("access", "m2m"):
+        if ttype in {"access", "m2m"}:
             return "at+jwt"
-        if token_type == "refresh":
+        if ttype == "refresh":
             return "refresh+jwt"
         return "JWT"
 
     @staticmethod
     def _policy_for(expected_type: TokenType | None, expected_audience: str | None) -> VerifierPolicy:
         """Create a VerifierPolicy based on expected type and audience."""
-        if expected_type == "refresh":
-            policy = refresh_token_policy()
-        else:
-            # Default to access token policy
-            policy = access_token_policy()
+        policy = refresh_token_policy() if expected_type == "refresh" else access_token_policy()
         # Apply issuer and audience expectations
         policy.expected_issuer = settings.jwt_iss
         if expected_audience:
@@ -395,7 +397,6 @@ class JWTService:
         Returns:
             Unique JWT ID
         """
-        import uuid
         return str(uuid.uuid4())
 
     @staticmethod
@@ -408,11 +409,9 @@ class JWTService:
         Returns:
             Base64URL encoded string
         """
-        import base64
-        
         if isinstance(data, str):
             data = data.encode()
-        
+
         return base64.urlsafe_b64encode(data).rstrip(b"=").decode()
 
     @staticmethod
@@ -425,13 +424,11 @@ class JWTService:
         Returns:
             Decoded bytes
         """
-        import base64
-        
         # Add padding if needed
         padding = 4 - (len(data) % 4)
         if padding != 4:
             data += "=" * padding
-        
+
         return base64.urlsafe_b64decode(data)
 
     async def _is_token_revoked(self, jti: str | None) -> bool:
@@ -447,4 +444,10 @@ class JWTService:
             return False
 
         revocation_key = f"jwt:revoked:{jti}"
-        return await self.redis.exists(revocation_key) > 0
+        exists = await self.redis.exists(revocation_key)
+        if isinstance(exists, (int, bool)):
+            return bool(exists)
+        try:
+            return bool(int(exists))
+        except (TypeError, ValueError):
+            return False

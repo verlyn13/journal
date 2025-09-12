@@ -151,9 +151,10 @@ class KeyManager:
         """
         # Try cache first
         cached_pem = await self.redis.get(self._current_key_cache)
-        if cached_pem:
+        if isinstance(cached_pem, (bytes, bytearray, str)) and cached_pem:
             try:
-                private_key = Ed25519KeyGenerator.load_private_key_from_pem(cached_pem.decode())
+                pem_text = cached_pem.decode() if isinstance(cached_pem, (bytes, bytearray)) else cached_pem
+                private_key = Ed25519KeyGenerator.load_private_key_from_pem(pem_text)
                 metadata = await self._get_current_key_metadata()
                 if metadata:
                     return KeyPair(
@@ -218,10 +219,11 @@ class KeyManager:
         # Include retiring key if present within overlap window
         try:
             retiring_pem = await self.redis.get(self._retiring_key_cache)
-            if retiring_pem:
+            if isinstance(retiring_pem, (bytes, bytearray, str)) and retiring_pem:
                 retiring_meta = await self._get_retiring_key_metadata()
                 if retiring_meta:
-                    priv = Ed25519KeyGenerator.load_private_key_from_pem(retiring_pem.decode())
+                    pem_text = retiring_pem.decode() if isinstance(retiring_pem, (bytes, bytearray)) else retiring_pem
+                    priv = Ed25519KeyGenerator.load_private_key_from_pem(pem_text)
                     keys.append(
                         KeyPair(
                             private_key=priv,

@@ -11,7 +11,6 @@ from app.domain.auth.jwt_service import JWTService
 from app.domain.auth.key_manager import KeyManager
 from app.domain.auth.token_validator import TokenValidator
 from app.infra.redis import get_redis_pool
-from app.domain.auth.secrets_provider import InMemorySecretsProvider, SecretsClientAdapter
 
 
 @pytest_asyncio.fixture
@@ -35,11 +34,19 @@ async def redis() -> Redis:
     await client.aclose()
 
 
-class MockSecretsClient(SecretsClientAdapter):
-    """Backwards-compatible mock via SecretsProvider adapter."""
+class MockSecretsClient:
+    """Simple in-memory secrets client with legacy interface."""
 
     def __init__(self) -> None:
-        super().__init__(InMemorySecretsProvider())
+        self._secrets: dict[str, str] = {}
+
+    async def fetch_secret(self, path: str) -> str:
+        if path not in self._secrets:
+            raise KeyError(f"Secret not found: {path}")
+        return self._secrets[path]
+
+    async def store_secret(self, path: str, value: str) -> None:
+        self._secrets[path] = value
 
 
 @pytest_asyncio.fixture
