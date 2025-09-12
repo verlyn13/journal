@@ -176,7 +176,7 @@ async def client(request, session_factory, db_connection: AsyncConnection):
     app.dependency_overrides[get_session] = override_get_session
     # For E2E auth tests, don't override auth unless explicitly marked to skip
     # Check if this is an auth-specific test that should not bypass authentication
-    is_auth_test = hasattr(request, 'node') and 'auth' in request.node.name
+    is_auth_test = hasattr(request, "node") and "auth" in request.node.name
     if not settings.user_mgmt_enabled and not is_auth_test:
         app.dependency_overrides[require_user] = lambda: "test-user"
     try:

@@ -1,8 +1,5 @@
 """JWT testing fixtures."""
 
-from uuid import uuid4
-
-import pytest
 import pytest_asyncio
 
 from redis.asyncio import Redis

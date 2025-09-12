@@ -391,7 +391,7 @@ class TestOutboxPatternExtended:
         )
         db_session.add(event)
         await db_session.commit()
-        event_id = event.id
+        _event_id = event.id  # Store for potential debugging
 
         # Mock NATS connection
         class MockNC:

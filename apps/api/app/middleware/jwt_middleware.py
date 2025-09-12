@@ -43,6 +43,7 @@ class JWTMiddleware:
             require_auth: Whether authentication is required
             required_scopes: Optional list of required scopes
             allow_expired_for_refresh: Allow expired tokens for refresh endpoint
+            expected_token_type: Expected token type (e.g., 'access', 'refresh')
         """
         self.jwt_service = jwt_service
         self.token_validator = token_validator
@@ -141,7 +142,7 @@ class JWTMiddleware:
                         claims["expired"] = True
                         request.state.jwt_claims = claims
                         return claims
-                except Exception:  # noqa: S110
+                except (ValueError, KeyError, json.JSONDecodeError):
                     pass  # Fallback if manual decode fails
 
             # Authentication failed
@@ -151,7 +152,7 @@ class JWTMiddleware:
                 detail=str(e),
                 headers={"WWW-Authenticate": "Bearer"},
             )
-        except Exception as e:  # noqa: BLE001
+        except Exception as e:
             logger.exception("JWT middleware error: %s", e)
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,

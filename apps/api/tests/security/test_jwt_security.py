@@ -6,7 +6,7 @@ import json
 import time
 
 from datetime import UTC, datetime, timedelta
-from uuid import UUID, uuid4
+from uuid import uuid4
 
 import pytest
 
@@ -14,7 +14,6 @@ from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
 
 from app.domain.auth.jwt_service import JWTService
 from app.domain.auth.token_validator import TokenValidator
-from app.infra.crypto.key_generation import Ed25519KeyGenerator
 
 
 # Use local security conftest fixtures (no DB/Redis)

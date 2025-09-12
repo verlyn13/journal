@@ -143,7 +143,7 @@ class AuthRateLimiter:
                     event_data={"reason": reason, "ip": ip_address},
                     ip_address=ip_address,
                 )
-            except Exception as e:
+            except (ConnectionError, RuntimeError, ValueError) as e:
                 # Do not fail the request if audit logging is unavailable or FK not present
                 self._logger.debug("Audit log event failed for rate limiter: %s", e)
 

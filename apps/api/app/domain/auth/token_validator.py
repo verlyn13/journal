@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import logging
 
 from datetime import UTC, datetime
@@ -130,9 +131,8 @@ class TokenValidator:
             validated["scopes"] = []
 
         # Validate audience
-        if validated["aud"]:
-            if isinstance(validated["aud"], str):
-                validated["aud"] = [validated["aud"]]
+        if validated["aud"] and isinstance(validated["aud"], str):
+            validated["aud"] = [validated["aud"]]
 
         return validated
 
@@ -163,11 +163,10 @@ class TokenValidator:
             return True
 
         # Check wildcard scopes (e.g., "entries:*" matches "entries:read")
-        scope_prefix = required_scope.split(":")[0]
+        scope_prefix = required_scope.split(":", 1)[0]
         # Do not allow admin:* to satisfy admin:system unless allow_admin is True
-        if not (scope_prefix == "admin" and not allow_admin):
-            if f"{scope_prefix}:*" in token_scopes:
-                return True
+        if not (scope_prefix == "admin" and not allow_admin) and f"{scope_prefix}:*" in token_scopes:
+            return True
 
         return False
 
@@ -365,14 +364,8 @@ class TokenValidator:
         Returns:
             Validated scope list
         """
-        validated = []
-        for scope in scopes:
-            # Check format (resource:action)
-            if ":" in scope:
-                validated.append(scope)
-            # Skip invalid scopes silently
-
-        return validated
+        # Use list comprehension for better performance
+        return [scope for scope in scopes if ":" in scope]
 
     async def _get_user(self, user_id: UUID) -> User | None:
         """Get user from database.
@@ -401,8 +394,6 @@ class TokenValidator:
             validation_result: Validation result to cache
             ttl: Cache TTL in seconds
         """
-        import json
-
         cache_key = f"jwt:validated:{jti}"
         await self.redis.setex(
             cache_key,
@@ -419,8 +410,6 @@ class TokenValidator:
         Returns:
             Cached validation result or None
         """
-        import json
-
         cache_key = f"jwt:validated:{jti}"
         cached = await self.redis.get(cache_key)
 

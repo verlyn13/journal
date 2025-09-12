@@ -7,13 +7,17 @@ from uuid import uuid4
 
 import pytest
 
-from redis.asyncio import Redis
-from sqlalchemy.ext.asyncio import AsyncSession
-
 from app.domain.auth.jwt_service import JWTService
 from app.domain.auth.key_manager import KeyManager
 from app.infra.crypto.key_generation import Ed25519KeyGenerator
-from tests.fixtures.jwt_fixtures import jwt_service, key_manager, redis, token_validator
+
+# Import fixtures for pytest to discover them
+from tests.fixtures.jwt_fixtures import (  # noqa: F401
+    jwt_service,
+    key_manager,
+    redis,
+    token_validator,
+)
 
 
 @pytest.mark.asyncio
