@@ -150,7 +150,7 @@ class StepUpAuthService:
         """
         cutoff_time = datetime.now(UTC) - self.FRESH_AUTH_WINDOW
 
-        return await self.session.scalar(
+        result = await self.session.scalar(
             select(AuditLogEntry)
             .where(
                 AuditLogEntry.user_id == user_id,
@@ -160,6 +160,7 @@ class StepUpAuthService:
             .order_by(AuditLogEntry.created_at.desc())
             .limit(1)
         )
+        return result
 
     async def _generate_challenge(self, user_id: UUID, action: SensitiveAction) -> str:
         """Generate and store a new challenge.
