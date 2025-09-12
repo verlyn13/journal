@@ -460,9 +460,9 @@ class KeyManager:
                 # store metadata as retiring with short TTL via Redis directly
                 await self._store_key_metadata_with_ttl(current_meta, KeyStatus.RETIRING, int(self.overlap_window.total_seconds()))
             await self.redis.setex(self._retiring_key_cache, int(self.overlap_window.total_seconds()), current_pem)
-        except Exception:
+        except Exception as e:
             # If this fails, rotation still proceeds; overlap just won't include retiring
-            pass
+            logger.debug("Could not cache retiring key: %s", e)
 
         # Get next key
         next_pem = await self.infisical_client.fetch_secret("/auth/jwt/next_private_key")

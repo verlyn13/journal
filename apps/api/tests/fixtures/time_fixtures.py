@@ -3,9 +3,11 @@
 from __future__ import annotations
 
 import contextlib
+
 from datetime import UTC, datetime
 
 import pytest
+
 from freezegun import freeze_time as _freeze_time
 
 
@@ -26,4 +28,3 @@ def freeze_time():
             yield
 
     return _ctx
-

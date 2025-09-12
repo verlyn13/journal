@@ -14,6 +14,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.infra.sa_models import User
 
+
 logger = logging.getLogger(__name__)
 
 # Scope categories
@@ -31,12 +32,12 @@ class TokenValidator:
         "entries:delete": "Delete entries",
         "profile:read": "Read user profile",
         "profile:write": "Update user profile",
-        
+
         # Admin scopes
         "admin:users": "Manage users",
         "admin:system": "System administration",
         "admin:audit": "Access audit logs",
-        
+
         # Service scopes
         "service:embedding": "Embedding service access",
         "service:search": "Search service access",
@@ -108,11 +109,11 @@ class TokenValidator:
             user = await self._get_user(validated["user_id"])
             if not user:
                 raise ValueError("User not found")
-            
+
             # Check if user is active
             if not user.is_active:
                 raise ValueError("User account is not active")
-            
+
             # Add user info to validated claims
             validated["user"] = {
                 "id": str(user.id),
@@ -152,22 +153,22 @@ class TokenValidator:
             True if scope is present
         """
         token_scopes = claims.get("scopes", [])
-        
+
         # Check exact scope
         if required_scope in token_scopes:
             return True
-        
+
         # Check admin override
         if allow_admin and "admin:system" in token_scopes:
             return True
-        
+
         # Check wildcard scopes (e.g., "entries:*" matches "entries:read")
         scope_prefix = required_scope.split(":")[0]
         # Do not allow admin:* to satisfy admin:system unless allow_admin is True
         if not (scope_prefix == "admin" and not allow_admin):
             if f"{scope_prefix}:*" in token_scopes:
                 return True
-        
+
         return False
 
     def check_all_scopes(
@@ -247,7 +248,7 @@ class TokenValidator:
         audiences = claims.get("aud", [])
         if isinstance(audiences, str):
             audiences = [audiences]
-        
+
         return expected_audience in audiences
 
     def validate_token_type(
@@ -278,9 +279,9 @@ class TokenValidator:
         exp = claims.get("exp")
         if not exp:
             return True
-        
+
         now = datetime.now(UTC).timestamp()
-        return now >= exp
+        return bool(now >= exp)
 
     def get_token_age(self, claims: dict[str, Any]) -> int:
         """Get token age in seconds.
@@ -294,7 +295,7 @@ class TokenValidator:
         iat = claims.get("iat")
         if not iat:
             return 0
-        
+
         now = datetime.now(UTC).timestamp()
         return int(now - iat)
 
@@ -310,7 +311,7 @@ class TokenValidator:
         exp = claims.get("exp")
         if not exp:
             return 0
-        
+
         now = datetime.now(UTC).timestamp()
         remaining = exp - now
         return max(0, int(remaining))
@@ -335,15 +336,15 @@ class TokenValidator:
         # Check token type
         if claims.get("type") != "m2m":
             raise ValueError("Not a service token")
-        
+
         # Check service identifier
         if claims.get("sub") != expected_service:
             raise ValueError(f"Invalid service: expected {expected_service}")
-        
+
         # Check service audience
         if not self.validate_audience(claims, "services"):
             raise ValueError("Invalid service audience")
-        
+
         # Add service metadata
         validated = claims.copy()
         validated["service"] = {
@@ -351,7 +352,7 @@ class TokenValidator:
             "type": "m2m",
             "scopes": claims.get("scopes", []),
         }
-        
+
         return validated
 
     @staticmethod
@@ -370,7 +371,7 @@ class TokenValidator:
             if ":" in scope:
                 validated.append(scope)
             # Skip invalid scopes silently
-        
+
         return validated
 
     async def _get_user(self, user_id: UUID) -> User | None:
@@ -401,7 +402,7 @@ class TokenValidator:
             ttl: Cache TTL in seconds
         """
         import json
-        
+
         cache_key = f"jwt:validated:{jti}"
         await self.redis.setex(
             cache_key,
@@ -419,14 +420,15 @@ class TokenValidator:
             Cached validation result or None
         """
         import json
-        
+
         cache_key = f"jwt:validated:{jti}"
         cached = await self.redis.get(cache_key)
-        
+
         if cached:
             try:
-                return json.loads(cached.decode())
+                result = json.loads(cached.decode())
+                return result if isinstance(result, dict) else None
             except (json.JSONDecodeError, AttributeError):
                 pass
-        
+
         return None

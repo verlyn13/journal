@@ -5,18 +5,17 @@ from __future__ import annotations
 import logging
 import time
 
-from typing import Any, Optional
+from typing import Any
 
 from fastapi import HTTPException, Request, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
-from redis.asyncio import Redis
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.domain.auth.jwt_service import JWTService
 from app.domain.auth.token_validator import TokenValidator
 from app.infra.db import get_session
 from app.infra.redis import get_redis_client
 from app.settings import settings
+
 
 logger = logging.getLogger(__name__)
 
@@ -66,7 +65,7 @@ class JWTMiddleware:
         """
         # Extract token from Authorization header
         token = await self._extract_token(request)
-        
+
         if not token:
             if self.require_auth:
                 raise HTTPException(
@@ -86,21 +85,21 @@ class JWTMiddleware:
         try:
             # Measure verification time
             start_time = time.perf_counter()
-            
+
             # Verify JWT
             claims = await self.jwt_service.verify_jwt(
                 token,
                 expected_type=self.expected_token_type or "access",
                 expected_audience=settings.jwt_aud,
             )
-            
+
             # Validate claims
             validated_claims = await self.token_validator.validate_claims(
                 claims,
                 required_claims=["sub", "type", "exp"],
                 validate_user=claims.get("type") != "m2m",
             )
-            
+
             # Check required scopes
             if self.required_scopes:
                 if not self.token_validator.check_all_scopes(validated_claims, self.required_scopes):
@@ -108,17 +107,17 @@ class JWTMiddleware:
                         status_code=status.HTTP_403_FORBIDDEN,
                         detail=f"Insufficient scopes. Required: {self.required_scopes}",
                     )
-            
+
             # Log verification time
             verification_time = (time.perf_counter() - start_time) * 1000
             if verification_time > 10:  # Log slow verifications
-                logger.warning(f"Slow JWT verification: {verification_time:.2f}ms")
-            
+                logger.warning("Slow JWT verification: %.2fms", verification_time)
+
             # Store claims in request state
             request.state.jwt_claims = validated_claims
             request.state.user_id = validated_claims.get("user_id")
             request.state.token_type = validated_claims.get("type")
-            
+
             return validated_claims
 
         except ValueError as e:
@@ -129,31 +128,31 @@ class JWTMiddleware:
                     # Decode without verification for refresh
                     parts = token.split(".")
                     if len(parts) == 3:
-                        import json
-                        import base64
-                        
+                        import base64  # noqa: PLC0415
+                        import json  # noqa: PLC0415
+
                         payload = parts[1]
                         # Add padding if needed
                         padding = 4 - (len(payload) % 4)
                         if padding != 4:
                             payload += "=" * padding
-                        
+
                         claims = json.loads(base64.urlsafe_b64decode(payload))
                         claims["expired"] = True
                         request.state.jwt_claims = claims
                         return claims
-                except Exception:
-                    pass
-            
+                except Exception:  # noqa: S110
+                    pass  # Fallback if manual decode fails
+
             # Authentication failed
-            logger.debug(f"JWT verification failed: {e}")
+            logger.debug("JWT verification failed: %s", e)
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail=str(e),
                 headers={"WWW-Authenticate": "Bearer"},
             )
-        except Exception as e:
-            logger.error(f"JWT middleware error: {e}")
+        except Exception as e:  # noqa: BLE001
+            logger.exception("JWT middleware error: %s", e)
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail="Authentication service error",
@@ -173,17 +172,17 @@ class JWTMiddleware:
         auth_header = request.headers.get("Authorization")
         if auth_header and auth_header.startswith("Bearer "):
             return auth_header[7:]
-        
+
         # Check cookie (for session tokens)
         session_cookie = request.cookies.get("session_token")
         if session_cookie:
             return session_cookie
-        
+
         # Check query parameter (for websocket connections)
         token_param = request.query_params.get("token")
         if token_param:
             return token_param
-        
+
         return None
 
 
@@ -230,7 +229,7 @@ class RequireAuth:
             token = credentials.credentials
         else:
             token = await JWTMiddleware._extract_token(request)
-        
+
         if not token:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
@@ -248,21 +247,21 @@ class RequireAuth:
         )
 
         claims = await middleware(request)
-        
+
         if not claims:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Invalid authentication",
                 headers={"WWW-Authenticate": "Bearer"},
             )
-        
+
         # Check token type
         if self.token_types and claims.get("type") not in self.token_types:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail=f"Invalid token type. Expected: {self.token_types}",
             )
-        
+
         return claims
 
 
@@ -297,7 +296,7 @@ class OptionalAuth:
             token = credentials.credentials
         else:
             token = await JWTMiddleware._extract_token(request)
-        
+
         if not token:
             return None
 
@@ -307,7 +306,7 @@ class OptionalAuth:
                 require_auth=False,
                 required_scopes=self.scopes,
             )
-            
+
             return await middleware(request)
         except HTTPException:
             # Authentication failed but it's optional
@@ -341,28 +340,28 @@ class RequireScopes:
         """
         # Get claims from request state
         claims = getattr(request.state, "jwt_claims", None)
-        
+
         if not claims:
             # Not authenticated yet, run auth first
             auth = RequireAuth(scopes=self.scopes)
             claims = await auth(request)
-        
+
         # Check scopes
         async with get_session() as session:
             redis = get_redis_client()
             validator = TokenValidator(session, redis)
-            
+
             if self.match_all:
                 has_scopes = validator.check_all_scopes(claims, self.scopes)
             else:
                 has_scopes = validator.check_any_scope(claims, self.scopes)
-            
+
             if not has_scopes:
                 raise HTTPException(
                     status_code=status.HTTP_403_FORBIDDEN,
                     detail=f"Insufficient scopes. Required: {self.scopes}",
                 )
-        
+
         return claims
 
 

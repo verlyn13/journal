@@ -7,15 +7,19 @@ JWT cryptography and header/claims validation without pulling Postgres/Alembic.
 from __future__ import annotations
 
 import asyncio
+
 from typing import Any
 
 import pytest
 import pytest_asyncio
+
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.domain.auth.jwt_service import JWTService
 from app.domain.auth.key_manager import KeyManager
 from app.domain.auth.token_validator import TokenValidator
+
+
 class _InMemorySecretsClient:
     def __init__(self) -> None:
         self._secrets: dict[str, str] = {}
@@ -55,7 +59,7 @@ class FakeRedis:
 
     # Pipeline support for telemetry tests
     class _Pipeline:
-        def __init__(self, parent: 'FakeRedis') -> None:
+        def __init__(self, parent: FakeRedis) -> None:
             self.parent = parent
 
         def hincrby(self, key: str, field: str, amount: int) -> None:
@@ -66,7 +70,7 @@ class FakeRedis:
             obj[field] = int(obj.get(field, 0)) + amount
             self.parent._data[key] = json.dumps(obj).encode()
 
-        def set(self, key: str, value: str, ex: int | None = None) -> None:  # noqa: ARG002
+        def set(self, key: str, value: str, ex: int | None = None) -> None:
             self.parent._data[key] = value.encode()
 
         def rpush(self, key: str, value: str) -> None:
@@ -77,19 +81,19 @@ class FakeRedis:
             arr.append(value)
             self.parent._data[key] = json.dumps(arr).encode()
 
-        def ltrim(self, key: str, start: int, end: int) -> None:  # noqa: ARG002
+        def ltrim(self, key: str, start: int, end: int) -> None:
             # No-op for tests
             return None
 
         async def execute(self) -> None:
             return None
 
-    def pipeline(self) -> 'FakeRedis._Pipeline':
+    def pipeline(self) -> FakeRedis._Pipeline:
         return FakeRedis._Pipeline(self)
 
 
 class FakeAsyncSession(AsyncSession):
-    async def __aenter__(self) -> "FakeAsyncSession":  # type: ignore[override]
+    async def __aenter__(self) -> FakeAsyncSession:  # type: ignore[override]
         return self
 
     async def __aexit__(self, exc_type, exc, tb) -> None:  # type: ignore[override]
@@ -121,6 +125,7 @@ async def key_manager(db_session: AsyncSession, redis: FakeRedis) -> KeyManager:
     secrets = _InMemorySecretsClient()
     manager = KeyManager(db_session, redis, infisical_client=secrets)
     # Disable audit logging side effects in unit tests
+
     async def _no_audit(**kwargs):  # type: ignore[no-untyped-def]
         return None
     manager.audit_service.log_event = _no_audit  # type: ignore[assignment]
@@ -131,6 +136,7 @@ async def key_manager(db_session: AsyncSession, redis: FakeRedis) -> KeyManager:
 @pytest_asyncio.fixture
 async def jwt_service(db_session: AsyncSession, redis: FakeRedis, key_manager: KeyManager) -> JWTService:
     service = JWTService(db_session, redis, key_manager)
+
     async def _no_audit(**kwargs):  # type: ignore[no-untyped-def]
         return None
     service.audit_service.log_event = _no_audit  # type: ignore[assignment]

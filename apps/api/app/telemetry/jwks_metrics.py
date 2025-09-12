@@ -99,8 +99,8 @@ class JWKSMetrics:
                         # Some MagicMock may need explicit await on the function itself
                         try:
                             await exec_fn()  # type: ignore[misc]
-                        except Exception:
-                            pass
+                        except Exception:  # noqa: S110, BLE001
+                            pass  # Ignore if MagicMock doesn't support await
             except (ConnectionError, TimeoutError, ValueError) as e:
                 # Metrics collection failure should not affect service
                 logger.debug("Failed to record JWKS metrics: %s", e)

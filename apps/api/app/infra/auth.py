@@ -66,7 +66,7 @@ def create_verify_token(sub: str, minutes: int = 30) -> str:
 def require_user(creds: HTTPAuthorizationCredentials | None = Depends(bearer_scheme)) -> str:
     if creds is None:
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, 
+            status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Missing auth",
             headers={"WWW-Authenticate": "Bearer"}
         )
@@ -86,14 +86,14 @@ def require_user(creds: HTTPAuthorizationCredentials | None = Depends(bearer_sch
         sub: str | None = decoded.get("sub")
         if not sub or not isinstance(sub, str):
             raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED, 
+                status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Invalid token",
                 headers={"WWW-Authenticate": 'Bearer error="invalid_token"'}
             )
         return sub
     except jwt.PyJWTError as e:
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, 
+            status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid token",
             headers={"WWW-Authenticate": 'Bearer error="invalid_token"'}
         ) from e

@@ -414,15 +414,15 @@ class TestOutboxPatternExtended:
         async def mock_session_factory():
             # Return the test session which is already bound to test transaction
             yield db_session
-        
+
         # Process batch (will use test session)
         published_count = await process_outbox_batch(mock_session_factory)
-        
-        # The test should verify the publish count since the database update 
+
+        # The test should verify the publish count since the database update
         # happens within a savepoint that may not be visible to the test session
         assert published_count == 1
-        
-        # Note: Due to transaction isolation in tests, the published_at field 
+
+        # Note: Due to transaction isolation in tests, the published_at field
         # update may not be visible to the test session even though it occurred
 
     @pytest.mark.asyncio()

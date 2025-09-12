@@ -4,12 +4,12 @@ from __future__ import annotations
 
 import hashlib
 
+from collections.abc import Awaitable as _Awaitable
 from datetime import UTC, datetime
 from typing import Any
 from uuid import UUID
 
 from redis.asyncio import Redis
-from collections.abc import Awaitable as _Awaitable
 from sqlalchemy import update
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -25,7 +25,8 @@ class TokenRotationService:
         self.redis = redis
         self.audit_service = AuditService(session)
 
-    async def _resolve(self, value: Any) -> Any:
+    @staticmethod
+    async def _resolve(value: Any) -> Any:
         """Resolve possibly awaitable Redis operations for unit test mocks."""
         if isinstance(value, _Awaitable) or hasattr(value, "__await__"):
             return await value  # type: ignore[misc]

@@ -6,10 +6,13 @@ Asserts Content-Type and caching headers per RFC 7517 and operational guidance.
 from __future__ import annotations
 
 import json
+
 from typing import Any
 
 import pytest
+
 from fastapi import Response
+
 from app.api.v1.jwks import get_jwks as route_get_jwks
 from app.services.jwks_service import JWKSService
 

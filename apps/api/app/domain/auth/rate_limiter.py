@@ -3,11 +3,11 @@
 from __future__ import annotations
 
 import hashlib
+import logging
 
 from collections.abc import Awaitable
-import logging
 from dataclasses import dataclass
-from typing import Any, ClassVar, cast
+from typing import Any, ClassVar
 from uuid import UUID
 
 from redis.asyncio import Redis
@@ -143,9 +143,9 @@ class AuthRateLimiter:
                     event_data={"reason": reason, "ip": ip_address},
                     ip_address=ip_address,
                 )
-            except Exception:
+            except Exception as e:
                 # Do not fail the request if audit logging is unavailable or FK not present
-                self._logger.debug("Audit log event failed for rate limiter")
+                self._logger.debug("Audit log event failed for rate limiter: %s", e)
 
         # Track failure patterns for anomaly detection
         await self._track_failure_pattern(action, ip_address, user_id)
@@ -209,7 +209,8 @@ class AuthRateLimiter:
         if action:
             # Reset specific action
             key = self._make_key(action, identifier)
-            return await self._resolve(self.redis.delete(key))
+            result = await self._resolve(self.redis.delete(key))
+            return int(result) if result else 0
 
         # Reset all actions
         count = 0

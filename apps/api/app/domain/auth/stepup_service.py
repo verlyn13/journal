@@ -5,6 +5,7 @@ from __future__ import annotations
 import base64
 import secrets
 
+from collections.abc import Awaitable as _Awaitable
 from datetime import UTC, datetime, timedelta
 from typing import Any, Literal, cast
 from uuid import UUID
@@ -43,7 +44,6 @@ class StepUpAuthService:
         self.session = session
         self.redis = redis
         self.audit_service = AuditService(session)
-        from collections.abc import Awaitable as _Awaitable
         self._AwaitableT = _Awaitable
 
     async def _resolve(self, value: Any) -> Any:
