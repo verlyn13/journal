@@ -1,18 +1,24 @@
 from __future__ import annotations
+
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.ext.asyncio import AsyncSession
-from app.infra.db import get_session
-from app.infra.search_pgvector import hybrid_search, semantic_search, upsert_entry_embedding
-from app.infra.models import Entry
 from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.infra.db import get_session
+from app.infra.models import Entry
+from app.infra.search_pgvector import hybrid_search, semantic_search, upsert_entry_embedding
 
 router = APIRouter(prefix="", tags=["search"])
 
+
 @router.get("/search")
-async def search_hybrid(q: str, k: int = 10, alpha: float = 0.6, s: AsyncSession = Depends(get_session)):
+async def search_hybrid(
+    q: str, k: int = 10, alpha: float = 0.6, s: AsyncSession = Depends(get_session)
+):
     if not (0.0 <= alpha <= 1.0):
         raise HTTPException(400, "alpha must be in [0,1]")
     return await hybrid_search(s, q=q, k=k, alpha=alpha)
+
 
 @router.post("/search/semantic")
 async def search_semantic(body: dict, s: AsyncSession = Depends(get_session)):
@@ -21,6 +27,7 @@ async def search_semantic(body: dict, s: AsyncSession = Depends(get_session)):
     if not q:
         raise HTTPException(400, "Missing 'q'")
     return await semantic_search(s, q=q, k=k)
+
 
 @router.post("/entries/{entry_id}/embed")
 async def embed_entry(entry_id: str, s: AsyncSession = Depends(get_session)):

@@ -1,9 +1,13 @@
 from __future__ import annotations
+
+import json
+
 from fastapi import APIRouter
-import json, asyncio
+
 from app.infra.nats_bus import nats_conn
 
 router = APIRouter(prefix="/admin", tags=["admin"])
+
 
 @router.post("/reindex-embeddings")
 async def reindex_embeddings(body: dict | None = None):

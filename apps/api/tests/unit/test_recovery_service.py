@@ -251,9 +251,7 @@ class TestRecoveryService:
         assert status["used_codes"] == 1  # 1 code was used from the new kit
         assert status["remaining_codes"] == 9  # 9 unused codes remaining
 
-    def test_get_recovery_instructions(
-        self, recovery_service: RecoveryService
-    ) -> None:
+    def test_get_recovery_instructions(self, recovery_service: RecoveryService) -> None:
         """Test recovery instructions."""
         instructions = recovery_service.get_recovery_instructions()
 

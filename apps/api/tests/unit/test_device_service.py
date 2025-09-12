@@ -69,12 +69,8 @@ class TestDeviceService:
     ) -> None:
         """Test listing user devices."""
         # Create multiple devices
-        device1 = await device_service.register_device(
-            test_user.id, "iPhone", "Safari", "iOS"
-        )
-        device2 = await device_service.register_device(
-            test_user.id, "MacBook", "Chrome", "macOS"
-        )
+        device1 = await device_service.register_device(test_user.id, "iPhone", "Safari", "iOS")
+        device2 = await device_service.register_device(test_user.id, "MacBook", "Chrome", "macOS")
 
         devices = await device_service.list_user_devices(test_user.id)
 
@@ -131,13 +127,9 @@ class TestDeviceService:
         db_session: AsyncSession,
     ) -> None:
         """Test updating device name."""
-        device = await device_service.register_device(
-            test_user.id, "Old Name", "Chrome", "Linux"
-        )
+        device = await device_service.register_device(test_user.id, "Old Name", "Chrome", "Linux")
 
-        success = await device_service.update_device_name(
-            device.id, test_user.id, "New Name"
-        )
+        success = await device_service.update_device_name(device.id, test_user.id, "New Name")
 
         assert success is True
 
@@ -159,9 +151,7 @@ class TestDeviceService:
 
         assert device.trusted is False
 
-        success = await device_service.mark_device_trusted(
-            device.id, test_user.id, True
-        )
+        success = await device_service.mark_device_trusted(device.id, test_user.id, True)
 
         assert success is True
 
@@ -170,9 +160,7 @@ class TestDeviceService:
         assert updated.trusted is True
 
         # Test untrusting
-        success = await device_service.mark_device_trusted(
-            device.id, test_user.id, False
-        )
+        success = await device_service.mark_device_trusted(device.id, test_user.id, False)
 
         assert success is True
 

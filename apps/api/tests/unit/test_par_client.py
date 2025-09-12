@@ -102,9 +102,11 @@ class TestPARClient:
         assert "code_challenge" in params
 
         assert len(verifier) > 40
-        expected_challenge = base64.urlsafe_b64encode(
-            hashlib.sha256(verifier.encode()).digest()
-        ).decode().rstrip("=")
+        expected_challenge = (
+            base64.urlsafe_b64encode(hashlib.sha256(verifier.encode()).digest())
+            .decode()
+            .rstrip("=")
+        )
         assert params["code_challenge"] == expected_challenge
 
     @pytest.mark.asyncio()

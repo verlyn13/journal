@@ -67,9 +67,7 @@ class PrivacyService:
             raise ValueError("User not found")
 
         # Get entries (journal content)
-        entries_result = await self.session.scalars(
-            select(Entry).where(Entry.author_id == user_id)
-        )
+        entries_result = await self.session.scalars(select(Entry).where(Entry.author_id == user_id))
         entries = list(entries_result)
 
         # Get devices
@@ -186,7 +184,15 @@ class PrivacyService:
         if data["entries"]:
             writer = csv.DictWriter(
                 output,
-                fieldnames=["id", "title", "content", "markdown_content", "word_count", "created_at", "updated_at"],
+                fieldnames=[
+                    "id",
+                    "title",
+                    "content",
+                    "markdown_content",
+                    "word_count",
+                    "created_at",
+                    "updated_at",
+                ],
             )
             writer.writeheader()
             for entry in data["entries"]:

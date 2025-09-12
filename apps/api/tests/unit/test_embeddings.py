@@ -89,8 +89,9 @@ class TestEmbeddings:
         mock_client = MagicMock()
         mock_client.embeddings.create.side_effect = Exception("API Error")
 
-        with patch("openai.OpenAI", return_value=mock_client), pytest.raises(
-            Exception, match="API Error"
+        with (
+            patch("openai.OpenAI", return_value=mock_client),
+            pytest.raises(Exception, match="API Error"),
         ):
             get_embedding("test text")
 

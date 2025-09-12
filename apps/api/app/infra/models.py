@@ -131,11 +131,11 @@ class User(SQLModel, table=True):
     )
     created_at: datetime = Field(
         default_factory=lambda: datetime.now(UTC),
-        sa_column=Column(DateTime(timezone=True), nullable=False, index=True)
+        sa_column=Column(DateTime(timezone=True), nullable=False, index=True),
     )
     updated_at: datetime = Field(
         default_factory=lambda: datetime.now(UTC),
-        sa_column=Column(DateTime(timezone=True), nullable=False)
+        sa_column=Column(DateTime(timezone=True), nullable=False),
     )
 
 
@@ -155,16 +155,13 @@ class UserSession(SQLModel, table=True):
     ip_address: str | None = None
     issued_at: datetime = Field(
         default_factory=lambda: datetime.now(UTC),
-        sa_column=Column(DateTime(timezone=True), nullable=False, index=True)
+        sa_column=Column(DateTime(timezone=True), nullable=False, index=True),
     )
     last_used_at: datetime = Field(
         default_factory=lambda: datetime.now(UTC),
-        sa_column=Column(DateTime(timezone=True), nullable=False)
+        sa_column=Column(DateTime(timezone=True), nullable=False),
     )
-    expires_at: datetime = Field(
-        sa_column=Column(DateTime(timezone=True), nullable=False)
-    )
+    expires_at: datetime = Field(sa_column=Column(DateTime(timezone=True), nullable=False))
     revoked_at: datetime | None = Field(
-        default=None,
-        sa_column=Column(DateTime(timezone=True), nullable=True)
+        default=None, sa_column=Column(DateTime(timezone=True), nullable=True)
     )

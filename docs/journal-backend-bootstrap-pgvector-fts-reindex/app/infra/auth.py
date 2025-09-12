@@ -1,15 +1,20 @@
 from __future__ import annotations
+
 from datetime import datetime, timedelta, timezone
 from typing import Any, Dict
+
 import jwt
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+
 from app.settings import settings
 
 bearer_scheme = HTTPBearer(auto_error=False)
 
+
 def _utcnow() -> datetime:
     return datetime.now(timezone.utc)
+
 
 def create_access_token(sub: str, scopes: list[str] | None = None) -> str:
     now = _utcnow()
@@ -25,6 +30,7 @@ def create_access_token(sub: str, scopes: list[str] | None = None) -> str:
     }
     return jwt.encode(payload, settings.jwt_secret, algorithm="HS256")
 
+
 def create_refresh_token(sub: str) -> str:
     now = _utcnow()
     payload = {
@@ -37,6 +43,7 @@ def create_refresh_token(sub: str) -> str:
         "typ": "refresh",
     }
     return jwt.encode(payload, settings.jwt_secret, algorithm="HS256")
+
 
 def require_user(creds: HTTPAuthorizationCredentials = Depends(bearer_scheme)) -> str:
     if not creds:

@@ -48,7 +48,7 @@ event_data: Mapped[dict[str, Any]]  # JSON data structure
 
 LESSON: Always specify type parameters for generics.
 Even dict[str, Any] is better than bare dict.
-        """
+        """,
     )
     wait_for_input()
 
@@ -79,7 +79,7 @@ if not exists_guard(user):
 
 LESSON: Type guards make narrowing explicit and reusable.
 They're honest with the type checker.
-        """
+        """,
     )
     wait_for_input()
 
@@ -111,7 +111,7 @@ update_timestamp(session)
 
 LESSON: Protocols > inheritance for shared behavior.
 If it walks like a duck and quacks like a duck...
-        """
+        """,
     )
     wait_for_input()
 
@@ -142,7 +142,7 @@ samesite = validate_cookie_samesite(settings.cookie_samesite)
 
 LESSON: Validate and transform at system boundaries.
 Types can't cross network calls.
-        """
+        """,
     )
     wait_for_input()
 
@@ -171,7 +171,7 @@ WHY WE KEEP THEM:
 - They teach humility about type systems
 
 96% with understanding > 100% with hacks
-        """
+        """,
     )
     wait_for_input()
 
@@ -207,7 +207,7 @@ What this journey taught us:
    Understanding > eliminating
 
 REMEMBER: Types serve us, not vice versa.
-        """
+        """,
     )
     wait_for_input()
 
@@ -242,7 +242,7 @@ EXTERNAL RESOURCES:
 🔗 mypy documentation
 
 Remember: Every type annotation is a chance to teach.
-        """
+        """,
     )
     wait_for_input()
 

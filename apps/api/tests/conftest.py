@@ -49,6 +49,7 @@ settings.db_url_sync = TEST_DB_URL_SYNC
 def event_loop():
     """Create event loop for the session."""
     import asyncio
+
     loop = asyncio.new_event_loop()
     yield loop
     loop.close()
@@ -129,6 +130,7 @@ async def request_scoped_session(session_factory, db_connection: AsyncConnection
         yield session
     finally:
         await session.close()
+
 
 # Note: No more TRUNCATE-based cleanup - using transaction rollback pattern
 

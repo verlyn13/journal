@@ -3,19 +3,23 @@ import pytest
 from journal import create_app, db
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def test_app():
     """Create and configure a new app instance for each test module."""
     # Setup: Create app with testing config
-    app = create_app('config.TestingConfig')  # Use the TestingConfig defined in config.py
-    app.config.update({
-        'TESTING': True,
-        # Ensure DB URI uses in-memory for isolation
-        'SQLALCHEMY_DATABASE_URI': 'sqlite:///:memory:',
-        'WTF_CSRF_ENABLED': False,  # Disable CSRF for easier form testing in unit/integration tests
-        'LOGIN_DISABLED': False,  # Ensure login is not globally disabled by Flask-Login testing utils if used later
-        'SERVER_NAME': 'localhost.test',  # Required for url_for generation without active request context
-    })
+    app = create_app(
+        "config.TestingConfig"
+    )  # Use the TestingConfig defined in config.py
+    app.config.update(
+        {
+            "TESTING": True,
+            # Ensure DB URI uses in-memory for isolation
+            "SQLALCHEMY_DATABASE_URI": "sqlite:///:memory:",
+            "WTF_CSRF_ENABLED": False,  # Disable CSRF for easier form testing in unit/integration tests
+            "LOGIN_DISABLED": False,  # Ensure login is not globally disabled by Flask-Login testing utils if used later
+            "SERVER_NAME": "localhost.test",  # Required for url_for generation without active request context
+        }
+    )
 
     with app.app_context():
         db.create_all()  # Create tables for in-memory db
@@ -32,7 +36,7 @@ def test_app():
             pass
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def test_client(test_app):
     """A test client for the app."""
     return test_app.test_client()
@@ -53,9 +57,9 @@ def db_session(test_app):
 @pytest.fixture  # Function scope as it involves login state
 def auth_client(test_client, test_app):
     """Provides a test client logged in as a predefined user."""
-    username = 'crud_user'
-    email = 'crud@example.com'
-    password = 'crud_password'
+    username = "crud_user"
+    email = "crud@example.com"
+    password = "crud_password"
 
     # Create user within app context
     with test_app.app_context():
@@ -75,8 +79,8 @@ def auth_client(test_client, test_app):
 
     # Log in the user using the client
     response = test_client.post(
-        '/auth/login',
-        data={'username': username, 'password': password},
+        "/auth/login",
+        data={"username": username, "password": password},
         follow_redirects=True,
     )
 
@@ -85,7 +89,7 @@ def auth_client(test_client, test_app):
     yield test_client, user_id
 
     # Teardown: Log out the client (optional, client state resets anyway)
-    test_client.get('/auth/logout', follow_redirects=True)
+    test_client.get("/auth/logout", follow_redirects=True)
 
 
 @pytest.fixture
@@ -100,10 +104,12 @@ def entry(test_app, auth_client):
 
         # Create an entry for the authenticated user
         test_entry = Entry(
-            title='Test Entry',
-            body='This is test content.',  # Changed from content to body
+            title="Test Entry",
+            body="This is test content.",  # Changed from content to body
             user_id=user_id,
-            timestamp=datetime.now(UTC),  # Changed from created_at/updated_at to timestamp
+            timestamp=datetime.now(
+                UTC
+            ),  # Changed from created_at/updated_at to timestamp
         )
         db.session.add(test_entry)
         db.session.commit()

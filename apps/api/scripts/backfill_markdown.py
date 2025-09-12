@@ -19,7 +19,9 @@ async def backfill_markdown_content(batch_size: int = 100, dry_run: bool = False
         logger.info("DRY RUN MODE - No changes will be saved")
 
     engine = get_async_engine()
-    async_session_local = async_sessionmaker(bind=engine, class_=AsyncSession, expire_on_commit=False)
+    async_session_local = async_sessionmaker(
+        bind=engine, class_=AsyncSession, expire_on_commit=False
+    )
     async with async_session_local() as s:
         while True:
             rows = (
