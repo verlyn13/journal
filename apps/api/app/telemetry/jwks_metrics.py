@@ -144,25 +144,24 @@ class JWKSMetrics:
             # Get all counters
             counters = await cast(
                 "Awaitable[dict[bytes, bytes]]",
-                self.redis.hgetall(f"{self._metrics_prefix}counters")
+                self.redis.hgetall(f"{self._metrics_prefix}counters"),
             )
 
             # Get histogram data
             histogram = await cast(
                 "Awaitable[dict[bytes, bytes]]",
-                self.redis.hgetall(f"{self._metrics_prefix}histogram")
+                self.redis.hgetall(f"{self._metrics_prefix}histogram"),
             )
 
             # Get last request time
             last_request = await cast(
-                "Awaitable[bytes | None]",
-                self.redis.get(f"{self._metrics_prefix}last_request")
+                "Awaitable[bytes | None]", self.redis.get(f"{self._metrics_prefix}last_request")
             )
 
             # Get recent rotation history
             rotation_history = await cast(
                 "Awaitable[list[bytes]]",
-                self.redis.lrange(f"{self._metrics_prefix}rotation_history", -10, -1)
+                self.redis.lrange(f"{self._metrics_prefix}rotation_history", -10, -1),
             )
 
             # Calculate cache hit rate

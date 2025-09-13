@@ -33,12 +33,10 @@ class TokenValidator:
         "entries:delete": "Delete entries",
         "profile:read": "Read user profile",
         "profile:write": "Update user profile",
-
         # Admin scopes
         "admin:users": "Manage users",
         "admin:system": "System administration",
         "admin:audit": "Access audit logs",
-
         # Service scopes
         "service:embedding": "Embedding service access",
         "service:search": "Search service access",
@@ -125,7 +123,11 @@ class TokenValidator:
 
         # Parse and validate scopes
         if validated["scope"]:
-            scopes = validated["scope"].split() if isinstance(validated["scope"], str) else validated["scope"]
+            scopes = (
+                validated["scope"].split()
+                if isinstance(validated["scope"], str)
+                else validated["scope"]
+            )
             validated["scopes"] = self._validate_scopes(scopes)
         else:
             validated["scopes"] = []
@@ -165,7 +167,10 @@ class TokenValidator:
         # Check wildcard scopes (e.g., "entries:*" matches "entries:read")
         scope_prefix = required_scope.split(":", 1)[0]
         # Do not allow admin:* to satisfy admin:system unless allow_admin is True
-        return not (scope_prefix == "admin" and not allow_admin) and f"{scope_prefix}:*" in token_scopes
+        return (
+            not (scope_prefix == "admin" and not allow_admin)
+            and f"{scope_prefix}:*" in token_scopes
+        )
 
     def check_all_scopes(
         self,
@@ -183,10 +188,7 @@ class TokenValidator:
         Returns:
             True if all scopes are present
         """
-        return all(
-            self.check_scope(claims, scope, allow_admin)
-            for scope in required_scopes
-        )
+        return all(self.check_scope(claims, scope, allow_admin) for scope in required_scopes)
 
     def check_any_scope(
         self,
@@ -204,10 +206,7 @@ class TokenValidator:
         Returns:
             True if any scope is present
         """
-        return any(
-            self.check_scope(claims, scope, allow_admin)
-            for scope in required_scopes
-        )
+        return any(self.check_scope(claims, scope, allow_admin) for scope in required_scopes)
 
     def get_user_permissions(self, claims: dict[str, Any]) -> dict[str, bool]:
         """Get user permissions based on token scopes.
@@ -373,9 +372,7 @@ class TokenValidator:
         Returns:
             User object or None
         """
-        result = await self.session.execute(
-            select(User).where(User.id == user_id)
-        )
+        result = await self.session.execute(select(User).where(User.id == user_id))
         return result.scalar_one_or_none()
 
     async def cache_validation_result(
