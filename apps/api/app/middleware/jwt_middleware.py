@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import logging
 import time
 
@@ -102,12 +103,11 @@ class JWTMiddleware:
             )
 
             # Check required scopes
-            if self.required_scopes:
-                if not self.token_validator.check_all_scopes(validated_claims, self.required_scopes):
-                    raise HTTPException(
-                        status_code=status.HTTP_403_FORBIDDEN,
-                        detail=f"Insufficient scopes. Required: {self.required_scopes}",
-                    )
+            if self.required_scopes and not self.token_validator.check_all_scopes(validated_claims, self.required_scopes):
+                raise HTTPException(
+                    status_code=status.HTTP_403_FORBIDDEN,
+                    detail=f"Insufficient scopes. Required: {self.required_scopes}",
+                )
 
             # Log verification time
             verification_time = (time.perf_counter() - start_time) * 1000
@@ -142,7 +142,7 @@ class JWTMiddleware:
                         claims["expired"] = True
                         request.state.jwt_claims = claims
                         return claims
-                except (ValueError, KeyError, json.JSONDecodeError):
+                except (KeyError, ValueError):  # JSONDecodeError ⊂ ValueError
                     pass  # Fallback if manual decode fails
 
             # Authentication failed
@@ -152,8 +152,8 @@ class JWTMiddleware:
                 detail=str(e),
                 headers={"WWW-Authenticate": "Bearer"},
             )
-        except Exception as e:
-            logger.exception("JWT middleware error: %s", e)
+        except Exception:
+            logger.exception("JWT middleware error")
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail="Authentication service error",

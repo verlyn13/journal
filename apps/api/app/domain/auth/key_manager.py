@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import json
 import logging
 
@@ -11,6 +12,7 @@ from typing import Any, Protocol, cast
 from uuid import UUID
 
 from redis.asyncio import Redis
+from redis.exceptions import RedisError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.domain.auth.audit_service import AuditService
@@ -369,7 +371,7 @@ class KeyManager:
                 results["cache_consistent"] = (
                     cached_current.decode() == stored_current if cached_current else False
                 )
-        except (ConnectionError, TimeoutError, ValueError) as e:
+        except (RedisError, asyncio.TimeoutError, ValueError) as e:
             issues.append(f"Cache consistency error: {e}")
 
         return results
@@ -460,7 +462,7 @@ class KeyManager:
                 # store metadata as retiring with short TTL via Redis directly
                 await self._store_key_metadata_with_ttl(current_meta, KeyStatus.RETIRING, int(self.overlap_window.total_seconds()))
             await self.redis.setex(self._retiring_key_cache, int(self.overlap_window.total_seconds()), current_pem)
-        except (RuntimeError, ConnectionError, TimeoutError) as e:
+        except (RuntimeError, RedisError, asyncio.TimeoutError) as e:
             # If this fails, rotation still proceeds; overlap just won't include retiring
             logger.debug("Could not cache retiring key: %s", e)
 

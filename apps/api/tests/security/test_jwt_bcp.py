@@ -68,5 +68,5 @@ class TestJWTBCP:
         header["typ"] = "JWT"
         h = base64.urlsafe_b64encode(json.dumps(header).encode()).decode().rstrip("=")
         bad = f"{h}.{parts[1]}.{parts[2]}"
-        with pytest.raises(ValueError, match="Token type|not allowed|typ"):
+        with pytest.raises(ValueError, match=r"Token type|not allowed|typ"):
             await jwt_service.verify_jwt(bad, expected_type="access")

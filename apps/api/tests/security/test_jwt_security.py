@@ -19,7 +19,7 @@ from app.domain.auth.token_validator import TokenValidator
 # Use local security conftest fixtures (no DB/Redis)
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 class TestJWTSecurity:
     """Security-focused tests for JWT implementation."""
 
@@ -77,7 +77,7 @@ class TestJWTSecurity:
         tampered_token = f"{tampered_header}.{parts[1]}."  # No signature
 
         # Verification should fail
-        with pytest.raises(ValueError, match="forbidden|Algorithm|allowed"):
+        with pytest.raises(ValueError, match=r"forbidden|Algorithm|allowed"):
             await jwt_service.verify_jwt(tampered_token)
 
     async def test_expired_token_rejection(self, jwt_service: JWTService) -> None:
@@ -120,7 +120,7 @@ class TestJWTSecurity:
         future_token = f"{header_b64}.{payload_b64}.{signature_b64}"
 
         # Verification should fail
-        with pytest.raises(ValueError, match="not yet valid|nbf"):
+        with pytest.raises(ValueError, match=r"not yet valid|nbf"):
             await jwt_service.verify_jwt(future_token)
 
     async def test_invalid_kid_rejection(self, jwt_service: JWTService) -> None:
@@ -147,7 +147,7 @@ class TestJWTSecurity:
         fake_token = f"{header_b64}.{payload_b64}.{signature_b64}"
 
         # Verification should fail
-        with pytest.raises(ValueError, match="Unknown key ID|Unknown key|kid"):
+        with pytest.raises(ValueError, match=r"Unknown key ID|Unknown key|kid"):
             await jwt_service.verify_jwt(fake_token)
 
     async def test_token_reuse_after_revocation(self, jwt_service: JWTService) -> None:
@@ -205,7 +205,7 @@ class TestJWTSecurity:
         assert "web" in claims["aud"]
 
         # Should fail with wrong audience
-        with pytest.raises(ValueError, match="audience|No matching audience"):
+        with pytest.raises(ValueError, match=r"audience|No matching audience"):
             await jwt_service.verify_jwt(token, expected_audience="admin")
 
     async def test_token_type_validation(self, jwt_service: JWTService) -> None:
@@ -219,7 +219,7 @@ class TestJWTSecurity:
         assert claims["type"] == "refresh"
 
         # Should fail with wrong type
-        with pytest.raises(ValueError, match="Invalid token type|Token type"):
+        with pytest.raises(ValueError, match=r"Invalid token type|Token type"):
             await jwt_service.verify_jwt(token, expected_type="access")
 
     async def test_jti_uniqueness(self, jwt_service: JWTService) -> None:
@@ -270,7 +270,7 @@ class TestJWTSecurity:
         ]
 
         for token in malformed_tokens:
-            with pytest.raises(ValueError):
+            with pytest.raises(ValueError, match=r"Invalid|malformed|decode"):
                 await jwt_service.verify_jwt(token)
 
     async def test_key_rotation_during_verification(

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import hashlib
 import logging
 
@@ -11,6 +12,7 @@ from typing import Any, ClassVar
 from uuid import UUID
 
 from redis.asyncio import Redis
+from redis.exceptions import RedisError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.domain.auth.audit_service import AuditService
@@ -143,7 +145,7 @@ class AuthRateLimiter:
                     event_data={"reason": reason, "ip": ip_address},
                     ip_address=ip_address,
                 )
-            except (ConnectionError, RuntimeError, ValueError) as e:
+            except (RedisError, asyncio.TimeoutError, RuntimeError, ValueError) as e:
                 # Do not fail the request if audit logging is unavailable or FK not present
                 self._logger.debug("Audit log event failed for rate limiter: %s", e)
 

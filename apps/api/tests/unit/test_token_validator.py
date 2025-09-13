@@ -1,24 +1,23 @@
 """Unit tests for token validator."""
-# ruff: noqa: F811
 
 from datetime import UTC, datetime, timedelta
+from typing import TYPE_CHECKING
 from uuid import uuid4
 
 import pytest
 
-from redis.asyncio import Redis
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.domain.auth.token_validator import TokenValidator
 from app.infra.sa_models import User
 
+if TYPE_CHECKING:
+    from app.domain.auth.jwt_service import JWTService
+    from app.domain.auth.key_manager import KeyManager
+    from redis.asyncio import Redis
+
 # Import fixtures for pytest to discover them
-from tests.fixtures.jwt_fixtures import (  # noqa: F401
-    jwt_service,
-    key_manager,
-    redis,
-    token_validator,
-)
+from tests.fixtures.jwt_fixtures import jwt_service, key_manager, redis, token_validator  # noqa: F401
 
 
 @pytest.fixture
@@ -35,7 +34,7 @@ async def test_user(db_session: AsyncSession) -> User:
     return user
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 class TestTokenValidator:
     """Test token validator functionality."""
 

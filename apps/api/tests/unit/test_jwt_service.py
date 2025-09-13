@@ -1,27 +1,26 @@
 """Unit tests for JWT service."""
-# ruff: noqa: F811
 
 import json
 
 from datetime import UTC, datetime, timedelta
+from typing import TYPE_CHECKING
 from uuid import uuid4
 
 import pytest
 
 from app.domain.auth.jwt_service import JWTService
-from app.domain.auth.key_manager import KeyManager
-from app.infra.crypto.key_generation import Ed25519KeyGenerator
+
+if TYPE_CHECKING:
+    from app.domain.auth.key_manager import KeyManager
+    from app.domain.auth.token_validator import TokenValidator
+    from app.infra.crypto.key_generation import Ed25519KeyGenerator
+    from redis.asyncio import Redis
 
 # Import fixtures for pytest to discover them
-from tests.fixtures.jwt_fixtures import (  # noqa: F401
-    jwt_service,
-    key_manager,
-    redis,
-    token_validator,
-)
+from tests.fixtures.jwt_fixtures import jwt_service, key_manager, redis, token_validator  # noqa: F401
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 class TestJWTService:
     """Test JWT service functionality."""
 
@@ -33,7 +32,7 @@ class TestJWTService:
         # Sign JWT
         token = await jwt_service.sign_jwt(
             user_id=user_id,
-            token_type="access",
+            token_type="access"  # noqa: S106 - token type not password,
             scopes=scopes,
             audience=["api", "web"],
         )
@@ -57,7 +56,7 @@ class TestJWTService:
         # Sign token with short TTL
         token = await jwt_service.sign_jwt(
             user_id=user_id,
-            token_type="access",
+            token_type="access"  # noqa: S106 - token type not password,
             ttl=timedelta(seconds=1),
         )
 
@@ -146,7 +145,7 @@ class TestJWTService:
         # Valid token
         token = await jwt_service.sign_jwt(
             user_id=user_id,
-            token_type="access",
+            token_type="access"  # noqa: S106 - token type not password,
             scopes=["entries:read"],
         )
 
@@ -159,7 +158,7 @@ class TestJWTService:
         # Expired token
         expired_token = await jwt_service.sign_jwt(
             user_id=user_id,
-            token_type="access",
+            token_type="access"  # noqa: S106 - token type not password,
             ttl=timedelta(seconds=-1),
         )
 
@@ -179,7 +178,7 @@ class TestJWTService:
 
         token = await jwt_service.sign_jwt(
             user_id=user_id,
-            token_type="access",
+            token_type="access"  # noqa: S106 - token type not password,
             additional_claims=additional,
         )
 
@@ -195,7 +194,7 @@ class TestJWTService:
         # Token with specific audiences
         token = await jwt_service.sign_jwt(
             user_id=user_id,
-            token_type="access",
+            token_type="access"  # noqa: S106 - token type not password,
             audience=["api", "mobile"],
         )
 
@@ -216,7 +215,7 @@ class TestJWTService:
 
         token = await jwt_service.sign_jwt(
             user_id=user_id,
-            token_type="access",
+            token_type="access"  # noqa: S106 - token type not password,
             scopes=["entries:read", "profile:read"],
         )
 
@@ -300,7 +299,7 @@ class TestJWTService:
 
         token = await jwt_service.sign_jwt(
             user_id=service_id,
-            token_type="m2m",
+            token_type="m2m"  # noqa: S106 - token type not password,
             scopes=["service:embedding", "service:search"],
             audience=["services"],
             additional_claims={"service_name": "embedding-worker"},

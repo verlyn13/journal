@@ -136,7 +136,7 @@ class TokenValidator:
 
         return validated
 
-    def check_scope(
+    def check_scope(  # noqa: PLR6301 - Instance method for API consistency
         self,
         claims: dict[str, Any],
         required_scope: str,
@@ -227,7 +227,7 @@ class TokenValidator:
             "is_admin": self.check_scope(claims, "admin:system", allow_admin=False),
         }
 
-    def validate_audience(
+    def validate_audience(  # noqa: PLR6301 - Instance method for API consistency
         self,
         claims: dict[str, Any],
         expected_audience: str,
@@ -247,7 +247,7 @@ class TokenValidator:
 
         return expected_audience in audiences
 
-    def validate_token_type(
+    def validate_token_type(  # noqa: PLR6301 - Instance method for API consistency
         self,
         claims: dict[str, Any],
         expected_type: str,
@@ -263,7 +263,7 @@ class TokenValidator:
         """
         return claims.get("type") == expected_type
 
-    def is_token_expired(self, claims: dict[str, Any]) -> bool:
+    def is_token_expired(self, claims: dict[str, Any]) -> bool:  # noqa: PLR6301 - Instance method for API consistency
         """Check if token is expired.
 
         Args:
@@ -279,7 +279,7 @@ class TokenValidator:
         now = datetime.now(UTC).timestamp()
         return bool(now >= exp)
 
-    def get_token_age(self, claims: dict[str, Any]) -> int:
+    def get_token_age(self, claims: dict[str, Any]) -> int:  # noqa: PLR6301 - Instance method for API consistency
         """Get token age in seconds.
 
         Args:
@@ -295,7 +295,7 @@ class TokenValidator:
         now = datetime.now(UTC).timestamp()
         return int(now - iat)
 
-    def get_token_remaining_ttl(self, claims: dict[str, Any]) -> int:
+    def get_token_remaining_ttl(self, claims: dict[str, Any]) -> int:  # noqa: PLR6301 - Instance method for API consistency
         """Get remaining TTL in seconds.
 
         Args:
