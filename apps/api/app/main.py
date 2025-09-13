@@ -4,6 +4,7 @@ import asyncio
 import logging
 
 from fastapi import FastAPI
+import os
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import PlainTextResponse
 from strawberry.fastapi import GraphQLRouter
@@ -93,8 +94,9 @@ async def _startup() -> None:
 
     configure_trusted_proxies()
 
-    # Background outbox relay publisher (skip in tests)
-    if not settings.testing:
+    # Background outbox relay publisher (skip in tests or when disabled via env)
+    disable_startup = os.getenv("JOURNAL_DISABLE_STARTUP") == "1"
+    if not settings.testing and not disable_startup:
         session_maker = sessionmaker_for(build_engine())
         task = asyncio.create_task(relay_outbox(session_maker))
         app.state.outbox_task = task

@@ -82,7 +82,7 @@ class LogoutRequest(BaseModel):
     """Request body for logout endpoint."""
 
     revoke_all: bool = Field(default=False, description="Revoke all user sessions")
-    environment: str
+    environment: str | None = None
 
 
 # Dependency to get integrated auth service

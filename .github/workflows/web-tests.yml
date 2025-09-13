@@ -171,6 +171,8 @@ jobs:
       - name: Start API (background)
         env:
           PORT: "5000"
+          JOURNAL_DB_URL: postgresql+asyncpg://journal:journal@localhost:5432/journal
+          JOURNAL_DISABLE_STARTUP: "1"
         working-directory: apps/api
         run: |
           nohup uv run fastapi run app/main.py --host 0.0.0.0 --port 5000 > /tmp/api.log 2>&1 &
