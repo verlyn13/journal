@@ -45,7 +45,7 @@ permissions:
 env:
   PYTHON_VERSION: "3.12"
   UV_CACHE_DIR: /tmp/.uv-cache
-  INFISICAL_VERSION: "0.42.1"
+  INFISICAL_VERSION: "latest"
 
 jobs:
   infisical-lint-test:
@@ -112,11 +112,11 @@ jobs:
       - name: Install dependencies
         run: uv sync --all-extras --dev
       
-      # Install Infisical CLI v0.42.1 for testing
+      # Install Infisical CLI for testing
       - name: Install Infisical CLI
         run: |
           curl -1sLf https://dl.cloudsmith.io/public/infisical/infisical-cli/setup.deb.sh | sudo -E bash
-          sudo apt-get update && sudo apt-get install -y infisical=${{ env.INFISICAL_VERSION }}
+          sudo apt-get update && sudo apt-get install -y infisical
           infisical --version
       
       # Validate Infisical client implementation
