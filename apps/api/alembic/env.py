@@ -54,6 +54,13 @@ def run_migrations_offline() -> None:
     script output.
 
     """
+    # Allow tests to disable migrations entirely for unit tests
+    if os.getenv("DISABLE_MIGRATIONS_FOR_TESTS") == "1":
+        logging.getLogger("alembic.runtime.migration").info(
+            "Migrations disabled via DISABLE_MIGRATIONS_FOR_TESTS=1 (offline)"
+        )
+        return
+
     url = config.get_main_option("sqlalchemy.url")
     context.configure(
         url=url,
@@ -68,6 +75,12 @@ def run_migrations_offline() -> None:
 
 def run_migrations_online() -> None:
     """Run migrations in 'online' mode using sync engine."""
+
+    if os.getenv("DISABLE_MIGRATIONS_FOR_TESTS") == "1":
+        logging.getLogger("alembic.runtime.migration").info(
+            "Migrations disabled via DISABLE_MIGRATIONS_FOR_TESTS=1 (online)"
+        )
+        return
 
     url_str = config.get_main_option("sqlalchemy.url")
     if url_str is None:

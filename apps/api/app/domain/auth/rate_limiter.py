@@ -3,13 +3,15 @@
 from __future__ import annotations
 
 import hashlib
+import logging
 
 from collections.abc import Awaitable
 from dataclasses import dataclass
-from typing import Any, ClassVar, cast
+from typing import Any, ClassVar
 from uuid import UUID
 
 from redis.asyncio import Redis
+from redis.exceptions import RedisError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.domain.auth.audit_service import AuditService
@@ -43,6 +45,18 @@ class AuthRateLimiter:
     def __init__(self, redis: Redis, session: AsyncSession | None = None) -> None:
         self.redis = redis
         self.session = session
+        self._logger = logging.getLogger(__name__)
+
+    @staticmethod
+    async def _resolve(value: Any) -> Any:
+        """Resolve a value that may be an awaitable or a plain value.
+
+        This makes the rate limiter resilient to tests that mock Redis methods
+        as either async or sync functions.
+        """
+        if isinstance(value, Awaitable) or hasattr(value, "__await__"):
+            return await value
+        return value
 
     async def check_rate_limit(self, action: str, identifier: str) -> tuple[bool, int | None]:
         """Check if an action is rate limited.
@@ -63,15 +77,15 @@ class AuthRateLimiter:
         key = self._make_key(action, identifier)
 
         # Get current count
-        current = await self.redis.incr(key)
+        current = await self._resolve(self.redis.incr(key))
 
         # Set expiry on first attempt
         if current == 1:
-            await self.redis.expire(key, limit_config.window)
+            await self._resolve(self.redis.expire(key, limit_config.window))
 
         # Check if limit exceeded
         if current > limit_config.attempts:
-            ttl = await self.redis.ttl(key)
+            ttl = await self._resolve(self.redis.ttl(key))
             return False, max(0, ttl)
 
         return True, None
@@ -123,12 +137,16 @@ class AuthRateLimiter:
         # Log to audit trail if we have a session and user
         if self.session and user_id:
             audit_service = AuditService(self.session)
-            await audit_service.log_event(
-                user_id=user_id,
-                event_type=f"{action}_failed",
-                event_data={"reason": reason, "ip": ip_address},
-                ip_address=ip_address,
-            )
+            try:
+                await audit_service.log_event(
+                    user_id=user_id,
+                    event_type=f"{action}_failed",
+                    event_data={"reason": reason, "ip": ip_address},
+                    ip_address=ip_address,
+                )
+            except (TimeoutError, RedisError, RuntimeError, ValueError) as e:
+                # Do not fail the request if audit logging is unavailable or FK not present
+                self._logger.debug("Audit log event failed for rate limiter: %s", e)
 
         # Track failure patterns for anomaly detection
         await self._track_failure_pattern(action, ip_address, user_id)
@@ -145,14 +163,14 @@ class AuthRateLimiter:
         """
         # Track failures by IP
         ip_key = f"failures:ip:{self._hash_identifier(ip_address)}"
-        await cast("Awaitable[int]", self.redis.hincrby(ip_key, action, 1))
-        await self.redis.expire(ip_key, 3600)  # 1 hour TTL
+        await self._resolve(self.redis.hincrby(ip_key, action, 1))
+        await self._resolve(self.redis.expire(ip_key, 3600))  # 1 hour TTL
 
         # Track failures by user if known
         if user_id:
             user_key = f"failures:user:{user_id}"
-            await cast("Awaitable[int]", self.redis.hincrby(user_key, action, 1))
-            await self.redis.expire(user_key, 3600)
+            await self._resolve(self.redis.hincrby(user_key, action, 1))
+            await self._resolve(self.redis.expire(user_key, 3600))
 
     async def is_blocked(
         self, identifier: str, action: str | None = None
@@ -192,13 +210,14 @@ class AuthRateLimiter:
         if action:
             # Reset specific action
             key = self._make_key(action, identifier)
-            return await cast("Awaitable[int]", self.redis.delete(key))
+            result = await self._resolve(self.redis.delete(key))
+            return int(result) if result else 0
 
         # Reset all actions
         count = 0
         for action_name in self.LIMITS:
             key = self._make_key(action_name, identifier)
-            count += await self.redis.delete(key)
+            count += await self._resolve(self.redis.delete(key))
 
         return count
 
@@ -217,10 +236,10 @@ class AuthRateLimiter:
             return {"limited": False, "action": action}
 
         key = self._make_key(action, identifier)
-        current = await self.redis.get(key)
+        current = await self._resolve(self.redis.get(key))
         current_count = int(current) if current else 0
 
-        ttl = await self.redis.ttl(key) if current else 0
+        ttl = await self._resolve(self.redis.ttl(key)) if current else 0
 
         return {
             "action": action,

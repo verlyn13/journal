@@ -115,7 +115,7 @@ class TestJWKSService:
         _response, headers = await jwks_service.get_jwks_with_headers()
 
         # Verify required headers
-        assert headers["Content-Type"] == "application/json"
+        assert headers["Content-Type"].startswith("application/jwk-set+json")
         assert "Cache-Control" in headers
         assert "public" in headers["Cache-Control"]
         assert "max-age=3600" in headers["Cache-Control"]

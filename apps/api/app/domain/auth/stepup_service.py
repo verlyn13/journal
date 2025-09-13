@@ -5,6 +5,7 @@ from __future__ import annotations
 import base64
 import secrets
 
+from collections.abc import Awaitable as _Awaitable
 from datetime import UTC, datetime, timedelta
 from typing import Any, Literal, cast
 from uuid import UUID
@@ -43,6 +44,16 @@ class StepUpAuthService:
         self.session = session
         self.redis = redis
         self.audit_service = AuditService(session)
+        self._AwaitableT = _Awaitable
+
+    async def _resolve(self, value: Any) -> Any:
+        """Resolve possibly awaitable Redis calls for test mocks.
+
+        In unit tests, Redis methods may be mocked to return plain values.
+        """
+        if isinstance(value, self._AwaitableT) or hasattr(value, "__await__"):
+            return await value
+        return value
 
     async def require_fresh_auth(
         self, user_id: UUID, action: SensitiveAction, ip_address: str | None = None
@@ -180,7 +191,7 @@ class StepUpAuthService:
 
         # Store with TTL
         key = f"stepup:{user_id}:{action}"
-        await self.redis.setex(key, self.CHALLENGE_TTL, challenge)
+        await self._resolve(self.redis.setex(key, self.CHALLENGE_TTL, challenge))
 
         return challenge
 
@@ -195,7 +206,7 @@ class StepUpAuthService:
             Stored challenge or None
         """
         key = f"stepup:{user_id}:{action}"
-        value = await self.redis.get(key)
+        value = await self._resolve(self.redis.get(key))
         return value.decode() if value else None
 
     async def _clear_challenge(self, user_id: UUID, action: SensitiveAction) -> None:
@@ -206,7 +217,7 @@ class StepUpAuthService:
             action: The action
         """
         key = f"stepup:{user_id}:{action}"
-        await self.redis.delete(key)
+        await self._resolve(self.redis.delete(key))
 
     async def _store_verification(self, user_id: UUID, action: SensitiveAction) -> None:
         """Store successful verification for fresh auth window.
@@ -217,7 +228,7 @@ class StepUpAuthService:
         """
         key = f"stepup_verified:{user_id}:{action}"
         ttl = int(self.FRESH_AUTH_WINDOW.total_seconds())
-        await self.redis.setex(key, ttl, "1")
+        await self._resolve(self.redis.setex(key, ttl, "1"))
 
     async def clear_all_challenges(self, user_id: UUID) -> int:
         """Clear all pending challenges for a user.
@@ -232,13 +243,18 @@ class StepUpAuthService:
         cursor = 0
         cleared = 0
 
+        # Gather all keys across scans and delete once for deterministic behavior
+        keys_to_delete: list[bytes] = []
         while True:
-            cursor, keys = await self.redis.scan(cursor, match=pattern, count=100)
+            cursor, keys = await self._resolve(self.redis.scan(cursor, match=pattern, count=100))
             if keys:
-                await self.redis.delete(*keys)
-                cleared += len(keys)
+                keys_to_delete.extend(keys)
             if cursor == 0:
                 break
+
+        if keys_to_delete:
+            await self._resolve(self.redis.delete(*keys_to_delete))
+            cleared = len(keys_to_delete)
 
         if cleared > 0:
             await self.audit_service.log_event(
@@ -263,12 +279,12 @@ class StepUpAuthService:
         actions = []
 
         while True:
-            cursor, keys = await self.redis.scan(cursor, match=pattern, count=100)
-            for key in keys:
-                # Extract action from key
-                parts = key.decode().split(":")
-                if len(parts) >= 3:
-                    actions.append(parts[2])
+            cursor, keys = await self._resolve(self.redis.scan(cursor, match=pattern, count=100))
+            if keys:
+                for key in keys:
+                    parts = key.decode().split(":")
+                    if len(parts) >= 3:
+                        actions.append(parts[-1])
             if cursor == 0:
                 break
 

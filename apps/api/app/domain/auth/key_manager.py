@@ -11,6 +11,7 @@ from typing import Any, Protocol, cast
 from uuid import UUID
 
 from redis.asyncio import Redis
+from redis.exceptions import RedisError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.domain.auth.audit_service import AuditService
@@ -125,6 +126,7 @@ class KeyManager:
         self._current_key_cache = "auth:keys:current"
         self._next_key_cache = "auth:keys:next"
         self._key_metadata_cache = "auth:keys:metadata"
+        self._retiring_key_cache = "auth:keys:retiring_pem"
 
     async def initialize_key_system(self) -> None:
         """Initialize the key management system.
@@ -150,9 +152,10 @@ class KeyManager:
         """
         # Try cache first
         cached_pem = await self.redis.get(self._current_key_cache)
-        if cached_pem:
+        if isinstance(cached_pem, (bytes, bytearray, str)) and cached_pem:
             try:
-                private_key = Ed25519KeyGenerator.load_private_key_from_pem(cached_pem.decode())
+                pem_text = cached_pem.decode() if isinstance(cached_pem, (bytes, bytearray)) else cached_pem
+                private_key = Ed25519KeyGenerator.load_private_key_from_pem(pem_text)
                 metadata = await self._get_current_key_metadata()
                 if metadata:
                     return KeyPair(
@@ -213,6 +216,25 @@ class KeyManager:
         except (ValueError, KeyError) as e:
             # Next key not available - this is expected during initial setup
             logger.debug("Next key not available: %s", e)
+
+        # Include retiring key if present within overlap window
+        try:
+            retiring_pem = await self.redis.get(self._retiring_key_cache)
+            if isinstance(retiring_pem, (bytes, bytearray, str)) and retiring_pem:
+                retiring_meta = await self._get_retiring_key_metadata()
+                if retiring_meta:
+                    pem_text = retiring_pem.decode() if isinstance(retiring_pem, (bytes, bytearray)) else retiring_pem
+                    priv = Ed25519KeyGenerator.load_private_key_from_pem(pem_text)
+                    keys.append(
+                        KeyPair(
+                            private_key=priv,
+                            public_key=priv.public_key(),
+                            kid=retiring_meta.kid,
+                            created_at=retiring_meta.created_at,
+                        )
+                    )
+        except Exception as e:  # noqa: BLE001 - non-critical path
+            logger.debug("Retiring key not available: %s", e)
 
         return keys
 
@@ -348,7 +370,7 @@ class KeyManager:
                 results["cache_consistent"] = (
                     cached_current.decode() == stored_current if cached_current else False
                 )
-        except (ConnectionError, TimeoutError, ValueError) as e:
+        except (TimeoutError, RedisError, ValueError) as e:
             issues.append(f"Cache consistency error: {e}")
 
         return results
@@ -431,6 +453,18 @@ class KeyManager:
         if not self.infisical_client:
             raise RuntimeError("Infisical client required for key promotion")
 
+        # Cache retiring key material and metadata for overlap window
+        try:
+            current_pem = await self.infisical_client.fetch_secret("/auth/jwt/current_private_key")
+            current_meta = await self._get_current_key_metadata()
+            if current_meta:
+                # store metadata as retiring with short TTL via Redis directly
+                await self._store_key_metadata_with_ttl(current_meta, KeyStatus.RETIRING, int(self.overlap_window.total_seconds()))
+            await self.redis.setex(self._retiring_key_cache, int(self.overlap_window.total_seconds()), current_pem)
+        except (TimeoutError, RuntimeError, RedisError) as e:
+            # If this fails, rotation still proceeds; overlap just won't include retiring
+            logger.debug("Could not cache retiring key: %s", e)
+
         # Get next key
         next_pem = await self.infisical_client.fetch_secret("/auth/jwt/next_private_key")
 
@@ -451,6 +485,10 @@ class KeyManager:
     async def _get_next_key_metadata(self) -> KeyMetadata | None:
         """Get metadata for next key."""
         return await self._get_key_metadata_by_status(KeyStatus.NEXT)
+
+    async def _get_retiring_key_metadata(self) -> KeyMetadata | None:
+        """Get metadata for retiring key."""
+        return await self._get_key_metadata_by_status(KeyStatus.RETIRING)
 
     async def _get_key_metadata_by_status(self, status: KeyStatus) -> KeyMetadata | None:
         """Get key metadata by status."""
@@ -473,26 +511,29 @@ class KeyManager:
         data = json.dumps(metadata.to_dict())
         await self.redis.setex(key, 86400, data)  # 24 hour TTL
 
+    async def _store_key_metadata_with_ttl(self, metadata: KeyMetadata, status: KeyStatus, ttl_seconds: int) -> None:
+        """Store metadata with a custom TTL and status."""
+        clone = KeyMetadata(
+            kid=metadata.kid,
+            status=status,
+            created_at=metadata.created_at,
+            activated_at=metadata.activated_at,
+            expires_at=metadata.expires_at,
+        )
+        key = f"{self._key_metadata_cache}:{status.value}"
+        data = json.dumps(clone.to_dict())
+        await self.redis.setex(key, ttl_seconds, data)
+
     async def _invalidate_key_caches(self) -> None:
         """Invalidate all key-related caches."""
+        # Do not delete retiring metadata or retiring pem; preserve overlap window
         keys_to_delete = [
             self._current_key_cache,
             self._next_key_cache,
-            f"{self._key_metadata_cache}:*",
         ]
 
         for key_pattern in keys_to_delete:
-            if "*" in key_pattern:
-                # Delete by pattern
-                cursor = 0
-                while True:
-                    cursor, keys = await self.redis.scan(cursor, match=key_pattern, count=100)
-                    if keys:
-                        await self.redis.delete(*keys)
-                    if cursor == 0:
-                        break
-            else:
-                await self.redis.delete(key_pattern)
+            await self.redis.delete(key_pattern)
 
     @staticmethod
     def _get_retiring_key_id() -> str | None:
