@@ -428,9 +428,11 @@ class InfisicalSecretsClient:
             # Extract secret keys/paths
             paths = []
             if isinstance(secrets_data, list):
-                for secret in secrets_data:
-                    if isinstance(secret, dict) and "secretKey" in secret:
-                        paths.append(secret["secretKey"])
+                paths.extend(
+                    secret["secretKey"]
+                    for secret in secrets_data
+                    if isinstance(secret, dict) and "secretKey" in secret
+                )
 
             metrics_inc("infisical_list_total", {"prefix": path_prefix, "count": len(paths)})
 
@@ -554,7 +556,7 @@ class InfisicalSecretsClient:
                     await asyncio.sleep(self.retry_delay * attempt)
                     logger.debug("Retry %d/%d for path %s: %s", attempt, self.max_retries, path, e)
                 else:
-                    logger.error("All retries exhausted for path %s", path)
+                    logger.exception("All retries exhausted for path %s", path)
 
         # Re-raise the last error
         if last_error:
@@ -638,7 +640,7 @@ class InfisicalSecretsClient:
         )
 
         try:
-            stdout, stderr = await asyncio.wait_for(
+            _stdout, stderr = await asyncio.wait_for(
                 process.communicate(),
                 timeout=self.timeout,
             )
@@ -676,7 +678,7 @@ class InfisicalSecretsClient:
         )
 
         try:
-            stdout, stderr = await asyncio.wait_for(
+            _stdout, stderr = await asyncio.wait_for(
                 process.communicate(),
                 timeout=self.timeout,
             )

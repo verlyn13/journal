@@ -135,7 +135,7 @@ class InfisicalKeyManager(KeyManager):
             return cipher
 
         except (SecretNotFoundError, json.JSONDecodeError, ValueError) as e:
-            logger.error("Failed to load AES cipher from Infisical: %s", e)
+            logger.exception("Failed to load AES cipher from Infisical: %s", e)
 
             # Fall back to environment if available
             try:
@@ -321,7 +321,7 @@ class InfisicalKeyManager(KeyManager):
                 event_data={"error": str(e)},
             )
 
-            logger.error("Key migration to Infisical failed: %s", e)
+            logger.exception("Key migration to Infisical failed: %s", e)
 
             return migration_results
 

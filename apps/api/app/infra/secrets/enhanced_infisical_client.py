@@ -530,11 +530,10 @@ class EnhancedInfisicalClient(SecretsClient):
             logger.info("Invalidated cached secret", extra={"path": path})
             return deleted
         # Invalidate all secrets
-        pattern_keys = []
-        async for key in self.redis.scan_iter(match=f"{self._cache_prefix}*"):
-            pattern_keys.append(key)
-        async for key in self.redis.scan_iter(match=f"{self._cache_metadata_prefix}*"):
-            pattern_keys.append(key)
+        pattern_keys = [key async for key in self.redis.scan_iter(match=f"{self._cache_prefix}*")]
+        pattern_keys.extend([
+            key async for key in self.redis.scan_iter(match=f"{self._cache_metadata_prefix}*")
+        ])
 
         if pattern_keys:
             deleted = await self.redis.delete(*pattern_keys)
