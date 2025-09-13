@@ -2,11 +2,11 @@
 
 from __future__ import annotations
 
-import json  # noqa: F401 - used in token decode fallback
+import json  # Used in token decode fallback
 import logging
 import time
 
-from typing import Any
+from typing import Any, Literal
 
 from fastapi import HTTPException, Request, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
@@ -34,7 +34,7 @@ class JWTMiddleware:
         require_auth: bool = True,
         required_scopes: list[str] | None = None,
         allow_expired_for_refresh: bool = False,
-        expected_token_type: str | None = None,
+        expected_token_type: Literal["access", "refresh", "m2m", "session"] | None = None,
     ) -> None:
         """Initialize JWT middleware.
 
@@ -79,19 +79,26 @@ class JWTMiddleware:
 
         # Get services if not injected
         if not self.jwt_service or not self.token_validator:
-            async with get_session() as session:
+            async for session in get_session():
                 redis = get_redis_client()
                 self.jwt_service = JWTService(session, redis)
                 self.token_validator = TokenValidator(session, redis)
+                break
 
         try:
             # Measure verification time
             start_time = time.perf_counter()
 
             # Verify JWT
+            expected_type: Literal["access", "refresh", "m2m", "session"] = self.expected_token_type or "access"
+
+            # jwt_service and token_validator are guaranteed to be non-None after the previous block
+            assert self.jwt_service is not None
+            assert self.token_validator is not None
+
             claims = await self.jwt_service.verify_jwt(
                 token,
-                expected_type=self.expected_token_type or "access",
+                expected_type=expected_type,
                 expected_audience=settings.jwt_aud,
             )
 
@@ -138,10 +145,10 @@ class JWTMiddleware:
                         if padding != 4:
                             payload += "=" * padding
 
-                        claims = json.loads(base64.urlsafe_b64decode(payload))
-                        claims["expired"] = True
-                        request.state.jwt_claims = claims
-                        return claims
+                        expired_claims: dict[str, Any] = json.loads(base64.urlsafe_b64decode(payload))
+                        expired_claims["expired"] = True
+                        request.state.jwt_claims = expired_claims
+                        return expired_claims
                 except (KeyError, ValueError):  # JSONDecodeError ⊂ ValueError
                     pass  # Fallback if manual decode fails
 
@@ -239,7 +246,12 @@ class RequireAuth:
             )
 
         # Use middleware for validation; pass expected_type when unambiguous
-        expected_type = self.token_types[0] if len(self.token_types) == 1 else None
+        expected_type: Literal["access", "refresh", "m2m", "session"] | None = None
+        if len(self.token_types) == 1:
+            token_type = self.token_types[0]
+            if token_type in {"access", "refresh", "m2m", "session"}:
+                expected_type = token_type  # type: ignore[assignment]
+
         middleware = JWTMiddleware(
             require_auth=True,
             required_scopes=self.scopes,
@@ -348,7 +360,7 @@ class RequireScopes:
             claims = await auth(request)
 
         # Check scopes
-        async with get_session() as session:
+        async for session in get_session():
             redis = get_redis_client()
             validator = TokenValidator(session, redis)
 
@@ -362,6 +374,7 @@ class RequireScopes:
                     status_code=status.HTTP_403_FORBIDDEN,
                     detail=f"Insufficient scopes. Required: {self.scopes}",
                 )
+            break
 
         return claims
 

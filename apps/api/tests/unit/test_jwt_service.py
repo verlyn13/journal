@@ -7,24 +7,41 @@ from uuid import uuid4
 
 import pytest
 
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from app.domain.auth.jwt_service import JWTService
 
 # Import fixtures for pytest to discover them
-from tests.fixtures.jwt_fixtures import (  # noqa: F401, F811
-    jwt_service,
-    key_manager,
-    redis,
-    token_validator,
-)
+from tests.conftest import db_session
+from tests.fixtures.jwt_fixtures import jwt_service, key_manager, redis, token_validator
+
+
+@pytest.fixture
+async def test_user_id(db_session: AsyncSession) -> uuid4:
+    """Create a test user for JWT tests."""
+    from app.infra.sa_models import User
+
+    user_id = uuid4()
+    test_user = User(
+        id=user_id,
+        email="test@example.com",
+        username="testuser",
+        is_active=True,
+    )
+    db_session.add(test_user)
+    await db_session.commit()
+    return user_id
 
 
 @pytest.mark.asyncio()
 class TestJWTService:
     """Test JWT service functionality."""
 
-    async def test_sign_and_verify_jwt(self, jwt_service: JWTService) -> None:
+    async def test_sign_and_verify_jwt(
+        self, jwt_service: JWTService, test_user_id: uuid4
+    ) -> None:
         """Test basic JWT signing and verification."""
-        user_id = uuid4()
+        user_id = test_user_id
         scopes = ["entries:read", "entries:write"]
 
         # Sign JWT
@@ -32,7 +49,7 @@ class TestJWTService:
             user_id=user_id,
             token_type="access",  # noqa: S106 - token type not password
             scopes=scopes,
-            audience=["api", "web"],
+            audience=["journal-clients"],
         )
 
         assert token is not None
@@ -44,12 +61,11 @@ class TestJWTService:
         assert claims["sub"] == str(user_id)
         assert claims["type"] == "access"
         assert claims["scope"] == "entries:read entries:write"
-        assert "api" in claims["aud"]
-        assert "web" in claims["aud"]
+        assert "journal-clients" in claims["aud"]
 
-    async def test_token_expiration(self, jwt_service: JWTService) -> None:
+    async def test_token_expiration(self, jwt_service: JWTService, test_user_id: uuid4) -> None:
         """Test token expiration handling."""
-        user_id = uuid4()
+        user_id = test_user_id
 
         # Sign token with short TTL
         token = await jwt_service.sign_jwt(
@@ -70,9 +86,9 @@ class TestJWTService:
         with pytest.raises(ValueError, match="Token expired"):
             await jwt_service.verify_jwt(token)
 
-    async def test_token_types(self, jwt_service: JWTService) -> None:
+    async def test_token_types(self, jwt_service: JWTService, test_user_id: uuid4) -> None:
         """Test different token types with appropriate TTLs."""
-        user_id = uuid4()
+        user_id = test_user_id
 
         # Test each token type
         token_types = ["access", "refresh", "m2m", "session"]
@@ -97,9 +113,9 @@ class TestJWTService:
             elif token_type == "session":
                 assert ttl_seconds == 43200  # 12 hours
 
-    async def test_token_revocation(self, jwt_service: JWTService) -> None:
+    async def test_token_revocation(self, jwt_service: JWTService, test_user_id: uuid4) -> None:
         """Test token revocation functionality."""
-        user_id = uuid4()
+        user_id = test_user_id
 
         # Sign token
         token = await jwt_service.sign_jwt(user_id, "access")
@@ -113,9 +129,9 @@ class TestJWTService:
         with pytest.raises(ValueError, match="Token has been revoked"):
             await jwt_service.verify_jwt(token)
 
-    async def test_mass_revocation(self, jwt_service: JWTService) -> None:
+    async def test_mass_revocation(self, jwt_service: JWTService, test_user_id: uuid4) -> None:
         """Test revoking all tokens for a user."""
-        user_id = uuid4()
+        user_id = test_user_id
 
         # Sign multiple tokens
         tokens = []
@@ -136,9 +152,9 @@ class TestJWTService:
         # Note: Current implementation uses timestamp-based revocation
         # which would need additional logic in verify_jwt
 
-    async def test_token_introspection(self, jwt_service: JWTService) -> None:
+    async def test_token_introspection(self, jwt_service: JWTService, test_user_id: uuid4) -> None:
         """Test token introspection."""
-        user_id = uuid4()
+        user_id = test_user_id
 
         # Valid token
         token = await jwt_service.sign_jwt(
@@ -164,14 +180,14 @@ class TestJWTService:
         assert result["active"] is False
         assert "error" in result
 
-    async def test_additional_claims(self, jwt_service: JWTService) -> None:
+    async def test_additional_claims(self, jwt_service: JWTService, test_user_id: uuid4) -> None:
         """Test adding additional claims to tokens."""
-        user_id = uuid4()
+        user_id = test_user_id
 
         additional = {
             "email": "test@example.com",
             "roles": ["user", "editor"],
-            "org_id": str(uuid4()),
+            "org_id": "test-org-123",
         }
 
         token = await jwt_service.sign_jwt(
@@ -185,9 +201,9 @@ class TestJWTService:
         assert claims["roles"] == ["user", "editor"]
         assert claims["org_id"] == additional["org_id"]
 
-    async def test_audience_verification(self, jwt_service: JWTService) -> None:
+    async def test_audience_verification(self, jwt_service: JWTService, test_user_id: uuid4) -> None:
         """Test audience verification."""
-        user_id = uuid4()
+        user_id = test_user_id
 
         # Token with specific audiences
         token = await jwt_service.sign_jwt(
@@ -207,9 +223,9 @@ class TestJWTService:
         with pytest.raises(ValueError, match="Invalid audience"):
             await jwt_service.verify_jwt(token, expected_audience="web")
 
-    async def test_scope_verification(self, jwt_service: JWTService) -> None:
+    async def test_scope_verification(self, jwt_service: JWTService, test_user_id: uuid4) -> None:
         """Test scope verification."""
-        user_id = uuid4()
+        user_id = test_user_id
 
         token = await jwt_service.sign_jwt(
             user_id=user_id,
@@ -231,9 +247,9 @@ class TestJWTService:
                 required_scopes=["entries:write"],
             )
 
-    async def test_token_type_verification(self, jwt_service: JWTService) -> None:
+    async def test_token_type_verification(self, jwt_service: JWTService, test_user_id: uuid4) -> None:
         """Test token type verification."""
-        user_id = uuid4()
+        user_id = test_user_id
 
         # Create refresh token
         token = await jwt_service.sign_jwt(user_id, "refresh")
@@ -246,9 +262,9 @@ class TestJWTService:
         with pytest.raises(ValueError, match="Invalid token type"):
             await jwt_service.verify_jwt(token, expected_type="access")
 
-    async def test_jti_generation(self, jwt_service: JWTService) -> None:
+    async def test_jti_generation(self, jwt_service: JWTService, test_user_id: uuid4) -> None:
         """Test JTI generation and uniqueness."""
-        user_id = uuid4()
+        user_id = test_user_id
         jtis = set()
 
         # Generate multiple tokens
@@ -260,9 +276,9 @@ class TestJWTService:
         # All JTIs should be unique
         assert len(jtis) == 10
 
-    async def test_nbf_claim(self, jwt_service: JWTService) -> None:
+    async def test_nbf_claim(self, jwt_service: JWTService, test_user_id: uuid4) -> None:
         """Test not-before claim is set correctly."""
-        user_id = uuid4()
+        user_id = test_user_id
 
         token = await jwt_service.sign_jwt(user_id, "access")
         claims = await jwt_service.verify_jwt(token)
@@ -272,9 +288,9 @@ class TestJWTService:
         assert claims["nbf"] <= int(datetime.now(UTC).timestamp())
         assert claims["nbf"] == claims["iat"]  # Should match issued at
 
-    async def test_header_validation(self, jwt_service: JWTService) -> None:
+    async def test_header_validation(self, jwt_service: JWTService, test_user_id: uuid4) -> None:
         """Test JWT header validation."""
-        user_id = uuid4()
+        user_id = test_user_id
         token = await jwt_service.sign_jwt(user_id, "access")
 
         # Decode header
@@ -291,9 +307,9 @@ class TestJWTService:
         assert header["typ"] == "JWT"
         assert "kid" in header
 
-    async def test_service_token(self, jwt_service: JWTService) -> None:
+    async def test_service_token(self, jwt_service: JWTService, test_user_id: uuid4) -> None:
         """Test M2M service token creation."""
-        service_id = uuid4()
+        service_id = test_user_id  # Use test user ID for audit logging
 
         token = await jwt_service.sign_jwt(
             user_id=service_id,

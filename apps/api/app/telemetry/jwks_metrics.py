@@ -6,7 +6,7 @@ import logging
 import time
 
 from collections.abc import AsyncGenerator, Awaitable
-from contextlib import asynccontextmanager
+from contextlib import asynccontextmanager, suppress
 from datetime import UTC, datetime
 from typing import Any, cast
 
@@ -94,13 +94,11 @@ class JWKSMetrics:
                     try:
                         result = exec_fn()
                         if hasattr(result, "__await__"):
-                            await result  # type: ignore[func-returns-value]
+                            await result
                     except TypeError:
                         # Some MagicMock may need explicit await on the function itself
-                        try:
-                            await exec_fn()  # type: ignore[misc]
-                        except Exception:  # noqa: S110, BLE001
-                            pass  # Ignore if MagicMock doesn't support await
+                        with suppress(Exception):
+                            await exec_fn()
             except (ConnectionError, TimeoutError, ValueError) as e:
                 # Metrics collection failure should not affect service
                 logger.debug("Failed to record JWKS metrics: %s", e)

@@ -1,17 +1,17 @@
 # .github/workflows/python-tests.yml
 name: Python Tests (api via uv)
 
+# DISABLED: Duplicate of ci.yml which also runs Ruff and mypy
+# This was causing stale cache/ref issues where one workflow
+# would see old code while the other saw new code.
+# Keep ci.yml as the single source of truth for linting.
 on:
-  push:
-    branches: [ main ]
-    paths:
-      - 'apps/api/**'
-      - '.github/workflows/python-tests.yml'
-  pull_request:
-    branches: [ main ]
-    paths:
-      - 'apps/api/**'
-      - '.github/workflows/python-tests.yml'
+  workflow_dispatch:  # Only manual trigger for now
+    inputs:
+      note:
+        description: "This duplicates ci.yml; use that instead"
+        required: false
+        default: ""
 
 jobs:
   test:

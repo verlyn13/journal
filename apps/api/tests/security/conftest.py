@@ -6,7 +6,7 @@ JWT cryptography and header/claims validation without pulling Postgres/Alembic.
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Self
 
 import pytest_asyncio
 
@@ -90,7 +90,7 @@ class FakeRedis:
 
 
 class FakeAsyncSession(AsyncSession):
-    async def __aenter__(self) -> FakeAsyncSession:  # type: ignore[override]
+    async def __aenter__(self) -> Self:  # type: ignore[override]
         return self
 
     async def __aexit__(self, exc_type, exc, tb) -> None:  # type: ignore[override]

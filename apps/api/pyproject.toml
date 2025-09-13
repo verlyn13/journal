@@ -313,6 +313,24 @@ convention = "google"
     "PLR1711", # useless return at end of function
     "PLC1901", # simplify falsey comparisons
     "PLR0914", # too many locals in big integration tests
+    "F811",   # redefinition of unused (pytest fixtures)
+]
+"tests/unit/test_jwt_service.py" = [
+    "F401",   # unused-import (fixtures are used by pytest)
+    "F811",   # redefinition (pytest fixture pattern)
+]
+"tests/unit/test_token_validator.py" = [
+    "F401",   # unused-import (fixtures are used by pytest)
+    "F811",   # redefinition (pytest fixture pattern)
+]
+"app/middleware/jwt_middleware.py" = [
+    "F401",   # json import used in exception handling
+]
+"app/domain/auth/key_manager.py" = [
+    "F401",   # asyncio import used for TimeoutError
+]
+"app/domain/auth/rate_limiter.py" = [
+    "F401",   # asyncio import used for TimeoutError
 ]
 "alembic/**/*.py" = [
     "D",      # docstrings not needed in migrations

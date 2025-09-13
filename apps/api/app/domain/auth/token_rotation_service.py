@@ -29,7 +29,7 @@ class TokenRotationService:
     async def _resolve(value: Any) -> Any:
         """Resolve possibly awaitable Redis operations for unit test mocks."""
         if isinstance(value, _Awaitable) or hasattr(value, "__await__"):
-            return await value  # type: ignore[misc]
+            return await value
         return value
 
     async def check_refresh_token_reuse(self, token_hash: str, user_id: UUID) -> bool:

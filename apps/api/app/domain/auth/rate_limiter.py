@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import asyncio
 import hashlib
 import logging
 
@@ -56,7 +55,7 @@ class AuthRateLimiter:
         as either async or sync functions.
         """
         if isinstance(value, Awaitable) or hasattr(value, "__await__"):
-            return await value  # type: ignore[misc]
+            return await value
         return value
 
     async def check_rate_limit(self, action: str, identifier: str) -> tuple[bool, int | None]:
@@ -145,7 +144,7 @@ class AuthRateLimiter:
                     event_data={"reason": reason, "ip": ip_address},
                     ip_address=ip_address,
                 )
-            except (RedisError, asyncio.TimeoutError, RuntimeError, ValueError) as e:
+            except (TimeoutError, RedisError, RuntimeError, ValueError) as e:
                 # Do not fail the request if audit logging is unavailable or FK not present
                 self._logger.debug("Audit log event failed for rate limiter: %s", e)
 

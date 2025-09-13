@@ -52,7 +52,7 @@ class StepUpAuthService:
         In unit tests, Redis methods may be mocked to return plain values.
         """
         if isinstance(value, self._AwaitableT) or hasattr(value, "__await__"):
-            return await value  # type: ignore[misc]
+            return await value
         return value
 
     async def require_fresh_auth(

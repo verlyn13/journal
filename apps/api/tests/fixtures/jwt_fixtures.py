@@ -16,11 +16,26 @@ async def redis() -> Redis:
     """Create Redis client for testing."""
     client = get_redis_pool()
 
-    # Use a test-specific key prefix
-    # This would normally be configured differently for tests
+    # Clean up any stale auth keys before test
+    cursor = 0
+    while True:
+        cursor, keys = await client.scan(cursor, match="auth:*", count=100)
+        if keys:
+            await client.delete(*keys)
+        if cursor == 0:
+            break
+
     yield client
 
-    # Clean up test keys
+    # Clean up test keys after test
+    cursor = 0
+    while True:
+        cursor, keys = await client.scan(cursor, match="auth:*", count=100)
+        if keys:
+            await client.delete(*keys)
+        if cursor == 0:
+            break
+
     cursor = 0
     while True:
         cursor, keys = await client.scan(cursor, match="test:*", count=100)
@@ -67,6 +82,9 @@ async def key_manager(db_session: AsyncSession, redis: Redis) -> KeyManager:
     # Create key manager with in-memory secrets via adapter
     secrets_client = MockSecretsClient()
     manager = KeyManager(db_session, redis, infisical_client=secrets_client)
+
+    # Initialize will create keys and store them in the mock secrets client
+    # The mock client will automatically accept and store any keys created
     await manager.initialize_key_system()
     return manager
 

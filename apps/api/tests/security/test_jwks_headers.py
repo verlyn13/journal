@@ -18,7 +18,10 @@ from app.services.jwks_service import JWKSService
 @pytest.mark.asyncio()
 async def test_jwks_headers(monkeypatch) -> None:
     # Override dependencies with fakes from security conftest
-    from tests.security.conftest import FakeAsyncSession, FakeRedis  # type: ignore
+    from tests.security.conftest import (  # type: ignore[import-not-found]
+        FakeAsyncSession,
+        FakeRedis,
+    )
 
     async def _session_override():  # type: ignore[no-redef]
         yield FakeAsyncSession()

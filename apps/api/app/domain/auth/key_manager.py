@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import asyncio
 import json
 import logging
 
@@ -371,7 +370,7 @@ class KeyManager:
                 results["cache_consistent"] = (
                     cached_current.decode() == stored_current if cached_current else False
                 )
-        except (asyncio.TimeoutError, RedisError, ValueError) as e:
+        except (TimeoutError, RedisError, ValueError) as e:
             issues.append(f"Cache consistency error: {e}")
 
         return results
@@ -462,7 +461,7 @@ class KeyManager:
                 # store metadata as retiring with short TTL via Redis directly
                 await self._store_key_metadata_with_ttl(current_meta, KeyStatus.RETIRING, int(self.overlap_window.total_seconds()))
             await self.redis.setex(self._retiring_key_cache, int(self.overlap_window.total_seconds()), current_pem)
-        except (RuntimeError, RedisError, asyncio.TimeoutError) as e:
+        except (TimeoutError, RuntimeError, RedisError) as e:
             # If this fails, rotation still proceeds; overlap just won't include retiring
             logger.debug("Could not cache retiring key: %s", e)
 
