@@ -41,9 +41,19 @@ help:
 	@echo "  make py-test       - Run pytest"
 	@echo "  make py-fix        - Ruff autofix + format (unsafe fixes on)"
 	@echo ""
+	@echo "Infisical Integration (Secret Management):"
+	@echo "  make infisical-setup   - Setup Infisical CLI integration"
+	@echo "  make infisical-test    - Run Infisical integration tests"
+	@echo "  make infisical-lint    - Lint Infisical integration code"
+	@echo "  make infisical-migrate - Migrate secrets to Infisical (interactive)"
+	@echo "  make infisical-health  - Check Infisical integration health"
+	@echo "  make infisical-deploy  - Pre-deployment validation checks"
+	@echo "  make infisical-rollback - Rollback to environment variables"
+	@echo ""
 	@echo "Examples:"
 	@echo "  make docs-fetch"
 	@echo "  make docs-search TERM=\"biome config\""
+	@echo "  make infisical-setup"
 	@echo "  make fresh"
 
 # Install dependencies
@@ -290,7 +300,58 @@ api-lint:
 	@cd apps/api && make lint
 
 api-format:
-	@cd apps/api && make lint
+	@cd apps/api && make format
+
+# Infisical Integration (CI/CD & Secret Management)
+.PHONY: infisical-setup infisical-test infisical-lint infisical-migrate infisical-health infisical-deploy infisical-rollback
+
+infisical-setup:
+	@echo "🔐 Setting up Infisical CLI integration..."
+	@cd apps/api && make infisical-init
+	@echo "✅ Infisical integration ready"
+
+infisical-test:
+	@echo "🧪 Running Infisical integration tests..."
+	@cd apps/api && make infisical-test
+	@echo "✅ Infisical tests completed"
+
+infisical-lint:
+	@echo "🔍 Linting Infisical integration code..."
+	@cd apps/api && uv run ruff check app/infra/secrets/ --output-format=github
+	@cd apps/api && uv run ruff check app/api/v1/infisical_webhooks.py --output-format=github
+	@cd apps/api && uv run ruff check app/scripts/migrate_to_infisical.py --output-format=github
+	@cd apps/api && uv run mypy app/infra/secrets/
+	@cd apps/api && uv run mypy app/api/v1/infisical_webhooks.py
+	@cd apps/api && uv run mypy app/scripts/migrate_to_infisical.py
+	@echo "✅ Infisical code quality checks passed"
+
+infisical-migrate:
+	@echo "🔄 Running Infisical migration (dry-run first)..."
+	@cd apps/api && make infisical-migrate-dry
+	@read -p "Continue with actual migration? (y/N): " confirm; \
+	if [ "$$confirm" = "y" ] || [ "$$confirm" = "Y" ]; then \
+		cd apps/api && make infisical-migrate-execute; \
+	else \
+		echo "Migration cancelled by user"; \
+	fi
+
+infisical-health:
+	@echo "🏥 Checking Infisical integration health..."
+	@cd apps/api && make infisical-health
+	@echo "✅ Health check completed"
+
+infisical-deploy:
+	@echo "🚀 Deploying with Infisical integration..."
+	@$(MAKE) infisical-lint
+	@$(MAKE) infisical-test
+	@$(MAKE) infisical-health
+	@echo "🔐 Infisical integration deployment checks passed"
+	@echo "Ready for production deployment with secret management"
+
+infisical-rollback:
+	@echo "⏪ Rolling back Infisical integration..."
+	@cd apps/api && make infisical-rollback
+	@echo "✅ Rollback to environment variables completed"
 
 
 # --- Repository scanner (MVP: scc + merge) ---

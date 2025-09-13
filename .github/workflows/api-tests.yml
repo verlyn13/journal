@@ -120,3 +120,61 @@ jobs:
           path: |
             apps/api/htmlcov
             apps/api/coverage.xml
+
+  v2_auth:
+    name: V2 Auth Suite
+    runs-on: ubuntu-24.04
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_USER: journal
+          POSTGRES_PASSWORD: journal
+          POSTGRES_DB: journal
+        ports:
+          - 5433:5432
+        options: >-
+          --health-cmd "pg_isready -U journal" \
+          --health-interval 10s \
+          --health-timeout 5s \
+          --health-retries 5
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6380:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    defaults:
+      run:
+        working-directory: apps/api
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+      - name: Install deps
+        run: uv sync --all-extras --dev
+      - name: Prepare database
+        env:
+          TEST_DB_URL: postgresql+asyncpg://journal:journal@localhost:5433/journal
+        run: |
+          uv run alembic -c alembic.ini upgrade head
+      - name: Run v2 auth tests
+        env:
+          TEST_DB_URL: postgresql+asyncpg://journal:journal@localhost:5433/journal
+          JOURNAL_DB_URL: postgresql+asyncpg://journal:journal@localhost:5433/journal
+          JOURNAL_REDIS_URL: redis://localhost:6380/0
+        run: |
+          uv run pytest tests/test_auth_v2.py -v --maxfail=1 \
+            --junitxml=reports/junit-v2.xml
+      - name: Upload v2 auth reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-v2-auth-reports
+          path: |
+            apps/api/reports/junit-v2.xml

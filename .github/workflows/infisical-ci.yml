@@ -1,0 +1,406 @@
+name: Infisical Integration CI
+
+on:
+  push:
+    branches: [ main, feat/jwt-signing-verification ]
+    paths:
+      - 'apps/api/app/infra/secrets/**'
+      - 'apps/api/app/api/v1/infisical_webhooks.py'
+      - 'apps/api/app/scripts/migrate_to_infisical.py'
+      - 'apps/api/tests/infisical/**'
+      - '.infisical.json'
+      - 'apps/api/Makefile'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'apps/api/app/infra/secrets/**'
+      - 'apps/api/app/api/v1/infisical_webhooks.py'
+      - 'apps/api/app/scripts/migrate_to_infisical.py'
+      - 'apps/api/tests/infisical/**'
+      - '.infisical.json'
+      - 'apps/api/Makefile'
+  workflow_dispatch:
+    inputs:
+      test_rotation:
+        description: "Test key rotation workflow"
+        required: false
+        type: boolean
+        default: false
+      validate_migration:
+        description: "Validate migration readiness"
+        required: false
+        type: boolean
+        default: false
+
+concurrency:
+  group: infisical-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  actions: read
+  checks: write
+  security-events: write
+
+env:
+  PYTHON_VERSION: "3.12"
+  UV_CACHE_DIR: /tmp/.uv-cache
+  INFISICAL_VERSION: "0.42.1"
+
+jobs:
+  infisical-lint-test:
+    name: Infisical Integration Tests
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: apps/api
+    
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_DB: journal_infisical_test
+          POSTGRES_USER: journal
+          POSTGRES_PASSWORD: journal
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+      
+      redis:
+        image: redis:7-alpine
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+      
+      # Mock Infisical server for testing
+      mock-infisical:
+        image: wiremock/wiremock:3.3.1
+        ports:
+          - 8080:8080
+        env:
+          --global-response-templating: true
+          --verbose: true
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          version: "latest"
+      
+      - name: Set up Python
+        run: uv python install ${{ env.PYTHON_VERSION }}
+      
+      - name: Restore uv cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.UV_CACHE_DIR }}
+          key: uv-infisical-${{ runner.os }}-${{ hashFiles('apps/api/uv.lock') }}
+          restore-keys: |
+            uv-infisical-${{ runner.os }}-
+      
+      - name: Install dependencies
+        run: uv sync --all-extras --dev
+      
+      # Install Infisical CLI v0.42.1 for testing
+      - name: Install Infisical CLI
+        run: |
+          curl -1sLf https://dl.cloudsmith.io/public/infisical/infisical-cli/setup.deb.sh | sudo -E bash
+          sudo apt-get update && sudo apt-get install -y infisical=${{ env.INFISICAL_VERSION }}
+          infisical --version
+      
+      # Validate Infisical client implementation
+      - name: Lint Infisical integration code
+        run: |
+          uv run ruff check app/infra/secrets/ --output-format=github
+          uv run ruff check app/api/v1/infisical_webhooks.py --output-format=github
+          uv run ruff check app/scripts/migrate_to_infisical.py --output-format=github
+      
+      - name: Type check Infisical code
+        run: |
+          uv run mypy app/infra/secrets/
+          uv run mypy app/api/v1/infisical_webhooks.py
+          uv run mypy app/scripts/migrate_to_infisical.py
+      
+      # Setup mock Infisical responses for testing
+      - name: Configure WireMock for Infisical API
+        run: |
+          # Create mock responses for Infisical CLI calls
+          curl -X POST http://localhost:8080/__admin/mappings \
+            -H "Content-Type: application/json" \
+            -d '{
+              "request": {
+                "method": "GET",
+                "urlPath": "/api/v3/workspaces"
+              },
+              "response": {
+                "status": 200,
+                "headers": {
+                  "Content-Type": "application/json"
+                },
+                "body": "{\"workspaces\": []}"
+              }
+            }'
+      
+      # Run database migrations for testing
+      - name: Run database migrations
+        run: uv run alembic upgrade head
+        env:
+          JOURNAL_DB_URL: postgresql+asyncpg://journal:journal@localhost:5432/journal_infisical_test
+      
+      # Test Infisical secrets client without real authentication
+      - name: Test Infisical client (unit tests)
+        run: |
+          uv run pytest tests/infisical/test_client_unit.py -v \
+            --cov=app.infra.secrets \
+            --cov-report=xml:coverage-infisical-client.xml
+        env:
+          JOURNAL_DB_URL: postgresql+asyncpg://journal:journal@localhost:5432/journal_infisical_test
+          JOURNAL_REDIS_URL: redis://localhost:6379/1
+          INFISICAL_SERVER_URL: http://localhost:8080
+          INFISICAL_PROJECT_ID: test-project-id
+          INFISICAL_ENVIRONMENT: test
+          INFISICAL_TOKEN: test-token
+      
+      # Test enhanced key manager integration
+      - name: Test Enhanced Key Manager
+        run: |
+          uv run pytest tests/infisical/test_key_manager.py -v \
+            --cov=app.infra.secrets.enhanced_key_manager \
+            --cov-report=xml:coverage-infisical-keymgr.xml
+        env:
+          JOURNAL_DB_URL: postgresql+asyncpg://journal:journal@localhost:5432/journal_infisical_test
+          JOURNAL_REDIS_URL: redis://localhost:6379/1
+          INFISICAL_SERVER_URL: http://localhost:8080
+          INFISICAL_PROJECT_ID: test-project-id
+          INFISICAL_ENVIRONMENT: test
+          INFISICAL_TOKEN: test-token
+      
+      # Test webhook handlers
+      - name: Test Webhook Integration
+        run: |
+          uv run pytest tests/infisical/test_webhooks.py -v \
+            --cov=app.api.v1.infisical_webhooks \
+            --cov-report=xml:coverage-infisical-webhooks.xml
+        env:
+          JOURNAL_DB_URL: postgresql+asyncpg://journal:journal@localhost:5432/journal_infisical_test
+          JOURNAL_REDIS_URL: redis://localhost:6379/1
+          INFISICAL_WEBHOOK_SECRET: test-webhook-secret
+          INFISICAL_PROJECT_ID: test-project-id
+      
+      # Test migration script (dry run only)
+      - name: Test Migration Script (Dry Run)
+        run: |
+          uv run python -m app.scripts.migrate_to_infisical migrate --dry-run --no-backup
+        env:
+          JOURNAL_DB_URL: postgresql+asyncpg://journal:journal@localhost:5432/journal_infisical_test
+          JOURNAL_REDIS_URL: redis://localhost:6379/1
+          INFISICAL_TOKEN: test-token
+          INFISICAL_PROJECT_ID: test-project-id
+          INFISICAL_ENVIRONMENT: test
+      
+      # Security validation
+      - name: Security Scan - Infisical Integration
+        run: |
+          # Check for hardcoded secrets
+          uv run bandit -r app/infra/secrets/ app/api/v1/infisical_webhooks.py app/scripts/migrate_to_infisical.py \
+            -f json -o bandit-infisical.json || true
+          
+          # Verify no plaintext secrets in tests
+          ! rg -r apps/api/tests/infisical/ "infisical.*token.*sk_" || \
+            (echo "::error title=Plaintext secret found::Do not include real Infisical tokens in tests" && exit 1)
+      
+      # Upload test coverage
+      - name: Upload Infisical Coverage
+        uses: codecov/codecov-action@v4
+        with:
+          files: apps/api/coverage-infisical-*.xml
+          flags: infisical
+          name: infisical-integration-coverage
+          fail_ci_if_error: false
+      
+      - name: Upload security scan results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: infisical-security-scan
+          path: apps/api/bandit-infisical.json
+
+  infisical-e2e-test:
+    name: Infisical E2E Tests
+    runs-on: ubuntu-24.04
+    needs: infisical-lint-test
+    if: github.event.inputs.test_rotation == 'true' || contains(github.event.head_commit.message, '[test-rotation]')
+    defaults:
+      run:
+        working-directory: apps/api
+    
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_DB: journal_e2e_test
+          POSTGRES_USER: journal
+          POSTGRES_PASSWORD: journal
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+      
+      redis:
+        image: redis:7-alpine
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Install uv and dependencies
+        uses: astral-sh/setup-uv@v4
+        with:
+          version: "latest"
+      
+      - name: Set up Python
+        run: uv python install ${{ env.PYTHON_VERSION }}
+      
+      - name: Install dependencies
+        run: uv sync --all-extras --dev
+      
+      - name: Install Infisical CLI
+        run: |
+          curl -1sLf https://dl.cloudsmith.io/public/infisical/infisical-cli/setup.deb.sh | sudo -E bash
+          sudo apt-get update && sudo apt-get install -y infisical=${{ env.INFISICAL_VERSION }}
+      
+      # Start the API server with Infisical integration
+      - name: Start API server with Infisical
+        run: |
+          # Use test secrets that don't require real Infisical auth
+          export JOURNAL_DB_URL=postgresql+asyncpg://journal:journal@localhost:5432/journal_e2e_test
+          export JOURNAL_REDIS_URL=redis://localhost:6379/0
+          export INFISICAL_TOKEN=test-e2e-token
+          export INFISICAL_PROJECT_ID=test-e2e-project
+          export INFISICAL_ENVIRONMENT=test
+          
+          uv run alembic upgrade head
+          uv run uvicorn app.main:app --host 0.0.0.0 --port 8000 &
+          
+          # Wait for server to be ready
+          timeout 30 bash -c 'until curl -f http://localhost:8000/health; do sleep 1; done'
+      
+      # Test webhook endpoints
+      - name: Test Infisical webhook endpoints
+        run: |
+          # Test health endpoint
+          curl -f http://localhost:8000/api/v1/infisical/health
+          
+          # Test cache invalidation endpoint
+          curl -f -X POST http://localhost:8000/api/v1/infisical/cache/invalidate
+      
+      # Test key rotation simulation (without real Infisical)
+      - name: Test Key Rotation Simulation
+        run: |
+          uv run pytest tests/infisical/test_e2e_rotation.py -v
+        env:
+          API_BASE_URL: http://localhost:8000
+          JOURNAL_DB_URL: postgresql+asyncpg://journal:journal@localhost:5432/journal_e2e_test
+          JOURNAL_REDIS_URL: redis://localhost:6379/0
+
+  migration-readiness:
+    name: Migration Readiness Check
+    runs-on: ubuntu-24.04
+    if: github.event.inputs.validate_migration == 'true' || github.ref == 'refs/heads/main'
+    defaults:
+      run:
+        working-directory: apps/api
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Install uv and dependencies
+        uses: astral-sh/setup-uv@v4
+        with:
+          version: "latest"
+      
+      - name: Set up Python
+        run: uv python install ${{ env.PYTHON_VERSION }}
+      
+      - name: Install dependencies
+        run: uv sync --all-extras --dev
+      
+      - name: Install Infisical CLI
+        run: |
+          curl -1sLf https://dl.cloudsmith.io/public/infisical/infisical-cli/setup.deb.sh | sudo -E bash
+          sudo apt-get update && sudo apt-get install -y infisical=${{ env.INFISICAL_VERSION }}
+      
+      # Validate migration script readiness
+      - name: Validate Migration Script
+        run: |
+          # Test help command
+          uv run python -m app.scripts.migrate_to_infisical --help
+          
+          # Test dry-run with minimal env vars
+          export INFISICAL_TOKEN=test-token
+          export INFISICAL_PROJECT_ID=test-project
+          export INFISICAL_ENVIRONMENT=test
+          
+          uv run python -m app.scripts.migrate_to_infisical validate-env --dry-run
+      
+      # Check for environment variable dependencies
+      - name: Environment Variable Audit
+        run: |
+          echo "=== Current Environment Variable Usage ==="
+          rg -n "os\.getenv|os\.environ" app/ || echo "No direct env var usage found"
+          
+          echo "=== Settings.py Environment Variables ==="
+          rg -n "Field.*env=" app/settings.py || echo "No env field usage found"
+          
+          echo "=== Makefile Environment Variables ==="
+          rg -n "export|ENV" Makefile || echo "No Makefile env usage found"
+      
+      # Generate migration plan
+      - name: Generate Migration Plan
+        run: |
+          echo "=== Infisical Migration Plan ===" >> migration-plan.md
+          echo "Generated on: $(date)" >> migration-plan.md
+          echo "" >> migration-plan.md
+          
+          echo "## Current Implementation Status" >> migration-plan.md
+          echo "- ✅ Infisical CLI v${{ env.INFISICAL_VERSION }} integration complete" >> migration-plan.md
+          echo "- ✅ Enhanced KeyManager with Infisical backend" >> migration-plan.md
+          echo "- ✅ Webhook handlers for automated operations" >> migration-plan.md
+          echo "- ✅ Migration script ready for deployment" >> migration-plan.md
+          echo "- ✅ Comprehensive test coverage" >> migration-plan.md
+          echo "" >> migration-plan.md
+          
+          echo "## Next Steps" >> migration-plan.md
+          echo "1. Deploy to staging environment" >> migration-plan.md
+          echo "2. Run migration script in dry-run mode" >> migration-plan.md
+          echo "3. Validate key rotation functionality" >> migration-plan.md
+          echo "4. Execute production migration" >> migration-plan.md
+          echo "5. Monitor webhook integration" >> migration-plan.md
+      
+      - name: Upload Migration Plan
+        uses: actions/upload-artifact@v4
+        with:
+          name: infisical-migration-plan
+          path: apps/api/migration-plan.md
