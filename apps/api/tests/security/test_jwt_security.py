@@ -299,7 +299,7 @@ class TestJWTSecurity:
         assert new_claims["sub"] == str(user_id)
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 class TestTokenValidatorSecurity:
     """Security tests for token validator."""
 
