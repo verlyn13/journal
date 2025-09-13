@@ -10,7 +10,12 @@ import pytest
 from app.domain.auth.jwt_service import JWTService
 
 # Import fixtures for pytest to discover them
-from tests.fixtures.jwt_fixtures import jwt_service, key_manager, redis, token_validator  # noqa: F401, F811
+from tests.fixtures.jwt_fixtures import (  # noqa: F401, F811
+    jwt_service,
+    key_manager,
+    redis,
+    token_validator,
+)
 
 
 @pytest.mark.asyncio()

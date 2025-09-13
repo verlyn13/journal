@@ -11,7 +11,12 @@ from app.domain.auth.token_validator import TokenValidator
 from app.infra.sa_models import User
 
 # Import fixtures for pytest to discover them
-from tests.fixtures.jwt_fixtures import jwt_service, key_manager, redis, token_validator  # noqa: F401, F811
+from tests.fixtures.jwt_fixtures import (  # noqa: F401, F811
+    jwt_service,
+    key_manager,
+    redis,
+    token_validator,
+)
 
 
 @pytest.fixture

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import asyncio  # noqa: F401 - used in exception handling
+import asyncio
 import json
 import logging
 
@@ -371,7 +371,7 @@ class KeyManager:
                 results["cache_consistent"] = (
                     cached_current.decode() == stored_current if cached_current else False
                 )
-        except (RedisError, asyncio.TimeoutError, ValueError) as e:
+        except (asyncio.TimeoutError, RedisError, ValueError) as e:
             issues.append(f"Cache consistency error: {e}")
 
         return results

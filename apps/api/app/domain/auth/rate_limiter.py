@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import asyncio  # noqa: F401 - used in exception handling
+import asyncio
 import hashlib
 import logging
 
