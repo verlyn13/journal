@@ -25,12 +25,21 @@ def get_redis_pool() -> Redis:
             decode_responses=False,  # Return bytes for flexibility
             socket_connect_timeout=5,
             socket_timeout=5,
-        )
+        ),
     )
 
 
 def get_redis_client() -> Redis:
     """Dependency injection for Redis client.
+
+    Returns:
+        Redis client instance
+    """
+    return get_redis_pool()
+
+
+async def get_redis() -> Redis:
+    """Get async Redis client for dependency injection.
 
     Returns:
         Redis client instance

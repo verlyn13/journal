@@ -71,19 +71,14 @@ class VerifierPolicy:
             raise ValueError("Algorithm 'none' is explicitly forbidden (RFC 8725)")
 
         if alg not in self.allowed_algorithms:
-            raise ValueError(
-                f"Algorithm '{alg}' not allowed. "
-                f"Allowed: {self.allowed_algorithms}"
-            )
+            raise ValueError(f"Algorithm '{alg}' not allowed. Allowed: {self.allowed_algorithms}")
 
         # Type validation (RFC 9068 for access tokens)
         if self.require_typ:
             typ = header.get("typ")
             if not typ or typ not in self.allowed_types:
                 allowed = ", ".join(sorted(self.allowed_types))
-                raise ValueError(
-                    f"Token type '{typ}' not allowed. Allowed: {{{allowed}}}"
-                )
+                raise ValueError(f"Token type '{typ}' not allowed. Allowed: {{{allowed}}}")
 
         # Forbidden headers check (RFC 8725 Section 3.2)
         for forbidden in self.forbidden_headers:
@@ -129,8 +124,7 @@ class VerifierPolicy:
         # Check token not too far in future (policy)
         if exp > now + self.max_token_lifetime + self.leeway_seconds:
             raise ValueError(
-                f"Token expiration too far in future "
-                f"(max lifetime: {self.max_token_lifetime}s)"
+                f"Token expiration too far in future (max lifetime: {self.max_token_lifetime}s)"
             )
 
         # Validate not before (RFC 7519 Section 4.1.5)
@@ -151,8 +145,7 @@ class VerifierPolicy:
         token_lifetime = exp - iat
         if token_lifetime > self.max_token_lifetime:
             raise ValueError(
-                f"Token lifetime ({token_lifetime}s) exceeds maximum "
-                f"({self.max_token_lifetime}s)"
+                f"Token lifetime ({token_lifetime}s) exceeds maximum ({self.max_token_lifetime}s)"
             )
 
         # Future token check

@@ -68,7 +68,7 @@ def require_user(creds: HTTPAuthorizationCredentials | None = Depends(bearer_sch
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Missing auth",
-            headers={"WWW-Authenticate": "Bearer"}
+            headers={"WWW-Authenticate": "Bearer"},
         )
     try:
         # In test mode, allow decoding without enforcing expiration to keep
@@ -88,14 +88,14 @@ def require_user(creds: HTTPAuthorizationCredentials | None = Depends(bearer_sch
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Invalid token",
-                headers={"WWW-Authenticate": 'Bearer error="invalid_token"'}
+                headers={"WWW-Authenticate": 'Bearer error="invalid_token"'},
             )
         return sub
     except jwt.PyJWTError as e:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid token",
-            headers={"WWW-Authenticate": 'Bearer error="invalid_token"'}
+            headers={"WWW-Authenticate": 'Bearer error="invalid_token"'},
         ) from e
 
 
