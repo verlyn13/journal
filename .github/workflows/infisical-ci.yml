@@ -161,6 +161,7 @@ jobs:
         run: uv run alembic upgrade head
         env:
           JOURNAL_DB_URL: postgresql+asyncpg://journal:journal@localhost:5432/journal_infisical_test
+          DATABASE_URL_SYNC: postgresql://journal:journal@localhost:5432/journal_infisical_test
       
       # Test Infisical monitoring (only existing test file)
       - name: Test Infisical Monitoring

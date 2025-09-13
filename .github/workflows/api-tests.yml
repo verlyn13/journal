@@ -104,6 +104,25 @@ jobs:
         uses: astral-sh/setup-uv@v4
       - name: Install deps
         run: uv sync --all-extras --dev
+      - name: Wait for PostgreSQL
+        run: |
+          sudo apt-get update && sudo apt-get install -y postgresql-client
+          for i in {1..60}; do
+            if pg_isready -h localhost -p 5433 -U journal; then
+              echo "PostgreSQL is ready!"
+              break
+            fi
+            echo "Waiting for PostgreSQL... attempt $i/60"
+            sleep 2
+          done
+          # Verify connection with psql
+          PGPASSWORD=journal psql -h localhost -p 5433 -U journal -d journal -c "SELECT 1"
+      - name: Alembic upgrade
+        env:
+          DATABASE_URL_SYNC: postgresql://journal:journal@localhost:5433/journal
+        run: |
+          cd apps/api
+          uv run alembic -c alembic.ini upgrade head
       - name: Run integration tests
         env:
           TEST_DB_URL: postgresql+asyncpg://journal:journal@localhost:5433/journal
@@ -111,7 +130,7 @@ jobs:
           JOURNAL_REDIS_URL: redis://localhost:6380/0
           RUN_REAL_NATS: '1'
         run: |
-          uv run alembic -c alembic.ini upgrade head
+          cd apps/api
           uv run pytest -m integration --cov=app/infra --cov=app/workers --cov=app/api/v1/search --cov-report=term-missing --cov-report=xml --cov-report=html:htmlcov
       - name: Upload API integration coverage
         uses: actions/upload-artifact@v4

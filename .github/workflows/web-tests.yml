@@ -125,30 +125,24 @@ jobs:
           echo "JOURNAL_DB_URL=$JOURNAL_DB_URL"
           echo "JOURNAL_DB_SYNC_URL=$JOURNAL_DB_SYNC_URL"
 
-      - name: DB auth wait (libpq)
-        env:
-          JOURNAL_DB_SYNC_URL: postgresql://journal:journal@localhost:5432/journal
-        working-directory: apps/api
+      - name: Wait for PostgreSQL
         run: |
-          uv run python - <<'PY'
-          import os, time, psycopg2
-          url = os.environ["JOURNAL_DB_SYNC_URL"]
-          for i in range(60):
-              try:
-                  conn = psycopg2.connect(url)
-                  conn.close()
-                  print("DB auth succeeded")
-                  break
-              except Exception as e:
-                  print(f"DB auth attempt {i+1}/60 failed: {e}")
-                  time.sleep(1)
-          else:
-              raise SystemExit("DB never became ready for password auth")
-          PY
+          sudo apt-get update && sudo apt-get install -y postgresql-client
+          for i in {1..30}; do
+            if pg_isready -h localhost -p 5432 -U journal; then
+              echo "PostgreSQL is ready!"
+              break
+            fi
+            echo "Waiting for PostgreSQL... attempt $i/30"
+            sleep 1
+          done
+          # Verify connection with psql
+          PGPASSWORD=journal psql -h localhost -p 5432 -U journal -d journal -c "SELECT 1"
 
       - name: Alembic upgrade
         env:
           JOURNAL_DB_URL: postgresql+asyncpg://journal:journal@localhost:5432/journal
+          DATABASE_URL_SYNC: postgresql://journal:journal@localhost:5432/journal
         working-directory: apps/api
         run: |
           set -e
