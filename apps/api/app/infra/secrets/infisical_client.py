@@ -257,7 +257,9 @@ class InfisicalSecretsClient:
         Expected environment variables:
         - INFISICAL_PROJECT_ID: Infisical project ID
         - INFISICAL_SERVER_URL: Infisical server URL
-        - INFISICAL_TOKEN: Machine identity token (optional, can use auth login)
+        - UA_CLIENT_ID_TOKEN_SERVICE: Universal Auth client ID (preferred)
+        - UA_CLIENT_SECRET_TOKEN_SERVICE: Universal Auth client secret (preferred)
+        - INFISICAL_TOKEN: Static token (fallback, deprecated)
         - INFISICAL_CACHE_TTL: Cache TTL in seconds (optional, default 300)
 
         Args:

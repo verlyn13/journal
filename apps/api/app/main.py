@@ -4,6 +4,7 @@ import asyncio
 import logging
 
 from fastapi import FastAPI
+from app.infra.secrets.auth_bootstrap import auth_lifespan
 import os
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import PlainTextResponse
@@ -26,6 +27,7 @@ from app.api.v1 import (
 from app.graphql.schema import schema
 from app.infra.db import build_engine, sessionmaker_for
 from app.infra.outbox import relay_outbox
+from app.infra.secrets.auth_bootstrap import ensure_authenticated
 from app.middleware.enhanced_jwt_middleware import EnhancedJWTMiddleware
 from app.services.monitoring_scheduler import start_monitoring_scheduler, stop_monitoring_scheduler
 from app.settings import settings
@@ -33,7 +35,7 @@ from app.telemetry.metrics_runtime import render_prom
 from app.telemetry.otel import setup_otel
 
 
-app = FastAPI(title="Journal API", version="1.0.0")
+app = FastAPI(title="Journal API", version="1.0.0", lifespan=auth_lifespan)
 
 # Observability (configurable endpoint)
 try:
@@ -89,6 +91,18 @@ async def metrics() -> PlainTextResponse:
 
 @app.on_event("startup")
 async def _startup() -> None:
+    # Initialize Infisical authentication (Universal Auth or static token fallback)
+    logger = logging.getLogger(__name__)
+    try:
+        success = await ensure_authenticated()
+        if success:
+            logger.info("Infisical authentication initialized successfully")
+        else:
+            logger.warning("Infisical authentication failed - some features may not work correctly")
+    except Exception as e:
+        logger.error("Failed to initialize Infisical authentication: %s", e)
+        # Continue startup even if auth fails - app may work with static tokens
+    
     # Configure trusted proxies for IP extraction
     from app.infra.ip_extraction import configure_trusted_proxies
 
@@ -103,7 +117,7 @@ async def _startup() -> None:
 
         # Start Infisical monitoring scheduler
         await start_monitoring_scheduler()
-        logging.getLogger(__name__).info("Infisical monitoring scheduler started")
+        logger.info("Infisical monitoring scheduler started")
 
 
 @app.on_event("shutdown")

@@ -1,0 +1,369 @@
+# Infisical Identities Implementation Manifest
+# Complete specification for Journal API Infisical setup with Universal Auth and OIDC
+
+organization:
+  name: Admin Org
+  id: fd347373-e19c-49d1-baf4-7577c245555a
+  slug: admin-org-v-ybx
+
+project:
+  name: journal
+  id: d01f583a-d833-4375-b359-c702a726ac4d
+  server_url: https://secrets.jefahnierocks.com
+  environments:
+    - name: prod
+      slug: prod
+    - name: staging  
+      slug: staging
+    - name: dev
+      slug: dev
+
+# ============================================================================
+# IDENTITIES (Create in Organization → Identities, then add to project)
+# ============================================================================
+
+identities:
+  # Runtime application identity - reads keys during normal operation
+  - name: token-service@journal
+    slug: token-service-journal
+    description: "Runtime identity for Journal API to read keys and secrets"
+    org_role: member
+    tags:
+      app: journal
+      purpose: token-service
+      owner: you@example.com
+    auth_methods:
+      universal_auth:
+        client_id: "<UA_CLIENT_ID_TOKEN_SERVICE>"        # FILL IN
+        client_secret: "<UA_CLIENT_SECRET_TOKEN_SERVICE>"  # FILL IN
+        notes: "Short-lived INFISICAL_TOKEN minted at service boot"
+    project_assignment:
+      project_id: d01f583a-d833-4375-b359-c702a726ac4d
+      role: viewer  # read-only base role
+      
+  # Key rotation identity - writes keys during approved rotation windows  
+  - name: rotator@ops
+    slug: rotator-ops
+    description: "Operational identity for key rotation under Change Requests"
+    org_role: member
+    tags:
+      app: journal
+      purpose: rotator
+      owner: you@example.com
+    auth_methods:
+      universal_auth:
+        client_id: "<UA_CLIENT_ID_ROTATOR>"        # FILL IN
+        client_secret: "<UA_CLIENT_SECRET_ROTATOR>"  # FILL IN
+        notes: "Used only during rotation windows with Change Request approval"
+    project_assignment:
+      project_id: d01f583a-d833-4375-b359-c702a726ac4d
+      role: no-access  # grant exact permissions via policies
+      
+  # GitHub Actions CI identity - reads secrets during CI/CD runs
+  - name: ci@github
+    slug: ci-github
+    description: "GitHub Actions CI identity; read-only per environment"
+    org_role: member
+    tags:
+      app: journal
+      purpose: ci
+      provider: github
+    auth_methods:
+      oidc:
+        issuer: "https://token.actions.githubusercontent.com"
+        discovery_url: "https://token.actions.githubusercontent.com/.well-known/openid-configuration"
+        subjects:
+          - "repo:verlyn13/journal:ref:refs/heads/main"
+          - "repo:verlyn13/journal:pull_request"
+        audiences:
+          - "https://github.com/verlyn13/journal"
+        advanced:
+          trusted_ips: []  # optional restriction
+          ca_certificate: null
+        notes: "Short-lived INFISICAL_TOKEN minted per CI job"
+    project_assignment:
+      project_id: d01f583a-d833-4375-b359-c702a726ac4d
+      role: viewer  # read-only
+
+# ============================================================================
+# POLICIES (Create in Project → Change Management → Policies)
+# ============================================================================
+
+policies:
+  # Production write protection - require Change Requests
+  - name: "prod-auth-write-protection"
+    environment: "prod"
+    rules:
+      - path: "/auth/*"
+        action: "write"
+        effect: "deny"
+        conditions:
+          - type: "change_request"
+            value: "required"
+        exceptions:
+          - identity_slug: "rotator-ops"
+            during: "rotation_window"  # CR approval window
+
+  # Private key read protection
+  - name: "prod-private-key-protection"
+    environment: "prod"
+    rules:
+      - path: "/auth/jwt/private"
+        action: "read"
+        effect: "allow"
+        identities:
+          - "token-service-journal"
+          - "rotator-ops"
+      - path: "/auth/jwt/private"
+        action: "read"
+        effect: "deny"
+        identities:
+          - "*"
+
+  # Public JWKS accessible to all
+  - name: "public-jwks-access"
+    environment: "all"
+    rules:
+      - path: "/auth/jwt/public_jwks"
+        action: "read"
+        effect: "allow"
+        identities:
+          - "*"
+
+# ============================================================================
+# IDENTITY PERMISSIONS (Effective permissions per environment)
+# ============================================================================
+
+identity_permissions:
+  token-service@journal:
+    prod:
+      - path: "/auth/jwt/*"
+        action: "read"
+        effect: "allow"
+      - path: "/auth/aes/*"
+        action: "read"
+        effect: "allow"
+      - path: "/auth/jwt/public_jwks"
+        action: "read"
+        effect: "allow"
+      - path: "/auth/*"
+        action: "write"
+        effect: "deny"
+    staging:
+      - path: "/auth/jwt/*"
+        action: "read"
+        effect: "allow"
+      - path: "/auth/aes/*"
+        action: "read"
+        effect: "allow"
+      - path: "/auth/*"
+        action: "write"
+        effect: "deny"
+    dev:
+      - path: "/auth/jwt/*"
+        action: "read"
+        effect: "allow"
+      - path: "/auth/aes/*"
+        action: "read"
+        effect: "allow"
+      - path: "/auth/*"
+        action: "write"
+        effect: "deny"
+        
+  rotator@ops:
+    prod:
+      - path: "/auth/jwt/*"
+        action: "write"
+        effect: "allow"
+        conditions:
+          - type: "change_request"
+            value: "required"
+      - path: "/auth/aes/*"
+        action: "write"
+        effect: "allow"
+        conditions:
+          - type: "change_request"
+            value: "required"
+      - path: "/auth/jwt/*"
+        action: "read"
+        effect: "allow"
+      - path: "/auth/aes/*"
+        action: "read"
+        effect: "allow"
+    staging:
+      - path: "/auth/jwt/*"
+        action: "write"
+        effect: "allow"
+      - path: "/auth/aes/*"
+        action: "write"
+        effect: "allow"
+      - path: "/auth/jwt/*"
+        action: "read"
+        effect: "allow"
+      - path: "/auth/aes/*"
+        action: "read"
+        effect: "allow"
+    dev:
+      - path: "/auth/jwt/*"
+        action: "write"
+        effect: "allow"
+      - path: "/auth/aes/*"
+        action: "write"
+        effect: "allow"
+      - path: "/auth/jwt/*"
+        action: "read"
+        effect: "allow"
+      - path: "/auth/aes/*"
+        action: "read"
+        effect: "allow"
+        
+  ci@github:
+    prod:
+      - path: "/auth/jwt/*"
+        action: "read"
+        effect: "allow"
+      - path: "/auth/aes/*"
+        action: "read"
+        effect: "allow"
+      - path: "/auth/*"
+        action: "write"
+        effect: "deny"
+    staging:
+      - path: "/auth/jwt/*"
+        action: "read"
+        effect: "allow"
+      - path: "/auth/aes/*"
+        action: "read"
+        effect: "allow"
+    dev:
+      - path: "/auth/jwt/*"
+        action: "read"
+        effect: "allow"
+      - path: "/auth/aes/*"
+        action: "read"
+        effect: "allow"
+
+# ============================================================================
+# CHANGE REQUESTS (Create in Project → Change Management → Change Requests)
+# ============================================================================
+
+change_requests:
+  prod:
+    enabled: true
+    required_for_paths:
+      - "/auth/jwt/current_private_key"
+      - "/auth/jwt/next_private_key"
+      - "/auth/aes/active_kid"
+      - "/auth/aes/enc_keys"
+    reviewers:
+      primary: "Admin"
+      secondary: "auth-operator"   # custom role; second approver
+    notes:
+      - "All writes to /auth/* require CR in prod"
+
+# ============================================================================
+# WEBHOOKS (Create in Project → Settings → Webhooks)
+# ============================================================================
+
+webhooks:
+  - name: "auth-key-rollover"
+    environment: "prod"
+    path: "/auth/jwt/*"
+    url: "https://api.journal.com/internal/keys/changed"
+    method: "POST"
+    headers:
+      Authorization: "Bearer ${WEBHOOK_SECRET}"
+      Content-Type: "application/json"
+      
+  - name: "aes-active-kid-changed"
+    environment: "prod"
+    path: "/auth/aes/active_kid"
+    url: "https://api.journal.com/internal/aes/activekid"
+    method: "POST"
+    headers:
+      Authorization: "Bearer ${WEBHOOK_SECRET}"
+      Content-Type: "application/json"
+
+# ============================================================================
+# RUNTIME USAGE PATTERNS
+# ============================================================================
+
+runtime_usage:
+  # Application runtime (token-service@journal)
+  application_startup:
+    method: "universal_auth"
+    environment_vars:
+      - "UA_CLIENT_ID_TOKEN_SERVICE"
+      - "UA_CLIENT_SECRET_TOKEN_SERVICE"
+    command: |
+      infisical login --method universal-auth \
+        --client-id "$UA_CLIENT_ID_TOKEN_SERVICE" \
+        --client-secret "$UA_CLIENT_SECRET_TOKEN_SERVICE" \
+        --silent --plain
+    notes: "Obtain short-lived token on boot, refresh before expiry"
+    
+  # Key rotation (rotator@ops)
+  key_rotation:
+    method: "universal_auth"
+    environment_vars:
+      - "UA_CLIENT_ID_ROTATOR"
+      - "UA_CLIENT_SECRET_ROTATOR"
+    command: |
+      infisical login --method universal-auth \
+        --client-id "$UA_CLIENT_ID_ROTATOR" \
+        --client-secret "$UA_CLIENT_SECRET_ROTATOR" \
+        --silent --plain
+    notes: "Use only during approved Change Request windows"
+    
+  # CI/CD (ci@github)
+  github_actions:
+    method: "oidc"
+    command: |
+      infisical login --method=oidc --silent --plain
+      export INFISICAL_TOKEN="$(infisical login --method=oidc --silent --plain)"
+    notes: "GitHub provides OIDC token, Infisical validates and issues short-lived token"
+
+# ============================================================================
+# SECURITY CONTROLS
+# ============================================================================
+
+security_controls:
+  rotation:
+    cadence_days:
+      ua_credentials: 90  # Rotate Universal Auth credentials quarterly
+      token_refresh: 1    # Refresh INFISICAL_TOKEN daily
+    overlap_days: 3
+    owners: ["platform", "security"]
+    
+  audit:
+    alerts_on_write_outside_prefixes: true
+    allowed_write_prefixes: ["/auth/", "/jwt/", "/encryption/"]
+    
+  separation_of_duties:
+    separate_runtime_rotation: true  # Different identities for runtime vs rotation
+    oidc_for_ci: true               # No stored CI secrets
+    change_requests_for_prod: true  # CR approval for production writes
+    read_only_runtime: true         # Runtime cannot write keys
+
+# ============================================================================
+# SECRET STRUCTURE (Create these paths in Infisical)
+# ============================================================================
+
+secret_structure:
+  "/auth/jwt/":
+    - "current_private_key"    # Active EdDSA private key
+    - "current_public_key"     # Active EdDSA public key  
+    - "next_private_key"       # Next key during rotation
+    - "next_public_key"        # Next public key
+    - "public_jwks"           # Public JWKS endpoint data
+    - "key_id"                # Current key ID
+    
+  "/auth/aes/":
+    - "active_kid"            # Active AES key ID
+    - "enc_keys"              # AES key mapping JSON
+    
+  "/auth/config/":
+    - "jwt_iss"               # JWT issuer
+    - "jwt_aud"               # JWT audience
+    - "access_token_ttl"      # Access token TTL
+    - "refresh_token_ttl"     # Refresh token TTL
