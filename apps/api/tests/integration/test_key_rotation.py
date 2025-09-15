@@ -16,13 +16,13 @@ from app.domain.auth.key_manager import KeyManager, KeyMetadata, KeyStatus
 from app.infra.crypto.key_generation import Ed25519KeyGenerator
 
 
-@pytest.fixture
+@pytest.fixture()
 def mock_session():
     """Mock AsyncSession for integration tests."""
     return AsyncMock(spec=AsyncSession)
 
 
-@pytest.fixture
+@pytest.fixture()
 def mock_redis():
     """Mock Redis client for integration tests."""
     mock_client = AsyncMock(spec=Redis)
@@ -33,7 +33,7 @@ def mock_redis():
     return mock_client
 
 
-@pytest.fixture
+@pytest.fixture()
 def mock_infisical():
     """Mock Infisical client for integration tests."""
     mock_client = AsyncMock()
@@ -42,7 +42,7 @@ def mock_infisical():
     return mock_client
 
 
-@pytest.fixture
+@pytest.fixture()
 def key_manager(mock_session, mock_redis, mock_infisical):
     """Create KeyManager with realistic configuration."""
     manager = KeyManager(

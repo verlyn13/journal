@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import logging
 
+from contextlib import suppress
 from datetime import UTC, datetime
 from typing import Any
 
@@ -16,6 +17,7 @@ from app.infra.db import get_session
 from app.infra.redis import get_redis
 from app.infra.secrets import InfisicalSecretsClient
 from app.infra.secrets.enhanced_key_manager import InfisicalKeyManager
+from app.infra.secrets.infisical_client import InfisicalError
 from app.settings import settings
 
 
@@ -23,17 +25,24 @@ logger = logging.getLogger(__name__)
 router = APIRouter()
 
 
-async def get_enhanced_key_manager(
+def get_enhanced_key_manager(
     session: AsyncSession = Depends(get_session),
     redis: Redis = Depends(get_redis),
 ) -> InfisicalKeyManager:
-    """Get enhanced key manager with Infisical client."""
-    # Initialize Infisical client from environment when enabled
+    """Get enhanced key manager with optional Infisical client.
+
+    Args:
+        session: Database session dependency
+        redis: Redis client dependency
+
+    Returns:
+        InfisicalKeyManager configured with optional Infisical client
+    """
     infisical_client = None
     try:
         if settings.infisical_enabled:
             infisical_client = InfisicalSecretsClient.from_env(redis)
-    except Exception:
+    except InfisicalError:
         # Fallback gracefully if env not configured in this environment
         infisical_client = None
 
@@ -87,12 +96,12 @@ async def get_security_events(
     Args:
         event_type: Filter by specific event type
         limit: Maximum number of events to return (max 100)
+        key_manager: Dependency-injected key manager
 
     Returns:
         List of recent security events with metadata
     """
-    if limit > 100:
-        limit = 100
+    limit = min(limit, 100)
 
     try:
         events = await key_manager.security_monitor.get_recent_events(
@@ -171,6 +180,8 @@ async def toggle_emergency_mode(
     Args:
         enable: True to enable emergency mode, False to disable
         reason: Reason for the change
+        redis: Dependency-injected Redis client
+        key_manager: Dependency-injected key manager
 
     Returns:
         Emergency mode status
@@ -235,6 +246,7 @@ async def force_key_rotation(
 
     Args:
         reason: Reason for forced rotation
+        key_manager: Dependency-injected key manager
 
     Returns:
         Rotation result
@@ -263,8 +275,8 @@ async def force_key_rotation(
     except Exception as e:
         logger.exception("Failed to force key rotation")
 
-        # Record failure event
-        try:
+        # Record failure event without masking original error
+        with suppress(Exception):
             await key_manager.security_monitor.record_event(
                 key_manager.security_monitor.SecurityEvent(
                     event_type="forced_rotation_failed",
@@ -273,8 +285,6 @@ async def force_key_rotation(
                     metadata={"reason": reason, "error": str(e)},
                 )
             )
-        except Exception:  # noqa: BLE001 - don't mask original error
-            pass
 
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -291,6 +301,7 @@ async def invalidate_secrets_cache(
 
     Args:
         secret_path: Specific secret path to invalidate, or None for all
+        key_manager: Dependency-injected key manager
 
     Returns:
         Cache invalidation result
@@ -344,6 +355,7 @@ async def get_active_alerts(
 
     Args:
         severity: Filter by severity level (low, medium, high, critical)
+        redis: Dependency-injected Redis client
 
     Returns:
         List of active security alerts

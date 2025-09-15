@@ -10,11 +10,9 @@ import logging
 import time
 
 from datetime import UTC, datetime, timedelta
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from redis.asyncio import Redis
-from sqlalchemy import func
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.infra.secrets import InfisicalSecretsClient
 from app.infra.secrets.enhanced_key_manager import InfisicalKeyManager
@@ -92,8 +90,8 @@ class InfisicalMonitoringService:
 
             return metrics
 
-        except Exception as e:
-            logger.error("Failed to collect Infisical metrics: %s", e)
+        except Exception:
+            logger.exception("Failed to collect Infisical metrics")
             metrics_inc("infisical_monitoring_collection_errors_total")
             raise
 
@@ -126,7 +124,7 @@ class InfisicalMonitoringService:
             }
 
         except Exception as e:
-            logger.error("Health metrics collection failed: %s", e)
+            logger.exception("Health metrics collection failed")
             return {
                 "overall_status": "error",
                 "error": str(e),
@@ -164,7 +162,7 @@ class InfisicalMonitoringService:
             }
 
         except Exception as e:
-            logger.error("Performance metrics collection failed: %s", e)
+            logger.exception("Performance metrics collection failed")
             return {
                 "error": str(e),
                 "last_measurement": datetime.now(UTC).isoformat(),
@@ -194,7 +192,7 @@ class InfisicalMonitoringService:
             }
 
         except Exception as e:
-            logger.error("Security metrics collection failed: %s", e)
+            logger.exception("Security metrics collection failed")
             return {
                 "error": str(e),
                 "last_check": datetime.now(UTC).isoformat(),
@@ -227,7 +225,7 @@ class InfisicalMonitoringService:
             return cache_stats
 
         except Exception as e:
-            logger.error("Cache metrics collection failed: %s", e)
+            logger.exception("Cache metrics collection failed")
             return {
                 "error": str(e),
                 "enabled": False,
@@ -257,7 +255,7 @@ class InfisicalMonitoringService:
             }
 
         except Exception as e:
-            logger.error("Rotation metrics collection failed: %s", e)
+            logger.exception("Rotation metrics collection failed")
             return {
                 "error": str(e),
                 "last_check": datetime.now(UTC).isoformat(),
@@ -282,7 +280,7 @@ class InfisicalMonitoringService:
             return metrics
 
         except Exception as e:
-            logger.error("Webhook metrics collection failed: %s", e)
+            logger.exception("Webhook metrics collection failed")
             return {
                 "error": str(e),
                 "last_updated": datetime.now(UTC).isoformat(),
@@ -461,8 +459,8 @@ class InfisicalMonitoringService:
 
             return history
 
-        except Exception as e:
-            logger.error("Failed to get rotation history: %s", e)
+        except Exception:
+            logger.exception("Failed to get rotation history")
             return []
 
     async def _store_metrics(self, metrics: dict[str, Any]) -> None:
@@ -495,8 +493,8 @@ class InfisicalMonitoringService:
                 except (ValueError, TypeError):
                     continue
 
-        except Exception as e:
-            logger.error("Failed to store metrics: %s", e)
+        except Exception:
+            logger.exception("Failed to store metrics")
 
     async def _check_alerts(self, metrics: dict[str, Any]) -> None:
         """Check metrics against alerting thresholds."""
@@ -547,8 +545,8 @@ class InfisicalMonitoringService:
                 await self._store_alerts(alerts)
                 logger.warning("Infisical monitoring alerts: %s", alerts)
 
-        except Exception as e:
-            logger.error("Failed to check alerts: %s", e)
+        except Exception:
+            logger.exception("Failed to check alerts")
 
     async def _store_alerts(self, alerts: list[dict[str, Any]]) -> None:
         """Store alerts for external monitoring systems."""
@@ -570,8 +568,8 @@ class InfisicalMonitoringService:
             # Keep only last 100 alerts
             await self.redis.ltrim("infisical:alerts", 0, 99)
 
-        except Exception as e:
-            logger.error("Failed to store alerts: %s", e)
+        except Exception:
+            logger.exception("Failed to store alerts")
 
     async def get_current_metrics(self) -> dict[str, Any] | None:
         """Get the latest collected metrics."""
@@ -583,8 +581,8 @@ class InfisicalMonitoringService:
                 return json.loads(data)
             return None
 
-        except Exception as e:
-            logger.error("Failed to get current metrics: %s", e)
+        except Exception:
+            logger.exception("Failed to get current metrics")
             return None
 
     async def get_metrics_history(self, hours: int = 24) -> list[dict[str, Any]]:
@@ -609,8 +607,8 @@ class InfisicalMonitoringService:
             history.sort(key=lambda x: x.get("timestamp", ""))
             return history
 
-        except Exception as e:
-            logger.error("Failed to get metrics history: %s", e)
+        except Exception:
+            logger.exception("Failed to get metrics history")
             return []
 
     async def get_active_alerts(self) -> list[dict[str, Any]]:
@@ -630,6 +628,6 @@ class InfisicalMonitoringService:
 
             return alerts
 
-        except Exception as e:
-            logger.error("Failed to get active alerts: %s", e)
+        except Exception:
+            logger.exception("Failed to get active alerts")
             return []

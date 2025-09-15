@@ -6,10 +6,11 @@ integration health, performance metrics, and alerting status.
 
 from __future__ import annotations
 
+import json
 import logging
 
 from datetime import UTC, datetime
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query, Request, status
 from pydantic import BaseModel, Field
@@ -20,7 +21,6 @@ from app.infra.db import get_session
 from app.infra.redis import get_redis
 from app.infra.secrets import InfisicalSecretsClient
 from app.infra.secrets.enhanced_key_manager import InfisicalKeyManager
-from app.middleware.enhanced_jwt_middleware import require_scopes
 from app.telemetry.infisical_monitoring import InfisicalMonitoringService
 from app.telemetry.metrics_runtime import inc as metrics_inc
 
@@ -62,13 +62,13 @@ class HealthStatus(BaseModel):
     uptime_seconds: float | None = Field(None, description="Service uptime")
 
 
-async def get_infisical_client() -> InfisicalSecretsClient:
+def get_infisical_client() -> InfisicalSecretsClient:
     """Get Infisical client dependency."""
-    redis = await get_redis()
+    redis = get_redis()
     return InfisicalSecretsClient.from_env(redis)
 
 
-async def get_key_manager(
+def get_key_manager(
     session: AsyncSession = Depends(get_session),
     redis: Redis = Depends(get_redis),
     infisical_client: InfisicalSecretsClient = Depends(get_infisical_client),
@@ -77,7 +77,7 @@ async def get_key_manager(
     return InfisicalKeyManager(session, redis, infisical_client)
 
 
-async def get_monitoring_service(
+def get_monitoring_service(
     redis: Redis = Depends(get_redis),
     infisical_client: InfisicalSecretsClient = Depends(get_infisical_client),
     key_manager: InfisicalKeyManager = Depends(get_key_manager),
@@ -133,7 +133,7 @@ async def get_health_status(
         )
 
     except Exception as e:
-        logger.error("Health check failed: %s", e)
+        logger.exception("Health check failed")
         metrics_inc("monitoring_health_check_errors_total")
 
         return HealthStatus(
@@ -152,7 +152,9 @@ async def get_current_metrics(
     """Get current Infisical integration metrics.
 
     Args:
+        request: The incoming request.
         refresh: If True, collect fresh metrics instead of using cached data
+        monitoring_service: The monitoring service.
 
     Returns:
         Current monitoring metrics
@@ -170,12 +172,10 @@ async def get_current_metrics(
                 logger.info("No cached metrics found, collecting fresh data")
                 metrics = await monitoring_service.collect_metrics()
             else:
-                # Check if data is stale
-                from datetime import UTC, datetime
-
-                import dateutil.parser
-
-                timestamp = dateutil.parser.parse(metrics["timestamp"])
+                # Check if data is stale (parse ISO timestamp without external deps)
+                ts_raw = metrics["timestamp"]
+                ts_norm = ts_raw.replace("Z", "+00:00")
+                timestamp = datetime.fromisoformat(ts_norm)
                 age_seconds = (datetime.now(UTC) - timestamp).total_seconds()
 
                 if age_seconds > 300:  # 5 minutes
@@ -189,7 +189,7 @@ async def get_current_metrics(
         return MonitoringMetrics.model_validate(metrics)
 
     except Exception as e:
-        logger.error("Failed to get metrics: %s", e)
+        logger.exception("Failed to get metrics")
         metrics_inc("monitoring_metrics_request_errors_total")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -206,7 +206,9 @@ async def get_metrics_history(
     """Get historical metrics for the specified time period.
 
     Args:
+        request: The incoming request.
         hours: Number of hours of history to retrieve (1-168)
+        monitoring_service: The monitoring service.
 
     Returns:
         List of historical metrics
@@ -219,7 +221,7 @@ async def get_metrics_history(
         return [MonitoringMetrics.model_validate(metrics) for metrics in history]
 
     except Exception as e:
-        logger.error("Failed to get metrics history: %s", e)
+        logger.exception("Failed to get metrics history")
         metrics_inc("monitoring_metrics_history_request_errors_total")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -244,7 +246,7 @@ async def get_active_alerts(
         return [AlertModel.model_validate(alert) for alert in alerts]
 
     except Exception as e:
-        logger.error("Failed to get alerts: %s", e)
+        logger.exception("Failed to get alerts")
         metrics_inc("monitoring_alerts_request_errors_total")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Failed to get alerts: {e}"
@@ -274,7 +276,7 @@ async def trigger_metrics_collection(
         }
 
     except Exception as e:
-        logger.error("Failed to trigger metrics collection: %s", e)
+        logger.exception("Failed to trigger metrics collection")
         metrics_inc("monitoring_metrics_collection_trigger_errors_total")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -351,7 +353,7 @@ async def get_monitoring_dashboard(
         return dashboard_data
 
     except Exception as e:
-        logger.error("Failed to get dashboard data: %s", e)
+        logger.exception("Failed to get dashboard data")
         metrics_inc("monitoring_dashboard_request_errors_total")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -368,6 +370,7 @@ async def acknowledge_alert(
 
     Args:
         alert_id: ID of the alert to acknowledge
+        redis: Dependency-injected Redis client
 
     Returns:
         Confirmation of alert acknowledgment
@@ -377,14 +380,12 @@ async def acknowledge_alert(
         # Note: This is a simplified implementation
         # In production, you'd want to mark alerts as acknowledged rather than delete
 
-        import json
-
         # Get all alerts
         alerts = await redis.lrange("infisical:alerts", 0, -1)
 
         # Find and remove the specified alert
         removed = False
-        for i, alert_data in enumerate(alerts):
+        for alert_data in alerts:
             try:
                 alert = json.loads(alert_data)
                 # Use timestamp + message as pseudo-ID (better to have real IDs)
@@ -410,7 +411,7 @@ async def acknowledge_alert(
     except HTTPException:
         raise
     except Exception as e:
-        logger.error("Failed to acknowledge alert: %s", e)
+        logger.exception("Failed to acknowledge alert")
         metrics_inc("monitoring_alert_acknowledge_errors_total")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,

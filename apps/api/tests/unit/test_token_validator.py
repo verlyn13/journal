@@ -14,7 +14,7 @@ from app.infra.sa_models import User
 from tests.fixtures.jwt_fixtures import jwt_service, key_manager, redis, token_validator
 
 
-@pytest.fixture
+@pytest.fixture()
 async def test_user(db_session: AsyncSession) -> User:
     """Create a test user."""
     user = User(

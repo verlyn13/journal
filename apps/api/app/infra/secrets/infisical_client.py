@@ -11,13 +11,13 @@ import asyncio
 import json
 import logging
 import os
+import shutil
 import subprocess
 import time
 
 from dataclasses import dataclass
-from datetime import UTC, datetime, timedelta
+from datetime import UTC, datetime
 from enum import Enum
-from pathlib import Path
 from typing import Any, Protocol
 
 from redis.asyncio import Redis
@@ -48,7 +48,7 @@ class AuthenticationError(InfisicalError):
     """Authentication failed with Infisical."""
 
 
-class ConnectionError(InfisicalError):
+class ConnectionError(InfisicalError):  # noqa: A001
     """Network connection error to Infisical server."""
 
 
@@ -214,14 +214,30 @@ class InfisicalSecretsClient:
         self.max_retries = max_retries
         self.retry_delay = retry_delay
 
-        # Validate CLI availability
+        # Resolve and validate CLI path
+        self._cli_path = self._resolve_cli_path()
         self._validate_cli()
+
+    @staticmethod
+    def _resolve_cli_path() -> str:
+        """Resolve absolute path to the Infisical CLI executable.
+
+        Returns:
+            Absolute path to `infisical` CLI.
+
+        Raises:
+            InfisicalError: If the CLI cannot be located.
+        """
+        cli_path = shutil.which("infisical")
+        if not cli_path:
+            raise InfisicalError("Infisical CLI not found on PATH")
+        return cli_path
 
     def _validate_cli(self) -> None:
         """Validate Infisical CLI is available and correct version."""
         try:
-            result = subprocess.run(
-                ["infisical", "--version"],
+            result = subprocess.run(  # noqa: S603 - arguments are constant and validated
+                [self._cli_path, "--version"],
                 capture_output=True,
                 text=True,
                 timeout=5.0,
@@ -397,7 +413,7 @@ class InfisicalSecretsClient:
             }
 
             cmd = [
-                "infisical",
+                self._cli_path,
                 "secrets",
                 "list",
                 "--project-id",
@@ -421,14 +437,14 @@ class InfisicalSecretsClient:
 
             stdout, stderr = await result.communicate()
 
-            if result.returncode != 0:
+            if result.returncode is not None and result.returncode != 0:
                 self._handle_cli_error(result.returncode, stderr.decode())
 
             # Parse JSON response
             secrets_data = json.loads(stdout.decode())
 
             # Extract secret keys/paths
-            paths = []
+            paths: list[str] = []
             if isinstance(secrets_data, list):
                 paths.extend(
                     secret["secretKey"]
@@ -522,12 +538,14 @@ class InfisicalSecretsClient:
             await self.cache.invalidate_pattern(pattern)
             logger.info("Invalidated cache pattern: %s", pattern)
 
-    def _is_cache_valid(self, metadata: SecretMetadata) -> bool:
+    @staticmethod
+    def _is_cache_valid(metadata: SecretMetadata) -> bool:
         """Check if cached secret is still valid."""
         age = datetime.now(UTC) - metadata.cached_at
         return age.total_seconds() < metadata.ttl_seconds
 
-    def _infer_secret_type(self, path: str) -> SecretType:
+    @staticmethod
+    def _infer_secret_type(path: str) -> SecretType:
         """Infer secret type from path."""
         path_lower = path.lower()
 
@@ -574,10 +592,10 @@ class InfisicalSecretsClient:
         }
 
         # Extract secret key from path
-        secret_key = path.split("/")[-1]
+        secret_key = path.rsplit("/", maxsplit=1)[-1]
 
         cmd = [
-            "infisical",
+            self._cli_path,
             "secrets",
             "get",
             secret_key,
@@ -603,7 +621,7 @@ class InfisicalSecretsClient:
             process.kill()
             raise ConnectionError(f"Timeout fetching secret {path}") from e
 
-        if process.returncode != 0:
+        if process.returncode is not None and process.returncode != 0:
             self._handle_cli_error(process.returncode, stderr.decode())
 
         try:
@@ -622,10 +640,10 @@ class InfisicalSecretsClient:
         }
 
         # Extract secret key from path
-        secret_key = path.split("/")[-1]
+        secret_key = path.rsplit("/", maxsplit=1)[-1]
 
         cmd = [
-            "infisical",
+            self._cli_path,
             "secrets",
             "set",
             secret_key,
@@ -650,7 +668,7 @@ class InfisicalSecretsClient:
             process.kill()
             raise ConnectionError(f"Timeout storing secret {path}") from e
 
-        if process.returncode != 0:
+        if process.returncode is not None and process.returncode != 0:
             self._handle_cli_error(process.returncode, stderr.decode())
 
     async def _delete_from_infisical(self, path: str) -> None:
@@ -661,10 +679,10 @@ class InfisicalSecretsClient:
         }
 
         # Extract secret key from path
-        secret_key = path.split("/")[-1]
+        secret_key = path.rsplit("/", maxsplit=1)[-1]
 
         cmd = [
-            "infisical",
+            self._cli_path,
             "secrets",
             "delete",
             secret_key,
@@ -688,10 +706,11 @@ class InfisicalSecretsClient:
             process.kill()
             raise ConnectionError(f"Timeout deleting secret {path}") from e
 
-        if process.returncode != 0:
+        if process.returncode is not None and process.returncode != 0:
             self._handle_cli_error(process.returncode, stderr.decode())
 
-    def _handle_cli_error(self, exit_code: int, stderr: str) -> None:
+    @staticmethod
+    def _handle_cli_error(exit_code: int, stderr: str) -> None:
         """Handle CLI errors and raise appropriate exceptions."""
         stderr_lower = stderr.lower()
 

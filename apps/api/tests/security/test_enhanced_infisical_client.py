@@ -1,11 +1,7 @@
 """Tests for enhanced Infisical client with security hardening."""
 
-import json
+from unittest.mock import AsyncMock
 
-from datetime import UTC, datetime
-from unittest.mock import AsyncMock, MagicMock, Mock
-
-import aiohttp
 import pytest
 
 from redis.asyncio import Redis
@@ -14,7 +10,6 @@ from app.infra.secrets.enhanced_infisical_client import (
     CircuitBreaker,
     EnhancedInfisicalClient,
     InfisicalAuthError,
-    InfisicalError,
     InfisicalRateLimitError,
     InfisicalUnavailableError,
     SecretEncryption,
@@ -65,7 +60,7 @@ class TestSecretEncryption:
 class TestCircuitBreaker:
     """Test circuit breaker for API resilience."""
 
-    @pytest.fixture
+    @pytest.fixture()
     def circuit_breaker(self) -> CircuitBreaker:
         """Create circuit breaker with low thresholds for testing."""
         return CircuitBreaker(
@@ -118,17 +113,17 @@ class TestCircuitBreaker:
 class TestEnhancedInfisicalClient:
     """Test enhanced Infisical client."""
 
-    @pytest.fixture
+    @pytest.fixture()
     def mock_redis(self) -> AsyncMock:
         """Create mock Redis client."""
         redis = AsyncMock(spec=Redis)
         redis.get.return_value = None
         redis.setex.return_value = True
         redis.delete.return_value = 1
-        redis.scan_iter.return_value = [].__aiter__()
+        redis.scan_iter.return_value = aiter([])
         return redis
 
-    @pytest.fixture
+    @pytest.fixture()
     def client(self, mock_redis: AsyncMock) -> EnhancedInfisicalClient:
         """Create enhanced Infisical client."""
         return EnhancedInfisicalClient(
@@ -140,14 +135,14 @@ class TestEnhancedInfisicalClient:
             cache_ttl=60,
         )
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_client_context_manager(self, client: EnhancedInfisicalClient) -> None:
         """Test client as async context manager."""
         async with client as managed_client:
             assert managed_client is client
             assert client._session is not None
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_fetch_secret_from_cache(
         self, client: EnhancedInfisicalClient, mock_redis: AsyncMock
     ) -> None:
@@ -164,7 +159,7 @@ class TestEnhancedInfisicalClient:
         assert result == secret_value
         mock_redis.get.assert_called_once_with(f"infisical:secrets:{secret_path}")
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_fetch_secret_cache_miss_api_success(
         self, client: EnhancedInfisicalClient, mock_redis: AsyncMock
     ) -> None:
@@ -190,7 +185,7 @@ class TestEnhancedInfisicalClient:
         # Should cache the result
         mock_redis.setex.assert_called()
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_fetch_secret_api_auth_error(
         self, client: EnhancedInfisicalClient, mock_redis: AsyncMock
     ) -> None:
@@ -211,7 +206,7 @@ class TestEnhancedInfisicalClient:
         with pytest.raises(InfisicalAuthError, match="Authentication failed"):
             await client.fetch_secret(secret_path)
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_fetch_secret_rate_limit_error(
         self, client: EnhancedInfisicalClient, mock_redis: AsyncMock
     ) -> None:
@@ -232,7 +227,7 @@ class TestEnhancedInfisicalClient:
         with pytest.raises(InfisicalRateLimitError, match="Rate limit exceeded"):
             await client.fetch_secret(secret_path)
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_fetch_secret_server_error(
         self, client: EnhancedInfisicalClient, mock_redis: AsyncMock
     ) -> None:
@@ -253,7 +248,7 @@ class TestEnhancedInfisicalClient:
         with pytest.raises(InfisicalUnavailableError, match="Server error: 500"):
             await client.fetch_secret(secret_path)
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_fetch_secret_circuit_breaker_open(
         self, client: EnhancedInfisicalClient, mock_redis: AsyncMock
     ) -> None:
@@ -269,7 +264,7 @@ class TestEnhancedInfisicalClient:
         with pytest.raises(InfisicalUnavailableError, match="Circuit breaker open"):
             await client.fetch_secret(secret_path)
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_fetch_secret_with_fallback(
         self, client: EnhancedInfisicalClient, mock_redis: AsyncMock
     ) -> None:
@@ -290,7 +285,7 @@ class TestEnhancedInfisicalClient:
 
         assert result == fallback_value
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_store_secret_success(
         self, client: EnhancedInfisicalClient, mock_redis: AsyncMock
     ) -> None:
@@ -311,7 +306,7 @@ class TestEnhancedInfisicalClient:
         # Should update cache
         mock_redis.setex.assert_called()
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_store_secret_circuit_breaker_open(self, client: EnhancedInfisicalClient) -> None:
         """Test store secret fails when circuit breaker is open."""
         secret_path = "/test/secret"
@@ -323,7 +318,7 @@ class TestEnhancedInfisicalClient:
         with pytest.raises(InfisicalUnavailableError, match="Circuit breaker open"):
             await client.store_secret(secret_path, secret_value)
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_health_check_success(self, client: EnhancedInfisicalClient) -> None:
         """Test health check with healthy service."""
         # Mock successful health check response
@@ -340,7 +335,7 @@ class TestEnhancedInfisicalClient:
         assert health_status["api_status"] == 200
         assert "circuit_breaker_state" in health_status
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_health_check_circuit_breaker_open(self, client: EnhancedInfisicalClient) -> None:
         """Test health check with circuit breaker open."""
         # Open circuit breaker
@@ -351,7 +346,7 @@ class TestEnhancedInfisicalClient:
         assert health_status["healthy"] is False
         assert health_status["reason"] == "Circuit breaker open"
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_invalidate_cache_specific_path(
         self, client: EnhancedInfisicalClient, mock_redis: AsyncMock
     ) -> None:
@@ -364,7 +359,7 @@ class TestEnhancedInfisicalClient:
         assert deleted_count == 2
         mock_redis.delete.assert_called_once()
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_invalidate_cache_all_secrets(
         self, client: EnhancedInfisicalClient, mock_redis: AsyncMock
     ) -> None:
@@ -379,9 +374,11 @@ class TestEnhancedInfisicalClient:
 
         async def mock_scan_iter(match=None):
             if "secrets" in match:
-                yield from cache_keys[:2]
+                for key in cache_keys[:2]:
+                    yield key
             elif "meta" in match:
-                yield from cache_keys[2:]
+                for key in cache_keys[2:]:
+                    yield key
 
         mock_redis.scan_iter.side_effect = mock_scan_iter
         mock_redis.delete.return_value = 4
@@ -390,7 +387,7 @@ class TestEnhancedInfisicalClient:
 
         assert deleted_count == 4
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_cache_secret_encryption(
         self, client: EnhancedInfisicalClient, mock_redis: AsyncMock
     ) -> None:
@@ -415,7 +412,7 @@ class TestEnhancedInfisicalClient:
         decrypted = client.encryption.decrypt(encrypted_value)
         assert decrypted == secret_value
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_get_cached_secret_decryption(
         self, client: EnhancedInfisicalClient, mock_redis: AsyncMock
     ) -> None:
@@ -431,7 +428,7 @@ class TestEnhancedInfisicalClient:
 
         assert result == secret_value
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_retry_mechanism_success_after_failure(
         self, client: EnhancedInfisicalClient, mock_redis: AsyncMock
     ) -> None:

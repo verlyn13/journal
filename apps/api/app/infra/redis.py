@@ -38,7 +38,7 @@ def get_redis_client() -> Redis:
     return get_redis_pool()
 
 
-async def get_redis() -> Redis:
+def get_redis() -> Redis:
     """Get async Redis client for dependency injection.
 
     Returns:

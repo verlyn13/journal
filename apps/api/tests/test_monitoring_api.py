@@ -18,7 +18,7 @@ from tests.helpers.auth_helpers import (
 )
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 class TestMonitoringEndpoints:
     """Test monitoring API endpoints with scope requirements."""
 

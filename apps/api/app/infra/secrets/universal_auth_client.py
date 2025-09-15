@@ -7,13 +7,12 @@ for secure secret access without storing long-lived credentials.
 from __future__ import annotations
 
 import asyncio
-import json
 import logging
 import os
-import subprocess
 import time
 
 from datetime import UTC, datetime, timedelta
+from functools import lru_cache
 from typing import Any
 
 from app.telemetry.metrics_runtime import inc as metrics_inc
@@ -258,12 +257,9 @@ class UniversalAuthClient:
             return status
 
 
-# Global instance for application use
-_universal_auth_client: UniversalAuthClient | None = None
-
-
-async def get_universal_auth_client() -> UniversalAuthClient:
-    """Get or create global Universal Auth client.
+@lru_cache(maxsize=1)
+def get_universal_auth_client() -> UniversalAuthClient:
+    """Get or create a cached Universal Auth client.
 
     Returns:
         Configured UniversalAuthClient instance
@@ -271,17 +267,13 @@ async def get_universal_auth_client() -> UniversalAuthClient:
     Raises:
         UniversalAuthError: If client cannot be created
     """
-    global _universal_auth_client
-
-    if _universal_auth_client is None:
-        try:
-            _universal_auth_client = UniversalAuthClient.from_env()
-            logger.info("Universal Auth client initialized")
-        except Exception as e:
-            logger.error("Failed to initialize Universal Auth client: %s", e)
-            raise UniversalAuthError(f"Client initialization failed: {e}") from e
-
-    return _universal_auth_client
+    try:
+        client = UniversalAuthClient.from_env()
+        logger.info("Universal Auth client initialized")
+        return client
+    except Exception as e:
+        logger.exception("Failed to initialize Universal Auth client")
+        raise UniversalAuthError(f"Client initialization failed: {e}") from e
 
 
 async def get_infisical_token() -> str:
@@ -295,5 +287,5 @@ async def get_infisical_token() -> str:
     Raises:
         UniversalAuthError: If authentication fails
     """
-    client = await get_universal_auth_client()
+    client = get_universal_auth_client()
     return await client.get_token()

@@ -17,7 +17,6 @@ from typing import Any
 import typer
 
 from rich.console import Console
-from rich.panel import Panel
 from rich.progress import Progress, SpinnerColumn, TextColumn
 from rich.table import Table
 
@@ -27,7 +26,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from app.infra.db import get_session
 from app.infra.redis import get_redis
-from app.infra.secrets import InfisicalSecretsClient, SecretType
+from app.infra.secrets import InfisicalSecretsClient, SecretNotFoundError, SecretType
 from app.infra.secrets.enhanced_key_manager import InfisicalKeyManager
 from app.security.token_cipher import KeyConfigError, TokenCipher
 from app.settings import settings
@@ -77,12 +76,12 @@ class MigrationResult:
         }
 
 
-async def create_backup(result: MigrationResult) -> None:
+def create_backup(result: MigrationResult) -> None:
     """Create backup of current environment secrets."""
     backup_dir = Path.home() / ".journal" / "infisical_migration_backups"
     backup_dir.mkdir(parents=True, exist_ok=True)
 
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    timestamp = datetime.now(UTC).strftime("%Y%m%d_%H%M%S")
     backup_file = backup_dir / f"secrets_backup_{timestamp}.json"
 
     backup_data = {
@@ -137,8 +136,7 @@ async def create_backup(result: MigrationResult) -> None:
         result.add_warning(f"Could not parse AES keys for backup: {e}")
 
     # Write backup file
-    with open(backup_file, "w") as f:
-        json.dump(backup_data, f, indent=2)
+    backup_file.write_text(json.dumps(backup_data, indent=2), encoding="utf-8")
 
     result.backup_path = str(backup_file)
     console.print(f"✅ Backup created: {backup_file}")
@@ -164,7 +162,7 @@ async def migrate_jwt_keys(
             await infisical_client.fetch_secret("/auth/jwt/current_private_key")
             result.add_warning("JWT keys already exist in Infisical, skipping migration")
             return
-        except Exception:
+        except SecretNotFoundError:
             # Good, no existing keys to conflict with
             pass
 
@@ -203,7 +201,7 @@ async def migrate_aes_keys(
             await infisical_client.fetch_secret("/auth/aes/active_kid")
             result.add_warning("AES keys already exist in Infisical, skipping migration")
             return
-        except Exception:
+        except SecretNotFoundError:
             # Good, no existing keys to conflict with
             pass
 
@@ -371,7 +369,7 @@ async def verify_migration(
         result.add_error(f"Migration verification failed: {e}")
 
 
-async def generate_migration_report(result: MigrationResult) -> None:
+def generate_migration_report(result: MigrationResult) -> None:
     """Generate a comprehensive migration report."""
     console.print("\n" + "=" * 60)
     console.print("📊 INFISICAL MIGRATION REPORT")
@@ -441,21 +439,15 @@ def check_prerequisites() -> None:
 
     issues = []
 
-    # Check Infisical CLI
+    # Check Infisical CLI availability via PATH
     try:
-        import subprocess
+        import shutil
 
-        result = subprocess.run(
-            ["infisical", "--version"],
-            capture_output=True,
-            text=True,
-            timeout=5.0,
-            check=False,
-        )
-        if result.returncode == 0:
-            console.print("✅ Infisical CLI is available")
+        cli_path = shutil.which("infisical")
+        if cli_path:
+            console.print(f"✅ Infisical CLI is available at {cli_path}")
         else:
-            issues.append("Infisical CLI not found or not working")
+            issues.append("Infisical CLI not found on PATH")
     except Exception:
         issues.append("Infisical CLI not available")
 
@@ -583,12 +575,13 @@ def migrate(
                     Path.home()
                     / ".journal"
                     / "infisical_migration_backups"
-                    / f"migration_log_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+                    / f"migration_log_{datetime.now(UTC).strftime('%Y%m%d_%H%M%S')}.json"
                 )
                 log_file.parent.mkdir(parents=True, exist_ok=True)
 
-                with open(log_file, "w") as f:
-                    json.dump(result.to_dict(), f, indent=2)
+                # Write log asynchronously to avoid blocking in async context
+                data = json.dumps(result.to_dict(), indent=2)
+                await asyncio.to_thread(log_file.write_text, data, "utf-8")
 
                 console.print(f"\n📝 Migration log saved: {log_file}")
 
@@ -617,8 +610,7 @@ def rollback(
         raise typer.Exit(1)
 
     try:
-        with open(backup_path) as f:
-            backup_data = json.load(f)
+        backup_data = json.loads(backup_path.read_text(encoding="utf-8"))
 
         console.print("📄 Backup file loaded successfully")
         console.print(f"Backup timestamp: {backup_data.get('timestamp', 'Unknown')}")

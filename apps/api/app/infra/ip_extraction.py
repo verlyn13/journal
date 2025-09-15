@@ -8,8 +8,7 @@ from __future__ import annotations
 
 import ipaddress
 import logging
-
-from typing import Optional
+import os
 
 from fastapi import Request
 
@@ -108,10 +107,9 @@ def _is_trusted_proxy(ip: str | None) -> bool:
                 network = ipaddress.ip_network(trusted, strict=False)
                 if ip_addr in network:
                     return True
-            else:
+            elif ip_addr == ipaddress.ip_address(trusted):
                 # Individual IP
-                if ip_addr == ipaddress.ip_address(trusted):
-                    return True
+                return True
 
         return False
 
@@ -183,8 +181,6 @@ def configure_trusted_proxies() -> None:
     Sets up trusted proxy list based on deployment environment.
     Should be called during application startup.
     """
-    import os
-
     # Check if explicitly configured
     trusted_proxies_env = os.getenv("TRUSTED_PROXIES", "").strip()
 

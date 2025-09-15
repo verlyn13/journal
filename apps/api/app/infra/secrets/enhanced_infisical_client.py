@@ -6,8 +6,8 @@ import asyncio
 import json
 import logging
 
-from datetime import UTC, datetime, timedelta
-from typing import Any, Protocol
+from datetime import UTC, datetime
+from typing import Any
 from urllib.parse import urljoin
 
 import aiohttp
@@ -248,7 +248,7 @@ class EnhancedInfisicalClient(SecretsClient):
                 )
                 return secret_value
 
-            except (InfisicalAuthError, InfisicalRateLimitError) as e:
+            except (InfisicalAuthError, InfisicalRateLimitError):
                 # Don't retry auth errors or rate limits
                 self.circuit_breaker.record_failure()
                 raise
@@ -309,7 +309,7 @@ class EnhancedInfisicalClient(SecretsClient):
                 )
                 return
 
-            except (InfisicalAuthError, InfisicalRateLimitError) as e:
+            except (InfisicalAuthError, InfisicalRateLimitError):
                 self.circuit_breaker.record_failure()
                 raise
             except InfisicalError as e:

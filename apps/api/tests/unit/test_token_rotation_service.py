@@ -18,19 +18,19 @@ from app.infra.sa_models import User, UserSession
 class TestTokenRotationService:
     """Test suite for TokenRotationService."""
 
-    @pytest.fixture
+    @pytest.fixture()
     def redis_mock(self) -> AsyncMock:
         """Create mock Redis client."""
         return AsyncMock(spec=Redis)
 
-    @pytest.fixture
+    @pytest.fixture()
     def token_service(
         self, db_session: AsyncSession, redis_mock: AsyncMock
     ) -> TokenRotationService:
         """Create TokenRotationService instance."""
         return TokenRotationService(db_session, redis_mock)
 
-    @pytest.fixture
+    @pytest.fixture()
     async def test_user(self, db_session: AsyncSession) -> User:
         """Create test user."""
         user = User(
@@ -44,7 +44,7 @@ class TestTokenRotationService:
         await db_session.flush()
         return user
 
-    @pytest.fixture
+    @pytest.fixture()
     async def test_session(self, db_session: AsyncSession, test_user: User) -> UserSession:
         """Create test session."""
         session = UserSession(

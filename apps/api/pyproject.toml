@@ -83,6 +83,7 @@ dev-dependencies = [
     "types-bleach>=6.2.0.20250809",
     "freezegun>=1.5.5",
     "pytest-freezegun>=0.4.2",
+    "aiohttp>=3.12.15",
 ]
 
 [project.scripts]
@@ -129,37 +130,69 @@ exclude = [
 ]
 
 [tool.ruff.lint]
+# Phased approach: enable critical rules first
 select = [
-    "ALL",  # Enable all rules, then selectively disable
+    # Core rules (always enabled)
+    "F",     # pyflakes
+    "E",     # pycodestyle errors
+    "W",     # pycodestyle warnings
+    "I",     # isort
+    "UP",    # pyupgrade
+    "SIM",   # simplicity
+    "C4",    # flake8-comprehensions
+    
+    # Security
+    "S",     # bandit subset (S1xx-S5xx)
+    
+    # Error handling
+    "TRY",   # tryceratops (logging.exception, error handling)
+    "BLE",   # blind-except
+    "EM",    # error message formatting
+    
+    # Style & best practices
+    "PLC0415", # no local imports
+    "RUF029",  # async must await
+    "PLR6301", # no-self-use
+    "PLR6201", # literal-membership
+    
+    # Tests
+    "PT",    # pytest rules
+    
+    # Docs (minimal for public APIs)
+    "D417",  # argument docs for public methods
+    
+    # Additional high-value rules
+    "ASYNC", # async correctness
+    "PERF",  # performance suggestions
+    "DTZ",   # datetime timezone awareness
+    "RET",   # return statement issues
+    "PIE",   # flake8-pie misc lints
+    "PGH",   # pygrep-hooks
+    "LOG",   # logging format
+    "FURB",  # refurb modernization
+    "A",     # builtins shadowing
+    "B",     # bugbear
+    "PL",    # pylint (selected subset)
+    "PTH",   # use pathlib
 ]
 ignore = [
     # Line length (handled by formatter)
     "E501",
     
-    # Complexity limits (FastAPI endpoints can be complex)
+    # Complexity limits (will address later)
     "PLR0913", # too-many-arguments
     "PLR0912", # too-many-branches  
     "PLR0915", # too-many-statements
-    "PLR2004", # magic-value-comparison
+    "PLR2004", # magic-value-comparison (allow in domain logic)
     "C901",    # too-complex
+    "PLR0911", # too-many-return-statements
+    "PLR0914", # too-many-locals
+    "PLR0904", # too-many-public-methods
     
-    # FastAPI specific - these are being addressed in a separate PR
-    "FAST002", # FastAPI dependency without Annotated
-    "B904",    # raise-without-from
-    "ANN201",  # missing-return-type-annotation-public-function
-    "ARG001",  # unused-function-argument
-    "DOC201",  # return-not-documented-in-docstring
-    "DOC501",  # raised-exception-missing-from-docstring
-    "DOC502",  # raised-exception-not-explicitly-raised
-    "CPY001",  # missing-copyright-notice
-    "INP001",  # implicit-namespace-package
+    # FastAPI specific patterns
+    "B904",    # raise-without-from (FastAPI exception handling)
     
-    # Boolean traps (FastAPI uses them)
-    "FBT001",  # boolean-type-hint-positional-argument
-    "FBT002",  # boolean-default-value-positional-argument
-    "FBT003",  # boolean-positional-value-in-call
-    
-    # Documentation (we handle separately)
+    # Documentation (handle separately)
     "D100",    # missing-module-docstring
     "D101",    # missing-class-docstring
     "D102",    # missing-method-docstring
@@ -168,24 +201,27 @@ ignore = [
     "D105",    # missing-magic-method-docstring
     "D106",    # missing-nested-class-docstring
     "D107",    # missing-init-docstring
+    # Keep D417 enabled for argument docs
     
     # SQLModel/Pydantic specific
-    "TC001",   # typing-only-first-party-import (was TCH001)
-    "TC002",   # typing-only-third-party-import (was TCH002)
-    "TC003",   # typing-only-stdlib-import (was TCH003)
     "RUF012",  # mutable-class-default (Pydantic handles this)
-    "ANN401",  # any-type (sometimes needed)
-    "S101",    # assert-used (fine in tests)
+    
+    # Stylistic preferences
     "TRY003",  # raise-vanilla-args
-    "TRY004",  # prefer-type-error (stylistic)
-    "TRY300",  # try-consider-else (stylistic)
-    "TRY301",  # raise-within-try (stylistic)
+    "TRY004",  # prefer-type-error
+    "TRY300",  # try-consider-else
+    "TRY301",  # raise-within-try
     "EM101",   # raw-string-in-exception
     "EM102",   # f-string-in-exception
     "SLF001",  # private-member-access (needed for tests)
-    "PD901",   # pandas-df-variable-name
     "COM812",  # trailing-comma-missing (conflicts with formatter)
     "ISC001",  # single-line-implicit-string-concatenation
+    
+    # Allow assert in production code for now
+    "S101",    # assert-used
+    
+    # False positives on security rules to configure
+    # Will refine these after initial pass
 ]
 
 # Enable auto-fixing for these categories
@@ -219,8 +255,6 @@ fixable = [
 unfixable = [
     "ERA",   # commented-out-code
     "T20",   # flake8-print
-    "F401",  # unused-import (might be intentional)
-    "F841",  # unused-variable (might be intentional)
 ]
 
 [tool.ruff.lint.isort]
@@ -289,31 +323,41 @@ convention = "google"
 "tests/**/*.py" = [
     "S101",   # assert-used
     "PLR2004", # magic-value-comparison
-    "ARG",    # unused-arguments (common in fixtures)
-    "ANN",    # type annotation rules relaxed in tests
-    "FBT",    # boolean-trap (test parameters)
     "SLF001", # private-member-access
     "D",      # docstrings not needed in tests
-    "DOC",    # relax docstring nitpicks for tests
     "PLR6301", # method-could-be-function (pytest test classes)
     "DTZ003", # allow naive datetime in tests
     "DTZ001", # datetime without tzinfo allowed in tests
-    "BLE001", # allow broad except in tests
+    "BLE001", # allow broad except in tests (temporarily)
     "PLC0415", # allow imports inside tests when needed
     "RUF029", # async-without-await in test helpers
-    "PT001",  # fixture parentheses nits
-    "PT018",  # composite assertions
-    "T201",   # print used in test output
     "PERF401", # list comprehensions and extend in tests
     "S105",   # hardcoded-password-strings in test data
+    "S106",   # hardcoded passwords in test fixtures
     "S608",   # SQL string construction in tests
     "PLR6201", # set literal suggestion noise in tests
     "TRY002",  # require custom exception types
-    "N801",   # class naming in test helpers
-    "PLR1711", # useless return at end of function
-    "PLC1901", # simplify falsey comparisons
     "PLR0914", # too many locals in big integration tests
     "F811",   # redefinition of unused (pytest fixtures)
+    "PT001",  # fixture parentheses style noise in tests
+    "PT018",  # composite assertions allowed in tests
+    "A004",   # allow shadowing builtin names in tests (e.g., ConnectionError)
+    "S107",   # hardcoded password defaults in test helpers
+]
+"app/api/internal/*.py" = [
+    "BLE001",  # broad except in integration endpoints
+    "TRY400",  # prefer logging.exception (to be refactored later)
+]
+"app/api/v1/*.py" = [
+    "BLE001",
+]
+"app/infra/security/**/*.py" = [
+    "BLE001",
+    "TRY400",
+]
+"app/domain/auth/**/*.py" = [
+    "BLE001",
+    "TRY400",
 ]
 "tests/unit/test_jwt_service.py" = [
     "F401",   # unused-import (fixtures are used by pytest)
@@ -335,13 +379,36 @@ convention = "google"
 "alembic/**/*.py" = [
     "D",      # docstrings not needed in migrations
     "E402",   # module-import-not-at-top
-    "INP001", # implicit-namespace-package
-    "T201",   # print allowed in migration env
 ]
-".tools/*.py" = ["T201"]
-"test_debug.py" = ["T201"]
+"app/infra/secrets/**/*.py" = [
+    # Integration-heavy code with external services
+    "BLE001",  # broad except for external service errors
+    "TRY400",  # logging.error with exc_info for debugging
+    "S105",    # false positives on "token_type" etc
+    "S106",    # false positives on auth parameters
+]
+"app/infra/security/webhook_verification.py" = [
+    # Complex security validation logic
+    "PLR0913", # many arguments for verification
+    "C901",    # complex verification logic
+]
+"app/telemetry/infisical_monitoring.py" = [
+    "BLE001",
+    "PLC0415",
+]
+"app/scripts/migrate_to_infisical.py" = [
+    "BLE001",
+    "PLC0415",
+]
+"app/infra/secrets/infisical_client.py" = [
+    "S404",   # subprocess usage is vetted and locked to absolute path
+]
+"tests/integration/test_infisical_integration.py" = [
+    "S404",   # uses subprocess for CLI presence check
+    "S607",   # partial executable path in test setup
+]
 "app/api/deps.py" = [
-    "ARG001", # unused-function-argument (dependency injection)
+    # FastAPI dependency injection patterns
 ]
 "app/models/**/*.py" = [
     "RUF012", # mutable-class-default (SQLModel/Pydantic)

@@ -17,7 +17,7 @@ from app.domain.auth.par_client import PARClient
 class TestPARClient:
     """Test suite for PARClient."""
 
-    @pytest.fixture
+    @pytest.fixture()
     def metadata_with_par(self) -> dict:
         """OAuth metadata with PAR support."""
         return {
@@ -29,7 +29,7 @@ class TestPARClient:
             "jwks_uri": "https://auth.example.com/jwks",
         }
 
-    @pytest.fixture
+    @pytest.fixture()
     def metadata_without_par(self) -> dict:
         """OAuth metadata without PAR support."""
         return {
@@ -40,7 +40,7 @@ class TestPARClient:
             "jwks_uri": "https://auth.example.com/jwks",
         }
 
-    @pytest.fixture
+    @pytest.fixture()
     def client_with_par(self, metadata_with_par: dict) -> PARClient:
         """Create PAR client with PAR-enabled provider."""
         return PARClient(
@@ -50,7 +50,7 @@ class TestPARClient:
             redirect_uri="https://app.example.com/callback",
         )
 
-    @pytest.fixture
+    @pytest.fixture()
     def client_without_par(self, metadata_without_par: dict) -> PARClient:
         """Create PAR client with non-PAR provider."""
         return PARClient(
@@ -60,7 +60,7 @@ class TestPARClient:
             redirect_uri="https://app.example.com/callback",
         )
 
-    @pytest.fixture
+    @pytest.fixture()
     def public_client(self, metadata_with_par: dict) -> PARClient:
         """Create public PAR client (no secret)."""
         return PARClient(

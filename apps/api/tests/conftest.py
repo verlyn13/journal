@@ -73,7 +73,6 @@ def migrated_db():
     """Run migrations once at session scope using sync Alembic."""
     cfg = Config(str(Path(__file__).resolve().parents[1] / "alembic.ini"))
     command.upgrade(cfg, "head")
-    return
 
 
 @pytest_asyncio.fixture

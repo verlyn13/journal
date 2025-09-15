@@ -206,7 +206,6 @@ if (typeof Element !== 'undefined' && !Element.prototype.animate) {
     value: animateImpl,
   });
 }
-
 // Mock backdrop-filter support for glass morphism tests
 // The supportsBackdropFilter function checks for __BACKDROP_SUPPORT_OVERRIDE__ first
 // This works in both jsdom and happy-dom environments
@@ -264,7 +263,6 @@ if (typeof window !== 'undefined' && typeof DocumentType === 'undefined') {
     }
   };
 }
-
 // Mock requestIdleCallback for tests
 (globalThis as any).requestIdleCallback ??= (cb: any) => setTimeout(cb, 0);
 (globalThis as any).cancelIdleCallback ??= (id: any) => clearTimeout(id);

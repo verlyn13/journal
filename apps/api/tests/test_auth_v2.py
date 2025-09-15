@@ -5,9 +5,9 @@ from __future__ import annotations
 import hashlib
 import json
 
-from datetime import UTC, datetime, timedelta
-from unittest.mock import AsyncMock, MagicMock, patch
-from uuid import UUID, uuid4
+from datetime import timedelta
+from unittest.mock import patch
+from uuid import uuid4
 
 import pytest
 
@@ -17,18 +17,17 @@ from redis.asyncio import Redis
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.config.token_rotation_config import ACCESS_JWT_TTL, REFRESH_TOKEN_TTL
+from app.config.token_rotation_config import ACCESS_JWT_TTL
 from app.domain.auth.jwt_service import JWTService
 from app.domain.auth.jwt_verifier_policy import VerifierPolicy
 from app.domain.auth.key_manager import KeyManager
 from app.domain.auth.token_rotation_service import TokenRotationService
 from app.infra.sa_models import User, UserSession
-from app.services.integrated_auth_service import IntegratedAuthService
-from app.services.m2m_token_service import M2MTokenService, MachineIdentity
+from app.services.m2m_token_service import MachineIdentity
 from app.settings import settings
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 class TestV2AuthEndpoints:
     """Test suite for v2 auth endpoints."""
 
@@ -345,7 +344,7 @@ class TestV2AuthEndpoints:
         assert "claims" in data
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 class TestM2MAuthentication:
     """Test suite for M2M token endpoints."""
 
@@ -458,7 +457,7 @@ class TestM2MAuthentication:
             assert "No valid scopes granted" in response.json()["detail"]
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 class TestEdDSASigningAndVerification:
     """Test EdDSA JWT signing and verification."""
 
@@ -544,7 +543,7 @@ class TestEdDSASigningAndVerification:
         assert claims.get("typ") == "at+jwt"
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 class TestSecurityPolicies:
     """Test security policy enforcement."""
 
@@ -570,10 +569,8 @@ class TestSecurityPolicies:
             issuer=settings.jwt_iss,
         )
 
-        with pytest.raises(Exception) as exc_info:
+        with pytest.raises(Exception, match="(?i)expired"):
             await jwt_service.verify_jwt(token, policy)
-
-        assert "expired" in str(exc_info.value).lower()
 
     async def test_audience_validation(
         self,
@@ -597,10 +594,8 @@ class TestSecurityPolicies:
             issuer=settings.jwt_iss,
         )
 
-        with pytest.raises(Exception) as exc_info:
+        with pytest.raises(Exception, match="(?i)audience"):
             await jwt_service.verify_jwt(token, policy)
-
-        assert "audience" in str(exc_info.value).lower()
 
     async def test_issuer_validation(
         self,
@@ -625,7 +620,5 @@ class TestSecurityPolicies:
             ttl=timedelta(minutes=10),
         )
 
-        with pytest.raises(Exception) as exc_info:
+        with pytest.raises(Exception, match="(?i)issuer"):
             await jwt_service.verify_jwt(token, policy)
-
-        assert "issuer" in str(exc_info.value).lower()

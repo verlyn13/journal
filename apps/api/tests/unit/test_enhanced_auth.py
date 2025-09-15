@@ -17,7 +17,7 @@ from app.security.token_cipher import TokenCipher
 class TestSecureTokenService:
     """Test suite for SecureTokenService."""
 
-    @pytest.fixture
+    @pytest.fixture()
     def mock_cipher(self) -> MagicMock:
         """Create mock cipher for testing."""
         cipher = MagicMock(spec=TokenCipher)
@@ -26,12 +26,12 @@ class TestSecureTokenService:
         cipher.needs_rotation.return_value = False
         return cipher
 
-    @pytest.fixture
+    @pytest.fixture()
     def service_with_cipher(self, mock_cipher: MagicMock) -> SecureTokenService:
         """Create service with mock cipher."""
         return SecureTokenService(cipher=mock_cipher)
 
-    @pytest.fixture
+    @pytest.fixture()
     def service_without_cipher(self) -> SecureTokenService:
         """Create service without cipher (unencrypted mode)."""
         with patch.object(SecureTokenService, "_get_default_cipher", return_value=None):

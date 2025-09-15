@@ -58,27 +58,20 @@ help:
 
 # Install dependencies
 install:
-	@echo "📦 Installing dependencies..."
-	@if command -v bun >/dev/null 2>&1; then \
-		bun install; \
-	elif command -v npm >/dev/null 2>&1; then \
-		npm install; \
-	else \
-		echo "❌ Neither bun nor npm found. Please install one."; \
-		exit 1; \
-	fi
+	@echo "📦 Installing dependencies (bun)..."
+	@bun install
 	@echo "✅ Dependencies installed"
 
 # Build project
 build:
 	@echo "🔨 Building project..."
-	@npm run build
+	@bun run build
 	@echo "✅ Build complete"
 
 # Development server
 dev:
 	@echo "🚀 Starting development server..."
-	@npm run dev
+	@bun run dev
 
 dev-full:
 	@echo "🚀 Starting API + Web + Services (one-shot)"
@@ -86,16 +79,84 @@ dev-full:
 
 dev-web:
 	@echo "🌐 Starting frontend watch (Rollup)..."
-	@npm run dev
+	@bun run dev
 
 dev-py:
 	@echo "🐍 Starting FastAPI backend..."
 	@cd apps/api && make dev
 
+# Python tooling targets (uv + ruff + mypy)
+.PHONY: py-sync py-lint py-format py-typecheck py-test py-fix
+
+py-sync:
+	@echo "📦 Syncing Python dependencies with uv..."
+	@cd apps/api && uv sync --all-extras --dev
+	@echo "✅ Python environment ready"
+
+py-lint:
+	@echo "🔍 Linting Python code with Ruff..."
+	@cd apps/api && uv run ruff check .
+	@cd apps/api && uv run ruff format --check .
+
+py-format:
+	@echo "🎨 Formatting Python code with Ruff..."
+	@cd apps/api && uv run ruff format .
+
+py-typecheck:
+	@echo "🔍 Type-checking Python with mypy..."
+	@cd apps/api && uv run mypy app
+
+py-test:
+	@echo "🧪 Running Python tests with pytest..."
+	@cd apps/api && uv run pytest -m "unit or component" -q
+
+py-fix:
+	@echo "🔧 Auto-fixing Python issues with Ruff..."
+	@cd apps/api && uv run ruff check . --fix --unsafe-fixes
+	@cd apps/api && uv run ruff format .
+
+# JavaScript/TypeScript tooling targets (bun + biome)
+.PHONY: js-lint js-format js-typecheck js-test js-fix
+
+js-lint:
+	@echo "🔍 Linting JS/TS code with Biome..."
+	@cd apps/web && bunx @biomejs/biome check
+
+js-format:
+	@echo "🎨 Formatting JS/TS code with Biome..."
+	@cd apps/web && bunx @biomejs/biome format --write
+
+js-typecheck:
+	@echo "🔍 Type-checking TypeScript..."
+	@cd apps/web && bun run typecheck
+
+js-test:
+	@echo "🧪 Running JS/TS tests..."
+	@cd apps/web && bun test
+
+js-fix:
+	@echo "🔧 Auto-fixing JS/TS issues with Biome..."
+	@cd apps/web && bunx @biomejs/biome check --write
+
+# Combined linting targets
+.PHONY: lint-all format-all typecheck-all fix-all
+
+lint-all: py-lint js-lint
+	@echo "✅ All linting complete"
+
+format-all: py-format js-format
+	@echo "✅ All formatting complete"
+
+typecheck-all: py-typecheck js-typecheck
+	@echo "✅ All type checking complete"
+
+fix-all: py-fix js-fix
+	@echo "✅ All autofixes applied"
+
 # Run tests
 test:
 	@echo "🧪 Running frontend tests..."
-	@npm test || true
+	@bun test || true
 	@echo "🧪 Running API tests..."
 	@cd apps/api && make test
 
@@ -146,10 +207,10 @@ e2e:
 	@echo "⏳ Waiting for API health..."
 	@for i in $$(seq 1 30); do curl -sf http://localhost:5000/health >/dev/null 2>&1 && break || sleep 2; done
 	@echo "🎭 Installing Playwright browsers (if needed)..."
-	@npm ci >/dev/null
-	@npx playwright install --with-deps >/dev/null
+	@bun install >/dev/null
+	@bun x playwright install --with-deps >/dev/null
 	@echo "🧪 Running Playwright tests..."
-	@set -e; status=0; npm test || status=$$?; \
+	@set -e; status=0; bun test || status=$$?; \
 	  if [ -f /tmp/journal_api_e2e.pid ]; then kill $$(cat /tmp/journal_api_e2e.pid) >/dev/null 2>&1 || true; rm -f /tmp/journal_api_e2e.pid; fi; \
 	  exit $$status
 

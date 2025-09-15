@@ -7,13 +7,11 @@ CLI v0.42.1 integration, including periodic metrics collection and alerting.
 from __future__ import annotations
 
 import asyncio
+import json
 import logging
 
 from datetime import UTC, datetime, timedelta
-from typing import Any, Dict, Optional
-
-from redis.asyncio import Redis
-from sqlalchemy.ext.asyncio import AsyncSession
+from typing import Any
 
 from app.infra.db import build_engine, sessionmaker_for
 from app.infra.redis import get_redis_pool
@@ -106,8 +104,8 @@ class MonitoringScheduler:
 
             except asyncio.CancelledError:
                 break
-            except Exception as e:
-                logger.error("Metrics collection failed: %s", e)
+            except Exception:
+                logger.exception("Metrics collection failed")
                 # Back off for 1 minute on error
                 await asyncio.sleep(60)
 
@@ -139,8 +137,8 @@ class MonitoringScheduler:
 
             except asyncio.CancelledError:
                 break
-            except Exception as e:
-                logger.error("Health check failed: %s", e)
+            except Exception:
+                logger.exception("Health check failed")
                 # Back off for 30 seconds on error
                 await asyncio.sleep(30)
 
@@ -153,7 +151,7 @@ class MonitoringScheduler:
         while self._running:
             try:
                 # Check rotation status every hour
-                monitoring_service = await self._get_monitoring_service()
+                await self._get_monitoring_service()
 
                 # Get key manager for rotation checks
                 redis = get_redis_pool()
@@ -183,8 +181,8 @@ class MonitoringScheduler:
 
             except asyncio.CancelledError:
                 break
-            except Exception as e:
-                logger.error("Rotation monitoring failed: %s", e)
+            except Exception:
+                logger.exception("Rotation monitoring failed")
                 # Back off for 10 minutes on error
                 await asyncio.sleep(600)
 
@@ -206,7 +204,7 @@ class MonitoringScheduler:
                 timeseries_data = await redis.hgetall("infisical:monitoring:timeseries")
                 old_keys = []
 
-                for timestamp_str in timeseries_data.keys():
+                for timestamp_str in timeseries_data:
                     try:
                         timestamp = int(timestamp_str)
                         if timestamp < cutoff_time:
@@ -230,18 +228,17 @@ class MonitoringScheduler:
 
             except asyncio.CancelledError:
                 break
-            except Exception as e:
-                logger.error("Cleanup failed: %s", e)
+            except Exception:
+                logger.exception("Cleanup failed")
                 # Back off for 1 hour on error
                 await asyncio.sleep(3600)
 
         logger.info("Cleanup loop stopped")
 
-    async def _store_rotation_alert(self, key_type: str, reason: str) -> None:
+    @staticmethod
+    async def _store_rotation_alert(key_type: str, reason: str) -> None:
         """Store a rotation alert in Redis."""
         try:
-            import json
-
             redis = get_redis_pool()
 
             alert = {
@@ -259,8 +256,8 @@ class MonitoringScheduler:
             await redis.lpush("infisical:alerts", json.dumps(alert))
             logger.info("Stored rotation alert for %s keys: %s", key_type, reason)
 
-        except Exception as e:
-            logger.error("Failed to store rotation alert: %s", e)
+        except Exception:
+            logger.exception("Failed to store rotation alert")
 
 
 # Global scheduler instance
@@ -269,7 +266,7 @@ _scheduler: MonitoringScheduler | None = None
 
 async def start_monitoring_scheduler() -> None:
     """Start the global monitoring scheduler."""
-    global _scheduler
+    global _scheduler  # noqa: PLW0603
 
     if _scheduler is not None:
         logger.warning("Monitoring scheduler already exists")
@@ -281,7 +278,7 @@ async def start_monitoring_scheduler() -> None:
 
 async def stop_monitoring_scheduler() -> None:
     """Stop the global monitoring scheduler."""
-    global _scheduler
+    global _scheduler  # noqa: PLW0603
 
     if _scheduler is None:
         return

@@ -8,11 +8,14 @@ from __future__ import annotations
 
 import logging
 
+from datetime import timedelta
 from typing import Any
 from uuid import UUID
 
+import jwt
+
 from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, Field
 from redis.asyncio import Redis
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -22,6 +25,7 @@ from app.infra.db import get_session
 from app.infra.ip_extraction import get_client_ip
 from app.infra.redis import get_redis
 from app.infra.sa_models import User
+from app.infra.secrets import InfisicalSecretsClient
 from app.infra.security import verify_password
 from app.middleware.enhanced_jwt_middleware import require_scopes
 from app.services.integrated_auth_service import IntegratedAuthService
@@ -62,7 +66,7 @@ class TokenResponse(BaseModel):
 
     access_token: str
     refresh_token: str | None = None
-    token_type: str = "bearer"
+    token_type: str = "bearer"  # noqa: S105 - claim name, not a password
     expires_in: int
     scope: str | None = None
 
@@ -71,7 +75,7 @@ class M2MTokenResponse(BaseModel):
     """M2M token response."""
 
     access_token: str
-    token_type: str = "Bearer"
+    token_type: str = "Bearer"  # noqa: S105 - claim name, not a password
     expires_in: int
     expires_at: str
     scopes: list[str]
@@ -86,7 +90,7 @@ class LogoutRequest(BaseModel):
 
 
 # Dependency to get integrated auth service
-async def get_auth_service(
+def get_auth_service(
     session: AsyncSession = Depends(get_session),
     redis: Redis = Depends(get_redis),
 ) -> IntegratedAuthService:
@@ -95,13 +99,11 @@ async def get_auth_service(
 
 
 # Dependency to get M2M token service
-async def get_m2m_service(
+def get_m2m_service(
     session: AsyncSession = Depends(get_session),
     redis: Redis = Depends(get_redis),
 ) -> M2MTokenService:
     """Get M2M token service."""
-    from app.infra.secrets import InfisicalSecretsClient
-
     if settings.testing:
         return M2MTokenService(session, redis)
 
@@ -200,7 +202,7 @@ async def refresh(
     except HTTPException:
         raise
     except Exception as e:
-        logger.error("Refresh failed: %s", e)
+        logger.exception("Refresh failed")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid refresh token",
@@ -218,7 +220,11 @@ async def logout(
     """Logout and optionally revoke all sessions.
 
     Args:
+        request: The incoming request
+        response: The outgoing response
         body: Optional request body with revoke_all flag
+        session: The database session
+        auth_service: The authentication service
     """
     # Get user from access token
     auth_header = request.headers.get("Authorization")
@@ -249,7 +255,7 @@ async def logout(
         return {"message": "Logged out successfully"}
 
     except Exception as e:
-        logger.error("Logout failed: %s", e)
+        logger.exception("Logout failed")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Logout failed",
@@ -300,7 +306,6 @@ async def exchange_m2m_token(
             ip_address = request.headers["X-Forwarded-For"].split(",")[0].strip()
 
         # Convert TTL to timedelta if provided
-        from datetime import timedelta
 
         ttl = timedelta(seconds=body.ttl_seconds) if body.ttl_seconds else None
 
@@ -313,13 +318,12 @@ async def exchange_m2m_token(
         )
 
         # Parse token to get claims for response
-        import jwt
 
         claims = jwt.decode(token, options={"verify_signature": False})
 
         return M2MTokenResponse(
             access_token=token,
-            token_type="bearer",
+            token_type="bearer",  # noqa: S106 - token type identifier, not a secret
             expires_in=body.ttl_seconds or 1800,
             expires_at=expiration.isoformat(),
             scopes=claims.get("scopes", []),
@@ -333,7 +337,7 @@ async def exchange_m2m_token(
             detail=str(e),
         ) from e
     except Exception as e:
-        logger.error("M2M token exchange failed: %s", e)
+        logger.exception("M2M token exchange failed")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Token exchange failed",
@@ -353,6 +357,7 @@ async def validate_m2m_token(
         token: M2M token to validate
         required_scope: Optional required scope
         required_env: Optional required environment
+        m2m_service: The M2M token service
 
     Returns:
         Token claims if valid
@@ -375,7 +380,7 @@ async def validate_m2m_token(
             "error": str(e),
         }
     except Exception as e:
-        logger.error("M2M validation failed: %s", e)
+        logger.exception("M2M validation failed")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Validation failed",
@@ -393,6 +398,7 @@ async def revoke_m2m_token(
     Args:
         token_id: Specific token ID to revoke
         service_name: Revoke all tokens for a service
+        m2m_service: The M2M token service
 
     Returns:
         Revocation result
@@ -416,7 +422,7 @@ async def revoke_m2m_token(
         return {"revoked": 0, "type": "none"}
 
     except Exception as e:
-        logger.error("M2M revocation failed: %s", e)
+        logger.exception("M2M revocation failed")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Revocation failed",

@@ -13,12 +13,11 @@ import pytest_asyncio
 
 from httpx import AsyncClient
 from redis.asyncio import Redis
-from sqlalchemy import delete
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 
 from app.infra.db import Base
-from app.infra.sa_models import User, UserSession
+from app.infra.sa_models import User
 from app.main import app
 from app.settings import settings
 

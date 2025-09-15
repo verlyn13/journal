@@ -35,14 +35,30 @@ db-downgrade:
 worker:
 	uv run python -m app.workers.embedding_consumer
 
-# Code quality
+# Code quality - Python linting
 lint:
-	uv run ruff check app/ --fix
-	uv run ruff format app/
+	@echo "Running Python linters with autofix..."
+	uv run ruff check . --fix
+	uv run ruff format .
 
 lint-check:
-	uv run ruff check app/
-	uv run ruff format --check app/
+	@echo "Checking Python lint issues (no fix)..."
+	uv run ruff check .
+	uv run ruff format --check .
+
+lint-fix:
+	@echo "Applying all Python autofixes..."
+	uv run ruff check . --fix --unsafe-fixes
+	uv run ruff format .
+
+# Type checking
+types:
+	@echo "Running mypy type checker..."
+	uv run mypy app
+
+types-strict:
+	@echo "Running mypy with strict mode..."
+	uv run mypy app --strict
 
 # Development setup
 setup:
@@ -63,7 +79,7 @@ reset:
 
 # Install dependencies
 install:
-	pip install -e .
+	uv sync --all-extras --dev
 
 # Infisical integration targets
 infisical-auth:

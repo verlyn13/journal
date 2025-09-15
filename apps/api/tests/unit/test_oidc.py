@@ -22,7 +22,7 @@ from app.security.oidc import (
 class TestOIDCValidation:
     """Test suite for OIDC validation functions."""
 
-    @pytest.fixture
+    @pytest.fixture()
     def jwks_response(self) -> dict:
         """Mock JWKS response."""
         return {
@@ -38,7 +38,7 @@ class TestOIDCValidation:
             ]
         }
 
-    @pytest.fixture
+    @pytest.fixture()
     def id_token_claims(self) -> dict:
         """Valid ID token claims."""
         return {

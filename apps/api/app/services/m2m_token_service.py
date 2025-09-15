@@ -11,7 +11,7 @@ import json
 import logging
 
 from datetime import UTC, datetime, timedelta
-from typing import Any, Optional
+from typing import Any
 from uuid import UUID, uuid4
 
 from redis.asyncio import Redis
@@ -19,9 +19,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.domain.auth.audit_service import AuditService
 from app.domain.auth.jwt_service import JWTService
-from app.domain.auth.jwt_verifier_policy import VerifierPolicy
 from app.infra.secrets import InfisicalSecretsClient
-from app.settings import settings
 
 
 logger = logging.getLogger(__name__)
@@ -175,11 +173,7 @@ class M2MTokenService:
             granted_scopes = identity.scopes
 
         # Determine TTL
-        if ttl:
-            # Clamp to min/max limits
-            ttl = max(M2M_MIN_TTL, min(ttl, M2M_MAX_TTL))
-        else:
-            ttl = M2M_TOKEN_TTL
+        ttl = max(M2M_MIN_TTL, min(ttl, M2M_MAX_TTL)) if ttl else M2M_TOKEN_TTL
 
         # Generate M2M token
         token_id = str(uuid4())
@@ -188,7 +182,7 @@ class M2MTokenService:
         # Sign the JWT (use logical type "m2m" which maps header typ to "at+jwt")
         jwt_token = await self.jwt_service.sign_jwt(
             user_id=UUID(int=0),  # M2M tokens don't have user IDs
-            token_type="m2m",
+            token_type="m2m",  # noqa: S106 - token type identifier, not a secret
             scopes=granted_scopes,
             audience=["api", "services"],  # service-to-service audiences
             additional_claims={
@@ -252,7 +246,7 @@ class M2MTokenService:
 
         # Check token type - accept both old and new format
         token_type = claims.get("type") or claims.get("token_type") or claims.get("typ")
-        if token_type not in ["m2m", "at+jwt", "access"]:
+        if token_type not in {"m2m", "at+jwt", "access"}:
             raise ValueError(f"Not an M2M token: {token_type}")
 
         # Check required scope if specified
@@ -420,7 +414,7 @@ class M2MTokenService:
             return identity
 
         except Exception as e:
-            logger.error("Failed to validate Machine Identity: %s", e)
+            logger.exception("Failed to validate Machine Identity")
             raise ValueError(f"Invalid Machine Identity: {e}") from e
 
     async def _cache_token_metadata(

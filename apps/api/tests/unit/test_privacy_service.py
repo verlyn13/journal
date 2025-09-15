@@ -18,12 +18,12 @@ from app.infra.sa_models import Entry, User, UserDevice, UserSession
 class TestPrivacyService:
     """Test suite for PrivacyService."""
 
-    @pytest.fixture
+    @pytest.fixture()
     def privacy_service(self, db_session: AsyncSession) -> PrivacyService:
         """Create PrivacyService instance."""
         return PrivacyService(db_session)
 
-    @pytest.fixture
+    @pytest.fixture()
     async def test_user(self, db_session: AsyncSession) -> User:
         """Create test user."""
         user = User(
@@ -39,7 +39,7 @@ class TestPrivacyService:
         await db_session.flush()
         return user
 
-    @pytest.fixture
+    @pytest.fixture()
     async def test_entry(self, db_session: AsyncSession, test_user: User) -> Entry:
         """Create test entry."""
         entry = Entry(
@@ -57,7 +57,7 @@ class TestPrivacyService:
         await db_session.flush()
         return entry
 
-    @pytest.fixture
+    @pytest.fixture()
     async def test_device(self, db_session: AsyncSession, test_user: User) -> UserDevice:
         """Create test device."""
         device = UserDevice(
@@ -75,7 +75,7 @@ class TestPrivacyService:
         await db_session.flush()
         return device
 
-    @pytest.fixture
+    @pytest.fixture()
     async def test_session(
         self, db_session: AsyncSession, test_user: User, test_device: UserDevice
     ) -> UserSession:

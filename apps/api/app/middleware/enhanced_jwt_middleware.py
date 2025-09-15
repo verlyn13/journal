@@ -8,12 +8,9 @@ from __future__ import annotations
 
 import logging
 
-from typing import Optional
-
 from fastapi import HTTPException, Request, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from redis.asyncio import Redis
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config.token_rotation_config import SecurityPolicies
 from app.infra.db import build_engine, sessionmaker_for
@@ -97,21 +94,21 @@ class EnhancedJWTMiddleware:
             claims = await auth_service.verify_access_token(token)
 
             # Enforce security policies
-            if SecurityPolicies.REQUIRE_AUDIENCE_VALIDATION:
-                if not claims.get("aud") or settings.jwt_aud not in claims["aud"]:
-                    raise ValueError("Invalid audience")
+            if SecurityPolicies.REQUIRE_AUDIENCE_VALIDATION and (
+                not claims.get("aud") or settings.jwt_aud not in claims["aud"]
+            ):
+                raise ValueError("Invalid audience")
 
-            if SecurityPolicies.REQUIRE_ISSUER_VALIDATION:
-                if claims.get("iss") != settings.jwt_iss:
-                    raise ValueError("Invalid issuer")
+            if SecurityPolicies.REQUIRE_ISSUER_VALIDATION and claims.get("iss") != settings.jwt_iss:
+                raise ValueError("Invalid issuer")
 
             # Check token type using payload 'type' (primary), supporting legacy aliases
             token_type = claims.get("type") or claims.get("token_type") or claims.get("typ")
-            if token_type not in ["access", "m2m", "at+jwt"]:
+            if token_type not in {"access", "m2m", "at+jwt"}:
                 raise ValueError(f"Invalid token type: {token_type}")
 
             # For M2M tokens, validate environment
-            if token_type in ["m2m", "at+jwt"]:
+            if token_type in {"m2m", "at+jwt"}:
                 token_env = claims.get("env")
                 if token_env and token_env != settings.env:
                     raise ValueError(f"Token not valid for environment: {settings.env}")
@@ -135,7 +132,8 @@ class EnhancedJWTMiddleware:
                 },
             ) from e
 
-    def _is_public_endpoint(self, path: str) -> bool:
+    @staticmethod
+    def _is_public_endpoint(path: str) -> bool:
         """Check if endpoint is public (no auth required).
 
         Args:
@@ -166,12 +164,10 @@ class EnhancedJWTMiddleware:
             return True
 
         # Prefix match for documentation
-        if path.startswith("/docs/") or path.startswith("/redoc/"):
-            return True
+        return bool(path.startswith(("/docs/", "/redoc/")))
 
-        return False
-
-    def _requires_auth(self, path: str) -> bool:
+    @staticmethod
+    def _requires_auth(path: str) -> bool:
         """Check if endpoint requires authentication.
 
         Args:
@@ -183,15 +179,10 @@ class EnhancedJWTMiddleware:
         # API endpoints require auth by default
         if path.startswith("/api/"):
             # Except for auth endpoints themselves
-            if "/auth/" in path:
-                return False
-            return True
+            return "/auth/" not in path
 
         # Internal endpoints require auth
-        if path.startswith("/internal/"):
-            return True
-
-        return False
+        return bool(path.startswith("/internal/"))
 
 
 # Dependency for FastAPI routes

@@ -1,0 +1,166 @@
+name: Lint
+
+on:
+  push:
+    branches: [main, develop, feat/*]
+  pull_request:
+    branches: [main, develop]
+  workflow_dispatch:
+
+concurrency:
+  group: lint-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  python-lint:
+    name: Python Linting
+    runs-on: ubuntu-latest
+    continue-on-error: true  # Stage 1: warnings allowed, do not fail PRs
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12"]
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          cache-dependency-glob: "apps/api/uv.lock"
+      
+      - name: Set up Python ${{ matrix.python-version }}
+        run: uv python install ${{ matrix.python-version }}
+      
+      - name: Install dependencies
+        working-directory: apps/api
+        run: uv sync --all-extras --dev
+      
+      - name: Run Ruff linter
+        working-directory: apps/api
+        run: |
+          echo "::group::Ruff check"
+          uv run ruff check . --output-format=github
+          echo "::endgroup::"
+      
+      - name: Check formatting with Ruff
+        working-directory: apps/api
+        run: |
+          echo "::group::Ruff format check"
+          uv run ruff format --check .
+          echo "::endgroup::"
+      
+      - name: Upload Ruff results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ruff-results-py${{ matrix.python-version }}
+          path: apps/api/.ruff_cache/
+          retention-days: 7
+
+  python-types:
+    name: Python Type Checking
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          cache-dependency-glob: "apps/api/uv.lock"
+      
+      - name: Set up Python
+        run: uv python install 3.11
+      
+      - name: Install dependencies
+        working-directory: apps/api
+        run: uv sync --all-extras --dev
+      
+      - name: Run mypy
+        working-directory: apps/api
+        run: |
+          echo "::group::mypy type check"
+          uv run mypy app --config-file mypy.ini
+          echo "::endgroup::"
+      
+      - name: Upload mypy cache
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mypy-cache
+          path: apps/api/.mypy_cache/
+          retention-days: 7
+
+  javascript-lint:
+    name: JavaScript/TypeScript Linting
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      
+      - name: Install dependencies
+        working-directory: apps/web
+        run: bun install --frozen-lockfile
+      
+      - name: Run Biome linter
+        working-directory: apps/web
+        run: |
+          echo "::group::Biome check"
+          bunx @biomejs/biome check --reporter=github
+          echo "::endgroup::"
+      
+      - name: TypeScript type check
+        working-directory: apps/web
+        run: |
+          echo "::group::TypeScript check"
+          bun run typecheck
+          echo "::endgroup::"
+
+  lint-summary:
+    name: Lint Summary
+    runs-on: ubuntu-latest
+    needs: [python-lint, python-types, javascript-lint]
+    if: always()
+    
+    steps:
+      - name: Check lint results
+        run: |
+          echo "## Lint Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ "${{ needs.python-lint.result }}" == "success" ]; then
+            echo "✅ Python linting passed" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Python linting failed" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          if [ "${{ needs.python-types.result }}" == "success" ]; then
+            echo "✅ Python type checking passed" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Python type checking failed" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          if [ "${{ needs.javascript-lint.result }}" == "success" ]; then
+            echo "✅ JavaScript/TypeScript linting passed" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ JavaScript/TypeScript linting failed" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          # Fail if any job failed
+          if [ "${{ needs.python-lint.result }}" != "success" ] || \
+             [ "${{ needs.python-types.result }}" != "success" ] || \
+             [ "${{ needs.javascript-lint.result }}" != "success" ]; then
+            echo ""
+            echo "⚠️ Some linting checks failed. Please review the errors above."
+            exit 1
+          fi
+          
+          echo ""
+          echo "🎉 All linting checks passed!"

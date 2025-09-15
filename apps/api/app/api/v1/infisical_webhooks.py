@@ -61,13 +61,13 @@ class WebhookResponse(BaseModel):
     processed_at: str = Field(..., description="Processing timestamp")
 
 
-async def get_infisical_client() -> InfisicalSecretsClient:
+def get_infisical_client() -> InfisicalSecretsClient:
     """Get Infisical client dependency."""
-    redis = await get_redis()
+    redis = get_redis()
     return InfisicalSecretsClient.from_env(redis)
 
 
-async def get_key_manager(
+def get_key_manager(
     session: AsyncSession = Depends(get_session),
     redis: Redis = Depends(get_redis),
     infisical_client: InfisicalSecretsClient = Depends(get_infisical_client),
@@ -76,7 +76,7 @@ async def get_key_manager(
     return InfisicalKeyManager(session, redis, infisical_client)
 
 
-async def verify_webhook_signature(request: Request, body: bytes) -> None:
+def verify_webhook_signature(request: Request, body: bytes) -> None:
     """Verify Infisical webhook signature.
 
     Args:
@@ -165,7 +165,7 @@ async def handle_infisical_webhook(
         # Handle different event types
         response_message = "Event received"
 
-        if event.event in ("secret.created", "secret.updated", "secret.deleted"):
+        if event.event in {"secret.created", "secret.updated", "secret.deleted"}:
             response_message = await _handle_secret_event(event, key_manager, background_tasks)
         elif event.event == "project.updated":
             response_message = await _handle_project_event(event, key_manager, background_tasks)
@@ -183,13 +183,13 @@ async def handle_infisical_webhook(
         )
 
     except json.JSONDecodeError as e:
-        logger.exception("Invalid JSON in webhook payload: %s", e)
+        logger.exception("Invalid JSON in webhook payload")
         metrics_inc("infisical_webhook_events_total", {"event": "unknown", "status": "json_error"})
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid JSON payload"
         ) from e
     except Exception as e:
-        logger.exception("Webhook processing failed: %s", e)
+        logger.exception("Webhook processing failed")
         metrics_inc("infisical_webhook_events_total", {"event": "unknown", "status": "error"})
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Webhook processing failed"
@@ -219,7 +219,7 @@ async def manual_key_rotation(
         request.reason or "No reason provided",
     )
 
-    if request.rotation_type not in ("jwt", "aes", "both"):
+    if request.rotation_type not in {"jwt", "aes", "both"}:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Invalid rotation_type. Must be 'jwt', 'aes', or 'both'",
@@ -249,7 +249,7 @@ async def manual_key_rotation(
         }
 
     except Exception as e:
-        logger.exception("Failed to initiate key rotation: %s", e)
+        logger.exception("Failed to initiate key rotation")
         metrics_inc("manual_key_rotation_errors_total", {"type": request.rotation_type})
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -290,7 +290,7 @@ async def infisical_health_check(
         return health_results
 
     except Exception as e:
-        logger.exception("Health check failed: %s", e)
+        logger.exception("Health check failed")
         return {
             "overall_status": "unhealthy",
             "error": str(e),
@@ -336,7 +336,7 @@ async def invalidate_cache(
         }
 
     except Exception as e:
-        logger.exception("Cache invalidation failed: %s", e)
+        logger.exception("Cache invalidation failed")
         metrics_inc("cache_invalidation_errors_total", {"pattern": pattern})
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -431,8 +431,8 @@ async def _perform_key_rotation(
     try:
         result = await key_manager.webhook_rotate_keys(webhook_data)
         logger.info("Background key rotation completed: %s", result)
-    except Exception as e:
-        logger.exception("Background key rotation failed: %s", e)
+    except Exception:
+        logger.exception("Background key rotation failed")
 
 
 async def _check_rotation_needed(
@@ -456,8 +456,8 @@ async def _check_rotation_needed(
             if needs_rotation:
                 logger.info("AES rotation triggered by secret update: %s", reason)
                 await key_manager.rotate_aes_keys(force=False)
-    except Exception as e:
-        logger.exception("Rotation check failed for %s: %s", secret_path, e)
+    except Exception:
+        logger.exception("Rotation check failed for %s", secret_path)
 
 
 async def _background_health_check(key_manager: InfisicalKeyManager) -> None:
@@ -472,5 +472,5 @@ async def _background_health_check(key_manager: InfisicalKeyManager) -> None:
             logger.warning("Health check shows issues: %s", health_results)
         else:
             logger.debug("Background health check passed")
-    except Exception as e:
-        logger.exception("Background health check failed: %s", e)
+    except Exception:
+        logger.exception("Background health check failed")

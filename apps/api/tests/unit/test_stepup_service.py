@@ -21,17 +21,17 @@ from app.infra.sa_models import AuditLogEntry, User
 class TestStepUpAuthService:
     """Test suite for StepUpAuthService."""
 
-    @pytest.fixture
+    @pytest.fixture()
     def redis_mock(self) -> AsyncMock:
         """Create mock Redis client."""
         return AsyncMock(spec=Redis)
 
-    @pytest.fixture
+    @pytest.fixture()
     def stepup_service(self, db_session: AsyncSession, redis_mock: AsyncMock) -> StepUpAuthService:
         """Create StepUpAuthService instance."""
         return StepUpAuthService(db_session, redis_mock)
 
-    @pytest.fixture
+    @pytest.fixture()
     async def test_user(self, db_session: AsyncSession) -> User:
         """Create test user."""
         user = User(

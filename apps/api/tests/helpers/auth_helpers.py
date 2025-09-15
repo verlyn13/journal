@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from datetime import timedelta
-from typing import Optional
 from uuid import UUID, uuid4
 
 from redis.asyncio import Redis
@@ -45,14 +44,12 @@ async def create_test_token_with_scopes(
     jwt_service = JWTService(session, redis, key_manager)
 
     # Create token with scopes
-    token = await jwt_service.sign_jwt(
+    return await jwt_service.sign_jwt(
         user_id=user_id,
         token_type=token_type,
         scopes=scopes or [],
         ttl=ttl,
     )
-
-    return token
 
 
 async def create_admin_token(

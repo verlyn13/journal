@@ -5,10 +5,10 @@ They can be run with real Infisical or mocked for CI environments.
 """
 
 import asyncio
-import json
 import os
 import subprocess
 
+from contextlib import suppress
 from datetime import UTC, datetime
 from unittest.mock import patch
 
@@ -51,7 +51,7 @@ pytestmark = pytest.mark.skipif(
 )
 
 
-@pytest.fixture
+@pytest.fixture()
 async def redis_client():
     """Create Redis client for testing."""
     redis = Redis.from_url("redis://localhost:6380/1")  # Use test DB
@@ -60,14 +60,13 @@ async def redis_client():
     await redis.close()
 
 
-@pytest.fixture
+@pytest.fixture()
 async def infisical_client(redis_client):
     """Create InfisicalSecretsClient for testing."""
-    client = InfisicalSecretsClient.from_env(redis_client)
-    yield client
+    return InfisicalSecretsClient.from_env(redis_client)
 
 
-@pytest.fixture
+@pytest.fixture()
 async def key_manager(redis_client, infisical_client):
     """Create InfisicalKeyManager for testing."""
     from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
@@ -85,7 +84,7 @@ async def key_manager(redis_client, infisical_client):
 class TestInfisicalSecretsClientIntegration:
     """Integration tests for InfisicalSecretsClient."""
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_health_check_real(self, infisical_client):
         """Test health check against real Infisical."""
         result = await infisical_client.health_check()
@@ -95,7 +94,7 @@ class TestInfisicalSecretsClientIntegration:
         assert result["server_url"] == infisical_client.server_url
         assert result["project_id"] == infisical_client.project_id
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_store_fetch_delete_cycle(self, infisical_client):
         """Test complete store -> fetch -> delete cycle."""
         test_path = "/test/integration_test_secret"
@@ -119,18 +118,16 @@ class TestInfisicalSecretsClientIntegration:
 
         finally:
             # Clean up
-            try:
+            with suppress(SecretNotFoundError):
                 await infisical_client.delete_secret(test_path)
-            except SecretNotFoundError:
-                pass  # Already deleted or never existed
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_fetch_nonexistent_secret(self, infisical_client):
         """Test fetching non-existent secret."""
         with pytest.raises(SecretNotFoundError):
             await infisical_client.fetch_secret("/test/nonexistent_secret")
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_list_secrets(self, infisical_client):
         """Test listing secrets."""
         # Create a test secret
@@ -148,12 +145,10 @@ class TestInfisicalSecretsClientIntegration:
             assert "list_test_secret" in secret_names
 
         finally:
-            try:
+            with suppress(SecretNotFoundError):
                 await infisical_client.delete_secret(test_path)
-            except SecretNotFoundError:
-                pass
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_cache_invalidation(self, infisical_client):
         """Test cache invalidation."""
         test_path = "/test/cache_test_secret"
@@ -172,16 +167,14 @@ class TestInfisicalSecretsClientIntegration:
             assert fresh_value == test_value
 
         finally:
-            try:
+            with suppress(SecretNotFoundError):
                 await infisical_client.delete_secret(test_path)
-            except SecretNotFoundError:
-                pass
 
 
 class TestInfisicalKeyManagerIntegration:
     """Integration tests for InfisicalKeyManager."""
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_initialize_key_system(self, key_manager):
         """Test initializing key system."""
         await key_manager.initialize_key_system()
@@ -191,7 +184,7 @@ class TestInfisicalKeyManagerIntegration:
         assert signing_key is not None
         assert signing_key.kid is not None
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_get_token_cipher(self, key_manager):
         """Test getting TokenCipher with Infisical backend."""
         # Initialize AES system first
@@ -210,7 +203,7 @@ class TestInfisicalKeyManagerIntegration:
 
         assert decrypted == test_plaintext
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_aes_key_rotation(self, key_manager):
         """Test AES key rotation."""
         # Initialize system
@@ -232,7 +225,7 @@ class TestInfisicalKeyManagerIntegration:
         assert new_cipher.active_kid == result["new_active_kid"]
         assert new_cipher.active_kid != initial_kid
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_jwt_key_rotation(self, key_manager):
         """Test JWT key rotation."""
         # Initialize system
@@ -252,7 +245,7 @@ class TestInfisicalKeyManagerIntegration:
         new_key = await key_manager.get_current_signing_key()
         assert new_key.kid != initial_kid
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_health_check_comprehensive(self, key_manager):
         """Test comprehensive health check."""
         # Initialize systems
@@ -266,7 +259,7 @@ class TestInfisicalKeyManagerIntegration:
         assert health["aes_system"]["status"] == "healthy"
         assert health["infisical_connection"]["status"] == "healthy"
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_webhook_rotation_workflow(self, key_manager):
         """Test webhook-triggered rotation workflow."""
         # Initialize systems
@@ -314,7 +307,7 @@ class TestInfisicalKeyManagerIntegration:
 class TestInfisicalErrorHandling:
     """Test error handling in Infisical integration."""
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_connection_error_handling(self, redis_client):
         """Test handling of connection errors."""
         # Create client with invalid server URL
@@ -330,11 +323,10 @@ class TestInfisicalErrorHandling:
         assert health["status"] == "unhealthy"
         assert "error" in health
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_retry_mechanism(self, infisical_client):
         """Test retry mechanism with transient failures."""
         # This test uses mocking to simulate transient failures
-        original_fetch = infisical_client._fetch_single_attempt
 
         call_count = 0
 
@@ -359,7 +351,7 @@ class TestInfisicalErrorHandling:
 class TestInfisicalPerformance:
     """Performance tests for Infisical integration."""
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_cache_performance(self, infisical_client):
         """Test cache performance improvement."""
         test_path = "/test/performance_test"
@@ -370,26 +362,24 @@ class TestInfisicalPerformance:
             await infisical_client.store_secret(test_path, test_value)
 
             # Time first fetch (should go to Infisical)
-            start_time = datetime.now()
+            start_time = datetime.now(UTC)
             await infisical_client.fetch_secret(test_path)
-            first_fetch_time = (datetime.now() - start_time).total_seconds()
+            first_fetch_time = (datetime.now(UTC) - start_time).total_seconds()
 
             # Time second fetch (should hit cache)
-            start_time = datetime.now()
+            start_time = datetime.now(UTC)
             await infisical_client.fetch_secret(test_path)
-            cached_fetch_time = (datetime.now() - start_time).total_seconds()
+            cached_fetch_time = (datetime.now(UTC) - start_time).total_seconds()
 
             # Cache should be significantly faster
             assert cached_fetch_time < first_fetch_time
             assert cached_fetch_time < 0.1  # Should be very fast
 
         finally:
-            try:
+            with suppress(SecretNotFoundError):
                 await infisical_client.delete_secret(test_path)
-            except SecretNotFoundError:
-                pass
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_concurrent_access(self, infisical_client):
         """Test concurrent access to secrets."""
         test_paths = [f"/test/concurrent_{i}" for i in range(5)]

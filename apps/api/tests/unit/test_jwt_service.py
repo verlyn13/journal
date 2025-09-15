@@ -16,7 +16,7 @@ from tests.conftest import db_session
 from tests.fixtures.jwt_fixtures import jwt_service, key_manager, redis, token_validator
 
 
-@pytest.fixture
+@pytest.fixture()
 async def test_user_id(db_session: AsyncSession) -> uuid4:
     """Create a test user for JWT tests."""
     from app.infra.sa_models import User

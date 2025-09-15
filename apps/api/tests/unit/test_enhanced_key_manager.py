@@ -7,13 +7,9 @@ import json
 
 from datetime import UTC, datetime
 from unittest.mock import AsyncMock, MagicMock, patch
-from uuid import UUID
 
 import pytest
 
-from redis.exceptions import RedisError
-
-from app.domain.auth.key_manager import KeyStatus
 from app.infra.secrets import InfisicalSecretsClient, SecretNotFoundError
 from app.infra.secrets.enhanced_key_manager import InfisicalKeyManager
 from app.security.token_cipher import TokenCipher
@@ -22,13 +18,12 @@ from app.security.token_cipher import TokenCipher
 class TestInfisicalKeyManager:
     """Test InfisicalKeyManager implementation."""
 
-    @pytest.fixture
+    @pytest.fixture()
     def mock_session(self):
         """Create mock database session."""
-        session = AsyncMock()
-        return session
+        return AsyncMock()
 
-    @pytest.fixture
+    @pytest.fixture()
     def mock_redis(self):
         """Create mock Redis client."""
         redis = AsyncMock()
@@ -37,13 +32,12 @@ class TestInfisicalKeyManager:
         redis.delete.return_value = 1
         return redis
 
-    @pytest.fixture
+    @pytest.fixture()
     def mock_infisical_client(self):
         """Create mock Infisical client."""
-        client = AsyncMock(spec=InfisicalSecretsClient)
-        return client
+        return AsyncMock(spec=InfisicalSecretsClient)
 
-    @pytest.fixture
+    @pytest.fixture()
     def key_manager(self, mock_session, mock_redis, mock_infisical_client):
         """Create InfisicalKeyManager instance."""
         return InfisicalKeyManager(
@@ -53,7 +47,7 @@ class TestInfisicalKeyManager:
             enable_infisical=True,
         )
 
-    @pytest.fixture
+    @pytest.fixture()
     def disabled_key_manager(self, mock_session, mock_redis, mock_infisical_client):
         """Create InfisicalKeyManager with Infisical disabled."""
         return InfisicalKeyManager(
@@ -63,7 +57,7 @@ class TestInfisicalKeyManager:
             enable_infisical=False,
         )
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_get_token_cipher_from_cache(self, key_manager, mock_redis):
         """Test getting TokenCipher from cache."""
         cached_cipher_data = {
@@ -79,7 +73,7 @@ class TestInfisicalKeyManager:
         assert isinstance(cipher, TokenCipher)
         assert cipher.active_kid == "test_kid"
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_get_token_cipher_from_infisical(
         self, key_manager, mock_redis, mock_infisical_client
     ):
@@ -100,7 +94,7 @@ class TestInfisicalKeyManager:
         # Verify cache was updated
         mock_redis.setex.assert_called_once()
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_get_token_cipher_fallback_to_env(self, key_manager, mock_infisical_client):
         """Test fallback to environment when Infisical fails."""
         mock_infisical_client.fetch_secret.side_effect = SecretNotFoundError("Not found")
@@ -114,7 +108,7 @@ class TestInfisicalKeyManager:
             assert cipher == mock_cipher
             mock_from_env.assert_called_once()
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_get_token_cipher_disabled(self, disabled_key_manager):
         """Test getting TokenCipher when Infisical is disabled."""
         with patch.object(TokenCipher, "from_env") as mock_from_env:
@@ -126,7 +120,7 @@ class TestInfisicalKeyManager:
             assert cipher == mock_cipher
             mock_from_env.assert_called_once()
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_rotate_aes_keys_success(self, key_manager, mock_infisical_client):
         """Test successful AES key rotation."""
         # Mock current cipher
@@ -153,7 +147,7 @@ class TestInfisicalKeyManager:
             # Verify Infisical was called to store new keys
             assert mock_infisical_client.store_secret.call_count >= 2
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_rotate_aes_keys_not_needed(self, key_manager):
         """Test AES rotation when not needed."""
         with patch.object(
@@ -164,7 +158,7 @@ class TestInfisicalKeyManager:
             assert result["status"] == "skipped"
             assert result["reason"] == "Not needed"
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_rotate_aes_keys_disabled(self, disabled_key_manager):
         """Test AES rotation when Infisical is disabled."""
         result = await disabled_key_manager.rotate_aes_keys()
@@ -172,7 +166,7 @@ class TestInfisicalKeyManager:
         assert result["status"] == "skipped"
         assert result["reason"] == "Infisical not enabled"
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_migrate_keys_to_infisical_success(self, key_manager):
         """Test successful key migration to Infisical."""
         # Mock existing JWT key
@@ -206,7 +200,7 @@ class TestInfisicalKeyManager:
             assert result["aes_keys_migrated"] is True
             assert len(result["errors"]) == 0
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_migrate_keys_no_existing_keys(self, key_manager):
         """Test migration when no existing keys found."""
         with (
@@ -223,7 +217,7 @@ class TestInfisicalKeyManager:
             assert result["aes_keys_migrated"] is False
             assert len(result["errors"]) == 0
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_health_check_all_healthy(self, key_manager, mock_redis, mock_infisical_client):
         """Test health check when all systems are healthy."""
         mock_redis.get.return_value = None  # No cached health
@@ -260,7 +254,7 @@ class TestInfisicalKeyManager:
             assert result["aes_system"]["status"] == "healthy"
             assert result["infisical_connection"]["status"] == "healthy"
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_health_check_jwt_unhealthy(self, key_manager, mock_redis):
         """Test health check when JWT system is unhealthy."""
         mock_redis.get.return_value = None
@@ -276,7 +270,7 @@ class TestInfisicalKeyManager:
             assert result["overall_status"] == "unhealthy"
             assert result["jwt_system"]["status"] == "unhealthy"
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_health_check_cached(self, key_manager, mock_redis):
         """Test health check returns cached results."""
         cached_health = {
@@ -290,7 +284,7 @@ class TestInfisicalKeyManager:
 
         assert result == cached_health
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_webhook_rotate_keys_jwt(self, key_manager):
         """Test webhook JWT key rotation."""
         webhook_data = {
@@ -306,7 +300,7 @@ class TestInfisicalKeyManager:
             assert result["rotation_type"] == "jwt"
             assert result["results"]["jwt"] == jwt_result
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_webhook_rotate_keys_aes(self, key_manager):
         """Test webhook AES key rotation."""
         webhook_data = {
@@ -323,7 +317,7 @@ class TestInfisicalKeyManager:
             assert result["force"] is True
             assert result["results"]["aes"] == aes_result
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_webhook_rotate_keys_both(self, key_manager):
         """Test webhook rotation of both key types."""
         webhook_data = {
@@ -343,7 +337,7 @@ class TestInfisicalKeyManager:
             assert result["results"]["jwt"] == jwt_result
             assert result["results"]["aes"] == aes_result
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_webhook_rotate_keys_invalid_type(self, key_manager):
         """Test webhook rotation with invalid type."""
         webhook_data = {
@@ -356,7 +350,7 @@ class TestInfisicalKeyManager:
         assert result["results"]["status"] == "error"
         assert "Invalid rotation_type" in result["results"]["error"]
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_initialize_aes_key_system_new(self, key_manager, mock_infisical_client):
         """Test initializing new AES key system."""
         # Mock that no existing keys found
@@ -367,7 +361,7 @@ class TestInfisicalKeyManager:
         # Verify new keys were stored
         assert mock_infisical_client.store_secret.call_count == 2  # keys_map and active_kid
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_initialize_aes_key_system_existing(self, key_manager, mock_infisical_client):
         """Test initializing AES key system when keys already exist."""
         # Mock existing active_kid

@@ -6,21 +6,19 @@ HttpOnly, Secure, and SameSite flags, idle timeout, and rotation on privilege ch
 
 from __future__ import annotations
 
-import hashlib
 import json
 import logging
 import secrets
 
 from datetime import UTC, datetime, timedelta
-from typing import Any, Literal, Optional
+from typing import Any
 from uuid import UUID
 
-from fastapi import HTTPException, Request, Response, status
+from fastapi import Request, Response
 from redis.asyncio import Redis
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.domain.auth.audit_service import AuditService
-from app.infra.cookies import clear_refresh_cookie
 from app.settings import settings
 from app.types.utilities import validate_cookie_samesite
 
@@ -107,10 +105,7 @@ class SessionData:
             return True
 
         # Check idle timeout
-        if now - self.last_activity > SESSION_IDLE_TIMEOUT:
-            return True
-
-        return False
+        return now - self.last_activity > SESSION_IDLE_TIMEOUT
 
     def needs_rotation(self) -> bool:
         """Check if session needs rotation."""
@@ -118,10 +113,7 @@ class SessionData:
         if self.rotation_count >= 10:
             return True
 
-        if datetime.now(UTC) - self.last_activity > timedelta(minutes=15):
-            return True
-
-        return False
+        return datetime.now(UTC) - self.last_activity > timedelta(minutes=15)
 
 
 class SessionService:
@@ -428,13 +420,14 @@ class SessionService:
         try:
             session_dict = json.loads(data)
             return SessionData.from_dict(session_dict)
-        except (json.JSONDecodeError, KeyError, ValueError) as e:
-            logger.error("Invalid session data: %s", e)
+        except (json.JSONDecodeError, KeyError, ValueError):
+            logger.exception("Invalid session data")
             # Delete corrupted session
             await self.redis.delete(key)
             return None
 
-    def _set_session_cookie(self, response: Response, session_id: str) -> None:
+    @staticmethod
+    def _set_session_cookie(response: Response, session_id: str) -> None:
         """Set session cookie with secure flags.
 
         Args:
@@ -451,7 +444,8 @@ class SessionService:
             path="/",
         )
 
-    def _clear_session_cookie(self, response: Response) -> None:
+    @staticmethod
+    def _clear_session_cookie(response: Response) -> None:
         """Clear session cookie.
 
         Args:

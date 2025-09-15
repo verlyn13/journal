@@ -7,20 +7,21 @@ existing JWT and AES key management system.
 
 from __future__ import annotations
 
+import base64
 import json
 import logging
+import os
 
-from datetime import UTC, datetime, timedelta
-from typing import Any, cast
-from uuid import UUID
+from datetime import UTC, datetime
+from typing import Any
+from uuid import UUID, uuid4
 
 from redis.asyncio import Redis
-from redis.exceptions import RedisError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.domain.auth.audit_service import AuditService
-from app.domain.auth.key_manager import KeyManager, KeyMetadata, KeyStatus
-from app.infra.crypto.key_generation import Ed25519KeyGenerator, KeyPair
+from app.domain.auth.key_manager import KeyManager
+from app.infra.crypto.key_generation import Ed25519KeyGenerator
 from app.infra.secrets import InfisicalSecretsClient, SecretNotFoundError, SecretType
 from app.security.token_cipher import TokenCipher
 from app.telemetry.metrics_runtime import inc as metrics_inc
@@ -135,7 +136,7 @@ class InfisicalKeyManager(KeyManager):
             return cipher
 
         except (SecretNotFoundError, json.JSONDecodeError, ValueError) as e:
-            logger.exception("Failed to load AES cipher from Infisical: %s", e)
+            logger.exception("Failed to load AES cipher from Infisical")
 
             # Fall back to environment if available
             try:
@@ -321,7 +322,7 @@ class InfisicalKeyManager(KeyManager):
                 event_data={"error": str(e)},
             )
 
-            logger.exception("Key migration to Infisical failed: %s", e)
+            logger.exception("Key migration to Infisical failed")
 
             return migration_results
 
@@ -398,7 +399,7 @@ class InfisicalKeyManager(KeyManager):
         # Determine overall status
         jwt_healthy = health_results["jwt_system"]["status"] == "healthy"
         aes_healthy = health_results["aes_system"]["status"] == "healthy"
-        infisical_ok = health_results["infisical_connection"]["status"] in ("healthy", "disabled")
+        infisical_ok = health_results["infisical_connection"]["status"] in {"healthy", "disabled"}
 
         if jwt_healthy and aes_healthy and infisical_ok:
             health_results["overall_status"] = "healthy"
@@ -504,7 +505,8 @@ class InfisicalKeyManager(KeyManager):
 
         logger.info("Initialized AES key system with key ID: %s", initial_kid)
 
-    async def _check_aes_rotation_needed(self) -> tuple[bool, str]:
+    @staticmethod
+    async def _check_aes_rotation_needed() -> tuple[bool, str]:
         """Check if AES key rotation is needed."""
         # For now, use simple time-based rotation
         # In production, you might want more sophisticated logic
@@ -515,35 +517,30 @@ class InfisicalKeyManager(KeyManager):
         except Exception as e:
             return True, f"Error checking rotation status: {e}"
 
-    def _generate_key_id(self) -> str:
+    @staticmethod
+    def _generate_key_id() -> str:
         """Generate a unique key ID."""
-        import uuid
+        return f"aes_{uuid4().hex[:8]}"
 
-        return f"aes_{uuid.uuid4().hex[:8]}"
-
-    def _generate_aes_key(self) -> bytes:
+    @staticmethod
+    def _generate_aes_key() -> bytes:
         """Generate a 256-bit AES key."""
-        import os
-
         return os.urandom(32)  # 256 bits
 
-    def _encode_base64_key(self, key_bytes: bytes) -> str:
+    @staticmethod
+    def _encode_base64_key(key_bytes: bytes) -> str:
         """Encode key bytes to base64 URL-safe string."""
-        import base64
-
         return base64.urlsafe_b64encode(key_bytes).decode().rstrip("=")
 
-    def _decode_base64_key(self, b64_key: str) -> bytes:
+    @staticmethod
+    def _decode_base64_key(b64_key: str) -> bytes:
         """Decode base64 URL-safe string to key bytes."""
-        import base64
-
         # Add padding if needed
         padded = b64_key + "=" * (-len(b64_key) % 4)
         return base64.urlsafe_b64decode(padded)
 
-    def _serialize_token_cipher(
-        self, cipher: TokenCipher, keys_map: dict[str, str]
-    ) -> dict[str, Any]:
+    @staticmethod
+    def _serialize_token_cipher(cipher: TokenCipher, keys_map: dict[str, str]) -> dict[str, Any]:
         """Serialize TokenCipher for caching."""
         return {
             "active_kid": cipher.active_kid,

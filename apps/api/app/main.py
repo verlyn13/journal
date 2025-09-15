@@ -4,9 +4,10 @@ import asyncio
 import logging
 import os
 
+from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager, suppress
+
 from fastapi import FastAPI
-from contextlib import asynccontextmanager
-from typing import AsyncIterator
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import PlainTextResponse
 from strawberry.fastapi import GraphQLRouter
@@ -27,9 +28,9 @@ from app.api.v1 import (
 )
 from app.graphql.schema import schema
 from app.infra.db import build_engine, sessionmaker_for
+from app.infra.ip_extraction import configure_trusted_proxies
 from app.infra.outbox import relay_outbox
 from app.infra.secrets.auth_bootstrap import ensure_authenticated
-from app.middleware.enhanced_jwt_middleware import EnhancedJWTMiddleware
 from app.services.monitoring_scheduler import start_monitoring_scheduler, stop_monitoring_scheduler
 from app.settings import settings
 from app.telemetry.metrics_runtime import render_prom
@@ -107,13 +108,11 @@ async def _startup() -> None:
             logger.info("Infisical authentication initialized successfully")
         else:
             logger.warning("Infisical authentication failed - some features may not work correctly")
-    except Exception as e:
-        logger.error("Failed to initialize Infisical authentication: %s", e)
+    except Exception:
+        logger.exception("Failed to initialize Infisical authentication")
         # Continue startup even if auth fails - app may work with static tokens
 
     # Configure trusted proxies for IP extraction
-    from app.infra.ip_extraction import configure_trusted_proxies
-
     configure_trusted_proxies()
 
     # Background outbox relay publisher (skip in tests or when disabled via env)
@@ -137,7 +136,5 @@ async def _shutdown() -> None:
     # Cancel outbox task if it exists
     if hasattr(app.state, "outbox_task"):
         app.state.outbox_task.cancel()
-        try:
+        with suppress(asyncio.CancelledError):
             await app.state.outbox_task
-        except asyncio.CancelledError:
-            pass

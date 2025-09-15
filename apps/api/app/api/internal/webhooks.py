@@ -5,16 +5,15 @@ from __future__ import annotations
 import json
 import logging
 
+from contextlib import suppress
 from datetime import UTC, datetime
 from typing import Any
-from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from redis.asyncio import Redis
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.domain.auth.audit_service import AuditService
-from app.domain.auth.jwt_service import JWTService
 from app.domain.auth.key_manager import KeyManager
 from app.infra.db import get_session
 from app.infra.redis import get_redis
@@ -197,7 +196,7 @@ async def handle_jwt_key_rotation(
         logger.exception("Failed to process JWT key rotation webhook")
 
         # Log failure to audit trail
-        try:
+        with suppress(Exception):
             audit_service = AuditService(session)
             await audit_service.log_event(
                 user_id=settings.system_user_id,
@@ -209,8 +208,6 @@ async def handle_jwt_key_rotation(
                     "project_id": project_id,
                 },
             )
-        except Exception:  # noqa: BLE001 - audit failure shouldn't mask original error
-            pass
 
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -267,9 +264,7 @@ async def handle_aes_key_rotation(
         for cache_key in cache_keys_to_clear:
             if "*" in cache_key:
                 # Handle pattern deletion
-                pattern_keys = []
-                async for key in redis.scan_iter(match=cache_key):
-                    pattern_keys.append(key)
+                pattern_keys = [key async for key in redis.scan_iter(match=cache_key)]
                 if pattern_keys:
                     cleared_count += await redis.delete(*pattern_keys)
             else:
@@ -306,7 +301,7 @@ async def handle_aes_key_rotation(
         logger.exception("Failed to process AES key rotation webhook")
 
         # Log failure to audit trail
-        try:
+        with suppress(Exception):
             audit_service = AuditService(session)
             await audit_service.log_event(
                 user_id=settings.system_user_id,
@@ -319,8 +314,6 @@ async def handle_aes_key_rotation(
                     "project_id": project_id,
                 },
             )
-        except Exception:  # noqa: BLE001 - audit failure shouldn't mask original error
-            pass
 
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,

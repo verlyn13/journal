@@ -5,18 +5,17 @@ from __future__ import annotations
 import json
 import logging
 
-from datetime import UTC, datetime, timedelta
+from datetime import UTC, datetime
 from typing import Any, cast
-from uuid import UUID
 
 from redis.asyncio import Redis
 from redis.exceptions import RedisError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.domain.auth.audit_service import AuditService
-from app.domain.auth.key_manager import KeyManager, KeyMetadata, KeyStatus
+from app.domain.auth.key_manager import KeyManager
 from app.infra.crypto.key_generation import Ed25519KeyGenerator, KeyPair
-from app.infra.secrets import InfisicalError, InfisicalSecretsClient
+from app.infra.secrets import InfisicalSecretsClient
 from app.settings import settings
 
 
@@ -358,11 +357,11 @@ class EnhancedKeyManager(KeyManager):
 
         return results
 
-    async def _acquire_rotation_lock(self, timeout: int = 300) -> bool:
+    async def _acquire_rotation_lock(self, lock_ttl: int = 300) -> bool:
         """Acquire rotation lock to prevent concurrent rotations.
 
         Args:
-            timeout: Lock timeout in seconds
+            lock_ttl: Lock TTL in seconds
 
         Returns:
             True if lock acquired, False otherwise
@@ -373,7 +372,7 @@ class EnhancedKeyManager(KeyManager):
                 self._rotation_lock,
                 datetime.now(UTC).isoformat(),
                 nx=True,  # Only set if not exists
-                ex=timeout,  # Expire after timeout
+                ex=lock_ttl,  # Expire after TTL
             )
             return bool(result)
         except RedisError as e:
@@ -547,29 +546,29 @@ class EnhancedKeyManager(KeyManager):
                 current_cached = await self.redis.get(self._current_key_cache)
                 if current_cached:
                     security_results["cache_consistency"] = True
-        except Exception:  # noqa: BLE001 - security check should be resilient
-            pass
+        except Exception as e:  # noqa: BLE001 - security check should be resilient
+            logger.warning("Security check (cache consistency) failed unexpectedly: %s", e)
 
         # Check if emergency fallback is available
         try:
             fallback_exists = await self.redis.exists(self._emergency_fallback_cache)
             security_results["fallback_available"] = bool(fallback_exists)
-        except Exception:  # noqa: BLE001 - security check should be resilient
-            pass
+        except Exception as e:  # noqa: BLE001 - security check should be resilient
+            logger.warning("Security check (fallback available) failed unexpectedly: %s", e)
 
         # Check rotation lock status
         try:
             lock_exists = await self.redis.exists(self._rotation_lock)
             security_results["rotation_lock_status"] = "locked" if lock_exists else "free"
-        except Exception:  # noqa: BLE001 - security check should be resilient
-            pass
+        except Exception as e:  # noqa: BLE001 - security check should be resilient
+            logger.warning("Security check (rotation lock) failed unexpectedly: %s", e)
 
         # Count recent security events
         try:
             recent_events = await self.security_monitor.get_recent_events(limit=10)
             security_results["security_events_recent"] = len(recent_events)
-        except Exception:  # noqa: BLE001 - security check should be resilient
-            pass
+        except Exception as e:  # noqa: BLE001 - security check should be resilient
+            logger.warning("Security check (recent events) failed unexpectedly: %s", e)
 
         return security_results
 

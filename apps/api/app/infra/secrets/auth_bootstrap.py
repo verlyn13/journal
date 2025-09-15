@@ -12,6 +12,8 @@ import os
 
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
+from functools import lru_cache
+from typing import Any
 
 from app.infra.secrets.universal_auth_client import UniversalAuthError, get_universal_auth_client
 
@@ -49,7 +51,7 @@ class AuthBootstrapService:
                     logger.info("Initializing Universal Auth authentication...")
 
                     # Get Universal Auth client and perform initial login
-                    auth_client = await get_universal_auth_client()
+                    auth_client = get_universal_auth_client()
                     token = await auth_client.get_token()
 
                     logger.info("Universal Auth login successful, token obtained")
@@ -76,39 +78,14 @@ class AuthBootstrapService:
                 )
                 return False
 
-            except UniversalAuthError as e:
-                logger.error("Universal Auth initialization failed: %s", e)
+            except UniversalAuthError:
+                logger.exception("Universal Auth initialization failed")
                 return False
-            except Exception as e:
-                logger.exception("Authentication initialization failed: %s", e)
+            except Exception:
+                logger.exception("Authentication initialization failed")
                 return False
 
-    async def refresh_auth(self) -> bool:
-        """Refresh authentication token.
-
-        Returns:
-            True if refresh was successful, False otherwise
-        """
-        try:
-            # Check if we have Universal Auth credentials
-            client_id = os.getenv("UA_CLIENT_ID_TOKEN_SERVICE")
-            if client_id:
-                auth_client = await get_universal_auth_client()
-                token = await auth_client.refresh_token()
-
-                # Update environment variable
-                os.environ["INFISICAL_TOKEN"] = token
-
-                logger.info("Authentication token refreshed successfully")
-                return True
-            logger.warning("Cannot refresh static token")
-            return False
-
-        except Exception as e:
-            logger.error("Authentication refresh failed: %s", e)
-            return False
-
-    async def health_check(self) -> dict[str, any]:
+    async def health_check(self) -> dict[str, Any]:
         """Check authentication health status.
 
         Returns:
@@ -125,7 +102,7 @@ class AuthBootstrapService:
             # Check if we have Universal Auth
             client_id = os.getenv("UA_CLIENT_ID_TOKEN_SERVICE")
             if client_id:
-                auth_client = await get_universal_auth_client()
+                auth_client = get_universal_auth_client()
                 return await auth_client.health_check()
             # Static token fallback
             token = os.getenv("INFISICAL_TOKEN")
@@ -149,18 +126,10 @@ class AuthBootstrapService:
         return self._initialized
 
 
-# Global service instance
-_auth_bootstrap_service: AuthBootstrapService | None = None
-
-
+@lru_cache(maxsize=1)
 def get_auth_bootstrap_service() -> AuthBootstrapService:
-    """Get or create global auth bootstrap service."""
-    global _auth_bootstrap_service
-
-    if _auth_bootstrap_service is None:
-        _auth_bootstrap_service = AuthBootstrapService()
-
-    return _auth_bootstrap_service
+    """Get or create a cached auth bootstrap service instance."""
+    return AuthBootstrapService()
 
 
 @asynccontextmanager

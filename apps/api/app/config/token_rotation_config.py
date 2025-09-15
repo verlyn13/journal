@@ -72,15 +72,15 @@ class InfisicalPaths:
 
     # OAuth Providers
     OAUTH_GOOGLE_CLIENT_ID: Final[str] = "/auth/oauth/google/client_id"
-    OAUTH_GOOGLE_CLIENT_SECRET: Final[str] = "/auth/oauth/google/client_secret"
+    OAUTH_GOOGLE_CLIENT_SECRET: Final[str] = "/auth/oauth/google/client_secret"  # noqa: S105 - secret name path, not a secret value
     OAUTH_GITHUB_CLIENT_ID: Final[str] = "/auth/oauth/github/client_id"
-    OAUTH_GITHUB_CLIENT_SECRET: Final[str] = "/auth/oauth/github/client_secret"
+    OAUTH_GITHUB_CLIENT_SECRET: Final[str] = "/auth/oauth/github/client_secret"  # noqa: S105 - secret name path, not a secret value
 
     # Email Authentication
     EMAIL_SMTP_HOST: Final[str] = "/auth/email/smtp_host"
     EMAIL_SMTP_PORT: Final[str] = "/auth/email/smtp_port"
     EMAIL_SMTP_USER: Final[str] = "/auth/email/smtp_user"
-    EMAIL_SMTP_PASSWORD: Final[str] = "/auth/email/smtp_password"
+    EMAIL_SMTP_PASSWORD: Final[str] = "/auth/email/smtp_password"  # noqa: S105 - secret name path, not a secret value
     EMAIL_FROM_ADDRESS: Final[str] = "/auth/email/from_address"
 
     # Service Identities

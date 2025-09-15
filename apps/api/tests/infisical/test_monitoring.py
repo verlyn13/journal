@@ -17,7 +17,7 @@ from app.infra.secrets.enhanced_key_manager import InfisicalKeyManager
 from app.telemetry.infisical_monitoring import InfisicalMonitoringService
 
 
-@pytest.fixture
+@pytest.fixture()
 async def monitoring_service(
     session: AsyncSession,
     redis_client: Redis,
@@ -28,7 +28,7 @@ async def monitoring_service(
     return InfisicalMonitoringService(redis_client, infisical_client, key_manager)
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 class TestInfisicalMonitoringService:
     """Test Infisical monitoring service functionality."""
 
@@ -305,7 +305,7 @@ class TestInfisicalMonitoringService:
         assert str(recent_timestamp) not in old_keys
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 class TestMonitoringAPI:
     """Test monitoring API endpoints."""
 

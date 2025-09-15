@@ -3,9 +3,7 @@
 Tests the Infisical CLI v0.42.1 integration client with mocked CLI calls.
 """
 
-import asyncio
 import json
-import subprocess
 
 from unittest.mock import AsyncMock, MagicMock, patch
 
@@ -27,7 +25,7 @@ from app.infra.secrets import (
 class TestInfisicalSecretsClient:
     """Test InfisicalSecretsClient implementation."""
 
-    @pytest.fixture
+    @pytest.fixture()
     def mock_redis(self):
         """Create mock Redis client."""
         redis = AsyncMock()
@@ -37,12 +35,12 @@ class TestInfisicalSecretsClient:
         redis.keys.return_value = []
         return redis
 
-    @pytest.fixture
+    @pytest.fixture()
     def cache(self, mock_redis):
         """Create RedisSecretsCache instance."""
         return RedisSecretsCache(mock_redis)
 
-    @pytest.fixture
+    @pytest.fixture()
     def client(self, cache):
         """Create InfisicalSecretsClient instance."""
         with patch("subprocess.run") as mock_run:
@@ -58,7 +56,7 @@ class TestInfisicalSecretsClient:
                 cache_ttl=60,
             )
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_validate_cli_success(self):
         """Test successful CLI validation."""
         with patch("subprocess.run") as mock_run:
@@ -76,12 +74,13 @@ class TestInfisicalSecretsClient:
 
     def test_validate_cli_not_found(self):
         """Test CLI validation when CLI not found."""
-        with patch("subprocess.run", side_effect=FileNotFoundError):
-            with pytest.raises(InfisicalError, match="CLI validation failed"):
-                InfisicalSecretsClient(
-                    project_id="test-project",
-                    server_url="https://test.infisical.com",
-                )
+        with patch("subprocess.run", side_effect=FileNotFoundError), pytest.raises(
+            InfisicalError, match="CLI validation failed"
+        ):
+            InfisicalSecretsClient(
+                project_id="test-project",
+                server_url="https://test.infisical.com",
+            )
 
     def test_validate_cli_wrong_version(self):
         """Test CLI validation with unexpected version format."""
@@ -97,7 +96,7 @@ class TestInfisicalSecretsClient:
                     server_url="https://test.infisical.com",
                 )
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_from_env_success(self, mock_redis):
         """Test creating client from environment variables."""
         env_vars = {
@@ -123,11 +122,12 @@ class TestInfisicalSecretsClient:
 
     def test_from_env_missing_project_id(self):
         """Test from_env with missing project ID."""
-        with patch("os.getenv", return_value=None):
-            with pytest.raises(InfisicalError, match="INFISICAL_PROJECT_ID.*required"):
-                InfisicalSecretsClient.from_env()
+        with patch("os.getenv", return_value=None), pytest.raises(
+            InfisicalError, match="INFISICAL_PROJECT_ID.*required"
+        ):
+            InfisicalSecretsClient.from_env()
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_fetch_secret_cache_hit(self, client, mock_redis):
         """Test fetching secret from cache."""
         cached_data = {
@@ -145,7 +145,7 @@ class TestInfisicalSecretsClient:
         assert result == "cached_value"
         mock_redis.get.assert_called_once()
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_fetch_secret_cache_miss_success(self, client, mock_redis):
         """Test fetching secret from Infisical when cache misses."""
         mock_redis.get.return_value = None
@@ -163,7 +163,7 @@ class TestInfisicalSecretsClient:
             assert result == "fresh_value"
             mock_redis.setex.assert_called_once()
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_fetch_secret_not_found(self, client, mock_redis):
         """Test fetching non-existent secret."""
         mock_redis.get.return_value = None
@@ -177,7 +177,7 @@ class TestInfisicalSecretsClient:
             with pytest.raises(SecretNotFoundError):
                 await client.fetch_secret("/test/nonexistent")
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_fetch_secret_authentication_error(self, client, mock_redis):
         """Test authentication error during fetch."""
         mock_redis.get.return_value = None
@@ -191,7 +191,7 @@ class TestInfisicalSecretsClient:
             with pytest.raises(AuthenticationError):
                 await client.fetch_secret("/test/secret")
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_fetch_secret_timeout(self, client):
         """Test timeout during secret fetch."""
         with patch("asyncio.create_subprocess_exec") as mock_subprocess:
@@ -205,7 +205,7 @@ class TestInfisicalSecretsClient:
 
             mock_process.kill.assert_called_once()
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_fetch_secret_with_retries(self, client, mock_redis):
         """Test fetch with retries on temporary failure."""
         mock_redis.get.return_value = None
@@ -236,7 +236,7 @@ class TestInfisicalSecretsClient:
             assert result == "retry_success"
             assert call_count == 2
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_store_secret_success(self, client):
         """Test storing secret successfully."""
         with patch("asyncio.create_subprocess_exec") as mock_subprocess:
@@ -254,7 +254,7 @@ class TestInfisicalSecretsClient:
             assert "secrets" in args
             assert "set" in args
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_list_secrets_success(self, client):
         """Test listing secrets successfully."""
         mock_response = [
@@ -272,7 +272,7 @@ class TestInfisicalSecretsClient:
 
             assert result == ["secret1", "secret2"]
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_delete_secret_success(self, client):
         """Test deleting secret successfully."""
         with patch("asyncio.create_subprocess_exec") as mock_subprocess:
@@ -290,7 +290,7 @@ class TestInfisicalSecretsClient:
             assert "secrets" in args
             assert "delete" in args
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_health_check_healthy(self, client):
         """Test health check when system is healthy."""
         with patch("asyncio.create_subprocess_exec") as mock_subprocess:
@@ -304,7 +304,7 @@ class TestInfisicalSecretsClient:
             assert result["status"] == "healthy"
             assert "response_time_ms" in result
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_health_check_unhealthy(self, client):
         """Test health check when system is unhealthy."""
         with patch("asyncio.create_subprocess_exec") as mock_subprocess:
@@ -318,7 +318,7 @@ class TestInfisicalSecretsClient:
             assert result["status"] == "unhealthy"
             assert "error" in result
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_invalidate_cache(self, client):
         """Test cache invalidation."""
         await client.invalidate_cache("/auth/*")
@@ -330,18 +330,17 @@ class TestInfisicalSecretsClient:
 class TestRedisSecretsCache:
     """Test RedisSecretsCache implementation."""
 
-    @pytest.fixture
+    @pytest.fixture()
     def mock_redis(self):
         """Create mock Redis client."""
-        redis = AsyncMock()
-        return redis
+        return AsyncMock()
 
-    @pytest.fixture
+    @pytest.fixture()
     def cache(self, mock_redis):
         """Create RedisSecretsCache instance."""
         return RedisSecretsCache(mock_redis, "test:secrets")
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_cache_get_hit(self, cache, mock_redis):
         """Test cache get with hit."""
         cached_data = {
@@ -360,7 +359,7 @@ class TestRedisSecretsCache:
         assert result.value == "cached_value"
         assert result.secret_type == SecretType.API_KEY
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_cache_get_miss(self, cache, mock_redis):
         """Test cache get with miss."""
         mock_redis.get.return_value = None
@@ -369,7 +368,7 @@ class TestRedisSecretsCache:
 
         assert result is None
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_cache_get_redis_error(self, cache, mock_redis):
         """Test cache get with Redis error."""
         mock_redis.get.side_effect = RedisError("Connection failed")
@@ -378,7 +377,7 @@ class TestRedisSecretsCache:
 
         assert result is None
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_cache_set_success(self, cache, mock_redis):
         """Test cache set success."""
         from datetime import UTC, datetime
@@ -400,14 +399,14 @@ class TestRedisSecretsCache:
         assert args[0] == "test:secrets:/test/secret"
         assert args[1] == 300  # TTL
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_cache_delete_success(self, cache, mock_redis):
         """Test cache delete success."""
         await cache.delete("/test/secret")
 
         mock_redis.delete.assert_called_once_with("test:secrets:/test/secret")
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_cache_invalidate_pattern(self, cache, mock_redis):
         """Test cache pattern invalidation."""
         mock_redis.keys.return_value = [

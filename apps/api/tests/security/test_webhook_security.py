@@ -25,12 +25,12 @@ from app.infra.security.webhook_verification import (
 class TestWebhookSignatureVerifier:
     """Test webhook signature verification."""
 
-    @pytest.fixture
+    @pytest.fixture()
     def webhook_secret(self) -> str:
         """Test webhook secret."""
         return "test-webhook-secret-key-12345"
 
-    @pytest.fixture
+    @pytest.fixture()
     def verifier(self, redis_client: Redis, webhook_secret: str) -> WebhookSignatureVerifier:
         """Create webhook signature verifier."""
         return WebhookSignatureVerifier(redis_client, webhook_secret)
@@ -63,7 +63,7 @@ class TestWebhookSignatureVerifier:
 
         assert actual_signature == expected_full
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_verify_webhook_success(self, verifier: WebhookSignatureVerifier) -> None:
         """Test successful webhook verification."""
         timestamp = str(int(datetime.now(UTC).timestamp()))
@@ -80,7 +80,7 @@ class TestWebhookSignatureVerifier:
         assert result["payload_size"] == len(payload)
         assert "verification_time" in result
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_verify_webhook_invalid_signature(
         self, verifier: WebhookSignatureVerifier
     ) -> None:
@@ -96,7 +96,7 @@ class TestWebhookSignatureVerifier:
                 payload=payload,
             )
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_verify_webhook_timestamp_drift(self, verifier: WebhookSignatureVerifier) -> None:
         """Test webhook verification with excessive timestamp drift."""
         # Timestamp 10 minutes in the past
@@ -111,7 +111,7 @@ class TestWebhookSignatureVerifier:
                 payload=payload,
             )
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_verify_webhook_invalid_timestamp(
         self, verifier: WebhookSignatureVerifier
     ) -> None:
@@ -126,7 +126,7 @@ class TestWebhookSignatureVerifier:
                 payload=payload,
             )
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_verify_webhook_with_nonce_success(
         self, verifier: WebhookSignatureVerifier
     ) -> None:
@@ -145,7 +145,7 @@ class TestWebhookSignatureVerifier:
 
         assert result["verified"] is True
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_verify_webhook_replay_attack(self, verifier: WebhookSignatureVerifier) -> None:
         """Test webhook verification prevents replay attacks."""
         timestamp = str(int(datetime.now(UTC).timestamp()))
@@ -170,7 +170,7 @@ class TestWebhookSignatureVerifier:
                 nonce=nonce,
             )
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_verify_webhook_payload_too_large(
         self, verifier: WebhookSignatureVerifier
     ) -> None:
@@ -207,12 +207,12 @@ class TestWebhookSignatureVerifier:
 class TestWebhookRateLimiter:
     """Test webhook rate limiting."""
 
-    @pytest.fixture
+    @pytest.fixture()
     def rate_limiter(self, redis_client: Redis) -> WebhookRateLimiter:
         """Create webhook rate limiter."""
         return WebhookRateLimiter(redis_client, max_requests=5, window_seconds=60)
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_rate_limit_within_limit(self, rate_limiter: WebhookRateLimiter) -> None:
         """Test requests within rate limit."""
         identifier = "test-client-1"
@@ -225,7 +225,7 @@ class TestWebhookRateLimiter:
         assert metadata["requests_remaining"] == 4
         assert "reset_time" in metadata
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_rate_limit_exceeded(self, rate_limiter: WebhookRateLimiter) -> None:
         """Test rate limit exceeded."""
         identifier = "test-client-2"
@@ -243,7 +243,7 @@ class TestWebhookRateLimiter:
         assert metadata["requests_remaining"] == 0
         assert "reset_time" in metadata
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_rate_limit_different_identifiers(self, rate_limiter: WebhookRateLimiter) -> None:
         """Test rate limiting with different identifiers."""
         # Each identifier should have its own limit
@@ -258,12 +258,12 @@ class TestWebhookRateLimiter:
 class TestWebhookSecurityManager:
     """Test unified webhook security manager."""
 
-    @pytest.fixture
+    @pytest.fixture()
     def webhook_secret(self) -> str:
         """Test webhook secret."""
         return "test-security-manager-secret"
 
-    @pytest.fixture
+    @pytest.fixture()
     def security_manager(self, redis_client: Redis, webhook_secret: str) -> WebhookSecurityManager:
         """Create webhook security manager."""
         return WebhookSecurityManager(
@@ -273,7 +273,7 @@ class TestWebhookSecurityManager:
             window_seconds=60,
         )
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_verify_and_rate_limit_success(
         self, security_manager: WebhookSecurityManager
     ) -> None:
@@ -294,7 +294,7 @@ class TestWebhookSecurityManager:
         assert "rate_limit" in result
         assert result["rate_limit"]["requests_made"] == 1
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_verify_and_rate_limit_signature_failure(
         self, security_manager: WebhookSecurityManager
     ) -> None:
@@ -312,7 +312,7 @@ class TestWebhookSecurityManager:
                 identifier=identifier,
             )
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_verify_and_rate_limit_rate_limit_failure(
         self, security_manager: WebhookSecurityManager
     ) -> None:
@@ -344,7 +344,7 @@ class TestWebhookSecurityManager:
 class TestWebhookEndpoints:
     """Test webhook API endpoints."""
 
-    @pytest.fixture
+    @pytest.fixture()
     def webhook_secret(self) -> str:
         """Test webhook secret."""
         return "test-endpoint-secret"

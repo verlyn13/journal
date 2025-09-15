@@ -9,8 +9,8 @@ from __future__ import annotations
 import hashlib
 import logging
 
-from datetime import UTC, datetime, timedelta
-from typing import Any, Optional
+from datetime import UTC, datetime
+from typing import Any
 from uuid import UUID, uuid4
 
 from fastapi import HTTPException, Request, Response, status
@@ -18,14 +18,15 @@ from redis.asyncio import Redis
 from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.config.token_rotation_config import ACCESS_JWT_TTL, REFRESH_TOKEN_TTL, SecurityPolicies
+from app.config.token_rotation_config import ACCESS_JWT_TTL, REFRESH_TOKEN_TTL
 from app.domain.auth.audit_service import AuditService
 from app.domain.auth.jwt_service import JWTService
 from app.domain.auth.jwt_verifier_policy import VerifierPolicy
 from app.domain.auth.key_manager import KeyManager
 from app.domain.auth.token_rotation_service import TokenRotationService
 from app.infra.cookies_v2 import clear_refresh_cookie_v2, set_refresh_cookie_v2
-from app.infra.sa_models import User, UserSession
+from app.infra.sa_models import UserSession
+from app.infra.secrets import InfisicalSecretsClient
 from app.infra.secrets.enhanced_key_manager import InfisicalKeyManager
 from app.services.session_service import SessionService
 from app.settings import settings
@@ -55,8 +56,6 @@ class IntegratedAuthService:
 
         # Initialize key manager (with or without Infisical)
         if use_infisical and not settings.testing:
-            from app.infra.secrets import InfisicalSecretsClient
-
             infisical_client = InfisicalSecretsClient.from_env(redis)
             self.key_manager = InfisicalKeyManager(session, redis, infisical_client)
         else:
@@ -99,7 +98,7 @@ class IntegratedAuthService:
         # Generate EdDSA-signed access token
         access_token = await self.jwt_service.sign_jwt(
             user_id=user_id,
-            token_type="access",
+            token_type="access",  # noqa: S106 - token type identifier, not a secret
             scopes=scopes,
             ttl=ACCESS_JWT_TTL,
         )
@@ -214,7 +213,6 @@ class IntegratedAuthService:
 
         # Rotate refresh ID
         new_refresh_id = str(uuid4())
-        old_refresh_id = db_session.refresh_id
         db_session.refresh_id = new_refresh_id
         db_session.last_activity = datetime.now(UTC)
         await self.session.commit()
@@ -222,7 +220,7 @@ class IntegratedAuthService:
         # Generate new token pair with EdDSA
         new_access_token = await self.jwt_service.sign_jwt(
             user_id=user_id,
-            token_type="access",
+            token_type="access",  # noqa: S106 - token type identifier, not a secret
             scopes=claims.get("scopes"),
             ttl=ACCESS_JWT_TTL,
         )
@@ -258,7 +256,7 @@ class IntegratedAuthService:
         return {
             "access_token": new_access_token,
             "refresh_token": new_refresh_token,
-            "token_type": "bearer",
+            "token_type": "bearer",  # noqa: S106 - not a secret
             "expires_in": int(ACCESS_JWT_TTL.total_seconds()),
         }
 
@@ -278,7 +276,7 @@ class IntegratedAuthService:
             revoke_all: Whether to revoke all sessions
         """
         # Clear cookies
-        clear_refresh_cookie(response)
+        clear_refresh_cookie_v2(response)
 
         # Destroy session if exists
         session_data = await self.session_service.get_session(request)
@@ -361,7 +359,7 @@ class IntegratedAuthService:
 
         return await self.jwt_service.sign_jwt(
             user_id=user_id,
-            token_type="refresh",
+            token_type="refresh",  # noqa: S106 - token type identifier, not a secret
             additional_claims=additional_claims,
             ttl=REFRESH_TOKEN_TTL,
         )
