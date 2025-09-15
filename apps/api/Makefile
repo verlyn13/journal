@@ -151,22 +151,20 @@ infisical-dev-check: infisical-health infisical-secrets-list
 # Environment setup for Infisical
 infisical-env-template:
 	@echo "📝 Creating Infisical environment template..."
-	@cat > .env.infisical.template << 'EOF'
-# Infisical Configuration
-JOURNAL_INFISICAL_ENABLED=true
-JOURNAL_INFISICAL_PROJECT_ID=d01f583a-d833-4375-b359-c702a726ac4d
-JOURNAL_INFISICAL_SERVER_URL=https://secrets.jefahnierocks.com
-JOURNAL_INFISICAL_CACHE_TTL=300
-JOURNAL_INFISICAL_WEBHOOK_SECRET=your_webhook_secret_here
-JOURNAL_INFISICAL_TIMEOUT=30.0
-JOURNAL_INFISICAL_MAX_RETRIES=3
-JOURNAL_INFISICAL_RETRY_DELAY=1.0
-
-# Infisical CLI Environment Variables
-INFISICAL_API_URL=https://secrets.jefahnierocks.com
-INFISICAL_PROJECT_ID=d01f583a-d833-4375-b359-c702a726ac4d
-# INFISICAL_TOKEN=your_machine_identity_token_here
-EOF
+	@printf '# Infisical Configuration\n' > .env.infisical.template
+	@printf 'JOURNAL_INFISICAL_ENABLED=true\n' >> .env.infisical.template
+	@printf 'JOURNAL_INFISICAL_PROJECT_ID=d01f583a-d833-4375-b359-c702a726ac4d\n' >> .env.infisical.template
+	@printf 'JOURNAL_INFISICAL_SERVER_URL=https://secrets.jefahnierocks.com\n' >> .env.infisical.template
+	@printf 'JOURNAL_INFISICAL_CACHE_TTL=300\n' >> .env.infisical.template
+	@printf 'JOURNAL_INFISICAL_WEBHOOK_SECRET=your_webhook_secret_here\n' >> .env.infisical.template
+	@printf 'JOURNAL_INFISICAL_TIMEOUT=30.0\n' >> .env.infisical.template
+	@printf 'JOURNAL_INFISICAL_MAX_RETRIES=3\n' >> .env.infisical.template
+	@printf 'JOURNAL_INFISICAL_RETRY_DELAY=1.0\n' >> .env.infisical.template
+	@printf '\n' >> .env.infisical.template
+	@printf '# Infisical CLI Environment Variables\n' >> .env.infisical.template
+	@printf 'INFISICAL_API_URL=https://secrets.jefahnierocks.com\n' >> .env.infisical.template
+	@printf 'INFISICAL_PROJECT_ID=d01f583a-d833-4375-b359-c702a726ac4d\n' >> .env.infisical.template
+	@printf '# INFISICAL_TOKEN=your_machine_identity_token_here\n' >> .env.infisical.template
 	@echo "✅ Template created: .env.infisical.template"
 	@echo "📋 Copy to .env and update values as needed"
 
