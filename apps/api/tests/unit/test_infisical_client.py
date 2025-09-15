@@ -74,8 +74,9 @@ class TestInfisicalSecretsClient:
 
     def test_validate_cli_not_found(self):
         """Test CLI validation when CLI not found."""
-        with patch("subprocess.run", side_effect=FileNotFoundError), pytest.raises(
-            InfisicalError, match="CLI validation failed"
+        with (
+            patch("subprocess.run", side_effect=FileNotFoundError),
+            pytest.raises(InfisicalError, match="CLI validation failed"),
         ):
             InfisicalSecretsClient(
                 project_id="test-project",
@@ -122,8 +123,9 @@ class TestInfisicalSecretsClient:
 
     def test_from_env_missing_project_id(self):
         """Test from_env with missing project ID."""
-        with patch("os.getenv", return_value=None), pytest.raises(
-            InfisicalError, match="INFISICAL_PROJECT_ID.*required"
+        with (
+            patch("os.getenv", return_value=None),
+            pytest.raises(InfisicalError, match="INFISICAL_PROJECT_ID.*required"),
         ):
             InfisicalSecretsClient.from_env()
 
