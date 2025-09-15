@@ -19,12 +19,12 @@ from app.telemetry.infisical_monitoring import InfisicalMonitoringService
 
 @pytest.fixture()
 async def monitoring_service(
-    session: AsyncSession,
+    db_session: AsyncSession,
     redis_client: Redis,
     infisical_client: InfisicalSecretsClient,
 ) -> InfisicalMonitoringService:
     """Create monitoring service for testing."""
-    key_manager = InfisicalKeyManager(session, redis_client, infisical_client)
+    key_manager = InfisicalKeyManager(db_session, redis_client, infisical_client)
     return InfisicalMonitoringService(redis_client, infisical_client, key_manager)
 
 
