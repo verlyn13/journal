@@ -233,26 +233,37 @@ jobs:
         id: web-biome
         working-directory: apps/web
         run: |
-          echo "🔍 Running Biome quality analysis..."
-          
-          # Run Biome and capture results
-          BIOME_OUTPUT=$(bun x biome ci --reporter=json . 2>/dev/null || echo '{"diagnostics":[]}')
-          BIOME_ERRORS=$(echo "$BIOME_OUTPUT" | jq '.diagnostics | length')
-          
-          # Calculate Biome score
+          echo "🔍 Running Biome quality analysis (robust parsing)..."
+          set +e
+          BIOME_OUTPUT=$(bun x biome ci --reporter=json . 2>&1)
+          echo "$BIOME_OUTPUT" | jq '.' >/dev/null 2>&1
+          PARSE_OK=$?
+          if [ "$PARSE_OK" -eq 0 ]; then
+            BIOME_ERRORS=$(echo "$BIOME_OUTPUT" | jq '.diagnostics | length' 2>/dev/null)
+          else
+            echo "⚠️ JSON parse failed, trying GitHub reporter fallback"
+            GITHUB_OUT=$(bun x biome ci --reporter=github . 2>&1)
+            BIOME_ERRORS=$(echo "$GITHUB_OUT" | grep -c "::error" || echo "0")
+            if [ -z "$BIOME_ERRORS" ] || [ "$BIOME_ERRORS" = "0" ]; then
+              echo "⚠️ GitHub reporter yielded no parseable errors; using plain fallback"
+              PLAIN_OUT=$(bun x biome ci . 2>&1 || true)
+              BIOME_ERRORS=$(echo "$PLAIN_OUT" | grep -E -c "(✖|ERROR|Error:)" || echo "0")
+            fi
+          fi
+          set -e
+
           TOTAL_FILES=$(find src -name "*.ts" -o -name "*.tsx" | wc -l)
-          BIOME_SCORE=$(echo "scale=2; (1 - $BIOME_ERRORS / ($TOTAL_FILES * 2)) * 100" | bc -l | cut -d. -f1)
-          
+          BIOME_SCORE=$(echo "scale=2; (1 - ${BIOME_ERRORS:-0} / ($TOTAL_FILES * 2)) * 100" | bc -l | cut -d. -f1)
+
           echo "📊 Biome Results:"
           echo "   Files: $TOTAL_FILES"
-          echo "   Issues: $BIOME_ERRORS"
+          echo "   Issues: ${BIOME_ERRORS:-0}"
           echo "   Score: ${BIOME_SCORE}%"
-          
+
           echo "score=$BIOME_SCORE" >> $GITHUB_OUTPUT
-          
-          if [ "$BIOME_ERRORS" -gt 10 ]; then
+
+          if [ "${BIOME_ERRORS:-0}" -gt 10 ]; then
             echo "❌ Too many Biome issues"
-            echo "$BIOME_OUTPUT" | jq -r '.diagnostics[0:5] | .[] | .message' 
             exit 1
           else
             echo "✅ Biome quality acceptable"
@@ -348,19 +359,85 @@ jobs:
     name: Performance Quality Gates
     runs-on: ubuntu-24.04
     needs: quality-summary
-    if: needs.quality-summary.outputs.quality_gate == 'true' && !inputs.skip_performance
-    timeout-minutes: 20
+    timeout-minutes: 25
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_USER: journal
+          POSTGRES_PASSWORD: journal
+          POSTGRES_DB: journal
+        ports:
+          - 5433:5432
+        options: >-
+          --health-cmd "pg_isready -U journal"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 30
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Performance Baseline Test
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: "1.2.21"
+
+      - name: Web build + bundle size check
+        working-directory: apps/web
         run: |
-          echo "⚡ Performance quality gates"
-          echo "Future: API response time validation"
-          echo "Future: Frontend bundle size limits" 
-          echo "Future: Database query performance"
-          echo "✅ Performance gates placeholder passed"
+          bun install
+          bun run build
+          node scripts/bundle-check.js
+
+      - name: Setup Python (uv)
+        uses: astral-sh/setup-uv@v4
+
+      - name: API deps
+        working-directory: apps/api
+        run: uv sync --all-extras --dev
+
+      - name: Wait for Postgres
+        run: |
+          sudo apt-get update && sudo apt-get install -y postgresql-client
+          for i in $(seq 1 60); do
+            if pg_isready -h 127.0.0.1 -p 5433 -U journal >/dev/null 2>&1; then echo ready; exit 0; fi
+            sleep 1
+          done
+          exit 1
+
+      - name: Alembic upgrade
+        env:
+          DATABASE_URL_SYNC: postgresql://journal:journal@localhost:5433/journal
+          TEST_DB_URL_ASYNC: postgresql+asyncpg://journal:journal@localhost:5433/journal
+          TEST_DB_URL_SYNC: postgresql+psycopg://journal:journal@localhost:5433/journal
+        working-directory: apps/api
+        run: uv run alembic upgrade head
+
+      - name: Start API (background)
+        env:
+          JOURNAL_DB_URL: postgresql+asyncpg://journal:journal@localhost:5433/journal
+          JOURNAL_DISABLE_STARTUP: "1"
+        working-directory: apps/api
+        run: |
+          nohup uv run fastapi run app/main.py --host 0.0.0.0 --port 5000 > /tmp/api-perf.log 2>&1 &
+          echo $! > /tmp/api-perf.pid
+
+      - name: Wait for /health
+        run: |
+          for i in $(seq 1 60); do
+            code=$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:5000/health || true)
+            if [ "$code" = "200" ]; then echo ready; exit 0; fi
+            sleep 1
+          done
+          echo "API did not become healthy"; exit 1
+
+      - name: API latency smoke (p95)
+        working-directory: apps/api
+        env:
+          TARGET_URL: http://127.0.0.1:5000/health
+        run: |
+          uv run python scripts/perf_smoke.py --url "$TARGET_URL" --requests 60 --concurrency 6 --p95-threshold-ms 250
 
 # Quality Philosophy Documentation
 # 

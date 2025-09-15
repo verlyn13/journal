@@ -195,3 +195,13 @@ Implements comprehensive token enhancement plan including:
 ---
 
 **Ready for review and merge to main branch.**
+
+---
+
+## CI Hardening and Test Infrastructure (update)
+
+- Standardized Postgres port 5433 across API tests; fixed Infisical CI DB envs and added health checks/retries for Postgres/Redis.
+- Enabled Infisical E2E and Migration readiness jobs (removed gating on commit message/inputs).
+- Added docker-compose.test.yml plus wait/init scripts for reproducible local test envs.
+- Web quality gates: implemented robust Biome output parsing with multi-format fallbacks to eliminate jq parsing failures.
+- Introduced API latency smoke (p95) in Quality Gates and enforced web bundle size limits.

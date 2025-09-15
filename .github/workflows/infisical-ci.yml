@@ -68,7 +68,8 @@ jobs:
           --health-timeout 5s
           --health-retries 5
         ports:
-          - 5432:5432
+          # Standardize on 5433 host port used by tests
+          - 5433:5432
       
       redis:
         image: redis:7-alpine
@@ -111,6 +112,23 @@ jobs:
       
       - name: Install dependencies
         run: uv sync --all-extras --dev
+
+      - name: Wait for services (Postgres/Redis)
+        run: |
+          set -e
+          sudo apt-get update && sudo apt-get install -y postgresql-client redis-tools
+          echo "Waiting for Postgres on 5433..."
+          for i in $(seq 1 60); do
+            if pg_isready -h localhost -p 5433 -U journal >/dev/null 2>&1; then
+              echo "Postgres is ready"; break; fi
+            sleep 1
+          done
+          echo "Waiting for Redis on 6379..."
+          for i in $(seq 1 60); do
+            if redis-cli -h 127.0.0.1 -p 6379 ping | grep -q PONG; then
+              echo "Redis is ready"; break; fi
+            sleep 1
+          done
       
       # Install Infisical CLI for testing
       - name: Install Infisical CLI
@@ -160,8 +178,10 @@ jobs:
       - name: Run database migrations
         run: uv run alembic upgrade head
         env:
-          JOURNAL_DB_URL: postgresql+asyncpg://journal:journal@localhost:5432/journal_infisical_test
-          DATABASE_URL_SYNC: postgresql://journal:journal@localhost:5432/journal_infisical_test
+          TEST_DB_URL_ASYNC: postgresql+asyncpg://journal:journal@localhost:5433/journal_infisical_test
+          TEST_DB_URL_SYNC: postgresql+psycopg://journal:journal@localhost:5433/journal_infisical_test
+          JOURNAL_DB_URL: postgresql+asyncpg://journal:journal@localhost:5433/journal_infisical_test
+          DATABASE_URL_SYNC: postgresql://journal:journal@localhost:5433/journal_infisical_test
       
       # Test Infisical monitoring (only existing test file)
       - name: Test Infisical Monitoring
@@ -170,7 +190,9 @@ jobs:
             --cov=app.telemetry.infisical_monitoring \
             --cov-report=xml:coverage-infisical-monitoring.xml || true
         env:
-          JOURNAL_DB_URL: postgresql+asyncpg://journal:journal@localhost:5432/journal_infisical_test
+          TEST_DB_URL_ASYNC: postgresql+asyncpg://journal:journal@localhost:5433/journal_infisical_test
+          TEST_DB_URL_SYNC: postgresql+psycopg://journal:journal@localhost:5433/journal_infisical_test
+          JOURNAL_DB_URL: postgresql+asyncpg://journal:journal@localhost:5433/journal_infisical_test
           JOURNAL_REDIS_URL: redis://localhost:6379/1
           INFISICAL_SERVER_URL: http://localhost:8080
           INFISICAL_PROJECT_ID: test-project-id
@@ -184,7 +206,9 @@ jobs:
             --cov=app.infra.secrets \
             --cov-report=xml:coverage-infisical-unit.xml || true
         env:
-          JOURNAL_DB_URL: postgresql+asyncpg://journal:journal@localhost:5432/journal_infisical_test
+          TEST_DB_URL_ASYNC: postgresql+asyncpg://journal:journal@localhost:5433/journal_infisical_test
+          TEST_DB_URL_SYNC: postgresql+psycopg://journal:journal@localhost:5433/journal_infisical_test
+          JOURNAL_DB_URL: postgresql+asyncpg://journal:journal@localhost:5433/journal_infisical_test
           JOURNAL_REDIS_URL: redis://localhost:6379/1
           INFISICAL_SERVER_URL: http://localhost:8080
           INFISICAL_PROJECT_ID: test-project-id
@@ -194,7 +218,9 @@ jobs:
         run: |
           uv run python -m app.scripts.migrate_to_infisical migrate --dry-run --no-backup
         env:
-          JOURNAL_DB_URL: postgresql+asyncpg://journal:journal@localhost:5432/journal_infisical_test
+          TEST_DB_URL_ASYNC: postgresql+asyncpg://journal:journal@localhost:5433/journal_infisical_test
+          TEST_DB_URL_SYNC: postgresql+psycopg://journal:journal@localhost:5433/journal_infisical_test
+          JOURNAL_DB_URL: postgresql+asyncpg://journal:journal@localhost:5433/journal_infisical_test
           JOURNAL_REDIS_URL: redis://localhost:6379/1
           INFISICAL_TOKEN: test-token
           INFISICAL_PROJECT_ID: test-project-id
@@ -231,7 +257,6 @@ jobs:
     name: Infisical E2E Tests
     runs-on: ubuntu-24.04
     needs: infisical-lint-test
-    if: github.event.inputs.test_rotation == 'true' || contains(github.event.head_commit.message, '[test-rotation]')
     defaults:
       run:
         working-directory: apps/api
@@ -249,7 +274,7 @@ jobs:
           --health-timeout 5s
           --health-retries 5
         ports:
-          - 5432:5432
+          - 5433:5432
       
       redis:
         image: redis:7-alpine
@@ -275,6 +300,21 @@ jobs:
       
       - name: Install dependencies
         run: uv sync --all-extras --dev
+
+      - name: Wait for services (Postgres/Redis)
+        run: |
+          set -e
+          sudo apt-get update && sudo apt-get install -y postgresql-client redis-tools
+          for i in $(seq 1 60); do
+            if pg_isready -h localhost -p 5433 -U journal >/dev/null 2>&1; then
+              echo "Postgres is ready"; break; fi
+            sleep 1
+          done
+          for i in $(seq 1 60); do
+            if redis-cli -h 127.0.0.1 -p 6379 ping | grep -q PONG; then
+              echo "Redis is ready"; break; fi
+            sleep 1
+          done
       
       - name: Install Infisical CLI
         run: |
@@ -285,7 +325,9 @@ jobs:
       - name: Start API server with Infisical
         run: |
           # Use test secrets that don't require real Infisical auth
-          export JOURNAL_DB_URL=postgresql+asyncpg://journal:journal@localhost:5432/journal_e2e_test
+          export TEST_DB_URL_ASYNC=postgresql+asyncpg://journal:journal@localhost:5433/journal_e2e_test
+          export TEST_DB_URL_SYNC=postgresql+psycopg://journal:journal@localhost:5433/journal_e2e_test
+          export JOURNAL_DB_URL=postgresql+asyncpg://journal:journal@localhost:5433/journal_e2e_test
           export JOURNAL_REDIS_URL=redis://localhost:6379/0
           export INFISICAL_TOKEN=test-e2e-token
           export INFISICAL_PROJECT_ID=test-e2e-project
@@ -312,13 +354,14 @@ jobs:
           uv run pytest tests/infisical/test_e2e_rotation.py -v
         env:
           API_BASE_URL: http://localhost:8000
-          JOURNAL_DB_URL: postgresql+asyncpg://journal:journal@localhost:5432/journal_e2e_test
+          TEST_DB_URL_ASYNC: postgresql+asyncpg://journal:journal@localhost:5433/journal_e2e_test
+          TEST_DB_URL_SYNC: postgresql+psycopg://journal:journal@localhost:5433/journal_e2e_test
+          JOURNAL_DB_URL: postgresql+asyncpg://journal:journal@localhost:5433/journal_e2e_test
           JOURNAL_REDIS_URL: redis://localhost:6379/0
 
   migration-readiness:
     name: Migration Readiness Check
     runs-on: ubuntu-24.04
-    if: github.event.inputs.validate_migration == 'true' || github.ref == 'refs/heads/main'
     defaults:
       run:
         working-directory: apps/api
