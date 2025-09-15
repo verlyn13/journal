@@ -323,10 +323,10 @@ class TestInfisicalSecretsClient:
     @pytest.mark.asyncio()
     async def test_invalidate_cache(self, client):
         """Test cache invalidation."""
-        await client.invalidate_cache("/auth/*")
-
-        # Should call cache invalidation
-        client.cache.invalidate_pattern.assert_called_once_with("/auth/*")
+        # Spy on invalidate_pattern
+        with patch.object(client.cache, "invalidate_pattern", new=AsyncMock()) as mock_inv:
+            await client.invalidate_cache("/auth/*")
+            mock_inv.assert_called_once_with("/auth/*")
 
 
 class TestRedisSecretsCache:

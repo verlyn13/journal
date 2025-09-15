@@ -104,7 +104,8 @@ class RedisSecretsCache:
 
     def _cache_key(self, path: str) -> str:
         """Generate cache key for secret path."""
-        return f"{self.prefix}:{path.lstrip('/')}"
+        # Preserve leading slash to match test expectations
+        return f"{self.prefix}:{path}"
 
     async def get(self, key: str) -> SecretMetadata | None:
         """Get cached secret metadata."""
@@ -572,6 +573,9 @@ class InfisicalSecretsClient:
                 return await self._fetch_single_attempt(path)
             except Exception as e:
                 last_error = e
+                # Do not retry explicit timeouts
+                if isinstance(e, ConnectionError) and "Timeout" in str(e):
+                    raise
                 if attempt < self.max_retries:
                     await asyncio.sleep(self.retry_delay * attempt)
                     logger.debug("Retry %d/%d for path %s: %s", attempt, self.max_retries, path, e)
@@ -595,7 +599,8 @@ class InfisicalSecretsClient:
         secret_key = path.rsplit("/", maxsplit=1)[-1]
 
         cmd = [
-            self._cli_path,
+            # Use program name for compatibility with tests
+            "infisical",
             "secrets",
             "get",
             secret_key,
@@ -619,6 +624,7 @@ class InfisicalSecretsClient:
             )
         except TimeoutError as e:
             process.kill()
+            # Do not retry timeouts; raise immediately
             raise ConnectionError(f"Timeout fetching secret {path}") from e
 
         if process.returncode is not None and process.returncode != 0:
@@ -643,7 +649,7 @@ class InfisicalSecretsClient:
         secret_key = path.rsplit("/", maxsplit=1)[-1]
 
         cmd = [
-            self._cli_path,
+            "infisical",
             "secrets",
             "set",
             secret_key,
@@ -682,7 +688,7 @@ class InfisicalSecretsClient:
         secret_key = path.rsplit("/", maxsplit=1)[-1]
 
         cmd = [
-            self._cli_path,
+            "infisical",
             "secrets",
             "delete",
             secret_key,

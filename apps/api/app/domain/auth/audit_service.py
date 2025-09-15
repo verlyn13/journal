@@ -96,6 +96,7 @@ class AuditService:
             },
             sort_keys=True,
             separators=(",", ":"),
+            default=str,
         )
         return hashlib.sha256(content.encode()).hexdigest()
 
