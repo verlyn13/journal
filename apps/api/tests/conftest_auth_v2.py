@@ -3,12 +3,14 @@
 from __future__ import annotations
 
 import asyncio
+
+from collections.abc import AsyncGenerator
 from datetime import UTC, datetime
-from typing import AsyncGenerator
 from uuid import uuid4
 
 import pytest
 import pytest_asyncio
+
 from httpx import AsyncClient
 from redis.asyncio import Redis
 from sqlalchemy import delete
@@ -27,27 +29,25 @@ async def db_engine():
     # Use test database
     test_db_url = settings.database_url.replace("/journal", "/journal_test")
     engine = create_async_engine(test_db_url, echo=False)
-    
+
     # Create tables
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
-    
+
     yield engine
-    
+
     # Clean up
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
-    
+
     await engine.dispose()
 
 
 @pytest_asyncio.fixture
 async def db_session(db_engine) -> AsyncGenerator[AsyncSession, None]:
     """Create test database session."""
-    async_session = sessionmaker(
-        db_engine, class_=AsyncSession, expire_on_commit=False
-    )
-    
+    async_session = sessionmaker(db_engine, class_=AsyncSession, expire_on_commit=False)
+
     async with async_session() as session:
         yield session
         await session.rollback()
@@ -61,12 +61,12 @@ async def redis_client() -> AsyncGenerator[Redis, None]:
         decode_responses=True,
         db=15,  # Use separate DB for tests
     )
-    
+
     # Clear test database
     await redis.flushdb()
-    
+
     yield redis
-    
+
     # Clean up
     await redis.flushdb()
     await redis.close()
@@ -83,11 +83,11 @@ async def test_user(db_session: AsyncSession) -> User:
         created_at=datetime.now(UTC),
         updated_at=datetime.now(UTC),
     )
-    
+
     db_session.add(user)
     await db_session.commit()
     await db_session.refresh(user)
-    
+
     return user
 
 
@@ -99,14 +99,14 @@ async def async_client(
     """Create test HTTP client with dependency overrides."""
     from app.infra.db import get_session
     from app.infra.redis import get_redis
-    
+
     # Override dependencies
     app.dependency_overrides[get_session] = lambda: db_session
     app.dependency_overrides[get_redis] = lambda: redis_client
-    
+
     async with AsyncClient(app=app, base_url="http://test") as client:
         yield client
-    
+
     # Clean up overrides
     app.dependency_overrides.clear()
 

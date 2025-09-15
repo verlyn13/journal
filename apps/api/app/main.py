@@ -2,10 +2,9 @@ from __future__ import annotations
 
 import asyncio
 import logging
+import os
 
 from fastapi import FastAPI
-from app.infra.secrets.auth_bootstrap import auth_lifespan
-import os
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import PlainTextResponse
 from strawberry.fastapi import GraphQLRouter
@@ -27,7 +26,7 @@ from app.api.v1 import (
 from app.graphql.schema import schema
 from app.infra.db import build_engine, sessionmaker_for
 from app.infra.outbox import relay_outbox
-from app.infra.secrets.auth_bootstrap import ensure_authenticated
+from app.infra.secrets.auth_bootstrap import auth_lifespan, ensure_authenticated
 from app.middleware.enhanced_jwt_middleware import EnhancedJWTMiddleware
 from app.services.monitoring_scheduler import start_monitoring_scheduler, stop_monitoring_scheduler
 from app.settings import settings
@@ -102,7 +101,7 @@ async def _startup() -> None:
     except Exception as e:
         logger.error("Failed to initialize Infisical authentication: %s", e)
         # Continue startup even if auth fails - app may work with static tokens
-    
+
     # Configure trusted proxies for IP extraction
     from app.infra.ip_extraction import configure_trusted_proxies
 

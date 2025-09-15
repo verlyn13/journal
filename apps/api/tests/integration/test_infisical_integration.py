@@ -8,10 +8,12 @@ import asyncio
 import json
 import os
 import subprocess
+
 from datetime import UTC, datetime
 from unittest.mock import patch
 
 import pytest
+
 from redis.asyncio import Redis
 
 from app.infra.secrets import InfisicalSecretsClient, SecretNotFoundError, SecretType
@@ -45,7 +47,7 @@ def infisical_configured():
 
 pytestmark = pytest.mark.skipif(
     not infisical_available() or not infisical_configured(),
-    reason="Infisical CLI not available or not configured"
+    reason="Infisical CLI not available or not configured",
 )
 
 
@@ -68,13 +70,13 @@ async def infisical_client(redis_client):
 @pytest.fixture
 async def key_manager(redis_client, infisical_client):
     """Create InfisicalKeyManager for testing."""
-    from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
+    from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
     from sqlalchemy.orm import sessionmaker
-    
+
     # Use in-memory SQLite for testing
     engine = create_async_engine("sqlite+aiosqlite:///:memory:")
     session_factory = sessionmaker(engine, class_=AsyncSession)
-    
+
     async with session_factory() as session:
         manager = InfisicalKeyManager(session, redis_client, infisical_client)
         yield manager
@@ -87,7 +89,7 @@ class TestInfisicalSecretsClientIntegration:
     async def test_health_check_real(self, infisical_client):
         """Test health check against real Infisical."""
         result = await infisical_client.health_check()
-        
+
         assert "status" in result
         assert "response_time_ms" in result
         assert result["server_url"] == infisical_client.server_url
@@ -98,23 +100,23 @@ class TestInfisicalSecretsClientIntegration:
         """Test complete store -> fetch -> delete cycle."""
         test_path = "/test/integration_test_secret"
         test_value = f"test_value_{datetime.now(UTC).isoformat()}"
-        
+
         try:
             # Store secret
             await infisical_client.store_secret(test_path, test_value, SecretType.API_KEY)
-            
+
             # Fetch secret
             fetched_value = await infisical_client.fetch_secret(test_path)
             assert fetched_value == test_value
-            
+
             # Fetch from cache (second call should hit cache)
             cached_value = await infisical_client.fetch_secret(test_path)
             assert cached_value == test_value
-            
+
             # Force refresh
             fresh_value = await infisical_client.fetch_secret(test_path, force_refresh=True)
             assert fresh_value == test_value
-            
+
         finally:
             # Clean up
             try:
@@ -134,17 +136,17 @@ class TestInfisicalSecretsClientIntegration:
         # Create a test secret
         test_path = "/test/list_test_secret"
         test_value = "list_test_value"
-        
+
         try:
             await infisical_client.store_secret(test_path, test_value)
-            
+
             # List secrets
             secrets = await infisical_client.list_secrets("/test/")
-            
+
             # Should include our test secret
             secret_names = [path.split("/")[-1] for path in secrets]
             assert "list_test_secret" in secret_names
-            
+
         finally:
             try:
                 await infisical_client.delete_secret(test_path)
@@ -156,19 +158,19 @@ class TestInfisicalSecretsClientIntegration:
         """Test cache invalidation."""
         test_path = "/test/cache_test_secret"
         test_value = "cache_test_value"
-        
+
         try:
             # Store and fetch to populate cache
             await infisical_client.store_secret(test_path, test_value)
             await infisical_client.fetch_secret(test_path)
-            
+
             # Invalidate cache
             await infisical_client.invalidate_cache("/test/*")
-            
+
             # Next fetch should go to Infisical (not cache)
             fresh_value = await infisical_client.fetch_secret(test_path)
             assert fresh_value == test_value
-            
+
         finally:
             try:
                 await infisical_client.delete_secret(test_path)
@@ -183,7 +185,7 @@ class TestInfisicalKeyManagerIntegration:
     async def test_initialize_key_system(self, key_manager):
         """Test initializing key system."""
         await key_manager.initialize_key_system()
-        
+
         # Should be able to get current signing key
         signing_key = await key_manager.get_current_signing_key()
         assert signing_key is not None
@@ -194,18 +196,18 @@ class TestInfisicalKeyManagerIntegration:
         """Test getting TokenCipher with Infisical backend."""
         # Initialize AES system first
         await key_manager._initialize_aes_key_system()
-        
+
         cipher = await key_manager.get_token_cipher()
-        
+
         assert isinstance(cipher, TokenCipher)
         assert cipher.active_kid is not None
         assert len(cipher._keys) > 0
-        
+
         # Test encryption/decryption
         test_plaintext = "test_encryption_message"
         encrypted = cipher.encrypt(test_plaintext)
         decrypted = cipher.decrypt(encrypted)
-        
+
         assert decrypted == test_plaintext
 
     @pytest.mark.asyncio
@@ -213,18 +215,18 @@ class TestInfisicalKeyManagerIntegration:
         """Test AES key rotation."""
         # Initialize system
         await key_manager._initialize_aes_key_system()
-        
+
         # Get initial cipher
         initial_cipher = await key_manager.get_token_cipher()
         initial_kid = initial_cipher.active_kid
-        
+
         # Force rotation
         result = await key_manager.rotate_aes_keys(force=True)
-        
+
         assert result["status"] == "success"
         assert result["old_active_kid"] == initial_kid
         assert result["new_active_kid"] != initial_kid
-        
+
         # Get new cipher
         new_cipher = await key_manager.get_token_cipher()
         assert new_cipher.active_kid == result["new_active_kid"]
@@ -235,17 +237,17 @@ class TestInfisicalKeyManagerIntegration:
         """Test JWT key rotation."""
         # Initialize system
         await key_manager.initialize_key_system()
-        
+
         # Get initial key
         initial_key = await key_manager.get_current_signing_key()
         initial_kid = initial_key.kid
-        
+
         # Force rotation
         result = await key_manager.rotate_keys(force=True)
-        
+
         assert result["status"] == "success"
         assert "new_current_kid" in result
-        
+
         # Get new key
         new_key = await key_manager.get_current_signing_key()
         assert new_key.kid != initial_kid
@@ -256,9 +258,9 @@ class TestInfisicalKeyManagerIntegration:
         # Initialize systems
         await key_manager.initialize_key_system()
         await key_manager._initialize_aes_key_system()
-        
+
         health = await key_manager.health_check()
-        
+
         assert health["overall_status"] == "healthy"
         assert health["jwt_system"]["status"] == "healthy"
         assert health["aes_system"]["status"] == "healthy"
@@ -270,40 +272,40 @@ class TestInfisicalKeyManagerIntegration:
         # Initialize systems
         await key_manager.initialize_key_system()
         await key_manager._initialize_aes_key_system()
-        
+
         # Test JWT rotation via webhook
         jwt_webhook_data = {
             "rotation_type": "jwt",
             "force": True,
             "source": "webhook_test",
         }
-        
+
         jwt_result = await key_manager.webhook_rotate_keys(jwt_webhook_data)
-        
+
         assert jwt_result["rotation_type"] == "jwt"
         assert jwt_result["results"]["jwt"]["status"] == "success"
-        
+
         # Test AES rotation via webhook
         aes_webhook_data = {
             "rotation_type": "aes",
             "force": True,
             "source": "webhook_test",
         }
-        
+
         aes_result = await key_manager.webhook_rotate_keys(aes_webhook_data)
-        
+
         assert aes_result["rotation_type"] == "aes"
         assert aes_result["results"]["aes"]["status"] == "success"
-        
+
         # Test both rotation via webhook
         both_webhook_data = {
             "rotation_type": "both",
             "force": True,
             "source": "webhook_test",
         }
-        
+
         both_result = await key_manager.webhook_rotate_keys(both_webhook_data)
-        
+
         assert both_result["rotation_type"] == "both"
         assert both_result["results"]["jwt"]["status"] == "success"
         assert both_result["results"]["aes"]["status"] == "success"
@@ -322,9 +324,9 @@ class TestInfisicalErrorHandling:
             cache=None,
             timeout=2.0,  # Short timeout for faster test
         )
-        
+
         health = await client.health_check()
-        
+
         assert health["status"] == "unhealthy"
         assert "error" in health
 
@@ -333,22 +335,23 @@ class TestInfisicalErrorHandling:
         """Test retry mechanism with transient failures."""
         # This test uses mocking to simulate transient failures
         original_fetch = infisical_client._fetch_single_attempt
-        
+
         call_count = 0
-        
+
         async def mock_fetch_with_retry(path):
             nonlocal call_count
             call_count += 1
             if call_count == 1:
                 # First call fails
                 raise Exception("Transient error")
-            else:
-                # Second call succeeds
-                return "retry_success_value"
-        
-        with patch.object(infisical_client, "_fetch_single_attempt", side_effect=mock_fetch_with_retry):
+            # Second call succeeds
+            return "retry_success_value"
+
+        with patch.object(
+            infisical_client, "_fetch_single_attempt", side_effect=mock_fetch_with_retry
+        ):
             result = await infisical_client.fetch_secret("/test/retry")
-            
+
             assert result == "retry_success_value"
             assert call_count == 2
 
@@ -361,25 +364,25 @@ class TestInfisicalPerformance:
         """Test cache performance improvement."""
         test_path = "/test/performance_test"
         test_value = "performance_test_value"
-        
+
         try:
             # Store secret
             await infisical_client.store_secret(test_path, test_value)
-            
+
             # Time first fetch (should go to Infisical)
             start_time = datetime.now()
             await infisical_client.fetch_secret(test_path)
             first_fetch_time = (datetime.now() - start_time).total_seconds()
-            
+
             # Time second fetch (should hit cache)
             start_time = datetime.now()
             await infisical_client.fetch_secret(test_path)
             cached_fetch_time = (datetime.now() - start_time).total_seconds()
-            
+
             # Cache should be significantly faster
             assert cached_fetch_time < first_fetch_time
             assert cached_fetch_time < 0.1  # Should be very fast
-            
+
         finally:
             try:
                 await infisical_client.delete_secret(test_path)
@@ -391,7 +394,7 @@ class TestInfisicalPerformance:
         """Test concurrent access to secrets."""
         test_paths = [f"/test/concurrent_{i}" for i in range(5)]
         test_value = "concurrent_test_value"
-        
+
         try:
             # Store secrets concurrently
             store_tasks = [
@@ -399,22 +402,16 @@ class TestInfisicalPerformance:
                 for i, path in enumerate(test_paths)
             ]
             await asyncio.gather(*store_tasks)
-            
+
             # Fetch secrets concurrently
-            fetch_tasks = [
-                infisical_client.fetch_secret(path)
-                for path in test_paths
-            ]
+            fetch_tasks = [infisical_client.fetch_secret(path) for path in test_paths]
             results = await asyncio.gather(*fetch_tasks)
-            
+
             # Verify all results
             for i, result in enumerate(results):
                 assert result == f"{test_value}_{i}"
-                
+
         finally:
             # Clean up concurrently
-            delete_tasks = [
-                infisical_client.delete_secret(path)
-                for path in test_paths
-            ]
+            delete_tasks = [infisical_client.delete_secret(path) for path in test_paths]
             await asyncio.gather(*delete_tasks, return_exceptions=True)

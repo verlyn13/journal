@@ -22,7 +22,7 @@ async def create_test_token_with_scopes(
     ttl: timedelta | None = None,
 ) -> str:
     """Create a test JWT token with specific scopes.
-    
+
     Args:
         session: Database session
         redis: Redis client
@@ -30,20 +30,20 @@ async def create_test_token_with_scopes(
         scopes: List of scopes to include in token
         token_type: Type of token to create
         ttl: Token time-to-live
-        
+
     Returns:
         Signed JWT token string
     """
     if user_id is None:
         user_id = uuid4()
-    
+
     if ttl is None:
         ttl = timedelta(minutes=10)
-    
+
     # Initialize services
     key_manager = KeyManager(session, redis)
     jwt_service = JWTService(session, redis, key_manager)
-    
+
     # Create token with scopes
     token = await jwt_service.sign_jwt(
         user_id=user_id,
@@ -51,7 +51,7 @@ async def create_test_token_with_scopes(
         scopes=scopes or [],
         ttl=ttl,
     )
-    
+
     return token
 
 
@@ -61,12 +61,12 @@ async def create_admin_token(
     user_id: UUID | None = None,
 ) -> str:
     """Create an admin token with all admin scopes.
-    
+
     Args:
         session: Database session
         redis: Redis client
         user_id: User ID for token
-        
+
     Returns:
         Admin JWT token
     """
@@ -84,12 +84,12 @@ async def create_monitoring_token(
     user_id: UUID | None = None,
 ) -> str:
     """Create a monitoring token with monitor scope.
-    
+
     Args:
         session: Database session
         redis: Redis client
         user_id: User ID for token
-        
+
     Returns:
         Monitoring JWT token
     """
@@ -107,12 +107,12 @@ async def create_readonly_token(
     user_id: UUID | None = None,
 ) -> str:
     """Create a read-only token.
-    
+
     Args:
         session: Database session
         redis: Redis client
         user_id: User ID for token
-        
+
     Returns:
         Read-only JWT token
     """

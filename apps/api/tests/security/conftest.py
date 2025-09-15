@@ -50,7 +50,9 @@ class FakeRedis:
         for k in keys:
             self._data.pop(k, None)
 
-    async def scan(self, cursor: int, match: str | None = None, count: int = 10) -> tuple[int, list[str]]:
+    async def scan(
+        self, cursor: int, match: str | None = None, count: int = 10
+    ) -> tuple[int, list[str]]:
         # Minimal scan implementation for tests
         return 0, list(self._data.keys())
 
@@ -62,6 +64,7 @@ class FakeRedis:
         def hincrby(self, key: str, field: str, amount: int) -> None:
             # Represent hash as JSON-like blob in bytes
             import json
+
             raw = self.parent._data.get(key, b"{}")
             obj = json.loads(raw.decode())
             obj[field] = int(obj.get(field, 0)) + amount
@@ -73,6 +76,7 @@ class FakeRedis:
         def rpush(self, key: str, value: str) -> None:
             # Store list as JSON array
             import json
+
             raw = self.parent._data.get(key, b"[]")
             arr = json.loads(raw.decode())
             arr.append(value)
@@ -125,17 +129,21 @@ async def key_manager(db_session: AsyncSession, redis: FakeRedis) -> KeyManager:
 
     async def _no_audit(**kwargs):  # type: ignore[no-untyped-def]
         return None
+
     manager.audit_service.log_event = _no_audit  # type: ignore[assignment]
     await manager.initialize_key_system()
     return manager
 
 
 @pytest_asyncio.fixture
-async def jwt_service(db_session: AsyncSession, redis: FakeRedis, key_manager: KeyManager) -> JWTService:
+async def jwt_service(
+    db_session: AsyncSession, redis: FakeRedis, key_manager: KeyManager
+) -> JWTService:
     service = JWTService(db_session, redis, key_manager)
 
     async def _no_audit(**kwargs):  # type: ignore[no-untyped-def]
         return None
+
     service.audit_service.log_event = _no_audit  # type: ignore[assignment]
     return service
 

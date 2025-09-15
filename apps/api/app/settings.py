@@ -47,7 +47,7 @@ class Settings(BaseSettings):
     # Infisical configuration
     infisical_enabled: bool = True  # Enable Infisical integration
     infisical_project_id: str = "d01f583a-d833-4375-b359-c702a726ac4d"  # Infisical project ID
-    
+
     # Trusted proxy configuration
     trusted_proxies: list[str] = []  # List of trusted proxy IPs/CIDRs
     infisical_server_url: str = "https://secrets.jefahnierocks.com"  # Infisical server URL
