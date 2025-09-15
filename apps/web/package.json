@@ -20,7 +20,8 @@
     "quality:test": "vitest run --silent",
     "quality:bundle": "vite build && node scripts/bundle-check.js",
     "quality:all": "bun run quality:types && bun run quality:lint && bun run quality:test && bun run quality:bundle",
-    "precommit": "bun run quality:all"
+    "precommit": "bun run quality:all",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@codemirror/lang-markdown": "^6.2.4",
