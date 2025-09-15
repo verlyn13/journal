@@ -27,15 +27,33 @@ class TestInfisicalKeyManager:
     def mock_redis(self):
         """Create mock Redis client."""
         redis = AsyncMock()
-        redis.get.return_value = None
-        redis.setex.return_value = True
-        redis.delete.return_value = 1
+        redis.get = AsyncMock(return_value=None)
+        redis.setex = AsyncMock(return_value=True)
+        redis.delete = AsyncMock(return_value=1)
+        redis.hget = AsyncMock(return_value=None)
+        redis.hset = AsyncMock(return_value=True)
+        redis.expire = AsyncMock(return_value=True)
         return redis
 
     @pytest.fixture()
     def mock_infisical_client(self):
         """Create mock Infisical client."""
-        return AsyncMock(spec=InfisicalSecretsClient)
+        client = AsyncMock(spec=InfisicalSecretsClient)
+        # Setup default responses for common secrets
+        client.fetch_secret = AsyncMock(
+            side_effect=lambda path: {
+                "/auth/aes/active-kid": "test-kid-123",
+                "/auth/aes/keys-map": json.dumps({
+                    "keys": {
+                        "test-kid-123": "dGVzdC1rZXktMTIzNDU2Nzg5MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTI="  # 32-byte key base64
+                    },
+                    "current_kid": "test-kid-123"
+                }),
+                "/auth/jwt/private-key": "-----BEGIN PRIVATE KEY-----\ntest-key\n-----END PRIVATE KEY-----",
+                "/auth/jwt/public-key": "-----BEGIN PUBLIC KEY-----\ntest-key\n-----END PUBLIC KEY-----",
+            }.get(path, "default-value")
+        )
+        return client
 
     @pytest.fixture()
     def key_manager(self, mock_session, mock_redis, mock_infisical_client):
@@ -150,8 +168,12 @@ class TestInfisicalKeyManager:
     @pytest.mark.asyncio()
     async def test_rotate_aes_keys_not_needed(self, key_manager):
         """Test AES rotation when not needed."""
-        with patch.object(
-            key_manager, "_check_aes_rotation_needed", return_value=(False, "Not needed")
+        # Mock the get_token_cipher to avoid loading from env
+        mock_cipher = MagicMock(spec=TokenCipher)
+
+        with (
+            patch.object(key_manager, "get_token_cipher", return_value=mock_cipher),
+            patch.object(key_manager, "_check_aes_rotation_needed", return_value=(False, "Not needed")),
         ):
             result = await key_manager.rotate_aes_keys()
 
@@ -257,7 +279,11 @@ class TestInfisicalKeyManager:
     @pytest.mark.asyncio()
     async def test_health_check_jwt_unhealthy(self, key_manager, mock_redis):
         """Test health check when JWT system is unhealthy."""
-        mock_redis.get.return_value = None
+        # Setup Redis mock properly
+        mock_redis.get = AsyncMock(return_value=None)
+        mock_redis.hget = AsyncMock(return_value=None)
+        mock_redis.hset = AsyncMock(return_value=True)
+        mock_redis.expire = AsyncMock(return_value=True)
 
         # Mock unhealthy JWT system
         with patch.object(

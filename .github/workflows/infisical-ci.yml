@@ -222,6 +222,7 @@ jobs:
           TEST_DB_URL_SYNC: postgresql+psycopg://journal:journal@localhost:5433/journal_infisical_test
           JOURNAL_DB_URL: postgresql+asyncpg://journal:journal@localhost:5433/journal_infisical_test
           JOURNAL_REDIS_URL: redis://localhost:6379/1
+          INFISICAL_SERVER_URL: http://localhost:8080
           INFISICAL_TOKEN: test-token
           INFISICAL_PROJECT_ID: test-project-id
           INFISICAL_ENVIRONMENT: test

@@ -417,7 +417,7 @@ class InfisicalSecretsClient:
                 self._cli_path,
                 "secrets",
                 "list",
-                "--project-id",
+                "--projectId",
                 self.project_id,
                 "--format",
                 "json",

@@ -283,11 +283,13 @@ async def redis_client():
     # Create a mock Redis client with commonly used methods
     mock_redis = MagicMock(spec=Redis)
     mock_redis.ping = AsyncMock(return_value=True)
-    mock_redis.info = AsyncMock(return_value={
-        "redis_version": "7.0.0",
-        "used_memory_human": "1.5M",
-        "connected_clients": 2,
-    })
+    mock_redis.info = AsyncMock(
+        return_value={
+            "redis_version": "7.0.0",
+            "used_memory_human": "1.5M",
+            "connected_clients": 2,
+        }
+    )
     mock_redis.get = AsyncMock(return_value=None)
     mock_redis.set = AsyncMock(return_value=True)
     mock_redis.hget = AsyncMock(return_value=None)
