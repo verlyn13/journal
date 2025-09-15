@@ -132,23 +132,36 @@ class TestInfisicalSecretsClient:
     @pytest.mark.asyncio()
     async def test_fetch_secret_cache_hit(self, client, mock_redis):
         """Test fetching secret from cache."""
+        from datetime import UTC, datetime
+
+        # Use a recent timestamp so cache is considered valid
         cached_data = {
             "path": "/test/secret",
             "value": "cached_value",
-            "cached_at": "2024-01-01T00:00:00+00:00",
+            "cached_at": datetime.now(UTC).isoformat(),
             "ttl_seconds": 300,
             "secret_type": "api_key",
         }
 
+        # Mock redis.get to return cached data when called with the proper cache key
+        # The cache key will be "infisical:secrets:/test/secret" (default prefix)
         mock_redis.get.return_value = json.dumps(cached_data).encode()
 
         # Even though we hit cache, we should not call subprocess
+        # But we need to set up the mock in case the code path changes
         with patch("asyncio.create_subprocess_exec") as mock_subprocess:
-            # This should not be called because of cache hit
+            # Set up a proper mock process in case it gets called unexpectedly
+            mock_process = AsyncMock()
+            mock_process.communicate.return_value = (b"backup_value", b"")
+            mock_process.returncode = 0
+            mock_subprocess.return_value = mock_process
+
             result = await client.fetch_secret("/test/secret")
 
             assert result == "cached_value"
-            mock_redis.get.assert_called_once()
+            # Check that redis.get was called with the correct cache key
+            mock_redis.get.assert_called_once_with("infisical:secrets:/test/secret")
+            # Subprocess should not be called when cache hit
             mock_subprocess.assert_not_called()
 
     @pytest.mark.asyncio()
@@ -156,12 +169,12 @@ class TestInfisicalSecretsClient:
         """Test fetching secret from Infisical when cache misses."""
         mock_redis.get.return_value = None
 
-        # With --plain flag, output is just the secret value
-        mock_secret_value = "fresh_value"
+        # JSON format output (default mode)
+        mock_response = [{"secretKey": "secret", "secretValue": "fresh_value"}]
 
         with patch("asyncio.create_subprocess_exec") as mock_subprocess:
             mock_process = AsyncMock()
-            mock_process.communicate.return_value = (mock_secret_value.encode(), b"")
+            mock_process.communicate.return_value = (json.dumps(mock_response).encode(), b"")
             mock_process.returncode = 0
             mock_subprocess.return_value = mock_process
 
@@ -225,8 +238,9 @@ class TestInfisicalSecretsClient:
             if call_count < 2:
                 # First call fails
                 return b"", b"temporary error"
-            # Second call succeeds
-            return json.dumps({"secretValue": "retry_success"}).encode(), b""
+            # Second call succeeds - JSON format (default mode)
+            mock_response = [{"secretKey": "secret", "secretValue": "retry_success"}]
+            return json.dumps(mock_response).encode(), b""
 
         with patch("asyncio.create_subprocess_exec") as mock_subprocess:
             mock_process = AsyncMock()
@@ -332,6 +346,37 @@ class TestInfisicalSecretsClient:
         with patch.object(client.cache, "invalidate_pattern", new=AsyncMock()) as mock_inv:
             await client.invalidate_cache("/auth/*")
             mock_inv.assert_called_once_with("/auth/*")
+
+    @pytest.mark.asyncio()
+    async def test_fetch_secret_plain_mode(self, cache):
+        """Test fetching secret in plain text mode."""
+        # Create client with plain mode
+        with patch("subprocess.run") as mock_run:
+            mock_run.return_value = MagicMock(
+                returncode=0,
+                stdout="infisical version 0.42.1",
+            )
+            plain_client = InfisicalSecretsClient(
+                project_id="test-project",
+                server_url="https://test.infisical.com",
+                cache=cache,
+                mode="plain",
+            )
+
+        # Test plain mode fetch
+        with patch("asyncio.create_subprocess_exec") as mock_subprocess:
+            mock_process = AsyncMock()
+            # Plain mode returns just the value
+            mock_process.communicate.return_value = (b"plain_value", b"")
+            mock_process.returncode = 0
+            mock_subprocess.return_value = mock_process
+
+            result = await plain_client.fetch_secret("/test/secret")
+
+            assert result == "plain_value"
+            # Verify --plain flag was used
+            args = mock_subprocess.call_args[0]
+            assert "--plain" in args
 
 
 class TestRedisSecretsCache:

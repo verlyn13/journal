@@ -18,7 +18,7 @@ import time
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from enum import Enum
-from typing import Any, Protocol
+from typing import Any, Literal, Protocol
 
 from redis.asyncio import Redis
 from redis.exceptions import RedisError
@@ -195,6 +195,7 @@ class InfisicalSecretsClient:
         cache_ttl: int = DEFAULT_CACHE_TTL,
         max_retries: int = DEFAULT_MAX_RETRIES,
         retry_delay: float = DEFAULT_RETRY_DELAY,
+        mode: Literal["json", "plain"] = "json",
     ) -> None:
         """Initialize Infisical secrets client.
 
@@ -206,6 +207,7 @@ class InfisicalSecretsClient:
             cache_ttl: Cache TTL in seconds
             max_retries: Maximum retry attempts
             retry_delay: Delay between retries in seconds
+            mode: Output mode - 'json' for JSON format (default), 'plain' for plain text
         """
         self.project_id = project_id
         self.server_url = server_url
@@ -214,6 +216,7 @@ class InfisicalSecretsClient:
         self.cache_ttl = cache_ttl
         self.max_retries = max_retries
         self.retry_delay = retry_delay
+        self.mode = mode
 
         # Resolve and validate CLI path
         self._cli_path = self._resolve_cli_path()
@@ -268,7 +271,7 @@ class InfisicalSecretsClient:
             raise InfisicalError(f"Infisical CLI validation failed: {e}") from e
 
     @classmethod
-    def from_env(cls, redis: Redis | None = None) -> InfisicalSecretsClient:
+    def from_env(cls, redis: Redis | None = None, mode: Literal["json", "plain"] = "json") -> InfisicalSecretsClient:
         """Create client from environment variables.
 
         Expected environment variables:
@@ -278,9 +281,11 @@ class InfisicalSecretsClient:
         - UA_CLIENT_SECRET_TOKEN_SERVICE: Universal Auth client secret (preferred)
         - INFISICAL_TOKEN: Static token (fallback, deprecated)
         - INFISICAL_CACHE_TTL: Cache TTL in seconds (optional, default 300)
+        - INFISICAL_MODE: Output mode - 'json' or 'plain' (optional, default 'json')
 
         Args:
             redis: Optional Redis instance for caching
+            mode: Output mode override - 'json' for JSON format (default), 'plain' for plain text
 
         Returns:
             Configured InfisicalSecretsClient
@@ -302,11 +307,17 @@ class InfisicalSecretsClient:
         if redis:
             cache = RedisSecretsCache(redis)
 
+        # Check for mode override in environment
+        env_mode = os.getenv("INFISICAL_MODE", mode)
+        if env_mode not in ["json", "plain"]:
+            env_mode = "json"
+
         return cls(
             project_id=project_id,
             server_url=server_url,
             cache=cache,
             cache_ttl=cache_ttl,
+            mode=env_mode,  # type: ignore[arg-type]
         )
 
     async def fetch_secret(self, path: str, force_refresh: bool = False) -> str:
@@ -598,16 +609,28 @@ class InfisicalSecretsClient:
         # Extract secret key from path
         secret_key = path.rsplit("/", maxsplit=1)[-1]
 
-        cmd = [
-            # Use program name for compatibility with tests
-            "infisical",
-            "secrets",
-            "get",
-            secret_key,
-            "--projectId",
-            self.project_id,
-            "--plain",  # Get plain value output
-        ]
+        # Build command based on mode
+        if self.mode == "plain":
+            cmd = [
+                # Use program name for compatibility with tests
+                "infisical",
+                "secrets",
+                "get",
+                secret_key,
+                "--projectId",
+                self.project_id,
+                "--plain",  # Get plain value output
+            ]
+        else:
+            # JSON mode - use export command to get JSON format
+            cmd = [
+                "infisical",
+                "export",
+                "--format", "json",
+                "--projectId",
+                self.project_id,
+                "--path", "/",  # Export all from root to filter later
+            ]
 
         process = await asyncio.create_subprocess_exec(
             *cmd,
@@ -629,11 +652,32 @@ class InfisicalSecretsClient:
         if process.returncode is not None and process.returncode != 0:
             self._handle_cli_error(process.returncode, stderr.decode())
 
-        # With --plain flag, the output is just the secret value as plain text
-        secret_value = stdout.decode().strip()
-        if not secret_value:
-            raise SecretNotFoundError(f"Secret {path} not found or empty")
-        return secret_value
+        # Parse output based on mode
+        if self.mode == "plain":
+            # With --plain flag, the output is just the secret value as plain text
+            secret_value = stdout.decode().strip()
+            if not secret_value:
+                raise SecretNotFoundError(f"Secret {path} not found or empty")
+            return secret_value
+        else:
+            # JSON mode - parse the exported JSON and find our secret
+            try:
+                output = stdout.decode().strip()
+                if not output:
+                    raise SecretNotFoundError(f"Secret {path} not found")
+
+                # The export format returns an array of secrets
+                secrets = json.loads(output)
+
+                # Find our specific secret by key
+                for secret in secrets:
+                    if secret.get("secretKey") == secret_key:
+                        return secret.get("secretValue", "")
+
+                raise SecretNotFoundError(f"Secret {path} not found in export")
+            except json.JSONDecodeError as e:
+                logger.error("Failed to parse JSON output: %s", output[:200])
+                raise InfisicalError(f"Invalid JSON response: {e}") from e
 
     async def _store_to_infisical(self, path: str, value: str) -> None:
         """Store secret to Infisical."""

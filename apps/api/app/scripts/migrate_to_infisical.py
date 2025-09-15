@@ -10,9 +10,10 @@ import logging
 import os
 import sys
 
+from contextlib import asynccontextmanager
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any
+from typing import Any, AsyncGenerator
 
 import typer
 
@@ -24,12 +25,21 @@ from rich.table import Table
 # Add the app directory to the path so we can import modules
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from app.infra.db import get_session
+from app.infra.db import get_session, build_engine, sessionmaker_for
 from app.infra.redis import get_redis
 from app.infra.secrets import InfisicalSecretsClient, SecretNotFoundError, SecretType
 from app.infra.secrets.enhanced_key_manager import InfisicalKeyManager
 from app.security.token_cipher import KeyConfigError, TokenCipher
 from app.settings import settings
+from sqlalchemy.ext.asyncio import AsyncSession
+
+
+@asynccontextmanager
+async def get_migration_session() -> AsyncGenerator[AsyncSession, None]:
+    """Get a database session for migration operations."""
+    sm = sessionmaker_for(build_engine())
+    async with sm() as session:
+        yield session
 
 
 app = typer.Typer(name="infisical-migration", help="Migrate secrets from environment to Infisical")
@@ -448,10 +458,8 @@ def validate_env(
         "INFISICAL_ENVIRONMENT",
     ]
 
-    missing_vars = []
-    for var in required_vars:
-        if not os.getenv(var):
-            missing_vars.append(var)
+    # Use list comprehension for better performance (PERF401)
+    missing_vars = [var for var in required_vars if not os.getenv(var)]
 
     if missing_vars:
         console.print("\n❌ Missing required environment variables:")
@@ -485,17 +493,26 @@ def validate_env(
 
     # Verify Infisical CLI is available
     try:
+        import shutil
         import subprocess
-        result = subprocess.run(
-            ["infisical", "--version"],
-            capture_output=True,
-            text=True,
-            check=False,
-        )
-        if result.returncode == 0:
-            console.print(f"✅ Infisical CLI found: {result.stdout.strip()}")
+
+        # Use full path for security (S607) and validate executable exists
+        infisical_path = shutil.which("infisical")
+        if not infisical_path:
+            console.print("⚠️ [yellow]Infisical CLI not found in PATH[/yellow]")
         else:
-            console.print("⚠️ [yellow]Infisical CLI not found or not working properly[/yellow]")
+            # Use subprocess.run with full path (addresses S404, S607)
+            result = subprocess.run(  # noqa: S603
+                [infisical_path, "--version"],
+                capture_output=True,
+                text=True,
+                check=False,
+                timeout=5,  # Add timeout for safety
+            )
+            if result.returncode == 0:
+                console.print(f"✅ Infisical CLI found: {result.stdout.strip()}")
+            else:
+                console.print("⚠️ [yellow]Infisical CLI not found or not working properly[/yellow]")
     except FileNotFoundError:
         console.print("⚠️ [yellow]Infisical CLI not installed[/yellow]")
 
@@ -581,10 +598,11 @@ def migrate(
                 await create_backup(result)
 
             # Initialize clients
-            redis = await get_redis()
+            redis = get_redis()  # get_redis() returns a Redis client, not an awaitable
             infisical_client = InfisicalSecretsClient.from_env(redis)
 
-            async with get_session() as session:
+            # Use the proper async context manager for session
+            async with get_migration_session() as session:
                 key_manager = InfisicalKeyManager(session, redis, infisical_client)
 
                 if not dry_run:
@@ -635,10 +653,10 @@ def migrate(
                         console.print("  • Infrastructure secrets")
                         console.print("  • Webhook secrets")
 
-            await redis.close()
+            await redis.aclose()
 
             # Generate report
-            await generate_migration_report(result)
+            generate_migration_report(result)  # Not async, don't await
 
             # Save migration log
             if not dry_run:
@@ -713,10 +731,10 @@ def status() -> None:
 
     async def check_status():
         try:
-            redis = await get_redis()
+            redis = get_redis()  # get_redis() returns a Redis client, not an awaitable
             infisical_client = InfisicalSecretsClient.from_env(redis)
 
-            async with get_session() as session:
+            async with get_migration_session() as session:
                 key_manager = InfisicalKeyManager(session, redis, infisical_client)
 
                 # Check health
@@ -765,7 +783,7 @@ def status() -> None:
 
                 console.print(table)
 
-            await redis.close()
+            await redis.aclose()
 
         except Exception as e:
             console.print(f"❌ Status check failed: {e}")
