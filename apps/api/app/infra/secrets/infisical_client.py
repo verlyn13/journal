@@ -606,8 +606,7 @@ class InfisicalSecretsClient:
             secret_key,
             "--projectId",
             self.project_id,
-            "--format",
-            "json",
+            "--plain",  # Get plain value output
         ]
 
         process = await asyncio.create_subprocess_exec(
@@ -630,13 +629,11 @@ class InfisicalSecretsClient:
         if process.returncode is not None and process.returncode != 0:
             self._handle_cli_error(process.returncode, stderr.decode())
 
-        try:
-            data = json.loads(stdout.decode())
-            if isinstance(data, dict) and "secretValue" in data:
-                return data["secretValue"]
-            raise InfisicalError(f"Unexpected response format for {path}")
-        except json.JSONDecodeError as e:
-            raise InfisicalError(f"Invalid JSON response for {path}: {e}") from e
+        # With --plain flag, the output is just the secret value as plain text
+        secret_value = stdout.decode().strip()
+        if not secret_value:
+            raise SecretNotFoundError(f"Secret {path} not found or empty")
+        return secret_value
 
     async def _store_to_infisical(self, path: str, value: str) -> None:
         """Store secret to Infisical."""

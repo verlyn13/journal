@@ -433,6 +433,77 @@ def generate_migration_report(result: MigrationResult) -> None:
 
 
 @app.command()
+def validate_env(
+    dry_run: bool = typer.Option(
+        False, "--dry-run", help="Perform a dry run without making changes"
+    ),
+) -> None:
+    """Validate environment configuration for Infisical migration."""
+    console.print("🔍 Validating environment configuration...")
+
+    # Check required environment variables
+    required_vars = [
+        "INFISICAL_TOKEN",
+        "INFISICAL_PROJECT_ID",
+        "INFISICAL_ENVIRONMENT",
+    ]
+
+    missing_vars = []
+    for var in required_vars:
+        if not os.getenv(var):
+            missing_vars.append(var)
+
+    if missing_vars:
+        console.print("\n❌ Missing required environment variables:")
+        for var in missing_vars:
+            console.print(f"  • {var}")
+
+        if not dry_run:
+            raise typer.Exit(1)
+        else:
+            console.print("\n⚠️ [yellow]Dry run mode - would exit with error[/yellow]")
+
+    # Check optional but recommended variables
+    optional_vars = {
+        "INFISICAL_SERVER_URL": "https://app.infisical.com/api",
+        "JOURNAL_DB_URL": None,
+        "JOURNAL_REDIS_URL": None,
+    }
+
+    console.print("\n📋 Environment configuration:")
+    for var, default in optional_vars.items():
+        value = os.getenv(var, default)
+        if value:
+            # Mask sensitive values
+            display_value = value[:10] + "..." if len(value) > 15 else value
+            console.print(f"  • {var}: {display_value}")
+        else:
+            console.print(f"  • {var}: [yellow]Not set[/yellow]")
+
+    if not missing_vars:
+        console.print("\n✅ Environment validation passed!")
+
+    # Verify Infisical CLI is available
+    try:
+        import subprocess
+        result = subprocess.run(
+            ["infisical", "--version"],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        if result.returncode == 0:
+            console.print(f"✅ Infisical CLI found: {result.stdout.strip()}")
+        else:
+            console.print("⚠️ [yellow]Infisical CLI not found or not working properly[/yellow]")
+    except FileNotFoundError:
+        console.print("⚠️ [yellow]Infisical CLI not installed[/yellow]")
+
+    if dry_run:
+        console.print("\n🧪 [cyan]Dry run completed - no changes made[/cyan]")
+
+
+@app.command()
 def check_prerequisites() -> None:
     """Check prerequisites for Infisical migration."""
     console.print("🔍 Checking migration prerequisites...")

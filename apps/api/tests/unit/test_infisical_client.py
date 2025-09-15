@@ -142,21 +142,26 @@ class TestInfisicalSecretsClient:
 
         mock_redis.get.return_value = json.dumps(cached_data).encode()
 
-        result = await client.fetch_secret("/test/secret")
+        # Even though we hit cache, we should not call subprocess
+        with patch("asyncio.create_subprocess_exec") as mock_subprocess:
+            # This should not be called because of cache hit
+            result = await client.fetch_secret("/test/secret")
 
-        assert result == "cached_value"
-        mock_redis.get.assert_called_once()
+            assert result == "cached_value"
+            mock_redis.get.assert_called_once()
+            mock_subprocess.assert_not_called()
 
     @pytest.mark.asyncio()
     async def test_fetch_secret_cache_miss_success(self, client, mock_redis):
         """Test fetching secret from Infisical when cache misses."""
         mock_redis.get.return_value = None
 
-        mock_response = {"secretValue": "fresh_value"}
+        # With --plain flag, output is just the secret value
+        mock_secret_value = "fresh_value"
 
         with patch("asyncio.create_subprocess_exec") as mock_subprocess:
             mock_process = AsyncMock()
-            mock_process.communicate.return_value = (json.dumps(mock_response).encode(), b"")
+            mock_process.communicate.return_value = (mock_secret_value.encode(), b"")
             mock_process.returncode = 0
             mock_subprocess.return_value = mock_process
 
