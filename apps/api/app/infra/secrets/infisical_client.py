@@ -604,7 +604,7 @@ class InfisicalSecretsClient:
             "secrets",
             "get",
             secret_key,
-            "--project-id",
+            "--projectId",
             self.project_id,
             "--format",
             "json",
@@ -654,7 +654,7 @@ class InfisicalSecretsClient:
             "set",
             secret_key,
             value,
-            "--project-id",
+            "--projectId",
             self.project_id,
         ]
 
@@ -692,7 +692,7 @@ class InfisicalSecretsClient:
             "secrets",
             "delete",
             secret_key,
-            "--project-id",
+            "--projectId",
             self.project_id,
         ]
 
