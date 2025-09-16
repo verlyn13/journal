@@ -373,12 +373,12 @@ jobs:
 
           echo "🔍 Starting enhanced Postgres monitoring..."
           # Use our monitoring script for better diagnostics
-          ./.github/scripts/postgres-monitor.sh wait \
+          ../../.github/scripts/postgres-monitor.sh wait \
             postgresql://journal:journal@localhost:5433/journal_e2e_test \
             60 2
 
           echo "🔍 Checking for any lingering root connections..."
-          ./.github/scripts/postgres-monitor.sh diagnose \
+          ../../.github/scripts/postgres-monitor.sh diagnose \
             postgresql://journal:journal@localhost:5433/journal_e2e_test
 
           echo "🔍 Waiting for Redis..."
