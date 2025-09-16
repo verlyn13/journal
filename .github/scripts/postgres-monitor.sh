@@ -68,52 +68,153 @@ check_connection() {
     return 0
 }
 
-# Function to diagnose connection issues
+# Function to diagnose connection issues with forensic detail
 check_connection_issues() {
-    echo "🔍 Diagnosing connection issues..."
+    echo "🔍 FORENSIC DATABASE ANALYSIS - Security Contract Validation"
+    echo "=================================================="
 
-    # Check if database exists
-    if PGPASSWORD="$DB_PASS" psql -h "$DB_HOST" -p "$DB_PORT" -U postgres -lqt 2>/dev/null | cut -d \| -f 1 | grep -qw "$DB_NAME"; then
-        echo "✅ Database '$DB_NAME' exists"
+    # Validate expected database setup
+    echo "📋 EXPECTED SETUP VALIDATION:"
+    local expected_user="journal"
+    local expected_databases=("journal_infisical_test" "journal_e2e_test")
+
+    # Check if target database exists
+    echo "🎯 Target Database: $DB_NAME"
+    if PGPASSWORD="$DB_PASS" psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -lqt 2>/dev/null | cut -d \| -f 1 | grep -qw "$DB_NAME"; then
+        echo "✅ Target database '$DB_NAME' exists"
     else
-        echo "❌ Database '$DB_NAME' does not exist"
+        echo "❌ VIOLATION: Target database '$DB_NAME' does not exist"
+        echo "📝 Available databases:"
+        PGPASSWORD="$DB_PASS" psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -lqt 2>/dev/null | cut -d \| -f 1 | sed 's/^ */  - /' || echo "  Unable to list databases"
     fi
 
-    # Check active connections
-    echo "📊 Current database connections:"
-    PGPASSWORD="$DB_PASS" psql -h "$DB_HOST" -p "$DB_PORT" -U postgres -c "
-        SELECT datname, usename, application_name, state, count(*)
-        FROM pg_stat_activity
-        WHERE datname IS NOT NULL
-        GROUP BY datname, usename, application_name, state
-        ORDER BY datname, usename;
-    " 2>/dev/null || echo "Unable to query pg_stat_activity"
-
-    # Check for root user connections (common CI issue)
-    local root_connections
-    root_connections=$(PGPASSWORD="$DB_PASS" psql -h "$DB_HOST" -p "$DB_PORT" -U postgres -t -c "
-        SELECT count(*) FROM pg_stat_activity WHERE usename = 'root';
+    # Check if journal user exists and has correct permissions
+    echo "👤 Expected User: $expected_user"
+    local user_exists=$(PGPASSWORD="$DB_PASS" psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -t -c "
+        SELECT COUNT(*) FROM pg_user WHERE usename = '$expected_user';
     " 2>/dev/null || echo "0")
 
-    if [[ "$root_connections" -gt 0 ]]; then
-        echo "🚨 CRITICAL: Found $root_connections active 'root' user connections!"
-        echo "This is a common CI issue. Active root connections:"
-        PGPASSWORD="$DB_PASS" psql -h "$DB_HOST" -p "$DB_PORT" -U postgres -c "
-            SELECT pid, usename, datname, application_name, state, query_start, query
-            FROM pg_stat_activity
-            WHERE usename = 'root';
-        " 2>/dev/null || echo "Unable to query root connections"
-
-        echo "💡 Consider terminating root connections:"
-        echo "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE usename = 'root';"
+    if [[ "$user_exists" -gt 0 ]]; then
+        echo "✅ User '$expected_user' exists"
+    else
+        echo "❌ VIOLATION: User '$expected_user' does not exist"
     fi
 
-    # Check for permission issues
-    echo "🔐 Testing user permissions:"
-    if PGPASSWORD="$DB_PASS" psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" -c "CREATE TEMP TABLE test_perms (id int);" >/dev/null 2>&1; then
-        echo "✅ User '$DB_USER' has CREATE permissions"
+    echo ""
+    echo "🚨 PRIVILEGE VIOLATION AUDIT:"
+    echo "========================================="
+
+    # Check for ANY non-journal connections (security violations)
+    echo "📊 Current connection audit (ALL USERS):"
+    PGPASSWORD="$DB_PASS" psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -c "
+        SELECT
+            usename as \"User (MUST be journal)\",
+            datname as \"Database\",
+            application_name as \"Application\",
+            client_addr as \"Client\",
+            state as \"State\",
+            query_start as \"Started\",
+            left(query, 60) as \"Query Preview\"
+        FROM pg_stat_activity
+        WHERE state != 'idle' OR usename != 'journal'
+        ORDER BY usename, datname;
+    " 2>/dev/null || echo "❌ Unable to query pg_stat_activity - this itself is a violation!"
+
+    # Specific audit for privilege escalation attempts
+    local violating_users=$(PGPASSWORD="$DB_PASS" psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -t -c "
+        SELECT string_agg(DISTINCT usename, ', ')
+        FROM pg_stat_activity
+        WHERE usename NOT IN ('journal');
+    " 2>/dev/null | tr -d ' ')
+
+    if [[ -n "$violating_users" && "$violating_users" != "" ]]; then
+        echo "🚨 CRITICAL SECURITY VIOLATION: Unauthorized users detected!"
+        echo "Violating users: $violating_users"
+        echo ""
+        echo "🔍 DETAILED VIOLATION ANALYSIS:"
+
+        # Root user violations (most common)
+        local root_connections=$(PGPASSWORD="$DB_PASS" psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -t -c "
+            SELECT count(*) FROM pg_stat_activity WHERE usename = 'root';
+        " 2>/dev/null || echo "0")
+
+        if [[ "$root_connections" -gt 0 ]]; then
+            echo "  ❌ ROOT USER VIOLATIONS ($root_connections connections):"
+            PGPASSWORD="$DB_PASS" psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -c "
+                SELECT
+                    pid,
+                    datname as \"Target DB\",
+                    application_name as \"App/Tool\",
+                    client_addr,
+                    state,
+                    query_start,
+                    query as \"Full Query\"
+                FROM pg_stat_activity
+                WHERE usename = 'root';
+            " 2>/dev/null || echo "    Unable to get root connection details"
+        fi
+
+        # Postgres user violations
+        local postgres_connections=$(PGPASSWORD="$DB_PASS" psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -t -c "
+            SELECT count(*) FROM pg_stat_activity WHERE usename = 'postgres';
+        " 2>/dev/null || echo "0")
+
+        if [[ "$postgres_connections" -gt 0 ]]; then
+            echo "  ❌ POSTGRES USER VIOLATIONS ($postgres_connections connections):"
+            PGPASSWORD="$DB_PASS" psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -c "
+                SELECT
+                    pid,
+                    datname as \"Target DB\",
+                    application_name as \"App/Tool\",
+                    client_addr,
+                    state,
+                    query_start,
+                    query as \"Full Query\"
+                FROM pg_stat_activity
+                WHERE usename = 'postgres';
+            " 2>/dev/null || echo "    Unable to get postgres connection details"
+        fi
+
+        echo ""
+        echo "💡 REMEDIATION COMMANDS:"
+        echo "  Terminate violating connections:"
+        echo "  SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE usename != 'journal';"
+
     else
-        echo "❌ User '$DB_USER' lacks CREATE permissions"
+        echo "✅ SECURITY COMPLIANCE: Only journal user connections detected"
+    fi
+
+    echo ""
+    echo "🔐 PERMISSION VALIDATION:"
+    echo "========================="
+    if PGPASSWORD="$DB_PASS" psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" -c "CREATE TEMP TABLE test_perms (id int);" >/dev/null 2>&1; then
+        echo "✅ User '$DB_USER' has required CREATE permissions on '$DB_NAME'"
+    else
+        echo "❌ PERMISSION VIOLATION: User '$DB_USER' lacks CREATE permissions on '$DB_NAME'"
+        echo "This suggests database setup or user privileges are incorrect"
+    fi
+
+    echo ""
+    echo "📝 ENVIRONMENT AUDIT:"
+    echo "====================="
+    echo "Current environment variables that affect database connections:"
+    echo "  PGUSER: ${PGUSER:-<not set>}"
+    echo "  PGPASSWORD: ${PGPASSWORD:-<not set>} (${#PGPASSWORD} chars)"
+    echo "  PGHOST: ${PGHOST:-<not set>}"
+    echo "  PGPORT: ${PGPORT:-<not set>}"
+    echo "  PGDATABASE: ${PGDATABASE:-<not set>}"
+    echo "  DATABASE_URL: ${DATABASE_URL:-<not set>}"
+    echo "  DATABASE_URL_SYNC: ${DATABASE_URL_SYNC:-<not set>}"
+
+    echo ""
+    echo "🎯 FRAMEWORK COMPLIANCE SUMMARY:"
+    echo "================================"
+    echo "Expected: ONLY 'journal' user connecting to test databases"
+    echo "Reality:  $(echo "$violating_users" | wc -w) unauthorized user types detected"
+    if [[ -z "$violating_users" || "$violating_users" == "" ]]; then
+        echo "✅ COMPLIANT: Framework security contract honored"
+    else
+        echo "❌ NON-COMPLIANT: Security contract violated - unauthorized privilege escalation detected"
     fi
 }
 

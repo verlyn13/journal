@@ -244,16 +244,35 @@ jobs:
           PGHOST: localhost
           PGPORT: 5433
 
-      # Inspect connections to catch any non-journal users (especially root)
-      - name: Inspect Postgres connections (post-migration)
+      # COMPREHENSIVE DATABASE SECURITY AUDIT
+      - name: Database Security Framework Validation
         run: |
           set -e
-          echo "🔍 Current non-journal connections:"
-          PGPASSWORD=journal psql -h localhost -p 5433 -U journal -d journal_infisical_test -c "
-            SELECT usename, application_name, client_addr, state, left(query,100) AS query_snippet
-            FROM pg_stat_activity
-            WHERE usename <> 'journal';
-          " || true
+          echo "🔒 DEFENSIVE CI SECURITY FRAMEWORK AUDIT"
+          echo "========================================"
+          echo "Framework: Least privilege, journal-user-only, no superuser operations"
+          echo "Expected: All connections use 'journal' user with test databases only"
+          echo ""
+
+          # Validate service container database setup
+          echo "🏗️ VALIDATING SERVICE CONTAINER SETUP:"
+          echo "Expected databases: journal_infisical_test"
+          echo "Expected user: journal"
+          echo "Expected permissions: Non-superuser, database-specific"
+          echo ""
+
+          # Use our forensic monitoring script for comprehensive analysis
+          echo "🔍 RUNNING FORENSIC DATABASE ANALYSIS:"
+          ../../.github/scripts/postgres-monitor.sh diagnose \
+            postgresql://journal:journal@localhost:5433/journal_infisical_test
+
+          echo ""
+          echo "🎯 VALIDATION RESULTS:"
+          echo "If any violations appear above, they represent:"
+          echo "  - Code defaulting to postgres/root users (security risk)"
+          echo "  - Database tools not respecting CI environment setup"
+          echo "  - Missing environment variable configuration"
+          echo "  - Framework contract violations requiring immediate fix"
         env:
           PGUSER: journal
           PGPASSWORD: journal
@@ -455,16 +474,29 @@ jobs:
           PGHOST: localhost
           PGPORT: 5433
 
-      # Inspect connections after server start to catch any root users
-      - name: Inspect Postgres connections (post-server-start)
+      # E2E RUNTIME SECURITY AUDIT - Server + Application Security Validation
+      - name: E2E Runtime Security Framework Validation
         run: |
           set -e
-          echo "🔍 Current non-journal connections after server start:"
-          PGPASSWORD=journal psql -h localhost -p 5433 -U journal -d journal_e2e_test -c "
-            SELECT usename, application_name, client_addr, state, left(query,100) AS query_snippet
-            FROM pg_stat_activity
-            WHERE usename <> 'journal';
-          " || true
+          echo "🔒 E2E RUNTIME SECURITY AUDIT"
+          echo "============================="
+          echo "Context: FastAPI server running + Infisical client active"
+          echo "Critical: NO privilege escalation during application runtime"
+          echo ""
+
+          # Runtime forensic analysis after server startup
+          echo "🔍 RUNTIME FORENSIC ANALYSIS:"
+          ../../.github/scripts/postgres-monitor.sh diagnose \
+            postgresql://journal:journal@localhost:5433/journal_e2e_test
+
+          echo ""
+          echo "📊 APPLICATION RUNTIME COMPLIANCE:"
+          echo "If violations detected, they indicate:"
+          echo "  - FastAPI application defaulting to wrong DB user"
+          echo "  - Infisical client using incorrect credentials"
+          echo "  - ORM/SQLAlchemy not respecting environment"
+          echo "  - Background tasks bypassing security framework"
+          echo "  - Third-party libraries violating contract"
         env:
           PGUSER: journal
           PGPASSWORD: journal
@@ -497,19 +529,60 @@ jobs:
           PGHOST: localhost
           PGPORT: 5433
 
-      # Final assertion to ensure no root connections remain
-      - name: Assert no 'root' connections
+      # FINAL SECURITY COMPLIANCE ASSERTION - Zero Tolerance for Violations
+      - name: Final Security Framework Compliance Check
         run: |
           set -e
-          bad=$(PGPASSWORD=journal psql -h localhost -p 5433 -U journal -d journal_e2e_test -tAc \
-            "SELECT COUNT(*) FROM pg_stat_activity WHERE usename='root'")
-          if [ "$bad" -ne 0 ]; then
-            echo "::error::Unexpected Postgres connections as 'root'"
+          echo "🛡️ FINAL SECURITY COMPLIANCE ASSERTION"
+          echo "====================================="
+          echo "Zero tolerance policy: ANY non-journal user connection = CI FAILURE"
+          echo ""
+
+          # Count all non-journal connections
+          violating_count=$(PGPASSWORD=journal psql -h localhost -p 5433 -U journal -d journal_e2e_test -tAc \
+            "SELECT COUNT(*) FROM pg_stat_activity WHERE usename != 'journal' AND state != 'idle'" || echo "0")
+
+          root_count=$(PGPASSWORD=journal psql -h localhost -p 5433 -U journal -d journal_e2e_test -tAc \
+            "SELECT COUNT(*) FROM pg_stat_activity WHERE usename='root'" || echo "0")
+
+          postgres_count=$(PGPASSWORD=journal psql -h localhost -p 5433 -U journal -d journal_e2e_test -tAc \
+            "SELECT COUNT(*) FROM pg_stat_activity WHERE usename='postgres'" || echo "0")
+
+          if [ "$violating_count" -ne 0 ] || [ "$root_count" -ne 0 ] || [ "$postgres_count" -ne 0 ]; then
+            echo "🚨 SECURITY FRAMEWORK VIOLATION DETECTED!"
+            echo "========================================="
+            echo "Non-journal connections: $violating_count"
+            echo "Root connections: $root_count"
+            echo "Postgres connections: $postgres_count"
+            echo ""
+            echo "This violates the defensive CI security framework!"
+            echo "All database operations MUST use the 'journal' user only."
+            echo ""
+            echo "::error::Security framework violation - unauthorized database users detected"
+            echo ""
+            echo "📋 VIOLATION DETAILS:"
             PGPASSWORD=journal psql -h localhost -p 5433 -U journal -d journal_e2e_test -c \
-              "SELECT pid, usename, application_name, client_addr, state, left(query,120) FROM pg_stat_activity WHERE usename='root'"
+              "SELECT
+                usename as \"Violating User\",
+                datname as \"Target Database\",
+                application_name as \"Application\",
+                state,
+                query_start,
+                left(query,100) as \"Query\"
+               FROM pg_stat_activity
+               WHERE usename != 'journal'"
+            echo ""
+            echo "💡 REQUIRED ACTIONS:"
+            echo "1. Identify the source code/tool making these connections"
+            echo "2. Configure it to use journal:journal@localhost:5433"
+            echo "3. Ensure all PGUSER/DATABASE_URL variables are respected"
+            echo "4. Review environment variable configuration"
             exit 1
           fi
-          echo "✅ No root connections found"
+
+          echo "✅ SECURITY FRAMEWORK COMPLIANCE VERIFIED"
+          echo "All database connections properly use 'journal' user"
+          echo "Defensive CI security contract successfully enforced"
         env:
           PGUSER: journal
           PGPASSWORD: journal
