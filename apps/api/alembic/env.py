@@ -34,8 +34,16 @@ from app.settings import settings
 # access to the values within the .ini file in use.
 config = context.config
 
-# Use environment variable override if present, otherwise use settings.db_url_sync
-if os.environ.get("DATABASE_URL_SYNC"):
+# Priority order for database URL:
+# 1. Command line -x sqlalchemy.url=...
+# 2. Environment variable DATABASE_URL_SYNC
+# 3. Settings default
+
+if "sqlalchemy.url" in xargs:
+    # Use URL passed via -x flag (highest priority)
+    db_url_sync = xargs["sqlalchemy.url"]
+    print(f"Using sqlalchemy.url from -x flag: {db_url_sync}")
+elif os.environ.get("DATABASE_URL_SYNC"):
     db_url_sync = os.environ["DATABASE_URL_SYNC"]
     print(f"Using DATABASE_URL_SYNC from environment: {db_url_sync}")
 else:

@@ -158,7 +158,7 @@ jobs:
         run: |
           set -e
           # Use -x to pass database URL directly to alembic
-          uv run alembic -c alembic.ini -x sqlalchemy.url="${DATABASE_URL_SYNC}" upgrade head | tee -a /tmp/alembic.log
+          uv run alembic -c alembic.ini -x "sqlalchemy.url=${DATABASE_URL_SYNC}" upgrade head | tee -a /tmp/alembic.log
 
       - name: Post-migration probe
         env:

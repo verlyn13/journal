@@ -115,7 +115,7 @@ jobs:
       - name: Run database migrations
         run: |
           # Use -x to pass database URL directly to alembic
-          uv run alembic -x sqlalchemy.url="${DATABASE_URL_SYNC}" upgrade head
+          uv run alembic -x "sqlalchemy.url=${DATABASE_URL_SYNC}" upgrade head
         env:
           PGUSER: journal
           PGPASSWORD: journal
@@ -203,7 +203,7 @@ jobs:
       - name: Run database migrations
         run: |
           # Use -x to pass database URL directly to alembic
-          uv run alembic -x sqlalchemy.url="${DATABASE_URL_SYNC}" upgrade head
+          uv run alembic -x "sqlalchemy.url=${DATABASE_URL_SYNC}" upgrade head
         env:
           PGUSER: journal
           PGPASSWORD: journal
@@ -220,7 +220,7 @@ jobs:
           uv run uvicorn app.main:app --host 0.0.0.0 --port 8000 &
         env:
           DATABASE_URL: postgresql+asyncpg://journal:journal@localhost:5432/journal_integration
-          DATABASE_URL_SYNC: postgresql://journal:journal@localhost:5432/journal_integration
+          DATABASE_URL_SYNC: postgresql+psycopg://journal:journal@localhost:5432/journal_integration
           JOURNAL_DB_URL: postgresql+asyncpg://journal:journal@localhost:5432/journal_integration
           JOURNAL_REDIS_URL: redis://localhost:6379/0
           JOURNAL_NATS_URL: nats://localhost:4222
