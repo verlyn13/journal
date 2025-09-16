@@ -77,7 +77,6 @@
     "@rollup/plugin-terser": "0.4.4",
     "autoprefixer": "10.4.21",
     "axe-playwright": "2.1.0",
-    "bun-types": "1.2.21",
     "cssnano": "7.1.1",
     "jsdoc": "4.0.4",
     "markdown-link-check": "3.13.7",
