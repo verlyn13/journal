@@ -16,6 +16,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.infra.db import get_session
 from app.infra.redis import get_redis_client
+from app.settings import settings
 
 
 router = APIRouter(prefix="/observability", tags=["observability"])
@@ -64,7 +65,6 @@ async def readiness_check(
 
     # Redis check (optional)
     try:
-        from app.settings import settings
         if settings.redis_url and settings.redis_url != "redis://localhost:6379/0":
             redis = get_redis_client()
             start = time.time()
