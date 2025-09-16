@@ -5,6 +5,11 @@ on:
     branches: [ main ]
   pull_request:
 
+env:
+  INFISICAL_CLI_REQUIRED: "false"  # Web tests don't need Infisical CLI
+  PYTHON_VERSION: "3.12"
+  UV_CACHE_DIR: /tmp/.uv-cache
+
 jobs:
   unit:
     runs-on: ubuntu-24.04

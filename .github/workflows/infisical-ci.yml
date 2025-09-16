@@ -45,7 +45,8 @@ permissions:
 env:
   PYTHON_VERSION: "3.12"
   UV_CACHE_DIR: /tmp/.uv-cache
-  INFISICAL_VERSION: "latest"
+  INFISICAL_CLI_VERSION: "0.42.1"  # Pinned version for deterministic builds
+  INFISICAL_CLI_REQUIRED: "true"  # This workflow needs CLI for E2E tests
 
 jobs:
   infisical-lint-test:
@@ -131,20 +132,19 @@ jobs:
           done
       
       # Install Infisical CLI for testing
-      - name: Install Infisical CLI (with retry)
-        run: |
-          # Retry install up to 5 times due to potential external flakiness
-          for i in {1..5}; do
-            if curl -1sLf https://dl.cloudsmith.io/public/infisical/infisical-cli/setup.deb.sh | sudo -E bash; then
-              echo "Repository setup successful"
-              break
-            fi
-            echo "Retry $i/5: Repository setup failed, retrying..."
-            sleep 5
-          done
+      - name: Cache Infisical CLI
+        if: env.INFISICAL_CLI_REQUIRED == 'true'
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/infisical
+          key: infisical-cli-${{ env.INFISICAL_CLI_VERSION }}-${{ runner.os }}
+          restore-keys: |
+            infisical-cli-${{ env.INFISICAL_CLI_VERSION }}-
 
-          sudo apt-get update && sudo apt-get install -y infisical
-          infisical --version
+      - name: Install Infisical CLI (pinned, cached, fallback)
+        if: env.INFISICAL_CLI_REQUIRED == 'true'
+        run: |
+          ../../.github/workflows/scripts/install-infisical-cli.sh "${{ env.INFISICAL_CLI_VERSION }}"
           infisical --version
       
       # Validate Infisical client implementation
@@ -327,34 +327,36 @@ jobs:
             sleep 1
           done
       
-      - name: Install Infisical CLI (with retry)
-        run: |
-          # Retry install up to 5 times due to potential external flakiness
-          for i in {1..5}; do
-            if curl -1sLf https://dl.cloudsmith.io/public/infisical/infisical-cli/setup.deb.sh | sudo -E bash; then
-              echo "Repository setup successful"
-              break
-            fi
-            echo "Retry $i/5: Repository setup failed, retrying..."
-            sleep 5
-          done
+      - name: Cache Infisical CLI
+        if: env.INFISICAL_CLI_REQUIRED == 'true'
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/infisical
+          key: infisical-cli-${{ env.INFISICAL_CLI_VERSION }}-${{ runner.os }}
+          restore-keys: |
+            infisical-cli-${{ env.INFISICAL_CLI_VERSION }}-
 
-          sudo apt-get update && sudo apt-get install -y infisical
-          infisical --version
+      - name: Install Infisical CLI (pinned, cached, fallback)
+        if: env.INFISICAL_CLI_REQUIRED == 'true'
+        run: |
+          ../../.github/workflows/scripts/install-infisical-cli.sh "${{ env.INFISICAL_CLI_VERSION }}"
       
       # Start the API server with Infisical integration
       - name: Start API server with Infisical
         run: |
-          # Use test secrets that don't require real Infisical auth
-          export TEST_DB_URL_ASYNC=postgresql+asyncpg://journal:journal@localhost:5433/journal_e2e_test
-          export TEST_DB_URL_SYNC=postgresql+psycopg://journal:journal@localhost:5433/journal_e2e_test
-          export JOURNAL_DB_URL=postgresql+asyncpg://journal:journal@localhost:5433/journal_e2e_test
+          # Single source of truth for database configuration
+          export DATABASE_URL=postgresql+asyncpg://journal:journal@localhost:5433/journal_e2e_test
           export DATABASE_URL_SYNC=postgresql://journal:journal@localhost:5433/journal_e2e_test
+          export JOURNAL_DB_URL=$DATABASE_URL  # Backward compatibility alias
           export JOURNAL_REDIS_URL=redis://localhost:6379/0
+
+          # Infisical test configuration
           export INFISICAL_TOKEN=test-e2e-token
           export INFISICAL_PROJECT_ID=test-e2e-project
           export INFISICAL_ENVIRONMENT=test
 
+          # Run migrations with explicit user
+          export PGUSER=journal
           uv run alembic upgrade head
           uv run uvicorn app.main:app --host 0.0.0.0 --port 8000 &
 
@@ -403,20 +405,19 @@ jobs:
       - name: Install dependencies
         run: uv sync --all-extras --dev
       
-      - name: Install Infisical CLI (with retry)
-        run: |
-          # Retry install up to 5 times due to potential external flakiness
-          for i in {1..5}; do
-            if curl -1sLf https://dl.cloudsmith.io/public/infisical/infisical-cli/setup.deb.sh | sudo -E bash; then
-              echo "Repository setup successful"
-              break
-            fi
-            echo "Retry $i/5: Repository setup failed, retrying..."
-            sleep 5
-          done
+      - name: Cache Infisical CLI
+        if: env.INFISICAL_CLI_REQUIRED == 'true'
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/infisical
+          key: infisical-cli-${{ env.INFISICAL_CLI_VERSION }}-${{ runner.os }}
+          restore-keys: |
+            infisical-cli-${{ env.INFISICAL_CLI_VERSION }}-
 
-          sudo apt-get update && sudo apt-get install -y infisical
-          infisical --version
+      - name: Install Infisical CLI (pinned, cached, fallback)
+        if: env.INFISICAL_CLI_REQUIRED == 'true'
+        run: |
+          ../../.github/workflows/scripts/install-infisical-cli.sh "${{ env.INFISICAL_CLI_VERSION }}"
       
       # Validate migration script readiness
       - name: Validate Migration Script

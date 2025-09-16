@@ -11,6 +11,8 @@ on:
 env:
   PYTHON_VERSION: "3.12"
   UV_CACHE_DIR: /tmp/.uv-cache
+  # Infisical CLI not required for most API CI jobs
+  INFISICAL_CLI_REQUIRED: "false"
 
 jobs:
   lint-and-format:
@@ -190,14 +192,20 @@ jobs:
         run: uv sync --all-extras --dev
       
       - name: Run database migrations
-        run: uv run alembic upgrade head
+        run: |
+          export PGUSER=journal
+          uv run alembic upgrade head
         env:
+          DATABASE_URL: postgresql+asyncpg://journal:journal@localhost:5432/journal_integration
+          DATABASE_URL_SYNC: postgresql://journal:journal@localhost:5432/journal_integration
           JOURNAL_DB_URL: postgresql+asyncpg://journal:journal@localhost:5432/journal_integration
-      
+
       - name: Start API server in background
         run: |
           uv run uvicorn app.main:app --host 0.0.0.0 --port 8000 &
         env:
+          DATABASE_URL: postgresql+asyncpg://journal:journal@localhost:5432/journal_integration
+          DATABASE_URL_SYNC: postgresql://journal:journal@localhost:5432/journal_integration
           JOURNAL_DB_URL: postgresql+asyncpg://journal:journal@localhost:5432/journal_integration
           JOURNAL_REDIS_URL: redis://localhost:6379/0
           JOURNAL_NATS_URL: nats://localhost:4222
