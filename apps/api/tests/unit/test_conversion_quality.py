@@ -252,7 +252,7 @@ Plain code block
 
 ## Overview
 
-This project uses **Python 3.11** and *FastAPI* for the backend.
+This project uses **Python 3.13** and *FastAPI* for the backend.
 
 ### Key Features
 
@@ -300,7 +300,7 @@ For more info, see [documentation](https://docs.example.com)."""
 
         # Verify content is preserved (structure may be simplified)
         assert "Project Documentation" in html
-        assert "Python 3.11" in html
+        assert "Python 3.13" in html
         assert "RESTful API" in html
         assert "git clone" in html
         assert "CREATE EXTENSION" in html
