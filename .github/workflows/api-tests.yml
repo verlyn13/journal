@@ -251,12 +251,12 @@ jobs:
         uses: astral-sh/setup-uv@v4
       - name: Install deps
         run: uv sync --all-extras --dev
-      - name: Install Infisical CLI (deterministic)
+      - name: Setup Infisical CLI (if required)
         if: env.INFISICAL_CLI_REQUIRED == 'true'
-        uses: ./.github/actions/install-infisical-cli
+        uses: ./.github/actions/setup-infisical-testing
         with:
+          use-shim: 'true'
           version: ${{ env.INFISICAL_CLI_VERSION }}
-          optional: 'false'
       - name: Prepare database
         timeout-minutes: 5
         env:

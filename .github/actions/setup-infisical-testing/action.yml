@@ -1,0 +1,54 @@
+name: Setup Infisical for Testing
+description: Install Infisical CLI with testing shim fallback for deterministic CI
+inputs:
+  use-shim:
+    description: Use testing shim instead of real CLI (true/false)
+    required: false
+    default: 'false'
+  version:
+    description: Infisical CLI version (ignored when using shim)
+    required: false
+    default: '0.42.1'
+
+runs:
+  using: composite
+  steps:
+    - name: Setup Infisical CLI (Real)
+      if: inputs.use-shim == 'false'
+      uses: ./.github/actions/install-infisical-cli
+      with:
+        version: ${{ inputs.version }}
+        optional: 'true'
+
+    - name: Setup Infisical CLI (Shim)
+      if: inputs.use-shim == 'true'
+      shell: bash
+      run: |
+        echo "🔧 Setting up Infisical CLI testing shim"
+
+        # Create a directory for the shim binary
+        mkdir -p "$HOME/.local/bin"
+
+        # Copy the shim script to a location in PATH
+        cp "$GITHUB_WORKSPACE/.github/scripts/infisical-shim.sh" "$HOME/.local/bin/infisical"
+        chmod +x "$HOME/.local/bin/infisical"
+
+        # Add to PATH for subsequent steps
+        echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+        # Verify installation
+        infisical version
+        echo "✅ Infisical CLI shim installed successfully"
+
+    - name: Verify Infisical Installation
+      shell: bash
+      run: |
+        echo "🔍 Verifying Infisical CLI installation"
+        which infisical || echo "Warning: infisical not found in PATH"
+        infisical version || echo "Warning: infisical version failed"
+
+        if [ "${{ inputs.use-shim }}" == "true" ]; then
+          echo "ℹ️ Using testing shim mode"
+        else
+          echo "ℹ️ Using real CLI mode"
+        fi

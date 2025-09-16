@@ -52,6 +52,11 @@ jobs:
   infisical-lint-test:
     name: Infisical Integration Tests
     runs-on: ubuntu-24.04
+    env:
+      PGUSER: journal
+      PGPASSWORD: journal
+      PGHOST: localhost
+      PGPORT: 5433
     defaults:
       run:
         working-directory: apps/api
@@ -155,25 +160,39 @@ jobs:
       #     uv run mypy app/api/v1/infisical_webhooks.py
       #     uv run mypy app/scripts/migrate_to_infisical.py
       
+      # Wait for WireMock to be ready before configuring mappings
+      - name: Wait for WireMock (healthy)
+        run: |
+          set -euo pipefail
+          for i in {1..60}; do
+            code=$(curl -s -o /dev/null -w '%{http_code}' http://localhost:8080/__admin/mappings || true)
+            if [ "$code" = "200" ]; then
+              echo "WireMock is ready"; exit 0
+            fi
+            echo "Waiting for WireMock... ($i/60), got HTTP $code"
+            sleep 1
+          done
+          echo "::error::WireMock never became ready"
+          exit 1
+
       # Setup mock Infisical responses for testing
       - name: Configure WireMock for Infisical API
         run: |
-          # Create mock responses for Infisical CLI calls
-          curl -X POST http://localhost:8080/__admin/mappings \
+          set -euo pipefail
+          payload='{
+            "request": {"method":"GET","urlPath":"/api/v3/workspaces"},
+            "response":{"status":200,"headers":{"Content-Type":"application/json"},"body":"{\"workspaces\": []}"}
+          }'
+          code=$(curl -s -o /tmp/wiremock.out -w '%{http_code}' \
             -H "Content-Type: application/json" \
-            -d '{
-              "request": {
-                "method": "GET",
-                "urlPath": "/api/v3/workspaces"
-              },
-              "response": {
-                "status": 200,
-                "headers": {
-                  "Content-Type": "application/json"
-                },
-                "body": "{\"workspaces\": []}"
-              }
-            }'
+            -d "$payload" \
+            http://localhost:8080/__admin/mappings || true)
+          echo "WireMock mapping POST -> HTTP $code"
+          if [ "$code" != "201" ] && [ "$code" != "200" ]; then
+            echo "::error::WireMock mapping failed. Response:"
+            cat /tmp/wiremock.out || true
+            exit 1
+          fi
       
       # Run database migrations for testing
       - name: Run database migrations
@@ -183,6 +202,27 @@ jobs:
           uv run alembic -x sqlalchemy.url=${DATABASE_URL_SYNC} upgrade head
         env:
           DATABASE_URL_SYNC: postgresql+psycopg://journal:journal@localhost:5433/journal_infisical_test
+          DATABASE_URL: postgresql+asyncpg://journal:journal@localhost:5433/journal_infisical_test
+          PGUSER: journal
+          PGPASSWORD: journal
+          PGHOST: localhost
+          PGPORT: 5433
+
+      # Inspect connections to catch any non-journal users (especially root)
+      - name: Inspect Postgres connections (post-migration)
+        run: |
+          set -e
+          echo "🔍 Current non-journal connections:"
+          PGPASSWORD=journal psql -h localhost -p 5433 -U journal -d journal_infisical_test -c "
+            SELECT usename, application_name, client_addr, state, left(query,100) AS query_snippet
+            FROM pg_stat_activity
+            WHERE usename <> 'journal';
+          " || true
+        env:
+          PGUSER: journal
+          PGPASSWORD: journal
+          PGHOST: localhost
+          PGPORT: 5433
       
       # Test Infisical monitoring (only existing test file)
       - name: Test Infisical Monitoring
@@ -191,6 +231,8 @@ jobs:
             --cov=app.telemetry.infisical_monitoring \
             --cov-report=xml:coverage-infisical-monitoring.xml || true
         env:
+          DATABASE_URL: postgresql+asyncpg://journal:journal@localhost:5433/journal_infisical_test
+          DATABASE_URL_SYNC: postgresql+psycopg://journal:journal@localhost:5433/journal_infisical_test
           TEST_DB_URL_ASYNC: postgresql+asyncpg://journal:journal@localhost:5433/journal_infisical_test
           TEST_DB_URL_SYNC: postgresql+psycopg://journal:journal@localhost:5433/journal_infisical_test
           JOURNAL_DB_URL: postgresql+asyncpg://journal:journal@localhost:5433/journal_infisical_test
@@ -199,6 +241,10 @@ jobs:
           INFISICAL_PROJECT_ID: test-project-id
           INFISICAL_ENVIRONMENT: test
           INFISICAL_TOKEN: test-token
+          PGUSER: journal
+          PGPASSWORD: journal
+          PGHOST: localhost
+          PGPORT: 5433
       
       # Run unit tests for Infisical components
       - name: Run Unit Tests
@@ -207,18 +253,26 @@ jobs:
             --cov=app.infra.secrets \
             --cov-report=xml:coverage-infisical-unit.xml || true
         env:
+          DATABASE_URL: postgresql+asyncpg://journal:journal@localhost:5433/journal_infisical_test
+          DATABASE_URL_SYNC: postgresql+psycopg://journal:journal@localhost:5433/journal_infisical_test
           TEST_DB_URL_ASYNC: postgresql+asyncpg://journal:journal@localhost:5433/journal_infisical_test
           TEST_DB_URL_SYNC: postgresql+psycopg://journal:journal@localhost:5433/journal_infisical_test
           JOURNAL_DB_URL: postgresql+asyncpg://journal:journal@localhost:5433/journal_infisical_test
           JOURNAL_REDIS_URL: redis://localhost:6379/1
           INFISICAL_SERVER_URL: http://localhost:8080
           INFISICAL_PROJECT_ID: test-project-id
+          PGUSER: journal
+          PGPASSWORD: journal
+          PGHOST: localhost
+          PGPORT: 5433
       
       # Test migration script (dry run only)
       - name: Test Migration Script (Dry Run)
         run: |
           uv run python -m app.scripts.migrate_to_infisical migrate --dry-run --no-backup
         env:
+          DATABASE_URL: postgresql+asyncpg://journal:journal@localhost:5433/journal_infisical_test
+          DATABASE_URL_SYNC: postgresql+psycopg://journal:journal@localhost:5433/journal_infisical_test
           TEST_DB_URL_ASYNC: postgresql+asyncpg://journal:journal@localhost:5433/journal_infisical_test
           TEST_DB_URL_SYNC: postgresql+psycopg://journal:journal@localhost:5433/journal_infisical_test
           JOURNAL_DB_URL: postgresql+asyncpg://journal:journal@localhost:5433/journal_infisical_test
@@ -227,6 +281,10 @@ jobs:
           INFISICAL_TOKEN: test-token
           INFISICAL_PROJECT_ID: test-project-id
           INFISICAL_ENVIRONMENT: test
+          PGUSER: journal
+          PGPASSWORD: journal
+          PGHOST: localhost
+          PGPORT: 5433
       
       # Security validation
       - name: Security Scan - Infisical Integration
@@ -259,6 +317,11 @@ jobs:
     name: Infisical E2E Tests
     runs-on: ubuntu-24.04
     needs: infisical-lint-test
+    env:
+      PGUSER: journal
+      PGPASSWORD: journal
+      PGHOST: localhost
+      PGPORT: 5433
     defaults:
       run:
         working-directory: apps/api
@@ -303,27 +366,34 @@ jobs:
       - name: Install dependencies
         run: uv sync --all-extras --dev
 
-      - name: Wait for services (Postgres/Redis)
+      - name: Wait for services with monitoring
         run: |
           set -e
           sudo apt-get update && sudo apt-get install -y postgresql-client redis-tools
-          for i in $(seq 1 60); do
-            if pg_isready -h localhost -p 5433 -U journal >/dev/null 2>&1; then
-              echo "Postgres is ready"; break; fi
-            sleep 1
-          done
+
+          echo "🔍 Starting enhanced Postgres monitoring..."
+          # Use our monitoring script for better diagnostics
+          ./.github/scripts/postgres-monitor.sh wait \
+            postgresql://journal:journal@localhost:5433/journal_e2e_test \
+            60 2
+
+          echo "🔍 Checking for any lingering root connections..."
+          ./.github/scripts/postgres-monitor.sh diagnose \
+            postgresql://journal:journal@localhost:5433/journal_e2e_test
+
+          echo "🔍 Waiting for Redis..."
           for i in $(seq 1 60); do
             if redis-cli -h 127.0.0.1 -p 6379 ping | grep -q PONG; then
               echo "Redis is ready"; break; fi
             sleep 1
           done
       
-      - name: Install Infisical CLI (deterministic)
-        uses: ./.github/actions/install-infisical-cli
+      - name: Setup Infisical CLI for Testing
+        uses: ./.github/actions/setup-infisical-testing
         with:
+          use-shim: 'true'
           version: ${{ env.INFISICAL_CLI_VERSION }}
-          optional: 'false'
-      
+
       # Start the API server with Infisical integration
       - name: Start API server with Infisical
         timeout-minutes: 5
@@ -337,12 +407,33 @@ jobs:
           # Wait for server to be ready - requires full readiness for E2E tests
           SERVER_URL=http://localhost:8000 MAX_RETRIES=30 REQUIRES_READY=1 ./scripts/wait_for_server.sh
         env:
+          DATABASE_URL: postgresql+asyncpg://journal:journal@localhost:5433/journal_e2e_test
           DATABASE_URL_SYNC: postgresql+psycopg://journal:journal@localhost:5433/journal_e2e_test
           JOURNAL_DB_URL: postgresql+asyncpg://journal:journal@localhost:5433/journal_e2e_test
           JOURNAL_REDIS_URL: redis://localhost:6379/0
           INFISICAL_TOKEN: test-e2e-token
           INFISICAL_PROJECT_ID: test-e2e-project
           INFISICAL_ENVIRONMENT: test
+          PGUSER: journal
+          PGPASSWORD: journal
+          PGHOST: localhost
+          PGPORT: 5433
+
+      # Inspect connections after server start to catch any root users
+      - name: Inspect Postgres connections (post-server-start)
+        run: |
+          set -e
+          echo "🔍 Current non-journal connections after server start:"
+          PGPASSWORD=journal psql -h localhost -p 5433 -U journal -d journal_e2e_test -c "
+            SELECT usename, application_name, client_addr, state, left(query,100) AS query_snippet
+            FROM pg_stat_activity
+            WHERE usename <> 'journal';
+          " || true
+        env:
+          PGUSER: journal
+          PGPASSWORD: journal
+          PGHOST: localhost
+          PGPORT: 5433
       
       # Test webhook endpoints
       - name: Test Infisical webhook endpoints
@@ -359,14 +450,44 @@ jobs:
           uv run pytest tests/infisical/test_e2e_rotation.py -v
         env:
           API_BASE_URL: http://localhost:8000
+          DATABASE_URL: postgresql+asyncpg://journal:journal@localhost:5433/journal_e2e_test
+          DATABASE_URL_SYNC: postgresql+psycopg://journal:journal@localhost:5433/journal_e2e_test
           TEST_DB_URL_ASYNC: postgresql+asyncpg://journal:journal@localhost:5433/journal_e2e_test
           TEST_DB_URL_SYNC: postgresql+psycopg://journal:journal@localhost:5433/journal_e2e_test
           JOURNAL_DB_URL: postgresql+asyncpg://journal:journal@localhost:5433/journal_e2e_test
           JOURNAL_REDIS_URL: redis://localhost:6379/0
+          PGUSER: journal
+          PGPASSWORD: journal
+          PGHOST: localhost
+          PGPORT: 5433
+
+      # Final assertion to ensure no root connections remain
+      - name: Assert no 'root' connections
+        run: |
+          set -e
+          bad=$(PGPASSWORD=journal psql -h localhost -p 5433 -U journal -d journal_e2e_test -tAc \
+            "SELECT COUNT(*) FROM pg_stat_activity WHERE usename='root'")
+          if [ "$bad" -ne 0 ]; then
+            echo "::error::Unexpected Postgres connections as 'root'"
+            PGPASSWORD=journal psql -h localhost -p 5433 -U journal -d journal_e2e_test -c \
+              "SELECT pid, usename, application_name, client_addr, state, left(query,120) FROM pg_stat_activity WHERE usename='root'"
+            exit 1
+          fi
+          echo "✅ No root connections found"
+        env:
+          PGUSER: journal
+          PGPASSWORD: journal
+          PGHOST: localhost
+          PGPORT: 5433
 
   migration-readiness:
     name: Migration Readiness Check
     runs-on: ubuntu-24.04
+    env:
+      PGUSER: journal
+      PGPASSWORD: journal
+      PGHOST: localhost
+      PGPORT: 5433
     defaults:
       run:
         working-directory: apps/api
@@ -386,12 +507,12 @@ jobs:
       - name: Install dependencies
         run: uv sync --all-extras --dev
       
-      - name: Install Infisical CLI (deterministic)
-        uses: ./.github/actions/install-infisical-cli
+      - name: Setup Infisical CLI for Testing
+        uses: ./.github/actions/setup-infisical-testing
         with:
+          use-shim: 'true'
           version: ${{ env.INFISICAL_CLI_VERSION }}
-          optional: 'false'
-      
+
       # Validate migration script readiness
       - name: Validate Migration Script
         run: |

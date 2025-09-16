@@ -92,6 +92,7 @@ SERVER_URL=http://localhost:8000 MAX_RETRIES=30 REQUIRES_READY=0 ./scripts/wait_
 - **Version**: `0.42.1`
 - **Variable**: `INFISICAL_CLI_VERSION`
 - **Required Flag**: Set `INFISICAL_CLI_REQUIRED=true` only for jobs that need it
+- **Setup**: Use `./.github/actions/setup-infisical-testing` with `use-shim: 'true'` for deterministic CI
 
 ### Python
 - **Version**: `3.12`
@@ -100,6 +101,34 @@ SERVER_URL=http://localhost:8000 MAX_RETRIES=30 REQUIRES_READY=0 ./scripts/wait_
 ### Cache Directories
 - **uv cache**: `/tmp/.uv-cache`
 - **Infisical cache**: `~/.cache/infisical`
+
+## Infisical CLI Testing Setup
+
+All workflows that require Infisical CLI use the deterministic testing setup:
+
+```yaml
+- name: Setup Infisical CLI for Testing
+  uses: ./.github/actions/setup-infisical-testing
+  with:
+    use-shim: "true"     # Use deterministic shim (recommended for CI)
+    version: "0.42.1"    # Version (ignored when using shim)
+```
+
+### Testing Modes:
+- **Shim Mode (recommended)**: Zero network dependencies, deterministic responses
+- **Real CLI Mode**: Downloads actual CLI for production-like testing
+
+### Shim Features:
+- No network downloads or 404/500 failures
+- Predictable secret responses for testing
+- Full command compatibility for CI workflows
+- Exercises client-side logic end-to-end
+- Located at `.github/scripts/infisical-shim.sh`
+
+### When to Use Shim vs Real CLI:
+- **CI/CD workflows**: Always use shim for deterministic results
+- **Local development**: Use real CLI for actual Infisical integration
+- **Production deployment**: Use real CLI with proper authentication
 
 ## Security Scanning
 
