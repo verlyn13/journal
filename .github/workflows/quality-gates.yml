@@ -419,8 +419,14 @@ jobs:
           TEST_DB_URL_SYNC: postgresql+psycopg://journal:journal@localhost:5433/journal
         working-directory: apps/api
         run: |
-          # Use -x to pass database URL directly to alembic
+          echo "Using DATABASE_URL_SYNC: ${DATABASE_URL_SYNC}"
           uv run alembic -x "sqlalchemy.url=${DATABASE_URL_SYNC}" upgrade head
+
+          # Assert DB user
+          URL="${DATABASE_URL_SYNC/psycopg://}"
+          who=$(psql "$URL" -Atc 'select current_user')
+          echo "current_user=$who"
+          test "$who" = "journal"
 
       - name: Start API (background)
         env:

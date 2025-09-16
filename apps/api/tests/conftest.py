@@ -3,6 +3,7 @@ Test configuration and fixtures for the Journal API.
 """
 
 import os
+import shutil
 import uuid
 
 from collections.abc import Generator
@@ -12,6 +13,12 @@ from pathlib import Path
 
 import pytest
 import pytest_asyncio
+
+# Marker for tests that require the Infisical CLI
+requires_infisical = pytest.mark.skipif(
+    shutil.which("infisical") is None,
+    reason="Infisical CLI not installed"
+)
 
 from alembic.config import Config
 from fastapi.testclient import TestClient

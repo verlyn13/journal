@@ -45,7 +45,7 @@ permissions:
 env:
   PYTHON_VERSION: "3.12"
   UV_CACHE_DIR: /tmp/.uv-cache
-  INFISICAL_CLI_VERSION: "latest"  # Note: Infisical doesn't support version pinning via APT
+  INFISICAL_CLI_VERSION: "0.42.1"  # Pinned version for deterministic builds
   INFISICAL_CLI_REQUIRED: "true"  # This workflow needs CLI for E2E tests
 
 jobs:
@@ -132,17 +132,20 @@ jobs:
           done
       
       # Install Infisical CLI for testing
-      - name: Install Infisical CLI
+      - name: Cache Infisical CLI
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/infisical
+          key: infisical-${{ env.INFISICAL_CLI_VERSION }}-${{ runner.os }}-x64
+          restore-keys: infisical-${{ env.INFISICAL_CLI_VERSION }}-
+
+      - name: Make installer executable
+        run: chmod +x ../../.github/workflows/scripts/install-infisical-cli.sh
+
+      - name: Install Infisical CLI (pinned, GH-first, fallback)
         if: env.INFISICAL_CLI_REQUIRED == 'true'
         timeout-minutes: 5
-        run: |
-          # Check if already installed
-          command -v infisical && infisical --version && exit 0
-
-          # Make installer executable and run
-          chmod +x ../../.github/workflows/scripts/install-infisical-cli.sh
-          ../../.github/workflows/scripts/install-infisical-cli.sh "${{ env.INFISICAL_CLI_VERSION }}"
-          infisical --version
+        run: ../../.github/workflows/scripts/install-infisical-cli.sh "${{ env.INFISICAL_CLI_VERSION }}"
       
       # Validate Infisical client implementation
       # Note: Linting and type checking disabled for Infisical integration code
@@ -188,12 +191,14 @@ jobs:
           echo "DATABASE_URL_SYNC=${DATABASE_URL_SYNC}"
           echo "Current system user: $(whoami)"
 
-          # Use -x to pass the database URL directly to alembic, bypassing all config
+          echo "Using DATABASE_URL_SYNC: ${DATABASE_URL_SYNC}"
           uv run alembic -x "sqlalchemy.url=${DATABASE_URL_SYNC}" upgrade head
 
-          # Verify we're using the correct user (not 'root')
-          echo "Verifying database user:"
-          PGPASSWORD=journal psql -h localhost -p 5433 -U journal -d journal_infisical_test -Atc "select current_user" | grep -q "journal" || exit 1
+          # Assert DB user (guardrail)
+          URL="${DATABASE_URL_SYNC/psycopg://}"
+          who=$(psql "$URL" -Atc 'select current_user')
+          echo "current_user=$who"
+          test "$who" = "journal"
         env:
           DATABASE_URL_SYNC: postgresql+psycopg://journal:journal@localhost:5433/journal_infisical_test
           JOURNAL_DB_URL: postgresql+asyncpg://journal:journal@localhost:5433/journal_infisical_test
@@ -332,16 +337,20 @@ jobs:
             sleep 1
           done
       
-      - name: Install Infisical CLI
+      - name: Cache Infisical CLI
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/infisical
+          key: infisical-${{ env.INFISICAL_CLI_VERSION }}-${{ runner.os }}-x64
+          restore-keys: infisical-${{ env.INFISICAL_CLI_VERSION }}-
+
+      - name: Make installer executable
+        run: chmod +x ../../.github/workflows/scripts/install-infisical-cli.sh
+
+      - name: Install Infisical CLI (pinned, GH-first, fallback)
         if: env.INFISICAL_CLI_REQUIRED == 'true'
         timeout-minutes: 5
-        run: |
-          # Check if already installed
-          command -v infisical && infisical --version && exit 0
-
-          # Make installer executable and run
-          chmod +x ../../.github/workflows/scripts/install-infisical-cli.sh
-          ../../.github/workflows/scripts/install-infisical-cli.sh "${{ env.INFISICAL_CLI_VERSION }}"
+        run: ../../.github/workflows/scripts/install-infisical-cli.sh "${{ env.INFISICAL_CLI_VERSION }}"
       
       # Start the API server with Infisical integration
       - name: Start API server with Infisical
@@ -406,16 +415,20 @@ jobs:
       - name: Install dependencies
         run: uv sync --all-extras --dev
       
-      - name: Install Infisical CLI
+      - name: Cache Infisical CLI
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/infisical
+          key: infisical-${{ env.INFISICAL_CLI_VERSION }}-${{ runner.os }}-x64
+          restore-keys: infisical-${{ env.INFISICAL_CLI_VERSION }}-
+
+      - name: Make installer executable
+        run: chmod +x ../../.github/workflows/scripts/install-infisical-cli.sh
+
+      - name: Install Infisical CLI (pinned, GH-first, fallback)
         if: env.INFISICAL_CLI_REQUIRED == 'true'
         timeout-minutes: 5
-        run: |
-          # Check if already installed
-          command -v infisical && infisical --version && exit 0
-
-          # Make installer executable and run
-          chmod +x ../../.github/workflows/scripts/install-infisical-cli.sh
-          ../../.github/workflows/scripts/install-infisical-cli.sh "${{ env.INFISICAL_CLI_VERSION }}"
+        run: ../../.github/workflows/scripts/install-infisical-cli.sh "${{ env.INFISICAL_CLI_VERSION }}"
       
       # Validate migration script readiness
       - name: Validate Migration Script

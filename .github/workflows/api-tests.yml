@@ -18,7 +18,7 @@ on:
 env:
   PYTHON_VERSION: "3.12"
   UV_CACHE_DIR: /tmp/.uv-cache
-  INFISICAL_CLI_VERSION: "latest"  # Note: Infisical doesn't support version pinning via APT
+  INFISICAL_CLI_VERSION: "0.42.1"  # Pinned version for deterministic builds
   INFISICAL_CLI_REQUIRED: "false"  # Most API tests don't need Infisical CLI
 
 jobs:
@@ -262,17 +262,20 @@ jobs:
         uses: astral-sh/setup-uv@v4
       - name: Install deps
         run: uv sync --all-extras --dev
-      - name: Install Infisical CLI
+      - name: Cache Infisical CLI
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/infisical
+          key: infisical-${{ env.INFISICAL_CLI_VERSION }}-${{ runner.os }}-x64
+          restore-keys: infisical-${{ env.INFISICAL_CLI_VERSION }}-
+
+      - name: Make installer executable
+        run: chmod +x ../../.github/workflows/scripts/install-infisical-cli.sh
+
+      - name: Install Infisical CLI (pinned, GH-first, fallback)
         if: env.INFISICAL_CLI_REQUIRED == 'true'
         timeout-minutes: 5
-        run: |
-          # Check if already installed
-          command -v infisical && infisical --version && exit 0
-
-          # Make installer executable and run
-          chmod +x ../../.github/workflows/scripts/install-infisical-cli.sh
-          ../../.github/workflows/scripts/install-infisical-cli.sh "${{ env.INFISICAL_CLI_VERSION }}"
-          infisical --version
+        run: ../../.github/workflows/scripts/install-infisical-cli.sh "${{ env.INFISICAL_CLI_VERSION }}"
       - name: Prepare database
         env:
           PGUSER: journal
