@@ -124,18 +124,13 @@ jobs:
           # Verify connection with psql
           PGPASSWORD=journal psql -h localhost -p 5433 -U journal -d journal -c "SELECT 1"
       - name: Alembic upgrade
+        timeout-minutes: 5
         env:
-          PGUSER: journal
-          PGPASSWORD: journal
-          PGHOST: localhost
-          PGPORT: 5433
-          PGDATABASE: journal
           DATABASE_URL_SYNC: postgresql+psycopg://journal:journal@localhost:5433/journal
-          JOURNAL_DB_URL_SYNC: postgresql+psycopg://journal:journal@localhost:5433/journal
         run: |
           cd apps/api
           # Use -x to pass database URL directly to alembic
-          uv run alembic -c alembic.ini -x "sqlalchemy.url=${DATABASE_URL_SYNC}" upgrade head
+          uv run alembic -x sqlalchemy.url=${DATABASE_URL_SYNC} upgrade head
       - name: Run integration tests
         env:
           TEST_DB_URL: postgresql+asyncpg://journal:journal@localhost:5433/journal
@@ -192,18 +187,12 @@ jobs:
       - name: Install deps
         run: uv sync --all-extras --dev
       - name: Prepare database
+        timeout-minutes: 5
         env:
-          PGUSER: journal
-          PGPASSWORD: journal
-          PGHOST: localhost
-          PGPORT: 5433
-          PGDATABASE: journal
           DATABASE_URL_SYNC: postgresql+psycopg://journal:journal@localhost:5433/journal
-          JOURNAL_DB_URL_SYNC: postgresql+psycopg://journal:journal@localhost:5433/journal
-          TEST_DB_URL: postgresql+asyncpg://journal:journal@localhost:5433/journal
         run: |
           # Use -x to pass database URL directly to alembic
-          uv run alembic -c alembic.ini -x "sqlalchemy.url=${DATABASE_URL_SYNC}" upgrade head
+          uv run alembic -x sqlalchemy.url=${DATABASE_URL_SYNC} upgrade head
       - name: Run v2 auth tests
         env:
           TEST_DB_URL: postgresql+asyncpg://journal:journal@localhost:5433/journal
@@ -262,32 +251,19 @@ jobs:
         uses: astral-sh/setup-uv@v4
       - name: Install deps
         run: uv sync --all-extras --dev
-      - name: Cache Infisical CLI
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/infisical
-          key: infisical-${{ env.INFISICAL_CLI_VERSION }}-${{ runner.os }}-x64
-          restore-keys: infisical-${{ env.INFISICAL_CLI_VERSION }}-
-
-      - name: Make installer executable
-        run: chmod +x ../../.github/workflows/scripts/install-infisical-cli.sh
-
-      - name: Install Infisical CLI (pinned, GH-first, fallback)
+      - name: Install Infisical CLI (deterministic)
         if: env.INFISICAL_CLI_REQUIRED == 'true'
-        timeout-minutes: 5
-        run: ../../.github/workflows/scripts/install-infisical-cli.sh "${{ env.INFISICAL_CLI_VERSION }}"
+        uses: ./.github/actions/install-infisical-cli
+        with:
+          version: ${{ env.INFISICAL_CLI_VERSION }}
+          optional: 'false'
       - name: Prepare database
+        timeout-minutes: 5
         env:
-          PGUSER: journal
-          PGPASSWORD: journal
-          PGHOST: localhost
-          PGPORT: 5433
-          PGDATABASE: journal
           DATABASE_URL_SYNC: postgresql+psycopg://journal:journal@localhost:5433/journal
-          JOURNAL_DB_URL_SYNC: postgresql+psycopg://journal:journal@localhost:5433/journal
         run: |
           # Use -x to pass database URL directly to alembic
-          uv run alembic -c alembic.ini -x "sqlalchemy.url=${DATABASE_URL_SYNC}" upgrade head
+          uv run alembic -x sqlalchemy.url=${DATABASE_URL_SYNC} upgrade head
       - name: Get GitHub OIDC Token
         id: oidc_token
         run: |

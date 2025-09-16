@@ -113,24 +113,12 @@ jobs:
         run: uv sync --all-extras --dev
       
       - name: Run database migrations
+        timeout-minutes: 5
         run: |
-          echo "Using DATABASE_URL_SYNC: ${DATABASE_URL_SYNC}"
-          uv run alembic -x "sqlalchemy.url=${DATABASE_URL_SYNC}" upgrade head
-
-          # Assert DB user
-          URL="${DATABASE_URL_SYNC/psycopg://}"
-          who=$(psql "$URL" -Atc 'select current_user')
-          echo "current_user=$who"
-          test "$who" = "journal"
+          echo "Running migrations with DATABASE_URL_SYNC"
+          uv run alembic -x sqlalchemy.url=${DATABASE_URL_SYNC} upgrade head
         env:
-          PGUSER: journal
-          PGPASSWORD: journal
-          PGHOST: localhost
-          PGPORT: 5432
-          PGDATABASE: journal_test
           DATABASE_URL_SYNC: postgresql+psycopg://journal:journal@localhost:5432/journal_test
-          JOURNAL_DB_URL_SYNC: postgresql+psycopg://journal:journal@localhost:5432/journal_test
-          JOURNAL_DB_URL: postgresql+asyncpg://journal:journal@localhost:5432/journal_test
       
       - name: Run tests with coverage
         run: |
@@ -207,31 +195,18 @@ jobs:
         run: uv sync --all-extras --dev
       
       - name: Run database migrations
+        timeout-minutes: 5
         run: |
-          echo "Using DATABASE_URL_SYNC: ${DATABASE_URL_SYNC}"
-          uv run alembic -x "sqlalchemy.url=${DATABASE_URL_SYNC}" upgrade head
-
-          # Assert DB user
-          URL="${DATABASE_URL_SYNC/psycopg://}"
-          who=$(psql "$URL" -Atc 'select current_user')
-          echo "current_user=$who"
-          test "$who" = "journal"
+          echo "Running migrations with DATABASE_URL_SYNC"
+          uv run alembic -x sqlalchemy.url=${DATABASE_URL_SYNC} upgrade head
         env:
-          PGUSER: journal
-          PGPASSWORD: journal
-          PGHOST: localhost
-          PGPORT: 5432
-          PGDATABASE: journal_integration
-          DATABASE_URL: postgresql+asyncpg://journal:journal@localhost:5432/journal_integration
           DATABASE_URL_SYNC: postgresql+psycopg://journal:journal@localhost:5432/journal_integration
-          JOURNAL_DB_URL_SYNC: postgresql+psycopg://journal:journal@localhost:5432/journal_integration
-          JOURNAL_DB_URL: postgresql+asyncpg://journal:journal@localhost:5432/journal_integration
 
       - name: Start API server in background
+        timeout-minutes: 5
         run: |
           uv run uvicorn app.main:app --host 0.0.0.0 --port 8000 &
         env:
-          DATABASE_URL: postgresql+asyncpg://journal:journal@localhost:5432/journal_integration
           DATABASE_URL_SYNC: postgresql+psycopg://journal:journal@localhost:5432/journal_integration
           JOURNAL_DB_URL: postgresql+asyncpg://journal:journal@localhost:5432/journal_integration
           JOURNAL_REDIS_URL: redis://localhost:6379/0

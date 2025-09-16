@@ -145,20 +145,14 @@ jobs:
           PGPASSWORD=journal psql -h localhost -p 5432 -U journal -d journal -c "SELECT 1"
 
       - name: Alembic upgrade
+        timeout-minutes: 5
         env:
-          PGUSER: journal
-          PGPASSWORD: journal
-          PGHOST: localhost
-          PGPORT: 5432
-          PGDATABASE: journal
           DATABASE_URL_SYNC: postgresql+psycopg://journal:journal@localhost:5432/journal
-          JOURNAL_DB_URL_SYNC: postgresql+psycopg://journal:journal@localhost:5432/journal
-          JOURNAL_DB_URL: postgresql+asyncpg://journal:journal@localhost:5432/journal
         working-directory: apps/api
         run: |
           set -e
           # Use -x to pass database URL directly to alembic
-          uv run alembic -c alembic.ini -x "sqlalchemy.url=${DATABASE_URL_SYNC}" upgrade head | tee -a /tmp/alembic.log
+          uv run alembic -x sqlalchemy.url=${DATABASE_URL_SYNC} upgrade head | tee -a /tmp/alembic.log
 
       - name: Post-migration probe
         env:

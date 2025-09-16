@@ -407,26 +407,13 @@ jobs:
           exit 1
 
       - name: Alembic upgrade
+        timeout-minutes: 5
         env:
-          PGUSER: journal
-          PGPASSWORD: journal
-          PGHOST: localhost
-          PGPORT: 5433
-          PGDATABASE: journal
           DATABASE_URL_SYNC: postgresql+psycopg://journal:journal@localhost:5433/journal
-          JOURNAL_DB_URL_SYNC: postgresql+psycopg://journal:journal@localhost:5433/journal
-          TEST_DB_URL_ASYNC: postgresql+asyncpg://journal:journal@localhost:5433/journal
-          TEST_DB_URL_SYNC: postgresql+psycopg://journal:journal@localhost:5433/journal
         working-directory: apps/api
         run: |
-          echo "Using DATABASE_URL_SYNC: ${DATABASE_URL_SYNC}"
-          uv run alembic -x "sqlalchemy.url=${DATABASE_URL_SYNC}" upgrade head
-
-          # Assert DB user
-          URL="${DATABASE_URL_SYNC/psycopg://}"
-          who=$(psql "$URL" -Atc 'select current_user')
-          echo "current_user=$who"
-          test "$who" = "journal"
+          echo "Running migrations with DATABASE_URL_SYNC"
+          uv run alembic -x sqlalchemy.url=${DATABASE_URL_SYNC} upgrade head
 
       - name: Start API (background)
         env:

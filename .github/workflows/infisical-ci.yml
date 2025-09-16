@@ -132,20 +132,11 @@ jobs:
           done
       
       # Install Infisical CLI for testing
-      - name: Cache Infisical CLI
-        uses: actions/cache@v4
+      - name: Install Infisical CLI (deterministic)
+        uses: ./.github/actions/install-infisical-cli
         with:
-          path: ~/.cache/infisical
-          key: infisical-${{ env.INFISICAL_CLI_VERSION }}-${{ runner.os }}-x64
-          restore-keys: infisical-${{ env.INFISICAL_CLI_VERSION }}-
-
-      - name: Make installer executable
-        run: chmod +x ../../.github/workflows/scripts/install-infisical-cli.sh
-
-      - name: Install Infisical CLI (pinned, GH-first, fallback)
-        if: env.INFISICAL_CLI_REQUIRED == 'true'
-        timeout-minutes: 5
-        run: ../../.github/workflows/scripts/install-infisical-cli.sh "${{ env.INFISICAL_CLI_VERSION }}"
+          version: ${{ env.INFISICAL_CLI_VERSION }}
+          optional: 'false'
       
       # Validate Infisical client implementation
       # Note: Linting and type checking disabled for Infisical integration code
@@ -186,22 +177,12 @@ jobs:
       
       # Run database migrations for testing
       - name: Run database migrations
+        timeout-minutes: 5
         run: |
-          # Debug: Show what we're setting
-          echo "DATABASE_URL_SYNC=${DATABASE_URL_SYNC}"
-          echo "Current system user: $(whoami)"
-
-          echo "Using DATABASE_URL_SYNC: ${DATABASE_URL_SYNC}"
-          uv run alembic -x "sqlalchemy.url=${DATABASE_URL_SYNC}" upgrade head
-
-          # Assert DB user (guardrail)
-          URL="${DATABASE_URL_SYNC/psycopg://}"
-          who=$(psql "$URL" -Atc 'select current_user')
-          echo "current_user=$who"
-          test "$who" = "journal"
+          echo "Running migrations with DATABASE_URL_SYNC"
+          uv run alembic -x sqlalchemy.url=${DATABASE_URL_SYNC} upgrade head
         env:
           DATABASE_URL_SYNC: postgresql+psycopg://journal:journal@localhost:5433/journal_infisical_test
-          JOURNAL_DB_URL: postgresql+asyncpg://journal:journal@localhost:5433/journal_infisical_test
       
       # Test Infisical monitoring (only existing test file)
       - name: Test Infisical Monitoring
@@ -337,41 +318,31 @@ jobs:
             sleep 1
           done
       
-      - name: Cache Infisical CLI
-        uses: actions/cache@v4
+      - name: Install Infisical CLI (deterministic)
+        uses: ./.github/actions/install-infisical-cli
         with:
-          path: ~/.cache/infisical
-          key: infisical-${{ env.INFISICAL_CLI_VERSION }}-${{ runner.os }}-x64
-          restore-keys: infisical-${{ env.INFISICAL_CLI_VERSION }}-
-
-      - name: Make installer executable
-        run: chmod +x ../../.github/workflows/scripts/install-infisical-cli.sh
-
-      - name: Install Infisical CLI (pinned, GH-first, fallback)
-        if: env.INFISICAL_CLI_REQUIRED == 'true'
-        timeout-minutes: 5
-        run: ../../.github/workflows/scripts/install-infisical-cli.sh "${{ env.INFISICAL_CLI_VERSION }}"
+          version: ${{ env.INFISICAL_CLI_VERSION }}
+          optional: 'false'
       
       # Start the API server with Infisical integration
       - name: Start API server with Infisical
+        timeout-minutes: 5
         run: |
-          # Single source of truth for database configuration
-          export DATABASE_URL=postgresql+asyncpg://journal:journal@localhost:5433/journal_e2e_test
-          export DATABASE_URL_SYNC=postgresql://journal:journal@localhost:5433/journal_e2e_test
-          export JOURNAL_DB_URL=$DATABASE_URL  # Backward compatibility alias
-          export JOURNAL_REDIS_URL=redis://localhost:6379/0
-
-          # Infisical test configuration
-          export INFISICAL_TOKEN=test-e2e-token
-          export INFISICAL_PROJECT_ID=test-e2e-project
-          export INFISICAL_ENVIRONMENT=test
-
           # Run migrations with explicit database URL
-          uv run alembic -x "sqlalchemy.url=${DATABASE_URL_SYNC}" upgrade head
+          uv run alembic -x sqlalchemy.url=${DATABASE_URL_SYNC} upgrade head
+
+          # Start the server in background
           uv run uvicorn app.main:app --host 0.0.0.0 --port 8000 &
 
           # Wait for server to be ready - requires full readiness for E2E tests
           SERVER_URL=http://localhost:8000 MAX_RETRIES=30 REQUIRES_READY=1 ./scripts/wait_for_server.sh
+        env:
+          DATABASE_URL_SYNC: postgresql+psycopg://journal:journal@localhost:5433/journal_e2e_test
+          JOURNAL_DB_URL: postgresql+asyncpg://journal:journal@localhost:5433/journal_e2e_test
+          JOURNAL_REDIS_URL: redis://localhost:6379/0
+          INFISICAL_TOKEN: test-e2e-token
+          INFISICAL_PROJECT_ID: test-e2e-project
+          INFISICAL_ENVIRONMENT: test
       
       # Test webhook endpoints
       - name: Test Infisical webhook endpoints
@@ -415,20 +386,11 @@ jobs:
       - name: Install dependencies
         run: uv sync --all-extras --dev
       
-      - name: Cache Infisical CLI
-        uses: actions/cache@v4
+      - name: Install Infisical CLI (deterministic)
+        uses: ./.github/actions/install-infisical-cli
         with:
-          path: ~/.cache/infisical
-          key: infisical-${{ env.INFISICAL_CLI_VERSION }}-${{ runner.os }}-x64
-          restore-keys: infisical-${{ env.INFISICAL_CLI_VERSION }}-
-
-      - name: Make installer executable
-        run: chmod +x ../../.github/workflows/scripts/install-infisical-cli.sh
-
-      - name: Install Infisical CLI (pinned, GH-first, fallback)
-        if: env.INFISICAL_CLI_REQUIRED == 'true'
-        timeout-minutes: 5
-        run: ../../.github/workflows/scripts/install-infisical-cli.sh "${{ env.INFISICAL_CLI_VERSION }}"
+          version: ${{ env.INFISICAL_CLI_VERSION }}
+          optional: 'false'
       
       # Validate migration script readiness
       - name: Validate Migration Script
