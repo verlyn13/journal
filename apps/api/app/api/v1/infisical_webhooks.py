@@ -10,6 +10,7 @@ import hashlib
 import hmac
 import json
 import logging
+import os
 
 from datetime import UTC, datetime
 from typing import Any
@@ -257,27 +258,79 @@ async def manual_key_rotation(
         ) from e
 
 
+def get_infisical_client_safe() -> InfisicalSecretsClient | None:
+    """Get Infisical client dependency with error handling."""
+    try:
+        redis = get_redis()
+        return InfisicalSecretsClient.from_env(redis)
+    except Exception as e:
+        logger.warning("Failed to initialize Infisical client: %s", e)
+        return None
+
+
+def get_key_manager_safe(
+    session: AsyncSession = Depends(get_session),
+    redis: Redis = Depends(get_redis),
+) -> InfisicalKeyManager | None:
+    """Get enhanced key manager dependency with error handling."""
+    try:
+        infisical_client = get_infisical_client_safe()
+        if infisical_client is None:
+            return None
+        return InfisicalKeyManager(session, redis, infisical_client)
+    except Exception as e:
+        logger.warning("Failed to initialize key manager: %s", e)
+        return None
+
+
 @router.get("/health", response_model=dict[str, Any])
 async def infisical_health_check(
-    key_manager: InfisicalKeyManager = Depends(get_key_manager),
-    infisical_client: InfisicalSecretsClient = Depends(get_infisical_client),
+    session: AsyncSession = Depends(get_session),
+    redis: Redis = Depends(get_redis),
 ) -> dict[str, Any]:
     """Check health of Infisical integration.
 
+    This endpoint is designed to be resilient and provide diagnostic information
+    even when Infisical dependencies fail to initialize, preventing 500 errors
+    in test environments.
+
     Args:
-        key_manager: Enhanced key manager
-        infisical_client: Infisical client
+        session: Database session
+        redis: Redis connection
 
     Returns:
-        Health check results
+        Health check results with detailed diagnostics
     """
-    try:
-        # Perform comprehensive health check
-        health_results = await key_manager.health_check()
+    health_results = {
+        "overall_status": "checking",
+        "timestamp": datetime.now(UTC).isoformat(),
+        "components": {},
+        "configuration": {},
+        "errors": [],
+    }
 
-        # Add client-specific health info
-        client_health = await infisical_client.health_check()
-        health_results["client_health"] = client_health
+    # Check basic dependencies first
+    try:
+        # Test database connectivity
+        await session.execute("SELECT 1")
+        health_results["components"]["database"] = {"status": "healthy", "tested_at": datetime.now(UTC).isoformat()}
+    except Exception as e:
+        health_results["components"]["database"] = {"status": "unhealthy", "error": str(e)}
+        health_results["errors"].append(f"Database: {e}")
+
+    try:
+        # Test Redis connectivity
+        await redis.ping()
+        health_results["components"]["redis"] = {"status": "healthy", "tested_at": datetime.now(UTC).isoformat()}
+    except Exception as e:
+        health_results["components"]["redis"] = {"status": "unhealthy", "error": str(e)}
+        health_results["errors"].append(f"Redis: {e}")
+
+    # Try to initialize Infisical client
+    infisical_client = None
+    try:
+        infisical_client = InfisicalSecretsClient.from_env(redis)
+        health_results["components"]["infisical_client"] = {"status": "healthy", "initialized": True}
 
         # Add configuration info (without sensitive data)
         health_results["configuration"] = {
@@ -286,16 +339,57 @@ async def infisical_health_check(
             "cache_enabled": infisical_client.cache is not None,
             "cache_ttl": infisical_client.cache_ttl,
         }
-
-        return health_results
-
     except Exception as e:
-        logger.exception("Health check failed")
-        return {
-            "overall_status": "unhealthy",
-            "error": str(e),
-            "timestamp": datetime.now(UTC).isoformat(),
-        }
+        health_results["components"]["infisical_client"] = {"status": "unhealthy", "error": str(e), "initialized": False}
+        health_results["errors"].append(f"Infisical client: {e}")
+
+    # Try to initialize key manager
+    key_manager = None
+    if infisical_client:
+        try:
+            key_manager = InfisicalKeyManager(session, redis, infisical_client)
+            health_results["components"]["key_manager"] = {"status": "healthy", "initialized": True}
+        except Exception as e:
+            health_results["components"]["key_manager"] = {"status": "unhealthy", "error": str(e), "initialized": False}
+            health_results["errors"].append(f"Key manager: {e}")
+    else:
+        health_results["components"]["key_manager"] = {"status": "skipped", "reason": "infisical_client_failed", "initialized": False}
+
+    # Perform advanced health checks if components are available
+    if key_manager:
+        try:
+            advanced_health = await key_manager.health_check()
+            health_results["advanced_health"] = advanced_health
+        except Exception as e:
+            health_results["components"]["advanced_health"] = {"status": "unhealthy", "error": str(e)}
+            health_results["errors"].append(f"Advanced health check: {e}")
+
+    if infisical_client:
+        try:
+            client_health = await infisical_client.health_check()
+            health_results["client_health"] = client_health
+        except Exception as e:
+            health_results["components"]["client_health"] = {"status": "unhealthy", "error": str(e)}
+            health_results["errors"].append(f"Client health check: {e}")
+
+    # Determine overall status
+    component_statuses = [comp.get("status") for comp in health_results["components"].values()]
+    if all(status == "healthy" for status in component_statuses if status not in ["skipped"]):
+        health_results["overall_status"] = "healthy"
+    elif any(status == "healthy" for status in component_statuses):
+        health_results["overall_status"] = "degraded"
+    else:
+        health_results["overall_status"] = "unhealthy"
+
+    # Add environment diagnostic info
+    health_results["environment"] = {
+        "has_infisical_project_id": bool(os.getenv("INFISICAL_PROJECT_ID")),
+        "has_infisical_server_url": bool(os.getenv("INFISICAL_SERVER_URL")),
+        "has_infisical_token": bool(os.getenv("INFISICAL_TOKEN")),
+        "has_ua_credentials": bool(os.getenv("UA_CLIENT_ID_TOKEN_SERVICE") and os.getenv("UA_CLIENT_SECRET_TOKEN_SERVICE")),
+    }
+
+    return health_results
 
 
 @router.post("/cache/invalidate")
