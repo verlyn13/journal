@@ -25,6 +25,8 @@ fi
 
 # Required Python 3.13 mentions
 echo "Checking for Python 3.13 mentions..."
+echo "DEBUG: Looking for 'Python 3.13' in README.md..."
+rg 'Python 3\.13' README.md 2>/dev/null || echo "DEBUG: No match found"
 if ! rg -q 'Python 3\.13' README.md 2>/dev/null; then
   echo -e "${RED}❌ README.md missing Python 3.13 mention${NC}"
   fail=1
@@ -52,6 +54,10 @@ fi
 
 # Required Ruff 0.13.0 mentions
 echo "Checking for Ruff 0.13.0 mentions..."
+echo "DEBUG: Looking for 'Ruff 0.13.0' in README.md..."
+rg 'Ruff 0.13.0' README.md 2>/dev/null || echo "DEBUG: No exact match found"
+echo "DEBUG: Looking for 'ruff.*0.13.0' in README.md..."
+rg 'ruff.*0.13.0' README.md 2>/dev/null || echo "DEBUG: No pattern match found"
 if ! rg -q 'Ruff 0.13.0' README.md 2>/dev/null && ! rg -q 'ruff.*0.13.0' README.md 2>/dev/null; then
   echo -e "${RED}❌ README.md missing Ruff 0.13.0 mention${NC}"
   fail=1
