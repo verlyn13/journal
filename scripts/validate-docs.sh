@@ -2,6 +2,14 @@
 # Validate documentation for Python 3.13 and Ruff 0.13.0 alignment
 set -euo pipefail
 
+# Check if we're in the right directory
+if [ ! -f "README.md" ]; then
+  echo "ERROR: README.md not found. Are we in the project root?"
+  pwd
+  ls -la
+  exit 1
+fi
+
 fail=0
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -23,11 +31,9 @@ else
   echo -e "${GREEN}✅ No stale references in current docs${NC}"
 fi
 
-# Required Python 3.13 mentions
+# Required Python 3.13 mentions - using grep for simplicity
 echo "Checking for Python 3.13 mentions..."
-echo "DEBUG: Looking for 'Python 3.13' in README.md..."
-rg 'Python 3\.13' README.md 2>/dev/null || echo "DEBUG: No match found"
-if ! rg -q 'Python 3\.13' README.md 2>/dev/null; then
+if ! grep -q "Python 3.13" README.md 2>/dev/null; then
   echo -e "${RED}❌ README.md missing Python 3.13 mention${NC}"
   fail=1
 else
@@ -35,7 +41,7 @@ else
 fi
 
 if [ -f "CONTRIBUTING.md" ]; then
-  if ! rg -q '3\.13' CONTRIBUTING.md 2>/dev/null; then
+  if ! grep -q "3.13" CONTRIBUTING.md 2>/dev/null; then
     echo -e "${RED}❌ CONTRIBUTING.md missing Python 3.13 mention${NC}"
     fail=1
   else
@@ -44,7 +50,7 @@ if [ -f "CONTRIBUTING.md" ]; then
 fi
 
 if [ -f "docs/dev-setup.md" ]; then
-  if ! rg -q 'Python 3\.13' docs/dev-setup.md 2>/dev/null; then
+  if ! grep -q "Python 3.13" docs/dev-setup.md 2>/dev/null; then
     echo -e "${RED}❌ docs/dev-setup.md missing Python 3.13 mention${NC}"
     fail=1
   else
@@ -52,13 +58,9 @@ if [ -f "docs/dev-setup.md" ]; then
   fi
 fi
 
-# Required Ruff 0.13.0 mentions
+# Required Ruff 0.13.0 mentions - using grep for simplicity
 echo "Checking for Ruff 0.13.0 mentions..."
-echo "DEBUG: Looking for 'Ruff 0.13.0' in README.md..."
-rg 'Ruff 0.13.0' README.md 2>/dev/null || echo "DEBUG: No exact match found"
-echo "DEBUG: Looking for 'ruff.*0.13.0' in README.md..."
-rg 'ruff.*0.13.0' README.md 2>/dev/null || echo "DEBUG: No pattern match found"
-if ! rg -q 'Ruff 0.13.0' README.md 2>/dev/null && ! rg -q 'ruff.*0.13.0' README.md 2>/dev/null; then
+if ! grep -q "Ruff 0.13.0" README.md 2>/dev/null; then
   echo -e "${RED}❌ README.md missing Ruff 0.13.0 mention${NC}"
   fail=1
 else
@@ -66,7 +68,7 @@ else
 fi
 
 if [ -f "CONTRIBUTING.md" ]; then
-  if ! rg -q 'Ruff 0.13.0' CONTRIBUTING.md 2>/dev/null && ! rg -q 'ruff.*0.13.0' CONTRIBUTING.md 2>/dev/null; then
+  if ! grep -q "Ruff 0.13.0" CONTRIBUTING.md 2>/dev/null; then
     echo -e "${RED}❌ CONTRIBUTING.md missing Ruff 0.13.0 mention${NC}"
     fail=1
   else
@@ -75,7 +77,7 @@ if [ -f "CONTRIBUTING.md" ]; then
 fi
 
 if [ -f "docs/dev-setup.md" ]; then
-  if ! rg -q 'Ruff 0.13.0' docs/dev-setup.md 2>/dev/null && ! rg -q 'ruff.*0.13.0' docs/dev-setup.md 2>/dev/null; then
+  if ! grep -q "Ruff 0.13.0" docs/dev-setup.md 2>/dev/null; then
     echo -e "${RED}❌ docs/dev-setup.md missing Ruff 0.13.0 mention${NC}"
     fail=1
   else
