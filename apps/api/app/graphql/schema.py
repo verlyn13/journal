@@ -1,6 +1,5 @@
-import strawberry
-
 from sqlalchemy.ext.asyncio import AsyncSession
+import strawberry
 
 from app.infra.db import get_session
 from app.infra.search_pgvector import hybrid_search

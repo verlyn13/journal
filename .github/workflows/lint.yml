@@ -16,45 +16,43 @@ jobs:
     name: Python Linting
     runs-on: ubuntu-latest
     continue-on-error: true  # Stage 1: warnings allowed, do not fail PRs
-    strategy:
-      matrix:
-        python-version: ["3.11", "3.12"]
-    
+
     steps:
       - uses: actions/checkout@v4
-      
-      - name: Install uv
-        uses: astral-sh/setup-uv@v5
-        with:
-          enable-cache: true
-          cache-dependency-glob: "apps/api/uv.lock"
-      
-      - name: Set up Python ${{ matrix.python-version }}
-        run: uv python install ${{ matrix.python-version }}
-      
-      - name: Install dependencies
-        working-directory: apps/api
-        run: uv sync --all-extras --dev
-      
+
+      # Option A: Using official Astral Ruff Action (recommended)
       - name: Run Ruff linter
-        working-directory: apps/api
-        run: |
-          echo "::group::Ruff check"
-          uv run ruff check . --output-format=github
-          echo "::endgroup::"
-      
+        uses: astral-sh/ruff-action@v3
+        with:
+          version: "0.13.0"
+          args: "check --output-format=github ."
+          src: "./apps/api"
+
       - name: Check formatting with Ruff
-        working-directory: apps/api
-        run: |
-          echo "::group::Ruff format check"
-          uv run ruff format --check .
-          echo "::endgroup::"
+        uses: astral-sh/ruff-action@v3
+        with:
+          version: "0.13.0"
+          args: "format --check ."
+          src: "./apps/api"
+
+      # Alternative Option B: Using uv (kept for reference)
+      # - name: Install uv
+      #   uses: astral-sh/setup-uv@v5
+      #   with:
+      #     enable-cache: true
+      #     cache-dependency-glob: "apps/api/uv.lock"
+      #
+      # - name: Run linting with uv
+      #   working-directory: apps/api
+      #   run: |
+      #     uvx ruff@0.13.0 check . --output-format=github
+      #     uvx ruff@0.13.0 format --check .
       
       - name: Upload Ruff results
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: ruff-results-py${{ matrix.python-version }}
+          name: ruff-results
           path: apps/api/.ruff_cache/
           retention-days: 7
 
@@ -72,7 +70,7 @@ jobs:
           cache-dependency-glob: "apps/api/uv.lock"
       
       - name: Set up Python
-        run: uv python install 3.11
+        run: uv python install 3.13
       
       - name: Install dependencies
         working-directory: apps/api

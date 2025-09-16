@@ -6,15 +6,13 @@ refresh token rotation with reuse detection, and session management.
 
 from __future__ import annotations
 
-import logging
-
 from datetime import timedelta
+import logging
 from typing import Any
 from uuid import UUID
 
-import jwt
-
 from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
+import jwt
 from pydantic import BaseModel, Field
 from redis.asyncio import Redis
 from sqlalchemy import select

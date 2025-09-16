@@ -4,9 +4,8 @@ Test cases for entry deletion functionality.
 
 from uuid import uuid4
 
-import pytest
-
 from httpx import AsyncClient
+import pytest
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 

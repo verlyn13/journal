@@ -7,12 +7,11 @@ initialization to establish secure authentication without storing long-lived tok
 from __future__ import annotations
 
 import asyncio
-import logging
-import os
-
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 from functools import lru_cache
+import logging
+import os
 from typing import Any
 
 from app.infra.secrets.universal_auth_client import UniversalAuthError, get_universal_auth_client
@@ -133,7 +132,7 @@ def get_auth_bootstrap_service() -> AuthBootstrapService:
 
 
 @asynccontextmanager
-async def auth_lifespan() -> AsyncGenerator[None, None]:
+async def auth_lifespan() -> AsyncGenerator[None]:
     """Application lifespan context manager for authentication.
 
     This should be used with FastAPI lifespan events to ensure

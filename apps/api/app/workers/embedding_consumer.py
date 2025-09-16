@@ -5,11 +5,9 @@ import json
 import logging
 import os
 import random
-
 from typing import Any
 
 import nats
-
 from nats.aio.client import Client as NatsClient
 from nats.aio.msg import Msg as NatsMessage
 from nats.js import JetStreamContext

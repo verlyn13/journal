@@ -6,11 +6,10 @@ HttpOnly, Secure, and SameSite flags, idle timeout, and rotation on privilege ch
 
 from __future__ import annotations
 
+from datetime import UTC, datetime, timedelta
 import json
 import logging
 import secrets
-
-from datetime import UTC, datetime, timedelta
 from typing import Any
 from uuid import UUID
 

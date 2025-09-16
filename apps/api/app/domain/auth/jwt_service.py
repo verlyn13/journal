@@ -3,13 +3,12 @@
 from __future__ import annotations
 
 import base64
+from datetime import UTC, datetime, timedelta
 import json
 import logging
 import time
-import uuid
-
-from datetime import UTC, datetime, timedelta
 from typing import Any, Literal, cast
+import uuid
 from uuid import UUID
 
 from cryptography.exceptions import InvalidSignature

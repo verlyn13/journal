@@ -2,12 +2,11 @@
 
 from __future__ import annotations
 
-import logging
-import time
-
 from collections.abc import AsyncGenerator, Awaitable
 from contextlib import asynccontextmanager, suppress
 from datetime import UTC, datetime
+import logging
+import time
 from typing import Any, cast
 
 from redis.asyncio import Redis
@@ -203,7 +202,7 @@ class JWKSMetrics:
                 logger.debug("Failed to reset metrics: %s", e)
 
     @asynccontextmanager
-    async def measure_time(self) -> AsyncGenerator[dict[str, Any], None]:
+    async def measure_time(self) -> AsyncGenerator[dict[str, Any]]:
         """Context manager to measure operation time.
 
         Yields:

@@ -4,12 +4,10 @@ from __future__ import annotations
 
 import base64
 import hashlib
-
 from unittest.mock import AsyncMock, MagicMock, patch
 
-import pytest
-
 from httpx import Response
+import pytest
 
 from app.domain.auth.par_client import PARClient
 

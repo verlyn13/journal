@@ -5,15 +5,13 @@ They can be run with real Infisical or mocked for CI environments.
 """
 
 import asyncio
-import os
-import subprocess
-
 from contextlib import suppress
 from datetime import UTC, datetime
+import os
+import subprocess
 from unittest.mock import patch
 
 import pytest
-
 from redis.asyncio import Redis
 
 from app.infra.secrets import InfisicalSecretsClient, SecretNotFoundError, SecretType
@@ -39,10 +37,12 @@ def infisical_available():
 
 def infisical_configured():
     """Check if Infisical environment is configured."""
-    return all([
-        os.getenv("INFISICAL_PROJECT_ID"),
-        os.getenv("INFISICAL_SERVER_URL"),
-    ])
+    return all(
+        [
+            os.getenv("INFISICAL_PROJECT_ID"),
+            os.getenv("INFISICAL_SERVER_URL"),
+        ]
+    )
 
 
 pytestmark = pytest.mark.skipif(

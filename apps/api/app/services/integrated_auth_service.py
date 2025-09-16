@@ -6,10 +6,9 @@ session management, and proper security policies from the token enhancement plan
 
 from __future__ import annotations
 
+from datetime import UTC, datetime
 import hashlib
 import logging
-
-from datetime import UTC, datetime
 from typing import Any
 from uuid import UUID, uuid4
 

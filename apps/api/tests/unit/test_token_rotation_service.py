@@ -7,7 +7,6 @@ from unittest.mock import AsyncMock
 from uuid import uuid4
 
 import pytest
-
 from redis.asyncio import Redis
 from sqlalchemy.ext.asyncio import AsyncSession
 

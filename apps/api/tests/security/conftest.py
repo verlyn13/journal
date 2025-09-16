@@ -9,7 +9,6 @@ from __future__ import annotations
 from typing import Any, Self
 
 import pytest_asyncio
-
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.domain.auth.jwt_service import JWTService

@@ -1,8 +1,7 @@
 import logging
+from logging.config import fileConfig
 import os
 import sys
-
-from logging.config import fileConfig
 
 
 # Check if Alembic should be skipped

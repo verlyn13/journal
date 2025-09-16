@@ -2,9 +2,8 @@
 
 from __future__ import annotations
 
-import json
-
 from datetime import UTC, datetime, timedelta
+import json
 from unittest.mock import MagicMock, patch
 from uuid import uuid4
 

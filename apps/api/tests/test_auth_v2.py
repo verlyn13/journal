@@ -2,17 +2,15 @@
 
 from __future__ import annotations
 
+from datetime import timedelta
 import hashlib
 import json
-
-from datetime import timedelta
 from unittest.mock import patch
 from uuid import uuid4
 
-import pytest
-
 from fastapi import status
 from httpx import AsyncClient
+import pytest
 from redis.asyncio import Redis
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession

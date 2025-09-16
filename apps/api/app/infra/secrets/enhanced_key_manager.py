@@ -8,11 +8,10 @@ existing JWT and AES key management system.
 from __future__ import annotations
 
 import base64
+from datetime import UTC, datetime
 import json
 import logging
 import os
-
-from datetime import UTC, datetime
 from typing import Any
 from uuid import UUID, uuid4
 

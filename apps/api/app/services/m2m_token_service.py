@@ -6,11 +6,10 @@ authentication using Infisical Machine Identities as the trust anchor.
 
 from __future__ import annotations
 
+from datetime import UTC, datetime, timedelta
 import hashlib
 import json
 import logging
-
-from datetime import UTC, datetime, timedelta
 from typing import Any
 from uuid import UUID, uuid4
 

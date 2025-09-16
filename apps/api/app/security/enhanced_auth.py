@@ -6,9 +6,8 @@ for sensitive tokens like refresh tokens stored in databases or cookies.
 
 from __future__ import annotations
 
-import json
-
 from datetime import UTC, datetime, timedelta
+import json
 from typing import Any
 from uuid import UUID
 

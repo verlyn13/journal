@@ -3,15 +3,13 @@
 from __future__ import annotations
 
 import asyncio
+from datetime import UTC, datetime
 import json
 import logging
-
-from datetime import UTC, datetime
 from typing import Any
 from urllib.parse import urljoin
 
 import aiohttp
-
 from cryptography.fernet import Fernet
 from redis.asyncio import Redis
 
@@ -531,9 +529,9 @@ class EnhancedInfisicalClient(SecretsClient):
             return deleted
         # Invalidate all secrets
         pattern_keys = [key async for key in self.redis.scan_iter(match=f"{self._cache_prefix}*")]
-        pattern_keys.extend([
-            key async for key in self.redis.scan_iter(match=f"{self._cache_metadata_prefix}*")
-        ])
+        pattern_keys.extend(
+            [key async for key in self.redis.scan_iter(match=f"{self._cache_metadata_prefix}*")]
+        )
 
         if pattern_keys:
             deleted = await self.redis.delete(*pattern_keys)

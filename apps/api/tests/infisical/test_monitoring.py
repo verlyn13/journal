@@ -2,13 +2,11 @@
 
 from __future__ import annotations
 
-import json
-
 from datetime import UTC, datetime, timedelta
+import json
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
-
 from redis.asyncio import Redis
 from sqlalchemy.ext.asyncio import AsyncSession
 

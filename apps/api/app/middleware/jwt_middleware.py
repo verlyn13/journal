@@ -5,7 +5,6 @@ from __future__ import annotations
 import json  # Used in token decode fallback
 import logging
 import time
-
 from typing import Any, Literal
 
 from fastapi import HTTPException, Request, status

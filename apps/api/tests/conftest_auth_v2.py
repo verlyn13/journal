@@ -3,15 +3,13 @@
 from __future__ import annotations
 
 import asyncio
-
 from collections.abc import AsyncGenerator
 from datetime import UTC, datetime
 from uuid import uuid4
 
+from httpx import AsyncClient
 import pytest
 import pytest_asyncio
-
-from httpx import AsyncClient
 from redis.asyncio import Redis
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
@@ -43,7 +41,7 @@ async def db_engine():
 
 
 @pytest_asyncio.fixture
-async def db_session(db_engine) -> AsyncGenerator[AsyncSession, None]:
+async def db_session(db_engine) -> AsyncGenerator[AsyncSession]:
     """Create test database session."""
     async_session = sessionmaker(db_engine, class_=AsyncSession, expire_on_commit=False)
 
@@ -53,7 +51,7 @@ async def db_session(db_engine) -> AsyncGenerator[AsyncSession, None]:
 
 
 @pytest_asyncio.fixture
-async def redis_client() -> AsyncGenerator[Redis, None]:
+async def redis_client() -> AsyncGenerator[Redis]:
     """Create test Redis client."""
     redis = Redis.from_url(
         settings.redis_url,
@@ -94,7 +92,7 @@ async def test_user(db_session: AsyncSession) -> User:
 async def async_client(
     db_session: AsyncSession,
     redis_client: Redis,
-) -> AsyncGenerator[AsyncClient, None]:
+) -> AsyncGenerator[AsyncClient]:
     """Create test HTTP client with dependency overrides."""
     from app.infra.db import get_session
     from app.infra.redis import get_redis

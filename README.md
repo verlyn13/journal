@@ -7,7 +7,7 @@ A modern web application for journaling with a rich text editor, code highlighti
 ### Prerequisites
 
 - Node.js 20+ and Bun
-- Python 3.11+
+- Python 3.13
 - Docker & Docker Compose
 - PostgreSQL 16+ (via Docker)
 
@@ -117,7 +117,7 @@ Run with Bun from the repo root (use Node/npm if preferred):
   - `bun run api:setup` — start Postgres (5433), Redis (6380), NATS (4222) and run migrations
   - `bun run api:dev` — start FastAPI dev server (<http://127.0.0.1:8000>)
   - `bun run api:test` — run API tests via pytest
-  - `bun run api:lint` — lint/format API code (ruff)
+  - `bun run api:lint` — lint/format API code (Ruff 0.13.0)
   - `bun run api:db:upgrade` — apply DB migrations (alembic via uv)
   - `bun run api:db:downgrade` — rollback last migration
   - `M="add feature" bun run api:db:revision` — create a new migration revision
@@ -199,7 +199,7 @@ uv run pytest -m integration
 ### Backend
 
 - **uv**: Python package management
-- **Ruff**: Python linting and formatting
+- **Ruff 0.13.0**: Python linting and formatting
 - **MyPy**: Static type checking
 - **pytest**: Testing framework
 

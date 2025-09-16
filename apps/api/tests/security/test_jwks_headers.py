@@ -7,9 +7,8 @@ from __future__ import annotations
 
 from typing import Any
 
-import pytest
-
 from fastapi import Response
+import pytest
 
 from app.api.v1.jwks import get_jwks as route_get_jwks
 from app.services.jwks_service import JWKSService

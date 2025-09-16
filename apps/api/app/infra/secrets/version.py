@@ -45,7 +45,7 @@ def parse_cli_version(output: str) -> VersionInfo:
         ValueError: If version format is not recognized
     """
     # Clean the output - handle multi-line output by taking first line
-    lines = output.strip().split('\n')
+    lines = output.strip().split("\n")
     version_str = lines[0].strip() if lines else ""
 
     if not version_str:

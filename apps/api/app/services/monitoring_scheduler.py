@@ -7,10 +7,9 @@ CLI v0.42.1 integration, including periodic metrics collection and alerting.
 from __future__ import annotations
 
 import asyncio
+from datetime import UTC, datetime, timedelta
 import json
 import logging
-
-from datetime import UTC, datetime, timedelta
 from typing import Any
 
 from app.infra.db import build_engine, sessionmaker_for

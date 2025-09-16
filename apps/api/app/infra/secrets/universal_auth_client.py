@@ -7,12 +7,11 @@ for secure secret access without storing long-lived credentials.
 from __future__ import annotations
 
 import asyncio
+from datetime import UTC, datetime, timedelta
+from functools import lru_cache
 import logging
 import os
 import time
-
-from datetime import UTC, datetime, timedelta
-from functools import lru_cache
 from typing import Any
 
 from app.telemetry.metrics_runtime import inc as metrics_inc

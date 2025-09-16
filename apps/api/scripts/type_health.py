@@ -7,13 +7,12 @@ Usage:
     python scripts/type_health.py [--json]
 """
 
-import json
-import subprocess  # noqa: S404
-import sys
-
 from dataclasses import asdict, dataclass
 from datetime import datetime
+import json
 from pathlib import Path
+import subprocess  # noqa: S404
+import sys
 from typing import Literal
 
 

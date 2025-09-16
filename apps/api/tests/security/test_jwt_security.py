@@ -2,15 +2,13 @@
 
 import base64
 import contextlib
+from datetime import UTC, datetime, timedelta
 import json
 import time
-
-from datetime import UTC, datetime, timedelta
 from uuid import uuid4
 
-import pytest
-
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
+import pytest
 
 from app.domain.auth.jwt_service import JWTService
 from app.domain.auth.token_validator import TokenValidator

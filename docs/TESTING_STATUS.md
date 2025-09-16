@@ -49,7 +49,7 @@ Reference: `apps/api/docs/testing.md` describes test layers, fixtures, and deter
 Prereqs:
 
 - Docker + Compose
-- Python 3.12/3.13 with `uv`
+- Python 3.13 with `uv`
 - Node 20 + Bun 1.2.x
 - Free ports: 5000 (API), 5173 (web), 5433 (Postgres), 4222/8222 (NATS)
 

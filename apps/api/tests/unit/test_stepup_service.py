@@ -3,13 +3,11 @@
 from __future__ import annotations
 
 import base64
-
 from datetime import UTC, datetime, timedelta
 from unittest.mock import AsyncMock
 from uuid import uuid4
 
 import pytest
-
 from redis.asyncio import Redis
 from sqlalchemy.ext.asyncio import AsyncSession
 

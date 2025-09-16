@@ -6,11 +6,10 @@ This module provides side-effect-free health endpoints:
 """
 
 import asyncio
-import os
-import shutil
-
 from collections.abc import Awaitable, Callable
 from enum import StrEnum
+import os
+import shutil
 
 from fastapi import APIRouter, Response, status
 from pydantic import BaseModel

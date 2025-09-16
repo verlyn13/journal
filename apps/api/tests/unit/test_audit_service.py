@@ -6,7 +6,6 @@ from datetime import UTC, datetime
 from uuid import uuid4
 
 import pytest
-
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.domain.auth.audit_service import AuditService

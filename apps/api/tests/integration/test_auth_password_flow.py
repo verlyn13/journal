@@ -2,9 +2,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
-import pytest
-
 from alembic.config import Config
+import pytest
 
 from alembic import command
 from app.settings import settings

@@ -1,0 +1,129 @@
+# Verify Python 3.13 and Ruff 0.13.0 Alignment
+name: Verify Alignment
+on: [push, pull_request]
+
+jobs:
+  verify-alignment:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v4
+        with:
+          version: "latest"
+
+      - name: Python and Ruff versions
+        run: |
+          python3 --version | tee python-version.txt
+          uvx ruff --version | tee ruff-version.txt
+
+          # Verify Python 3.13
+          grep -q "^Python 3\.13\." python-version.txt || (echo "❌ Not Python 3.13"; exit 1)
+          echo "✅ Python 3.13 verified"
+
+          # Verify Ruff 0.13.0
+          grep -q "^ruff 0\.13\.0" ruff-version.txt || (echo "❌ Not Ruff 0.13.0"; exit 1)
+          echo "✅ Ruff 0.13.0 verified"
+
+      - name: Effective Ruff config
+        working-directory: apps/api
+        run: |
+          uvx ruff check . --show-settings 2>&1 | tee ../../ruff-config.txt
+
+          # Must show preview = true and explicit-preview-rules = true
+          grep -q 'linter.preview = enabled' ../../ruff-config.txt || (echo "❌ Ruff preview off"; exit 1)
+          grep -q 'linter.explicit_preview_rules = true' ../../ruff-config.txt || (echo "❌ explicit-preview-rules off"; exit 1)
+          echo "✅ Ruff configuration verified"
+
+      - name: Stale reference scan
+        run: |
+          echo "Checking for stale Python versions..."
+          if git grep -nE "python( |\:)?3\.(11|12)\b|3\.1[12]\b" -- ":!**/site-packages/**" ":!**/node_modules/**" ":!*.lock"; then
+            echo "❌ Found stale Python version references"
+            exit 1
+          fi
+          echo "✅ No stale Python version references"
+
+          echo "Checking for legacy tool references..."
+          if git grep -nE "\b(isort|flake8|black)\b" -- \
+            ":!**/site-packages/**" ":!**/vendor/**" ":!**/third_party/**" \
+            ":!**/node_modules/**" ":!*.lock" ":!**/RUFF_*.md" ":!**/.pre-commit-config.yaml"; then
+            echo "❌ Found legacy tool references"
+            exit 1
+          fi
+          echo "✅ No legacy tool references"
+
+          # Check for redundant tool blocks
+          if git grep -nE '^\[tool\.(black|isort|flake8)\]' -- "*.toml"; then
+            echo "❌ Found redundant tool blocks in pyproject.toml"
+            exit 1
+          fi
+          echo "✅ No redundant tool blocks"
+
+      - name: Lint + Format checks
+        working-directory: apps/api
+        run: |
+          uvx ruff clean
+          uvx ruff check . --output-format=github
+          uvx ruff format --check .
+          echo "✅ All linting and formatting checks pass"
+
+      - name: Docker Python version check
+        run: |
+          # Check Dockerfiles
+          for dockerfile in $(find . -name "Dockerfile*" -type f -not -path "*/node_modules/*"); do
+            if grep -q "FROM.*python" "$dockerfile"; then
+              if ! grep -q "python:3.13" "$dockerfile"; then
+                echo "❌ $dockerfile not using Python 3.13"
+                exit 1
+              fi
+            fi
+          done
+          echo "✅ All Dockerfiles use Python 3.13"
+
+      - name: Docs drift check
+        run: |
+          if [ -f "./scripts/validate-docs.sh" ]; then
+            ./scripts/validate-docs.sh
+          else
+            echo "⚠️ validate-docs.sh not found, skipping docs check"
+          fi
+
+      - name: Generate alignment report
+        if: always()
+        run: |
+          echo "# Python 3.13 & Ruff 0.13.0 Alignment Report" > alignment-report.txt
+          echo "Generated: $(date)" >> alignment-report.txt
+          echo "" >> alignment-report.txt
+
+          if [ -f python-version.txt ]; then
+            echo "## Python Version" >> alignment-report.txt
+            cat python-version.txt >> alignment-report.txt
+            echo "" >> alignment-report.txt
+          fi
+
+          if [ -f ruff-version.txt ]; then
+            echo "## Ruff Version" >> alignment-report.txt
+            cat ruff-version.txt >> alignment-report.txt
+            echo "" >> alignment-report.txt
+          fi
+
+          if [ -f ruff-config.txt ]; then
+            echo "## Ruff Configuration (excerpt)" >> alignment-report.txt
+            grep -E "preview|explicit" ruff-config.txt | head -10 >> alignment-report.txt
+            echo "" >> alignment-report.txt
+          fi
+
+          echo "## Validation Results" >> alignment-report.txt
+          echo "See workflow run for detailed results" >> alignment-report.txt
+
+      - name: Upload alignment report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: alignment-report
+          path: |
+            alignment-report.txt
+            ruff-config.txt
+            python-version.txt
+            ruff-version.txt

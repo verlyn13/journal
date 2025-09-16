@@ -5,9 +5,8 @@ Tests real user scenarios, error recovery, and system behavior under stress.
 
 import asyncio
 
-import pytest
-
 from httpx import AsyncClient
+import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.infra.models import Entry

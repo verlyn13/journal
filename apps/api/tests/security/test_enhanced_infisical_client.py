@@ -3,7 +3,6 @@
 from unittest.mock import AsyncMock
 
 import pytest
-
 from redis.asyncio import Redis
 
 from app.infra.secrets.enhanced_infisical_client import (

@@ -3,14 +3,12 @@
 from __future__ import annotations
 
 import base64
-
 from datetime import UTC, datetime, timedelta
 from unittest.mock import patch
 
-import pytest
-
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import ed25519
+import pytest
 
 from app.infra.crypto.key_generation import Ed25519KeyGenerator, KeyMaterial, KeyValidation
 

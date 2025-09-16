@@ -2,9 +2,8 @@
 Test cases for entry API markdown content handling.
 """
 
-import pytest
-
 from httpx import AsyncClient
+import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.infra.models import Entry

@@ -5,7 +5,6 @@ import logging
 import re
 
 import bleach
-
 from markdown_it import MarkdownIt
 
 

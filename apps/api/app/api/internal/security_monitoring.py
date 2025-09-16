@@ -2,11 +2,10 @@
 
 from __future__ import annotations
 
-import json
-import logging
-
 from contextlib import suppress
 from datetime import UTC, datetime
+import json
+import logging
 from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException, status

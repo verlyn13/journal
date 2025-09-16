@@ -6,10 +6,9 @@ including metrics collection, health checks, and alerting capabilities.
 
 from __future__ import annotations
 
+from datetime import UTC, datetime, timedelta
 import logging
 import time
-
-from datetime import UTC, datetime, timedelta
 from typing import Any
 
 from redis.asyncio import Redis
@@ -108,11 +107,13 @@ class InfisicalMonitoringService:
             redis_health = await self._test_redis_health()
 
             overall_status = "healthy"
-            if not all([
-                client_health.get("status") == "healthy",
-                key_manager_health.get("overall_status") == "healthy",
-                redis_health.get("status") == "healthy",
-            ]):
+            if not all(
+                [
+                    client_health.get("status") == "healthy",
+                    key_manager_health.get("overall_status") == "healthy",
+                    redis_health.get("status") == "healthy",
+                ]
+            ):
                 overall_status = "unhealthy"
 
             return {
@@ -503,42 +504,50 @@ class InfisicalMonitoringService:
 
             # Check overall health
             if metrics.get("health", {}).get("overall_status") != "healthy":
-                alerts.append({
-                    "severity": "critical",
-                    "message": "Infisical integration is unhealthy",
-                    "details": metrics.get("health", {}),
-                })
+                alerts.append(
+                    {
+                        "severity": "critical",
+                        "message": "Infisical integration is unhealthy",
+                        "details": metrics.get("health", {}),
+                    }
+                )
 
             # Check performance thresholds
             secret_latency = (
                 metrics.get("performance", {}).get("secret_retrieval", {}).get("latency_seconds", 0)
             )
             if secret_latency > 5.0:  # 5 second threshold
-                alerts.append({
-                    "severity": "warning",
-                    "message": f"Secret retrieval latency high: {secret_latency:.2f}s",
-                    "details": {"latency": secret_latency, "threshold": 5.0},
-                })
+                alerts.append(
+                    {
+                        "severity": "warning",
+                        "message": f"Secret retrieval latency high: {secret_latency:.2f}s",
+                        "details": {"latency": secret_latency, "threshold": 5.0},
+                    }
+                )
 
             # Check rotation compliance
             rotation_metrics = metrics.get("rotation", {})
             if rotation_metrics.get("jwt_rotation_needed") or rotation_metrics.get(
                 "aes_rotation_needed"
             ):
-                alerts.append({
-                    "severity": "warning",
-                    "message": "Key rotation needed",
-                    "details": rotation_metrics,
-                })
+                alerts.append(
+                    {
+                        "severity": "warning",
+                        "message": "Key rotation needed",
+                        "details": rotation_metrics,
+                    }
+                )
 
             # Check security issues
             security_metrics = metrics.get("security", {})
             if not security_metrics.get("jwt_keys", {}).get("keys_properly_configured"):
-                alerts.append({
-                    "severity": "critical",
-                    "message": "JWT keys not properly configured",
-                    "details": security_metrics.get("jwt_keys", {}),
-                })
+                alerts.append(
+                    {
+                        "severity": "critical",
+                        "message": "JWT keys not properly configured",
+                        "details": security_metrics.get("jwt_keys", {}),
+                    }
+                )
 
             # Store alerts
             if alerts:

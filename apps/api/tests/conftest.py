@@ -2,20 +2,19 @@
 Test configuration and fixtures for the Journal API.
 """
 
-import os
-import shutil
-import uuid
-
 from collections.abc import Generator
+import os
 
 # Alembic for proper schema and extensions
 from pathlib import Path
+import shutil
+import uuid
 
-import pytest
-import pytest_asyncio
 from alembic.config import Config
 from fastapi.testclient import TestClient
 from httpx import ASGITransport, AsyncClient
+import pytest
+import pytest_asyncio
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncConnection, AsyncEngine, AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
@@ -26,6 +25,7 @@ from app.infra.db import build_engine, get_session
 from app.infra.models import Entry
 from app.main import app
 from app.settings import settings
+
 
 # Marker for tests that require the Infisical CLI
 requires_infisical = pytest.mark.skipif(
@@ -193,7 +193,7 @@ async def client(request, session_factory, db_connection: AsyncConnection):
 
 
 @pytest.fixture
-def sync_client() -> Generator[TestClient, None, None]:
+def sync_client() -> Generator[TestClient]:
     """Create a synchronous test client for simple tests."""
     with TestClient(app) as client:
         yield client
@@ -243,10 +243,12 @@ class MockNATSConnection:
 
     async def publish(self, subject: str, payload: bytes):
         """Mock publish method."""
-        self.published_messages.append({
-            "subject": subject,
-            "payload": payload,
-        })
+        self.published_messages.append(
+            {
+                "subject": subject,
+                "payload": payload,
+            }
+        )
 
     async def close(self):
         """Mock close method."""

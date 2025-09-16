@@ -6,9 +6,8 @@ following FIDO2 best practices with conditional UI support.
 
 from __future__ import annotations
 
-import uuid
-
 from typing import Any
+import uuid
 
 from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
 from fastapi.responses import Response as FastAPIResponse

@@ -1,15 +1,13 @@
 """Tests for webhook security verification and rate limiting."""
 
+from datetime import UTC, datetime
 import hashlib
 import hmac
 import json
 import time
 
-from datetime import UTC, datetime
-
-import pytest
-
 from fastapi.testclient import TestClient
+import pytest
 from redis.asyncio import Redis
 
 from app.infra.security.webhook_verification import (

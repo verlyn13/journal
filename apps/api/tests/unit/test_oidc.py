@@ -3,13 +3,11 @@
 from __future__ import annotations
 
 import time
-
 from unittest.mock import AsyncMock, MagicMock, patch
-
-import pytest
 
 from httpx import Response
 from jose import jwt  # noqa: F401
+import pytest
 
 from app.security.oidc import (
     extract_standard_claims,

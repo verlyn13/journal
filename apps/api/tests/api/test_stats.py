@@ -5,9 +5,8 @@ Moved from test_api_admin_extended.py to proper location.
 
 from datetime import datetime, timedelta
 
-import pytest
-
 from httpx import AsyncClient
+import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.infra.models import Entry

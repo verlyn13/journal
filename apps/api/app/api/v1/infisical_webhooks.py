@@ -6,13 +6,12 @@ including automated key rotation, secret updates, and health monitoring.
 
 from __future__ import annotations
 
+from datetime import UTC, datetime
 import hashlib
 import hmac
 import json
 import logging
 import os
-
-from datetime import UTC, datetime
 from typing import Any
 
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Request, status
@@ -399,7 +398,7 @@ async def infisical_health_check(
 
     # Determine overall status
     component_statuses = [comp.get("status") for comp in health_results["components"].values()]
-    if all(status == "healthy" for status in component_statuses if status not in ["skipped"]):
+    if all(status == "healthy" for status in component_statuses if status != "skipped"):
         health_results["overall_status"] = "healthy"
     elif any(status == "healthy" for status in component_statuses):
         health_results["overall_status"] = "degraded"

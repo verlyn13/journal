@@ -43,7 +43,7 @@ permissions:
   security-events: write
 
 env:
-  PYTHON_VERSION: "3.12"
+  PYTHON_VERSION: "3.13"
   UV_CACHE_DIR: /tmp/.uv-cache
   INFISICAL_CLI_VERSION: "0.42.1"  # Pinned version for deterministic builds
   INFISICAL_CLI_REQUIRED: "true"  # This workflow needs CLI for E2E tests

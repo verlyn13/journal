@@ -1,12 +1,11 @@
 from __future__ import annotations
 
+from collections import deque
 import hashlib
 import math
 import os
 import random
 import time
-
-from collections import deque
 
 from app.telemetry.metrics_runtime import inc as metrics_inc
 

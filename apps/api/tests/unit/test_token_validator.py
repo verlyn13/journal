@@ -4,7 +4,6 @@ from datetime import UTC, datetime, timedelta
 from uuid import uuid4
 
 import pytest
-
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.domain.auth.token_validator import TokenValidator

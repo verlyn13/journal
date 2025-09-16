@@ -4,11 +4,9 @@ Tests the Infisical CLI v0.42.1 integration client with mocked CLI calls.
 """
 
 import json
-
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
-
 from redis.exceptions import RedisError
 
 from app.infra.secrets import (

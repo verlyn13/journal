@@ -1,8 +1,7 @@
 from __future__ import annotations
 
-import time
-
 from collections import defaultdict
+import time
 
 
 _state: dict[str, tuple[float, int]] = defaultdict(lambda: (0.0, 0))

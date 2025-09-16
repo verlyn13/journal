@@ -16,7 +16,7 @@ on:
         default: ""
 
 env:
-  PYTHON_VERSION: "3.12"
+  PYTHON_VERSION: "3.13"
   UV_CACHE_DIR: /tmp/.uv-cache
   INFISICAL_CLI_VERSION: "0.42.1"  # Pinned version for deterministic builds
   INFISICAL_CLI_REQUIRED: "false"  # Most API tests don't need Infisical CLI
@@ -46,7 +46,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: '3.13'
       - name: Install uv
         uses: astral-sh/setup-uv@v4
       - name: Install deps
@@ -105,7 +105,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: '3.13'
       - name: Install uv
         uses: astral-sh/setup-uv@v4
       - name: Install deps
@@ -181,7 +181,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: '3.13'
       - name: Install uv
         uses: astral-sh/setup-uv@v4
       - name: Install deps
@@ -246,7 +246,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: '3.13'
       - name: Install uv
         uses: astral-sh/setup-uv@v4
       - name: Install deps

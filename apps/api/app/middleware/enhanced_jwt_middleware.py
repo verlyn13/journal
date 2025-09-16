@@ -218,12 +218,14 @@ async def get_current_user(
     middleware = EnhancedJWTMiddleware()
 
     # Mock request with authorization header
-    mock_request = Request({
-        "type": "http",
-        "method": request.method,
-        "url": str(request.url),
-        "headers": [(b"authorization", f"Bearer {credentials.credentials}".encode())],
-    })
+    mock_request = Request(
+        {
+            "type": "http",
+            "method": request.method,
+            "url": str(request.url),
+            "headers": [(b"authorization", f"Bearer {credentials.credentials}".encode())],
+        }
+    )
 
     claims = await middleware(mock_request)
 

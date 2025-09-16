@@ -6,9 +6,8 @@ with support for conditional UI (autofill), proper origin validation, and no fin
 
 from __future__ import annotations
 
-import json
-
 from datetime import UTC, datetime, timedelta
+import json
 from typing import TYPE_CHECKING, Any
 from uuid import UUID
 

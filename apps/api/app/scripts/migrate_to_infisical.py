@@ -5,23 +5,21 @@ secrets to Infisical secret management with rollback capabilities.
 """
 
 import asyncio
-import json
-import logging
-import os
-import shutil
-import sys
-
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 from datetime import UTC, datetime
+import json
+import logging
+import os
 from pathlib import Path
+import shutil
+import sys
 from typing import Any
-
-import typer
 
 from rich.console import Console
 from rich.progress import Progress, SpinnerColumn, TextColumn
 from rich.table import Table
+import typer
 
 
 # Add the app directory to the path so we can import modules
@@ -38,7 +36,7 @@ from app.settings import settings
 
 
 @asynccontextmanager
-async def get_migration_session() -> AsyncGenerator[AsyncSession, None]:
+async def get_migration_session() -> AsyncGenerator[AsyncSession]:
     """Get a database session for migration operations."""
     sm = sessionmaker_for(build_engine())
     async with sm() as session:

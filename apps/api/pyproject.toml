@@ -12,12 +12,11 @@ classifiers = [
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Framework :: FastAPI",
     "Topic :: Internet :: WWW/HTTP :: HTTP Servers",
 ]
-requires-python = ">=3.11"
+requires-python = ">=3.13"
 dependencies = [
     "fastapi[standard]>=0.115.0",
     "uvicorn[standard]>=0.30.0",
@@ -64,7 +63,7 @@ dev-dependencies = [
     "factory-boy>=3.3.0",
     "faker>=25.0.0",
     # Code quality
-    "ruff>=0.6.0",
+    "ruff>=0.13.0",
     "mypy==1.17.1",
     "pre-commit>=3.8.0",
     # Security
@@ -106,17 +105,17 @@ build-backend = "hatchling.build"
 [tool.hatch.build.targets.wheel]
 packages = ["app"]
 
-# Ruff configuration (v0.8.4+ with latest features)
+# Ruff configuration (v0.13.0+ with modern best practices)
 [tool.ruff]
-target-version = "py311"
+# Infer target-version from requires-python
 line-length = 100
 fix = true
 unsafe-fixes = false  # Prevent unsafe auto-fixes
 show-fixes = true
-preview = true  # Enable preview features for latest improvements
 output-format = "concise"  # More readable output
 cache-dir = ".ruff_cache"
 respect-gitignore = true
+force-exclude = true  # Make pre-commit honor excludes
 exclude = [
     ".git",
     "__pycache__",
@@ -132,6 +131,10 @@ exclude = [
 ]
 
 [tool.ruff.lint]
+# Enable preview rules explicitly (not by prefix)
+preview = true
+explicit-preview-rules = true
+
 # Phased approach: enable critical rules first
 select = [
     # Core rules (always enabled)
@@ -260,19 +263,10 @@ unfixable = [
 ]
 
 [tool.ruff.lint.isort]
-split-on-trailing-comma = false
 combine-as-imports = true
+force-sort-within-sections = true
 known-first-party = ["app", "tests"]
-section-order = [
-    "future",
-    "standard-library",
-    "third-party",
-    "first-party",
-    "local-folder",
-]
-force-single-line = false
 lines-after-imports = 2
-lines-between-types = 1
 
 [tool.ruff.lint.pylint]
 max-args = 10
@@ -426,7 +420,7 @@ docstring-code-line-length = "dynamic"
 
 # MyPy configuration
 [tool.mypy]
-python_version = "3.11"
+python_version = "3.13"
 plugins = ["sqlalchemy.ext.mypy.plugin", "pydantic.mypy"]
 strict = true
 warn_return_any = true

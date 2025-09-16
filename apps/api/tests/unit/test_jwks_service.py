@@ -2,14 +2,12 @@
 
 from __future__ import annotations
 
+from datetime import UTC, datetime, timedelta
 import hashlib
 import json
-
-from datetime import UTC, datetime, timedelta
 from unittest.mock import AsyncMock, patch
 
 import pytest
-
 from redis.asyncio import Redis
 from sqlalchemy.ext.asyncio import AsyncSession
 

@@ -2,11 +2,10 @@
 
 from __future__ import annotations
 
-import hashlib
-import logging
-
 from collections.abc import Awaitable
 from dataclasses import dataclass
+import hashlib
+import logging
 from typing import Any, ClassVar
 from uuid import UUID
 
