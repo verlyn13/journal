@@ -390,6 +390,9 @@ convention = "google"
 "app/models/**/*.py" = [
     "RUF012", # mutable-class-default (SQLModel/Pydantic)
 ]
+"app/types/__init__.py" = [
+    "A005",   # module shadows standard library but uses qualified imports
+]
 
 [tool.ruff.format]
 quote-style = "double"

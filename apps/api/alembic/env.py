@@ -12,10 +12,9 @@ if os.getenv("ALEMBIC_SKIP", "0") == "1":
 # Suppress duplicate logging
 logging.getLogger("alembic.runtime.migration").setLevel(logging.WARNING)
 
+from alembic import context
 from sqlalchemy import create_engine, pool
 from sqlmodel import SQLModel
-
-from alembic import context
 
 
 # Check for skip via -x argument

@@ -10,6 +10,7 @@ from pathlib import Path
 import shutil
 import uuid
 
+from alembic import command
 from alembic.config import Config
 from fastapi.testclient import TestClient
 from httpx import ASGITransport, AsyncClient
@@ -19,7 +20,6 @@ from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncConnection, AsyncEngine, AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 
-from alembic import command
 from app.infra.auth import require_user
 from app.infra.db import build_engine, get_session
 from app.infra.models import Entry
