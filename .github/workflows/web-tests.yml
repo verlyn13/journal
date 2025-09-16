@@ -146,6 +146,7 @@ jobs:
 
       - name: Alembic upgrade
         env:
+          PGUSER: journal
           JOURNAL_DB_URL: postgresql+asyncpg://journal:journal@localhost:5432/journal
           DATABASE_URL_SYNC: postgresql://journal:journal@localhost:5432/journal
         working-directory: apps/api

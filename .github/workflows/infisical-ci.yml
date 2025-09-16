@@ -45,7 +45,7 @@ permissions:
 env:
   PYTHON_VERSION: "3.12"
   UV_CACHE_DIR: /tmp/.uv-cache
-  INFISICAL_CLI_VERSION: "0.42.1"  # Pinned version for deterministic builds
+  INFISICAL_CLI_VERSION: "latest"  # Note: Infisical doesn't support version pinning via APT
   INFISICAL_CLI_REQUIRED: "true"  # This workflow needs CLI for E2E tests
 
 jobs:
@@ -132,17 +132,9 @@ jobs:
           done
       
       # Install Infisical CLI for testing
-      - name: Cache Infisical CLI
+      - name: Install Infisical CLI
         if: env.INFISICAL_CLI_REQUIRED == 'true'
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/infisical
-          key: infisical-cli-${{ env.INFISICAL_CLI_VERSION }}-${{ runner.os }}
-          restore-keys: |
-            infisical-cli-${{ env.INFISICAL_CLI_VERSION }}-
-
-      - name: Install Infisical CLI (pinned, cached, fallback)
-        if: env.INFISICAL_CLI_REQUIRED == 'true'
+        timeout-minutes: 5
         run: |
           ../../.github/workflows/scripts/install-infisical-cli.sh "${{ env.INFISICAL_CLI_VERSION }}"
           infisical --version
@@ -188,6 +180,7 @@ jobs:
       - name: Run database migrations
         run: uv run alembic upgrade head
         env:
+          PGUSER: journal
           TEST_DB_URL_ASYNC: postgresql+asyncpg://journal:journal@localhost:5433/journal_infisical_test
           TEST_DB_URL_SYNC: postgresql+psycopg://journal:journal@localhost:5433/journal_infisical_test
           JOURNAL_DB_URL: postgresql+asyncpg://journal:journal@localhost:5433/journal_infisical_test
@@ -327,17 +320,9 @@ jobs:
             sleep 1
           done
       
-      - name: Cache Infisical CLI
+      - name: Install Infisical CLI
         if: env.INFISICAL_CLI_REQUIRED == 'true'
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/infisical
-          key: infisical-cli-${{ env.INFISICAL_CLI_VERSION }}-${{ runner.os }}
-          restore-keys: |
-            infisical-cli-${{ env.INFISICAL_CLI_VERSION }}-
-
-      - name: Install Infisical CLI (pinned, cached, fallback)
-        if: env.INFISICAL_CLI_REQUIRED == 'true'
+        timeout-minutes: 5
         run: |
           ../../.github/workflows/scripts/install-infisical-cli.sh "${{ env.INFISICAL_CLI_VERSION }}"
       
@@ -405,17 +390,9 @@ jobs:
       - name: Install dependencies
         run: uv sync --all-extras --dev
       
-      - name: Cache Infisical CLI
+      - name: Install Infisical CLI
         if: env.INFISICAL_CLI_REQUIRED == 'true'
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/infisical
-          key: infisical-cli-${{ env.INFISICAL_CLI_VERSION }}-${{ runner.os }}
-          restore-keys: |
-            infisical-cli-${{ env.INFISICAL_CLI_VERSION }}-
-
-      - name: Install Infisical CLI (pinned, cached, fallback)
-        if: env.INFISICAL_CLI_REQUIRED == 'true'
+        timeout-minutes: 5
         run: |
           ../../.github/workflows/scripts/install-infisical-cli.sh "${{ env.INFISICAL_CLI_VERSION }}"
       
@@ -452,7 +429,7 @@ jobs:
           echo "" >> migration-plan.md
           
           echo "## Current Implementation Status" >> migration-plan.md
-          echo "- ✅ Infisical CLI v${{ env.INFISICAL_VERSION }} integration complete" >> migration-plan.md
+          echo "- ✅ Infisical CLI v${{ env.INFISICAL_CLI_VERSION }} integration complete" >> migration-plan.md
           echo "- ✅ Enhanced KeyManager with Infisical backend" >> migration-plan.md
           echo "- ✅ Webhook handlers for automated operations" >> migration-plan.md
           echo "- ✅ Migration script ready for deployment" >> migration-plan.md

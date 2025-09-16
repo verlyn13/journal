@@ -15,6 +15,12 @@ on:
         required: false
         default: ""
 
+env:
+  PYTHON_VERSION: "3.12"
+  UV_CACHE_DIR: /tmp/.uv-cache
+  INFISICAL_CLI_VERSION: "latest"  # Note: Infisical doesn't support version pinning via APT
+  INFISICAL_CLI_REQUIRED: "false"  # Most API tests don't need Infisical CLI
+
 jobs:
   unit_component:
     name: Unit + Component
@@ -119,6 +125,7 @@ jobs:
           PGPASSWORD=journal psql -h localhost -p 5433 -U journal -d journal -c "SELECT 1"
       - name: Alembic upgrade
         env:
+          PGUSER: journal
           DATABASE_URL_SYNC: postgresql://journal:journal@localhost:5433/journal
         run: |
           cd apps/api
@@ -180,6 +187,7 @@ jobs:
         run: uv sync --all-extras --dev
       - name: Prepare database
         env:
+          PGUSER: journal
           TEST_DB_URL: postgresql+asyncpg://journal:journal@localhost:5433/journal
         run: |
           uv run alembic -c alembic.ini upgrade head
@@ -204,6 +212,8 @@ jobs:
     permissions:
       id-token: write  # Required for OIDC authentication
       contents: read   # Required for checking out code
+    env:
+      INFISICAL_CLI_REQUIRED: "true"  # This job needs CLI for migration tests
     services:
       postgres:
         image: pgvector/pgvector:pg16
@@ -240,11 +250,14 @@ jobs:
       - name: Install deps
         run: uv sync --all-extras --dev
       - name: Install Infisical CLI
+        if: env.INFISICAL_CLI_REQUIRED == 'true'
+        timeout-minutes: 5
         run: |
-          curl -1sLf 'https://dl.cloudsmith.io/public/infisical/infisical-cli/setup.deb.sh' | sudo -E bash
-          sudo apt-get update && sudo apt-get install infisical
+          ../../.github/workflows/scripts/install-infisical-cli.sh "${{ env.INFISICAL_CLI_VERSION }}"
+          infisical --version
       - name: Prepare database
         env:
+          PGUSER: journal
           DATABASE_URL_SYNC: postgresql://journal:journal@localhost:5433/journal
         run: |
           uv run alembic -c alembic.ini upgrade head

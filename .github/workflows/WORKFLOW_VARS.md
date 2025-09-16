@@ -13,7 +13,7 @@ env:
   UV_CACHE_DIR: /tmp/.uv-cache
 
   # Infisical CLI configuration
-  INFISICAL_CLI_VERSION: "0.42.1"  # Pinned version for deterministic builds
+  INFISICAL_CLI_VERSION: "latest"  # Note: APT repo doesn't support version pinning
   INFISICAL_CLI_REQUIRED: "true"   # Set to "false" for jobs that don't need it
 ```
 
@@ -70,23 +70,15 @@ env:
 
 ## Infisical CLI Installation
 
-Use the cached, pinned installer for deterministic builds:
+Use the installer script with timeouts for reliability:
 
 ```yaml
 # Only if INFISICAL_CLI_REQUIRED == 'true'
-- name: Cache Infisical CLI
+- name: Install Infisical CLI
   if: env.INFISICAL_CLI_REQUIRED == 'true'
-  uses: actions/cache@v4
-  with:
-    path: ~/.cache/infisical
-    key: infisical-cli-${{ env.INFISICAL_CLI_VERSION }}-${{ runner.os }}
-    restore-keys: |
-      infisical-cli-${{ env.INFISICAL_CLI_VERSION }}-
-
-- name: Install Infisical CLI (pinned, cached, fallback)
-  if: env.INFISICAL_CLI_REQUIRED == 'true'
+  timeout-minutes: 5
   run: |
-    .github/workflows/scripts/install-infisical-cli.sh "${{ env.INFISICAL_CLI_VERSION }}"
+    .github/workflows/scripts/install-infisical-cli.sh
 ```
 
 ## Server Wait Logic

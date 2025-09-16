@@ -115,6 +115,7 @@ jobs:
       - name: Run database migrations
         run: uv run alembic upgrade head
         env:
+          PGUSER: journal
           JOURNAL_DB_URL: postgresql+asyncpg://journal:journal@localhost:5432/journal_test
       
       - name: Run tests with coverage
@@ -192,10 +193,9 @@ jobs:
         run: uv sync --all-extras --dev
       
       - name: Run database migrations
-        run: |
-          export PGUSER=journal
-          uv run alembic upgrade head
+        run: uv run alembic upgrade head
         env:
+          PGUSER: journal
           DATABASE_URL: postgresql+asyncpg://journal:journal@localhost:5432/journal_integration
           DATABASE_URL_SYNC: postgresql://journal:journal@localhost:5432/journal_integration
           JOURNAL_DB_URL: postgresql+asyncpg://journal:journal@localhost:5432/journal_integration
