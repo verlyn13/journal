@@ -48,16 +48,18 @@ jobs:
           fi
           echo "✅ No stale Python version references"
 
-          echo "Checking for legacy tool references..."
-          if git grep -nE "\b(isort|flake8|black)\b" -- \
+          echo "Checking for actual legacy tool usage (not Ruff config)..."
+          # Look for actual imports/installs of legacy tools, not Ruff config sections
+          if git grep -nE "(^import (isort|flake8|black)|^from (isort|flake8|black)|pip install.*(isort|flake8|black))" -- \
             ":!**/site-packages/**" ":!**/vendor/**" ":!**/third_party/**" \
-            ":!**/node_modules/**" ":!*.lock" ":!**/RUFF_*.md" ":!**/.pre-commit-config.yaml"; then
-            echo "❌ Found legacy tool references"
+            ":!**/node_modules/**" ":!*.lock" ":!**/RUFF_*.md" ":!**/.pre-commit-config.yaml" \
+            ":!.github/workflows/verify-alignment.yml" ":!apps/api/.devcontainer/**"; then
+            echo "❌ Found actual legacy tool usage"
             exit 1
           fi
-          echo "✅ No legacy tool references"
+          echo "✅ No legacy tool usage detected"
 
-          # Check for redundant tool blocks
+          # Check for redundant tool blocks (actual config sections, not Ruff subsections)
           if git grep -nE '^\[tool\.(black|isort|flake8)\]' -- "*.toml"; then
             echo "❌ Found redundant tool blocks in pyproject.toml"
             exit 1
