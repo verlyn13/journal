@@ -52,7 +52,7 @@ fi
 
 # Required Ruff 0.13.0 mentions
 echo "Checking for Ruff 0.13.0 mentions..."
-if ! rg -q 'Ruff 0\.13\.0' README.md 2>/dev/null && ! rg -q 'ruff.*0\.13\.0' README.md 2>/dev/null; then
+if ! rg -q 'Ruff 0.13.0' README.md 2>/dev/null && ! rg -q 'ruff.*0.13.0' README.md 2>/dev/null; then
   echo -e "${RED}❌ README.md missing Ruff 0.13.0 mention${NC}"
   fail=1
 else
@@ -60,7 +60,7 @@ else
 fi
 
 if [ -f "CONTRIBUTING.md" ]; then
-  if ! rg -q 'Ruff 0\.13\.0' CONTRIBUTING.md 2>/dev/null && ! rg -q 'ruff.*0\.13\.0' CONTRIBUTING.md 2>/dev/null; then
+  if ! rg -q 'Ruff 0.13.0' CONTRIBUTING.md 2>/dev/null && ! rg -q 'ruff.*0.13.0' CONTRIBUTING.md 2>/dev/null; then
     echo -e "${RED}❌ CONTRIBUTING.md missing Ruff 0.13.0 mention${NC}"
     fail=1
   else
@@ -69,7 +69,7 @@ if [ -f "CONTRIBUTING.md" ]; then
 fi
 
 if [ -f "docs/dev-setup.md" ]; then
-  if ! rg -q 'Ruff 0\.13\.0' docs/dev-setup.md 2>/dev/null && ! rg -q 'ruff.*0\.13\.0' docs/dev-setup.md 2>/dev/null; then
+  if ! rg -q 'Ruff 0.13.0' docs/dev-setup.md 2>/dev/null && ! rg -q 'ruff.*0.13.0' docs/dev-setup.md 2>/dev/null; then
     echo -e "${RED}❌ docs/dev-setup.md missing Ruff 0.13.0 mention${NC}"
     fail=1
   else
