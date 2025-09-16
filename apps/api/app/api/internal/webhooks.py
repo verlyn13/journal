@@ -11,6 +11,7 @@ from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from redis.asyncio import Redis
+from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.domain.auth.audit_service import AuditService
@@ -340,7 +341,6 @@ async def webhook_health(
 
     try:
         # Check database connectivity with a simple query
-        from sqlalchemy import text
         await session.execute(text("SELECT 1"))
         db_healthy = True
     except Exception:  # noqa: BLE001 - health check should be resilient

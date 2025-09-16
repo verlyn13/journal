@@ -18,6 +18,7 @@ from typing import Any
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Request, status
 from pydantic import BaseModel, Field
 from redis.asyncio import Redis
+from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.infra.db import get_session
@@ -312,7 +313,6 @@ async def infisical_health_check(
     # Check basic dependencies first
     try:
         # Test database connectivity
-        from sqlalchemy import text
         await session.execute(text("SELECT 1"))
         health_results["components"]["database"] = {
             "status": "healthy",
