@@ -38,15 +38,22 @@ services:
 
 # In job steps:
 env:
+  # PostgreSQL environment variables (highest priority)
+  PGUSER: journal
+  PGPASSWORD: journal
+  PGHOST: localhost
+  PGPORT: 5432  # or 5433 for non-standard
+  PGDATABASE: journal_test  # or journal_integration, journal_e2e_test
+
   # Primary database URLs (single source of truth)
   DATABASE_URL: postgresql+asyncpg://journal:journal@localhost:5432/journal_test
-  DATABASE_URL_SYNC: postgresql://journal:journal@localhost:5432/journal_test
+  DATABASE_URL_SYNC: postgresql+psycopg://journal:journal@localhost:5432/journal_test
+
+  # Settings.py compatibility (JOURNAL_ prefix)
+  JOURNAL_DB_URL_SYNC: postgresql+psycopg://journal:journal@localhost:5432/journal_test
 
   # Backward compatibility aliases (if needed)
   JOURNAL_DB_URL: ${{ env.DATABASE_URL }}
-
-  # Explicit user for CLI tools
-  PGUSER: journal
 ```
 
 ## Redis Configuration

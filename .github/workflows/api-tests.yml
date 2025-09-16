@@ -126,7 +126,12 @@ jobs:
       - name: Alembic upgrade
         env:
           PGUSER: journal
-          DATABASE_URL_SYNC: postgresql://journal:journal@localhost:5433/journal
+          PGPASSWORD: journal
+          PGHOST: localhost
+          PGPORT: 5433
+          PGDATABASE: journal
+          DATABASE_URL_SYNC: postgresql+psycopg://journal:journal@localhost:5433/journal
+          JOURNAL_DB_URL_SYNC: postgresql+psycopg://journal:journal@localhost:5433/journal
         run: |
           cd apps/api
           uv run alembic -c alembic.ini upgrade head
@@ -188,6 +193,12 @@ jobs:
       - name: Prepare database
         env:
           PGUSER: journal
+          PGPASSWORD: journal
+          PGHOST: localhost
+          PGPORT: 5433
+          PGDATABASE: journal
+          DATABASE_URL_SYNC: postgresql+psycopg://journal:journal@localhost:5433/journal
+          JOURNAL_DB_URL_SYNC: postgresql+psycopg://journal:journal@localhost:5433/journal
           TEST_DB_URL: postgresql+asyncpg://journal:journal@localhost:5433/journal
         run: |
           uv run alembic -c alembic.ini upgrade head
@@ -258,7 +269,12 @@ jobs:
       - name: Prepare database
         env:
           PGUSER: journal
-          DATABASE_URL_SYNC: postgresql://journal:journal@localhost:5433/journal
+          PGPASSWORD: journal
+          PGHOST: localhost
+          PGPORT: 5433
+          PGDATABASE: journal
+          DATABASE_URL_SYNC: postgresql+psycopg://journal:journal@localhost:5433/journal
+          JOURNAL_DB_URL_SYNC: postgresql+psycopg://journal:journal@localhost:5433/journal
         run: |
           uv run alembic -c alembic.ini upgrade head
       - name: Get GitHub OIDC Token

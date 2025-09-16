@@ -147,8 +147,13 @@ jobs:
       - name: Alembic upgrade
         env:
           PGUSER: journal
+          PGPASSWORD: journal
+          PGHOST: localhost
+          PGPORT: 5432
+          PGDATABASE: journal
+          DATABASE_URL_SYNC: postgresql+psycopg://journal:journal@localhost:5432/journal
+          JOURNAL_DB_URL_SYNC: postgresql+psycopg://journal:journal@localhost:5432/journal
           JOURNAL_DB_URL: postgresql+asyncpg://journal:journal@localhost:5432/journal
-          DATABASE_URL_SYNC: postgresql://journal:journal@localhost:5432/journal
         working-directory: apps/api
         run: |
           set -e

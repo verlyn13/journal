@@ -116,6 +116,12 @@ jobs:
         run: uv run alembic upgrade head
         env:
           PGUSER: journal
+          PGPASSWORD: journal
+          PGHOST: localhost
+          PGPORT: 5432
+          PGDATABASE: journal_test
+          DATABASE_URL_SYNC: postgresql+psycopg://journal:journal@localhost:5432/journal_test
+          JOURNAL_DB_URL_SYNC: postgresql+psycopg://journal:journal@localhost:5432/journal_test
           JOURNAL_DB_URL: postgresql+asyncpg://journal:journal@localhost:5432/journal_test
       
       - name: Run tests with coverage
@@ -196,8 +202,13 @@ jobs:
         run: uv run alembic upgrade head
         env:
           PGUSER: journal
+          PGPASSWORD: journal
+          PGHOST: localhost
+          PGPORT: 5432
+          PGDATABASE: journal_integration
           DATABASE_URL: postgresql+asyncpg://journal:journal@localhost:5432/journal_integration
-          DATABASE_URL_SYNC: postgresql://journal:journal@localhost:5432/journal_integration
+          DATABASE_URL_SYNC: postgresql+psycopg://journal:journal@localhost:5432/journal_integration
+          JOURNAL_DB_URL_SYNC: postgresql+psycopg://journal:journal@localhost:5432/journal_integration
           JOURNAL_DB_URL: postgresql+asyncpg://journal:journal@localhost:5432/journal_integration
 
       - name: Start API server in background

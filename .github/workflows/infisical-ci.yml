@@ -178,10 +178,17 @@ jobs:
       
       # Run database migrations for testing
       - name: Run database migrations
-        run: uv run alembic upgrade head
+        run: |
+          echo "DATABASE_URL_SYNC=${DATABASE_URL_SYNC}"
+          uv run alembic upgrade head
         env:
           PGUSER: journal
-          DATABASE_URL_SYNC: postgresql://journal:journal@localhost:5433/journal_infisical_test
+          PGPASSWORD: journal
+          PGHOST: localhost
+          PGPORT: 5433
+          PGDATABASE: journal_infisical_test
+          DATABASE_URL_SYNC: postgresql+psycopg://journal:journal@localhost:5433/journal_infisical_test
+          JOURNAL_DB_URL_SYNC: postgresql+psycopg://journal:journal@localhost:5433/journal_infisical_test
           TEST_DB_URL_ASYNC: postgresql+asyncpg://journal:journal@localhost:5433/journal_infisical_test
           TEST_DB_URL_SYNC: postgresql+psycopg://journal:journal@localhost:5433/journal_infisical_test
           JOURNAL_DB_URL: postgresql+asyncpg://journal:journal@localhost:5433/journal_infisical_test
