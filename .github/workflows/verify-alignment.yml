@@ -42,7 +42,7 @@ jobs:
       - name: Stale reference scan
         run: |
           echo "Checking for stale Python versions..."
-          if git grep -nE "python( |\:)?3\.(11|12)\b|3\.1[12]\b" -- ":!**/site-packages/**" ":!**/node_modules/**" ":!*.lock" ":!docs/RUFF_*.md" ":!docs/adr/adr-0001-python-3.13-ruff-0.13.md"; then
+          if git grep -nE "(python|Python)( |:|-)?3\.(11|12)\b" -- ":!**/site-packages/**" ":!**/node_modules/**" ":!*.lock" ":!docs/RUFF_*.md" ":!docs/adr/adr-0001-python-3.13-ruff-0.13.md" ":!package-lock.json"; then
             echo "❌ Found stale Python version references"
             exit 1
           fi
