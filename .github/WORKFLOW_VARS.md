@@ -104,31 +104,49 @@ SERVER_URL=http://localhost:8000 MAX_RETRIES=30 REQUIRES_READY=0 ./scripts/wait_
 
 ## Infisical CLI Testing Setup
 
-All workflows that require Infisical CLI use the deterministic testing setup:
+**CRITICAL**: All CI/CD workflows MUST use the shim for deterministic testing.
 
 ```yaml
 - name: Setup Infisical CLI for Testing
   uses: ./.github/actions/setup-infisical-testing
   with:
-    use-shim: "true"     # Use deterministic shim (recommended for CI)
-    version: "0.42.1"    # Version (ignored when using shim)
+    use-shim: "true"     # ALWAYS true for CI/CD - no exceptions
+    version: "0.42.1"    # Ignored when using shim
 ```
 
-### Testing Modes:
-- **Shim Mode (recommended)**: Zero network dependencies, deterministic responses
-- **Real CLI Mode**: Downloads actual CLI for production-like testing
+### Why Shim is Mandatory in CI
 
-### Shim Features:
-- No network downloads or 404/500 failures
-- Predictable secret responses for testing
-- Full command compatibility for CI workflows
-- Exercises client-side logic end-to-end
-- Located at `.github/scripts/infisical-shim.sh`
+1. **Zero network dependencies** - No flaky downloads or API timeouts
+2. **Deterministic results** - Same inputs always produce same outputs
+3. **Fast execution** - Instant responses, no waiting
+4. **Version stability** - Returns `v0.42.1-shim` consistently
 
-### When to Use Shim vs Real CLI:
-- **CI/CD workflows**: Always use shim for deterministic results
-- **Local development**: Use real CLI for actual Infisical integration
-- **Production deployment**: Use real CLI with proper authentication
+### Version Management
+
+**SINGLE SOURCE OF TRUTH**: All version parsing MUST use:
+```python
+from app.infra.secrets.version import parse_cli_version
+```
+
+This handles:
+- Standard format: `infisical version 0.42.1`
+- Shim format: `Infisical CLI v0.42.1-shim`
+- Multi-line output (takes first line only)
+
+### Shim Details
+- **Location**: `.github/scripts/infisical-shim.sh`
+- **Version Output**: `Infisical CLI v0.42.1-shim`
+- **Documentation**: `.github/scripts/SHIM_GUIDE.md`
+
+### When to Use What
+
+| Environment | Tool | Reason |
+|------------|------|--------|
+| GitHub Actions | Shim | Mandatory - deterministic CI |
+| Local Development | Real CLI | Access actual secrets |
+| Production | Real CLI | Production secrets |
+| Unit/Integration Tests | Shim | Fast, predictable |
+| E2E Tests | Real CLI | Test real integration |
 
 ## Security Scanning
 
