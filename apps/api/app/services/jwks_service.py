@@ -2,11 +2,10 @@
 
 from __future__ import annotations
 
+from datetime import UTC, datetime, timedelta
 import hashlib
 import json
 import logging
-
-from datetime import UTC, datetime, timedelta
 from typing import Any, cast
 
 from redis.asyncio import Redis

@@ -4,12 +4,10 @@ Combines tests from test_api_admin.py and test_api_admin_extended.py
 """
 
 import json
-
 from unittest.mock import AsyncMock
 
-import pytest
-
 from httpx import AsyncClient
+import pytest
 
 
 @pytest.mark.component()

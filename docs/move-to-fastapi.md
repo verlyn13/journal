@@ -62,7 +62,7 @@ journal-backend/
 [project]
 name = "journal-backend"
 version = "0.1.0"
-requires-python = ">=3.12"
+requires-python = ">=3.13"
 dependencies = [
   "fastapi[standard]==0.116.1",        # CLI + docs + OpenAPI 3.1
   "uvicorn[standard]==0.35.0",

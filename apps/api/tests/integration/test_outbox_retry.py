@@ -4,7 +4,6 @@ import json
 import os
 
 import pytest
-
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -21,7 +20,6 @@ class MockJS:
         self.calls += 1
         if self.calls <= self.fail_times:
             raise RuntimeError("simulated publish failure")
-        return
 
 
 class MockNC:

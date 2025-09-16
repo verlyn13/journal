@@ -1,45 +1,43 @@
 :root {
-	/* Colors */
-	--bg: #0f1115;
-	--bg-light: #fafaf7;
-	--surface-dark: rgba(255, 255, 255, 0.04);
-	--surface-light: rgba(15, 17, 21, 0.03);
-	--accent-1: #00b894; /* Evergreen Aqua */
-	--accent-2: #ffd166; /* Warm Sand */
-	--success: #2ecc71;
-	--warning: #f39c12;
-	--danger: #e74c3c;
-	--info: #3498db;
+  /* Colors */
+  --bg: #0f1115;
+  --bg-light: #fafaf7;
+  --surface-dark: rgba(255, 255, 255, 0.04);
+  --surface-light: rgba(15, 17, 21, 0.03);
+  --accent-1: #00b894; /* Evergreen Aqua */
+  --accent-2: #ffd166; /* Warm Sand */
+  --success: #2ecc71;
+  --warning: #f39c12;
+  --danger: #e74c3c;
+  --info: #3498db;
 
-	/* Typography */
-	--font-body: "Literata", "IBM Plex Serif", serif;
-	--font-ui:
-		"Inter", "Noto Sans", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-	--font-code:
-		"JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-	--line-height: 1.7;
-	--max-measure: 72ch;
+  /* Typography */
+  --font-body: "Literata", "IBM Plex Serif", serif;
+  --font-ui: "Inter", "Noto Sans", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  --font-code: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --line-height: 1.7;
+  --max-measure: 72ch;
 
-	/* Radius / elevation */
-	--radius-2xl: 20px;
-	--focus-ring: 0 0 0 2px var(--accent-1);
+  /* Radius / elevation */
+  --radius-2xl: 20px;
+  --focus-ring: 0 0 0 2px var(--accent-1);
 }
 
 html,
 body {
-	height: 100%;
+  height: 100%;
 }
 body {
-	margin: 0;
-	background: var(--bg);
-	color: #edeff5;
-	font-family: var(--font-body);
-	line-height: var(--line-height);
+  margin: 0;
+  background: var(--bg);
+  color: #edeff5;
+  font-family: var(--font-body);
+  line-height: var(--line-height);
 }
 
 #react-editor-root {
-	width: 100%;
-	height: 100vh;
-	margin: 0;
-	padding: 0;
+  width: 100%;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
 }

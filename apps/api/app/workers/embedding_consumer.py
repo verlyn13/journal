@@ -5,11 +5,9 @@ import json
 import logging
 import os
 import random
-
 from typing import Any
 
 import nats
-
 from nats.aio.client import Client as NatsClient
 from nats.aio.msg import Msg as NatsMessage
 from nats.js import JetStreamContext
@@ -70,7 +68,7 @@ class EmbeddingConsumer:
                 )
                 await asyncio.sleep(jitter)
         if not self.js or not self.nc:
-            logger.error("Failed to connect to NATS after %s attempts: %s", max_attempts, last_err)
+            logger.error("Failed to connect to NATS after %s attempts", max_attempts)
             if last_err is not None:
                 raise last_err
             raise RuntimeError("Failed to connect to NATS")

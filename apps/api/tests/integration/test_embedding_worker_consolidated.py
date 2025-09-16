@@ -4,13 +4,11 @@ Combines tests from test_embedding_worker.py and test_embedding_worker_extended.
 """
 
 import asyncio
-import json
-
 from contextlib import suppress
+import json
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
-
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 

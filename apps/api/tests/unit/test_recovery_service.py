@@ -5,7 +5,6 @@ from __future__ import annotations
 from uuid import uuid4
 
 import pytest
-
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -16,12 +15,12 @@ from app.infra.sa_models import RecoveryCode, User
 class TestRecoveryService:
     """Test suite for RecoveryService."""
 
-    @pytest.fixture
+    @pytest.fixture()
     def recovery_service(self, db_session: AsyncSession) -> RecoveryService:
         """Create RecoveryService instance."""
         return RecoveryService(db_session)
 
-    @pytest.fixture
+    @pytest.fixture()
     async def test_user(self, db_session: AsyncSession) -> User:
         """Create test user."""
         user = User(

@@ -5,11 +5,9 @@ Integration tests for embedding worker functionality.
 import asyncio
 import contextlib
 import json
-
 from unittest.mock import AsyncMock
 
 import pytest
-
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 

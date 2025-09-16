@@ -6,7 +6,6 @@ from unittest.mock import AsyncMock
 from uuid import uuid4
 
 import pytest
-
 from redis.asyncio import Redis
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -16,7 +15,7 @@ from app.domain.auth.rate_limiter import AuthRateLimiter
 class TestAuthRateLimiter:
     """Test suite for AuthRateLimiter."""
 
-    @pytest.fixture
+    @pytest.fixture()
     def redis_mock(self) -> AsyncMock:
         """Create mock Redis client."""
         mock = AsyncMock(spec=Redis)
@@ -27,7 +26,7 @@ class TestAuthRateLimiter:
         mock.delete.return_value = 1
         return mock
 
-    @pytest.fixture
+    @pytest.fixture()
     def rate_limiter(self, redis_mock: AsyncMock, db_session: AsyncSession) -> AuthRateLimiter:
         """Create AuthRateLimiter instance."""
         return AuthRateLimiter(redis_mock, db_session)

@@ -3,14 +3,12 @@ Extended test cases for outbox pattern implementation.
 """
 
 import asyncio
-import json
-
 from contextlib import asynccontextmanager, suppress
 from datetime import datetime
+import json
 from uuid import uuid4
 
 import pytest
-
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 

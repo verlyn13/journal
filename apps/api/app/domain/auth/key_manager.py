@@ -2,11 +2,10 @@
 
 from __future__ import annotations
 
-import json
-import logging
-
 from datetime import UTC, datetime, timedelta
 from enum import Enum
+import json
+import logging
 from typing import Any, Protocol, cast
 from uuid import UUID
 
@@ -92,7 +91,9 @@ class KeyMetadata:
             status=status,
             created_at=datetime.fromisoformat(created_at_raw),
             activated_at=(
-                datetime.fromisoformat(activated_at_raw) if isinstance(activated_at_raw, str) else None
+                datetime.fromisoformat(activated_at_raw)
+                if isinstance(activated_at_raw, str)
+                else None
             ),
             expires_at=(datetime.fromisoformat(data["expires_at"]) if data["expires_at"] else None),
         )
@@ -154,7 +155,11 @@ class KeyManager:
         cached_pem = await self.redis.get(self._current_key_cache)
         if isinstance(cached_pem, (bytes, bytearray, str)) and cached_pem:
             try:
-                pem_text = cached_pem.decode() if isinstance(cached_pem, (bytes, bytearray)) else cached_pem
+                pem_text = (
+                    cached_pem.decode()
+                    if isinstance(cached_pem, (bytes, bytearray))
+                    else cached_pem
+                )
                 private_key = Ed25519KeyGenerator.load_private_key_from_pem(pem_text)
                 metadata = await self._get_current_key_metadata()
                 if metadata:
@@ -223,7 +228,11 @@ class KeyManager:
             if isinstance(retiring_pem, (bytes, bytearray, str)) and retiring_pem:
                 retiring_meta = await self._get_retiring_key_metadata()
                 if retiring_meta:
-                    pem_text = retiring_pem.decode() if isinstance(retiring_pem, (bytes, bytearray)) else retiring_pem
+                    pem_text = (
+                        retiring_pem.decode()
+                        if isinstance(retiring_pem, (bytes, bytearray))
+                        else retiring_pem
+                    )
                     priv = Ed25519KeyGenerator.load_private_key_from_pem(pem_text)
                     keys.append(
                         KeyPair(
@@ -459,8 +468,12 @@ class KeyManager:
             current_meta = await self._get_current_key_metadata()
             if current_meta:
                 # store metadata as retiring with short TTL via Redis directly
-                await self._store_key_metadata_with_ttl(current_meta, KeyStatus.RETIRING, int(self.overlap_window.total_seconds()))
-            await self.redis.setex(self._retiring_key_cache, int(self.overlap_window.total_seconds()), current_pem)
+                await self._store_key_metadata_with_ttl(
+                    current_meta, KeyStatus.RETIRING, int(self.overlap_window.total_seconds())
+                )
+            await self.redis.setex(
+                self._retiring_key_cache, int(self.overlap_window.total_seconds()), current_pem
+            )
         except (TimeoutError, RuntimeError, RedisError) as e:
             # If this fails, rotation still proceeds; overlap just won't include retiring
             logger.debug("Could not cache retiring key: %s", e)
@@ -511,7 +524,9 @@ class KeyManager:
         data = json.dumps(metadata.to_dict())
         await self.redis.setex(key, 86400, data)  # 24 hour TTL
 
-    async def _store_key_metadata_with_ttl(self, metadata: KeyMetadata, status: KeyStatus, ttl_seconds: int) -> None:
+    async def _store_key_metadata_with_ttl(
+        self, metadata: KeyMetadata, status: KeyStatus, ttl_seconds: int
+    ) -> None:
         """Store metadata with a custom TTL and status."""
         clone = KeyMetadata(
             kid=metadata.kid,

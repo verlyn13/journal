@@ -38,7 +38,7 @@ describe('Surface Component', () => {
       </Surface>,
     );
     const element = screen.getByTestId('surface');
-    if (typeof CSS !== 'undefined' && CSS.supports('backdrop-filter', 'blur(1px)')) {
+    if (CSS?.supports('backdrop-filter', 'blur(1px)')) {
       expect(element).toHaveStyle('backdrop-filter: blur(20px) saturate(180%)');
     }
   });
@@ -121,7 +121,7 @@ describe('FloatingPanel Component', () => {
       </FloatingPanel>,
     );
     const element = screen.getByTestId('panel');
-    if (typeof CSS !== 'undefined' && CSS.supports('backdrop-filter', 'blur(1px)')) {
+    if (CSS?.supports('backdrop-filter', 'blur(1px)')) {
       expect(element).toHaveStyle('backdrop-filter: blur(20px) saturate(180%)');
     }
   });

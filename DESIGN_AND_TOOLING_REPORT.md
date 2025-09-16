@@ -64,7 +64,7 @@ The Journal application is a full-stack web application built for personal journ
 
 | Technology      | Version | Purpose                           |
 | --------------- | ------- | --------------------------------- |
-| Python          | 3.12+   | Core programming language         |
+| Python          | 3.13+   | Core programming language         |
 | Flask           | 3.1.0   | Web application framework         |
 | SQLAlchemy      | 2.0.36  | ORM and database toolkit          |
 | Flask-Login     | 0.6.3   | User session management           |

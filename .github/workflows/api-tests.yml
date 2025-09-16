@@ -15,13 +15,19 @@ on:
         required: false
         default: ""
 
+env:
+  PYTHON_VERSION: "3.13"
+  UV_CACHE_DIR: /tmp/.uv-cache
+  INFISICAL_CLI_VERSION: "0.42.1"  # Pinned version for deterministic builds
+  INFISICAL_CLI_REQUIRED: "false"  # Most API tests don't need Infisical CLI
+
 jobs:
   unit_component:
     name: Unit + Component
     runs-on: ubuntu-24.04
     services:
       postgres:
-        image: pgvector/pgvector:pg16
+        image: pgvector/pgvector:pg16@sha256:c3c84b85691a264aa3c5b8fc1d611e67d42b0cca8596e3d3d22dc2424c12c4e2
         env:
           POSTGRES_USER: journal
           POSTGRES_PASSWORD: journal
@@ -40,7 +46,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: '3.13'
       - name: Install uv
         uses: astral-sh/setup-uv@v4
       - name: Install deps
@@ -65,7 +71,7 @@ jobs:
     runs-on: ubuntu-24.04
     services:
       postgres:
-        image: pgvector/pgvector:pg16
+        image: pgvector/pgvector:pg16@sha256:c3c84b85691a264aa3c5b8fc1d611e67d42b0cca8596e3d3d22dc2424c12c4e2
         env:
           POSTGRES_USER: journal
           POSTGRES_PASSWORD: journal
@@ -84,7 +90,7 @@ jobs:
           - 4222:4222
           - 8222:8222
       redis:
-        image: redis:7-alpine
+        image: redis:7-alpine@sha256:bb186d083732f669da90be8b0f975a37812b15e913465bb14d845db72a4e3e08
         ports:
           - 6380:6379
         options: >-
@@ -99,11 +105,32 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: '3.13'
       - name: Install uv
         uses: astral-sh/setup-uv@v4
       - name: Install deps
         run: uv sync --all-extras --dev
+      - name: Wait for PostgreSQL
+        run: |
+          sudo apt-get update && sudo apt-get install -y postgresql-client
+          for i in {1..60}; do
+            if pg_isready -h localhost -p 5433 -U journal; then
+              echo "PostgreSQL is ready!"
+              break
+            fi
+            echo "Waiting for PostgreSQL... attempt $i/60"
+            sleep 2
+          done
+          # Verify connection with psql
+          PGPASSWORD=journal psql -h localhost -p 5433 -U journal -d journal -c "SELECT 1"
+      - name: Alembic upgrade
+        timeout-minutes: 5
+        env:
+          DATABASE_URL_SYNC: postgresql+psycopg://journal:journal@localhost:5433/journal
+        run: |
+          cd apps/api
+          # Use -x to pass database URL directly to alembic
+          uv run alembic -x sqlalchemy.url=${DATABASE_URL_SYNC} upgrade head
       - name: Run integration tests
         env:
           TEST_DB_URL: postgresql+asyncpg://journal:journal@localhost:5433/journal
@@ -111,7 +138,7 @@ jobs:
           JOURNAL_REDIS_URL: redis://localhost:6380/0
           RUN_REAL_NATS: '1'
         run: |
-          uv run alembic -c alembic.ini upgrade head
+          cd apps/api
           uv run pytest -m integration --cov=app/infra --cov=app/workers --cov=app/api/v1/search --cov-report=term-missing --cov-report=xml --cov-report=html:htmlcov
       - name: Upload API integration coverage
         uses: actions/upload-artifact@v4
@@ -120,3 +147,223 @@ jobs:
           path: |
             apps/api/htmlcov
             apps/api/coverage.xml
+
+  v2_auth:
+    name: V2 Auth Suite
+    runs-on: ubuntu-24.04
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16@sha256:c3c84b85691a264aa3c5b8fc1d611e67d42b0cca8596e3d3d22dc2424c12c4e2
+        env:
+          POSTGRES_USER: journal
+          POSTGRES_PASSWORD: journal
+          POSTGRES_DB: journal
+        ports:
+          - 5433:5432
+        options: >-
+          --health-cmd "pg_isready -U journal" \
+          --health-interval 10s \
+          --health-timeout 5s \
+          --health-retries 5
+      redis:
+        image: redis:7-alpine@sha256:bb186d083732f669da90be8b0f975a37812b15e913465bb14d845db72a4e3e08
+        ports:
+          - 6380:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    defaults:
+      run:
+        working-directory: apps/api
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+      - name: Install deps
+        run: uv sync --all-extras --dev
+      - name: Prepare database
+        timeout-minutes: 5
+        env:
+          DATABASE_URL_SYNC: postgresql+psycopg://journal:journal@localhost:5433/journal
+        run: |
+          # Use -x to pass database URL directly to alembic
+          uv run alembic -x sqlalchemy.url=${DATABASE_URL_SYNC} upgrade head
+      - name: Run v2 auth tests
+        env:
+          TEST_DB_URL: postgresql+asyncpg://journal:journal@localhost:5433/journal
+          JOURNAL_DB_URL: postgresql+asyncpg://journal:journal@localhost:5433/journal
+          JOURNAL_REDIS_URL: redis://localhost:6380/0
+        run: |
+          uv run pytest tests/test_auth_v2.py -v --maxfail=1 \
+            --junitxml=reports/junit-v2.xml
+      - name: Upload v2 auth reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-v2-auth-reports
+          path: |
+            apps/api/reports/junit-v2.xml
+
+  infisical_integration:
+    name: Infisical Integration Tests
+    runs-on: ubuntu-24.04
+    permissions:
+      id-token: write  # Required for OIDC authentication
+      contents: read   # Required for checking out code
+    env:
+      INFISICAL_CLI_REQUIRED: "true"  # This job needs CLI for migration tests
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16@sha256:c3c84b85691a264aa3c5b8fc1d611e67d42b0cca8596e3d3d22dc2424c12c4e2
+        env:
+          POSTGRES_USER: journal
+          POSTGRES_PASSWORD: journal
+          POSTGRES_DB: journal
+        ports:
+          - 5433:5432
+        options: >-
+          --health-cmd "pg_isready -U journal" \
+          --health-interval 10s \
+          --health-timeout 5s \
+          --health-retries 5
+      redis:
+        image: redis:7-alpine@sha256:bb186d083732f669da90be8b0f975a37812b15e913465bb14d845db72a4e3e08
+        ports:
+          - 6380:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    defaults:
+      run:
+        working-directory: apps/api
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+      - name: Install deps
+        run: uv sync --all-extras --dev
+      - name: Setup Infisical CLI (if required)
+        if: env.INFISICAL_CLI_REQUIRED == 'true'
+        uses: ./.github/actions/setup-infisical-testing
+        with:
+          use-shim: 'true'
+          version: ${{ env.INFISICAL_CLI_VERSION }}
+      - name: Prepare database
+        timeout-minutes: 5
+        env:
+          DATABASE_URL_SYNC: postgresql+psycopg://journal:journal@localhost:5433/journal
+        run: |
+          # Use -x to pass database URL directly to alembic
+          uv run alembic -x sqlalchemy.url=${DATABASE_URL_SYNC} upgrade head
+      - name: Get GitHub OIDC Token
+        id: oidc_token
+        run: |
+          # Request OIDC token from GitHub
+          echo "Requesting GitHub OIDC token..."
+          TOKEN_URL="${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=https://github.com/verlyn13/journal"
+          OIDC_TOKEN=$(curl -H "Authorization: Bearer ${ACTIONS_ID_TOKEN_REQUEST_TOKEN}" "${TOKEN_URL}" | jq -r '.value')
+          
+          # Save token to file for Infisical CLI
+          echo "$OIDC_TOKEN" > /tmp/github_oidc_token
+          echo "GitHub OIDC token obtained successfully"
+      - name: Authenticate with Infisical via GitHub OIDC
+        env:
+          INFISICAL_PROJECT_ID: d01f583a-d833-4375-b359-c702a726ac4d
+          INFISICAL_SERVER_URL: https://secrets.jefahnierocks.com
+          INFISICAL_ENVIRONMENT: prod
+        run: |
+          echo "Authenticating with Infisical via GitHub OIDC (ci@github identity)..."
+          infisical --version
+          
+          # Use the GitHub OIDC token to authenticate with Infisical
+          # Note: This requires ci@github identity configured in Infisical
+          # with subjects matching repo:verlyn13/journal:*
+          
+          # Method 1: If Infisical CLI supports direct OIDC
+          if infisical login --method=oidc --jwt-file=/tmp/github_oidc_token --silent --plain > /tmp/infisical_token 2>&1; then
+            export INFISICAL_TOKEN="$(cat /tmp/infisical_token)"
+            echo "INFISICAL_TOKEN=$INFISICAL_TOKEN" >> $GITHUB_ENV
+            echo "✅ GitHub OIDC authentication successful via CLI"
+          else
+            # Method 2: Fallback to API exchange if CLI doesn't support OIDC directly
+            echo "CLI OIDC not available, attempting API exchange..."
+            
+            # Exchange GitHub OIDC token for Infisical token via API
+            RESPONSE=$(curl -X POST "${INFISICAL_SERVER_URL}/api/v1/auth/oidc/login" \
+              -H "Content-Type: application/json" \
+              -d "{
+                \"jwt\": \"$(cat /tmp/github_oidc_token)\",
+                \"identityId\": \"ci-github\"
+              }")
+            
+            INFISICAL_TOKEN=$(echo "$RESPONSE" | jq -r '.accessToken')
+            
+            if [ "$INFISICAL_TOKEN" != "null" ] && [ -n "$INFISICAL_TOKEN" ]; then
+              echo "INFISICAL_TOKEN=$INFISICAL_TOKEN" >> $GITHUB_ENV
+              echo "✅ GitHub OIDC authentication successful via API"
+            else
+              echo "❌ OIDC authentication failed. Response: $RESPONSE"
+              echo "⚠️ Falling back to static token if available..."
+              # If you have a fallback static token in secrets (remove this when OIDC is working)
+              if [ -n "${{ secrets.INFISICAL_TOKEN_CI }}" ]; then
+                echo "INFISICAL_TOKEN=${{ secrets.INFISICAL_TOKEN_CI }}" >> $GITHUB_ENV
+                echo "⚠️ Using static token fallback (deprecated)"
+              else
+                exit 1
+              fi
+            fi
+          fi
+          
+          # Clean up token file
+          rm -f /tmp/github_oidc_token /tmp/infisical_token
+      - name: Test Infisical migration dry-run
+        env:
+          INFISICAL_PROJECT_ID: d01f583a-d833-4375-b359-c702a726ac4d
+          INFISICAL_SERVER_URL: https://secrets.jefahnierocks.com
+          INFISICAL_ENVIRONMENT: prod
+          TEST_DB_URL: postgresql+asyncpg://journal:journal@localhost:5433/journal
+        run: |
+          echo "Testing Infisical CLI with OIDC authentication..."
+          
+          # Verify we have a token
+          if [ -z "$INFISICAL_TOKEN" ]; then
+            echo "❌ No INFISICAL_TOKEN available"
+            exit 1
+          fi
+          
+          echo "Running migration dry-run..."
+          uv run python -m app.scripts.migrate_to_infisical status
+          uv run python -m app.scripts.migrate_to_infisical migrate --dry-run --no-backup
+      - name: Run Infisical integration tests
+        env:
+          INFISICAL_PROJECT_ID: d01f583a-d833-4375-b359-c702a726ac4d
+          INFISICAL_SERVER_URL: https://secrets.jefahnierocks.com
+          INFISICAL_ENVIRONMENT: prod
+          TEST_DB_URL: postgresql+asyncpg://journal:journal@localhost:5433/journal
+          JOURNAL_REDIS_URL: redis://localhost:6380/0
+        run: |
+          echo "Running Infisical integration tests with OIDC authentication..."
+          
+          # Verify we have a token
+          if [ -z "$INFISICAL_TOKEN" ]; then
+            echo "❌ No INFISICAL_TOKEN available"
+            exit 1
+          fi
+          
+          uv run pytest tests/integration/test_infisical_integration.py -v \
+            --junitxml=reports/junit-infisical.xml
+      - name: Upload Infisical test reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-infisical-reports
+          path: |
+            apps/api/reports/junit-infisical.xml

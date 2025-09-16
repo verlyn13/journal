@@ -2,15 +2,13 @@
 
 import base64
 import contextlib
+from datetime import UTC, datetime, timedelta
 import json
 import time
-
-from datetime import UTC, datetime, timedelta
 from uuid import uuid4
 
-import pytest
-
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
+import pytest
 
 from app.domain.auth.jwt_service import JWTService
 from app.domain.auth.token_validator import TokenValidator
@@ -50,9 +48,9 @@ class TestJWTSecurity:
         payload["scope"] = "admin:system entries:write"  # Escalate privileges
 
         # Re-encode payload
-        tampered_payload = base64.urlsafe_b64encode(
-            json.dumps(payload).encode()
-        ).decode().rstrip("=")
+        tampered_payload = (
+            base64.urlsafe_b64encode(json.dumps(payload).encode()).decode().rstrip("=")
+        )
         tampered_token = f"{parts[0]}.{tampered_payload}.{parts[2]}"
 
         # Verification should fail
@@ -71,9 +69,7 @@ class TestJWTSecurity:
         header["alg"] = "none"
 
         # Re-encode header
-        tampered_header = base64.urlsafe_b64encode(
-            json.dumps(header).encode()
-        ).decode().rstrip("=")
+        tampered_header = base64.urlsafe_b64encode(json.dumps(header).encode()).decode().rstrip("=")
         tampered_token = f"{tampered_header}.{parts[1]}."  # No signature
 
         # Verification should fail
@@ -87,7 +83,7 @@ class TestJWTSecurity:
         token = await jwt_service.sign_jwt(
             user_id,
             "access",
-            ttl=timedelta(seconds=-120)  # Already expired, beyond leeway
+            ttl=timedelta(seconds=-120),  # Already expired, beyond leeway
         )
 
         # Verification should fail
@@ -394,5 +390,6 @@ class TestTokenValidatorSecurity:
         # (In practice, Ed25519 verification is constant-time)
         # Check that variance is low
         import statistics
+
         variance = statistics.variance(timings)
         assert variance < 0.001  # Less than 1ms variance

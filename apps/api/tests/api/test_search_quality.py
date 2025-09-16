@@ -5,9 +5,8 @@ Tests semantic search, embedding generation, and search result quality.
 
 from uuid import uuid4
 
-import pytest
-
 from httpx import AsyncClient
+import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.infra.models import Entry

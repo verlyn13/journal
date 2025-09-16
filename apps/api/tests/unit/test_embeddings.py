@@ -3,7 +3,6 @@ Unit tests for embedding functionality with mocked OpenAI API.
 """
 
 import importlib
-
 from unittest.mock import MagicMock, patch
 
 import pytest

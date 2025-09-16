@@ -1,0 +1,208 @@
+# security/role_template_full.yaml
+# Empty template enumerating all role creation policy items, subitems, and access flags
+
+role:
+  name: ""          # e.g., "Security Ops"
+  slug: ""          # e.g., "security-ops"
+  description: ""   # role description
+
+# Global mode per category: choose one of [no_access, read_only, full_access, custom]
+# When "custom" is selected, toggle individual booleans inside each category.
+
+capabilities:
+  user_management:
+    mode: no_access
+    custom:
+      view_all_members: false
+      invite_members: false
+      edit_members: false
+      remove_members: false
+
+  role_management:
+    mode: no_access
+    custom:
+      view: false
+      create: false
+      modify: false
+      remove: false
+
+  incident_contacts:
+    mode: no_access
+    custom:
+      view: false
+      add: false
+      edit: false
+      remove: false
+
+  audit_logs:
+    mode: no_access
+    custom:
+      view: false
+      create: false
+      modify: false
+      remove: false
+
+  organization_profile:
+    mode: no_access
+    custom:
+      view: false
+      create: false
+      modify: false
+      remove: false
+
+  secret_scanning:
+    mode: no_access
+    custom:
+      view_risks: false
+      add_integrations: false
+      edit_risk_status: false
+      remove_integrations: false
+
+  sso:
+    mode: no_access
+    custom:
+      view: false
+      create: false
+      modify: false
+      remove: false
+
+  ldap:
+    mode: no_access
+    custom:
+      view: false
+      create: false
+      modify: false
+      remove: false
+
+  scim:
+    mode: no_access
+    custom:
+      view: false
+      create: false
+      modify: false
+      remove: false
+
+  github_org_sync:
+    mode: no_access
+    custom:
+      view: false
+      create: false
+      modify: false
+      remove: false
+
+  external_kms:
+    mode: no_access
+    custom:
+      view: false
+      create: false
+      modify: false
+      remove: false
+
+  project_templates:
+    mode: no_access
+    custom:
+      view_apply: false
+      create: false
+      modify: false
+      remove: false
+
+  machine_identity_management:
+    mode: no_access
+    custom:
+      read_identities: false
+      create_identities: false
+      edit_identities: false
+      delete_identities: false
+      grant_privileges: false
+      revoke_auth: false
+      create_token: false
+      get_token: false
+      delete_token: false
+
+  group_management:
+    mode: no_access
+    custom:
+      read_groups: false
+      create_groups: false
+      edit_groups: false
+      delete_groups: false
+      grant_privileges: false
+      add_members: false
+      remove_members: false
+
+  app_connections:
+    mode: no_access
+    custom:
+      read: false
+      create: false
+      modify: false
+      remove: false
+      connect: false
+
+  gateways:
+    mode: no_access
+    custom:
+      list: false
+      create: false
+      edit: false
+      delete: false
+      attach: false
+
+  billing:
+    mode: no_access
+    custom:
+      view_bills: false
+      manage_billing: false
+
+  secret_share:
+    mode: no_access
+    custom:
+      manage_settings: false
+
+  project:
+    mode: no_access
+    custom:
+      create_projects: false
+
+  organization_admin_console:
+    mode: no_access
+    custom:
+      access_all_projects: false
+
+  machine_identity_auth_templates:
+    mode: no_access
+    custom:
+      list_templates: false
+      create_templates: false
+      edit_templates: false
+      delete_templates: false
+      unlink_templates: false
+      attach_templates: false
+
+  kmip:
+    mode: no_access
+    custom:
+      proxy_requests: false
+      setup_kmip: false
+
+# Optional binding to project/environment scope
+project_binding:
+  project_id: ""             # UUID or project slug
+  environment: ""            # e.g., "prod", "staging"
+  secrets_permissions:
+    read: []                 # list of allowed read paths
+    write: []                # list of allowed write paths
+    list_paths: false
+    read_versions: false
+    delete: false
+
+# Optional operational controls
+operational_controls:
+  change_request_required: false
+  usage_identity: ""         # e.g., rotator@ops
+  auth_method: ""            # e.g., universal_auth
+  token_ttl_seconds: 0
+  validity_window_hours: 0
+  revoke_after_window: false
+  audit_requirements: []
+

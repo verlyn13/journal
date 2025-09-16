@@ -2,30 +2,35 @@
 Test configuration and fixtures for the Journal API.
 """
 
-import os
-import uuid
-
 from collections.abc import Generator
+import os
 
 # Alembic for proper schema and extensions
 from pathlib import Path
+import shutil
+import uuid
 
-import pytest
-import pytest_asyncio
-
+from alembic import command
 from alembic.config import Config
 from fastapi.testclient import TestClient
 from httpx import ASGITransport, AsyncClient
+import pytest
+import pytest_asyncio
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncConnection, AsyncEngine, AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 
-from alembic import command
 from app.infra.auth import require_user
 from app.infra.db import build_engine, get_session
 from app.infra.models import Entry
 from app.main import app
 from app.settings import settings
+
+
+# Marker for tests that require the Infisical CLI
+requires_infisical = pytest.mark.skipif(
+    shutil.which("infisical") is None, reason="Infisical CLI not installed"
+)
 
 
 # Set testing mode before importing app
@@ -73,7 +78,6 @@ def migrated_db():
     """Run migrations once at session scope using sync Alembic."""
     cfg = Config(str(Path(__file__).resolve().parents[1] / "alembic.ini"))
     command.upgrade(cfg, "head")
-    return
 
 
 @pytest_asyncio.fixture
@@ -189,7 +193,7 @@ async def client(request, session_factory, db_connection: AsyncConnection):
 
 
 @pytest.fixture
-def sync_client() -> Generator[TestClient, None, None]:
+def sync_client() -> Generator[TestClient]:
     """Create a synchronous test client for simple tests."""
     with TestClient(app) as client:
         yield client
@@ -273,6 +277,73 @@ def nats_capture(monkeypatch):
     monkeypatch.setattr("app.infra.nats_bus.nats_conn", _fake_nats_conn)
     monkeypatch.setattr("app.infra.outbox.nats_conn", _fake_nats_conn)
     return conn
+
+
+@pytest_asyncio.fixture
+async def redis_client():
+    """Create a Redis client for testing."""
+    from unittest.mock import AsyncMock, MagicMock
+
+    from redis.asyncio import Redis
+
+    # Create a mock Redis client with commonly used methods
+    mock_redis = MagicMock(spec=Redis)
+    mock_redis.ping = AsyncMock(return_value=True)
+    mock_redis.info = AsyncMock(
+        return_value={
+            "redis_version": "7.0.0",
+            "used_memory_human": "1.5M",
+            "connected_clients": 2,
+        }
+    )
+    mock_redis.get = AsyncMock(return_value=None)
+    mock_redis.set = AsyncMock(return_value=True)
+    mock_redis.hget = AsyncMock(return_value=None)
+    mock_redis.hset = AsyncMock(return_value=True)
+    mock_redis.expire = AsyncMock(return_value=True)
+    mock_redis.delete = AsyncMock(return_value=1)
+    mock_redis.exists = AsyncMock(return_value=False)
+    mock_redis.keys = AsyncMock(return_value=[])
+    mock_redis.scan_iter = AsyncMock(return_value=[])
+    mock_redis.close = AsyncMock(return_value=None)
+
+    return mock_redis
+
+
+@pytest_asyncio.fixture
+async def infisical_client(db_session: AsyncSession, redis_client):
+    """Create an Infisical client for testing."""
+    from unittest.mock import AsyncMock, MagicMock
+
+    from app.infra.secrets import InfisicalSecretsClient
+
+    # Create a mock Infisical client with necessary methods
+    mock_client = MagicMock(spec=InfisicalSecretsClient)
+    mock_client.health_check = AsyncMock(return_value={"status": "healthy"})
+    mock_client.fetch_secrets = AsyncMock(return_value={})
+    mock_client.update_secret = AsyncMock(return_value=True)
+    mock_client.delete_secret = AsyncMock(return_value=True)
+    mock_client.create_secret = AsyncMock(return_value=True)
+    mock_client.list_secrets = AsyncMock(return_value=[])
+
+    return mock_client
+
+
+@pytest_asyncio.fixture
+async def cache():
+    """Create a cache instance for testing."""
+    from unittest.mock import AsyncMock, MagicMock
+
+    from app.infra.cache import Cache
+
+    mock_cache = MagicMock(spec=Cache)
+    mock_cache.get = AsyncMock(return_value=None)
+    mock_cache.set = AsyncMock(return_value=True)
+    mock_cache.delete = AsyncMock(return_value=True)
+    mock_cache.clear = AsyncMock(return_value=True)
+    mock_cache.exists = AsyncMock(return_value=False)
+
+    return mock_cache
 
 
 # Test utilities

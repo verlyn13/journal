@@ -2,12 +2,11 @@
 
 from __future__ import annotations
 
-import logging
-import time
-
 from collections.abc import AsyncGenerator, Awaitable
 from contextlib import asynccontextmanager, suppress
 from datetime import UTC, datetime
+import logging
+import time
 from typing import Any, cast
 
 from redis.asyncio import Redis
@@ -144,25 +143,24 @@ class JWKSMetrics:
             # Get all counters
             counters = await cast(
                 "Awaitable[dict[bytes, bytes]]",
-                self.redis.hgetall(f"{self._metrics_prefix}counters")
+                self.redis.hgetall(f"{self._metrics_prefix}counters"),
             )
 
             # Get histogram data
             histogram = await cast(
                 "Awaitable[dict[bytes, bytes]]",
-                self.redis.hgetall(f"{self._metrics_prefix}histogram")
+                self.redis.hgetall(f"{self._metrics_prefix}histogram"),
             )
 
             # Get last request time
             last_request = await cast(
-                "Awaitable[bytes | None]",
-                self.redis.get(f"{self._metrics_prefix}last_request")
+                "Awaitable[bytes | None]", self.redis.get(f"{self._metrics_prefix}last_request")
             )
 
             # Get recent rotation history
             rotation_history = await cast(
                 "Awaitable[list[bytes]]",
-                self.redis.lrange(f"{self._metrics_prefix}rotation_history", -10, -1)
+                self.redis.lrange(f"{self._metrics_prefix}rotation_history", -10, -1),
             )
 
             # Calculate cache hit rate
@@ -204,7 +202,7 @@ class JWKSMetrics:
                 logger.debug("Failed to reset metrics: %s", e)
 
     @asynccontextmanager
-    async def measure_time(self) -> AsyncGenerator[dict[str, Any], None]:
+    async def measure_time(self) -> AsyncGenerator[dict[str, Any]]:
         """Context manager to measure operation time.
 
         Yields:

@@ -6,7 +6,6 @@ from datetime import UTC, datetime
 from uuid import uuid4
 
 import pytest
-
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.domain.auth.device_service import DeviceService
@@ -16,12 +15,12 @@ from app.infra.sa_models import User, UserSession
 class TestDeviceService:
     """Test suite for DeviceService."""
 
-    @pytest.fixture
+    @pytest.fixture()
     def device_service(self, db_session: AsyncSession) -> DeviceService:
         """Create DeviceService instance."""
         return DeviceService(db_session)
 
-    @pytest.fixture
+    @pytest.fixture()
     async def test_user(self, db_session: AsyncSession) -> User:
         """Create test user."""
         user = User(

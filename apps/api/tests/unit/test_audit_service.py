@@ -6,7 +6,6 @@ from datetime import UTC, datetime
 from uuid import uuid4
 
 import pytest
-
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.domain.auth.audit_service import AuditService
@@ -16,12 +15,12 @@ from app.infra.sa_models import AuditLogEntry, User, UserDevice
 class TestAuditService:
     """Test suite for AuditService."""
 
-    @pytest.fixture
+    @pytest.fixture()
     def audit_service(self, db_session: AsyncSession) -> AuditService:
         """Create AuditService instance."""
         return AuditService(db_session)
 
-    @pytest.fixture
+    @pytest.fixture()
     async def test_user(self, db_session: AsyncSession) -> User:
         """Create test user."""
         user = User(
@@ -35,7 +34,7 @@ class TestAuditService:
         await db_session.flush()
         return user
 
-    @pytest.fixture
+    @pytest.fixture()
     async def test_device(self, db_session: AsyncSession, test_user: User) -> UserDevice:
         """Create test device."""
         device = UserDevice(

@@ -3,9 +3,8 @@ Quality-focused tests for entry API endpoints.
 These tests focus on real-world scenarios, error handling, and edge cases.
 """
 
-import pytest
-
 from httpx import AsyncClient
+import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.infra.models import Entry

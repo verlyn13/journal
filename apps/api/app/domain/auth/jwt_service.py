@@ -3,13 +3,12 @@
 from __future__ import annotations
 
 import base64
+from datetime import UTC, datetime, timedelta
 import json
 import logging
 import time
-import uuid
-
-from datetime import UTC, datetime, timedelta
 from typing import Any, Literal, cast
+import uuid
 from uuid import UUID
 
 from cryptography.exceptions import InvalidSignature
@@ -168,7 +167,7 @@ class JWTService:
     async def verify_jwt(
         self,
         token: str,
-        expected_type: TokenType | None = None,
+        expected_type: TokenType | VerifierPolicy | None = None,
         required_scopes: list[str] | None = None,
         expected_audience: str | None = None,
     ) -> dict[str, Any]:
@@ -198,17 +197,25 @@ class JWTService:
             header = cast("dict[str, Any]", json.loads(self._base64url_decode(header_b64)))
 
             # Build verifier policy (RFC 8725/9068)
-            # If expected_type not provided, infer policy from header.typ
-            inferred_type: TokenType | None = None
-            typ_hdr = header.get("typ")
-            if typ_hdr == "refresh+jwt":
-                inferred_type = "refresh"
-            elif typ_hdr == "at+jwt":
-                inferred_type = "access"
-            policy = self._build_policy(
-                expected_type=expected_type or inferred_type,
-                expected_audience=expected_audience,
-            )
+            # Support passing a VerifierPolicy directly for advanced tests
+            policy: VerifierPolicy
+            logical_expected_type: TokenType | None
+            if isinstance(expected_type, VerifierPolicy):
+                policy = expected_type
+                logical_expected_type = None
+            else:
+                # If expected_type not provided, infer policy from header.typ
+                inferred_type: TokenType | None = None
+                typ_hdr = header.get("typ")
+                if typ_hdr == "refresh+jwt":
+                    inferred_type = "refresh"
+                elif typ_hdr == "at+jwt":
+                    inferred_type = "access"
+                policy = self._build_policy(
+                    expected_type=expected_type or inferred_type,
+                    expected_audience=expected_audience,
+                )
+                logical_expected_type = expected_type
 
             # Validate header strictly (alg allowlist, typ, forbidden headers, crit)
             policy.validate_header(header)
@@ -247,16 +254,18 @@ class JWTService:
             policy.validate_claims(payload)
 
             # Check logical token type claim if specified
-            if expected_type and payload.get("type") != expected_type:
+            if logical_expected_type and payload.get("type") != logical_expected_type:
                 raise ValueError(
-                    f"Invalid token type: expected {expected_type}, got {payload.get('type')}"
+                    f"Invalid token type: expected {logical_expected_type}, got {payload.get('type')}"
                 )
 
             # Check scopes
             if required_scopes:
                 token_scopes = payload.get("scope", "").split()
                 if not all(scope in token_scopes for scope in required_scopes):
-                    raise ValueError(f"Insufficient scopes: required {required_scopes}, has {token_scopes}")
+                    raise ValueError(
+                        f"Insufficient scopes: required {required_scopes}, has {token_scopes}"
+                    )
 
             # Check JTI for revocation (if needed)
             if await self._is_token_revoked(payload.get("jti")):
@@ -376,7 +385,9 @@ class JWTService:
         return "JWT"
 
     @staticmethod
-    def _policy_for(expected_type: TokenType | None, expected_audience: str | None) -> VerifierPolicy:
+    def _policy_for(
+        expected_type: TokenType | None, expected_audience: str | None
+    ) -> VerifierPolicy:
         """Create a VerifierPolicy based on expected type and audience."""
         policy = refresh_token_policy() if expected_type == "refresh" else access_token_policy()
         # Apply issuer and audience expectations
@@ -387,7 +398,9 @@ class JWTService:
             policy.expected_audiences = {settings.jwt_aud}
         return policy
 
-    def _build_policy(self, expected_type: TokenType | None, expected_audience: str | None) -> VerifierPolicy:
+    def _build_policy(
+        self, expected_type: TokenType | None, expected_audience: str | None
+    ) -> VerifierPolicy:
         return self._policy_for(expected_type, expected_audience)
 
     @staticmethod

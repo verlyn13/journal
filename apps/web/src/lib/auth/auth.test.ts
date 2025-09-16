@@ -12,7 +12,6 @@ beforeAll(() => {
   if (typeof window === 'undefined') {
     (globalThis as any).window = globalThis;
   }
-
   // Mock WebAuthn API
   (globalThis as any).PublicKeyCredential = vi.fn();
   (globalThis as any).AuthenticatorAssertionResponse = vi.fn();
@@ -74,7 +73,6 @@ describe('AuthenticationOrchestrator', () => {
         configurable: true,
       });
     }
-
     // Setup PublicKeyCredential with proper methods
     (window as any).PublicKeyCredential = {
       isUserVerifyingPlatformAuthenticatorAvailable: vi.fn().mockResolvedValue(true),

@@ -20,7 +20,8 @@
     "quality:test": "vitest run --silent",
     "quality:bundle": "vite build && node scripts/bundle-check.js",
     "quality:all": "bun run quality:types && bun run quality:lint && bun run quality:test && bun run quality:bundle",
-    "precommit": "bun run quality:all"
+    "precommit": "bun run quality:all",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@codemirror/lang-markdown": "^6.2.4",
@@ -45,7 +46,9 @@
     "turndown": "^7.2.1"
   },
   "devDependencies": {
+    "@biomejs/biome": "^2.2.4",
     "@storybook/addon-a11y": "^9.1.5",
+    "@storybook/addon-docs": "^9.1.5",
     "@storybook/react-vite": "^9.1.5",
     "@tailwindcss/postcss": "^4.1.12",
     "@testing-library/jest-dom": "6.8.0",
@@ -63,13 +66,12 @@
     "babel-plugin-react-compiler": "^19.0.0-beta-af1b7da-20250417",
     "eslint": "^9.34.0",
     "eslint-plugin-react-compiler": "^19.0.0-beta-af1b7da-20250417",
+    "eslint-plugin-storybook": "9.1.5",
     "jsdom": "24.0.0",
     "postcss": "^8.5.6",
     "storybook": "^9.1.5",
     "typescript": "^5.6.2",
     "vite": "^6.0.0",
-    "vitest": "3.2.4",
-    "eslint-plugin-storybook": "9.1.5",
-    "@storybook/addon-docs": "^9.1.5"
+    "vitest": "3.2.4"
   }
 }

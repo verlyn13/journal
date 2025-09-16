@@ -1,8 +1,7 @@
 """Test real user authentication and authorization."""
 
-import pytest
-
 from httpx import AsyncClient
+import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.infra.models import User

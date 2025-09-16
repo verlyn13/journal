@@ -5,6 +5,11 @@ on:
     branches: [ main ]
   pull_request:
 
+env:
+  INFISICAL_CLI_REQUIRED: "false"  # Web tests don't need Infisical CLI
+  PYTHON_VERSION: "3.13"
+  UV_CACHE_DIR: /tmp/.uv-cache
+
 jobs:
   unit:
     runs-on: ubuntu-24.04
@@ -86,7 +91,7 @@ jobs:
     timeout-minutes: 10
     services:
       postgres:
-        image: pgvector/pgvector:pg16
+        image: pgvector/pgvector:pg16@sha256:c3c84b85691a264aa3c5b8fc1d611e67d42b0cca8596e3d3d22dc2424c12c4e2
         ports: [ "5432:5432" ]
         env:
           POSTGRES_DB: journal
@@ -108,7 +113,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: "3.13"
 
       - name: Install uv
         run: pip install uv==0.4.*  # fast & hermetic
@@ -125,34 +130,29 @@ jobs:
           echo "JOURNAL_DB_URL=$JOURNAL_DB_URL"
           echo "JOURNAL_DB_SYNC_URL=$JOURNAL_DB_SYNC_URL"
 
-      - name: DB auth wait (libpq)
-        env:
-          JOURNAL_DB_SYNC_URL: postgresql://journal:journal@localhost:5432/journal
-        working-directory: apps/api
+      - name: Wait for PostgreSQL
         run: |
-          uv run python - <<'PY'
-          import os, time, psycopg2
-          url = os.environ["JOURNAL_DB_SYNC_URL"]
-          for i in range(60):
-              try:
-                  conn = psycopg2.connect(url)
-                  conn.close()
-                  print("DB auth succeeded")
-                  break
-              except Exception as e:
-                  print(f"DB auth attempt {i+1}/60 failed: {e}")
-                  time.sleep(1)
-          else:
-              raise SystemExit("DB never became ready for password auth")
-          PY
+          sudo apt-get update && sudo apt-get install -y postgresql-client
+          for i in {1..30}; do
+            if pg_isready -h localhost -p 5432 -U journal; then
+              echo "PostgreSQL is ready!"
+              break
+            fi
+            echo "Waiting for PostgreSQL... attempt $i/30"
+            sleep 1
+          done
+          # Verify connection with psql
+          PGPASSWORD=journal psql -h localhost -p 5432 -U journal -d journal -c "SELECT 1"
 
       - name: Alembic upgrade
+        timeout-minutes: 5
         env:
-          JOURNAL_DB_URL: postgresql+asyncpg://journal:journal@localhost:5432/journal
+          DATABASE_URL_SYNC: postgresql+psycopg://journal:journal@localhost:5432/journal
         working-directory: apps/api
         run: |
           set -e
-          uv run alembic -c alembic.ini upgrade head | tee -a /tmp/alembic.log
+          # Use -x to pass database URL directly to alembic
+          uv run alembic -x sqlalchemy.url=${DATABASE_URL_SYNC} upgrade head | tee -a /tmp/alembic.log
 
       - name: Post-migration probe
         env:
@@ -171,21 +171,22 @@ jobs:
       - name: Start API (background)
         env:
           PORT: "5000"
+          JOURNAL_DB_URL: postgresql+asyncpg://journal:journal@localhost:5432/journal
+          JOURNAL_DISABLE_STARTUP: "1"
         working-directory: apps/api
         run: |
           nohup uv run fastapi run app/main.py --host 0.0.0.0 --port 5000 > /tmp/api.log 2>&1 &
           echo $! > /tmp/api.pid
 
-      - name: Wait for /health
+      - name: Wait for API readiness
+        working-directory: apps/api
         run: |
-          for i in $(seq 1 60); do
-            code=$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:5000/health || true)
-            if [ "$code" = "200" ]; then echo "API healthy"; exit 0; fi
-            sleep 1
-          done
-          echo "Health never returned 200"
-          cat /tmp/api.log || true
-          exit 1
+          # Web tests don't require external dependencies, just liveness
+          SERVER_URL=http://127.0.0.1:5000 MAX_RETRIES=60 REQUIRES_READY=0 ./scripts/wait_for_server.sh || {
+            echo "Server failed to start, showing logs:"
+            cat /tmp/api.log || true
+            exit 1
+          }
 
       - name: Install root dependencies
         run: bun install

@@ -26,6 +26,11 @@ permissions:
   actions: read
   checks: write
 
+env:
+  PYTHON_VERSION: "3.13"
+  UV_CACHE_DIR: /tmp/.uv-cache
+  INFISICAL_CLI_REQUIRED: "false"  # CI jobs don't need Infisical CLI
+
 jobs:
   build-test:
     name: Lint, Typecheck, Test

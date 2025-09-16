@@ -8,7 +8,7 @@ Reference: PEP 647 - User-Defined Type Guards
 https://www.python.org/dev/peps/pep-0647/
 """
 
-from typing import TypeGuard, TypeVar
+from typing import TypeGuard
 from uuid import UUID
 
 from fastapi import HTTPException, status
@@ -18,11 +18,7 @@ from app.infra.base import Base
 from app.infra.sa_models import Entry, User
 
 
-# Generic type variable bound to our Base model
-T = TypeVar("T", bound=Base)
-
-
-def exists_guard(obj: T | None) -> TypeGuard[T]:
+def exists_guard[T: Base](obj: T | None) -> TypeGuard[T]:
     """Type guard for SQLAlchemy model existence.
 
     This guard narrows Optional[Model] to Model, allowing safe attribute access
@@ -85,7 +81,7 @@ def is_valid_entry(entry: Entry | None) -> TypeGuard[Entry]:
     return entry is not None and not entry.is_deleted and entry.author_id is not None
 
 
-async def get_or_404(
+async def get_or_404[T: Base](
     session: AsyncSession,
     model: type[T],
     resource_id: UUID | str,

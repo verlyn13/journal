@@ -142,7 +142,7 @@ Enable pre-commit to catch issues early and keep formatting consistent.
 - Run on all files: `pre-commit run --all-files`
 - Hooks included:
   - detect-private-key, check-merge-conflict, end-of-file-fixer, trailing-whitespace
-  - ruff (lint) and ruff-format for Python
+  - Ruff 0.13.0 (lint and format) for Python
   - Biome check for JS/TS via `bun run check`
 
 Note: All Python tasks use `uv` in `apps/api/`, and all JS/TS tasks use `bun`.

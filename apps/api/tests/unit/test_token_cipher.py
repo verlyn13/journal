@@ -5,7 +5,6 @@ from __future__ import annotations
 import base64
 import json
 import os
-
 from unittest.mock import patch
 
 import pytest
@@ -16,7 +15,7 @@ from app.security.token_cipher import KeyConfigError, TokenCipher
 class TestTokenCipher:  # noqa: PLR0904
     """Test suite for TokenCipher."""
 
-    @pytest.fixture
+    @pytest.fixture()
     def sample_keys(self) -> dict[str, bytes]:
         """Provide sample encryption keys."""
         return {
@@ -25,7 +24,7 @@ class TestTokenCipher:  # noqa: PLR0904
             "key3": os.urandom(16),  # 128-bit key
         }
 
-    @pytest.fixture
+    @pytest.fixture()
     def cipher(self, sample_keys: dict[str, bytes]) -> TokenCipher:
         """Create cipher instance with sample keys."""
         return TokenCipher(keys=sample_keys, active_kid="key1")

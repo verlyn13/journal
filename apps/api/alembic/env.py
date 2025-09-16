@@ -1,16 +1,27 @@
 import logging
-import os
-
 from logging.config import fileConfig
+import os
+import sys
 
+
+# Check if Alembic should be skipped
+if os.getenv("ALEMBIC_SKIP", "0") == "1":
+    print("Skipping Alembic per ALEMBIC_SKIP=1")
+    sys.exit(0)
 
 # Suppress duplicate logging
 logging.getLogger("alembic.runtime.migration").setLevel(logging.WARNING)
 
+from alembic import context
 from sqlalchemy import create_engine, pool
 from sqlmodel import SQLModel
 
-from alembic import context
+
+# Check for skip via -x argument
+xargs = context.get_x_argument(as_dictionary=True)
+if xargs.get("skip") == "true":
+    print("Skipping Alembic per -x skip=true")
+    sys.exit(0)
 
 # Import all models for autogenerate support
 from app.infra.models import Entry, Event, User, UserSession  # noqa: F401
@@ -21,12 +32,26 @@ from app.settings import settings
 # access to the values within the .ini file in use.
 config = context.config
 
-# Use environment variable override if present, otherwise use settings.db_url_sync
-if os.environ.get("DATABASE_URL_SYNC"):
+# Priority order for database URL:
+# 1. Command line -x sqlalchemy.url=...
+# 2. Environment variable DATABASE_URL_SYNC
+# 3. Settings default
+
+if "sqlalchemy.url" in xargs:
+    # Use URL passed via -x flag (highest priority)
+    db_url_sync = xargs["sqlalchemy.url"]
+    print(f"Using sqlalchemy.url from -x flag: {db_url_sync}")
+elif os.environ.get("DATABASE_URL_SYNC"):
     db_url_sync = os.environ["DATABASE_URL_SYNC"]
+    print(f"Using DATABASE_URL_SYNC from environment: {db_url_sync}")
 else:
     # Use settings.db_url_sync (already in sync format)
     db_url_sync = settings.db_url_sync
+    print(f"Using db_url_sync from settings: {db_url_sync}")
+
+# Ensure the URL has explicit user credentials
+if "@" not in db_url_sync:
+    print("WARNING: Database URL does not contain credentials!")
 
 config.set_main_option("sqlalchemy.url", db_url_sync)
 

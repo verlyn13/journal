@@ -10,7 +10,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.infra.db import get_session
 from app.infra.redis import get_redis_client
+from app.infra.secrets import InfisicalSecretsClient
+from app.infra.secrets.enhanced_key_manager import InfisicalKeyManager
 from app.services.jwks_service import JWKSService
+from app.settings import settings
 from app.telemetry.jwks_metrics import JWKSMetrics
 
 
@@ -38,7 +41,14 @@ async def get_jwks(
     Returns:
         JWKS response with public keys
     """
-    jwks_service = JWKSService(session, redis)
+    # Use InfisicalKeyManager in production for current+next key publication
+    if not settings.testing:
+        infisical_client = InfisicalSecretsClient.from_env(redis)
+        key_manager = InfisicalKeyManager(session, redis, infisical_client)
+        jwks_service = JWKSService(session, redis, key_manager)
+    else:
+        jwks_service = JWKSService(session, redis)
+
     metrics = JWKSMetrics(redis)
 
     # Use metrics context manager to track performance

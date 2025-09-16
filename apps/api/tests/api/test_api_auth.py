@@ -2,9 +2,8 @@
 Test cases for authentication API endpoints.
 """
 
-import pytest
-
 from httpx import AsyncClient
+import pytest
 
 from app.infra.auth import create_access_token, create_refresh_token
 

@@ -2,9 +2,8 @@
 Test cases for entry API markdown content handling.
 """
 
-import pytest
-
 from httpx import AsyncClient
+import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.infra.models import Entry
@@ -222,8 +221,8 @@ Some text here.
 
         assert response.status_code == 200
         data = response.json()
-        assert data["markdown_content"] == ""
-        assert data["content"] == ""  # HTML should also be empty
+        assert not data["markdown_content"]
+        assert not data["content"]  # HTML should also be empty
 
     @pytest.mark.asyncio()
     async def test_update_entry_markdown_special_characters(

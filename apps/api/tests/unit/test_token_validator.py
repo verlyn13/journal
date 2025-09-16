@@ -4,7 +4,6 @@ from datetime import UTC, datetime, timedelta
 from uuid import uuid4
 
 import pytest
-
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.domain.auth.token_validator import TokenValidator
@@ -14,7 +13,7 @@ from app.infra.sa_models import User
 from tests.fixtures.jwt_fixtures import jwt_service, key_manager, redis, token_validator
 
 
-@pytest.fixture
+@pytest.fixture()
 async def test_user(db_session: AsyncSession) -> User:
     """Create a test user."""
     user = User(

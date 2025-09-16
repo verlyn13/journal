@@ -5,14 +5,14 @@ that enhance type safety across the codebase.
 """
 
 from datetime import UTC, datetime, timedelta
-from typing import Any, Literal, NewType, Protocol, TypeAlias, cast, runtime_checkable
+from typing import Any, Literal, NewType, Protocol, cast, runtime_checkable
 
 
 # Type Aliases for common patterns
 # ---------------------------------
 
 # JSON-compatible dictionary (what goes into JSON columns)
-JSONDict: TypeAlias = dict[str, Any]
+type JSONDict = dict[str, Any]
 
 # Configuration for cookies that matches FastAPI's expectations
 CookieSameSite = Literal["lax", "strict", "none"]

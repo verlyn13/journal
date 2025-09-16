@@ -2,9 +2,8 @@
 Test cases for entries API endpoints.
 """
 
-import pytest
-
 from httpx import AsyncClient
+import pytest
 
 from app.infra.models import Entry
 from tests.conftest import assert_entry_response, create_test_entry_data

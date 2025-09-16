@@ -3,10 +3,9 @@
 from __future__ import annotations
 
 import base64
-import secrets
-
 from collections.abc import Awaitable as _Awaitable
 from datetime import UTC, datetime, timedelta
+import secrets
 from typing import Any, Literal, cast
 from uuid import UUID
 

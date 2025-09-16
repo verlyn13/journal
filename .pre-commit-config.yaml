@@ -23,8 +23,8 @@ repos:
   - repo: local
     hooks:
       - id: biome
-        name: Biome check
-        entry: bun run check
+        name: Biome check (apps/web)
+        entry: bash -lc 'cd apps/web && bunx @biomejs/biome check'
         language: system
         files: \.(js|jsx|ts|tsx|json|jsonc|css|yaml|yml)$
         pass_filenames: false

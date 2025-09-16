@@ -65,7 +65,7 @@ export function JournalApp() {
   // Cross-tab logout handling
   useEffect(() => {
     const unsub = subscribe((evt) => {
-      if ((evt as any)?.type === 'logout') {
+      if (evt && typeof evt === 'object' && 'type' in evt && evt.type === 'logout') {
         setState((prev) => ({ ...prev, authenticated: false, user: undefined }));
       }
     });

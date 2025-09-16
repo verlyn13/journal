@@ -2,14 +2,12 @@
 
 from __future__ import annotations
 
+from datetime import UTC, datetime, timedelta
 import hashlib
 import json
-
-from datetime import UTC, datetime, timedelta
 from unittest.mock import AsyncMock, patch
 
 import pytest
-
 from redis.asyncio import Redis
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -18,13 +16,13 @@ from app.infra.crypto.key_generation import Ed25519KeyGenerator
 from app.services.jwks_service import JWKSService
 
 
-@pytest.fixture
+@pytest.fixture()
 def mock_session():
     """Mock database session."""
     return AsyncMock(spec=AsyncSession)
 
 
-@pytest.fixture
+@pytest.fixture()
 def mock_redis():
     """Mock Redis client."""
     mock_client = AsyncMock(spec=Redis)
@@ -34,7 +32,7 @@ def mock_redis():
     return mock_client
 
 
-@pytest.fixture
+@pytest.fixture()
 def mock_key_manager():
     """Mock key manager."""
     mock_manager = AsyncMock(spec=KeyManager)
@@ -48,7 +46,7 @@ def mock_key_manager():
     return mock_manager
 
 
-@pytest.fixture
+@pytest.fixture()
 def jwks_service(mock_session, mock_redis, mock_key_manager):
     """Create JWKS service instance."""
     service = JWKSService(mock_session, mock_redis)

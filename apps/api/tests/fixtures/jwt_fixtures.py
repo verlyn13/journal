@@ -1,7 +1,6 @@
 """JWT testing fixtures."""
 
 import pytest_asyncio
-
 from redis.asyncio import Redis
 from sqlalchemy.ext.asyncio import AsyncSession
 

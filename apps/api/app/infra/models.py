@@ -1,10 +1,8 @@
 from __future__ import annotations
 
-import logging
-
-
 # Standard library imports
 from datetime import UTC, datetime
+import logging
 from typing import Any
 from uuid import UUID, uuid4
 

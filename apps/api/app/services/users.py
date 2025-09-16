@@ -1,7 +1,6 @@
 """User management service."""
 
 import logging
-
 from uuid import UUID
 
 from sqlalchemy.exc import IntegrityError

@@ -3,9 +3,8 @@
 from __future__ import annotations
 
 import base64
-import json
-
 from datetime import UTC, datetime, timedelta
+import json
 from uuid import uuid4
 
 import pytest

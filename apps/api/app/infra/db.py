@@ -27,7 +27,7 @@ def get_async_engine() -> AsyncEngine:
     return build_engine()
 
 
-async def get_session() -> AsyncGenerator[AsyncSession, None]:
+async def get_session() -> AsyncGenerator[AsyncSession]:
     sm = sessionmaker_for(build_engine())
     async with sm() as s:
         yield s

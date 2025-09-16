@@ -3,13 +3,11 @@
 from __future__ import annotations
 
 import time
-
 from unittest.mock import AsyncMock, MagicMock, patch
-
-import pytest
 
 from httpx import Response
 from jose import jwt  # noqa: F401
+import pytest
 
 from app.security.oidc import (
     extract_standard_claims,
@@ -22,7 +20,7 @@ from app.security.oidc import (
 class TestOIDCValidation:
     """Test suite for OIDC validation functions."""
 
-    @pytest.fixture
+    @pytest.fixture()
     def jwks_response(self) -> dict:
         """Mock JWKS response."""
         return {
@@ -38,7 +36,7 @@ class TestOIDCValidation:
             ]
         }
 
-    @pytest.fixture
+    @pytest.fixture()
     def id_token_claims(self) -> dict:
         """Valid ID token claims."""
         return {

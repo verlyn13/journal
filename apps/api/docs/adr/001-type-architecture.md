@@ -11,7 +11,7 @@ The Journal API is a production system that processes critical user data. Type s
 - Reduced runtime errors
 - Easier refactoring
 
-We're using Python 3.11+ with mypy in strict mode to achieve maximum type safety.
+We're using Python 3.13+ with mypy in strict mode to achieve maximum type safety.
 
 ## Decision
 
@@ -26,7 +26,7 @@ We're using Python 3.11+ with mypy in strict mode to achieve maximum type safety
 ```python
 # mypy.ini configuration
 [mypy]
-python_version = 3.11
+python_version = 3.13
 strict = true
 warn_return_any = true
 warn_unused_configs = true

@@ -6,9 +6,8 @@ user management implementation. Replace skips when functionality is ready.
 
 from __future__ import annotations
 
-import pytest
-
 from httpx import AsyncClient
+import pytest
 
 
 pytestmark = pytest.mark.integration

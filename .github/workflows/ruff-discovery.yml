@@ -1,0 +1,105 @@
+# Ruff Discovery Mode - Analyze unsafe fixes for progressive autofixing
+name: Ruff Discovery Mode
+
+on:
+  pull_request:
+    paths:
+      - 'apps/api/**/*.py'
+      - 'apps/api/pyproject.toml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  discovery:
+    name: Analyze Unsafe Fixes
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - uses: astral-sh/setup-uv@v4
+        with:
+          version: "latest"
+
+      - name: Install API dependencies
+        working-directory: apps/api
+        run: uv sync --frozen
+
+      - name: Run Ruff Discovery Mode
+        run: ./scripts/ruff-discovery-mode.sh
+
+      - name: Upload discovery reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ruff-discovery-reports
+          path: apps/api/.ruff_reports/
+          retention-days: 7
+
+      - name: Comment PR with unsafe fixes summary
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const path = 'apps/api/.ruff_reports/unsafe-fixes.json';
+
+            if (!fs.existsSync(path)) {
+              console.log('No unsafe fixes report found');
+              return;
+            }
+
+            try {
+              const unsafeFixes = JSON.parse(fs.readFileSync(path, 'utf8'));
+              const fixCount = unsafeFixes.length;
+
+              const ruleCounts = {};
+              unsafeFixes.forEach(fix => {
+                if (fix.rule && fix.rule.code) {
+                  ruleCounts[fix.rule.code] = (ruleCounts[fix.rule.code] || 0) + 1;
+                }
+              });
+
+              const topRules = Object.entries(ruleCounts)
+                .sort(([,a], [,b]) => b - a)
+                .slice(0, 5)
+                .map(([code, count]) => `- \`${code}\`: ${count} fixes`)
+                .join('\n');
+
+              const comment = `## 🔍 Ruff Discovery Mode Results
+
+**Unsafe fixes available**: ${fixCount}
+
+${fixCount > 0 ? `**Top opportunities**:
+${topRules}
+
+💡 **Safe promotion candidates**: Review high-volume, low-risk rules for \`extend-safe-fixes\`
+📊 **Full report**: Check the \`ruff-discovery-reports\` artifact` : '✅ **No unsafe fixes needed**'}
+
+<details>
+<summary>About Discovery Mode</summary>
+
+This analysis identifies potential unsafe fixes that could be safely promoted to auto-fix after validation. Unsafe fixes are changes that might alter code behavior and require human review.
+
+**Next steps**:
+1. Review the detailed JSON report in artifacts
+2. Test promising rules in development
+3. Add validated rules to \`extend-safe-fixes\` in pyproject.toml
+</details>`;
+
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: comment
+              });
+            } catch (error) {
+              console.error('Error processing unsafe fixes report:', error);
+            }

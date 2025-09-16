@@ -5,7 +5,6 @@ from __future__ import annotations
 import json  # Used in token decode fallback
 import logging
 import time
-
 from typing import Any, Literal
 
 from fastapi import HTTPException, Request, status
@@ -90,7 +89,9 @@ class JWTMiddleware:
             start_time = time.perf_counter()
 
             # Verify JWT
-            expected_type: Literal["access", "refresh", "m2m", "session"] = self.expected_token_type or "access"
+            expected_type: Literal["access", "refresh", "m2m", "session"] = (
+                self.expected_token_type or "access"
+            )
 
             # jwt_service and token_validator are guaranteed to be non-None after the previous block
             assert self.jwt_service is not None
@@ -110,7 +111,9 @@ class JWTMiddleware:
             )
 
             # Check required scopes
-            if self.required_scopes and not self.token_validator.check_all_scopes(validated_claims, self.required_scopes):
+            if self.required_scopes and not self.token_validator.check_all_scopes(
+                validated_claims, self.required_scopes
+            ):
                 raise HTTPException(
                     status_code=status.HTTP_403_FORBIDDEN,
                     detail=f"Insufficient scopes. Required: {self.required_scopes}",
@@ -145,7 +148,9 @@ class JWTMiddleware:
                         if padding != 4:
                             payload += "=" * padding
 
-                        expired_claims: dict[str, Any] = json.loads(base64.urlsafe_b64decode(payload))
+                        expired_claims: dict[str, Any] = json.loads(
+                            base64.urlsafe_b64decode(payload)
+                        )
                         expired_claims["expired"] = True
                         request.state.jwt_claims = expired_claims
                         return expired_claims

@@ -4,9 +4,8 @@ from __future__ import annotations
 
 import base64
 import binascii
-import secrets
-
 from datetime import UTC, datetime
+import secrets
 from typing import Any, NamedTuple
 
 from cryptography.hazmat.primitives import serialization

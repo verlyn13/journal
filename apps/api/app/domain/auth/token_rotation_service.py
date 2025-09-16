@@ -2,10 +2,9 @@
 
 from __future__ import annotations
 
-import hashlib
-
 from collections.abc import Awaitable as _Awaitable
 from datetime import UTC, datetime
+import hashlib
 from typing import Any
 from uuid import UUID
 
@@ -143,7 +142,9 @@ class TokenRotationService:
 
         return revoked_count
 
-    async def get_token_rotation_history(self, user_id: UUID, limit: int = 10) -> list[dict[str, Any]]:
+    async def get_token_rotation_history(
+        self, user_id: UUID, limit: int = 10
+    ) -> list[dict[str, Any]]:
         """Get recent token rotation history for a user.
 
         Args:

@@ -2,10 +2,9 @@
 
 from __future__ import annotations
 
+from datetime import UTC, datetime
 import hashlib
 import json
-
-from datetime import UTC, datetime
 from typing import Any
 from uuid import UUID
 
@@ -96,6 +95,7 @@ class AuditService:
             },
             sort_keys=True,
             separators=(",", ":"),
+            default=str,
         )
         return hashlib.sha256(content.encode()).hexdigest()
 

@@ -1,5 +1,4 @@
 import pytest
-
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.infra.models import Entry

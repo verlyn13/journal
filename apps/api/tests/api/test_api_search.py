@@ -2,9 +2,8 @@
 Test cases for search API endpoints.
 """
 
-import pytest
-
 from httpx import AsyncClient
+import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.infra.models import Entry

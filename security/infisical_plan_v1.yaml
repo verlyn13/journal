@@ -1,0 +1,158 @@
+# security/infisical_plan_v1.yaml
+
+meta:
+  project_id: d01f583a-d833-4375-b359-c702a726ac4d
+  server_url: https://secrets.jefahnierocks.com
+  canonical_paths: ["/auth/jwt/*", "/auth/aes/*", "/auth/oauth/*", "/auth/jwt/public_jwks"]
+
+principles:
+  - Least privilege by environment.
+  - No writes to prod auth secrets outside approved Change Requests (CRs).
+  - Prefer Machine Identities or short-lived tokens minted by CLI; use service tokens only for CI bootstrap with short validity.
+  - Use only canonical paths listed in meta.canonical_paths.
+
+identities:
+  # ---------- PRODUCTION ----------
+  - name: token-service@journal        # runtime
+    env: prod
+    role: runtime
+    auth_methods:
+      universal_auth:
+        enabled: true
+        token_ttl_seconds: 3600         # 30–60 min
+        trusted_ips: ["0.0.0.0/0", "::/0"]
+      token_auth:
+        enabled: false                  # no static tokens in prod runtime
+    permissions:
+      read_paths:  ["/auth/jwt/*", "/auth/aes/*", "/auth/jwt/public_jwks"]
+      write_paths: []
+    notes: "App mints a short-lived token at boot; no writes in prod."
+
+  - name: rotator@ops                  # rotations under CR
+    env: prod
+    role: security-ops
+    auth_methods:
+      universal_auth:
+        enabled: true
+        token_ttl_seconds: 1200         # 10–20 min
+    permissions:
+      read_paths:  ["/auth/jwt/*", "/auth/aes/*"]
+      write_paths: ["/auth/jwt/*", "/auth/aes/*"]
+    controls:
+      change_request_required: true
+      validity_window_hours: 24         # 24–72h per CR window
+    notes: "Only identity allowed to write in prod; time-boxed usage."
+
+  - name: ci@github                    # CI pipeline
+    env: prod
+    role: ci
+    auth_methods:
+      oidc:
+        enabled: true
+        discovery_url: "https://token.actions.githubusercontent.com"
+        issuer:        "https://token.actions.githubusercontent.com"
+        subject: "repo:<owner>/<repo>:ref:refs/heads/main"   # adjust
+        audiences: ["<confirm-from-GH-token>"]               # confirm
+        token_ttl_seconds: 1800
+      token_auth:
+        enabled: true                 # fallback only
+        expiration_days: 30
+    permissions:
+      read_paths:  ["/auth/jwt/*", "/auth/aes/*", "/auth/oauth/*"]
+      write_paths: []
+    notes: "Prefer OIDC mint-per-job; fallback service token is read-only and short-lived."
+
+  # ---------- STAGING ----------
+  - name: token-service@journal
+    env: staging
+    role: runtime
+    auth_methods:
+      universal_auth: { enabled: true, token_ttl_seconds: 3600 }
+      token_auth:     { enabled: false }
+    permissions:
+      read_paths:  ["/auth/jwt/*", "/auth/aes/*", "/auth/jwt/public_jwks"]
+      write_paths: []
+  - name: rotator@ops
+    env: staging
+    role: security-ops
+    auth_methods:
+      universal_auth: { enabled: true, token_ttl_seconds: 1200 }
+    permissions:
+      read_paths:  ["/auth/jwt/*", "/auth/aes/*"]
+      write_paths: ["/auth/jwt/*", "/auth/aes/*"]
+
+  - name: ci@github
+    env: staging
+    role: ci
+    auth_methods:
+      oidc:       { enabled: true, token_ttl_seconds: 1800 }
+      token_auth: { enabled: true, expiration_days: 30 }
+    permissions:
+      read_paths:  ["/auth/jwt/*", "/auth/aes/*", "/auth/oauth/*"]
+      write_paths: []
+
+  # ---------- DEVELOPMENT ----------
+  - name: token-service@journal
+    env: dev
+    role: runtime
+    auth_methods:
+      universal_auth: { enabled: true, token_ttl_seconds: 3600 }
+      token_auth:     { enabled: false }
+    permissions:
+      read_paths:  ["/auth/jwt/*", "/auth/aes/*", "/auth/jwt/public_jwks"]
+      write_paths: []
+  - name: rotator@ops
+    env: dev
+    role: security-ops
+    auth_methods:
+      universal_auth: { enabled: true, token_ttl_seconds: 1200 }
+    permissions:
+      read_paths:  ["/auth/jwt/*", "/auth/aes/*"]
+      write_paths: ["/auth/jwt/*", "/auth/aes/*"]
+  - name: ci@github
+    env: dev
+    role: ci
+    auth_methods:
+      oidc:       { enabled: true, token_ttl_seconds: 1800 }
+      token_auth: { enabled: true, expiration_days: 30 }
+    permissions:
+      read_paths:  ["/auth/jwt/*", "/auth/aes/*", "/auth/oauth/*"]
+      write_paths: []
+
+runtime_wiring:
+  env:
+    INFISICAL_PROJECT_ID: d01f583a-d833-4375-b359-c702a726ac4d
+    INFISICAL_SERVER_URL: https://secrets.jefahnierocks.com
+    INFISICAL_API_URL:    https://secrets.jefahnierocks.com
+    INFISICAL_ENVIRONMENT: prod
+  mint_token_universal_auth: |
+    export INFISICAL_TOKEN="$(
+      infisical login \
+        --method=universal-auth \
+        --client-id    "$INFISICAL_UNIVERSAL_AUTH_CLIENT_ID" \
+        --client-secret"$INFISICAL_UNIVERSAL_AUTH_CLIENT_SECRET" \
+        --silent --plain
+    )"
+  use_cli_example: |
+    infisical secrets get JWT_PRIVATE_KEY --project-id "$INFISICAL_PROJECT_ID" --format json
+
+ci_wiring:
+  github_actions:
+    permissions: { id-token: write, contents: read }
+    export_token_oidc_note: "Use GH OIDC to mint a short-lived token; confirm iss/aud/sub first."
+    fallback_service_token_env: "INFISICAL_TOKEN_CI (read-only, ≤30d) — remove once OIDC is live."
+
+policy:
+  prod_writes:
+    allowed_identities: ["rotator@ops"]
+    denied_identities:  ["token-service@journal", "ci@github"]
+  lifetimes:
+    runtime_seconds:   3600
+    ci_seconds:        1800
+    rotator_seconds:   1200
+    fallback_ci_days:  30
+    rotation_overlap_days: 3
+  audit:
+    alert_on_write_outside_paths: ["/auth/jwt/*", "/auth/aes/*"]
+    require_cr_for_prod_writes: true
+

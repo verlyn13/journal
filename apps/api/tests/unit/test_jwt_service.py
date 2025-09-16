@@ -1,12 +1,10 @@
 """Unit tests for JWT service."""
 
-import json
-
 from datetime import UTC, datetime, timedelta
+import json
 from uuid import uuid4
 
 import pytest
-
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.domain.auth.jwt_service import JWTService
@@ -16,7 +14,7 @@ from tests.conftest import db_session
 from tests.fixtures.jwt_fixtures import jwt_service, key_manager, redis, token_validator
 
 
-@pytest.fixture
+@pytest.fixture()
 async def test_user_id(db_session: AsyncSession) -> uuid4:
     """Create a test user for JWT tests."""
     from app.infra.sa_models import User
@@ -37,9 +35,7 @@ async def test_user_id(db_session: AsyncSession) -> uuid4:
 class TestJWTService:
     """Test JWT service functionality."""
 
-    async def test_sign_and_verify_jwt(
-        self, jwt_service: JWTService, test_user_id: uuid4
-    ) -> None:
+    async def test_sign_and_verify_jwt(self, jwt_service: JWTService, test_user_id: uuid4) -> None:
         """Test basic JWT signing and verification."""
         user_id = test_user_id
         scopes = ["entries:read", "entries:write"]
@@ -80,6 +76,7 @@ class TestJWTService:
 
         # Wait for expiration
         import asyncio
+
         await asyncio.sleep(2)
 
         # Should fail after expiration
@@ -201,7 +198,9 @@ class TestJWTService:
         assert claims["roles"] == ["user", "editor"]
         assert claims["org_id"] == additional["org_id"]
 
-    async def test_audience_verification(self, jwt_service: JWTService, test_user_id: uuid4) -> None:
+    async def test_audience_verification(
+        self, jwt_service: JWTService, test_user_id: uuid4
+    ) -> None:
         """Test audience verification."""
         user_id = test_user_id
 
@@ -247,7 +246,9 @@ class TestJWTService:
                 required_scopes=["entries:write"],
             )
 
-    async def test_token_type_verification(self, jwt_service: JWTService, test_user_id: uuid4) -> None:
+    async def test_token_type_verification(
+        self, jwt_service: JWTService, test_user_id: uuid4
+    ) -> None:
         """Test token type verification."""
         user_id = test_user_id
 
@@ -295,6 +296,7 @@ class TestJWTService:
 
         # Decode header
         import base64
+
         header_b64 = token.split(".")[0]
         padding = 4 - (len(header_b64) % 4)
         if padding != 4:

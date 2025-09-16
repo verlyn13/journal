@@ -18,7 +18,7 @@ A modern FastAPI-based backend for the Journal application, featuring:
 
 ### Prerequisites
 
-- Python 3.11+ (3.13 OK)
+- Python 3.13+
 - uv 0.8+ (recommended): `pip install uv`
 - Docker & Docker Compose
 - jq (optional, for curl examples)
