@@ -107,15 +107,17 @@ packages = ["app"]
 
 # Ruff configuration (v0.13.0+ with modern best practices)
 [tool.ruff]
-# Infer target-version from requires-python
+required-version = "==0.13.0"  # Lock version for consistency
+preview = true
 line-length = 100
 fix = true
-unsafe-fixes = false  # Prevent unsafe auto-fixes
+unsafe-fixes = false  # Start conservative, promote with extend-safe-fixes
 show-fixes = true
-output-format = "concise"  # More readable output
+output-format = "github"  # Better CI annotations
 cache-dir = ".ruff_cache"
 respect-gitignore = true
 force-exclude = true  # Make pre-commit honor excludes
+src = ["app", "tests"]  # Improve import analysis
 exclude = [
     ".git",
     "__pycache__",
@@ -132,8 +134,17 @@ exclude = [
 
 [tool.ruff.lint]
 # Enable preview rules explicitly (not by prefix)
-preview = true
 explicit-preview-rules = true
+
+# Progressive autofix strategy: start with safe fixes only
+fixable = ["E", "F", "I"]  # Expand after discovery mode review
+unfixable = []  # Control via fixable list for now
+
+# Safe fixes promoted from unsafe after validation
+extend-safe-fixes = []  # e.g., ["UP032"] after testing
+
+# Keep type-checking moves gated initially
+extend-unsafe-fixes = ["TCH"]
 
 # Phased approach: enable critical rules first
 select = [
@@ -229,38 +240,12 @@ ignore = [
     # Will refine these after initial pass
 ]
 
-# Enable auto-fixing for these categories
-fixable = [
-    "F",     # pyflakes
-    "E",     # pycodestyle errors
-    "W",     # pycodestyle warnings  
-    "I",     # isort
-    "UP",    # pyupgrade
-    "YTT",   # flake8-2020
-    "B",     # flake8-bugbear
-    "C4",    # flake8-comprehensions
-    "PIE",   # flake8-pie
-    "RET",   # flake8-return
-    "SIM",   # flake8-simplify
-    "TCH",   # flake8-type-checking
-    "PTH",   # flake8-use-pathlib
-    "RUF",   # ruff-specific
-    "NPY",   # numpy-specific
-    "PD",    # pandas-vet
-    "PGH",   # pygrep-hooks
-    "TRY",   # tryceratops
-    "FLY",   # flynt
-    "PERF",  # performance
-    "FURB",  # refurb
-    "LOG",   # flake8-logging
-    "ASYNC", # flake8-async
-]
+# Progressive autofix: expand fixable list as we gain confidence
+# Currently conservative, will expand after discovery mode analysis
 
-# Rules to never auto-fix (require human review)
-unfixable = [
-    "ERA",   # commented-out-code
-    "T20",   # flake8-print
-]
+[tool.ruff.format]
+docstring-code-format = true  # Format code blocks in docstrings
+line-ending = "lf"           # Consistent line endings
 
 [tool.ruff.lint.isort]
 combine-as-imports = true
