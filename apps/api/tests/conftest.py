@@ -13,13 +13,6 @@ from pathlib import Path
 
 import pytest
 import pytest_asyncio
-
-# Marker for tests that require the Infisical CLI
-requires_infisical = pytest.mark.skipif(
-    shutil.which("infisical") is None,
-    reason="Infisical CLI not installed"
-)
-
 from alembic.config import Config
 from fastapi.testclient import TestClient
 from httpx import ASGITransport, AsyncClient
@@ -33,6 +26,12 @@ from app.infra.db import build_engine, get_session
 from app.infra.models import Entry
 from app.main import app
 from app.settings import settings
+
+# Marker for tests that require the Infisical CLI
+requires_infisical = pytest.mark.skipif(
+    shutil.which("infisical") is None,
+    reason="Infisical CLI not installed"
+)
 
 
 # Set testing mode before importing app
