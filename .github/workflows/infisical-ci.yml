@@ -164,35 +164,71 @@ jobs:
       - name: Wait for WireMock (healthy)
         run: |
           set -euo pipefail
-          for i in {1..60}; do
-            code=$(curl -s -o /dev/null -w '%{http_code}' http://localhost:8080/__admin/mappings || true)
+          echo "🔍 Waiting for WireMock to become ready..."
+          for i in {1..90}; do
+            code=$(curl -s -o /tmp/wiremock_health.out -w '%{http_code}' http://localhost:8080/__admin/mappings 2>/dev/null || echo "000")
             if [ "$code" = "200" ]; then
-              echo "WireMock is ready"; exit 0
+              echo "✅ WireMock is ready (attempt $i/90)"
+              echo "WireMock response:"
+              cat /tmp/wiremock_health.out || true
+              exit 0
             fi
-            echo "Waiting for WireMock... ($i/60), got HTTP $code"
-            sleep 1
+            echo "⏳ Waiting for WireMock... (attempt $i/90), got HTTP $code"
+            # Show any error details for debugging
+            if [ -f /tmp/wiremock_health.out ]; then
+              echo "Response body: $(cat /tmp/wiremock_health.out)"
+            fi
+            sleep 2
           done
-          echo "::error::WireMock never became ready"
+          echo "::error::WireMock never became ready after 90 attempts (3 minutes)"
+          # Final diagnostic attempt
+          echo "Final diagnostic check:"
+          curl -v http://localhost:8080/__admin/mappings 2>&1 || true
           exit 1
 
       # Setup mock Infisical responses for testing
       - name: Configure WireMock for Infisical API
         run: |
           set -euo pipefail
+          echo "🔧 Configuring WireMock mappings for Infisical API..."
+
+          # Create a well-formed JSON payload
           payload='{
-            "request": {"method":"GET","urlPath":"/api/v3/workspaces"},
-            "response":{"status":200,"headers":{"Content-Type":"application/json"},"body":"{\"workspaces\": []}"}
+            "request": {
+              "method": "GET",
+              "urlPath": "/api/v3/workspaces"
+            },
+            "response": {
+              "status": 200,
+              "headers": {
+                "Content-Type": "application/json"
+              },
+              "body": "{\"workspaces\": []}"
+            }
           }'
+
+          echo "Payload to send:"
+          echo "$payload" | jq '.' || echo "$payload"
+
+          # Send mapping request with detailed error handling
           code=$(curl -s -o /tmp/wiremock.out -w '%{http_code}' \
             -H "Content-Type: application/json" \
+            -X POST \
             -d "$payload" \
-            http://localhost:8080/__admin/mappings || true)
-          echo "WireMock mapping POST -> HTTP $code"
+            http://localhost:8080/__admin/mappings 2>/dev/null || echo "000")
+
+          echo "✅ WireMock mapping POST -> HTTP $code"
+          echo "Response body:"
+          cat /tmp/wiremock.out || echo "No response body"
+
           if [ "$code" != "201" ] && [ "$code" != "200" ]; then
-            echo "::error::WireMock mapping failed. Response:"
-            cat /tmp/wiremock.out || true
+            echo "::error::WireMock mapping failed with HTTP $code"
+            echo "Full curl debug attempt:"
+            curl -v -H "Content-Type: application/json" -X POST -d "$payload" http://localhost:8080/__admin/mappings 2>&1 || true
             exit 1
           fi
+
+          echo "✅ WireMock mapping configured successfully"
       
       # Run database migrations for testing
       - name: Run database migrations
