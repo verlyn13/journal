@@ -134,7 +134,8 @@ jobs:
           JOURNAL_DB_URL_SYNC: postgresql+psycopg://journal:journal@localhost:5433/journal
         run: |
           cd apps/api
-          uv run alembic -c alembic.ini upgrade head
+          # Use -x to pass database URL directly to alembic
+          uv run alembic -c alembic.ini -x sqlalchemy.url="${DATABASE_URL_SYNC}" upgrade head
       - name: Run integration tests
         env:
           TEST_DB_URL: postgresql+asyncpg://journal:journal@localhost:5433/journal
@@ -201,7 +202,8 @@ jobs:
           JOURNAL_DB_URL_SYNC: postgresql+psycopg://journal:journal@localhost:5433/journal
           TEST_DB_URL: postgresql+asyncpg://journal:journal@localhost:5433/journal
         run: |
-          uv run alembic -c alembic.ini upgrade head
+          # Use -x to pass database URL directly to alembic
+          uv run alembic -c alembic.ini -x sqlalchemy.url="${DATABASE_URL_SYNC}" upgrade head
       - name: Run v2 auth tests
         env:
           TEST_DB_URL: postgresql+asyncpg://journal:journal@localhost:5433/journal
@@ -276,7 +278,8 @@ jobs:
           DATABASE_URL_SYNC: postgresql+psycopg://journal:journal@localhost:5433/journal
           JOURNAL_DB_URL_SYNC: postgresql+psycopg://journal:journal@localhost:5433/journal
         run: |
-          uv run alembic -c alembic.ini upgrade head
+          # Use -x to pass database URL directly to alembic
+          uv run alembic -c alembic.ini -x sqlalchemy.url="${DATABASE_URL_SYNC}" upgrade head
       - name: Get GitHub OIDC Token
         id: oidc_token
         run: |

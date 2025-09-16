@@ -179,18 +179,14 @@ jobs:
       # Run database migrations for testing
       - name: Run database migrations
         run: |
+          # Debug: Show what we're setting
           echo "DATABASE_URL_SYNC=${DATABASE_URL_SYNC}"
-          uv run alembic upgrade head
+          echo "Current system user: $(whoami)"
+
+          # Use -x to pass the database URL directly to alembic, bypassing all config
+          uv run alembic -x sqlalchemy.url="${DATABASE_URL_SYNC}" upgrade head
         env:
-          PGUSER: journal
-          PGPASSWORD: journal
-          PGHOST: localhost
-          PGPORT: 5433
-          PGDATABASE: journal_infisical_test
           DATABASE_URL_SYNC: postgresql+psycopg://journal:journal@localhost:5433/journal_infisical_test
-          JOURNAL_DB_URL_SYNC: postgresql+psycopg://journal:journal@localhost:5433/journal_infisical_test
-          TEST_DB_URL_ASYNC: postgresql+asyncpg://journal:journal@localhost:5433/journal_infisical_test
-          TEST_DB_URL_SYNC: postgresql+psycopg://journal:journal@localhost:5433/journal_infisical_test
           JOURNAL_DB_URL: postgresql+asyncpg://journal:journal@localhost:5433/journal_infisical_test
       
       # Test Infisical monitoring (only existing test file)
@@ -347,9 +343,8 @@ jobs:
           export INFISICAL_PROJECT_ID=test-e2e-project
           export INFISICAL_ENVIRONMENT=test
 
-          # Run migrations with explicit user
-          export PGUSER=journal
-          uv run alembic upgrade head
+          # Run migrations with explicit database URL
+          uv run alembic -x sqlalchemy.url="${DATABASE_URL_SYNC}" upgrade head
           uv run uvicorn app.main:app --host 0.0.0.0 --port 8000 &
 
           # Wait for server to be ready - requires full readiness for E2E tests

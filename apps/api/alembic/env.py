@@ -37,9 +37,15 @@ config = context.config
 # Use environment variable override if present, otherwise use settings.db_url_sync
 if os.environ.get("DATABASE_URL_SYNC"):
     db_url_sync = os.environ["DATABASE_URL_SYNC"]
+    print(f"Using DATABASE_URL_SYNC from environment: {db_url_sync}")
 else:
     # Use settings.db_url_sync (already in sync format)
     db_url_sync = settings.db_url_sync
+    print(f"Using db_url_sync from settings: {db_url_sync}")
+
+# Ensure the URL has explicit user credentials
+if "@" not in db_url_sync:
+    print("WARNING: Database URL does not contain credentials!")
 
 config.set_main_option("sqlalchemy.url", db_url_sync)
 
