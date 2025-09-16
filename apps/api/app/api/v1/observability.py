@@ -64,13 +64,19 @@ async def readiness_check(
 
     # Redis check (optional)
     try:
-        redis = await get_redis_client()
-        if redis:
+        from app.settings import settings
+        if settings.redis_url and settings.redis_url != "redis://localhost:6379/0":
+            redis = get_redis_client()
             start = time.time()
             await redis.ping()
             checks["checks"]["redis"] = {
                 "status": "healthy",
                 "latency_ms": round((time.time() - start) * 1000, 2),
+            }
+        else:
+            checks["checks"]["redis"] = {
+                "status": "skipped",
+                "reason": "No Redis configuration",
             }
     except Exception as e:
         # Redis is optional, don't fail readiness
