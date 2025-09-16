@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 # Validate documentation for Python 3.13 and Ruff 0.13.0 alignment
+# TODO: After merging to main, investigate why ripgrep patterns failed in CI
+# and restore more robust regex validation if possible
 set -euo pipefail
 
 # Check if we're in the right directory

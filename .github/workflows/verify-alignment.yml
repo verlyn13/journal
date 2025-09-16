@@ -90,6 +90,9 @@ jobs:
 
       - name: Docs drift check
         run: |
+          # TODO: After merging to main, ensure ripgrep regex patterns work correctly
+          # Currently using simplified grep due to CI environment issues
+          # This should be revisited to use proper regex validation
           if [ -f "./scripts/validate-docs.sh" ]; then
             ./scripts/validate-docs.sh
           else
