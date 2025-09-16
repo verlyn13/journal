@@ -9,7 +9,7 @@ These should be defined at the workflow level in the `env:` section:
 ```yaml
 env:
   # Python configuration
-  PYTHON_VERSION: "3.12"
+  PYTHON_VERSION: "3.13"
   UV_CACHE_DIR: /tmp/.uv-cache
 
   # Infisical CLI configuration

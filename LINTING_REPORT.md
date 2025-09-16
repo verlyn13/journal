@@ -77,7 +77,7 @@ make fix-all       # Fix everything
 
 ### CI Integration
 - Created `.github/workflows/lint.yml` with:
-  - Matrix testing for Python 3.11/3.12
+  - Matrix testing for Python 3.13
   - Parallel Python/JS linting
   - GitHub annotations for errors
   - Summary reporting

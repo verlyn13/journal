@@ -4,7 +4,7 @@ This project runs a React frontend (`apps/web`) against a FastAPI backend (`apps
 
 ## Prerequisites
 
-- Python 3.11+ (3.13 OK)
+- Python 3.13+
 - uv 0.8+ (recommended): `pip install uv`
 - Docker & Docker Compose
 - Bun (and Node 18+) for the frontend

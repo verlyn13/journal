@@ -6,7 +6,7 @@ This quick guide shows developers how to run the API with Infisical Universal Au
 
 - gopass (with age or GPG configured) and a git‑backed password store
 - Infisical CLI v0.42.x
-- Python 3.12+ and uv
+- Python 3.13+ and uv
 
 ## 1) Store UA credentials in gopass (one‑time)
 

@@ -95,7 +95,7 @@ SERVER_URL=http://localhost:8000 MAX_RETRIES=30 REQUIRES_READY=0 ./scripts/wait_
 - **Setup**: Use `./.github/actions/setup-infisical-testing` with `use-shim: 'true'` for deterministic CI
 
 ### Python
-- **Version**: `3.12`
+- **Version**: `3.13`
 - **Variable**: `PYTHON_VERSION`
 
 ### Cache Directories

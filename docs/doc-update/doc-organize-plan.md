@@ -152,7 +152,7 @@ services:
   # This orchestrates the final step
   # -------------------------------------------
   merge-results:
-    image: python:3.11-slim
+    image: python:3.13-slim
     profiles: ["scan"]
     working_dir: /repo
     command: python .scanner/scripts/merge_scans.py

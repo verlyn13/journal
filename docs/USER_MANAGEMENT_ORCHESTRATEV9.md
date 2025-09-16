@@ -109,7 +109,7 @@ Goal: Constrain mypy to app code for now; exclude tests; set clear gradual typin
 
 1) Create/Update apps/api/mypy.ini (or pyproject mypy config) with:
 [mypy]
-python_version = 3.12
+python_version = 3.13
 strict = True
 warn_unused_ignores = True
 warn_redundant_casts = True

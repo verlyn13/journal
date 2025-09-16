@@ -275,7 +275,7 @@ See `.github/WORKFLOW_VARS.md` for:
 
 | Tool | Version | Update Frequency |
 |------|---------|------------------|
-| Python | 3.12 | Quarterly |
+| Python | 3.13 | Quarterly |
 | uv | latest | Monthly |
 | Infisical CLI | 0.42.1 | As needed |
 | PostgreSQL | 16 | Yearly |

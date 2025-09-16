@@ -550,7 +550,7 @@ tail -f /var/log/journal/infisical.log
 ### Version Compatibility
 
 - **Infisical CLI**: v0.42.1 (recommended)
-- **Python**: 3.11+
+- **Python**: 3.13+
 - **FastAPI**: 0.115+
 - **Redis**: 5.0+
 - **PostgreSQL**: 14+

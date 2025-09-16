@@ -21,7 +21,7 @@ The Journal project is a modern full-stack application built as a monorepo, comb
 
 ### Tech Stack Summary
 
-**Backend (Python 3.11+)**
+**Backend (Python 3.13+)**
 
 - FastAPI with async/await patterns
 - SQLModel (SQLAlchemy + Pydantic) for ORM
@@ -114,7 +114,7 @@ The project uses a **workspace-based monorepo** approach:
 
 - Node.js 20+ (for compatibility)
 - Bun 1.2.21+ (primary JS runtime)
-- Python 3.11+ (backend)
+- Python 3.13+ (backend)
 - Docker & Docker Compose (infrastructure)
 - PostgreSQL 16+ (if running locally)
 
@@ -435,7 +435,7 @@ bun run api:db:revision m="description"  # Create migration
 
 **Configuration (`apps/api/pyproject.toml`):**
 
-- Target: Python 3.11+
+- Target: Python 3.13+
 - Line length: 100 characters
 - Auto-fix enabled
 - Comprehensive rule set (E, W, F, I, B, etc.)
