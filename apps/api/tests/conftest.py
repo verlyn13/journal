@@ -29,8 +29,7 @@ from app.settings import settings
 
 # Marker for tests that require the Infisical CLI
 requires_infisical = pytest.mark.skipif(
-    shutil.which("infisical") is None,
-    reason="Infisical CLI not installed"
+    shutil.which("infisical") is None, reason="Infisical CLI not installed"
 )
 
 

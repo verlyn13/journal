@@ -22,9 +22,10 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Run OSV Scanner
-        uses: google/osv-scanner-action@v1.9.1
-        with:
-          scan-args: '. --skip-git --format sarif --output osv-results.sarif'
+        run: |
+          curl -LO https://github.com/google/osv-scanner/releases/download/v1.9.1/osv-scanner_1.9.1_linux_amd64.deb
+          sudo dpkg -i osv-scanner_1.9.1_linux_amd64.deb
+          osv-scanner . --skip-git --format sarif --output osv-results.sarif || true
         continue-on-error: true
 
       - name: Upload OSV results to GitHub Security
