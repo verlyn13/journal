@@ -85,6 +85,7 @@ dev-dependencies = [
     "freezegun>=1.5.5",
     "pytest-freezegun>=0.4.2",
     "aiohttp>=3.12.15",
+    "types-psutil>=7.0.0.20250822",
 ]
 
 [project.scripts]

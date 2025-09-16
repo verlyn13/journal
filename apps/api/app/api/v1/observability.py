@@ -2,6 +2,7 @@
 Observability endpoints for monitoring and metrics.
 """
 
+import logging
 import time
 
 from datetime import UTC, datetime
@@ -39,7 +40,7 @@ async def readiness_check(
     - Disk space
     - Memory usage
     """
-    checks = {
+    checks: dict[str, Any] = {
         "status": "ready",
         "timestamp": datetime.now(UTC).isoformat(),
         "checks": {},
@@ -114,7 +115,7 @@ async def metrics_endpoint() -> str:
     Provides basic metrics in Prometheus text format.
     Can be extended with prometheus-fastapi-instrumentator for full metrics.
     """
-    metrics = []
+    metrics: list[str] = []
 
     # System metrics
     try:
@@ -123,36 +124,43 @@ async def metrics_endpoint() -> str:
         disk = psutil.disk_usage("/")
 
         # CPU metrics
-        metrics.append("# HELP system_cpu_usage_percent CPU usage percentage")
-        metrics.append("# TYPE system_cpu_usage_percent gauge")
-        metrics.append(f"system_cpu_usage_percent {cpu_percent}")
+        metrics.extend([
+            "# HELP system_cpu_usage_percent CPU usage percentage",
+            "# TYPE system_cpu_usage_percent gauge",
+            f"system_cpu_usage_percent {cpu_percent}",
+        ])
 
         # Memory metrics
-        metrics.append("# HELP system_memory_usage_bytes Memory usage in bytes")
-        metrics.append("# TYPE system_memory_usage_bytes gauge")
-        metrics.append(f"system_memory_usage_bytes {memory.used}")
-
-        metrics.append("# HELP system_memory_total_bytes Total memory in bytes")
-        metrics.append("# TYPE system_memory_total_bytes gauge")
-        metrics.append(f"system_memory_total_bytes {memory.total}")
+        metrics.extend([
+            "# HELP system_memory_usage_bytes Memory usage in bytes",
+            "# TYPE system_memory_usage_bytes gauge",
+            f"system_memory_usage_bytes {memory.used}",
+            "# HELP system_memory_total_bytes Total memory in bytes",
+            "# TYPE system_memory_total_bytes gauge",
+            f"system_memory_total_bytes {memory.total}",
+        ])
 
         # Disk metrics
-        metrics.append("# HELP system_disk_usage_bytes Disk usage in bytes")
-        metrics.append("# TYPE system_disk_usage_bytes gauge")
-        metrics.append(f"system_disk_usage_bytes {disk.used}")
+        metrics.extend([
+            "# HELP system_disk_usage_bytes Disk usage in bytes",
+            "# TYPE system_disk_usage_bytes gauge",
+            f"system_disk_usage_bytes {disk.used}",
+            "# HELP system_disk_total_bytes Total disk space in bytes",
+            "# TYPE system_disk_total_bytes gauge",
+            f"system_disk_total_bytes {disk.total}",
+        ])
 
-        metrics.append("# HELP system_disk_total_bytes Total disk space in bytes")
-        metrics.append("# TYPE system_disk_total_bytes gauge")
-        metrics.append(f"system_disk_total_bytes {disk.total}")
-
-    except Exception:
-        # If we can't get system metrics, just skip them
-        pass
+    except Exception as exc:
+        # Log the exception for debugging, but don't fail the metrics endpoint
+        logger = logging.getLogger(__name__)
+        logger.debug(f"Failed to collect system metrics: {exc}")
 
     # Application info
-    metrics.append("# HELP app_info Application information")
-    metrics.append("# TYPE app_info gauge")
-    metrics.append('app_info{version="1.0.0",name="journal-api"} 1')
+    metrics.extend([
+        "# HELP app_info Application information",
+        "# TYPE app_info gauge",
+        'app_info{version="1.0.0",name="journal-api"} 1',
+    ])
 
     return "\n".join(metrics) + "\n"
 
@@ -161,4 +169,3 @@ async def metrics_endpoint() -> str:
 async def ping() -> dict[str, str]:
     """Simple ping endpoint for uptime monitoring."""
     return {"pong": datetime.now(UTC).isoformat()}
-
