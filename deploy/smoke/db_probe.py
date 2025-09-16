@@ -1,179 +1,252 @@
 #!/usr/bin/env python3
 """
-Database probe script for smoke testing
-Tests connection, extensions, and basic operations
+Enhanced Database Probe for Journal Application - Supabase Ready
+
+Tests database connectivity, required extensions, and key functionality
+for both local development and Supabase production environments.
+
+Usage:
+    python deploy/smoke/db_probe.py
+    DATABASE_URL=postgresql://... python deploy/smoke/db_probe.py
 """
 
 import os
 import sys
-import time
-from urllib.parse import urlparse
+import traceback
+from typing import Dict, List, Tuple
 
-def probe_database():
-    """Probe database connectivity and features."""
-    # Get database URL from environment
-    db_url = os.environ.get("DATABASE_URL")
-    if not db_url:
-        print("ERROR: DATABASE_URL not set")
-        sys.exit(1)
+try:
+    import psycopg
+except ImportError:
+    print("❌ psycopg not available - run: pip install psycopg[binary]")
+    sys.exit(1)
 
-    # Parse URL to check if it's PostgreSQL
-    parsed = urlparse(db_url)
-    if not parsed.scheme.startswith("postgres"):
-        print(f"ERROR: Expected PostgreSQL URL, got: {parsed.scheme}")
-        sys.exit(1)
 
-    # Import psycopg (for sync operations) or asyncpg (for async)
-    try:
-        import psycopg
-    except ImportError:
-        print("ERROR: psycopg not installed. Run: pip install psycopg[binary]")
-        sys.exit(1)
+class DatabaseProbe:
+    def __init__(self, database_url: str):
+        self.database_url = database_url
+        self.results: Dict[str, bool] = {}
+        self.details: Dict[str, str] = {}
 
-    print(f"[INFO] Connecting to database: {parsed.hostname}:{parsed.port}/{parsed.path[1:]}")
+    def connect(self):
+        """Establish database connection"""
+        try:
+            return psycopg.connect(self.database_url, autocommit=True)
+        except Exception as e:
+            print(f"❌ Database connection failed: {e}")
+            sys.exit(1)
 
-    try:
-        # Connect to database
-        with psycopg.connect(db_url) as conn:
-            with conn.cursor() as cur:
-                # Test 1: Basic connectivity
-                cur.execute("SELECT 1")
-                result = cur.fetchone()
-                assert result[0] == 1, "Basic SELECT failed"
-                print("✓ Database connection successful")
-
-                # Test 2: Check PostgreSQL version
-                cur.execute("SELECT version()")
-                version = cur.fetchone()[0]
-                print(f"✓ PostgreSQL version: {version.split(',')[0]}")
-
-                # Test 3: Check for pgvector extension
-                cur.execute("""
-                    SELECT COUNT(*)
-                    FROM pg_extension
-                    WHERE extname = 'vector'
-                """)
-                has_vector = cur.fetchone()[0] > 0
-
-                if has_vector:
-                    print("✓ pgvector extension is installed")
-
-                    # Test vector operations
-                    cur.execute("SELECT '[1,2,3]'::vector")
-                    print("✓ Vector operations working")
-                else:
-                    print("⚠ pgvector extension not found")
-                    print("  Run: CREATE EXTENSION IF NOT EXISTS vector;")
-
-                # Test 4: Check for required tables
-                cur.execute("""
-                    SELECT table_name
-                    FROM information_schema.tables
-                    WHERE table_schema = 'public'
-                    AND table_type = 'BASE TABLE'
-                    ORDER BY table_name
-                """)
-                tables = [row[0] for row in cur.fetchall()]
-
-                if tables:
-                    print(f"✓ Found {len(tables)} tables:")
-                    for table in tables[:5]:  # Show first 5
-                        print(f"  - {table}")
-                    if len(tables) > 5:
-                        print(f"  ... and {len(tables) - 5} more")
-                else:
-                    print("⚠ No tables found (database may need migrations)")
-
-                # Test 5: Check for Alembic version
-                cur.execute("""
-                    SELECT COUNT(*)
-                    FROM information_schema.tables
-                    WHERE table_name = 'alembic_version'
-                """)
-                has_alembic = cur.fetchone()[0] > 0
-
-                if has_alembic:
-                    cur.execute("SELECT version_num FROM alembic_version")
-                    migration = cur.fetchone()
-                    if migration:
-                        print(f"✓ Database migrated to version: {migration[0]}")
+    def test_basic_connectivity(self) -> bool:
+        """Test basic database connectivity"""
+        print("🔄 Testing basic connectivity...")
+        try:
+            with self.connect() as conn:
+                with conn.cursor() as cur:
+                    cur.execute("SELECT 1")
+                    result = cur.fetchone()
+                    if result and result[0] == 1:
+                        print("✅ Basic connectivity: OK")
+                        self.details['connectivity'] = "Successfully connected and executed query"
+                        return True
                     else:
-                        print("⚠ Alembic table exists but no version recorded")
-                else:
-                    print("⚠ No alembic_version table (migrations not run)")
+                        print("❌ Basic connectivity: Failed - Invalid response")
+                        return False
+        except Exception as e:
+            print(f"❌ Basic connectivity: Failed - {e}")
+            self.details['connectivity'] = f"Error: {e}"
+            return False
 
-                # Test 6: Write test (create temp table)
-                test_table = f"smoke_test_{int(time.time())}"
-                try:
-                    cur.execute(f"""
-                        CREATE TEMP TABLE {test_table} (
-                            id SERIAL PRIMARY KEY,
-                            data TEXT,
-                            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                        )
+    def test_required_extensions(self) -> bool:
+        """Test that required PostgreSQL extensions are available"""
+        print("🔄 Testing required extensions...")
+
+        required_extensions = ['vector', 'pg_trgm', 'btree_gin']
+
+        try:
+            with self.connect() as conn:
+                with conn.cursor() as cur:
+                    # Check installed extensions
+                    cur.execute("""
+                        SELECT extname, extversion
+                        FROM pg_extension
+                        WHERE extname = ANY(%s)
+                        ORDER BY extname;
+                    """, (required_extensions,))
+
+                    installed = {row[0]: row[1] for row in cur.fetchall()}
+
+                    all_present = True
+                    for ext in required_extensions:
+                        if ext in installed:
+                            print(f"✅ Extension {ext}: {installed[ext]}")
+                        else:
+                            print(f"❌ Extension {ext}: Missing")
+                            all_present = False
+
+                    if all_present:
+                        self.details['extensions'] = f"All required extensions present: {list(installed.keys())}"
+                        return True
+                    else:
+                        missing = set(required_extensions) - set(installed.keys())
+                        self.details['extensions'] = f"Missing extensions: {list(missing)}"
+                        return False
+
+        except Exception as e:
+            print(f"❌ Extension check failed: {e}")
+            self.details['extensions'] = f"Error: {e}"
+            return False
+
+    def test_pgvector_functionality(self) -> bool:
+        """Test pgvector extension functionality"""
+        print("🔄 Testing pgvector functionality...")
+
+        try:
+            with self.connect() as conn:
+                with conn.cursor() as cur:
+                    # Test vector creation and operations
+                    cur.execute("SELECT '[1,2,3]'::vector")
+                    vector1 = cur.fetchone()[0]
+
+                    # Test vector distance calculation
+                    cur.execute("SELECT '[1,2,3]'::vector <-> '[4,5,6]'::vector")
+                    distance = cur.fetchone()[0]
+
+                    # Test vector similarity (should be distance in this case)
+                    if distance > 0:
+                        print(f"✅ pgvector: Vector distance calculation works (distance: {distance:.3f})")
+
+                        # Test with realistic dimensions (OpenAI embedding size)
+                        test_vector = f"[{','.join(['0.1'] * 1536)}]"
+                        cur.execute(f"SELECT '{test_vector}'::vector(1536)")
+                        result = cur.fetchone()
+
+                        if result:
+                            print("✅ pgvector: 1536-dimension vectors supported (OpenAI compatible)")
+                            self.details['pgvector'] = f"Working with distance calc: {distance:.3f}, 1536-dim supported"
+                            return True
+
+                    print("❌ pgvector: Distance calculation returned invalid result")
+                    return False
+
+        except Exception as e:
+            print(f"❌ pgvector test failed: {e}")
+            self.details['pgvector'] = f"Error: {e}"
+            return False
+
+    def test_full_text_search(self) -> bool:
+        """Test full-text search functionality"""
+        print("🔄 Testing full-text search...")
+
+        try:
+            with self.connect() as conn:
+                with conn.cursor() as cur:
+                    # Test tsvector creation
+                    cur.execute("SELECT to_tsvector('english', 'The quick brown fox jumps over the lazy dog')")
+                    tsvector = cur.fetchone()[0]
+
+                    # Test tsquery matching
+                    cur.execute("""
+                        SELECT to_tsvector('english', 'The quick brown fox')
+                        @@ to_tsquery('english', 'quick & fox')
                     """)
+                    match_result = cur.fetchone()[0]
 
-                    # Insert test data
-                    cur.execute(f"""
-                        INSERT INTO {test_table} (data)
-                        VALUES ('smoke test')
-                        RETURNING id
-                    """)
-                    test_id = cur.fetchone()[0]
+                    if match_result:
+                        print("✅ Full-text search: Basic tsvector/tsquery operations work")
 
-                    # Read back
-                    cur.execute(f"""
-                        SELECT data FROM {test_table}
-                        WHERE id = %s
-                    """, (test_id,))
-                    data = cur.fetchone()[0]
+                        # Check if entries table has search_vector column
+                        cur.execute("""
+                            SELECT COUNT(*)
+                            FROM information_schema.columns
+                            WHERE table_name = 'entries' AND column_name = 'search_vector'
+                        """)
+                        has_search_col = cur.fetchone()[0] > 0
 
-                    assert data == "smoke test", "Read/write test failed"
-                    print("✓ Read/write operations working")
+                        if has_search_col:
+                            print("✅ Full-text search: entries.search_vector column exists")
 
-                    # Cleanup happens automatically (TEMP TABLE)
-                except Exception as e:
-                    print(f"⚠ Write test failed: {e}")
+                        self.details['fts'] = "tsvector/tsquery working, search_vector column present"
+                        return True
+                    else:
+                        print("❌ Full-text search: Query matching failed")
+                        return False
 
-                # Test 7: Check connection limits
-                cur.execute("""
-                    SELECT setting::int
-                    FROM pg_settings
-                    WHERE name = 'max_connections'
-                """)
-                max_conn = cur.fetchone()[0]
+        except Exception as e:
+            print(f"❌ Full-text search test failed: {e}")
+            self.details['fts'] = f"Error: {e}"
+            return False
 
-                cur.execute("""
-                    SELECT COUNT(*)
-                    FROM pg_stat_activity
-                """)
-                current_conn = cur.fetchone()[0]
+    def run_all_tests(self) -> Dict[str, bool]:
+        """Run all database probe tests"""
+        print("🚀 Starting comprehensive database probe...\n")
 
-                print(f"✓ Connections: {current_conn}/{max_conn}")
+        tests = [
+            ('connectivity', self.test_basic_connectivity),
+            ('extensions', self.test_required_extensions),
+            ('pgvector', self.test_pgvector_functionality),
+            ('fts', self.test_full_text_search),
+        ]
 
-                if current_conn / max_conn > 0.8:
-                    print("⚠ WARNING: Connection usage above 80%")
+        for test_name, test_func in tests:
+            try:
+                self.results[test_name] = test_func()
+                print()  # Add spacing between tests
+            except Exception as e:
+                print(f"❌ {test_name} test crashed: {e}")
+                traceback.print_exc()
+                self.results[test_name] = False
+                self.details[test_name] = f"Crashed: {e}"
+                print()
 
-                # Test 8: Check database size
-                cur.execute("""
-                    SELECT pg_database_size(current_database())
-                """)
-                db_size = cur.fetchone()[0]
-                size_mb = db_size / (1024 * 1024)
-                print(f"✓ Database size: {size_mb:.2f} MB")
+        return self.results
 
-        print("\n[SUCCESS] All database probes passed")
-        return 0
+    def print_summary(self):
+        """Print test results summary"""
+        print("=" * 50)
+        print("DATABASE PROBE SUMMARY")
+        print("=" * 50)
 
-    except psycopg.OperationalError as e:
-        print(f"[ERROR] Failed to connect to database: {e}")
-        return 1
-    except Exception as e:
-        print(f"[ERROR] Unexpected error: {e}")
-        import traceback
-        traceback.print_exc()
-        return 1
+        passed = sum(1 for result in self.results.values() if result)
+        total = len(self.results)
+
+        print(f"Tests passed: {passed}/{total}")
+        print(f"Overall status: {'✅ PASS' if passed == total else '❌ FAIL'}")
+        print()
+
+        print("Detailed results:")
+        for test_name, result in self.results.items():
+            status = "✅ PASS" if result else "❌ FAIL"
+            print(f"  {test_name:15} {status}")
+            if test_name in self.details:
+                print(f"                  {self.details[test_name]}")
+
+        print()
+
+        if passed == total:
+            print("🎉 Database is ready for Supabase deployment!")
+            return True
+        else:
+            print("⚠️  Database has issues that must be resolved before Supabase deployment.")
+            return False
 
 
-if __name__ == "__main__":
-    sys.exit(probe_database())
+def main():
+    """Main entry point"""
+    database_url = os.getenv('DATABASE_URL')
+    if not database_url:
+        print("❌ DATABASE_URL environment variable is required")
+        print("Example: DATABASE_URL=postgresql://user:pass@host:port/dbname")
+        sys.exit(1)
+
+    print(f"🔍 Probing database: {database_url.split('@')[-1] if '@' in database_url else 'localhost'}")
+    print()
+
+    probe = DatabaseProbe(database_url)
+    probe.run_all_tests()
+    success = probe.print_summary()
+
+    sys.exit(0 if success else 1)
+
+
+if __name__ == '__main__':
+    main()

@@ -181,6 +181,21 @@ jobs:
             sleep 1
           done
 
+      - name: Run enhanced database probe
+        env:
+          DATABASE_URL: postgresql://journal:journal@localhost:5432/journal
+        run: |
+          cd apps/api
+          uv run python ../../deploy/smoke/db_probe.py
+
+      - name: Run database load test
+        env:
+          DATABASE_URL: postgresql://journal:journal@localhost:5432/journal
+          DB_LOAD_N: 5
+        run: |
+          cd apps/api
+          uv run python ../../deploy/smoke/db_load.py
+
       - name: Run API smoke test
         env:
           API_URL: http://localhost:5000
@@ -233,11 +248,12 @@ jobs:
         run: |
           psql -h localhost -U journal -d journal -c "CREATE EXTENSION IF NOT EXISTS vector;"
 
-      - name: Run database probe
+      - name: Run enhanced database probe
         env:
           DATABASE_URL: postgresql://journal:journal@localhost:5432/journal
         run: |
-          python3 deploy/smoke/db_probe.py
+          cd apps/api
+          uv run python ../../deploy/smoke/db_probe.py
 
   # Gate 5: Full smoke test (all services)
   full-smoke:

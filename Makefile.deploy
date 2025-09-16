@@ -105,6 +105,43 @@ db-reset: ## Reset database (DANGEROUS)
 		uv run alembic -x sqlalchemy.url=$${DATABASE_URL_SYNC} upgrade head; \
 	fi
 
+db:snapshot: ## Create database snapshot
+	@echo -e "$(BLUE)Creating database snapshot...$(NC)"
+	./deploy/db/snapshot.sh
+
+db:snapshot:schema: ## Create schema-only snapshot
+	@echo -e "$(BLUE)Creating schema snapshot...$(NC)"
+	./deploy/db/snapshot.sh --schema-only
+
+db:snapshot:data: ## Create data-only snapshot
+	@echo -e "$(BLUE)Creating data snapshot...$(NC)"
+	./deploy/db/snapshot.sh --data-only
+
+db:anonymize:dryrun: ## Preview anonymization changes
+	@echo -e "$(BLUE)Previewing anonymization...$(NC)"
+	python3 scripts/anonymize.py --dry-run
+
+db:anonymize:execute: ## Apply anonymization changes
+	@echo -e "$(YELLOW)Applying anonymization...$(NC)"
+	python3 scripts/anonymize.py --execute
+
+db:anonymize:validate: ## Validate for PII patterns
+	@echo -e "$(BLUE)Validating for PII...$(NC)"
+	python3 scripts/anonymize.py --validate
+
+db:probe: ## Run comprehensive database probe (extensions, pgvector, FTS)
+	@echo -e "$(BLUE)Running database probe...$(NC)"
+	cd apps/api && uv run python ../../deploy/smoke/db_probe.py
+
+db:load: ## Run database load test for connection pooling
+	@echo -e "$(BLUE)Running database load test...$(NC)"
+	cd apps/api && DB_LOAD_N=$${N:-10} uv run python ../../deploy/smoke/db_load.py
+
+db:probe:extensions: ## Check specifically for required extensions
+	@echo -e "$(BLUE)Checking database extensions...$(NC)"
+	cd apps/api && DATABASE_URL_SYNC=$${DATABASE_URL_SYNC:-$${DATABASE_URL}} \
+		psql $${DATABASE_URL_SYNC} -c "SELECT extname, extversion FROM pg_extension WHERE extname IN ('vector', 'pg_trgm', 'btree_gin') ORDER BY extname;"
+
 # =============================================================================
 # Testing
 # =============================================================================
