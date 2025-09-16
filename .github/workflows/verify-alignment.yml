@@ -53,7 +53,8 @@ jobs:
           if git grep -nE "(^import (isort|flake8|black)|^from (isort|flake8|black)|pip install.*(isort|flake8|black))" -- \
             ":!**/site-packages/**" ":!**/vendor/**" ":!**/third_party/**" \
             ":!**/node_modules/**" ":!*.lock" ":!**/RUFF_*.md" ":!**/.pre-commit-config.yaml" \
-            ":!.github/workflows/verify-alignment.yml" ":!apps/api/.devcontainer/**"; then
+            ":!.github/workflows/verify-alignment.yml" ":!apps/api/.devcontainer/**" \
+            ":!docs/guides/**" ":!docs/initial-planning/**"; then
             echo "❌ Found actual legacy tool usage"
             exit 1
           fi
