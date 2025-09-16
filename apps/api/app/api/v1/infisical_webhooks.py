@@ -313,7 +313,10 @@ async def infisical_health_check(
     try:
         # Test database connectivity
         await session.execute("SELECT 1")
-        health_results["components"]["database"] = {"status": "healthy", "tested_at": datetime.now(UTC).isoformat()}
+        health_results["components"]["database"] = {
+            "status": "healthy",
+            "tested_at": datetime.now(UTC).isoformat(),
+        }
     except Exception as e:
         health_results["components"]["database"] = {"status": "unhealthy", "error": str(e)}
         health_results["errors"].append(f"Database: {e}")
@@ -321,7 +324,10 @@ async def infisical_health_check(
     try:
         # Test Redis connectivity
         await redis.ping()
-        health_results["components"]["redis"] = {"status": "healthy", "tested_at": datetime.now(UTC).isoformat()}
+        health_results["components"]["redis"] = {
+            "status": "healthy",
+            "tested_at": datetime.now(UTC).isoformat(),
+        }
     except Exception as e:
         health_results["components"]["redis"] = {"status": "unhealthy", "error": str(e)}
         health_results["errors"].append(f"Redis: {e}")
@@ -330,7 +336,10 @@ async def infisical_health_check(
     infisical_client = None
     try:
         infisical_client = InfisicalSecretsClient.from_env(redis)
-        health_results["components"]["infisical_client"] = {"status": "healthy", "initialized": True}
+        health_results["components"]["infisical_client"] = {
+            "status": "healthy",
+            "initialized": True,
+        }
 
         # Add configuration info (without sensitive data)
         health_results["configuration"] = {
@@ -340,7 +349,11 @@ async def infisical_health_check(
             "cache_ttl": infisical_client.cache_ttl,
         }
     except Exception as e:
-        health_results["components"]["infisical_client"] = {"status": "unhealthy", "error": str(e), "initialized": False}
+        health_results["components"]["infisical_client"] = {
+            "status": "unhealthy",
+            "error": str(e),
+            "initialized": False,
+        }
         health_results["errors"].append(f"Infisical client: {e}")
 
     # Try to initialize key manager
@@ -350,10 +363,18 @@ async def infisical_health_check(
             key_manager = InfisicalKeyManager(session, redis, infisical_client)
             health_results["components"]["key_manager"] = {"status": "healthy", "initialized": True}
         except Exception as e:
-            health_results["components"]["key_manager"] = {"status": "unhealthy", "error": str(e), "initialized": False}
+            health_results["components"]["key_manager"] = {
+                "status": "unhealthy",
+                "error": str(e),
+                "initialized": False,
+            }
             health_results["errors"].append(f"Key manager: {e}")
     else:
-        health_results["components"]["key_manager"] = {"status": "skipped", "reason": "infisical_client_failed", "initialized": False}
+        health_results["components"]["key_manager"] = {
+            "status": "skipped",
+            "reason": "infisical_client_failed",
+            "initialized": False,
+        }
 
     # Perform advanced health checks if components are available
     if key_manager:
@@ -361,7 +382,10 @@ async def infisical_health_check(
             advanced_health = await key_manager.health_check()
             health_results["advanced_health"] = advanced_health
         except Exception as e:
-            health_results["components"]["advanced_health"] = {"status": "unhealthy", "error": str(e)}
+            health_results["components"]["advanced_health"] = {
+                "status": "unhealthy",
+                "error": str(e),
+            }
             health_results["errors"].append(f"Advanced health check: {e}")
 
     if infisical_client:
@@ -386,7 +410,9 @@ async def infisical_health_check(
         "has_infisical_project_id": bool(os.getenv("INFISICAL_PROJECT_ID")),
         "has_infisical_server_url": bool(os.getenv("INFISICAL_SERVER_URL")),
         "has_infisical_token": bool(os.getenv("INFISICAL_TOKEN")),
-        "has_ua_credentials": bool(os.getenv("UA_CLIENT_ID_TOKEN_SERVICE") and os.getenv("UA_CLIENT_SECRET_TOKEN_SERVICE")),
+        "has_ua_credentials": bool(
+            os.getenv("UA_CLIENT_ID_TOKEN_SERVICE") and os.getenv("UA_CLIENT_SECRET_TOKEN_SERVICE")
+        ),
     }
 
     return health_results
