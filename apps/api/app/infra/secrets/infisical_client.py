@@ -243,6 +243,8 @@ class InfisicalSecretsClient:
 
     def _validate_cli(self) -> None:
         """Validate Infisical CLI is available and correct version."""
+        from app.infra.secrets.version import format_version, is_compatible_version, parse_cli_version
+
         try:
             result = subprocess.run(  # noqa: S603 - arguments are constant and validated
                 [self._cli_path, "--version"],
@@ -255,21 +257,18 @@ class InfisicalSecretsClient:
             if result.returncode != 0:
                 raise InfisicalError("Infisical CLI not found or failed to execute")
 
-            version = result.stdout.strip()
-            if not version.startswith("infisical version"):
-                raise InfisicalError(f"Unexpected Infisical CLI version format: {version}")
+            try:
+                version_info = parse_cli_version(result.stdout)
+            except ValueError as e:
+                raise InfisicalError(str(e)) from e
 
-            # Extract version number
-            version_parts = version.split()
-            if len(version_parts) >= 3:
-                version_num = version_parts[2]
-                if not version_num.startswith("0.42"):
-                    logger.warning(
-                        "Infisical CLI version %s may not be compatible (expected 0.42.x)",
-                        version_num,
-                    )
+            if not is_compatible_version(version_info):
+                logger.warning(
+                    "Infisical CLI version %s may not be compatible (expected 0.42.x)",
+                    format_version(version_info),
+                )
 
-            logger.info("Infisical CLI validated: %s", version)
+            logger.info("Infisical CLI validated: %s", version_info.raw)
 
         except (subprocess.TimeoutExpired, FileNotFoundError) as e:
             raise InfisicalError(f"Infisical CLI validation failed: {e}") from e
