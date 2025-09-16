@@ -277,8 +277,9 @@ def nats_capture(monkeypatch):
 @pytest_asyncio.fixture
 async def redis_client():
     """Create a Redis client for testing."""
-    from redis.asyncio import Redis
     from unittest.mock import AsyncMock, MagicMock
+
+    from redis.asyncio import Redis
 
     # Create a mock Redis client with commonly used methods
     mock_redis = MagicMock(spec=Redis)
@@ -307,8 +308,9 @@ async def redis_client():
 @pytest_asyncio.fixture
 async def infisical_client(db_session: AsyncSession, redis_client):
     """Create an Infisical client for testing."""
-    from app.infra.secrets import InfisicalSecretsClient
     from unittest.mock import AsyncMock, MagicMock
+
+    from app.infra.secrets import InfisicalSecretsClient
 
     # Create a mock Infisical client with necessary methods
     mock_client = MagicMock(spec=InfisicalSecretsClient)
@@ -325,8 +327,9 @@ async def infisical_client(db_session: AsyncSession, redis_client):
 @pytest_asyncio.fixture
 async def cache():
     """Create a cache instance for testing."""
-    from app.infra.cache import Cache
     from unittest.mock import AsyncMock, MagicMock
+
+    from app.infra.cache import Cache
 
     mock_cache = MagicMock(spec=Cache)
     mock_cache.get = AsyncMock(return_value=None)

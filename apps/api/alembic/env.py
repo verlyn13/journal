@@ -4,6 +4,7 @@ import sys
 
 from logging.config import fileConfig
 
+
 # Check if Alembic should be skipped
 if os.getenv("ALEMBIC_SKIP", "0") == "1":
     print("Skipping Alembic per ALEMBIC_SKIP=1")
@@ -16,6 +17,7 @@ from sqlalchemy import create_engine, pool
 from sqlmodel import SQLModel
 
 from alembic import context
+
 
 # Check for skip via -x argument
 xargs = context.get_x_argument(as_dictionary=True)

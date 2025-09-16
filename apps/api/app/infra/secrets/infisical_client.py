@@ -29,7 +29,7 @@ from app.telemetry.metrics_runtime import inc as metrics_inc
 logger = logging.getLogger(__name__)
 
 # Valid output modes for the Infisical client
-ALLOWED_MODES = {"json", "plain"}
+_ALLOWED_MODES = {"json", "plain"}
 
 
 class InfisicalError(Exception):
@@ -314,7 +314,7 @@ class InfisicalSecretsClient:
 
         # Check for mode override in environment
         env_mode = os.getenv("INFISICAL_MODE", mode)
-        if env_mode not in ALLOWED_MODES:
+        if env_mode not in _ALLOWED_MODES:
             env_mode = "json"
 
         return cls(
@@ -442,20 +442,24 @@ class InfisicalSecretsClient:
             if path_prefix != "/":
                 cmd.extend(["--path", path_prefix])
 
-            result = await asyncio.wait_for(
-                asyncio.create_subprocess_exec(
-                    *cmd,
-                    stdout=asyncio.subprocess.PIPE,
-                    stderr=asyncio.subprocess.PIPE,
-                    env=env,
-                ),
-                timeout=self.timeout,
+            process = await asyncio.create_subprocess_exec(
+                *cmd,
+                stdout=asyncio.subprocess.PIPE,
+                stderr=asyncio.subprocess.PIPE,
+                env=env,
             )
 
-            stdout, stderr = await result.communicate()
+            try:
+                stdout, stderr = await asyncio.wait_for(
+                    process.communicate(),
+                    timeout=1.0,  # 1s timeout as specified
+                )
+            except TimeoutError as e:
+                process.kill()
+                raise ConnectionError(f"Timeout listing secrets at {path_prefix}") from e
 
-            if result.returncode is not None and result.returncode != 0:
-                self._handle_cli_error(result.returncode, stderr.decode())
+            if process.returncode is not None and process.returncode != 0:
+                self._handle_cli_error(process.returncode, stderr.decode())
 
             # Parse JSON response
             secrets_data = json.loads(stdout.decode())
@@ -473,8 +477,6 @@ class InfisicalSecretsClient:
 
             return sorted(paths)
 
-        except TimeoutError as e:
-            raise ConnectionError(f"Timeout listing secrets: {e}") from e
         except json.JSONDecodeError as e:
             raise InfisicalError(f"Invalid JSON response: {e}") from e
         except Exception as e:
@@ -617,8 +619,7 @@ class InfisicalSecretsClient:
         # Build command based on mode
         if self.mode == "plain":
             cmd = [
-                # Use program name for compatibility with tests
-                "infisical",
+                self._cli_path,
                 "secrets",
                 "get",
                 secret_key,
@@ -629,7 +630,7 @@ class InfisicalSecretsClient:
         else:
             # JSON mode - use export command to get JSON format
             cmd = [
-                "infisical",
+                self._cli_path,
                 "export",
                 "--format",
                 "json",
@@ -657,7 +658,7 @@ class InfisicalSecretsClient:
         try:
             stdout, stderr = await asyncio.wait_for(
                 process.communicate(),
-                timeout=self.timeout,
+                timeout=1.0,  # 1s timeout as specified
             )
         except TimeoutError as e:
             process.kill()
@@ -715,7 +716,7 @@ class InfisicalSecretsClient:
         secret_key = path.rsplit("/", maxsplit=1)[-1]
 
         cmd = [
-            "infisical",
+            self._cli_path,
             "secrets",
             "set",
             secret_key,
@@ -734,7 +735,7 @@ class InfisicalSecretsClient:
         try:
             _stdout, stderr = await asyncio.wait_for(
                 process.communicate(),
-                timeout=self.timeout,
+                timeout=1.0,  # 1s timeout as specified
             )
         except TimeoutError as e:
             process.kill()
@@ -754,7 +755,7 @@ class InfisicalSecretsClient:
         secret_key = path.rsplit("/", maxsplit=1)[-1]
 
         cmd = [
-            "infisical",
+            self._cli_path,
             "secrets",
             "delete",
             secret_key,
@@ -772,7 +773,7 @@ class InfisicalSecretsClient:
         try:
             _stdout, stderr = await asyncio.wait_for(
                 process.communicate(),
-                timeout=self.timeout,
+                timeout=1.0,  # 1s timeout as specified
             )
         except TimeoutError as e:
             process.kill()

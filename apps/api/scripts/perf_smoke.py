@@ -4,7 +4,6 @@ import argparse
 import asyncio
 import statistics
 import time
-from typing import List
 
 import httpx
 
@@ -16,8 +15,8 @@ async def fetch(client: httpx.AsyncClient, url: str) -> float:
     return (time.perf_counter() - t0) * 1000.0
 
 
-async def run_load(url: str, total: int, concurrency: int) -> List[float]:
-    latencies: List[float] = []
+async def run_load(url: str, total: int, concurrency: int) -> list[float]:
+    latencies: list[float] = []
     sem = asyncio.Semaphore(concurrency)
 
     async with httpx.AsyncClient() as client:

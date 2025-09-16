@@ -338,8 +338,8 @@ jobs:
           uv run alembic upgrade head
           uv run uvicorn app.main:app --host 0.0.0.0 --port 8000 &
 
-          # Wait for server to be ready using proper health checks
-          SERVER_URL=http://localhost:8000 MAX_RETRIES=30 ./scripts/wait_for_server.sh
+          # Wait for server to be ready - requires full readiness for E2E tests
+          SERVER_URL=http://localhost:8000 MAX_RETRIES=30 REQUIRES_READY=1 ./scripts/wait_for_server.sh
       
       # Test webhook endpoints
       - name: Test Infisical webhook endpoints

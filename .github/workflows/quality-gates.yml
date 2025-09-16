@@ -426,7 +426,8 @@ jobs:
       - name: Wait for API readiness
         working-directory: apps/api
         run: |
-          SERVER_URL=http://127.0.0.1:5000 MAX_RETRIES=60 ./scripts/wait_for_server.sh
+          # Performance tests don't require external dependencies
+          SERVER_URL=http://127.0.0.1:5000 MAX_RETRIES=60 REQUIRES_READY=0 ./scripts/wait_for_server.sh
 
       - name: API latency smoke (p95)
         working-directory: apps/api

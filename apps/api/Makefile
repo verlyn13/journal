@@ -35,7 +35,17 @@ db-downgrade:
 worker:
 	uv run python -m app.workers.embedding_consumer
 
-# Code quality - Python linting
+# Code quality - Python linting and formatting
+format:
+	@echo "Formatting Python code..."
+	uv run ruff format .
+	uv run ruff check . --fix
+
+format-check:
+	@echo "Checking Python formatting (no changes)..."
+	uv run ruff format --check .
+	uv run ruff check .
+
 lint:
 	@echo "Running Python linters with autofix..."
 	uv run ruff check . --fix
