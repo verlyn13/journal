@@ -8,12 +8,14 @@ import asyncio
 import json
 import logging
 import os
+import shutil
 import sys
 
+from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any, AsyncGenerator
+from typing import Any
 
 import typer
 
@@ -25,13 +27,14 @@ from rich.table import Table
 # Add the app directory to the path so we can import modules
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from app.infra.db import get_session, build_engine, sessionmaker_for
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.infra.db import build_engine, sessionmaker_for
 from app.infra.redis import get_redis
 from app.infra.secrets import InfisicalSecretsClient, SecretNotFoundError, SecretType
 from app.infra.secrets.enhanced_key_manager import InfisicalKeyManager
 from app.security.token_cipher import KeyConfigError, TokenCipher
 from app.settings import settings
-from sqlalchemy.ext.asyncio import AsyncSession
 
 
 @asynccontextmanager
@@ -468,8 +471,7 @@ def validate_env(
 
         if not dry_run:
             raise typer.Exit(1)
-        else:
-            console.print("\n⚠️ [yellow]Dry run mode - would exit with error[/yellow]")
+        console.print("\n⚠️ [yellow]Dry run mode - would exit with error[/yellow]")
 
     # Check optional but recommended variables
     optional_vars = {
@@ -492,29 +494,32 @@ def validate_env(
         console.print("\n✅ Environment validation passed!")
 
     # Verify Infisical CLI is available
-    try:
-        import shutil
-        import subprocess
-
-        # Use full path for security (S607) and validate executable exists
+    async def check_cli_version():
+        # Use full path for security and validate executable exists
         infisical_path = shutil.which("infisical")
         if not infisical_path:
             console.print("⚠️ [yellow]Infisical CLI not found in PATH[/yellow]")
-        else:
-            # Use subprocess.run with full path (addresses S404, S607)
-            result = subprocess.run(  # noqa: S603
-                [infisical_path, "--version"],
-                capture_output=True,
-                text=True,
-                check=False,
-                timeout=5,  # Add timeout for safety
+            return
+
+        try:
+            process = await asyncio.create_subprocess_exec(
+                infisical_path, "--version",
+                stdout=asyncio.subprocess.PIPE,
+                stderr=asyncio.subprocess.PIPE,
             )
-            if result.returncode == 0:
-                console.print(f"✅ Infisical CLI found: {result.stdout.strip()}")
+            stdout, stderr = await asyncio.wait_for(
+                process.communicate(),
+                timeout=5.0,
+            )
+            if process.returncode == 0:
+                console.print(f"✅ Infisical CLI found: {stdout.decode().strip()}")
             else:
                 console.print("⚠️ [yellow]Infisical CLI not found or not working properly[/yellow]")
-    except FileNotFoundError:
-        console.print("⚠️ [yellow]Infisical CLI not installed[/yellow]")
+        except (TimeoutError, OSError):
+            console.print("⚠️ [yellow]Infisical CLI not installed or not responding[/yellow]")
+
+    # Run the async check
+    asyncio.run(check_cli_version())
 
     if dry_run:
         console.print("\n🧪 [cyan]Dry run completed - no changes made[/cyan]")

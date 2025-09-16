@@ -28,6 +28,9 @@ from app.telemetry.metrics_runtime import inc as metrics_inc
 
 logger = logging.getLogger(__name__)
 
+# Valid output modes for the Infisical client
+ALLOWED_MODES = {"json", "plain"}
+
 
 class InfisicalError(Exception):
     """Base exception for Infisical operations."""
@@ -309,7 +312,7 @@ class InfisicalSecretsClient:
 
         # Check for mode override in environment
         env_mode = os.getenv("INFISICAL_MODE", mode)
-        if env_mode not in ["json", "plain"]:
+        if env_mode not in ALLOWED_MODES:
             env_mode = "json"
 
         return cls(
@@ -629,8 +632,17 @@ class InfisicalSecretsClient:
                 "--format", "json",
                 "--projectId",
                 self.project_id,
-                "--path", "/",  # Export all from root to filter later
             ]
+
+            # Add environment if specified
+            infisical_env = os.getenv("INFISICAL_ENVIRONMENT")
+            if infisical_env:
+                cmd.extend(["--env", infisical_env])
+
+            # Export from the parent path of the requested secret
+            # This allows us to find the specific secret within its context
+            parent_path = "/" if "/" not in path else path.rsplit("/", 1)[0] or "/"
+            cmd.extend(["--path", parent_path])
 
         process = await asyncio.create_subprocess_exec(
             *cmd,
@@ -659,25 +671,33 @@ class InfisicalSecretsClient:
             if not secret_value:
                 raise SecretNotFoundError(f"Secret {path} not found or empty")
             return secret_value
-        else:
-            # JSON mode - parse the exported JSON and find our secret
-            try:
-                output = stdout.decode().strip()
-                if not output:
-                    raise SecretNotFoundError(f"Secret {path} not found")
+        # JSON mode - parse the exported JSON and find our secret
+        try:
+            output = stdout.decode().strip()
+            if not output:
+                raise SecretNotFoundError(f"Secret {path} not found")
 
-                # The export format returns an array of secrets
-                secrets = json.loads(output)
+            # The export format returns an array of secrets
+            secrets = json.loads(output)
 
-                # Find our specific secret by key
-                for secret in secrets:
-                    if secret.get("secretKey") == secret_key:
-                        return secret.get("secretValue", "")
+            # Find our specific secret by matching full path and key
+            # Some versions wrap in {"secrets": [...]} - handle both
+            if isinstance(secrets, dict) and "secrets" in secrets:
+                secrets = secrets["secrets"]
 
-                raise SecretNotFoundError(f"Secret {path} not found in export")
-            except json.JSONDecodeError as e:
-                logger.error("Failed to parse JSON output: %s", output[:200])
-                raise InfisicalError(f"Invalid JSON response: {e}") from e
+            for secret in secrets:
+                # Match by key and optionally path for disambiguation
+                secret_path = secret.get("secretPath", "")
+                if secret.get("secretKey") == secret_key and (
+                    not secret_path or secret_path == parent_path or path.endswith(f"{secret_path}/{secret_key}")
+                ):
+                    # If we have multiple matches, prefer exact path match
+                    return secret.get("secretValue", "")
+
+            raise SecretNotFoundError(f"Secret {path} not found in export")
+        except json.JSONDecodeError as e:
+            logger.error("Failed to parse JSON output: %s", output[:200])
+            raise InfisicalError(f"Invalid JSON response: {e}") from e
 
     async def _store_to_infisical(self, path: str, value: str) -> None:
         """Store secret to Infisical."""

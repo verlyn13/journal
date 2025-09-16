@@ -329,11 +329,12 @@ jobs:
           export TEST_DB_URL_ASYNC=postgresql+asyncpg://journal:journal@localhost:5433/journal_e2e_test
           export TEST_DB_URL_SYNC=postgresql+psycopg://journal:journal@localhost:5433/journal_e2e_test
           export JOURNAL_DB_URL=postgresql+asyncpg://journal:journal@localhost:5433/journal_e2e_test
+          export DATABASE_URL_SYNC=postgresql://journal:journal@localhost:5433/journal_e2e_test
           export JOURNAL_REDIS_URL=redis://localhost:6379/0
           export INFISICAL_TOKEN=test-e2e-token
           export INFISICAL_PROJECT_ID=test-e2e-project
           export INFISICAL_ENVIRONMENT=test
-          
+
           uv run alembic upgrade head
           uv run uvicorn app.main:app --host 0.0.0.0 --port 8000 &
           

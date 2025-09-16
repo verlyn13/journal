@@ -1,8 +1,13 @@
 import logging
 import os
+import sys
 
 from logging.config import fileConfig
 
+# Check if Alembic should be skipped
+if os.getenv("ALEMBIC_SKIP", "0") == "1":
+    print("Skipping Alembic per ALEMBIC_SKIP=1")
+    sys.exit(0)
 
 # Suppress duplicate logging
 logging.getLogger("alembic.runtime.migration").setLevel(logging.WARNING)
@@ -11,6 +16,12 @@ from sqlalchemy import create_engine, pool
 from sqlmodel import SQLModel
 
 from alembic import context
+
+# Check for skip via -x argument
+xargs = context.get_x_argument(as_dictionary=True)
+if xargs.get("skip") == "true":
+    print("Skipping Alembic per -x skip=true")
+    sys.exit(0)
 
 # Import all models for autogenerate support
 from app.infra.models import Entry, Event, User, UserSession  # noqa: F401
