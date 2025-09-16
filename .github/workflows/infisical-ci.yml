@@ -58,7 +58,7 @@ jobs:
     
     services:
       postgres:
-        image: pgvector/pgvector:pg16
+        image: pgvector/pgvector:pg16@sha256:c3c84b85691a264aa3c5b8fc1d611e67d42b0cca8596e3d3d22dc2424c12c4e2
         env:
           POSTGRES_DB: journal_infisical_test
           POSTGRES_USER: journal
@@ -73,7 +73,7 @@ jobs:
           - 5433:5432
       
       redis:
-        image: redis:7-alpine
+        image: redis:7-alpine@sha256:bb186d083732f669da90be8b0f975a37812b15e913465bb14d845db72a4e3e08
         options: >-
           --health-cmd "redis-cli ping"
           --health-interval 10s
@@ -265,7 +265,7 @@ jobs:
     
     services:
       postgres:
-        image: pgvector/pgvector:pg16
+        image: pgvector/pgvector:pg16@sha256:c3c84b85691a264aa3c5b8fc1d611e67d42b0cca8596e3d3d22dc2424c12c4e2
         env:
           POSTGRES_DB: journal_e2e_test
           POSTGRES_USER: journal
@@ -279,7 +279,7 @@ jobs:
           - 5433:5432
       
       redis:
-        image: redis:7-alpine
+        image: redis:7-alpine@sha256:bb186d083732f669da90be8b0f975a37812b15e913465bb14d845db72a4e3e08
         options: >-
           --health-cmd "redis-cli ping"
           --health-interval 10s

@@ -27,7 +27,7 @@ jobs:
     runs-on: ubuntu-24.04
     services:
       postgres:
-        image: pgvector/pgvector:pg16
+        image: pgvector/pgvector:pg16@sha256:c3c84b85691a264aa3c5b8fc1d611e67d42b0cca8596e3d3d22dc2424c12c4e2
         env:
           POSTGRES_USER: journal
           POSTGRES_PASSWORD: journal
@@ -71,7 +71,7 @@ jobs:
     runs-on: ubuntu-24.04
     services:
       postgres:
-        image: pgvector/pgvector:pg16
+        image: pgvector/pgvector:pg16@sha256:c3c84b85691a264aa3c5b8fc1d611e67d42b0cca8596e3d3d22dc2424c12c4e2
         env:
           POSTGRES_USER: journal
           POSTGRES_PASSWORD: journal
@@ -90,7 +90,7 @@ jobs:
           - 4222:4222
           - 8222:8222
       redis:
-        image: redis:7-alpine
+        image: redis:7-alpine@sha256:bb186d083732f669da90be8b0f975a37812b15e913465bb14d845db72a4e3e08
         ports:
           - 6380:6379
         options: >-
@@ -153,7 +153,7 @@ jobs:
     runs-on: ubuntu-24.04
     services:
       postgres:
-        image: pgvector/pgvector:pg16
+        image: pgvector/pgvector:pg16@sha256:c3c84b85691a264aa3c5b8fc1d611e67d42b0cca8596e3d3d22dc2424c12c4e2
         env:
           POSTGRES_USER: journal
           POSTGRES_PASSWORD: journal
@@ -166,7 +166,7 @@ jobs:
           --health-timeout 5s \
           --health-retries 5
       redis:
-        image: redis:7-alpine
+        image: redis:7-alpine@sha256:bb186d083732f669da90be8b0f975a37812b15e913465bb14d845db72a4e3e08
         ports:
           - 6380:6379
         options: >-
@@ -218,7 +218,7 @@ jobs:
       INFISICAL_CLI_REQUIRED: "true"  # This job needs CLI for migration tests
     services:
       postgres:
-        image: pgvector/pgvector:pg16
+        image: pgvector/pgvector:pg16@sha256:c3c84b85691a264aa3c5b8fc1d611e67d42b0cca8596e3d3d22dc2424c12c4e2
         env:
           POSTGRES_USER: journal
           POSTGRES_PASSWORD: journal
@@ -231,7 +231,7 @@ jobs:
           --health-timeout 5s \
           --health-retries 5
       redis:
-        image: redis:7-alpine
+        image: redis:7-alpine@sha256:bb186d083732f669da90be8b0f975a37812b15e913465bb14d845db72a4e3e08
         ports:
           - 6380:6379
         options: >-
