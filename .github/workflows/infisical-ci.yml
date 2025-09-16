@@ -93,9 +93,6 @@ jobs:
         image: wiremock/wiremock:3.3.1
         ports:
           - 8080:8080
-        env:
-          --global-response-templating: true
-          --verbose: true
     
     steps:
       - name: Checkout code
@@ -425,10 +422,11 @@ jobs:
       PGHOST: localhost
       PGPORT: 5433
       PGDATABASE: journal_e2e_test
+      INFISICAL_SERVER_URL: http://localhost:8080  # Point to WireMock
     defaults:
       run:
         working-directory: apps/api
-    
+
     services:
       postgres:
         image: pgvector/pgvector:pg16@sha256:c3c84b85691a264aa3c5b8fc1d611e67d42b0cca8596e3d3d22dc2424c12c4e2
@@ -443,7 +441,7 @@ jobs:
           --health-retries 5
         ports:
           - 5433:5432
-      
+
       redis:
         image: redis:7-alpine@sha256:bb186d083732f669da90be8b0f975a37812b15e913465bb14d845db72a4e3e08
         options: >-
@@ -453,6 +451,11 @@ jobs:
           --health-retries 5
         ports:
           - 6379:6379
+
+      mock-infisical:
+        image: wiremock/wiremock:3.3.1
+        ports:
+          - 8080:8080
     
     steps:
       - name: Checkout code
@@ -496,6 +499,54 @@ jobs:
             echo "⏳ Waiting for Redis... (attempt $i/60)"
             sleep 1
           done
+
+      - name: Wait for WireMock
+        run: |
+          set -euo pipefail
+          echo "🔍 Waiting for WireMock to be ready..."
+          for i in {1..90}; do
+            code=$(curl -s -o /tmp/wm.out -w '%{http_code}' http://localhost:8080/__admin/mappings || echo "000")
+            if [ "$code" = "200" ]; then
+              echo "✅ WireMock is ready"
+              exit 0
+            fi
+            echo "⏳ WireMock not ready (HTTP $code), attempt $i/90"
+            sleep 2
+          done
+          echo "::error::WireMock never became ready"
+          cat /tmp/wm.out || true
+          exit 1
+
+      - name: Configure WireMock for Infisical API
+        run: |
+          set -euo pipefail
+          echo "🔧 Configuring WireMock mappings for Infisical API..."
+
+          # Add workspace endpoint
+          payload='{
+            "request": { "method": "GET", "urlPath": "/api/v3/workspaces" },
+            "response": { "status": 200, "headers": {"Content-Type": "application/json"}, "body": "{\"workspaces\": []}" }
+          }'
+          code=$(curl -s -o /tmp/wm_map.out -w '%{http_code}' -H "Content-Type: application/json" -X POST -d "$payload" http://localhost:8080/__admin/mappings || echo "000")
+          if [ "$code" != "201" ] && [ "$code" != "200" ]; then
+            echo "::error::WireMock mapping failed with HTTP $code"
+            cat /tmp/wm_map.out || true
+            exit 1
+          fi
+          echo "✅ Added workspace mapping"
+
+          # Add health check endpoint
+          payload='{
+            "request": { "method": "GET", "urlPath": "/health" },
+            "response": { "status": 200, "headers": {"Content-Type": "application/json"}, "body": "{\"status\": \"healthy\"}" }
+          }'
+          code=$(curl -s -o /tmp/wm_map2.out -w '%{http_code}' -H "Content-Type: application/json" -X POST -d "$payload" http://localhost:8080/__admin/mappings || echo "000")
+          if [ "$code" != "201" ] && [ "$code" != "200" ]; then
+            echo "::error::WireMock health mapping failed with HTTP $code"
+            cat /tmp/wm_map2.out || true
+            exit 1
+          fi
+          echo "✅ Added health mapping"
       
       - name: Setup Infisical CLI for Testing
         uses: ./.github/actions/setup-infisical-testing
@@ -557,14 +608,30 @@ jobs:
           PGHOST: localhost
           PGPORT: 5433
       
-      # Test webhook endpoints
+      # Test webhook endpoints with retry logic
       - name: Test Infisical webhook endpoints
         run: |
-          # Test health endpoint
-          curl -f http://localhost:8000/api/v1/infisical/health
-          
-          # Test cache invalidation endpoint
-          curl -f -X POST http://localhost:8000/api/v1/infisical/cache/invalidate
+          echo "🔄 Testing health endpoint with retry..."
+          for i in {1..10}; do
+            if curl -fsS http://localhost:8000/api/v1/infisical/health; then
+              echo "✅ Health endpoint succeeded on attempt $i"
+              break
+            else
+              echo "⏳ Health check failed, retrying... (attempt $i/10)"
+              sleep 2
+            fi
+          done
+
+          echo "🔄 Testing cache invalidation endpoint with retry..."
+          for i in {1..10}; do
+            if curl -fsS -X POST http://localhost:8000/api/v1/infisical/cache/invalidate; then
+              echo "✅ Cache invalidation succeeded on attempt $i"
+              break
+            else
+              echo "⏳ Cache invalidation failed, retrying... (attempt $i/10)"
+              sleep 2
+            fi
+          done
       
       # Test key rotation simulation (without real Infisical)
       - name: Test Key Rotation Simulation

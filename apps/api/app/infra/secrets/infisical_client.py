@@ -24,6 +24,7 @@ from typing import Any, Literal, Protocol
 from redis.asyncio import Redis
 from redis.exceptions import RedisError
 
+from app.infra.secrets.version import format_version, is_compatible_version, parse_cli_version
 from app.telemetry.metrics_runtime import inc as metrics_inc
 
 
@@ -243,8 +244,6 @@ class InfisicalSecretsClient:
 
     def _validate_cli(self) -> None:
         """Validate Infisical CLI is available and correct version."""
-        from app.infra.secrets.version import format_version, is_compatible_version, parse_cli_version
-
         try:
             result = subprocess.run(  # noqa: S603 - arguments are constant and validated
                 [self._cli_path, "--version"],
