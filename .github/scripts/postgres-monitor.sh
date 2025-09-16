@@ -19,9 +19,11 @@ if [[ "${1:-}" == "help" || "${1:-}" == "--help" || "${1:-}" == "-h" ]]; then
     exit 0
 fi
 
-DB_URL="${1:-postgresql://journal:journal@localhost:5433/journal_test}"
-MAX_RETRIES="${2:-30}"
-CHECK_INTERVAL="${3:-2}"
+# Parse arguments properly - first arg is command, second is DB URL
+COMMAND="${1:-wait}"
+DB_URL="${2:-postgresql://journal:journal@localhost:5433/journal_test}"
+MAX_RETRIES="${3:-30}"
+CHECK_INTERVAL="${4:-2}"
 
 echo "🔍 Monitoring Postgres connections for issues..."
 echo "Database URL: $DB_URL"
@@ -159,7 +161,7 @@ monitor_connections() {
 }
 
 # Main execution
-case "${1:-wait}" in
+case "$COMMAND" in
     "wait")
         wait_for_database
         ;;
@@ -173,6 +175,7 @@ case "${1:-wait}" in
         check_connection_issues
         ;;
     *)
+        echo "Error: Unknown command '$COMMAND'"
         echo "Usage: $0 [wait|monitor|check|diagnose] [db_url] [max_retries] [interval]"
         echo "  wait     - Wait for database to become available (default)"
         echo "  monitor  - Continuously monitor connections"
