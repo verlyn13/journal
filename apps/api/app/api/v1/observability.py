@@ -3,10 +3,12 @@ Observability endpoints for monitoring and metrics.
 """
 
 import time
-from datetime import datetime, timezone
+
+from datetime import UTC, datetime
 from typing import Any
 
 import psutil
+
 from fastapi import APIRouter, Depends
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -14,13 +16,14 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.infra.db import get_session
 from app.infra.redis import get_redis_client
 
+
 router = APIRouter(prefix="/observability", tags=["observability"])
 
 
 @router.get("/health")
 async def health_check() -> dict[str, str]:
     """Basic health check endpoint."""
-    return {"status": "healthy", "timestamp": datetime.now(timezone.utc).isoformat()}
+    return {"status": "healthy", "timestamp": datetime.now(UTC).isoformat()}
 
 
 @router.get("/ready")
@@ -38,14 +41,14 @@ async def readiness_check(
     """
     checks = {
         "status": "ready",
-        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "timestamp": datetime.now(UTC).isoformat(),
         "checks": {},
     }
 
     # Database check
     try:
         start = time.time()
-        result = await session.execute(text("SELECT 1"))
+        await session.execute(text("SELECT 1"))
         await session.commit()
         checks["checks"]["database"] = {
             "status": "healthy",
@@ -120,26 +123,26 @@ async def metrics_endpoint() -> str:
         disk = psutil.disk_usage("/")
 
         # CPU metrics
-        metrics.append(f"# HELP system_cpu_usage_percent CPU usage percentage")
-        metrics.append(f"# TYPE system_cpu_usage_percent gauge")
+        metrics.append("# HELP system_cpu_usage_percent CPU usage percentage")
+        metrics.append("# TYPE system_cpu_usage_percent gauge")
         metrics.append(f"system_cpu_usage_percent {cpu_percent}")
 
         # Memory metrics
-        metrics.append(f"# HELP system_memory_usage_bytes Memory usage in bytes")
-        metrics.append(f"# TYPE system_memory_usage_bytes gauge")
+        metrics.append("# HELP system_memory_usage_bytes Memory usage in bytes")
+        metrics.append("# TYPE system_memory_usage_bytes gauge")
         metrics.append(f"system_memory_usage_bytes {memory.used}")
 
-        metrics.append(f"# HELP system_memory_total_bytes Total memory in bytes")
-        metrics.append(f"# TYPE system_memory_total_bytes gauge")
+        metrics.append("# HELP system_memory_total_bytes Total memory in bytes")
+        metrics.append("# TYPE system_memory_total_bytes gauge")
         metrics.append(f"system_memory_total_bytes {memory.total}")
 
         # Disk metrics
-        metrics.append(f"# HELP system_disk_usage_bytes Disk usage in bytes")
-        metrics.append(f"# TYPE system_disk_usage_bytes gauge")
+        metrics.append("# HELP system_disk_usage_bytes Disk usage in bytes")
+        metrics.append("# TYPE system_disk_usage_bytes gauge")
         metrics.append(f"system_disk_usage_bytes {disk.used}")
 
-        metrics.append(f"# HELP system_disk_total_bytes Total disk space in bytes")
-        metrics.append(f"# TYPE system_disk_total_bytes gauge")
+        metrics.append("# HELP system_disk_total_bytes Total disk space in bytes")
+        metrics.append("# TYPE system_disk_total_bytes gauge")
         metrics.append(f"system_disk_total_bytes {disk.total}")
 
     except Exception:
@@ -147,9 +150,9 @@ async def metrics_endpoint() -> str:
         pass
 
     # Application info
-    metrics.append(f"# HELP app_info Application information")
-    metrics.append(f"# TYPE app_info gauge")
-    metrics.append(f'app_info{{version="1.0.0",name="journal-api"}} 1')
+    metrics.append("# HELP app_info Application information")
+    metrics.append("# TYPE app_info gauge")
+    metrics.append('app_info{version="1.0.0",name="journal-api"} 1')
 
     return "\n".join(metrics) + "\n"
 
@@ -157,4 +160,5 @@ async def metrics_endpoint() -> str:
 @router.get("/ping")
 async def ping() -> dict[str, str]:
     """Simple ping endpoint for uptime monitoring."""
-    return {"pong": datetime.now(timezone.utc).isoformat()}
+    return {"pong": datetime.now(UTC).isoformat()}
+
