@@ -44,17 +44,17 @@ jobs:
           fetch-depth: 0
           ref: ${{ github.sha }}
 
-      - name: Setup Bun 1.2.21
-        uses: oven-sh/setup-bun@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          bun-version: "1.2.21"
+          node-version: "20"
 
       - name: Web: install, typecheck, build
         working-directory: apps/web
         run: |
-          bun install
-          bun run quality:types
-          bun run build
+          npm ci --legacy-peer-deps
+          npm run quality:types
+          npm run build
           node scripts/bundle-check.js
 
       - name: Install uv 0.8.x

@@ -19,8 +19,8 @@
     "quality:lint": "biome lint .",
     "quality:test": "vitest run --silent",
     "quality:bundle": "vite build && node scripts/bundle-check.js",
-    "quality:all": "bun run quality:types && bun run quality:lint && bun run quality:test && bun run quality:bundle",
-    "precommit": "bun run quality:all",
+    "quality:all": "npm run quality:types && npm run quality:lint && npm run quality:test && npm run quality:bundle",
+    "precommit": "npm run quality:all",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

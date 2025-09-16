@@ -26,26 +26,22 @@ jobs:
         with:
           node-version: '22.8.0'
 
-      # Bun for web unit tests
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: "1.2.21"
+      # Node.js for web unit tests (already setup above)
 
-      - name: Cache bun store
+      - name: Cache npm store
         uses: actions/cache@v4
         with:
-          path: ~/.bun/install/cache
-          key: bun-${{ runner.os }}-${{ hashFiles('**/bun.lock') }}
+          path: ~/.npm
+          key: npm-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
 
       - name: Install deps
-        run: bun install
+        run: npm ci --legacy-peer-deps
 
       - name: Print tool versions
         run: |
           echo "Node:" && node -v || true
-          echo "Bun:" && bun -v
-          echo "Vitest:" && bun x vitest --version
+          echo "npm:" && npm -v
+          echo "Vitest:" && npx vitest --version
           node -e "console.log('jsdom:', require('jsdom/package.json').version)"
 
       - name: Create reports directory
@@ -56,7 +52,7 @@ jobs:
           CI: "true"
         run: |
           mkdir -p reports
-          bun x vitest run \
+          npx vitest run \
             --environment=jsdom \
             --coverage.enabled \
             --reporter=default \
@@ -103,11 +99,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Bun for Playwright runner and root dependencies
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
+      # Node.js for Playwright runner and root dependencies
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          bun-version: "1.2.21"
+          node-version: "20"
 
       # Python/uv for API + Alembic
       - name: Setup Python
@@ -189,17 +185,17 @@ jobs:
           }
 
       - name: Install root dependencies
-        run: bun install
+        run: npm ci --legacy-peer-deps
 
       - name: Install Playwright browsers
-        run: bunx playwright install --with-deps
+        run: npx playwright install --with-deps
 
       - name: Run Playwright tests
         env:
           BASE_URL: http://127.0.0.1:5000
         run: |
           echo "Note: Playwright tests may be outdated for the refactored app"
-          bunx playwright test --reporter=line --timeout=30000 --max-failures=3 || echo "Tests failed - likely need updating for new app structure"
+          npx playwright test --reporter=line --timeout=30000 --max-failures=3 || echo "Tests failed - likely need updating for new app structure"
 
       - name: Upload API log
         if: always()
