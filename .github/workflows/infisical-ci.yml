@@ -119,20 +119,47 @@ jobs:
       - name: Install dependencies
         run: uv sync --all-extras --dev
 
-      - name: Wait for services (Postgres/Redis)
+      - name: Wait for services and initialize database
         run: |
           set -e
           sudo apt-get update && sudo apt-get install -y postgresql-client redis-tools
-          echo "Waiting for Postgres on 5433..."
+
+          echo "🔍 Waiting for PostgreSQL server to start..."
           for i in $(seq 1 60); do
-            if pg_isready -h localhost -p 5433 -U journal >/dev/null 2>&1; then
-              echo "Postgres is ready"; break; fi
-            sleep 1
+            if pg_isready -h localhost -p 5433 >/dev/null 2>&1; then
+              echo "✅ PostgreSQL server is ready"; break; fi
+            echo "⏳ Waiting for PostgreSQL... (attempt $i/60)"
+            sleep 2
           done
-          echo "Waiting for Redis on 6379..."
+
+          echo "🔧 Creating journal user and ensuring proper permissions..."
+          # Connect as default postgres user to create journal user
+          PGPASSWORD=postgres psql -h localhost -p 5433 -U postgres -c "
+            DO \$\$
+            BEGIN
+              IF NOT EXISTS (SELECT FROM pg_catalog.pg_user WHERE usename = 'journal') THEN
+                CREATE USER journal WITH PASSWORD 'journal';
+              END IF;
+
+              -- Grant necessary permissions
+              GRANT ALL PRIVILEGES ON DATABASE journal_infisical_test TO journal;
+              ALTER USER journal CREATEDB;
+            END
+            \$\$;
+          " || {
+            echo "⚠️ Failed to create user as postgres, trying direct connection..."
+            # Fallback: sometimes the image uses different defaults
+            PGPASSWORD=journal psql -h localhost -p 5433 -U journal -d journal_infisical_test -c "SELECT current_user;" || {
+              echo "❌ Both approaches failed. Checking what users exist..."
+              PGPASSWORD=postgres psql -h localhost -p 5433 -U postgres -c "SELECT usename FROM pg_user;" || true
+            }
+          }
+
+          echo "🔍 Waiting for Redis on 6379..."
           for i in $(seq 1 60); do
             if redis-cli -h 127.0.0.1 -p 6379 ping | grep -q PONG; then
-              echo "Redis is ready"; break; fi
+              echo "✅ Redis is ready"; break; fi
+            echo "⏳ Waiting for Redis... (attempt $i/60)"
             sleep 1
           done
       
@@ -229,6 +256,41 @@ jobs:
           fi
 
           echo "✅ WireMock mapping configured successfully"
+
+      # Comprehensive WireMock diagnostics for debugging
+      - name: WireMock Diagnostics and Health Check
+        run: |
+          set -e
+          echo "🔍 WIREMOCK COMPREHENSIVE DIAGNOSTICS"
+          echo "====================================="
+
+          # Basic connectivity test
+          echo "📡 Testing WireMock connectivity..."
+          curl -f http://localhost:8080/__admin/mappings >/dev/null && echo "✅ WireMock admin API accessible" || echo "❌ WireMock admin API failed"
+
+          # List all current mappings
+          echo ""
+          echo "📋 Current WireMock mappings:"
+          curl -s http://localhost:8080/__admin/mappings | jq '.' || curl -s http://localhost:8080/__admin/mappings
+
+          # Test the specific Infisical workspace endpoint we configured
+          echo ""
+          echo "🎯 Testing configured Infisical workspace endpoint:"
+          workspace_response=$(curl -s -w "\nHTTP_CODE:%{http_code}" http://localhost:8080/api/v3/workspaces || echo "CURL_FAILED")
+          echo "Response: $workspace_response"
+
+          # WireMock metrics and status
+          echo ""
+          echo "📊 WireMock status and metrics:"
+          curl -s http://localhost:8080/__admin/docs || echo "WireMock docs not available"
+
+          # Check for any recorded requests
+          echo ""
+          echo "📝 Recorded requests (if any):"
+          curl -s http://localhost:8080/__admin/requests | jq '.requests | length' 2>/dev/null || echo "No requests recorded yet"
+
+          echo ""
+          echo "✅ WireMock diagnostics completed"
       
       # Run database migrations for testing
       - name: Run database migrations
@@ -421,12 +483,43 @@ jobs:
       - name: Install dependencies
         run: uv sync --all-extras --dev
 
-      - name: Wait for services with monitoring
+      - name: Wait for services and initialize database
         run: |
           set -e
           sudo apt-get update && sudo apt-get install -y postgresql-client redis-tools
 
-          echo "🔍 Starting enhanced Postgres monitoring..."
+          echo "🔍 Waiting for PostgreSQL server to start..."
+          for i in $(seq 1 60); do
+            if pg_isready -h localhost -p 5433 >/dev/null 2>&1; then
+              echo "✅ PostgreSQL server is ready"; break; fi
+            echo "⏳ Waiting for PostgreSQL... (attempt $i/60)"
+            sleep 2
+          done
+
+          echo "🔧 Creating journal user and ensuring proper permissions..."
+          # Connect as default postgres user to create journal user
+          PGPASSWORD=postgres psql -h localhost -p 5433 -U postgres -c "
+            DO \$\$
+            BEGIN
+              IF NOT EXISTS (SELECT FROM pg_catalog.pg_user WHERE usename = 'journal') THEN
+                CREATE USER journal WITH PASSWORD 'journal';
+              END IF;
+
+              -- Grant necessary permissions
+              GRANT ALL PRIVILEGES ON DATABASE journal_e2e_test TO journal;
+              ALTER USER journal CREATEDB;
+            END
+            \$\$;
+          " || {
+            echo "⚠️ Failed to create user as postgres, trying direct connection..."
+            # Fallback: sometimes the image uses different defaults
+            PGPASSWORD=journal psql -h localhost -p 5433 -U journal -d journal_e2e_test -c "SELECT current_user;" || {
+              echo "❌ Both approaches failed. Checking what users exist..."
+              PGPASSWORD=postgres psql -h localhost -p 5433 -U postgres -c "SELECT usename FROM pg_user;" || true
+            }
+          }
+
+          echo "🔍 Enhanced Postgres monitoring with user validation..."
           # Use our monitoring script for better diagnostics
           ../../.github/scripts/postgres-monitor.sh wait \
             postgresql://journal:journal@localhost:5433/journal_e2e_test \
@@ -439,7 +532,8 @@ jobs:
           echo "🔍 Waiting for Redis..."
           for i in $(seq 1 60); do
             if redis-cli -h 127.0.0.1 -p 6379 ping | grep -q PONG; then
-              echo "Redis is ready"; break; fi
+              echo "✅ Redis is ready"; break; fi
+            echo "⏳ Waiting for Redis... (attempt $i/60)"
             sleep 1
           done
       
@@ -589,6 +683,42 @@ jobs:
           PGHOST: localhost
           PGPORT: 5433
 
+      # Comprehensive diagnostic logs collection for E2E debugging
+      - name: Collect E2E Container Diagnostics
+        if: always()
+        run: |
+          set +e  # Continue on errors for diagnostic collection
+
+          echo "🔍 E2E CONTAINER DIAGNOSTICS COLLECTION"
+          echo "======================================="
+
+          # Get all container IDs and names
+          echo "📋 Active containers:"
+          docker ps -a --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
+
+          echo ""
+          echo "🐘 PostgreSQL container logs (E2E):"
+          docker logs $(docker ps -q --filter "ancestor=pgvector/pgvector:pg16") 2>&1 | tail -100 || echo "Failed to get PostgreSQL logs"
+
+          echo ""
+          echo "🔴 Redis container logs (E2E):"
+          docker logs $(docker ps -q --filter "ancestor=redis:7-alpine") 2>&1 | tail -30 || echo "Failed to get Redis logs"
+
+          echo ""
+          echo "📊 Final container status (E2E):"
+          docker ps -a
+
+          echo ""
+          echo "🔍 Network information:"
+          docker network ls
+
+          echo ""
+          echo "🔍 Container resource usage:"
+          docker stats --no-stream 2>/dev/null || echo "Docker stats not available"
+
+          echo ""
+          echo "✅ E2E container diagnostics collection completed"
+
   migration-readiness:
     name: Migration Readiness Check
     runs-on: ubuntu-24.04
@@ -669,6 +799,42 @@ jobs:
           echo "4. Execute production migration" >> migration-plan.md
           echo "5. Monitor webhook integration" >> migration-plan.md
       
+      # Comprehensive diagnostic logs collection for debugging
+      - name: Collect Container Diagnostics
+        if: always()
+        run: |
+          set +e  # Continue on errors for diagnostic collection
+
+          echo "🔍 COMPREHENSIVE CONTAINER DIAGNOSTICS COLLECTION"
+          echo "=================================================="
+
+          # Get all container IDs and names
+          echo "📋 Active containers:"
+          docker ps -a --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
+
+          echo ""
+          echo "🐘 PostgreSQL container logs:"
+          docker logs $(docker ps -q --filter "ancestor=pgvector/pgvector:pg16") 2>&1 | tail -100 || echo "Failed to get PostgreSQL logs"
+
+          echo ""
+          echo "🧱 WireMock container logs:"
+          docker logs $(docker ps -a -q --filter "ancestor=wiremock/wiremock:3.3.1") 2>&1 | tail -50 || echo "Failed to get WireMock logs"
+
+          echo ""
+          echo "🔴 Redis container logs:"
+          docker logs $(docker ps -q --filter "ancestor=redis:7-alpine") 2>&1 | tail -30 || echo "Failed to get Redis logs"
+
+          echo ""
+          echo "📊 Final container status:"
+          docker ps -a
+
+          echo ""
+          echo "🔍 Docker system overview:"
+          docker system df 2>/dev/null || echo "Docker system df not available"
+
+          echo ""
+          echo "✅ Container diagnostics collection completed"
+
       - name: Upload Migration Plan
         uses: actions/upload-artifact@v4
         with:
