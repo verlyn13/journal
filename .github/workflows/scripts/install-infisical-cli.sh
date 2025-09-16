@@ -16,7 +16,26 @@ if command -v infisical &> /dev/null; then
   exit 0
 fi
 
+# Check if this is optional (for workflows that don't strictly need it)
+if [ "${INFISICAL_CLI_REQUIRED:-true}" = "false" ]; then
+  echo "Infisical CLI not required for this workflow, skipping installation"
+  exit 0
+fi
+
 echo "Installing Infisical CLI from Cloudsmith APT repository..."
+
+# First check if Cloudsmith is accessible
+echo "Checking Cloudsmith availability..."
+if ! curl -fsSL --connect-timeout 5 --max-time 10 -o /dev/null -w "%{http_code}" \
+  https://dl.cloudsmith.io/public/infisical/infisical-cli/config.json 2>/dev/null | grep -q "200\|404"; then
+  echo "WARNING: Cloudsmith appears to be down (not returning 200 or 404)"
+  echo "This is a temporary infrastructure issue outside our control."
+
+  if [ "${INFISICAL_CLI_OPTIONAL:-false}" = "true" ]; then
+    echo "Infisical CLI is optional, continuing without it"
+    exit 0
+  fi
+fi
 
 # Use bounded retries with exponential backoff
 for i in 1 2 3; do
@@ -42,10 +61,18 @@ for i in 1 2 3; do
   fi
 
   if [ $i -eq 3 ]; then
-    echo "ERROR: Cloudsmith repository unavailable after 3 attempts"
+    echo "WARNING: Cloudsmith repository unavailable after 3 attempts"
     echo "This is likely a temporary issue with the Cloudsmith service."
-    echo "Please retry the workflow in a few minutes."
-    exit 1
+
+    # Check if we can continue without Infisical CLI
+    if [ "${INFISICAL_CLI_OPTIONAL:-false}" = "true" ]; then
+      echo "Infisical CLI is optional for this workflow, continuing without it"
+      exit 0
+    else
+      echo "Infisical CLI is required but cannot be installed."
+      echo "Please retry the workflow in a few minutes."
+      exit 1
+    fi
   fi
 
   WAIT=$((2**i))
