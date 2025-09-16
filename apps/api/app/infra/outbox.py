@@ -54,14 +54,12 @@ async def _publish_rows(s: AsyncSession, rows: list[Event], retry_enabled: bool)
             subject = SUBJECT_MAP.get(ev.aggregate_type, "journal.events")
             # Normalize timestamp to naive ISO without offset for compatibility
             ts = ev.occurred_at.replace(tzinfo=None).isoformat(timespec="seconds")
-            payload = json.dumps(
-                {
-                    "id": str(ev.id),
-                    "event_type": ev.event_type,
-                    "event_data": ev.event_data,
-                    "ts": ts,
-                }
-            ).encode("utf-8")
+            payload = json.dumps({
+                "id": str(ev.id),
+                "event_type": ev.event_type,
+                "event_data": ev.event_data,
+                "ts": ts,
+            }).encode("utf-8")
             try:
                 metrics_inc("outbox_publish_attempts_total", {"stage": "attempt"})
                 if js:
@@ -149,14 +147,12 @@ async def process_outbox_batch(session_factory: SessionFactory) -> int:
             for ev in rows:
                 subject = SUBJECT_MAP.get(ev.aggregate_type, "journal.events")
                 ts = ev.occurred_at.replace(tzinfo=None).isoformat(timespec="seconds")
-                payload = json.dumps(
-                    {
-                        "id": str(ev.id),
-                        "event_type": ev.event_type,
-                        "event_data": ev.event_data,
-                        "ts": ts,
-                    }
-                ).encode("utf-8")
+                payload = json.dumps({
+                    "id": str(ev.id),
+                    "event_type": ev.event_type,
+                    "event_data": ev.event_data,
+                    "ts": ts,
+                }).encode("utf-8")
                 try:
                     metrics_inc("outbox_publish_attempts_total", {"stage": "attempt"})
                     if js:

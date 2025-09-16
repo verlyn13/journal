@@ -111,12 +111,10 @@ async def test_worker_handles_missing_entry(monkeypatch, db_session: AsyncSessio
 
     # Message for non-existent entry
     class MissingMsg:
-        data = json.dumps(
-            {
-                "event_type": "entry.created",
-                "event_data": {"entry_id": "99999999-9999-9999-9999-999999999999"},
-            }
-        ).encode("utf-8")
+        data = json.dumps({
+            "event_type": "entry.created",
+            "event_data": {"entry_id": "99999999-9999-9999-9999-999999999999"},
+        }).encode("utf-8")
         acked = False
         naked = False
 
@@ -172,12 +170,10 @@ async def test_worker_handles_entry_deleted_event(monkeypatch, db_session: Async
 
     # Send deleted event
     class DeleteMsg:
-        data = json.dumps(
-            {
-                "event_type": "entry.deleted",
-                "event_data": {"entry_id": str(entry.id)},
-            }
-        ).encode("utf-8")
+        data = json.dumps({
+            "event_type": "entry.deleted",
+            "event_data": {"entry_id": str(entry.id)},
+        }).encode("utf-8")
         acked = False
 
         async def ack(self):
@@ -218,12 +214,10 @@ async def test_worker_rate_limit_nak(monkeypatch, db_session: AsyncSession):
     consumer = EmbeddingConsumer()
 
     class Msg:
-        data = json.dumps(
-            {
-                "event_type": "entry.updated",
-                "event_data": {"entry_id": str(entry.id)},
-            }
-        ).encode("utf-8")
+        data = json.dumps({
+            "event_type": "entry.updated",
+            "event_data": {"entry_id": str(entry.id)},
+        }).encode("utf-8")
         naks = 0
 
         async def nak(self):
@@ -306,12 +300,10 @@ async def test_worker_handles_entry_updated_event(monkeypatch, db_session: Async
 
     # Send updated event
     class UpdateMsg:
-        data = json.dumps(
-            {
-                "event_type": "entry.updated",
-                "event_data": {"entry_id": str(entry.id)},
-            }
-        ).encode("utf-8")
+        data = json.dumps({
+            "event_type": "entry.updated",
+            "event_data": {"entry_id": str(entry.id)},
+        }).encode("utf-8")
         acked = False
 
         async def ack(self):
@@ -356,12 +348,10 @@ async def test_worker_batch_processing(monkeypatch, db_session: AsyncSession):
     for entry in entries:
 
         class Msg:
-            data = json.dumps(
-                {
-                    "event_type": "entry.created",
-                    "event_data": {"entry_id": str(entry.id)},
-                }
-            ).encode("utf-8")
+            data = json.dumps({
+                "event_type": "entry.created",
+                "event_data": {"entry_id": str(entry.id)},
+            }).encode("utf-8")
             acked = False
 
             async def ack(self):

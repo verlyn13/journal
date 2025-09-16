@@ -55,12 +55,10 @@ class TestEmbeddingWorker:
         consumer = EmbeddingConsumer()
 
         # Simulate entry.created event message
-        msg = FakeMsg(
-            {
-                "event_type": "entry.created",
-                "event_data": {"entry_id": str(e.id)},
-            }
-        )
+        msg = FakeMsg({
+            "event_type": "entry.created",
+            "event_data": {"entry_id": str(e.id)},
+        })
 
         await consumer.process_entry_event(msg)
         assert msg.acked and not msg.naked
@@ -72,12 +70,10 @@ class TestEmbeddingWorker:
         assert (res.scalar() or 0) == 1
 
         # Send again: idempotent upsert keeps single row
-        msg2 = FakeMsg(
-            {
-                "event_type": "entry.created",
-                "event_data": {"entry_id": str(e.id)},
-            }
-        )
+        msg2 = FakeMsg({
+            "event_type": "entry.created",
+            "event_data": {"entry_id": str(e.id)},
+        })
         await consumer.process_entry_event(msg2)
         res2 = await db_session.execute(
             text("SELECT COUNT(*) FROM entry_embeddings WHERE entry_id = :id"), {"id": str(e.id)}
@@ -102,12 +98,10 @@ class TestEmbeddingWorker:
         consumer = EmbeddingConsumer()
 
         # Reindex event
-        reindex = FakeMsg(
-            {
-                "event_type": "embedding.reindex",
-                "event_data": {},
-            }
-        )
+        reindex = FakeMsg({
+            "event_type": "embedding.reindex",
+            "event_data": {},
+        })
         await consumer.process_entry_event(reindex)
         assert reindex.acked
 
@@ -189,14 +183,12 @@ class TestEmbeddingWorker:
         mock_js = MagicMock()
 
         async def mock_subscribe(subject, queue, cb, manual_ack, max_deliver):
-            subscriptions.append(
-                {
-                    "subject": subject,
-                    "queue": queue,
-                    "manual_ack": manual_ack,
-                    "max_deliver": max_deliver,
-                }
-            )
+            subscriptions.append({
+                "subject": subject,
+                "queue": queue,
+                "manual_ack": manual_ack,
+                "max_deliver": max_deliver,
+            })
             return AsyncMock()
 
         mock_js.subscribe = mock_subscribe

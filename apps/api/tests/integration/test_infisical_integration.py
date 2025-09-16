@@ -37,12 +37,10 @@ def infisical_available():
 
 def infisical_configured():
     """Check if Infisical environment is configured."""
-    return all(
-        [
-            os.getenv("INFISICAL_PROJECT_ID"),
-            os.getenv("INFISICAL_SERVER_URL"),
-        ]
-    )
+    return all([
+        os.getenv("INFISICAL_PROJECT_ID"),
+        os.getenv("INFISICAL_SERVER_URL"),
+    ])
 
 
 pytestmark = pytest.mark.skipif(

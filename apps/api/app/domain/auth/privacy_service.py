@@ -195,17 +195,15 @@ class PrivacyService:
             )
             writer.writeheader()
             for entry in data["entries"]:
-                writer.writerow(
-                    {
-                        "id": entry["id"],
-                        "title": entry["title"],
-                        "content": entry["content"] or "",
-                        "markdown_content": entry["markdown_content"] or "",
-                        "word_count": entry["word_count"] or 0,
-                        "created_at": entry["created_at"],
-                        "updated_at": entry["updated_at"],
-                    }
-                )
+                writer.writerow({
+                    "id": entry["id"],
+                    "title": entry["title"],
+                    "content": entry["content"] or "",
+                    "markdown_content": entry["markdown_content"] or "",
+                    "word_count": entry["word_count"] or 0,
+                    "created_at": entry["created_at"],
+                    "updated_at": entry["updated_at"],
+                })
 
         csv_data = output.getvalue()
         filename = f"user_entries_{user_id}_{datetime.now(UTC).strftime('%Y%m%d_%H%M%S')}.csv"

@@ -128,37 +128,31 @@ async def metrics_endpoint() -> str:
         disk = psutil.disk_usage("/")
 
         # CPU metrics
-        metrics.extend(
-            [
-                "# HELP system_cpu_usage_percent CPU usage percentage",
-                "# TYPE system_cpu_usage_percent gauge",
-                f"system_cpu_usage_percent {cpu_percent}",
-            ]
-        )
+        metrics.extend([
+            "# HELP system_cpu_usage_percent CPU usage percentage",
+            "# TYPE system_cpu_usage_percent gauge",
+            f"system_cpu_usage_percent {cpu_percent}",
+        ])
 
         # Memory metrics
-        metrics.extend(
-            [
-                "# HELP system_memory_usage_bytes Memory usage in bytes",
-                "# TYPE system_memory_usage_bytes gauge",
-                f"system_memory_usage_bytes {memory.used}",
-                "# HELP system_memory_total_bytes Total memory in bytes",
-                "# TYPE system_memory_total_bytes gauge",
-                f"system_memory_total_bytes {memory.total}",
-            ]
-        )
+        metrics.extend([
+            "# HELP system_memory_usage_bytes Memory usage in bytes",
+            "# TYPE system_memory_usage_bytes gauge",
+            f"system_memory_usage_bytes {memory.used}",
+            "# HELP system_memory_total_bytes Total memory in bytes",
+            "# TYPE system_memory_total_bytes gauge",
+            f"system_memory_total_bytes {memory.total}",
+        ])
 
         # Disk metrics
-        metrics.extend(
-            [
-                "# HELP system_disk_usage_bytes Disk usage in bytes",
-                "# TYPE system_disk_usage_bytes gauge",
-                f"system_disk_usage_bytes {disk.used}",
-                "# HELP system_disk_total_bytes Total disk space in bytes",
-                "# TYPE system_disk_total_bytes gauge",
-                f"system_disk_total_bytes {disk.total}",
-            ]
-        )
+        metrics.extend([
+            "# HELP system_disk_usage_bytes Disk usage in bytes",
+            "# TYPE system_disk_usage_bytes gauge",
+            f"system_disk_usage_bytes {disk.used}",
+            "# HELP system_disk_total_bytes Total disk space in bytes",
+            "# TYPE system_disk_total_bytes gauge",
+            f"system_disk_total_bytes {disk.total}",
+        ])
 
     except Exception as exc:
         # Log the exception for debugging, but don't fail the metrics endpoint
@@ -166,13 +160,11 @@ async def metrics_endpoint() -> str:
         logger.debug(f"Failed to collect system metrics: {exc}")
 
     # Application info
-    metrics.extend(
-        [
-            "# HELP app_info Application information",
-            "# TYPE app_info gauge",
-            'app_info{version="1.0.0",name="journal-api"} 1',
-        ]
-    )
+    metrics.extend([
+        "# HELP app_info Application information",
+        "# TYPE app_info gauge",
+        'app_info{version="1.0.0",name="journal-api"} 1',
+    ])
 
     return "\n".join(metrics) + "\n"
 

@@ -243,12 +243,10 @@ class MockNATSConnection:
 
     async def publish(self, subject: str, payload: bytes):
         """Mock publish method."""
-        self.published_messages.append(
-            {
-                "subject": subject,
-                "payload": payload,
-            }
-        )
+        self.published_messages.append({
+            "subject": subject,
+            "payload": payload,
+        })
 
     async def close(self):
         """Mock close method."""

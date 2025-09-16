@@ -42,14 +42,12 @@ class TestInfisicalKeyManager:
         client.fetch_secret = AsyncMock(
             side_effect=lambda path: {
                 "/auth/aes/active-kid": "test-kid-123",
-                "/auth/aes/keys-map": json.dumps(
-                    {
-                        "keys": {
-                            "test-kid-123": "dGVzdC1rZXktMTIzNDU2Nzg5MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTI="  # 32-byte key base64
-                        },
-                        "current_kid": "test-kid-123",
-                    }
-                ),
+                "/auth/aes/keys-map": json.dumps({
+                    "keys": {
+                        "test-kid-123": "dGVzdC1rZXktMTIzNDU2Nzg5MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTI="  # 32-byte key base64
+                    },
+                    "current_kid": "test-kid-123",
+                }),
                 "/auth/jwt/private-key": "-----BEGIN PRIVATE KEY-----\ntest-key\n-----END PRIVATE KEY-----",
                 "/auth/jwt/public-key": "-----BEGIN PUBLIC KEY-----\ntest-key\n-----END PUBLIC KEY-----",
             }.get(path, "default-value")
@@ -150,12 +148,10 @@ class TestInfisicalKeyManager:
 
         # Setup proper mock responses
         mock_infisical_client.fetch_secret = AsyncMock(
-            return_value=json.dumps(
-                {
-                    "keys": {"old_kid": "b2xkX2tleQ=="},  # Proper base64 encoded key
-                    "current_kid": "old_kid",
-                }
-            )
+            return_value=json.dumps({
+                "keys": {"old_kid": "b2xkX2tleQ=="},  # Proper base64 encoded key
+                "current_kid": "old_kid",
+            })
         )
         mock_infisical_client.store_secret = AsyncMock(return_value=True)
 
