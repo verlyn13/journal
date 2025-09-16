@@ -12,6 +12,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import PlainTextResponse
 from strawberry.fastapi import GraphQLRouter
 
+from app.api import health as health_api
 from app.api.internal import security_monitoring as security_api, webhooks as webhook_api
 from app.api.v1 import (
     admin as admin_api,
@@ -68,6 +69,9 @@ app.add_middleware(
 # Enhanced JWT middleware for EdDSA token validation
 # Note: EnhancedJWTMiddleware is used via require_scopes dependency, not as middleware
 
+# Health check routers (no auth required)
+app.include_router(health_api.router)
+
 # Public API routers
 app.include_router(jwks_api.router)  # No prefix, uses /.well-known
 app.include_router(auth_api.router, prefix="/api/v1")  # Legacy HS256 auth
@@ -85,11 +89,6 @@ app.include_router(GraphQLRouter(schema), prefix="/graphql")
 # Internal API routers (security-hardened)
 app.include_router(webhook_api.router, prefix="/internal")
 app.include_router(security_api.router, prefix="/internal")
-
-
-@app.get("/health")
-async def health() -> dict[str, str]:
-    return {"status": "ok"}
 
 
 @app.get("/metrics")

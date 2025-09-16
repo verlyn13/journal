@@ -503,7 +503,8 @@ def validate_env(
 
         try:
             process = await asyncio.create_subprocess_exec(
-                infisical_path, "--version",
+                infisical_path,
+                "--version",
                 stdout=asyncio.subprocess.PIPE,
                 stderr=asyncio.subprocess.PIPE,
             )

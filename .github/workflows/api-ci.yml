@@ -197,16 +197,15 @@ jobs:
       - name: Start API server in background
         run: |
           uv run uvicorn app.main:app --host 0.0.0.0 --port 8000 &
-          sleep 10
         env:
           JOURNAL_DB_URL: postgresql+asyncpg://journal:journal@localhost:5432/journal_integration
           JOURNAL_REDIS_URL: redis://localhost:6379/0
           JOURNAL_NATS_URL: nats://localhost:4222
           JOURNAL_JWT_SECRET: test-secret-key-for-integration
-      
-      - name: Run API health check
+
+      - name: Wait for API readiness
         run: |
-          curl --fail --retry 5 --retry-delay 2 http://localhost:8000/health
+          SERVER_URL=http://localhost:8000 MAX_RETRIES=30 ./scripts/wait_for_server.sh
       
       - name: Run integration tests
         run: uv run pytest tests/integration/ -v

@@ -274,7 +274,9 @@ class InfisicalSecretsClient:
             raise InfisicalError(f"Infisical CLI validation failed: {e}") from e
 
     @classmethod
-    def from_env(cls, redis: Redis | None = None, mode: Literal["json", "plain"] = "json") -> InfisicalSecretsClient:
+    def from_env(
+        cls, redis: Redis | None = None, mode: Literal["json", "plain"] = "json"
+    ) -> InfisicalSecretsClient:
         """Create client from environment variables.
 
         Expected environment variables:
@@ -629,7 +631,8 @@ class InfisicalSecretsClient:
             cmd = [
                 "infisical",
                 "export",
-                "--format", "json",
+                "--format",
+                "json",
                 "--projectId",
                 self.project_id,
             ]
@@ -689,7 +692,9 @@ class InfisicalSecretsClient:
                 # Match by key and optionally path for disambiguation
                 secret_path = secret.get("secretPath", "")
                 if secret.get("secretKey") == secret_key and (
-                    not secret_path or secret_path == parent_path or path.endswith(f"{secret_path}/{secret_key}")
+                    not secret_path
+                    or secret_path == parent_path
+                    or path.endswith(f"{secret_path}/{secret_key}")
                 ):
                     # If we have multiple matches, prefer exact path match
                     return secret.get("secretValue", "")

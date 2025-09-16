@@ -172,16 +172,14 @@ jobs:
           nohup uv run fastapi run app/main.py --host 0.0.0.0 --port 5000 > /tmp/api.log 2>&1 &
           echo $! > /tmp/api.pid
 
-      - name: Wait for /health
+      - name: Wait for API readiness
+        working-directory: apps/api
         run: |
-          for i in $(seq 1 60); do
-            code=$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:5000/health || true)
-            if [ "$code" = "200" ]; then echo "API healthy"; exit 0; fi
-            sleep 1
-          done
-          echo "Health never returned 200"
-          cat /tmp/api.log || true
-          exit 1
+          SERVER_URL=http://127.0.0.1:5000 MAX_RETRIES=60 ./scripts/wait_for_server.sh || {
+            echo "Server failed to become ready, showing logs:"
+            cat /tmp/api.log || true
+            exit 1
+          }
 
       - name: Install root dependencies
         run: bun install
