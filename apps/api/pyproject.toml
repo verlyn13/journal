@@ -243,10 +243,6 @@ ignore = [
 # Progressive autofix: expand fixable list as we gain confidence
 # Currently conservative, will expand after discovery mode analysis
 
-[tool.ruff.format]
-docstring-code-format = true  # Format code blocks in docstrings
-line-ending = "lf"           # Consistent line endings
-
 [tool.ruff.lint.isort]
 combine-as-imports = true
 force-sort-within-sections = true
@@ -399,8 +395,8 @@ convention = "google"
 quote-style = "double"
 indent-style = "space"
 skip-magic-trailing-comma = false
-line-ending = "auto"
-docstring-code-format = true
+line-ending = "lf"  # Consistent line endings (changed from "auto")
+docstring-code-format = true  # Format code blocks in docstrings
 docstring-code-line-length = "dynamic"
 
 # MyPy configuration
