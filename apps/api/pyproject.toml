@@ -51,6 +51,7 @@ dependencies = [
     "pyotp>=2.9.0",
     "httpx>=0.28.1",
     "types-python-jose>=3.5.0.20250531",
+    "psutil>=6.1.1",
 ]
 
 [tool.uv]

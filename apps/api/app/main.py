@@ -23,6 +23,7 @@ from app.api.v1 import (
     infisical_webhooks as infisical_api,
     jwks as jwks_api,
     monitoring as monitoring_api,
+    observability as observability_api,
     search as search_api,
     stats as stats_api,
     webauthn as webauthn_api,
@@ -84,6 +85,7 @@ app.include_router(search_api.router, prefix="/api/v1")
 app.include_router(stats_api.router, prefix="/api/v1")
 app.include_router(infisical_api.router, prefix="/api/v1")
 app.include_router(monitoring_api.router, prefix="/api/v1")
+app.include_router(observability_api.router, prefix="/api/v1")
 app.include_router(GraphQLRouter(schema), prefix="/graphql")
 
 # Internal API routers (security-hardened)
