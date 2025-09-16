@@ -312,7 +312,8 @@ async def infisical_health_check(
     # Check basic dependencies first
     try:
         # Test database connectivity
-        await session.execute("SELECT 1")
+        from sqlalchemy import text
+        await session.execute(text("SELECT 1"))
         health_results["components"]["database"] = {
             "status": "healthy",
             "tested_at": datetime.now(UTC).isoformat(),

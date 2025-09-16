@@ -340,7 +340,8 @@ async def webhook_health(
 
     try:
         # Check database connectivity with a simple query
-        await session.execute("SELECT 1")
+        from sqlalchemy import text
+        await session.execute(text("SELECT 1"))
         db_healthy = True
     except Exception:  # noqa: BLE001 - health check should be resilient
         db_healthy = False

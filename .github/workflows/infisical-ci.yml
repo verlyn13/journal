@@ -57,6 +57,7 @@ jobs:
       PGPASSWORD: journal
       PGHOST: localhost
       PGPORT: 5433
+      PGDATABASE: journal_infisical_test
     defaults:
       run:
         working-directory: apps/api
@@ -119,41 +120,25 @@ jobs:
       - name: Install dependencies
         run: uv sync --all-extras --dev
 
-      - name: Wait for services and initialize database
+      - name: Wait for services
         run: |
           set -e
           sudo apt-get update && sudo apt-get install -y postgresql-client redis-tools
 
           echo "🔍 Waiting for PostgreSQL server to start..."
           for i in $(seq 1 60); do
-            if pg_isready -h localhost -p 5433 >/dev/null 2>&1; then
+            if pg_isready -h localhost -p 5433 -U journal >/dev/null 2>&1; then
               echo "✅ PostgreSQL server is ready"; break; fi
             echo "⏳ Waiting for PostgreSQL... (attempt $i/60)"
             sleep 2
           done
 
-          echo "🔧 Creating journal user and ensuring proper permissions..."
-          # Connect as default postgres user to create journal user
-          PGPASSWORD=postgres psql -h localhost -p 5433 -U postgres -c "
-            DO \$\$
-            BEGIN
-              IF NOT EXISTS (SELECT FROM pg_catalog.pg_user WHERE usename = 'journal') THEN
-                CREATE USER journal WITH PASSWORD 'journal';
-              END IF;
-
-              -- Grant necessary permissions
-              GRANT ALL PRIVILEGES ON DATABASE journal_infisical_test TO journal;
-              ALTER USER journal CREATEDB;
-            END
-            \$\$;
-          " || {
-            echo "⚠️ Failed to create user as postgres, trying direct connection..."
-            # Fallback: sometimes the image uses different defaults
-            PGPASSWORD=journal psql -h localhost -p 5433 -U journal -d journal_infisical_test -c "SELECT current_user;" || {
-              echo "❌ Both approaches failed. Checking what users exist..."
-              PGPASSWORD=postgres psql -h localhost -p 5433 -U postgres -c "SELECT usename FROM pg_user;" || true
-            }
+          echo "🔍 Verifying database connectivity..."
+          PGPASSWORD=journal psql -h localhost -p 5433 -U journal -d journal_infisical_test -c "SELECT current_user, current_database();" || {
+            echo "❌ Failed to connect to database"
+            exit 1
           }
+          echo "✅ Database connection verified"
 
           echo "🔍 Waiting for Redis on 6379..."
           for i in $(seq 1 60); do
@@ -164,11 +149,11 @@ jobs:
           done
       
       # Install Infisical CLI for testing
-      - name: Install Infisical CLI (deterministic)
-        uses: ./.github/actions/install-infisical-cli
+      - name: Setup Infisical CLI for Testing
+        uses: ./.github/actions/setup-infisical-testing
         with:
+          use-shim: 'true'
           version: ${{ env.INFISICAL_CLI_VERSION }}
-          optional: 'false'
       
       # Validate Infisical client implementation
       # Note: Linting and type checking disabled for Infisical integration code
@@ -439,6 +424,7 @@ jobs:
       PGPASSWORD: journal
       PGHOST: localhost
       PGPORT: 5433
+      PGDATABASE: journal_e2e_test
     defaults:
       run:
         working-directory: apps/api
@@ -483,51 +469,25 @@ jobs:
       - name: Install dependencies
         run: uv sync --all-extras --dev
 
-      - name: Wait for services and initialize database
+      - name: Wait for services
         run: |
           set -e
           sudo apt-get update && sudo apt-get install -y postgresql-client redis-tools
 
           echo "🔍 Waiting for PostgreSQL server to start..."
           for i in $(seq 1 60); do
-            if pg_isready -h localhost -p 5433 >/dev/null 2>&1; then
+            if pg_isready -h localhost -p 5433 -U journal >/dev/null 2>&1; then
               echo "✅ PostgreSQL server is ready"; break; fi
             echo "⏳ Waiting for PostgreSQL... (attempt $i/60)"
             sleep 2
           done
 
-          echo "🔧 Creating journal user and ensuring proper permissions..."
-          # Connect as default postgres user to create journal user
-          PGPASSWORD=postgres psql -h localhost -p 5433 -U postgres -c "
-            DO \$\$
-            BEGIN
-              IF NOT EXISTS (SELECT FROM pg_catalog.pg_user WHERE usename = 'journal') THEN
-                CREATE USER journal WITH PASSWORD 'journal';
-              END IF;
-
-              -- Grant necessary permissions
-              GRANT ALL PRIVILEGES ON DATABASE journal_e2e_test TO journal;
-              ALTER USER journal CREATEDB;
-            END
-            \$\$;
-          " || {
-            echo "⚠️ Failed to create user as postgres, trying direct connection..."
-            # Fallback: sometimes the image uses different defaults
-            PGPASSWORD=journal psql -h localhost -p 5433 -U journal -d journal_e2e_test -c "SELECT current_user;" || {
-              echo "❌ Both approaches failed. Checking what users exist..."
-              PGPASSWORD=postgres psql -h localhost -p 5433 -U postgres -c "SELECT usename FROM pg_user;" || true
-            }
+          echo "🔍 Verifying database connectivity..."
+          PGPASSWORD=journal psql -h localhost -p 5433 -U journal -d journal_e2e_test -c "SELECT current_user, current_database();" || {
+            echo "❌ Failed to connect to database"
+            exit 1
           }
-
-          echo "🔍 Enhanced Postgres monitoring with user validation..."
-          # Use our monitoring script for better diagnostics
-          ../../.github/scripts/postgres-monitor.sh wait \
-            postgresql://journal:journal@localhost:5433/journal_e2e_test \
-            60 2
-
-          echo "🔍 Checking for any lingering root connections..."
-          ../../.github/scripts/postgres-monitor.sh diagnose \
-            postgresql://journal:journal@localhost:5433/journal_e2e_test
+          echo "✅ Database connection verified"
 
           echo "🔍 Waiting for Redis..."
           for i in $(seq 1 60); do
@@ -727,6 +687,7 @@ jobs:
       PGPASSWORD: journal
       PGHOST: localhost
       PGPORT: 5433
+      PGDATABASE: journal
     defaults:
       run:
         working-directory: apps/api
