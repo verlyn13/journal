@@ -11,7 +11,6 @@ import shutil
 
 from collections.abc import Awaitable, Callable
 from enum import StrEnum
-from typing import Any
 
 from fastapi import APIRouter, Response, status
 from pydantic import BaseModel
@@ -158,13 +157,13 @@ async def readiness(response: Response) -> HealthReport:
             # Use sync URL if available for simpler probe
             sync_url = os.getenv("DATABASE_URL_SYNC")
             if sync_url:
-                engine = create_engine(sync_url)
-                with engine.connect() as conn:
+                sync_engine = create_engine(sync_url)
+                with sync_engine.connect() as conn:
                     conn.execute(text("SELECT 1"))
                     conn.commit()
             else:
-                engine: AsyncEngine = build_engine()
-                async with engine.connect() as conn:
+                async_engine: AsyncEngine = build_engine()
+                async with async_engine.connect() as conn:
                     await conn.execute(text("SELECT 1"))
                     await conn.commit()
 
@@ -183,7 +182,7 @@ async def readiness(response: Response) -> HealthReport:
     if redis_url:
 
         async def redis_probe() -> None:
-            redis: Redis[Any] = get_redis()
+            redis: Redis = get_redis()
             await redis.ping()
 
         checks.append(await _timed(redis_probe, "redis", timeout_s=1.0))

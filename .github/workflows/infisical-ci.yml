@@ -131,10 +131,20 @@ jobs:
           done
       
       # Install Infisical CLI for testing
-      - name: Install Infisical CLI
+      - name: Install Infisical CLI (with retry)
         run: |
-          curl -1sLf https://dl.cloudsmith.io/public/infisical/infisical-cli/setup.deb.sh | sudo -E bash
+          # Retry install up to 5 times due to potential external flakiness
+          for i in {1..5}; do
+            if curl -1sLf https://dl.cloudsmith.io/public/infisical/infisical-cli/setup.deb.sh | sudo -E bash; then
+              echo "Repository setup successful"
+              break
+            fi
+            echo "Retry $i/5: Repository setup failed, retrying..."
+            sleep 5
+          done
+
           sudo apt-get update && sudo apt-get install -y infisical
+          infisical --version
           infisical --version
       
       # Validate Infisical client implementation
@@ -317,10 +327,20 @@ jobs:
             sleep 1
           done
       
-      - name: Install Infisical CLI
+      - name: Install Infisical CLI (with retry)
         run: |
-          curl -1sLf https://dl.cloudsmith.io/public/infisical/infisical-cli/setup.deb.sh | sudo -E bash
+          # Retry install up to 5 times due to potential external flakiness
+          for i in {1..5}; do
+            if curl -1sLf https://dl.cloudsmith.io/public/infisical/infisical-cli/setup.deb.sh | sudo -E bash; then
+              echo "Repository setup successful"
+              break
+            fi
+            echo "Retry $i/5: Repository setup failed, retrying..."
+            sleep 5
+          done
+
           sudo apt-get update && sudo apt-get install -y infisical
+          infisical --version
       
       # Start the API server with Infisical integration
       - name: Start API server with Infisical
@@ -383,10 +403,20 @@ jobs:
       - name: Install dependencies
         run: uv sync --all-extras --dev
       
-      - name: Install Infisical CLI
+      - name: Install Infisical CLI (with retry)
         run: |
-          curl -1sLf https://dl.cloudsmith.io/public/infisical/infisical-cli/setup.deb.sh | sudo -E bash
+          # Retry install up to 5 times due to potential external flakiness
+          for i in {1..5}; do
+            if curl -1sLf https://dl.cloudsmith.io/public/infisical/infisical-cli/setup.deb.sh | sudo -E bash; then
+              echo "Repository setup successful"
+              break
+            fi
+            echo "Retry $i/5: Repository setup failed, retrying..."
+            sleep 5
+          done
+
           sudo apt-get update && sudo apt-get install -y infisical
+          infisical --version
       
       # Validate migration script readiness
       - name: Validate Migration Script

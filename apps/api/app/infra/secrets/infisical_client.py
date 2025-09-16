@@ -18,6 +18,7 @@ import time
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from enum import Enum
+from pathlib import PurePosixPath
 from typing import Any, Literal, Protocol
 
 from redis.asyncio import Redis
@@ -613,8 +614,10 @@ class InfisicalSecretsClient:
             "INFISICAL_API_URL": self.server_url,
         }
 
-        # Extract secret key from path
-        secret_key = path.rsplit("/", maxsplit=1)[-1]
+        # Parse path to extract parent and key
+        p = PurePosixPath(path)
+        parent_path = str(p.parent) if str(p.parent) != "." else "/"
+        secret_key = p.name
 
         # Build command based on mode
         if self.mode == "plain":
@@ -641,11 +644,10 @@ class InfisicalSecretsClient:
             # Add environment if specified
             infisical_env = os.getenv("INFISICAL_ENVIRONMENT")
             if infisical_env:
-                cmd.extend(["--env", infisical_env])
+                cmd.extend(["--environment", infisical_env])
 
             # Export from the parent path of the requested secret
-            # This allows us to find the specific secret within its context
-            parent_path = "/" if "/" not in path else path.rsplit("/", 1)[0] or "/"
+            # This provides proper scoping and avoids collisions
             cmd.extend(["--path", parent_path])
 
         process = await asyncio.create_subprocess_exec(
@@ -690,15 +692,21 @@ class InfisicalSecretsClient:
                 secrets = secrets["secrets"]
 
             for secret in secrets:
-                # Match by key and optionally path for disambiguation
+                # Match by both path and key to avoid collisions
+                # Some schemas provide secretPath, others don't
                 secret_path = secret.get("secretPath", "")
-                if secret.get("secretKey") == secret_key and (
-                    not secret_path
-                    or secret_path == parent_path
-                    or path.endswith(f"{secret_path}/{secret_key}")
-                ):
-                    # If we have multiple matches, prefer exact path match
-                    return secret.get("secretValue", "")
+                secret_key_found = secret.get("secretKey", "")
+
+                # Exact match on key is required
+                if secret_key_found == secret_key:
+                    # If path is provided, verify it matches
+                    if secret_path:
+                        # Check if this secret is from our parent path
+                        if secret_path == parent_path or secret_path == parent_path.rstrip("/"):
+                            return secret.get("secretValue", "")
+                    else:
+                        # No path in schema, match by key only
+                        return secret.get("secretValue", "")
 
             raise SecretNotFoundError(f"Secret {path} not found in export")
         except json.JSONDecodeError as e:
