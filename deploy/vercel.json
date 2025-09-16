@@ -1,0 +1,97 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "name": "journal-web",
+  "buildCommand": "cd apps/web && npm run build",
+  "outputDirectory": "apps/web/dist",
+  "installCommand": "cd apps/web && npm ci --legacy-peer-deps",
+  "framework": "vite",
+  "devCommand": "cd apps/web && npm run dev",
+  "ignoreCommand": "git diff HEAD^ HEAD --quiet .",
+
+  "env": {
+    "NODE_VERSION": "20"
+  },
+
+  "build": {
+    "env": {
+      "NODE_ENV": "production",
+      "CI": "true"
+    }
+  },
+
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "https://api.journal.example.com/api/:path*"
+    }
+  ],
+
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/(.*).js",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/(.*).css",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        }
+      ]
+    }
+  ],
+
+  "github": {
+    "enabled": true,
+    "autoAlias": true
+  },
+
+  "public": false,
+
+  "regions": ["iad1"],
+
+  "functions": {
+    "api/health.js": {
+      "memory": 128,
+      "maxDuration": 10
+    }
+  },
+
+  "crons": []
+}
