@@ -4,8 +4,9 @@ Extract OpenAPI specification from FastAPI application.
 """
 
 import json
-import sys
 from pathlib import Path
+import sys
+
 
 # Add app to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -33,15 +34,15 @@ try:
         f.write(f"**Title**: {openapi_schema.get('info', {}).get('title', 'Journal API')}\n")
         f.write(f"**Version**: {openapi_schema.get('info', {}).get('version', '0.1.0')}\n\n")
 
-        if 'paths' in openapi_schema:
+        if "paths" in openapi_schema:
             f.write("## Endpoints\n\n")
-            for path, methods in openapi_schema['paths'].items():
+            for path, methods in openapi_schema["paths"].items():
                 f.write(f"### {path}\n\n")
                 for method, details in methods.items():
                     f.write(f"**{method.upper()}**\n")
-                    if 'summary' in details:
+                    if "summary" in details:
                         f.write(f"- {details['summary']}\n")
-                    if 'description' in details:
+                    if "description" in details:
                         f.write(f"- {details['description']}\n")
                     f.write("\n")
 

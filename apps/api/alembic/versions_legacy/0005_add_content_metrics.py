@@ -5,6 +5,7 @@ Revises: 0004_add_version_lock
 Create Date: 2025-01-15 10:01:00.000000
 
 """
+
 from alembic import op
 import sqlalchemy as sa
 
@@ -20,23 +21,27 @@ def upgrade() -> None:
     """Add word_count and char_count columns."""
     # Check if columns exist first
     conn = op.get_bind()
-    
+
     # Add word_count if missing
     result = conn.exec_driver_sql(
         "SELECT 1 FROM information_schema.columns WHERE table_name=%s AND column_name=%s",
-        ("entries", "word_count")
+        ("entries", "word_count"),
     ).first()
     if result is None:
-        op.add_column("entries", sa.Column("word_count", sa.Integer(), nullable=False, server_default="0"))
+        op.add_column(
+            "entries", sa.Column("word_count", sa.Integer(), nullable=False, server_default="0")
+        )
         op.alter_column("entries", "word_count", server_default=None)
-    
+
     # Add char_count if missing
     result = conn.exec_driver_sql(
         "SELECT 1 FROM information_schema.columns WHERE table_name=%s AND column_name=%s",
-        ("entries", "char_count")
+        ("entries", "char_count"),
     ).first()
     if result is None:
-        op.add_column("entries", sa.Column("char_count", sa.Integer(), nullable=False, server_default="0"))
+        op.add_column(
+            "entries", sa.Column("char_count", sa.Integer(), nullable=False, server_default="0")
+        )
         op.alter_column("entries", "char_count", server_default=None)
 
 

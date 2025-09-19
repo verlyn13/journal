@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-import logging
 from datetime import UTC, datetime, timedelta
+import logging
 from typing import Any
 from uuid import UUID
 
@@ -357,8 +357,9 @@ class AuthService:
         Raises:
             HTTPException: If token is invalid
         """
-        from app.infra.auth import require_user
         from fastapi.security import HTTPAuthorizationCredentials
+
+        from app.infra.auth import require_user
 
         # Create mock credentials object
         creds = HTTPAuthorizationCredentials(scheme="Bearer", credentials=token)

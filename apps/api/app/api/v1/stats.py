@@ -17,8 +17,8 @@ from pydantic import BaseModel, ConfigDict, Field
 from sqlalchemy import Integer, and_, cast, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.infra.enhanced_auth import require_user
 from app.infra.db import get_session
+from app.infra.enhanced_auth import require_user
 from app.infra.sa_models import Entry
 
 

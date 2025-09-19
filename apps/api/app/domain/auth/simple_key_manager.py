@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-import logging
 from datetime import UTC, datetime
+import logging
 import os
 from typing import cast
 from uuid import UUID

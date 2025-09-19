@@ -31,22 +31,23 @@ jobs:
         version: "0.5.16"
 
     - name: Install dependencies
+      working-directory: apps/api
       run: uv sync --all-extras --dev
 
     - name: Validate documentation with schema
       run: |
         echo "Validating documentation against JSON schemas..."
-        uv run python scripts/validate_docs.py
+        cd apps/api && uv run python ../../scripts/validate_docs.py
 
     - name: Check documentation coverage
       run: |
         echo "Checking documentation coverage..."
-        uv run python scripts/check_doc_coverage.py
+        cd apps/api && uv run python ../../scripts/check_doc_coverage.py
 
     - name: Generate documentation report
       run: |
         echo "Generating documentation report..."
-        uv run python scripts/generate_doc_report.py
+        cd apps/api && uv run python ../../scripts/generate_doc_report.py
 
     - name: Upload documentation report
       uses: actions/upload-artifact@v4
@@ -60,10 +61,10 @@ jobs:
       continue-on-error: true
       run: |
         echo "Validating markdown frontmatter (legacy check)..."
-        uv run python scripts/validate_docs_frontmatter.py || true
+        cd apps/api && uv run python ../../scripts/validate_docs_frontmatter.py || true
 
     - name: Check documentation structure (legacy)
       continue-on-error: true
       run: |
         echo "Checking documentation structure (legacy check)..."
-        uv run python scripts/check_docs_structure.py || true
+        cd apps/api && uv run python ../../scripts/check_docs_structure.py || true

@@ -5,6 +5,7 @@ Revises: 0007_add_processed_events
 Create Date: 2025-09-03 00:30:00.000000
 
 """
+
 from alembic import op
 import sqlalchemy as sa
 
@@ -42,7 +43,9 @@ def upgrade() -> None:
         op.alter_column("events", "attempts", nullable=False)
 
     if not _col_exists(conn, "events", "next_attempt_at"):
-        op.add_column("events", sa.Column("next_attempt_at", sa.DateTime(timezone=True), nullable=True))
+        op.add_column(
+            "events", sa.Column("next_attempt_at", sa.DateTime(timezone=True), nullable=True)
+        )
 
     if not _col_exists(conn, "events", "last_error"):
         op.add_column("events", sa.Column("last_error", sa.Text(), nullable=True))
@@ -82,4 +85,3 @@ def downgrade() -> None:
             batch.drop_column("attempts")
         except Exception:
             pass
-

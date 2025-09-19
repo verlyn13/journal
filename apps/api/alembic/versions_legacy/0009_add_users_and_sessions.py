@@ -5,6 +5,7 @@ Revises: 0008_outbox_retry_fields
 Create Date: 2025-09-09 00:00:00.000000
 
 """
+
 from alembic import op
 import sqlalchemy as sa
 
@@ -32,8 +33,18 @@ def upgrade() -> None:
             nullable=False,
             server_default=sa.text("'[\"user\"]'::jsonb"),
         ),
-        sa.Column("created_at", sa.DateTime(timezone=True), nullable=False, server_default=sa.text("CURRENT_TIMESTAMP")),
-        sa.Column("updated_at", sa.DateTime(timezone=True), nullable=False, server_default=sa.text("CURRENT_TIMESTAMP")),
+        sa.Column(
+            "created_at",
+            sa.DateTime(timezone=True),
+            nullable=False,
+            server_default=sa.text("CURRENT_TIMESTAMP"),
+        ),
+        sa.Column(
+            "updated_at",
+            sa.DateTime(timezone=True),
+            nullable=False,
+            server_default=sa.text("CURRENT_TIMESTAMP"),
+        ),
     )
     op.create_index("ix_users_email", "users", ["email"], unique=True)
     op.create_index("ix_users_username", "users", ["username"], unique=True)
@@ -47,8 +58,18 @@ def upgrade() -> None:
         sa.Column("refresh_id", sa.UUID(), nullable=False),
         sa.Column("user_agent", sa.String(), nullable=True),
         sa.Column("ip_address", sa.String(), nullable=True),
-        sa.Column("issued_at", sa.DateTime(timezone=True), nullable=False, server_default=sa.text("CURRENT_TIMESTAMP")),
-        sa.Column("last_used_at", sa.DateTime(timezone=True), nullable=False, server_default=sa.text("CURRENT_TIMESTAMP")),
+        sa.Column(
+            "issued_at",
+            sa.DateTime(timezone=True),
+            nullable=False,
+            server_default=sa.text("CURRENT_TIMESTAMP"),
+        ),
+        sa.Column(
+            "last_used_at",
+            sa.DateTime(timezone=True),
+            nullable=False,
+            server_default=sa.text("CURRENT_TIMESTAMP"),
+        ),
         sa.Column("expires_at", sa.DateTime(timezone=True), nullable=False),
         sa.Column("revoked_at", sa.DateTime(timezone=True), nullable=True),
     )
@@ -67,4 +88,3 @@ def downgrade() -> None:
     op.drop_index("ix_users_username", table_name="users")
     op.drop_index("ix_users_email", table_name="users")
     op.drop_table("users")
-

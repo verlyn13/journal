@@ -16,10 +16,10 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.infra.auth import create_access_token, create_refresh_token
-from app.infra.enhanced_auth import get_current_user
 from app.infra.auth_counters import login_success
 from app.infra.cookies import set_refresh_cookie
 from app.infra.db import get_session
+from app.infra.enhanced_auth import get_current_user
 from app.infra.ratelimit import allow
 from app.infra.sa_models import User
 from app.infra.sessions import create_session as create_user_session

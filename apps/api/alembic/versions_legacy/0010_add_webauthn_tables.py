@@ -8,9 +8,10 @@ Create Date: 2025-01-10 19:35:00.000000
 
 from typing import Sequence, Union
 
-import sqlalchemy as sa
 from alembic import op
+import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
+
 
 # revision identifiers, used by Alembic.
 revision: str = "0010_add_webauthn_tables"
@@ -51,7 +52,7 @@ def upgrade() -> None:
         sa.UniqueConstraint("credential_id", name=op.f("uq_webauthn_credentials_credential_id")),
         comment="WebAuthn/Passkey credential storage following FIDO2 standards",
     )
-    
+
     # Create indexes for webauthn_credentials
     op.create_index(
         op.f("ix_webauthn_credentials_user_id"),
@@ -59,7 +60,7 @@ def upgrade() -> None:
         ["user_id"],
         unique=False,
     )
-    
+
     # Create webauthn_challenges table
     op.create_table(
         "webauthn_challenges",
@@ -78,7 +79,7 @@ def upgrade() -> None:
         sa.PrimaryKeyConstraint("id", name=op.f("pk_webauthn_challenges")),
         comment="Temporary storage for WebAuthn challenges with TTL",
     )
-    
+
     # Create indexes for webauthn_challenges
     op.create_index(
         op.f("ix_webauthn_challenges_session_id"),
@@ -92,15 +93,14 @@ def upgrade() -> None:
         ["expires_at"],
         unique=False,
     )
-    
+
     # Add comments to columns
     op.execute(
         "COMMENT ON COLUMN webauthn_credentials.credential_id IS "
         "'Raw credential ID from authenticator'"
     )
     op.execute(
-        "COMMENT ON COLUMN webauthn_credentials.public_key IS "
-        "'COSE public key for verification'"
+        "COMMENT ON COLUMN webauthn_credentials.public_key IS 'COSE public key for verification'"
     )
     op.execute(
         "COMMENT ON COLUMN webauthn_credentials.sign_count IS "
@@ -110,10 +110,7 @@ def upgrade() -> None:
         "COMMENT ON COLUMN webauthn_credentials.transports IS "
         "'CSV of transport types (usb,nfc,ble,internal)'"
     )
-    op.execute(
-        "COMMENT ON COLUMN webauthn_credentials.aaguid IS "
-        "'Authenticator Attestation GUID'"
-    )
+    op.execute("COMMENT ON COLUMN webauthn_credentials.aaguid IS 'Authenticator Attestation GUID'")
     op.execute(
         "COMMENT ON COLUMN webauthn_credentials.nickname IS "
         "'User-provided name for this credential'"
@@ -126,23 +123,15 @@ def upgrade() -> None:
         "COMMENT ON COLUMN webauthn_credentials.backup_state IS "
         "'Whether credential is currently backed up'"
     )
-    
+
     op.execute(
-        "COMMENT ON COLUMN webauthn_challenges.session_id IS "
-        "'Session or user ID for challenge'"
+        "COMMENT ON COLUMN webauthn_challenges.session_id IS 'Session or user ID for challenge'"
     )
+    op.execute("COMMENT ON COLUMN webauthn_challenges.challenge IS 'Random challenge bytes'")
     op.execute(
-        "COMMENT ON COLUMN webauthn_challenges.challenge IS "
-        "'Random challenge bytes'"
+        "COMMENT ON COLUMN webauthn_challenges.challenge_type IS 'registration or authentication'"
     )
-    op.execute(
-        "COMMENT ON COLUMN webauthn_challenges.challenge_type IS "
-        "'registration or authentication'"
-    )
-    op.execute(
-        "COMMENT ON COLUMN webauthn_challenges.used IS "
-        "'Prevent challenge reuse'"
-    )
+    op.execute("COMMENT ON COLUMN webauthn_challenges.used IS 'Prevent challenge reuse'")
 
 
 def downgrade() -> None:
@@ -150,6 +139,6 @@ def downgrade() -> None:
     op.drop_index(op.f("ix_webauthn_challenges_expires_at"), table_name="webauthn_challenges")
     op.drop_index(op.f("ix_webauthn_challenges_session_id"), table_name="webauthn_challenges")
     op.drop_table("webauthn_challenges")
-    
+
     op.drop_index(op.f("ix_webauthn_credentials_user_id"), table_name="webauthn_credentials")
     op.drop_table("webauthn_credentials")

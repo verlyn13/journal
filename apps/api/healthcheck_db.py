@@ -6,8 +6,9 @@ Run from apps/api directory: uv run python healthcheck_db.py
 
 import asyncio
 import os
-import sys
 from pathlib import Path
+import sys
+
 
 # Try to import asyncpg
 try:
@@ -55,7 +56,7 @@ async def test_connection():
 
             # Test basic query
             version = await conn.fetchval("SELECT version()")
-            print(f"✅ Connected successfully!")
+            print("✅ Connected successfully!")
             print(f"📦 {version.split(',')[0].strip()}")
 
             # Check pgvector
@@ -71,7 +72,9 @@ async def test_connection():
                     FROM pg_extension
                     WHERE extname = 'vector'
                 """)
-                print(f"✅ pgvector enabled (v{vector_info['extversion']}) in schema: {vector_info['schema']}")
+                print(
+                    f"✅ pgvector enabled (v{vector_info['extversion']}) in schema: {vector_info['schema']}"
+                )
             else:
                 print("⚠️  pgvector not enabled")
                 print("   Enable via Dashboard → Database → Extensions")
@@ -96,7 +99,9 @@ async def test_connection():
             print(f"❌ Session mode connection failed: {e}")
             print("\nTroubleshooting:")
             print("1. Check connection string format:")
-            print("   postgresql://postgres.<ref>:<password>@aws-0-<region>.pooler.supabase.com:5432/postgres")
+            print(
+                "   postgresql://postgres.<ref>:<password>@aws-0-<region>.pooler.supabase.com:5432/postgres"
+            )
             print("2. Verify password is correct")
             print("3. Check project reference ID matches")
 
@@ -126,7 +131,9 @@ async def test_with_env_override():
     print("1. Go to: https://supabase.com/dashboard/project/ecmnzrtsuajatmuahooa/settings/database")
     print("2. Copy 'Connection string' → 'Session Mode'")
     print("3. It should look like:")
-    print("   postgresql://postgres.[PROJECT-REF]:[PASSWORD]@aws-0-us-west-1.pooler.supabase.com:5432/postgres")
+    print(
+        "   postgresql://postgres.[PROJECT-REF]:[PASSWORD]@aws-0-us-west-1.pooler.supabase.com:5432/postgres"
+    )
     print("\nOr set environment variable:")
     print("   export DATABASE_URL_SESSION='<connection-string>'")
 

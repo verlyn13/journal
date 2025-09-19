@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-import uuid
 from datetime import UTC, datetime
 from typing import Any
+import uuid
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
@@ -67,6 +67,7 @@ async def get_auth_service(
         except Exception as e:
             # Log warning but continue with simple key manager
             import logging
+
             logger = logging.getLogger(__name__)
             logger.warning("Failed to initialize Infisical client: %s", e)
 
@@ -77,6 +78,7 @@ async def get_auth_service(
         await auth_service.initialize()
     except Exception as e:
         import logging
+
         logger = logging.getLogger(__name__)
         logger.warning("Auth service initialization warning: %s", e)
 
@@ -144,6 +146,7 @@ async def login(
         except Exception as e:
             # Fallback to legacy tokens if new service fails
             import logging
+
             logger = logging.getLogger(__name__)
             logger.warning("New JWT service failed, using legacy: %s", e)
             return {
@@ -197,6 +200,7 @@ async def login(
     except Exception as e:
         # Fallback to legacy tokens
         import logging
+
         logger = logging.getLogger(__name__)
         logger.warning("New JWT service failed for real login, using legacy: %s", e)
         access = create_access_token(str(user.id), scopes=user.roles)
@@ -249,6 +253,7 @@ async def register(
     except Exception as e:
         # Fallback to legacy token
         import logging
+
         logger = logging.getLogger(__name__)
         logger.warning("New JWT service failed for verify token, using legacy: %s", e)
         token = create_verify_token(str(user.id))
@@ -321,6 +326,7 @@ async def demo_login(
     except Exception as e:
         # Fallback to legacy tokens
         import logging
+
         logger = logging.getLogger(__name__)
         logger.warning("New JWT service failed for demo, using legacy: %s", e)
         user_id = str(demo_user_id)
@@ -398,6 +404,7 @@ async def refresh(
             except Exception as e:
                 # Fall through to legacy handling
                 import logging
+
                 logger = logging.getLogger(__name__)
                 logger.warning("New JWT refresh failed, trying legacy: %s", e)
                 raise ValueError("New service failed") from e
@@ -519,11 +526,12 @@ async def get_jwks(
         return await auth_service.get_jwks()
     except Exception as e:
         import logging
+
         logger = logging.getLogger(__name__)
         logger.error("Failed to get JWKS: %s", e)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Failed to retrieve verification keys"
+            detail="Failed to retrieve verification keys",
         ) from e
 
 
@@ -539,6 +547,7 @@ async def auth_health(
         return await auth_service.get_system_health()
     except Exception as e:
         import logging
+
         logger = logging.getLogger(__name__)
         logger.error("Auth health check failed: %s", e)
         return {
