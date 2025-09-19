@@ -1,3 +1,20 @@
+---
+id: api-reference-template
+title: 'API Endpoint: `endpoint_path`'
+type: api
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags:
+- api
+priority: high
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 ***
 
 title: "API Endpoint Name"
@@ -26,7 +43,7 @@ Brief description of the endpoint's purpose and functionality (1-2 paragraphs). 
 
 | Attribute         | Value                         |
 | ----------------- | ----------------------------- |
-| **URL**           | `/api/v1/endpoint_path`       |
+| **URL**           | `/api/endpoint_path`       |
 | **Method**        | `GET`/`POST`/`PUT`/`DELETE`   |
 | **Auth Required** | Yes/No                        |
 | **Rate Limits**   | Any applicable rate limits    |
@@ -150,7 +167,7 @@ For `POST`/`PUT`/`PATCH` requests, describe the expected request body format.
 
 ```bash
 curl -X POST \
-  https://example.com/api/v1/endpoint_path \
+  https://journal.local/api/endpoint_path \
       -H 'Content-Type: application/json' \
       -H 'Authorization: Bearer {token}' \
       -d '{
@@ -181,5 +198,5 @@ curl -X POST \
 
 ## See Also
 
-- [Related Endpoint Documentation](link/to/related.md)
-- [Relevant Concept Guide](link/to/concept.md)
+- Related Endpoint Documentation
+- Relevant Concept Guide

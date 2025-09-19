@@ -11,7 +11,7 @@ from pydantic import BaseModel, Field
 from sqlalchemy.ext.asyncio import AsyncSession
 
 # Local imports
-from app.infra.auth import require_user
+from app.infra.enhanced_auth import require_user
 from app.infra.auto_embed import ensure_embedding_for_entry
 from app.infra.conversion import markdown_to_html
 from app.infra.db import get_session

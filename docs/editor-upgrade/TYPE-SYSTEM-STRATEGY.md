@@ -1,3 +1,20 @@
+---
+id: type-system-strategy
+title: Type System Strategy
+type: reference
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags:
+- typescript
+priority: medium
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 # Type System Strategy
 
 ## Systematic Approach to TypeScript Types in the Journal Project
@@ -282,7 +299,7 @@ export {
 {
   "scripts": {
     "types:generate": "bun run types:api && bun run types:check",
-    "types:api": "openapi-typescript http://localhost:8000/openapi.json -o src/types/generated/api.ts",
+    "types:api": "openapi-typescript https://your-domain.com/openapi.json -o src/types/generated/api.ts",
     "types:check": "tsc --noEmit",
     "types:coverage": "typescript-coverage-report"
   }
@@ -479,10 +496,10 @@ describe('Type Guards', () => {
 grep -r "any" --include="*.ts" --include="*.tsx" apps/web/src
 
 # Find all implicit any (missing types)
-npx tsc --noImplicitAny --noEmit
+bunx tsc --noImplicitAny --noEmit
 
 # Generate type coverage report
-npx typescript-coverage-report
+bunx typescript-coverage-report
 ```
 
 ### Phase 2: Create Canonical Types

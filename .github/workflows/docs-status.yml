@@ -1,0 +1,56 @@
+name: Docs Status
+
+on:
+  push:
+    paths:
+      - 'docs/**'
+      - 'scripts/**'
+      - '.github/workflows/docs-status.yml'
+  pull_request:
+    paths:
+      - 'docs/**'
+      - 'scripts/**'
+
+jobs:
+  docs-status:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install Python deps
+        run: |
+          python3 -m pip install --upgrade pip
+          python3 -m pip install pyyaml
+
+      - name: Quick Health
+        run: |
+          bash scripts/check_docs.sh
+
+      - name: Full Validation (JSON)
+        run: |
+          python3 scripts/validate_documentation.py --json --quiet | tee /tmp/validator.json
+
+      - name: Full Validation (Strict gate)
+        run: |
+          # Fails the job on validation issues
+          python3 scripts/validate_documentation.py --strict
+
+      - name: Generate Consolidated Status
+        run: |
+          python3 scripts/generate_status_report.py
+
+      - name: Upload Docs Status Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: docs-status-report
+          path: |
+            docs/reports/docs-status.md
+            docs/_generated/reports/docs_status.json
+            docs/INDEX.md
+

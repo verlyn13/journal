@@ -1,3 +1,20 @@
+---
+id: python-docstring-standards
+title: Python Docstring Standards Guide
+type: guide
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags:
+- python
+priority: medium
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 ***
 
 title: "Python Docstring Standards Guide"
@@ -226,7 +243,7 @@ The following tools can help enforce and work with our docstring standards:
 1. **pydocstyle**: Linter that checks compliance with Python docstring conventions
 2. **Sphinx**: Documentation generator that can create HTML documentation from docstrings
 3. **sphinx-autodoc**: Sphinx extension that automatically includes documented modules
-4. **flake8-docstrings**: Flake8 plugin for checking docstring style
+4. **Ruff-docstrings**: Ruff plugin for checking docstring style
 5. **docformatter**: Tool to automatically format docstrings to conform to PEP 257
 
 ### Integration with Documentation Workflow
@@ -243,11 +260,11 @@ sphinx-build -b html docs/sphinx docs/sphinx/build
 
 ## Relationship to JSDoc Standards
 
-This Python docstring standard complements our [JSDoc Standards](jsdoc-standards.md) for JavaScript. The two standards follow similar patterns to maintain consistency across languages, with adaptations for language-specific conventions.
+This Python docstring standard complements our JSDoc Standards for JavaScript. The two standards follow similar patterns to maintain consistency across languages, with adaptations for language-specific conventions.
 
 ## See Also
 
-- [JSDoc Standards Guide](jsdoc-standards.md)
-- [Documentation Templates Guide](documentation-templates.md)
+- JSDoc Standards Guide
+- Documentation Templates Guide
 - [Python PEP 257 (Docstring Conventions)](https://peps.python.org/pep-0257/)
 - [Google Python Style Guide](https://google.github.io/styleguide/pyguide.html#38-comments-and-docstrings)

@@ -1,0 +1,107 @@
+{
+  "generated_at": "2025-09-18T20:18:04.195332",
+  "quick_health": {
+    "total_docs": 226,
+    "frontmatter_count": 226,
+    "frontmatter_percent": 100,
+    "score": 80
+  },
+  "validator": {
+    "passed": true,
+    "score": 86,
+    "stats": {
+      "total_files": 206,
+      "root_files": 2,
+      "organized_files": 204,
+      "frontmatter_coverage": "206/206",
+      "invalid_frontmatter": 1,
+      "incorrect_tools": 0,
+      "broken_links": 5,
+      "potential_duplicates": 1,
+      "quality_issues": 0,
+      "outdated_content": 0
+    },
+    "issues": {
+      "frontmatter": [
+        "deployment/PRE_DEPLOYMENT_CHECKLIST.md: Missing field 'id'"
+      ],
+      "links": [
+        "deployment/PRE_DEPLOYMENT_CHECKLIST.md: Broken link to './architecture.md'",
+        "deployment/PRE_DEPLOYMENT_CHECKLIST.md: Broken link to './environment-variables.md'",
+        "deployment/PRE_DEPLOYMENT_CHECKLIST.md: Broken link to './database-migration.md'",
+        "deployment/PRE_DEPLOYMENT_CHECKLIST.md: Broken link to './monitoring.md'",
+        "deployment/PRE_DEPLOYMENT_CHECKLIST.md: Broken link to './runbook.md'"
+      ],
+      "duplicates": [
+        "Similar filenames: README.md, implementation/README.md, guides/README.md, js-api/README.md, user-guide/README.md, schemas/README.md, ci-cd/README.md, development/README.md, schemas/v1/README.md, js-api/fonts/README.md, js-api/scripts/README.md, js-api/styles/README.md, js-api/scripts/prettify/README.md"
+      ]
+    }
+  },
+  "orphans": {
+    "count": 1,
+    "files": [
+      "deployment/PRE_DEPLOYMENT_CHECKLIST.md"
+    ]
+  },
+  "large_docs": {
+    "count": 10,
+    "threshold": 50000,
+    "files": [
+      [
+        158979,
+        "initial-planning/comprehensive-guide-personal.md"
+      ],
+      [
+        144038,
+        "implementation/IMPLEMENTATION_GUIDE.md"
+      ],
+      [
+        101330,
+        "biome/internals/changelog.md"
+      ],
+      [
+        69562,
+        "biome/reference/cli.md"
+      ],
+      [
+        68261,
+        "initial-planning/deployment-script-guide.md"
+      ],
+      [
+        65154,
+        "initial-planning/testing.md"
+      ],
+      [
+        60598,
+        "status/CHANGELOG.md"
+      ],
+      [
+        55297,
+        "planning/enhance-journal-app.md"
+      ],
+      [
+        54330,
+        "code-mirror/reference-manual-part3.md"
+      ],
+      [
+        52284,
+        "code-mirror/reference-manual-part1.md"
+      ]
+    ]
+  },
+  "tool_scan": {
+    "count": 65,
+    "examples": [
+      "docs/initial-planning/editor-implementation.md:95: [npm] Frontend dependencies will be managed via `npm` and bundled. See the [Resource Bundling Strategy](#resource-bundling-strategy) section for details on `package.json`.",
+      "docs/initial-planning/editor-implementation.md:1003: [npm] echo \"bun could not be found. Please install Node.js and npm.\"",
+      "docs/implementation/IMPLEMENTATION_GUIDE.md:1503: [npm] - Initialize `npm` in the project root: `bun init -y`.",
+      "docs/implementation/IMPLEMENTATION_GUIDE.md:1667: [npm] - Initialized `npm` and managed frontend dependencies via `package.json`.",
+      "docs/implementation/IMPLEMENTATION_GUIDE.md:1707: [npm] - Established a standard frontend build pipeline using modern JavaScript tools (npm, Vite).",
+      "docs/status/CHANGELOG.md:1074: [npm] - **Frontend Build Process:** Established using `npm`, Vite, and PostCSS. Dependencies installed and build configuration (`Vite.config.js`) created.",
+      "docs/code-mirror/example-bundled.md:36: [npm] Modern JavaScript libraries like CodeMirror are typically organized as a collection of modules. While browsers can now load ES modules natively, their current dependency resolution mechanisms aren't sophisticated enough to efficiently handle NPM-distributed module collections.",
+      "docs/development/DEVELOPMENT_FRAMEWORK.md:184: [npm] **NEVER use npm, bun, or pnpm**",
+      "docs/project-config/CLAUDE.md:23: [npm] - bun for frontend tooling (NEVER npm/bun)",
+      "docs/project-config/CODEX-SETUP.md:131: [npm] - **ALWAYS** use `bun` for JS/TS operations (never npm/bun)"
+    ]
+  }
+}

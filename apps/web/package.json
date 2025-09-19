@@ -30,6 +30,7 @@
     "@tailwindcss/typography": "^0.5.16",
     "@tanstack/react-query": "^5.56.2",
     "@uiw/react-codemirror": "^4.21.0",
+    "@vercel/speed-insights": "^1.2.0",
     "katex": "^0.16.11",
     "monaco-editor": "^0.52.2",
     "react": "^19.1.0",

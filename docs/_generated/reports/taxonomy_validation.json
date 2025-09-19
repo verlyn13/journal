@@ -1,0 +1,684 @@
+{
+  "generated_at": "2025-09-18T20:17:04.021281",
+  "stats": {
+    "total_files": 222,
+    "unknown_types": 31,
+    "unknown_tags": 7,
+    "missing_sections": 299,
+    "stale_docs": 0,
+    "invalid_status": 24,
+    "invalid_priority": 0
+  },
+  "issues": [
+    {
+      "file": "INDEX.md",
+      "message": "Unknown type 'report'",
+      "kind": "type"
+    },
+    {
+      "file": "initial-planning/api-contract-guide.md",
+      "message": "Missing sections: Authentication, Endpoints, Errors, Rate Limiting",
+      "kind": "sections"
+    },
+    {
+      "file": "initial-planning/comprehensive-guide-personal.md",
+      "message": "Missing sections: Authentication, Endpoints, Errors, Rate Limiting",
+      "kind": "sections"
+    },
+    {
+      "file": "initial-planning/deployment-script-guide.md",
+      "message": "Missing sections: Authentication, Endpoints, Errors, Rate Limiting",
+      "kind": "sections"
+    },
+    {
+      "file": "initial-planning/editor-implementation.md",
+      "message": "Missing sections: Authentication, Endpoints, Errors, Rate Limiting",
+      "kind": "sections"
+    },
+    {
+      "file": "initial-planning/structure-update.md",
+      "message": "Missing sections: Authentication, Endpoints, Errors, Rate Limiting",
+      "kind": "sections"
+    },
+    {
+      "file": "initial-planning/testing.md",
+      "message": "Missing sections: Authentication, Endpoints, Errors, Rate Limiting",
+      "kind": "sections"
+    },
+    {
+      "file": "implementation/documentation-specialist-execution-plan.md",
+      "message": "Missing sections: Authentication, Endpoints, Errors, Rate Limiting",
+      "kind": "sections"
+    },
+    {
+      "file": "implementation/documentation-specialist-role.md",
+      "message": "Missing sections: Authentication, Endpoints, Errors, Rate Limiting",
+      "kind": "sections"
+    },
+    {
+      "file": "implementation/local-act-testing-plan.md",
+      "message": "Missing sections: Strategy, Setup, Execution, Coverage",
+      "kind": "sections"
+    },
+    {
+      "file": "implementation/README.md",
+      "message": "Unknown type 'documentation'",
+      "kind": "type"
+    },
+    {
+      "file": "status/CHANGELOG.md",
+      "message": "Unknown type 'documentation'",
+      "kind": "type"
+    },
+    {
+      "file": "guides/api-reference.md",
+      "message": "Missing sections: Endpoints, Errors, Rate Limiting",
+      "kind": "sections"
+    },
+    {
+      "file": "guides/architecture-overview.md",
+      "message": "Missing sections: Authentication, Endpoints, Errors, Rate Limiting",
+      "kind": "sections"
+    },
+    {
+      "file": "guides/documentation-metrics.md",
+      "message": "Missing sections: Authentication, Endpoints, Errors, Rate Limiting",
+      "kind": "sections"
+    },
+    {
+      "file": "guides/documentation-review-process.md",
+      "message": "Missing sections: Authentication, Endpoints, Errors, Rate Limiting",
+      "kind": "sections"
+    },
+    {
+      "file": "guides/documentation-templates.md",
+      "message": "Missing sections: Authentication, Endpoints, Errors, Rate Limiting",
+      "kind": "sections"
+    },
+    {
+      "file": "guides/documentation-update-checklist.md",
+      "message": "Missing sections: Authentication, Endpoints, Errors, Rate Limiting",
+      "kind": "sections"
+    },
+    {
+      "file": "guides/editor-architecture.md",
+      "message": "Missing sections: Authentication, Endpoints, Errors, Rate Limiting",
+      "kind": "sections"
+    },
+    {
+      "file": "guides/gh-cli.md",
+      "message": "Missing sections: Authentication, Endpoints, Errors, Rate Limiting",
+      "kind": "sections"
+    },
+    {
+      "file": "guides/js-api-docs.md",
+      "message": "Missing sections: Authentication, Endpoints, Errors, Rate Limiting",
+      "kind": "sections"
+    },
+    {
+      "file": "guides/request-lifecycle.md",
+      "message": "Missing sections: Authentication, Endpoints, Errors, Rate Limiting",
+      "kind": "sections"
+    },
+    {
+      "file": "guides/README.md",
+      "message": "Unknown type 'documentation'",
+      "kind": "type"
+    },
+    {
+      "file": "templates/api-reference-template.md",
+      "message": "Missing sections: Authentication, Endpoints, Errors, Rate Limiting",
+      "kind": "sections"
+    },
+    {
+      "file": "templates/component-doc-template.md",
+      "message": "Missing sections: Authentication, Endpoints, Errors, Rate Limiting",
+      "kind": "sections"
+    },
+    {
+      "file": "journal-backend-bootstrap-pgvector-fts-reindex/README.md",
+      "message": "Missing sections: Overview, Components, Data Flow, Security",
+      "kind": "sections"
+    },
+    {
+      "file": "editor-upgrade/BULLETPROOF-IMPLEMENTATION-PLAN.md",
+      "message": "Missing sections: Authentication, Endpoints, Errors, Rate Limiting",
+      "kind": "sections"
+    },
+    {
+      "file": "editor-upgrade/VITEST-MIGRATION-IMPACT.md",
+      "message": "Missing sections: Strategy, Setup, Execution, Coverage",
+      "kind": "sections"
+    },
+    {
+      "file": "editor-upgrade/VITEST-TESTING-SETUP.md",
+      "message": "Missing sections: Strategy, Setup, Execution, Coverage",
+      "kind": "sections"
+    },
+    {
+      "file": "future-features/jwt-security-hardening.md",
+      "message": "Missing sections: Authentication, Endpoints, Errors, Rate Limiting",
+      "kind": "sections"
+    },
+    {
+      "file": "deployment/vercel-supabase-migration-assessment.md",
+      "message": "Missing sections: Authentication, Endpoints, Errors, Rate Limiting",
+      "kind": "sections"
+    },
+    {
+      "file": "deployment/vercel-supabase-strategy.md",
+      "message": "Missing sections: Prerequisites, Setup, Configuration, Verification",
+      "kind": "sections"
+    },
+    {
+      "file": "deployment/data-policy.md",
+      "message": "Missing sections: Prerequisites, Setup, Configuration, Verification",
+      "kind": "sections"
+    },
+    {
+      "file": "deployment/PRE_DEPLOYMENT_CHECKLIST.md",
+      "message": "Unknown tags: checklist",
+      "kind": "tags"
+    },
+    {
+      "file": "deployment/PRE_DEPLOYMENT_CHECKLIST.md",
+      "message": "Invalid status 'active'",
+      "kind": "status"
+    },
+    {
+      "file": "security/ADVANCED_AUTH.md",
+      "message": "Missing sections: Authentication, Endpoints, Errors, Rate Limiting",
+      "kind": "sections"
+    },
+    {
+      "file": "security/DEPLOYMENT_AWARE_AUTH.md",
+      "message": "Missing sections: Authentication, Endpoints, Errors, Rate Limiting",
+      "kind": "sections"
+    },
+    {
+      "file": "security/token-enhancement.md",
+      "message": "Missing sections: Authentication, Endpoints, Errors, Rate Limiting",
+      "kind": "sections"
+    },
+    {
+      "file": "ci-cd/CI_CHECKLIST.md",
+      "message": "Missing sections: Authentication, Endpoints, Errors, Rate Limiting",
+      "kind": "sections"
+    },
+    {
+      "file": "ci-cd/CI_FIX_WORKFLOW.md",
+      "message": "Unknown type 'workflow'",
+      "kind": "type"
+    },
+    {
+      "file": "ci-cd/CI_FIX_WORKFLOW.md",
+      "message": "Invalid status 'active'",
+      "kind": "status"
+    },
+    {
+      "file": "ci-cd/PR-CHECKLIST.md",
+      "message": "Unknown type 'documentation'",
+      "kind": "type"
+    },
+    {
+      "file": "ci-cd/PR-CHECKLIST.md",
+      "message": "Invalid status 'active'",
+      "kind": "status"
+    },
+    {
+      "file": "ci-cd/MERGE-CHECKLIST.md",
+      "message": "Unknown type 'documentation'",
+      "kind": "type"
+    },
+    {
+      "file": "ci-cd/MERGE-CHECKLIST.md",
+      "message": "Invalid status 'active'",
+      "kind": "status"
+    },
+    {
+      "file": "ci-cd/PR_SUMMARY.md",
+      "message": "Unknown type 'documentation'",
+      "kind": "type"
+    },
+    {
+      "file": "ci-cd/PR_SUMMARY.md",
+      "message": "Invalid status 'active'",
+      "kind": "status"
+    },
+    {
+      "file": "ci-cd/README.md",
+      "message": "Unknown type 'documentation'",
+      "kind": "type"
+    },
+    {
+      "file": "migrations/move-to-fastapi.md",
+      "message": "Missing sections: Authentication, Endpoints, Errors, Rate Limiting",
+      "kind": "sections"
+    },
+    {
+      "file": "development/DEVELOPMENT_FRAMEWORK.md",
+      "message": "Unknown type 'documentation'",
+      "kind": "type"
+    },
+    {
+      "file": "development/DEVELOPMENT_FRAMEWORK.md",
+      "message": "Invalid status 'active'",
+      "kind": "status"
+    },
+    {
+      "file": "development/BACKEND_ARCHITECTURE.md",
+      "message": "Missing sections: Overview, Components, Data Flow, Security",
+      "kind": "sections"
+    },
+    {
+      "file": "development/BACKEND_ARCHITECTURE.md",
+      "message": "Invalid status 'active'",
+      "kind": "status"
+    },
+    {
+      "file": "development/RUNNING_THE_APP.md",
+      "message": "Unknown type 'documentation'",
+      "kind": "type"
+    },
+    {
+      "file": "development/RUNNING_THE_APP.md",
+      "message": "Invalid status 'active'",
+      "kind": "status"
+    },
+    {
+      "file": "development/USAGE-GUIDE.md",
+      "message": "Invalid status 'active'",
+      "kind": "status"
+    },
+    {
+      "file": "development/README.md",
+      "message": "Unknown type 'documentation'",
+      "kind": "type"
+    },
+    {
+      "file": "design/UI_DESIGN_SPECIFICATION.md",
+      "message": "Missing sections: Overview, Components, Data Flow, Security",
+      "kind": "sections"
+    },
+    {
+      "file": "design/UI_DESIGN_UPDATE_PLAN.md",
+      "message": "Missing sections: Overview, Components, Data Flow, Security",
+      "kind": "sections"
+    },
+    {
+      "file": "design/refactor-ui-design.md",
+      "message": "Missing sections: Overview, Components, Data Flow, Security",
+      "kind": "sections"
+    },
+    {
+      "file": "planning/PHASE_5_ENHANCEMENT_PLAN.md",
+      "message": "Missing sections: Authentication, Endpoints, Errors, Rate Limiting",
+      "kind": "sections"
+    },
+    {
+      "file": "planning/PHASE_5_MASTER_PLAN.md",
+      "message": "Missing sections: Authentication, Endpoints, Errors, Rate Limiting",
+      "kind": "sections"
+    },
+    {
+      "file": "planning/ROADMAP.md",
+      "message": "Missing sections: Authentication, Endpoints, Errors, Rate Limiting",
+      "kind": "sections"
+    },
+    {
+      "file": "infrastructure/observability-setup.md",
+      "message": "Missing sections: Authentication, Endpoints, Errors, Rate Limiting",
+      "kind": "sections"
+    },
+    {
+      "file": "infrastructure/error-handling-logging.md",
+      "message": "Missing sections: Authentication, Endpoints, Errors, Rate Limiting",
+      "kind": "sections"
+    },
+    {
+      "file": "infrastructure/INFISICAL_ARCHITECTURE.md",
+      "message": "Missing sections: Authentication, Endpoints, Errors, Rate Limiting",
+      "kind": "sections"
+    },
+    {
+      "file": "infrastructure/infisical-cli-useage.md",
+      "message": "Missing sections: Authentication, Endpoints, Errors, Rate Limiting",
+      "kind": "sections"
+    },
+    {
+      "file": "workflows/agent-workflows.md",
+      "message": "Missing sections: Authentication, Endpoints, Errors, Rate Limiting",
+      "kind": "sections"
+    },
+    {
+      "file": "workflows/hx-ax-workflows.md",
+      "message": "Missing sections: Authentication, Endpoints, Errors, Rate Limiting",
+      "kind": "sections"
+    },
+    {
+      "file": "workflows/dual-language-setup.md",
+      "message": "Missing sections: Authentication, Endpoints, Errors, Rate Limiting",
+      "kind": "sections"
+    },
+    {
+      "file": "meta/DOCUMENTATION_ARCHITECTURE.md",
+      "message": "Missing sections: Authentication, Endpoints, Errors, Rate Limiting",
+      "kind": "sections"
+    },
+    {
+      "file": "meta/DOCUMENTATION_ROADMAP.md",
+      "message": "Missing sections: Authentication, Endpoints, Errors, Rate Limiting",
+      "kind": "sections"
+    },
+    {
+      "file": "meta/DEFINITION_OF_DONE.md",
+      "message": "Missing sections: Authentication, Endpoints, Errors, Rate Limiting",
+      "kind": "sections"
+    },
+    {
+      "file": "meta/MIGRATION_CHECKLIST.md",
+      "message": "Missing sections: Authentication, Endpoints, Errors, Rate Limiting",
+      "kind": "sections"
+    },
+    {
+      "file": "meta/ORCHESTRATION_WORKFLOW.md",
+      "message": "Missing sections: Authentication, Endpoints, Errors, Rate Limiting",
+      "kind": "sections"
+    },
+    {
+      "file": "meta/TESTING_STATUS.md",
+      "message": "Missing sections: Authentication, Endpoints, Errors, Rate Limiting",
+      "kind": "sections"
+    },
+    {
+      "file": "project-config/CLAUDE.md",
+      "message": "Unknown type 'configuration'",
+      "kind": "type"
+    },
+    {
+      "file": "project-config/CLAUDE.md",
+      "message": "Invalid status 'active'",
+      "kind": "status"
+    },
+    {
+      "file": "project-config/AGENTS.md",
+      "message": "Unknown type 'configuration'",
+      "kind": "type"
+    },
+    {
+      "file": "project-config/AGENTS.md",
+      "message": "Invalid status 'active'",
+      "kind": "status"
+    },
+    {
+      "file": "project-config/GEMINI.md",
+      "message": "Unknown type 'configuration'",
+      "kind": "type"
+    },
+    {
+      "file": "project-config/GEMINI.md",
+      "message": "Invalid status 'active'",
+      "kind": "status"
+    },
+    {
+      "file": "project-config/CODEX-SETUP.md",
+      "message": "Unknown type 'configuration'",
+      "kind": "type"
+    },
+    {
+      "file": "project-config/CODEX-SETUP.md",
+      "message": "Invalid status 'active'",
+      "kind": "status"
+    },
+    {
+      "file": "project-config/documentation-instructions.md",
+      "message": "Unknown type 'configuration'",
+      "kind": "type"
+    },
+    {
+      "file": "project-config/documentation-instructions.md",
+      "message": "Invalid status 'active'",
+      "kind": "status"
+    },
+    {
+      "file": "testing/PERFORMANCE-BASELINE.md",
+      "message": "Missing sections: Strategy, Setup, Execution, Coverage",
+      "kind": "sections"
+    },
+    {
+      "file": "testing/PERFORMANCE-BASELINE.md",
+      "message": "Invalid status 'active'",
+      "kind": "status"
+    },
+    {
+      "file": "reports/DESIGN_AND_TOOLING_REPORT.md",
+      "message": "Unknown type 'documentation'",
+      "kind": "type"
+    },
+    {
+      "file": "reports/DESIGN_AND_TOOLING_REPORT.md",
+      "message": "Invalid status 'active'",
+      "kind": "status"
+    },
+    {
+      "file": "reports/LINTING_REPORT.md",
+      "message": "Unknown type 'documentation'",
+      "kind": "type"
+    },
+    {
+      "file": "reports/LINTING_REPORT.md",
+      "message": "Invalid status 'active'",
+      "kind": "status"
+    },
+    {
+      "file": "reports/PYTHON_RUFF_ALIGNMENT_REPORT.md",
+      "message": "Unknown type 'documentation'",
+      "kind": "type"
+    },
+    {
+      "file": "reports/PYTHON_RUFF_ALIGNMENT_REPORT.md",
+      "message": "Invalid status 'active'",
+      "kind": "status"
+    },
+    {
+      "file": "reports/UI_UX_STRATEGY_REPORT.md",
+      "message": "Unknown type 'documentation'",
+      "kind": "type"
+    },
+    {
+      "file": "reports/UI_UX_STRATEGY_REPORT.md",
+      "message": "Invalid status 'active'",
+      "kind": "status"
+    },
+    {
+      "file": "reports/documentation-fix-report.md",
+      "message": "Unknown type 'report'",
+      "kind": "type"
+    },
+    {
+      "file": "reports/docs-status.md",
+      "message": "Unknown type 'report'",
+      "kind": "type"
+    },
+    {
+      "file": "reports/docs-status.md",
+      "message": "Unknown tags: documentation, status",
+      "kind": "tags"
+    },
+    {
+      "file": "reports/large-docs-plan.md",
+      "message": "Unknown type 'report'",
+      "kind": "type"
+    },
+    {
+      "file": "reports/taxonomy-status.md",
+      "message": "Unknown type 'report'",
+      "kind": "type"
+    },
+    {
+      "file": "reports/taxonomy-status.md",
+      "message": "Unknown tags: documentation, taxonomy",
+      "kind": "tags"
+    },
+    {
+      "file": "reports/relationships-status.md",
+      "message": "Unknown type 'report'",
+      "kind": "type"
+    },
+    {
+      "file": "reports/relationships-status.md",
+      "message": "Unknown tags: documentation, relationships",
+      "kind": "tags"
+    },
+    {
+      "file": "implementation-summaries/INFISICAL_IMPLEMENTATION_SUMMARY.md",
+      "message": "Unknown type 'documentation'",
+      "kind": "type"
+    },
+    {
+      "file": "implementation-summaries/INFISICAL_IMPLEMENTATION_SUMMARY.md",
+      "message": "Invalid status 'active'",
+      "kind": "status"
+    },
+    {
+      "file": "implementation-summaries/SECURITY_HARDENING_IMPLEMENTATION.md",
+      "message": "Unknown type 'documentation'",
+      "kind": "type"
+    },
+    {
+      "file": "implementation-summaries/SECURITY_HARDENING_IMPLEMENTATION.md",
+      "message": "Invalid status 'active'",
+      "kind": "status"
+    },
+    {
+      "file": "implementation-summaries/PROJECT-INTEGRATION.md",
+      "message": "Unknown type 'documentation'",
+      "kind": "type"
+    },
+    {
+      "file": "implementation-summaries/PROJECT-INTEGRATION.md",
+      "message": "Invalid status 'active'",
+      "kind": "status"
+    },
+    {
+      "file": "implementation-summaries/ROLLOUT-PLAN.md",
+      "message": "Unknown type 'documentation'",
+      "kind": "type"
+    },
+    {
+      "file": "implementation-summaries/ROLLOUT-PLAN.md",
+      "message": "Invalid status 'active'",
+      "kind": "status"
+    },
+    {
+      "file": "investigations/DEEP_INVESTIGATION_DIRECTIVE.md",
+      "message": "Unknown type 'documentation'",
+      "kind": "type"
+    },
+    {
+      "file": "investigations/DEEP_INVESTIGATION_DIRECTIVE.md",
+      "message": "Invalid status 'active'",
+      "kind": "status"
+    },
+    {
+      "file": "features/user-management/USER_MANAGEMENT_IMPLEMENTATION.md",
+      "message": "Missing sections: Authentication, Endpoints, Errors, Rate Limiting",
+      "kind": "sections"
+    },
+    {
+      "file": "features/user-management/USER_MANAGEMENT.md",
+      "message": "Missing sections: Authentication, Endpoints, Errors, Rate Limiting",
+      "kind": "sections"
+    },
+    {
+      "file": "development/python/fastapi-boostrap-helper.md",
+      "message": "Missing sections: Authentication, Endpoints, Errors, Rate Limiting",
+      "kind": "sections"
+    },
+    {
+      "file": "development/python/fastapi-boostrap-starter.md",
+      "message": "Missing sections: Authentication, Endpoints, Errors, Rate Limiting",
+      "kind": "sections"
+    },
+    {
+      "file": "editor-upgrade/reference/security-and-corrections.md",
+      "message": "Missing sections: Authentication, Endpoints, Errors, Rate Limiting",
+      "kind": "sections"
+    },
+    {
+      "file": "journal-backend-bootstrap-pgvector-fts-reindex/app/README.md",
+      "message": "Missing sections: Overview, Components, Data Flow, Security",
+      "kind": "sections"
+    },
+    {
+      "file": "journal-backend-bootstrap-pgvector-fts-reindex/tests/README.md",
+      "message": "Missing sections: Strategy, Setup, Execution, Coverage",
+      "kind": "sections"
+    },
+    {
+      "file": "journal-backend-bootstrap-pgvector-fts-reindex/ops/README.md",
+      "message": "Missing sections: Prerequisites, Setup, Configuration, Verification",
+      "kind": "sections"
+    },
+    {
+      "file": "journal-backend-bootstrap-pgvector-fts-reindex/app/infra/README.md",
+      "message": "Missing sections: Overview, Components, Data Flow, Security",
+      "kind": "sections"
+    },
+    {
+      "file": "journal-backend-bootstrap-pgvector-fts-reindex/app/domain/README.md",
+      "message": "Missing sections: Overview, Components, Data Flow, Security",
+      "kind": "sections"
+    },
+    {
+      "file": "journal-backend-bootstrap-pgvector-fts-reindex/app/services/README.md",
+      "message": "Missing sections: Overview, Components, Data Flow, Security",
+      "kind": "sections"
+    },
+    {
+      "file": "journal-backend-bootstrap-pgvector-fts-reindex/app/api/README.md",
+      "message": "Missing sections: Authentication, Endpoints, Errors, Rate Limiting",
+      "kind": "sections"
+    },
+    {
+      "file": "journal-backend-bootstrap-pgvector-fts-reindex/app/api/v1/README.md",
+      "message": "Missing sections: Authentication, Endpoints, Errors, Rate Limiting",
+      "kind": "sections"
+    },
+    {
+      "file": "bun/api/file-io.md",
+      "message": "Missing sections: Authentication, Endpoints, Errors, Rate Limiting",
+      "kind": "sections"
+    },
+    {
+      "file": "bun/api/http-server.md",
+      "message": "Missing sections: Authentication, Endpoints, Errors, Rate Limiting",
+      "kind": "sections"
+    },
+    {
+      "file": "bun/api/sql.md",
+      "message": "Missing sections: Authentication, Endpoints, Errors, Rate Limiting",
+      "kind": "sections"
+    },
+    {
+      "file": "bun/api/websockets.md",
+      "message": "Missing sections: Authentication, Endpoints, Errors, Rate Limiting",
+      "kind": "sections"
+    },
+    {
+      "file": "bun/deployment/environment-variables.md",
+      "message": "Missing sections: Prerequisites, Setup, Configuration, Verification",
+      "kind": "sections"
+    },
+    {
+      "file": "bun/deployment/standalone-executables.md",
+      "message": "Missing sections: Prerequisites, Setup, Configuration, Verification",
+      "kind": "sections"
+    },
+    {
+      "file": "biome/internals/architecture.md",
+      "message": "Missing sections: Overview, Components, Data Flow, Security",
+      "kind": "sections"
+    }
+  ]
+}

@@ -1,3 +1,19 @@
+---
+id: faq
+title: Frequently Asked Questions
+type: guide
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags: []
+priority: medium
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 ***
 
 title: "Flask Journal FAQs"
@@ -9,7 +25,7 @@ tags: \["faq", "questions", "help", "support"]
 
 # Frequently Asked Questions
 
-This document addresses common questions about the Flask Journal application. If you don't find your question answered here, please refer to the [Troubleshooting Guide](troubleshooting.md) or other sections of the [User Guide](README.md).
+This document addresses common questions about the Flask Journal application. If you don't find your question answered here, please refer to the Troubleshooting Guide or other sections of the User Guide.
 
 ## Table of Contents
 
@@ -89,7 +105,7 @@ Yes, the Markdown editor supports GitHub-style tables:
 
 ### Can I insert images into my entries?
 
-Currently, you cannot upload images directly into entries. However, you can link to images hosted elsewhere using standard Markdown image syntax: `![Alt text](http://example.com/image.jpg)`.
+Currently, you cannot upload images directly into entries. However, you can link to images hosted elsewhere using standard Markdown image syntax: `![Alt text](http://journal.local/image.jpg)`.
 
 ### Why doesn't the editor show my formatting while I type?
 
@@ -139,7 +155,7 @@ For the self-hosted version, data is stored on your own server. For the hosted v
 
 ### Can I use Flask Journal offline?
 
-The standard web version requires an internet connection. However, you can set up a local development version that works offline by following the [Installation Guide](installation.md).
+The standard web version requires an internet connection. However, you can set up a local development version that works offline by following the Installation Guide.
 
 ### Which browsers are supported?
 
@@ -162,4 +178,4 @@ Bugs and feature requests can be submitted through the project's GitHub issues p
 
 ***
 
-If you have a question not answered here, please refer to the [Troubleshooting Guide](troubleshooting.md) or contact support for assistance.
+If you have a question not answered here, please refer to the Troubleshooting Guide or contact support for assistance.

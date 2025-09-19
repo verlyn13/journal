@@ -8,7 +8,7 @@ from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.infra.auth import require_user
+from app.infra.enhanced_auth import require_user
 from app.infra.db import get_session
 from app.infra.nats_bus import nats_conn
 

@@ -113,6 +113,7 @@
     "highlight.js": "^11.11.1",
     "lowlight": "^3.3.0",
     "marked": "16.2.1",
-    "taffydb": "2.7.3"
+    "taffydb": "2.7.3",
+    "vercel": "^48.0.3"
   }
 }

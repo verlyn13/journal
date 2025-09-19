@@ -1,0 +1,9 @@
+skip_tokens:
+  - journal-backend-bootstrap-pgvector-fts-reindex
+  - journal-backend-bootstrap-pgvector-fts-reindex/.ruff_cache
+
+duplicate_name_whitelist:
+  - README.md
+  - overview.md
+  - architecture.md
+  - changelog.md

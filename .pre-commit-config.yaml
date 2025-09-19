@@ -28,3 +28,29 @@ repos:
         language: system
         files: \.(js|jsx|ts|tsx|json|jsonc|css|yaml|yml)$
         pass_filenames: false
+
+      - id: validate-documentation-authoritative
+        name: Validate documentation (authoritative)
+        entry: python scripts/validate_documentation.py --strict
+        language: system
+        files: \.md$
+        pass_filenames: false
+        description: Authoritative documentation validator (links, tools, quality, outdated)
+
+      - id: docs-validate
+        name: Docs validate (status+taxonomy+relationships+graph)
+        entry: bash -lc 'make docs-validate'
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [commit]
+        files: ''
+
+      - id: docs-fix-frontmatter-dry
+        name: Docs frontmatter normalize (dry-run)
+        entry: bash -lc 'python3 scripts/fix_frontmatter.py --enforce-tags'
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [commit]
+        files: ''

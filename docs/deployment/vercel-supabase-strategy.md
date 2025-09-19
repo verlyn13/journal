@@ -1,3 +1,24 @@
+---
+id: vercel-supabase-strategy
+title: Vercel + Supabase Deployment Strategy
+type: deployment
+version: 1.0.0
+created: '2025-09-16'
+updated: '2025-09-16'
+author: Journal Team
+tags:
+- python
+- fastapi
+- docker
+- react
+- deployment
+priority: critical
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-16'
+---
+
 # Vercel + Supabase Deployment Strategy
 
 **Date**: September 16, 2025
@@ -15,8 +36,7 @@ Based on comprehensive assessment, we're pursuing a **hybrid deployment strategy
 ## Migration Phases
 
 ### Phase 1: Remove Bun Dependencies (COMPLETED)
-✅ Updated package.json scripts to use npm
-✅ Generated package-lock.json for frontend
+✅ Updated package.json scripts to use bun ✅ Generated package-lock.json for frontend
 ✅ Updated CI workflows to use Node.js
 
 ### Phase 2: Environment Configuration (IN PROGRESS)
@@ -65,7 +85,7 @@ Based on comprehensive assessment, we're pursuing a **hybrid deployment strategy
 
 ```env
 # Frontend (VITE_ prefix for client access)
-VITE_API_URL=https://api.journal.example.com  # Your backend host
+VITE_API_URL=https://api.journal.journal.local  # Your backend host
 VITE_SUPABASE_URL=https://xxxxx.supabase.co
 VITE_SUPABASE_ANON_KEY=xxxxx
 
@@ -77,7 +97,7 @@ NODE_ENV=production
 
 ```env
 # Database
-DATABASE_URL=postgresql://...@db.xxxxx.supabase.co:5432/postgres
+DATABASE_URL=postgresql://user:password@db.xxxxx.supabase.co:5432/postgres
 JOURNAL_DB_URL_ASYNC=postgresql+asyncpg://...
 JOURNAL_DB_URL_SYNC=postgresql+psycopg://...
 
@@ -124,14 +144,14 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 ### vercel.json
 ```json
 {
-  "buildCommand": "cd apps/web && npm run build",
+  "buildCommand": "cd apps/web && bun run build",
   "outputDirectory": "apps/web/dist",
-  "installCommand": "cd apps/web && npm ci --legacy-peer-deps",
+  "installCommand": "cd apps/web && bun ci --legacy-peer-deps",
   "framework": "vite",
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://api.journal.example.com/api/:path*"
+      "destination": "https://api.journal.journal.local/api/:path*"
     }
   ]
 }
@@ -185,7 +205,7 @@ services:
 
 ### Pre-deployment
 - [x] Remove Bun from package.json
-- [x] Generate npm lockfile
+- [x] Generate bun lockfile
 - [x] Update CI workflows
 - [ ] Create Supabase project
 - [ ] Configure pgvector extension

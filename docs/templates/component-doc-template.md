@@ -1,3 +1,21 @@
+---
+id: component-doc-template
+title: 'Component: ComponentName'
+type: api
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags:
+- api
+- python
+priority: high
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 ***
 
 title: "Component Name"
@@ -190,6 +208,6 @@ Optional section listing planned improvements or potential future enhancements.
 
 ## See Also
 
-- [Related Component Documentation](link/to/related.md)
-- [API Reference for Related Endpoint](link/to/api.md)
-- [External Resource](https://example.com)
+- Related Component Documentation
+- API Reference for Related Endpoint
+- [External Resource](https://journal.local)

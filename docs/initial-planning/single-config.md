@@ -1,32 +1,48 @@
+---
+id: single-config
+title: Single Config
+type: reference
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags: []
+priority: medium
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 ***
 
-title: Rollup Configuration Recommendation (Single Config)
-description: "Recommendation for using a single Rollup config with multiple named entries (JS and CSS) to simplify the build process and manifest generation."
+title: Vite Configuration Recommendation (Single Config)
+description: "Recommendation for using a single Vite config with multiple named entries (JS and CSS) to simplify the build process and manifest generation."
 category: "Initial Planning"
 status: active
-tags: \["rollup", "build", "configuration", "javascript", "css", "manifest"]
+tags: \["Vite", "build", "configuration", "javascript", "css", "manifest"]
 ----------------------------------------------------------------------------
 
-Below is a **practical recommendation** that fits your project setup and avoids the “no related origin name” or “could not resolve” pitfalls. **Short version**: **Use a single Rollup config with two named entries**—one for your JS (`main.js`), one for your CSS (`main.css`). That way, Rollup and the manifest plugin see everything in one pass, and you get a single, consistent `manifest.json` containing both hashed JS and CSS.
+Below is a **practical recommendation** that fits your project setup and avoids the “no related origin name” or “could not resolve” pitfalls. **Short version**: **Use a single Vite config with two named entries**—one for your JS (`main.js`), one for your CSS (`main.css`). That way, Vite and the manifest plugin see everything in one pass, and you get a single, consistent `manifest.json` containing both hashed JS and CSS.
 
 ***
 
 ## Recommended Approach: Two Named Entries in One Config
 
 1. **Remove** any line like `import '../css/main.css'` from your `main.js`.
-2. **Use** a single `rollup.config.js` (or `.cjs`) that sets up:
+2. **Use** a single `Vite.config.js` (or `.cjs`) that sets up:
 
 - **`input`**: an object with `{ main: 'src/js/main.js', styles: 'src/css/main.css' }`
 - **`postcss({ extract: true })`**: so the CSS is written as a separate file
 - **`outputManifest`** plugin: to produce a single manifest referencing both
 
-### Example `rollup.config.js`
+### Example `Vite.config.js`
 
 ```js
-import resolve from '@rollup/plugin-node-resolve';
-import commonjs from '@rollup/plugin-commonjs';
-import postcss from 'rollup-plugin-postcss';
-import outputManifestPlugin from 'rollup-plugin-output-manifest';
+import resolve from '@Vite/plugin-node-resolve';
+import commonjs from '@Vite/plugin-commonjs';
+import postcss from 'Vite-plugin-postcss';
+import outputManifestPlugin from 'Vite-plugin-output-manifest';
 
 const outputManifest = outputManifestPlugin.default || outputManifestPlugin;
 const production = !process.env.ROLLUP_WATCH;
@@ -75,7 +91,7 @@ export default {
   \- “`styles`” -> `src/css/main.css` (your core stylesheet)
 
 - **PostCSS Extract**:\
-  \- Because `extract: true`, Rollup will generate a hashed CSS file for the “styles” entry.\
+  \- Because `extract: true`, Vite will generate a hashed CSS file for the “styles” entry.\
   \- The manifest plugin sees these outputs (e.g. `main.abc123.js` and `styles.def456.css`) and writes them to `manifest.json`.
 
 - **No Extra Imports**:\
@@ -86,7 +102,7 @@ export default {
 
 ## After the Build
 
-1. **Run** `npm run build` and check `journal/static/gen/`. You should see something like:
+1. **Run** `bun run build` and check `journal/static/gen/`. You should see something like:
 
 - `main.abc123.js`
 - `styles.def456.css`
@@ -111,7 +127,7 @@ export default {
 
 ## Why This Resolves the Confusion
 
-1. **No “Could Not Resolve”**: You’re not importing `.css` from `.js`, so Rollup is not forced to interpret CSS as a module.
+1. **No “Could Not Resolve”**: You’re not importing `.css` from `.js`, so Vite is not forced to interpret CSS as a module.
 2. **No “No Related Origin Name”**: Because `styles: 'src/css/main.css'` is a **first‐class entry**, the build knows exactly which origin (“styles”) the extracted CSS came from, so the manifest plugin includes it.
 3. **Unified Build**: Only one config → only one pass. The plugin sees all final assets.
 4. **Simplicity**: No custom `generate()` logic. The plugin does the standard job of listing every output in the manifest.

@@ -1,3 +1,20 @@
+---
+id: extensions
+title: PostgreSQL Extensions Compatibility
+type: reference
+version: 1.0.0
+created: '2025-09-16'
+updated: '2025-09-16'
+author: Journal Team
+tags:
+- python
+priority: medium
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-16'
+---
+
 # PostgreSQL Extensions Compatibility
 
 **Status**: Pre-Production Assessment
@@ -111,7 +128,7 @@ Current local setup uses:
 ```bash
 # Check current extensions
 cd apps/api
-DATABASE_URL_SYNC="postgresql://journal:journal@localhost:5433/journal" \
+DATABASE_URL_SYNC="postgresql://user:password@localhost:5433/journal" \
   psql $DATABASE_URL_SYNC -c "SELECT extname, extversion FROM pg_extension ORDER BY 1;"
 ```
 

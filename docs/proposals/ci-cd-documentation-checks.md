@@ -1,3 +1,19 @@
+---
+id: ci-cd-documentation-checks
+title: 'Proposal: CI/CD Integration for Documentation Checks'
+type: reference
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags: []
+priority: medium
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 ***
 
 title: "Proposal: CI/CD Integration for Documentation Checks"
@@ -31,15 +47,15 @@ The following checks should be implemented, using the scripts defined in `packag
 ### 2.1. Markdown Linting
 
 - **Purpose:** Ensure consistency in Markdown formatting and style according to project standards (implicitly using `markdownlint-cli` defaults or a future configuration file).
-- **Command:** `npm run lint:md`
-- *(Underlying command: `npx markdownlint "docs/**/*.md"`)*
+- **Command:** `bun run lint:md`
+- *(Underlying command: `bunx markdownlint "docs/**/*.md"`)*
 - **Scope:** All `.md` files within the `docs/` directory and its subdirectories.
 
 ### 2.2. Link Checking
 
 - **Purpose:** Detect broken internal or external links within the documentation.
-- **Command:** `npm run lint:links`
-- *(Underlying command: `npx markdown-link-check "docs/**/*.md"`)*
+- **Command:** `bun run lint:links`
+- *(Underlying command: `bunx markdown-link-check "docs/**/*.md"`)*
 - **Scope:** All `.md` files within the `docs/` directory and its subdirectories.
 - **Note:** This check makes external network requests and might be slower or require specific network configuration in the CI environment. Configuration (e.g., retry logic, timeouts, ignoring specific links) might be necessary via a `.mlc_config.json` file in the future if needed.
 
@@ -77,7 +93,7 @@ graph LR
 ## 4. Implementation Notes
 
 - The actual implementation of these CI/CD jobs depends on the specific platform used (e.g., GitHub Actions, GitLab CI, Jenkins).
-- The CI environment will need Node.js and npm installed to execute the commands.
+- The CI environment will need Node.js and bun installed to execute the commands.
 - Coordination with the team responsible for managing the CI/CD pipeline is required for implementation.
 
 ## 5. Conclusion

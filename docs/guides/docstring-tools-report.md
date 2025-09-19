@@ -1,3 +1,20 @@
+---
+id: docstring-tools-report
+title: Python Docstring Tools Report
+type: guide
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags:
+- python
+priority: medium
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 ***
 
 title: "Python Docstring Tools Report"
@@ -40,7 +57,7 @@ The ideal docstring tooling for Flask Journal should:
 
 - Checks PEP 257 compliance
 - Configurable through `.pydocstyle` config files
-- Can be integrated with flake8
+- Can be integrated with Ruff
 - Actively maintained
 
 **Cons**:
@@ -83,7 +100,7 @@ ignore = D107,D203,D212
 
 ```bash
 # Installation
-pip install sphinx sphinx-rtd-theme sphinx-autodoc-typehints
+uv pip install sphinx sphinx-rtd-theme sphinx-autodoc-typehints
 
 # Basic configuration (conf.py)
 extensions = [
@@ -159,14 +176,14 @@ pyment -o google -w my_file.py
 pyment -o google -w journal/**/*.py
 ```
 
-### 5. flake8-docstrings
+### 5. Ruff-docstrings
 
-**Description**: A flake8 plugin that includes pydocstyle checks.
+**Description**: A Ruff plugin that includes pydocstyle checks.
 
 **Pros**:
 
 - Integrates docstring checks with other linting
-- Can be used with existing flake8 configurations
+- Can be used with existing Ruff configurations
 - Works with pre-commit hooks
 
 **Cons**:
@@ -178,10 +195,10 @@ pyment -o google -w journal/**/*.py
 
 ```bash
 # Installation
-pip install flake8-docstrings
+uv pip install Ruff-docstrings
 
-# Configuration (.flake8)
-[flake8]
+# Configuration (.Ruff)
+[Ruff]
 max-line-length = 100
 docstring-convention = google
 ignore = D107,D203,D212
@@ -217,7 +234,7 @@ docformatter --in-place --recursive journal/
 
 Based on the evaluation, we recommend implementing a combined approach:
 
-1. **Primary Validation**: Use **flake8-docstrings** (with pydocstyle) to validate docstring presence and format as part of our linting process
+1. **Primary Validation**: Use **Ruff-docstrings** (with pydocstyle) to validate docstring presence and format as part of our linting process
 2. **Documentation Generation**: Implement **Sphinx with sphinx-autodoc** to generate comprehensive API documentation from our docstrings
 3. **Coverage Enforcement**: Use **interrogate** to track and enforce docstring coverage metrics
 4. **Formatting Assistance**: Consider **docformatter** for basic formatting corrections
@@ -226,12 +243,12 @@ Based on the evaluation, we recommend implementing a combined approach:
 
 1. **Initial Setup**:
    ```bash
-   pip install flake8-docstrings sphinx sphinx-rtd-theme sphinx-autodoc-typehints interrogate docformatter
+   uv pip install Ruff-docstrings sphinx sphinx-rtd-theme sphinx-autodoc-typehints interrogate docformatter
    ```
 
 2. **Configuration Files**:
 
-- Create `.flake8` for flake8/pydocstyle configuration
+- Create `.Ruff` for Ruff/pydocstyle configuration
 - Create `docs/sphinx/conf.py` for Sphinx configuration
 - Add interrogate settings to existing `pyproject.toml`
 
@@ -257,7 +274,7 @@ Based on the evaluation, we recommend implementing a combined approach:
 
 Implementing these tools will help enforce our Python docstring standards effectively. The combination of validation, coverage tracking, and documentation generation creates a comprehensive approach to docstring quality management.
 
-While these tools require initial configuration and integration effort, they will significantly improve documentation consistency and completeness as the project evolves. The priority should be implementing flake8-docstrings for validation and Sphinx for documentation generation.
+While these tools require initial configuration and integration effort, they will significantly improve documentation consistency and completeness as the project evolves. The priority should be implementing Ruff-docstrings for validation and Sphinx for documentation generation.
 
 ## Next Steps
 

@@ -1,11 +1,11 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "name": "journal-web",
-  "buildCommand": "cd apps/web && npm run build",
+  "buildCommand": "cd apps/web && bun run build",
   "outputDirectory": "apps/web/dist",
-  "installCommand": "cd apps/web && npm ci --legacy-peer-deps",
+  "installCommand": "cd apps/web && bun install",
   "framework": "vite",
-  "devCommand": "cd apps/web && npm run dev",
+  "devCommand": "cd apps/web && bun run dev",
   "ignoreCommand": "git diff HEAD^ HEAD --quiet .",
 
   "env": {

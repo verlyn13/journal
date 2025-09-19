@@ -15,7 +15,8 @@ from pydantic import BaseModel, Field
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.infra.auth import create_access_token, create_refresh_token, get_current_user
+from app.infra.auth import create_access_token, create_refresh_token
+from app.infra.enhanced_auth import get_current_user
 from app.infra.auth_counters import login_success
 from app.infra.cookies import set_refresh_cookie
 from app.infra.db import get_session

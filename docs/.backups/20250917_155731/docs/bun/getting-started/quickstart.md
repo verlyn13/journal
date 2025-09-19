@@ -1,0 +1,199 @@
+---
+id: quickstart
+title: QUICKSTART
+type: guide
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags:
+- typescript
+- guide
+priority: medium
+status: approved
+visibility: internal
+schema_version: v1
+---
+
+# QUICKSTART
+
+*Source: <https://bun.sh/docs/quickstart>*
+*Fetched: 2025-08-30T00:47:26.626Z*
+
+***
+
+Let's write a simple HTTP server using the built-in `Bun.serve` API. First, create a fresh directory.
+
+```
+mkdir quickstart
+```
+
+```
+cd quickstart
+```
+
+Run `bun init` to scaffold a new project. It's an interactive tool; for this tutorial, just press `enter` to accept the default answer for each prompt.
+
+```
+bun init
+```
+
+```
+bun init helps you get started with a minimal project and tries to
+guess sensible defaults. Press ^C anytime to quit.
+
+package name (quickstart):
+entry point (index.ts):
+
+Done! A package.json file was saved in the current directory.
+ + index.ts
+ + .gitignore
+ + tsconfig.json (for editor auto-complete)
+ + README.md
+
+To get started, run:
+  bun run index.ts
+```
+
+Since our entry point is a `*.ts` file, Bun generates a `tsconfig.json` for you. If you're using plain JavaScript, it will generate a [`jsconfig.json`](https://code.visualstudio.com/docs/languages/jsconfig) instead.
+
+## [Run a file](#run-a-file)
+
+Open `index.ts` and paste the following code snippet, which implements a simple HTTP server with [`Bun.serve`](https://bun.com/docs/api/http).
+
+```
+const server = Bun.serve({
+  port: 3000,
+  fetch(req) {
+    return new Response("Bun!");
+  },
+});
+
+console.log(`Listening on http://localhost:${server.port} ...`);
+
+```
+
+Seeing TypeScript errors on `Bun`?
+
+If you used `bun init`, Bun will have automatically installed Bun's TypeScript declarations and configured your `tsconfig.json`. If you're trying out Bun in an existing project, you may see a type error on the `Bun` global.
+
+To fix this, first install `@types/bun` as a dev dependency.
+
+```
+bun add -d @types/bun
+```
+
+Then add the following to your `compilerOptions` in `tsconfig.json`:
+
+tsconfig.json\`\`\`
+{
+"compilerOptions": {
+"lib": \["ESNext"],
+"target": "ESNext",
+"module": "Preserve",
+"moduleDetection": "force",
+"moduleResolution": "bundler",
+"allowImportingTsExtensions": true,
+"verbatimModuleSyntax": true,
+"noEmit": true,
+}
+}
+
+```
+
+Run the file from your shell.
+
+```
+
+bun index.ts
+
+```
+```
+
+Listening on <http://localhost:5000> ...
+
+```
+
+Visit [http://localhost:5000](http://localhost:5000) to test the server. You should see a simple page that says "Bun!".
+
+## [Run a script](#run-a-script)
+
+Bun can also execute `"scripts"` from your `package.json`. Add the following script:
+
+```
+
+{
+"name": "quickstart",
+"module": "index.ts",
+"type": "module",
+"scripts": {
+"start": "bun run index.ts"
+},
+"devDependencies": {
+"@types/bun": "latest"
+}
+}
+
+```
+
+Then run it with `bun run start`.
+
+```
+
+bun run start
+
+```
+```
+
+$ bun run index.ts
+Listening on <http://localhost:5000> ...
+
+```
+
+⚡️ **Performance** — `bun run` is roughly 28x faster than `bun run` (6ms vs 170ms of overhead).
+
+## [Install a package](#install-a-package)
+
+Let&#x27;s make our server a little more interesting by installing a package. First install the `figlet` package and its type declarations. Figlet is a utility for converting strings into ASCII art.
+
+```
+
+bun add figlet
+
+```
+```
+
+bun add -d @types/figlet # TypeScript users only
+
+```
+
+Update `index.ts` to use `figlet` in the `fetch` handler.
+
+```
+
+import figlet from "figlet";
+
+const server = Bun.serve({
+port: 3000,
+fetch(req) {
+const body = figlet.textSync("Bun!");
+return new Response(body);
+return new Response("Bun!");
+},
+});
+
+```
+
+Restart the server and refresh the page. You should see a new ASCII art banner.
+
+```
+
+***
+
+\| \_\_ ) \_   \_ \_ \_\_ | |
+\|  \_ | | | | '\_ | |
+\| |*) | |*| | | | |*|
+|*\_\_*/ \_*,*|*| |*(*)
+
+```
+```

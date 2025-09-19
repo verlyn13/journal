@@ -1,3 +1,23 @@
+---
+id: vercel-supabase-migration-assessment
+title: Vercel + Supabase Migration Assessment - Journal App
+type: api
+version: 1.0.0
+created: '2025-09-16'
+updated: '2025-09-16'
+author: Journal Team
+tags:
+- api
+- python
+- react
+- fastapi
+priority: critical
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-16'
+---
+
 # Vercel + Supabase Migration Assessment - Journal App
 
 **Assessment Date**: September 16, 2025
@@ -44,7 +64,7 @@ bunfig.toml - Bun configuration at root
 ```
 
 ### Required Changes
-1. Replace ALL `bun run` with `npm run` or `pnpm run`
+1. Replace ALL `bun run` with `bun run` or `pnpm run`
 2. Generate `package-lock.json` or `pnpm-lock.yaml`
 3. Remove Bun-specific configurations
 4. Update CI/CD workflows (currently use Bun)
@@ -143,16 +163,16 @@ infisical_project_id: str = "d01f583a-d833-4375-b359-c702a726ac4d"
 ## 6) HTTP Surface & Integrations
 
 ### Current Status
-- ✅ **API Structure**: RESTful with `/api/v1/*` prefix
+- ✅ **API Structure**: RESTful with `/api/*` prefix
 - ⚠️ **CORS**: Configured but needs multi-env support
 - ❌ **Webhooks**: Infisical webhooks configured
 
 ### API Endpoints
 ```
-/api/v1/auth/* - Authentication flows
-/api/v1/entries/* - CRUD operations
-/api/v1/search/* - Vector similarity search
-/api/v1/jwks - JWKS endpoint
+/api/auth/* - Authentication flows
+/api/entries/* - CRUD operations
+/api/search/* - Vector similarity search
+/api/jwks - JWKS endpoint
 ```
 
 ---
@@ -282,7 +302,7 @@ Deploy to traditional hosting (AWS ECS, Railway, Render) that supports:
 
 ## Next Steps if Proceeding
 
-1. **Immediate**: Replace Bun with pnpm/npm throughout
+1. **Immediate**: Replace Bun with pnpm/bun throughout
 2. **Week 1**: Prototype Edge Function for one endpoint
 3. **Week 2**: Test Supabase database migration with pgvector
 4. **Week 3**: Evaluate background worker alternatives

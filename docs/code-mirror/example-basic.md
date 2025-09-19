@@ -1,3 +1,20 @@
+---
+id: example-basic
+title: Setting Up a Basic CodeMirror Editor
+type: reference
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags:
+- typescript
+priority: medium
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 ***
 
 title: CodeMirror Basic Example

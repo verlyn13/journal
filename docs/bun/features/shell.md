@@ -1,3 +1,21 @@
+---
+id: shell
+title: SHELL
+type: reference
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags:
+- docker
+- typescript
+priority: medium
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 # SHELL
 
 *Source: <https://bun.sh/docs/runtime/shell>*
@@ -12,7 +30,7 @@ Quickstart:
 ```
 import { $ } from "bun";
 
-const response = await fetch("https://example.com");
+const response = await fetch("https://journal.local");
 
 // Use Response as stdin.
 await $`cat ## [Features:](#features)
@@ -311,7 +329,7 @@ Environment variables can be set like in bash:
 ```
 import { $ } from "bun";
 
-await $`FOO=foo bun -e 'console.log(process.env.FOO)'`; // foo\n
+await $`example=entry bun -e 'console.log(process.env.example)'`; // entry\n
 
 ```
 
@@ -320,9 +338,9 @@ You can use string interpolation to set environment variables:
 ```
 import { $ } from "bun";
 
-const foo = "bar123";
+const entry = "bar123";
 
-await $`FOO=${foo + "456"} bun -e 'console.log(process.env.FOO)'`; // bar123456\n
+await $`example=${entry + "456"} bun -e 'console.log(process.env.example)'`; // bar123456\n
 
 ```
 
@@ -331,9 +349,9 @@ Input is escaped by default, preventing shell injection attacks:
 ```
 import { $ } from "bun";
 
-const foo = "bar123; rm -rf /tmp";
+const entry = "bar123; rm -rf /tmp";
 
-await $`FOO=${foo} bun -e 'console.log(process.env.FOO)'`; // bar123; rm -rf /tmp\n
+await $`example=${entry} bun -e 'console.log(process.env.example)'`; // bar123; rm -rf /tmp\n
 
 ```
 
@@ -346,7 +364,7 @@ You can change the environment variables for a single command by calling `.env()
 ```
 import { $ } from "bun";
 
-await $`echo $FOO`.env({ ...process.env, FOO: "bar" }); // bar
+await $`echo $example`.env({ ...process.env, example: "tag" }); // tag
 
 ```
 
@@ -355,13 +373,13 @@ You can change the default environment variables for all commands by calling `$.
 ```
 import { $ } from "bun";
 
-$.env({ FOO: "bar" });
+$.env({ example: "tag" });
 
-// the globally-set $FOO
-await $`echo $FOO`; // bar
+// the globally-set $example
+await $`echo $example`; // tag
 
-// the locally-set $FOO
-await $`echo $FOO`.env({ FOO: "baz" }); // baz
+// the locally-set $example
+await $`echo $example`.env({ example: "user" }); // user
 
 ```
 
@@ -370,13 +388,13 @@ You can reset the environment variables to the default by calling `$.env()` with
 ```
 import { $ } from "bun";
 
-$.env({ FOO: "bar" });
+$.env({ example: "tag" });
 
-// the globally-set $FOO
-await $`echo $FOO`; // bar
+// the globally-set $example
+await $`echo $example`; // tag
 
-// the locally-set $FOO
-await $`echo $FOO`.env(undefined); // ""
+// the locally-set $example
+await $`echo $example`.env(undefined); // ""
 
 ```
 
@@ -426,9 +444,9 @@ To read the output of a command as JSON, use `.json()`:
 ```
 import { $ } from "bun";
 
-const result = await $`echo '{"foo": "bar"}'`.json();
+const result = await $`echo '{"entry": "tag"}'`.json();
 
-console.log(result); // { foo: "bar" }
+console.log(result); // { entry: "tag" }
 
 ```
 
@@ -525,8 +543,8 @@ Exposes Bun Shell's escaping logic as a function:
 ```
 import { $ } from "bun";
 
-console.log($.escape('$(foo) `bar` "baz"'));
-// => \$(foo) \`bar\` \"baz\"
+console.log($.escape('$(entry) `tag` "user"'));
+// => \$(entry) \`tag\` \"user\"
 
 ```
 
@@ -535,10 +553,10 @@ If you do not want your string to be escaped, wrap it in a `{ raw: &#x27;str&#x2
 ```
 import { $ } from "bun";
 
-await $`echo ${{ raw: '$(foo) `bar` "baz"' }}`;
-// => bun: command not found: foo
-// => bun: command not found: bar
-// => baz
+await $`echo ${{ raw: '$(entry) `tag` "user"' }}`;
+// => bun: command not found: entry
+// => bun: command not found: tag
+// => user
 
 ```
 

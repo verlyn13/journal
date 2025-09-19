@@ -1,0 +1,336 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://journal.app/schemas/base-document.schema.json",
+  "title": "Base Document Schema",
+  "description": "Core schema for all Journal application documentation",
+  "type": "object",
+  "required": ["metadata", "content", "relationships"],
+  "properties": {
+    "metadata": {
+      "type": "object",
+      "description": "Document metadata and classification",
+      "required": ["id", "title", "type", "version", "created", "updated", "author"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9-]*[a-z0-9]$",
+          "description": "Unique document identifier (kebab-case)"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 10,
+          "maxLength": 100,
+          "description": "Human-readable document title"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["guide", "reference", "tutorial", "api", "architecture", "deployment", "testing", "decision", "status"],
+          "description": "Document classification type"
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+\\.\\d+$",
+          "description": "Document version (semver format)"
+        },
+        "created": {
+          "type": "string",
+          "format": "date",
+          "description": "Creation date (YYYY-MM-DD)"
+        },
+        "updated": {
+          "type": "string",
+          "format": "date",
+          "description": "Last update date (YYYY-MM-DD)"
+        },
+        "author": {
+          "type": "string",
+          "description": "Primary author or team"
+        },
+        "reviewers": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "List of document reviewers"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]*$"
+          },
+          "minItems": 1,
+          "maxItems": 10,
+          "description": "Categorization tags"
+        },
+        "priority": {
+          "type": "string",
+          "enum": ["critical", "high", "medium", "low"],
+          "default": "medium",
+          "description": "Documentation priority level"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["draft", "review", "approved", "deprecated"],
+          "default": "draft",
+          "description": "Document lifecycle status"
+        },
+        "visibility": {
+          "type": "string",
+          "enum": ["public", "internal", "private"],
+          "default": "internal",
+          "description": "Access control level"
+        }
+      }
+    },
+    "content": {
+      "type": "object",
+      "description": "Document content structure",
+      "required": ["summary", "sections"],
+      "properties": {
+        "summary": {
+          "type": "string",
+          "minLength": 50,
+          "maxLength": 500,
+          "description": "Executive summary of document contents"
+        },
+        "objectives": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "Learning objectives or goals"
+        },
+        "prerequisites": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "Required knowledge or documents"
+        },
+        "sections": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["id", "heading", "content", "level"],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9-]*$",
+                "description": "Section identifier"
+              },
+              "heading": {
+                "type": "string",
+                "minLength": 3,
+                "maxLength": 100,
+                "description": "Section heading text"
+              },
+              "level": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 6,
+                "description": "Heading level (1-6)"
+              },
+              "content": {
+                "type": "string",
+                "minLength": 10,
+                "description": "Section content (markdown)"
+              },
+              "semantic_chunk_id": {
+                "type": "string",
+                "description": "Unique identifier for semantic search"
+              },
+              "token_count": {
+                "type": "integer",
+                "minimum": 150,
+                "maximum": 1000,
+                "description": "Approximate token count for LLM processing"
+              },
+              "code_blocks": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["language", "code"],
+                  "properties": {
+                    "language": {
+                      "type": "string",
+                      "description": "Programming language"
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Code content"
+                    },
+                    "filename": {
+                      "type": "string",
+                      "description": "Optional filename reference"
+                    },
+                    "line_numbers": {
+                      "type": "boolean",
+                      "default": false,
+                      "description": "Display line numbers"
+                    }
+                  }
+                }
+              },
+              "diagrams": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["type", "content"],
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": ["mermaid", "plantuml", "graphviz", "ascii"],
+                      "description": "Diagram type"
+                    },
+                    "content": {
+                      "type": "string",
+                      "description": "Diagram definition"
+                    },
+                    "caption": {
+                      "type": "string",
+                      "description": "Diagram caption"
+                    }
+                  }
+                }
+              },
+              "subsections": {
+                "$ref": "#/properties/content/properties/sections"
+              }
+            }
+          }
+        },
+        "appendices": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["title", "content"],
+            "properties": {
+              "title": {"type": "string"},
+              "content": {"type": "string"}
+            }
+          }
+        }
+      }
+    },
+    "relationships": {
+      "type": "object",
+      "description": "Document relationships and dependencies",
+      "properties": {
+        "parent": {
+          "type": "string",
+          "description": "Parent document ID"
+        },
+        "children": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "Child document IDs"
+        },
+        "prerequisites": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "Required reading document IDs"
+        },
+        "related": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "Related document IDs"
+        },
+        "supersedes": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "Documents this replaces"
+        },
+        "superseded_by": {
+          "type": "string",
+          "description": "Document that replaces this"
+        },
+        "implements": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "Features or components implemented"
+        },
+        "references": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["type", "id"],
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": ["document", "issue", "pr", "commit", "external"],
+                "description": "Reference type"
+              },
+              "id": {
+                "type": "string",
+                "description": "Reference identifier"
+              },
+              "url": {
+                "type": "string",
+                "format": "uri",
+                "description": "Optional URL"
+              },
+              "title": {
+                "type": "string",
+                "description": "Reference title"
+              }
+            }
+          }
+        }
+      }
+    },
+    "validation": {
+      "type": "object",
+      "description": "Validation metadata",
+      "properties": {
+        "schema_version": {
+          "type": "string",
+          "const": "1.0.0",
+          "description": "Schema version used"
+        },
+        "last_validated": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Last validation timestamp"
+        },
+        "validation_errors": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "path": {"type": "string"},
+              "message": {"type": "string"},
+              "severity": {
+                "type": "string",
+                "enum": ["error", "warning", "info"]
+              }
+            }
+          }
+        }
+      }
+    },
+    "metrics": {
+      "type": "object",
+      "description": "Document quality metrics",
+      "properties": {
+        "readability_score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Flesch reading ease score"
+        },
+        "completeness": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Content completeness percentage"
+        },
+        "accuracy": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Technical accuracy score"
+        },
+        "freshness": {
+          "type": "integer",
+          "description": "Days since last update"
+        }
+      }
+    }
+  }
+}

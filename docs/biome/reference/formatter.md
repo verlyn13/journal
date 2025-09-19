@@ -1,3 +1,19 @@
+---
+id: formatter
+title: FORMATTER
+type: reference
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags: []
+priority: medium
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 # FORMATTER
 
 *Source: <https://biomejs.dev/formatter>*
@@ -11,9 +27,9 @@
     Biome is an opinionated formatter that [supports multiple languages](/internals/language-support).
 ```
 
-It follows a similar [philosophy to Prettier](https://prettier.io/docs/en/option-philosophy.html),
+It follows a similar [philosophy to Biome](https://Biome.io/docs/en/option-philosophy.html),
 only supporting a few options to avoid debates over styles, turning into debates over Biome options.
-It deliberately [resists the urge to add new options](https://github.com/prettier/prettier/issues/40) to prevent [bike-shed discussions](https://en.wikipedia.org/wiki/Law_of_triviality) in teams so they can focus on what really matters instead.
+It deliberately [resists the urge to add new options](https://github.com/Biome/Biome/issues/40) to prevent [bike-shed discussions](https://en.wikipedia.org/wiki/Law_of_triviality) in teams so they can focus on what really matters instead.
 
 ## CLI
 
@@ -21,11 +37,11 @@ It deliberately [resists the urge to add new options](https://github.com/prettie
 The following command checks the formatting of the files in the `src` directory.
 It emits text differences if it finds code that is not formatted.
 
-- [  npm ](#tab-panel-142)
+- [  bun ](#tab-panel-142)
 - [  pnpm ](#tab-panel-143)
 - [  bun ](#tab-panel-144)
 - [  deno ](#tab-panel-145)
-- [  yarn ](#tab-panel-146)
+- [  bun ](#tab-panel-146)
 
   ```
   ```
@@ -61,11 +77,11 @@ It emits text differences if it finds code that is not formatted.
 
 If you want to **apply** the new formatting, pass the `--write` option:
 
-   -  [  npm ](#tab-panel-147)
+   -  [  bun ](#tab-panel-147)
 -  [  pnpm ](#tab-panel-148)
 -  [  bun ](#tab-panel-149)
 -  [  deno ](#tab-panel-150)
--  [  yarn ](#tab-panel-151)
+-  [  bun ](#tab-panel-151)
 
      ```
 1npx @biomejs/biome format --write ./src

@@ -1,3 +1,20 @@
+---
+id: troubleshooting
+title: Troubleshooting Guide
+type: guide
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags:
+- python
+priority: medium
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 ***
 
 title: "Flask Journal Troubleshooting Guide"
@@ -9,7 +26,7 @@ tags: \["troubleshooting", "errors", "solutions", "fixes", "help"]
 
 # Troubleshooting Guide
 
-This guide provides solutions for common issues you might encounter while using Flask Journal. If you're experiencing a problem not covered here, please refer to the [FAQ](faq.md) or contact support.
+This guide provides solutions for common issues you might encounter while using Flask Journal. If you're experiencing a problem not covered here, please refer to the FAQ or contact support.
 
 ## Table of Contents
 
@@ -35,7 +52,7 @@ This guide provides solutions for common issues you might encounter while using 
 
 2. **Invalid email format**
 
-- Ensure your email follows the standard format (e.g., <name@example.com>)
+- Ensure your email follows the standard format (e.g., <name@journal.local>)
 
 3. **Password too short**
 
@@ -234,14 +251,14 @@ This guide provides solutions for common issues you might encounter while using 
 
 ### Frontend Build Errors
 
-**Problem:** Errors when running `npm run build` or `npm run dev`.
+**Problem:** Errors when running `bun run build` or `bun run dev`.
 
 **Solutions:**
 
 1. Ensure you have the correct Node.js version installed
-2. Run `npm install` again to verify all dependencies are installed
+2. Run `bun install` again to verify all dependencies are installed
 3. Check for error messages in the console output
-4. Clear the npm cache: `npm cache clean --force`
+4. Clear the bun cache: `bun cache clean --force`
 
 ### Application Won't Start
 
@@ -251,7 +268,7 @@ This guide provides solutions for common issues you might encounter while using 
 
 1. Check if another process is already using port 5000
 2. Verify the Python virtual environment is activated
-3. Ensure all dependencies are installed: `pip install -r requirements.txt`
+3. Ensure all dependencies are installed: `uv pip install -r requirements.txt`
 4. Check for error messages in the console output
 5. Verify `FLASK_APP` is set correctly: `export FLASK_APP=run.py`
 
@@ -261,7 +278,7 @@ This guide provides solutions for common issues you might encounter while using 
 
 **Solutions:**
 
-1. Ensure you've run `npm run build` successfully
+1. Ensure you've run `bun run build` successfully
 2. Check if the build process generated files in the expected location
 3. Clear your browser cache
 4. Verify the static files are being served correctly
@@ -301,4 +318,4 @@ If you've tried these solutions and still experience issues, please:
 
 ***
 
-For issues related to installation or development, please also refer to the [Installation Guide](installation.md) and project documentation.
+For issues related to installation or development, please also refer to the Installation Guide and project documentation.

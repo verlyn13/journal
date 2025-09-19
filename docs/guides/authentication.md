@@ -1,3 +1,20 @@
+---
+id: authentication
+title: Authentication System Guide
+type: guide
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags:
+- python
+priority: medium
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 ***
 
 title: "Authentication System Guide"
@@ -306,6 +323,6 @@ The following enhancements are not currently implemented but may be added in fut
 
 ## See Also
 
-- [API Reference](api-reference.md)
-- [Data Model Documentation](data-model.md)
+- API Reference
+- Data Model Documentation
 - [Flask-Login Documentation](https://flask-login.readthedocs.io/)

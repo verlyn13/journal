@@ -6,11 +6,13 @@ on:
     branches: [ main ]
     paths:
       - 'docs/**'
+      - 'scripts/**'
       - '.github/workflows/documentation-validate.yml'
   pull_request:
     branches: [ main ]
     paths:
       - 'docs/**'
+      - 'scripts/**'
       - '.github/workflows/documentation-validate.yml'
   # Allow manual triggering
   workflow_dispatch:
@@ -19,26 +21,49 @@ jobs:
   validate-structure:
     name: Validate Documentation Structure
     runs-on: ubuntu-24.04
-    
+
     steps:
     - uses: actions/checkout@v4
-    
-    - name: Set up Python
-      uses: actions/setup-python@v4
+
+    - name: Set up Python with uv
+      uses: astral-sh/setup-uv@v4
       with:
-        python-version: '3.13'
-    
+        version: "0.5.16"
+
     - name: Install dependencies
+      run: uv sync --all-extras --dev
+
+    - name: Validate documentation with schema
       run: |
-        python -m pip install --upgrade pip
-        pip install pyyaml
-    
-    - name: Validate frontmatter
+        echo "Validating documentation against JSON schemas..."
+        uv run python scripts/validate_docs.py
+
+    - name: Check documentation coverage
       run: |
-        echo "Validating markdown frontmatter..."
-        python scripts/validate_docs_frontmatter.py
-    
-    - name: Check documentation structure
+        echo "Checking documentation coverage..."
+        uv run python scripts/check_doc_coverage.py
+
+    - name: Generate documentation report
       run: |
-        echo "Checking documentation structure..."
-        python scripts/check_docs_structure.py
+        echo "Generating documentation report..."
+        uv run python scripts/generate_doc_report.py
+
+    - name: Upload documentation report
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: documentation-report
+        path: docs/_generated/reports/
+
+    # Keep legacy checks temporarily (non-blocking)
+    - name: Validate frontmatter (legacy)
+      continue-on-error: true
+      run: |
+        echo "Validating markdown frontmatter (legacy check)..."
+        uv run python scripts/validate_docs_frontmatter.py || true
+
+    - name: Check documentation structure (legacy)
+      continue-on-error: true
+      run: |
+        echo "Checking documentation structure (legacy check)..."
+        uv run python scripts/check_docs_structure.py || true

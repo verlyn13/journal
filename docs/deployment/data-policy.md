@@ -1,3 +1,21 @@
+---
+id: data-policy
+title: Data Policy & Preview Environment Security
+type: deployment
+version: 1.0.0
+created: '2025-09-16'
+updated: '2025-09-16'
+author: Journal Team
+tags:
+- python
+- deployment
+priority: critical
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-16'
+---
+
 # Data Policy & Preview Environment Security
 
 **Status**: Pre-Production
@@ -31,7 +49,7 @@ All preview environments must use anonymized data that:
 | Category | Production | Preview | Local Dev |
 |----------|------------|---------|-----------|
 | **User PII** | Real data | Anonymized | Fake/Generated |
-| **Content** | Real entries | Lorem ipsum | Generated |
+| **Content** | Real entries | Example content here | Generated |
 | **Metadata** | Real timestamps | Shifted dates | Recent dates |
 | **Analytics** | Real metrics | Synthetic data | Mock data |
 | **Auth Tokens** | Real secrets | Test tokens | Local keys |
@@ -50,7 +68,7 @@ Located in `scripts/anonymize/`:
 ```python
 # Example transformations applied by scripts/anonymize.py
 {
-    'email': 'user{id}@example.com',
+    'email': 'user{id}@journal.local',
     'name': fake.name(),
     'phone': fake.phone_number(),
     'address': fake.address(),
@@ -200,9 +218,9 @@ make audit:export --start-date=<date> --end-date=<date>
 
 ## References
 
-- [Supabase Branching Documentation](../supabase.branching.md)
-- [Environment Configuration Guide](../../deploy/README.md)
-- [Security Incident Response Plan](./incident-response.md)
+- Supabase Branching Documentation
+- Environment Configuration Guide
+- Security Incident Response Plan
 
 ---
 

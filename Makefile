@@ -28,7 +28,13 @@ help:
 	@echo "  make docs-serve    - Serve documentation locally"
 	@echo "  make docs-search   - Search documentation (use TERM=keyword)"
 	@echo "  make docs-check    - Check documentation integrity"
+	@echo "  make docs-status   - Generate consolidated docs status report"
+	@echo "  make docs-taxonomy - Validate taxonomy conformance"
+	@echo "  make docs-relationships - Validate relationships.json"
+	@echo "  make docs-graph   - Build docs graph for agent discovery"
 	@echo "  make docs-clean    - Remove all documentation"
+	@echo "  make docs-validate - Run all docs validators (status+taxonomy+relationships+graph)"
+	@echo "  make docs-fix-frontmatter - Normalize/add frontmatter (dry-run: set WRITE=1 to write)"
 	@echo ""
 	@echo "Shortcuts:"
 	@echo "  make fresh         - Clean install with documentation"
@@ -267,6 +273,39 @@ docs-clean:
 	@echo "🧹 Cleaning documentation..."
 	@chmod +x docs.sh 2>/dev/null || true
 	@./docs.sh clean
+
+# Docs status report
+.PHONY: docs-status
+docs-status:
+	@echo "📊 Generating documentation status report..."
+	@python3 scripts/generate_status_report.py
+	@echo "✅ Report written to docs/reports/docs-status.md"
+
+.PHONY: docs-taxonomy docs-relationships docs-graph
+docs-taxonomy:
+	@echo "🧭 Validating taxonomy..."
+	@python3 scripts/validate_taxonomy.py
+	@echo "✅ Report written to docs/reports/taxonomy-status.md"
+
+docs-relationships:
+	@echo "🕸️  Validating document relationships..."
+	@python3 scripts/validate_relationships.py
+	@echo "✅ Report written to docs/reports/relationships-status.md"
+
+docs-graph:
+	@echo "🗺️  Building documentation graph..."
+	@python3 scripts/build_docs_graph.py
+	@echo "✅ Graph written to docs/_generated/graph.json"
+
+.PHONY: docs-validate
+docs-validate: docs-status docs-taxonomy docs-relationships docs-graph
+	@echo "✅ Documentation validators complete"
+
+.PHONY: docs-fix-frontmatter
+docs-fix-frontmatter:
+	@echo "🛠️  Fixing frontmatter (dry-run by default)..."
+	@python3 scripts/fix_frontmatter.py $(if $(WRITE),--write,)
+	@echo "✅ Frontmatter fix pass complete"
 
 # Fresh install with documentation
 fresh: clean install docs-fetch

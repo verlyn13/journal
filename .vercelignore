@@ -1,0 +1,66 @@
+# Vercel deployment ignore file
+
+# Development files
+.env
+.env.local
+.env.development
+*.log
+*.backup
+
+# Test files
+**/*.test.*
+**/*.spec.*
+**/tests/
+**/test/
+**/__tests__/
+coverage/
+.coverage
+
+# Documentation
+docs/
+*.md
+!README.md
+
+# Source control
+.git/
+.github/
+.gitignore
+
+# Development tools
+.vscode/
+.idea/
+*.sublime-*
+
+# Python/Backend (not needed for frontend deployment)
+apps/api/
+*.py
+*.pyc
+__pycache__/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+uv.lock
+pyproject.toml
+
+# Build artifacts
+dist/
+build/
+*.map
+
+# Package managers
+node_modules/
+.yarn/
+.pnp.*
+
+# Misc
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# Backup files
+*.backup
+*.old
+docs.backup.*

@@ -1,3 +1,21 @@
+---
+id: jwt-security-hardening
+title: JWT Security Hardening - Future Feature
+type: api
+version: 1.0.0
+created: '2025-09-16'
+updated: '2025-09-16'
+author: Journal Team
+tags:
+- api
+- python
+priority: critical
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-16'
+---
+
 # JWT Security Hardening - Future Feature
 
 ## Intent & Purpose
@@ -63,7 +81,7 @@ ID_TOKEN_POLICY       # 1-hour max, requires nonce
    - Future: Use SecretsProvider for key storage
    - Benefit: Consistent secret handling across all auth components
 
-3. **Improve `app/api/v1/auth.py`**:
+3. **Improve `app/api/auth.py`**:
    - Current: Inline token generation
    - Future: Policy-driven token creation and validation
    - Benefit: Different policies for different token types
