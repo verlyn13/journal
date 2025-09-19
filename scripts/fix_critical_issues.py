@@ -9,11 +9,11 @@ import shutil
 from pathlib import Path
 from datetime import datetime
 from collections import defaultdict
-import yaml
+
 
 class CriticalIssuesFixer:
     def __init__(self, docs_dir: Path = None):
-        self.docs_dir = docs_dir or Path('docs')
+        self.docs_dir = docs_dir or Path("docs")
         self.fixes_applied = defaultdict(list)
         self.stats = defaultdict(int)
 
@@ -50,20 +50,22 @@ class CriticalIssuesFixer:
 
         # Patterns that indicate example/placeholder vs real secrets
         safe_patterns = [
-            r'YOUR[_-]?API[_-]?KEY',
-            r'your[_-]?api[_-]?key',
-            r'<[^>]+>',  # Already placeholder
-            r'xxx+',
-            r'PLACEHOLDER',
-            r'EXAMPLE',
-            r'SECRET_KEY',  # Django setting name
-            r'JWT_SECRET',  # Config name
+            r"YOUR[_-]?API[_-]?KEY",
+            r"your[_-]?api[_-]?key",
+            r"<[^>]+>",  # Already placeholder
+            r"xxx+",
+            r"PLACEHOLDER",
+            r"EXAMPLE",
+            r"SECRET_KEY",  # Django setting name
+            r"JWT_SECRET",  # Config name
         ]
 
         files_fixed = 0
 
         for md_file in self.docs_dir.rglob("*.md"):
-            if any(skip in str(md_file) for skip in ['_generated', 'archive', '.backups']):
+            if any(
+                skip in str(md_file) for skip in ["_generated", "archive", ".backups"]
+            ):
                 continue
 
             try:
@@ -73,25 +75,45 @@ class CriticalIssuesFixer:
                 # Replace various secret patterns with safe placeholders
                 replacements = [
                     # API Keys
-                    (r'api[_-]?key\s*[:=]\s*["\']([a-zA-Z0-9]{20,})["\']', r'api_key: "YOUR_API_KEY_HERE"'),
-                    (r'API[_-]?KEY\s*[:=]\s*["\']([a-zA-Z0-9]{20,})["\']', r'API_KEY: "YOUR_API_KEY_HERE"'),
-
+                    (
+                        r'api[_-]?key\s*[:=]\s*["\']([a-zA-Z0-9]{20,})["\']',
+                        r'api_key: "YOUR_API_KEY_HERE"',
+                    ),
+                    (
+                        r'API[_-]?KEY\s*[:=]\s*["\']([a-zA-Z0-9]{20,})["\']',
+                        r'API_KEY: "YOUR_API_KEY_HERE"',
+                    ),
                     # Secrets
-                    (r'secret\s*[:=]\s*["\']([a-zA-Z0-9]{20,})["\']', r'secret: "YOUR_SECRET_HERE"'),
-                    (r'SECRET\s*[:=]\s*["\']([a-zA-Z0-9]{20,})["\']', r'SECRET: "YOUR_SECRET_HERE"'),
-
+                    (
+                        r'secret\s*[:=]\s*["\']([a-zA-Z0-9]{20,})["\']',
+                        r'secret: "YOUR_SECRET_HERE"',
+                    ),
+                    (
+                        r'SECRET\s*[:=]\s*["\']([a-zA-Z0-9]{20,})["\']',
+                        r'SECRET: "YOUR_SECRET_HERE"',
+                    ),
                     # Passwords
-                    (r'password\s*[:=]\s*["\']([^"\']+)["\']', r'password: "YOUR_PASSWORD_HERE"'),
-                    (r'PASSWORD\s*[:=]\s*["\']([^"\']+)["\']', r'PASSWORD: "YOUR_PASSWORD_HERE"'),
-
+                    (
+                        r'password\s*[:=]\s*["\']([^"\']+)["\']',
+                        r'password: "YOUR_PASSWORD_HERE"',
+                    ),
+                    (
+                        r'PASSWORD\s*[:=]\s*["\']([^"\']+)["\']',
+                        r'PASSWORD: "YOUR_PASSWORD_HERE"',
+                    ),
                     # Tokens
-                    (r'token\s*[:=]\s*["\']([a-zA-Z0-9]{20,})["\']', r'token: "YOUR_TOKEN_HERE"'),
-                    (r'TOKEN\s*[:=]\s*["\']([a-zA-Z0-9]{20,})["\']', r'TOKEN: "YOUR_TOKEN_HERE"'),
-
+                    (
+                        r'token\s*[:=]\s*["\']([a-zA-Z0-9]{20,})["\']',
+                        r'token: "YOUR_TOKEN_HERE"',
+                    ),
+                    (
+                        r'TOKEN\s*[:=]\s*["\']([a-zA-Z0-9]{20,})["\']',
+                        r'TOKEN: "YOUR_TOKEN_HERE"',
+                    ),
                     # Database URLs with credentials
-                    (r'postgresql://[^@]+@', r'postgresql://user:password@'),
-                    (r'mysql://[^@]+@', r'mysql://user:password@'),
-                    (r'mongodb://[^@]+@', r'mongodb://user:password@'),
+                    (r"postgresql://[^@]+@", r"postgresql://user:password@"),
+                    (r"mysql://[^@]+@", r"mysql://user:password@"),
+                    (r"mongodb://[^@]+@", r"mongodb://user:password@"),
                 ]
 
                 for pattern, replacement in replacements:
@@ -99,14 +121,21 @@ class CriticalIssuesFixer:
                     matches = re.finditer(pattern, content, re.IGNORECASE)
                     for match in matches:
                         matched_text = match.group(0)
-                        is_safe = any(re.search(safe, matched_text, re.IGNORECASE) for safe in safe_patterns)
+                        is_safe = any(
+                            re.search(safe, matched_text, re.IGNORECASE)
+                            for safe in safe_patterns
+                        )
                         if not is_safe:
-                            content = content.replace(matched_text, re.sub(pattern, replacement, matched_text))
-                            self.stats['secrets_removed'] += 1
+                            content = content.replace(
+                                matched_text, re.sub(pattern, replacement, matched_text)
+                            )
+                            self.stats["secrets_removed"] += 1
 
                 if content != original_content:
                     md_file.write_text(content)
-                    self.fixes_applied['security'].append(str(md_file.relative_to(self.docs_dir)))
+                    self.fixes_applied["security"].append(
+                        str(md_file.relative_to(self.docs_dir))
+                    )
                     files_fixed += 1
 
             except Exception as e:
@@ -121,11 +150,16 @@ class CriticalIssuesFixer:
         files_fixed = 0
 
         for md_file in self.docs_dir.rglob("*.md"):
-            if any(skip in str(md_file) for skip in ['_generated', 'archive', '.backups']):
+            if any(
+                skip in str(md_file) for skip in ["_generated", "archive", ".backups"]
+            ):
                 continue
 
             # Skip files that are clearly development-related
-            if any(dev in str(md_file).lower() for dev in ['development', 'dev-', 'local-', 'setup']):
+            if any(
+                dev in str(md_file).lower()
+                for dev in ["development", "dev-", "local-", "setup"]
+            ):
                 continue
 
             try:
@@ -134,25 +168,27 @@ class CriticalIssuesFixer:
 
                 # Replace localhost with proper placeholders
                 replacements = [
-                    (r'http://localhost:5000', 'https://your-domain.com'),
-                    (r'http://localhost:3000', 'https://your-domain.com'),
-                    (r'http://localhost:8000', 'https://your-domain.com'),
-                    (r'localhost:5000', 'your-domain.com'),
-                    (r'localhost:3000', 'your-domain.com'),
-                    (r'localhost:8000', 'your-domain.com'),
-                    (r'127\.0\.0\.1:5000', 'your-domain.com'),
-                    (r'127\.0\.0\.1:3000', 'your-domain.com'),
-                    (r'127\.0\.0\.1:8000', 'your-domain.com'),
+                    (r"http://localhost:5000", "https://your-domain.com"),
+                    (r"http://localhost:3000", "https://your-domain.com"),
+                    (r"http://localhost:8000", "https://your-domain.com"),
+                    (r"localhost:5000", "your-domain.com"),
+                    (r"localhost:3000", "your-domain.com"),
+                    (r"localhost:8000", "your-domain.com"),
+                    (r"127\.0\.0\.1:5000", "your-domain.com"),
+                    (r"127\.0\.0\.1:3000", "your-domain.com"),
+                    (r"127\.0\.0\.1:8000", "your-domain.com"),
                 ]
 
                 for pattern, replacement in replacements:
                     if re.search(pattern, content):
                         content = re.sub(pattern, replacement, content)
-                        self.stats['localhost_fixed'] += 1
+                        self.stats["localhost_fixed"] += 1
 
                 if content != original_content:
                     md_file.write_text(content)
-                    self.fixes_applied['localhost'].append(str(md_file.relative_to(self.docs_dir)))
+                    self.fixes_applied["localhost"].append(
+                        str(md_file.relative_to(self.docs_dir))
+                    )
                     files_fixed += 1
 
             except Exception as e:
@@ -163,53 +199,57 @@ class CriticalIssuesFixer:
     def consolidate_implementation_docs(self):
         """Consolidate implementation phase documents."""
 
-        impl_dir = self.docs_dir / 'implementation'
+        impl_dir = self.docs_dir / "implementation"
         if not impl_dir.exists():
             return
 
         # Create consolidated implementation guide
-        consolidated_path = impl_dir / 'IMPLEMENTATION_GUIDE.md'
+        consolidated_path = impl_dir / "IMPLEMENTATION_GUIDE.md"
 
         # Gather all phase docs
-        phase_docs = sorted(impl_dir.glob('*-phase-*.md'))
+        phase_docs = sorted(impl_dir.glob("*-phase-*.md"))
 
         if phase_docs:
-            content = ["---",
-                      "id: implementation-guide",
-                      "title: Implementation Guide (Consolidated)",
-                      "type: guide",
-                      f"created: {datetime.now().isoformat()}",
-                      f"updated: {datetime.now().isoformat()}",
-                      "author: documentation-system",
-                      "tags: [implementation, guide, phases]",
-                      "---",
-                      "",
-                      "# Implementation Guide",
-                      "",
-                      "This document consolidates all implementation phase documentation.",
-                      "",
-                      "## Table of Contents",
-                      ""]
+            content = [
+                "---",
+                "id: implementation-guide",
+                "title: Implementation Guide (Consolidated)",
+                "type: guide",
+                f"created: {datetime.now().isoformat()}",
+                f"updated: {datetime.now().isoformat()}",
+                "author: documentation-system",
+                "tags: [implementation, guide, phases]",
+                "---",
+                "",
+                "# Implementation Guide",
+                "",
+                "This document consolidates all implementation phase documentation.",
+                "",
+                "## Table of Contents",
+                "",
+            ]
 
             # Add TOC
             for doc in phase_docs:
-                phase_num = re.search(r'phase-(\w+)', doc.name)
+                phase_num = re.search(r"phase-(\w+)", doc.name)
                 if phase_num:
-                    content.append(f"- [Phase {phase_num.group(1).title()}](#{phase_num.group(1)})")
+                    content.append(
+                        f"- [Phase {phase_num.group(1).title()}](#{phase_num.group(1)})"
+                    )
 
             content.append("")
 
             # Add content from each phase
             for doc in phase_docs:
-                phase_num = re.search(r'phase-(\w+)', doc.name)
+                phase_num = re.search(r"phase-(\w+)", doc.name)
                 if phase_num:
                     content.append(f"## Phase {phase_num.group(1).title()}")
                     content.append("")
 
                     # Get content after frontmatter
                     doc_content = doc.read_text()
-                    if '---' in doc_content:
-                        parts = doc_content.split('---', 2)
+                    if "---" in doc_content:
+                        parts = doc_content.split("---", 2)
                         if len(parts) >= 3:
                             content.append(parts[2].strip())
                     else:
@@ -220,64 +260,68 @@ class CriticalIssuesFixer:
                     content.append("")
 
             # Write consolidated doc
-            consolidated_path.write_text('\n'.join(content))
-            self.stats['impl_consolidated'] = len(phase_docs)
+            consolidated_path.write_text("\n".join(content))
+            self.stats["impl_consolidated"] = len(phase_docs)
 
             # Archive originals
-            archive_dir = self.docs_dir / 'archive' / 'implementation-phases'
+            archive_dir = self.docs_dir / "archive" / "implementation-phases"
             archive_dir.mkdir(parents=True, exist_ok=True)
 
             for doc in phase_docs:
                 shutil.move(str(doc), str(archive_dir / doc.name))
 
             print(f"   ✓ Consolidated {len(phase_docs)} implementation docs")
-            self.fixes_applied['consolidation'].append('implementation/IMPLEMENTATION_GUIDE.md')
+            self.fixes_applied["consolidation"].append(
+                "implementation/IMPLEMENTATION_GUIDE.md"
+            )
 
     def consolidate_status_docs(self):
         """Consolidate status update documents into changelog."""
 
-        status_dir = self.docs_dir / 'status'
+        status_dir = self.docs_dir / "status"
         if not status_dir.exists():
             return
 
         # Create changelog
-        changelog_path = status_dir / 'CHANGELOG.md'
+        changelog_path = status_dir / "CHANGELOG.md"
 
         # Gather all status docs
-        status_docs = sorted(status_dir.glob('*.md'), reverse=True)  # Newest first
+        status_docs = sorted(status_dir.glob("*.md"), reverse=True)  # Newest first
 
         if status_docs:
-            content = ["---",
-                      "id: changelog",
-                      "title: Project Changelog",
-                      "type: documentation",
-                      f"created: {datetime.now().isoformat()}",
-                      f"updated: {datetime.now().isoformat()}",
-                      "author: documentation-system",
-                      "tags: [changelog, status, updates]",
-                      "---",
-                      "",
-                      "# Project Changelog",
-                      "",
-                      "All project status updates and milestones.",
-                      "",
-                      "## Updates",
-                      ""]
+            content = [
+                "---",
+                "id: changelog",
+                "title: Project Changelog",
+                "type: documentation",
+                f"created: {datetime.now().isoformat()}",
+                f"updated: {datetime.now().isoformat()}",
+                "author: documentation-system",
+                "tags: [changelog, status, updates]",
+                "---",
+                "",
+                "# Project Changelog",
+                "",
+                "All project status updates and milestones.",
+                "",
+                "## Updates",
+                "",
+            ]
 
             # Add each status update
             for doc in status_docs:
-                if doc.name == 'CHANGELOG.md':
+                if doc.name == "CHANGELOG.md":
                     continue
 
                 # Extract date from filename
-                date_match = re.search(r'(\d{4}-\d{2}-\d{2})', doc.name)
+                date_match = re.search(r"(\d{4}-\d{2}-\d{2})", doc.name)
                 if date_match:
                     content.append(f"### {date_match.group(1)}")
 
                     # Get content after frontmatter
                     doc_content = doc.read_text()
-                    if '---' in doc_content:
-                        parts = doc_content.split('---', 2)
+                    if "---" in doc_content:
+                        parts = doc_content.split("---", 2)
                         if len(parts) >= 3:
                             content.append(parts[2].strip())
                     else:
@@ -286,44 +330,51 @@ class CriticalIssuesFixer:
                     content.append("")
 
             # Write changelog
-            changelog_path.write_text('\n'.join(content))
-            self.stats['status_consolidated'] = len(status_docs) - 1
+            changelog_path.write_text("\n".join(content))
+            self.stats["status_consolidated"] = len(status_docs) - 1
 
             # Archive originals
-            archive_dir = self.docs_dir / 'archive' / 'status-updates'
+            archive_dir = self.docs_dir / "archive" / "status-updates"
             archive_dir.mkdir(parents=True, exist_ok=True)
 
             for doc in status_docs:
-                if doc.name != 'CHANGELOG.md':
+                if doc.name != "CHANGELOG.md":
                     shutil.move(str(doc), str(archive_dir / doc.name))
 
-            print(f"   ✓ Consolidated {len(status_docs)-1} status docs into changelog")
-            self.fixes_applied['consolidation'].append('status/CHANGELOG.md')
+            print(
+                f"   ✓ Consolidated {len(status_docs) - 1} status docs into changelog"
+            )
+            self.fixes_applied["consolidation"].append("status/CHANGELOG.md")
 
     def create_navigation(self):
         """Create README files for major directories."""
 
         nav_structure = {
-            'guides': {
-                'title': 'Guides',
-                'description': 'How-to guides and tutorials for the Journal project.',
-                'sections': ['Getting Started', 'Development', 'Deployment', 'API Reference']
+            "guides": {
+                "title": "Guides",
+                "description": "How-to guides and tutorials for the Journal project.",
+                "sections": [
+                    "Getting Started",
+                    "Development",
+                    "Deployment",
+                    "API Reference",
+                ],
             },
-            'implementation': {
-                'title': 'Implementation',
-                'description': 'Implementation details and phase documentation.',
-                'sections': ['Overview', 'Architecture', 'Phases']
+            "implementation": {
+                "title": "Implementation",
+                "description": "Implementation details and phase documentation.",
+                "sections": ["Overview", "Architecture", "Phases"],
             },
-            'ci-cd': {
-                'title': 'CI/CD',
-                'description': 'Continuous integration and deployment documentation.',
-                'sections': ['Workflows', 'Checks', 'Deployment']
+            "ci-cd": {
+                "title": "CI/CD",
+                "description": "Continuous integration and deployment documentation.",
+                "sections": ["Workflows", "Checks", "Deployment"],
             },
-            'development': {
-                'title': 'Development',
-                'description': 'Development environment setup and guidelines.',
-                'sections': ['Setup', 'Backend', 'Frontend', 'Testing']
-            }
+            "development": {
+                "title": "Development",
+                "description": "Development environment setup and guidelines.",
+                "sections": ["Setup", "Backend", "Frontend", "Testing"],
+            },
         }
 
         readmes_created = 0
@@ -331,7 +382,7 @@ class CriticalIssuesFixer:
         for dir_name, config in nav_structure.items():
             dir_path = self.docs_dir / dir_name
             if dir_path.exists():
-                readme_path = dir_path / 'README.md'
+                readme_path = dir_path / "README.md"
                 if not readme_path.exists():
                     # Create README
                     content = [
@@ -347,26 +398,26 @@ class CriticalIssuesFixer:
                         "",
                         f"# {config['title']}",
                         "",
-                        config['description'],
+                        config["description"],
                         "",
                         "## Contents",
-                        ""
+                        "",
                     ]
 
                     # List all files in directory
-                    files = sorted(dir_path.glob('*.md'))
+                    files = sorted(dir_path.glob("*.md"))
                     for f in files:
-                        if f.name != 'README.md':
+                        if f.name != "README.md":
                             # Read title from frontmatter if available
                             try:
                                 file_content = f.read_text()
-                                if file_content.startswith('---'):
-                                    lines = file_content.split('\n')
+                                if file_content.startswith("---"):
+                                    lines = file_content.split("\n")
                                     for line in lines[1:]:
-                                        if line.strip() == '---':
+                                        if line.strip() == "---":
                                             break
-                                        if line.startswith('title:'):
-                                            title = line.split(':', 1)[1].strip()
+                                        if line.startswith("title:"):
+                                            title = line.split(":", 1)[1].strip()
                                             content.append(f"- [{title}]({f.name})")
                                             break
                                 else:
@@ -374,12 +425,14 @@ class CriticalIssuesFixer:
                             except:
                                 content.append(f"- [{f.stem}]({f.name})")
 
-                    readme_path.write_text('\n'.join(content))
+                    readme_path.write_text("\n".join(content))
                     readmes_created += 1
-                    self.fixes_applied['navigation'].append(str(readme_path.relative_to(self.docs_dir)))
+                    self.fixes_applied["navigation"].append(
+                        str(readme_path.relative_to(self.docs_dir))
+                    )
 
         print(f"   ✓ Created {readmes_created} README navigation files")
-        self.stats['readmes_created'] = readmes_created
+        self.stats["readmes_created"] = readmes_created
 
     def print_summary(self):
         """Print summary of fixes."""
@@ -402,7 +455,7 @@ class CriticalIssuesFixer:
             print("\nDetailed statistics:")
             for key, value in self.stats.items():
                 if value > 0:
-                    key_formatted = key.replace('_', ' ').title()
+                    key_formatted = key.replace("_", " ").title()
                     print(f"  • {key_formatted}: {value}")
 
         print("\n✅ Critical issues addressed!")

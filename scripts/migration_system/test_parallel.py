@@ -6,20 +6,22 @@ Tests basic functionality and parallel execution.
 
 import sys
 import time
-import json
 from pathlib import Path
-from typing import Dict
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-from scripts.migration_system.task_orchestrator import TaskOrchestrator, Task as TaskDefinition, TaskStatus
-from scripts.migration_system.worker_tasks import WorkerTaskLibrary, TaskResult
+from scripts.migration_system.task_orchestrator import (
+    TaskOrchestrator,
+    Task as TaskDefinition,
+    TaskStatus,
+)
+from scripts.migration_system.worker_tasks import WorkerTaskLibrary
 
 
 def test_worker_tasks():
     """Test individual worker tasks."""
     print("Testing Worker Tasks")
-    print("="*50)
+    print("=" * 50)
 
     project_root = Path(__file__).parent.parent.parent
     library = WorkerTaskLibrary(project_root)
@@ -63,57 +65,52 @@ def test_worker_tasks():
     if result.error:
         print(f"   Error: {result.error}")
 
-    print("\n" + "="*50)
+    print("\n" + "=" * 50)
     print("Worker task tests completed.")
 
 
 def test_parallel_execution():
     """Test parallel task execution."""
     print("\n\nTesting Parallel Execution")
-    print("="*50)
+    print("=" * 50)
 
     project_root = Path(__file__).parent.parent.parent
 
     # Create simple test tasks that can run in parallel
     test_tasks = [
-        TaskDefinition(
-            id="test_backup",
-            type="backup_docs",
-            priority=100,
-            params={}
-        ),
+        TaskDefinition(id="test_backup", type="backup_docs", priority=100, params={}),
         TaskDefinition(
             id="test_analysis",
             type="analyze_structure",
             priority=90,
             dependencies=[],  # Can run in parallel with backup
-            params={}
+            params={},
         ),
         TaskDefinition(
             id="test_scan",
             type="scan_frontmatter",
             priority=90,
             dependencies=[],  # Can run in parallel
-            params={}
+            params={},
         ),
         TaskDefinition(
             id="test_quality",
             type="analyze_quality",
             priority=85,
             dependencies=["test_analysis"],  # Depends on analysis
-            params={}
+            params={},
         ),
         TaskDefinition(
             id="test_freshness",
             type="check_freshness",
             priority=80,
             dependencies=["test_scan"],  # Depends on scan
-            params={}
-        )
+            params={},
+        ),
     ]
 
     # Create orchestrator with 3 workers
-    print(f"\nCreating orchestrator with 3 workers...")
+    print("\nCreating orchestrator with 3 workers...")
     orchestrator = TaskOrchestrator(project_root, num_workers=3)
 
     try:
@@ -129,18 +126,20 @@ def test_parallel_execution():
         print("")
 
         start_time = time.time()
-        last_stats = {'completed': 0}
+        last_stats = {"completed": 0}
 
         while not orchestrator.all_tasks_done():
             stats = orchestrator.get_statistics()
 
             # Print progress update if changed
-            if stats['completed'] != last_stats['completed']:
+            if stats["completed"] != last_stats["completed"]:
                 elapsed = int(time.time() - start_time)
-                print(f"[{elapsed:3d}s] Completed: {stats['completed']}/{stats['total']} | "
-                      f"Running: {stats['running']} | "
-                      f"Pending: {stats['pending']} | "
-                      f"Failed: {stats['failed']}")
+                print(
+                    f"[{elapsed:3d}s] Completed: {stats['completed']}/{stats['total']} | "
+                    f"Running: {stats['running']} | "
+                    f"Pending: {stats['pending']} | "
+                    f"Failed: {stats['failed']}"
+                )
                 last_stats = stats
 
             time.sleep(0.5)
@@ -149,9 +148,9 @@ def test_parallel_execution():
         final_stats = orchestrator.get_statistics()
         elapsed_total = time.time() - start_time
 
-        print("\n" + "="*50)
+        print("\n" + "=" * 50)
         print("Execution Summary")
-        print("="*50)
+        print("=" * 50)
         print(f"Total tasks:     {final_stats['total']}")
         print(f"Completed:       {final_stats['completed']} ✅")
         print(f"Failed:          {final_stats['failed']} ❌")
@@ -159,7 +158,7 @@ def test_parallel_execution():
         print(f"Parallel speedup: ~{3:.1f}x (with 3 workers)")
 
         # Check results
-        if final_stats['failed'] > 0:
+        if final_stats["failed"] > 0:
             print("\n⚠️  Some tasks failed. Checking errors...")
             # Would check error details here
         else:
@@ -173,7 +172,7 @@ def test_parallel_execution():
 def test_dependency_resolution():
     """Test dependency graph resolution."""
     print("\n\nTesting Dependency Resolution")
-    print("="*50)
+    print("=" * 50)
 
     from scripts.migration_system.task_orchestrator import DependencyResolver
 
@@ -182,7 +181,9 @@ def test_dependency_resolution():
         TaskDefinition(id="A", type="test", priority=50, dependencies=[], params={}),
         TaskDefinition(id="B", type="test", priority=50, dependencies=["A"], params={}),
         TaskDefinition(id="C", type="test", priority=50, dependencies=["A"], params={}),
-        TaskDefinition(id="D", type="test", priority=50, dependencies=["B", "C"], params={}),
+        TaskDefinition(
+            id="D", type="test", priority=50, dependencies=["B", "C"], params={}
+        ),
         TaskDefinition(id="E", type="test", priority=50, dependencies=["D"], params={}),
     ]
 
@@ -214,7 +215,7 @@ def test_dependency_resolution():
 def test_state_persistence():
     """Test state persistence and recovery."""
     print("\n\nTesting State Persistence")
-    print("="*50)
+    print("=" * 50)
 
     from scripts.migration_system.task_orchestrator import StateStore
 
@@ -230,20 +231,12 @@ def test_state_persistence():
     # Save some test state
     print("\nSaving test state...")
     test_task = TaskDefinition(
-        id="test_task",
-        type="backup_docs",
-        priority=100,
-        params={"test": True}
+        id="test_task", type="backup_docs", priority=100, params={"test": True}
     )
 
     test_task.status = TaskStatus.COMPLETED
     store.save_task(test_task)
-    store.update_statistics({
-        "total": 5,
-        "completed": 3,
-        "failed": 1,
-        "pending": 1
-    })
+    store.update_statistics({"total": 5, "completed": 3, "failed": 1, "pending": 1})
 
     # Retrieve state
     print("Retrieving state...")
@@ -261,9 +254,9 @@ def test_state_persistence():
 
 def main():
     """Run all tests."""
-    print("="*60)
+    print("=" * 60)
     print("Parallel Documentation Migration System Tests")
-    print("="*60)
+    print("=" * 60)
 
     try:
         # Test individual components
@@ -274,13 +267,14 @@ def main():
         # Test parallel execution
         test_parallel_execution()
 
-        print("\n" + "="*60)
+        print("\n" + "=" * 60)
         print("✅ All tests completed successfully!")
-        print("="*60)
+        print("=" * 60)
 
     except Exception as e:
         print(f"\n❌ Test failed with error: {e}")
         import traceback
+
         traceback.print_exc()
         sys.exit(1)
 

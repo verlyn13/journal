@@ -4,17 +4,17 @@ Comprehensive Critical Evaluation of Documentation System
 """
 
 import yaml
-import json
 import re
 from pathlib import Path
 from collections import defaultdict, Counter
 from datetime import datetime
 import statistics
 
+
 class DocumentationEvaluator:
     def __init__(self, docs_dir: Path = None):
-        self.docs_dir = docs_dir or Path('docs')
-        self.skip_dirs = ['archive', '.backups', '_generated']
+        self.docs_dir = docs_dir or Path("docs")
+        self.skip_dirs = ["archive", ".backups", "_generated"]
 
     def evaluate(self):
         """Run comprehensive evaluation."""
@@ -65,12 +65,15 @@ class DocumentationEvaluator:
             depth_counts[len(rel_path.parts) - 1] += 1
 
         return {
-            'total_files': len(all_files),
-            'directories': len(dir_counts),
-            'top_dirs': dict(dir_counts.most_common(5)),
-            'depth_distribution': dict(depth_counts),
-            'max_depth': max(depth_counts.keys()) if depth_counts else 0,
-            'avg_depth': sum(k*v for k,v in depth_counts.items()) / sum(depth_counts.values()) if depth_counts else 0
+            "total_files": len(all_files),
+            "directories": len(dir_counts),
+            "top_dirs": dict(dir_counts.most_common(5)),
+            "depth_distribution": dict(depth_counts),
+            "max_depth": max(depth_counts.keys()) if depth_counts else 0,
+            "avg_depth": sum(k * v for k, v in depth_counts.items())
+            / sum(depth_counts.values())
+            if depth_counts
+            else 0,
         }
 
     def analyze_content_quality(self):
@@ -85,8 +88,8 @@ class DocumentationEvaluator:
         for f in all_files:
             content = f.read_text()
             # Remove frontmatter for size calculation
-            if content.startswith('---'):
-                parts = content.split('---', 2)
+            if content.startswith("---"):
+                parts = content.split("---", 2)
                 if len(parts) >= 3:
                     content = parts[2]
 
@@ -101,12 +104,12 @@ class DocumentationEvaluator:
                 large_count += 1
 
         return {
-            'avg_size': statistics.mean(sizes) if sizes else 0,
-            'median_size': statistics.median(sizes) if sizes else 0,
-            'empty_docs': empty_count,
-            'stub_docs': stub_count,
-            'large_docs': large_count,
-            'size_variance': statistics.stdev(sizes) if len(sizes) > 1 else 0
+            "avg_size": statistics.mean(sizes) if sizes else 0,
+            "median_size": statistics.median(sizes) if sizes else 0,
+            "empty_docs": empty_count,
+            "stub_docs": stub_count,
+            "large_docs": large_count,
+            "size_variance": statistics.stdev(sizes) if len(sizes) > 1 else 0,
         }
 
     def analyze_metadata(self):
@@ -119,35 +122,37 @@ class DocumentationEvaluator:
         missing_fields = defaultdict(int)
         update_freshness = []
 
-        required = ['id', 'title', 'type', 'created', 'updated', 'author']
+        required = ["id", "title", "type", "created", "updated", "author"]
 
         for f in all_files:
             try:
                 content = f.read_text()
-                if content.startswith('---'):
+                if content.startswith("---"):
                     has_fm += 1
-                    lines = content.split('\n')
+                    lines = content.split("\n")
                     end = None
                     for i, line in enumerate(lines[1:], 1):
-                        if line.strip() == '---':
+                        if line.strip() == "---":
                             end = i
                             break
 
                     if end:
-                        fm_text = '\n'.join(lines[1:end])
+                        fm_text = "\n".join(lines[1:end])
                         fm = yaml.safe_load(fm_text)
 
-                        types[fm.get('type', 'unknown')] += 1
-                        authors[fm.get('author', 'unknown')] += 1
+                        types[fm.get("type", "unknown")] += 1
+                        authors[fm.get("author", "unknown")] += 1
 
                         for field in required:
                             if field not in fm:
                                 missing_fields[field] += 1
 
                         # Check update freshness
-                        if 'updated' in fm:
+                        if "updated" in fm:
                             try:
-                                updated = datetime.fromisoformat(fm['updated'].replace('Z', '+00:00'))
+                                updated = datetime.fromisoformat(
+                                    fm["updated"].replace("Z", "+00:00")
+                                )
                                 days_old = (datetime.now() - updated).days
                                 update_freshness.append(days_old)
                             except:
@@ -156,12 +161,14 @@ class DocumentationEvaluator:
                 pass
 
         return {
-            'frontmatter_coverage': f"{has_fm}/{len(all_files)}",
-            'doc_types': dict(types.most_common()),
-            'top_authors': dict(authors.most_common(3)),
-            'missing_required': dict(missing_fields),
-            'avg_days_since_update': statistics.mean(update_freshness) if update_freshness else None,
-            'stale_docs_90d': sum(1 for d in update_freshness if d > 90)
+            "frontmatter_coverage": f"{has_fm}/{len(all_files)}",
+            "doc_types": dict(types.most_common()),
+            "top_authors": dict(authors.most_common(3)),
+            "missing_required": dict(missing_fields),
+            "avg_days_since_update": statistics.mean(update_freshness)
+            if update_freshness
+            else None,
+            "stale_docs_90d": sum(1 for d in update_freshness if d > 90),
         }
 
     def analyze_navigation(self):
@@ -177,13 +184,13 @@ class DocumentationEvaluator:
         for f in all_files:
             content = f.read_text()
 
-            if f.name.lower() == 'readme.md':
+            if f.name.lower() == "readme.md":
                 readmes += 1
-            if 'index' in f.name.lower():
+            if "index" in f.name.lower():
                 indexes += 1
 
             # Count outgoing links
-            links = re.findall(r'\[([^\]]+)\]\(([^)]+)\)', content)
+            links = re.findall(r"\[([^\]]+)\]\(([^)]+)\)", content)
             link_count[str(f.relative_to(self.docs_dir))] = len(links)
 
             # Check if file is linked from anywhere
@@ -199,12 +206,14 @@ class DocumentationEvaluator:
                 orphans.append(str(f.relative_to(self.docs_dir)))
 
         return {
-            'readme_files': readmes,
-            'index_files': indexes,
-            'orphan_docs': len(orphans),
-            'orphan_examples': orphans[:5],
-            'avg_links_per_doc': statistics.mean(link_count.values()) if link_count else 0,
-            'docs_with_no_links': sum(1 for v in link_count.values() if v == 0)
+            "readme_files": readmes,
+            "index_files": indexes,
+            "orphan_docs": len(orphans),
+            "orphan_examples": orphans[:5],
+            "avg_links_per_doc": statistics.mean(link_count.values())
+            if link_count
+            else 0,
+            "docs_with_no_links": sum(1 for v in link_count.values() if v == 0),
         }
 
     def analyze_maintenance(self):
@@ -218,15 +227,15 @@ class DocumentationEvaluator:
 
         for f in all_files:
             # Check for similar names
-            base = f.stem.lower().replace('-', '_').replace(' ', '_')
+            base = f.stem.lower().replace("-", "_").replace(" ", "_")
             similar_names[base].append(str(f.relative_to(self.docs_dir)))
 
             # Check content
             content = f.read_text()
 
             # Count TODOs/FIXMEs
-            todo_count += len(re.findall(r'\bTODO\b', content, re.IGNORECASE))
-            fixme_count += len(re.findall(r'\bFIXME\b', content, re.IGNORECASE))
+            todo_count += len(re.findall(r"\bTODO\b", content, re.IGNORECASE))
+            fixme_count += len(re.findall(r"\bFIXME\b", content, re.IGNORECASE))
 
         # Find actual duplicates
         for base, files in similar_names.items():
@@ -234,21 +243,16 @@ class DocumentationEvaluator:
                 duplicates[base] = files
 
         return {
-            'potential_duplicates': len(duplicates),
-            'duplicate_examples': dict(list(duplicates.items())[:3]),
-            'todo_markers': todo_count,
-            'fixme_markers': fixme_count,
-            'total_maintenance_debt': todo_count + fixme_count + len(duplicates) * 5
+            "potential_duplicates": len(duplicates),
+            "duplicate_examples": dict(list(duplicates.items())[:3]),
+            "todo_markers": todo_count,
+            "fixme_markers": fixme_count,
+            "total_maintenance_debt": todo_count + fixme_count + len(duplicates) * 5,
         }
 
     def identify_critical_issues(self):
         """Identify critical issues needing immediate attention."""
-        issues = {
-            'critical': [],
-            'high': [],
-            'medium': [],
-            'low': []
-        }
+        issues = {"critical": [], "high": [], "medium": [], "low": []}
 
         all_files = list(self.get_md_files())
 
@@ -257,21 +261,31 @@ class DocumentationEvaluator:
             content = f.read_text()
 
             # Look for potential secrets
-            if re.search(r'(api[_-]?key|secret|password|token)\s*[:=]\s*["\'][^"\']+["\']', content, re.IGNORECASE):
-                issues['critical'].append(f"Potential secret in {f.relative_to(self.docs_dir)}")
+            if re.search(
+                r'(api[_-]?key|secret|password|token)\s*[:=]\s*["\'][^"\']+["\']',
+                content,
+                re.IGNORECASE,
+            ):
+                issues["critical"].append(
+                    f"Potential secret in {f.relative_to(self.docs_dir)}"
+                )
 
             # Check for localhost references in non-dev docs
-            if 'localhost' in content and 'development' not in str(f).lower():
-                issues['medium'].append(f"Localhost reference in {f.relative_to(self.docs_dir)}")
+            if "localhost" in content and "development" not in str(f).lower():
+                issues["medium"].append(
+                    f"Localhost reference in {f.relative_to(self.docs_dir)}"
+                )
 
             # Empty docs
             if len(content.strip()) < 50:
-                issues['low'].append(f"Empty/stub doc: {f.relative_to(self.docs_dir)}")
+                issues["low"].append(f"Empty/stub doc: {f.relative_to(self.docs_dir)}")
 
         # Structure issues
-        depth_4_plus = sum(1 for f in all_files if len(f.relative_to(self.docs_dir).parts) > 4)
+        depth_4_plus = sum(
+            1 for f in all_files if len(f.relative_to(self.docs_dir).parts) > 4
+        )
         if depth_4_plus > 10:
-            issues['high'].append(f"{depth_4_plus} files nested >4 levels deep")
+            issues["high"].append(f"{depth_4_plus} files nested >4 levels deep")
 
         return issues
 
@@ -347,6 +361,7 @@ NEXT STEPS:
 3. Create navigation index pages
 4. Update stale content (>90 days)
 """)
+
 
 if __name__ == "__main__":
     evaluator = DocumentationEvaluator()

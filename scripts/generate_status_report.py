@@ -18,7 +18,6 @@ from __future__ import annotations
 import json
 import re
 import subprocess
-from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, List, Tuple
 
@@ -39,7 +38,10 @@ def quick_health() -> Dict[str, Any]:
     stats: Dict[str, Any] = {}
     for line in out.splitlines():
         line = line.strip()
-        if line.startswith("• Total documentation files:") or "Total documentation files:" in line:
+        if (
+            line.startswith("• Total documentation files:")
+            or "Total documentation files:" in line
+        ):
             stats["total_docs"] = int(line.split(":")[-1].strip())
         elif "Files with frontmatter:" in line:
             part = line.split(":", 1)[1].strip()
@@ -57,7 +59,9 @@ def quick_health() -> Dict[str, Any]:
 
 
 def validator() -> Dict[str, Any]:
-    code, out, err = run(["python3", "scripts/validate_documentation.py", "--json", "--quiet"])
+    code, out, err = run(
+        ["python3", "scripts/validate_documentation.py", "--json", "--quiet"]
+    )
     # Even if exit code is non-zero (validation failed), we still parse stdout JSON
     if out.strip():
         try:
@@ -65,6 +69,7 @@ def validator() -> Dict[str, Any]:
         except Exception as e:
             raise RuntimeError(f"Validator output not JSON: {e}\n{out}")
     raise RuntimeError(f"Validator produced no output: {err}")
+
 
 def tool_scan() -> Dict[str, Any]:
     """Run heuristic tool reference scan and return summary."""
@@ -167,38 +172,44 @@ def write_reports(payload: Dict[str, Any]) -> None:
     qh = payload.get("quick_health", {})
     md.append("## Summary")
     md.append("")
-    md.append(f"- Health (quick): {qh.get('score','N/A')}/100")
-    md.append(f"- Frontmatter: {qh.get('frontmatter_count','N/A')} ({qh.get('frontmatter_percent','N/A')}%)")
+    md.append(f"- Health (quick): {qh.get('score', 'N/A')}/100")
+    md.append(
+        f"- Frontmatter: {qh.get('frontmatter_count', 'N/A')} ({qh.get('frontmatter_percent', 'N/A')}%)"
+    )
     v = payload.get("validator", {})
     vs = v.get("stats", {})
-    md.append(f"- Validator total files: {vs.get('total_files','N/A')}")
-    md.append(f"- Broken links: {vs.get('broken_links','N/A')}")
-    md.append(f"- Tool issues: {vs.get('incorrect_tools','N/A')}")
-    md.append(f"- Quality issues: {vs.get('quality_issues','N/A')}")
-    md.append(f"- Outdated content: {vs.get('outdated_content','N/A')}")
-    md.append(f"- Heuristic tool scan (context mentions): {payload['tool_scan']['count']}")
+    md.append(f"- Validator total files: {vs.get('total_files', 'N/A')}")
+    md.append(f"- Broken links: {vs.get('broken_links', 'N/A')}")
+    md.append(f"- Tool issues: {vs.get('incorrect_tools', 'N/A')}")
+    md.append(f"- Quality issues: {vs.get('quality_issues', 'N/A')}")
+    md.append(f"- Outdated content: {vs.get('outdated_content', 'N/A')}")
+    md.append(
+        f"- Heuristic tool scan (context mentions): {payload['tool_scan']['count']}"
+    )
     md.append("")
     md.append("## Orphans")
     md.append("")
     md.append(f"- Count: {payload['orphans']['count']}")
-    if payload['orphans']['count']:
+    if payload["orphans"]["count"]:
         md.append("- Examples:")
-        for f in payload['orphans']['files'][:15]:
+        for f in payload["orphans"]["files"][:15]:
             md.append(f"  - `{f}`")
     md.append("")
     md.append("## Large Documents")
     md.append("")
-    md.append(f"- Count: {payload['large_docs']['count']} (> {payload['large_docs']['threshold']} bytes)")
-    if payload['large_docs']['count']:
+    md.append(
+        f"- Count: {payload['large_docs']['count']} (> {payload['large_docs']['threshold']} bytes)"
+    )
+    if payload["large_docs"]["count"]:
         md.append("- Top examples:")
-        for size, f in payload['large_docs']['files'][:10]:
+        for size, f in payload["large_docs"]["files"][:10]:
             md.append(f"  - {size} bytes — `{f}`")
 
     md.append("")
     md.append("## Tool Reference Scan (Heuristic)")
     md.append("")
-    md.append(f"- Offending lines (sample):")
-    for ex in payload['tool_scan']['examples']:
+    md.append("- Offending lines (sample):")
+    for ex in payload["tool_scan"]["examples"]:
         md.append(f"  - {ex}")
 
     MD_REPORT.write_text("\n".join(md))

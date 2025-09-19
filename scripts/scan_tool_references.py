@@ -19,7 +19,7 @@ DOCS = Path("docs")
 
 def should_skip(p: Path) -> bool:
     s = str(p)
-    
+
     if any(tok in s for tok in ["/archive/", "/_generated/", "/.backups/"]):
         return True
     if s.endswith("/INDEX.md"):
@@ -36,26 +36,29 @@ def main() -> int:
             continue
         try:
             for lineno, line in enumerate(md.read_text().splitlines(), 1):
-                l = line.lower()
+                line_lower = line.lower()
                 # pip install without uv prefix
-                if re.search(r"(?<!uv )\bpip install\b", l):
+                if re.search(r"(?<!uv )\bpip install\b", line_lower):
                     offenders.append((md, lineno, line.strip(), "pip install"))
                     continue
                 # npm usage (ignore CDN and selection notes)
-                if "cdn.jsdelivr.net/npm" in l or "choose one of npm" in l:
+                if (
+                    "cdn.jsdelivr.net/npm" in line_lower
+                    or "choose one of npm" in line_lower
+                ):
                     pass
-                elif re.search(r"\bnpm\b", l):
+                elif re.search(r"\bnpm\b", line_lower):
                     offenders.append((md, lineno, line.strip(), "npm"))
                     continue
                 # yarn usage
-                if re.search(r"\byarn\b", l):
+                if re.search(r"\byarn\b", line_lower):
                     offenders.append((md, lineno, line.strip(), "yarn"))
                     continue
                 # prettier/eslint without biome on same line
-                if "prettier" in l and "biome" not in l:
+                if "prettier" in line_lower and "biome" not in line_lower:
                     offenders.append((md, lineno, line.strip(), "prettier"))
                     continue
-                if re.search(r"\beslint\b", l) and "biome" not in l:
+                if re.search(r"\beslint\b", line_lower) and "biome" not in line_lower:
                     offenders.append((md, lineno, line.strip(), "eslint"))
                     continue
         except Exception:
@@ -65,10 +68,9 @@ def main() -> int:
     for md, lineno, snippet, kind in offenders[:100]:
         print(f"{md}:{lineno}: [{kind}] {snippet}")
     if len(offenders) > 100:
-        print(f"... and {len(offenders)-100} more")
+        print(f"... and {len(offenders) - 100} more")
     return 0
 
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

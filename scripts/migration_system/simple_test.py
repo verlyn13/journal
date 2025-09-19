@@ -33,7 +33,7 @@ def main():
     result = library.task_analyze_structure("test_analysis")
 
     if result.success:
-        print(f"✅ SUCCESS: Analysis completed")
+        print("✅ SUCCESS: Analysis completed")
         print(f"   Total files: {result.metrics.get('total_files')}")
         print(f"   Directories: {result.metrics.get('directories')}")
     else:

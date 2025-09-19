@@ -19,7 +19,7 @@ import os
 import re
 import sys
 from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional
 import json
 import hashlib
 import random
@@ -37,6 +37,7 @@ fake = Faker()
 Faker.seed(12345)
 random.seed(12345)
 
+
 class DatabaseAnonymizer:
     def __init__(self, database_url: str, dry_run: bool = True):
         self.database_url = database_url
@@ -53,12 +54,14 @@ class DatabaseAnonymizer:
 
     def log_change(self, table: str, operation: str, count: int):
         """Log anonymization changes"""
-        self.changes_made.append({
-            'table': table,
-            'operation': operation,
-            'rows_affected': count,
-            'timestamp': datetime.now().isoformat()
-        })
+        self.changes_made.append(
+            {
+                "table": table,
+                "operation": operation,
+                "rows_affected": count,
+                "timestamp": datetime.now().isoformat(),
+            }
+        )
 
     def deterministic_hash(self, value: str, prefix: str = "") -> str:
         """Generate deterministic hash for consistent anonymization"""
@@ -67,17 +70,17 @@ class DatabaseAnonymizer:
 
     def anonymize_email(self, email: str) -> str:
         """Anonymize email while preserving format"""
-        if not email or '@' not in email:
-            return 'user@example.com'
+        if not email or "@" not in email:
+            return "user@example.com"
 
         # Extract domain for potential business logic preservation
-        local, domain = email.split('@', 1)
+        local, domain = email.split("@", 1)
 
         # Use deterministic approach for consistent results
         hash_suffix = self.deterministic_hash(email, "email")
 
         # Preserve some domain patterns for testing
-        if domain in ['localhost', 'example.com', 'test.com']:
+        if domain in ["localhost", "example.com", "test.com"]:
             return f"user{hash_suffix}@{domain}"
         else:
             return f"user{hash_suffix}@example.com"
@@ -115,7 +118,7 @@ class DatabaseAnonymizer:
         word_count = min(len(content.split()), max_words)
         word_count = max(1, word_count)  # At least 1 word
 
-        return fake.text(max_nb_chars=len(content))[:len(content)]
+        return fake.text(max_nb_chars=len(content))[: len(content)]
 
     def anonymize_json_metadata(self, metadata: str) -> str:
         """Anonymize JSON metadata while preserving structure"""
@@ -131,13 +134,13 @@ class DatabaseAnonymizer:
         if isinstance(obj, dict):
             result = {}
             for key, value in obj.items():
-                if key.lower() in ['email', 'user_email', 'contact_email']:
+                if key.lower() in ["email", "user_email", "contact_email"]:
                     result[key] = self.anonymize_email(str(value))
-                elif key.lower() in ['name', 'username', 'display_name', 'full_name']:
+                elif key.lower() in ["name", "username", "display_name", "full_name"]:
                     result[key] = self.anonymize_name(str(value))
-                elif key.lower() in ['ip', 'ip_address', 'client_ip']:
+                elif key.lower() in ["ip", "ip_address", "client_ip"]:
                     result[key] = self.anonymize_ip(str(value))
-                elif key.lower() in ['phone', 'phone_number', 'mobile']:
+                elif key.lower() in ["phone", "phone_number", "mobile"]:
                     result[key] = self.anonymize_phone(str(value))
                 else:
                     result[key] = self._anonymize_json_recursive(value)
@@ -147,7 +150,9 @@ class DatabaseAnonymizer:
         else:
             return obj
 
-    def shift_date(self, date_value: datetime, base_date: Optional[datetime] = None) -> datetime:
+    def shift_date(
+        self, date_value: datetime, base_date: Optional[datetime] = None
+    ) -> datetime:
         """Shift dates to recent timeframe while preserving relative relationships"""
         if not base_date:
             base_date = datetime.now() - timedelta(days=30)
@@ -176,7 +181,9 @@ class DatabaseAnonymizer:
         with self.connect() as conn:
             with conn.cursor() as cur:
                 # Get all users
-                cur.execute("SELECT id, email, name, phone, metadata, created_at FROM users")
+                cur.execute(
+                    "SELECT id, email, name, phone, metadata, created_at FROM users"
+                )
                 users = cur.fetchall()
 
                 count = 0
@@ -188,20 +195,29 @@ class DatabaseAnonymizer:
                     anon_name = self.anonymize_name(name)
                     anon_phone = self.anonymize_phone(phone) if phone else None
                     anon_metadata = self.anonymize_json_metadata(metadata)
-                    shifted_updated_at = self.shift_date(created_at) + timedelta(hours=1)
+                    shifted_updated_at = self.shift_date(created_at) + timedelta(
+                        hours=1
+                    )
 
                     if self.dry_run:
                         print(f"  {email} → {anon_email}")
                         print(f"  {name} → {anon_name}")
                     else:
-                        cur.execute(query, (
-                            anon_email, anon_name, anon_phone,
-                            anon_metadata, shifted_updated_at, user_id
-                        ))
+                        cur.execute(
+                            query,
+                            (
+                                anon_email,
+                                anon_name,
+                                anon_phone,
+                                anon_metadata,
+                                shifted_updated_at,
+                                user_id,
+                            ),
+                        )
 
                     count += 1
 
-                self.log_change('users', 'anonymize_pii', count)
+                self.log_change("users", "anonymize_pii", count)
                 return count
 
     def anonymize_journal_entries(self) -> int:
@@ -218,7 +234,9 @@ class DatabaseAnonymizer:
 
         with self.connect() as conn:
             with conn.cursor() as cur:
-                cur.execute("SELECT id, title, content, tags, metadata, created_at FROM journal_entries")
+                cur.execute(
+                    "SELECT id, title, content, tags, metadata, created_at FROM journal_entries"
+                )
                 entries = cur.fetchall()
 
                 count = 0
@@ -226,23 +244,32 @@ class DatabaseAnonymizer:
                     entry_id, title, content, tags, metadata, created_at = entry
 
                     # Generate anonymized content
-                    anon_title = fake.sentence(nb_words=4).rstrip('.')
+                    anon_title = fake.sentence(nb_words=4).rstrip(".")
                     anon_content = self.anonymize_text_content(content, max_words=200)
                     anon_tags = [fake.word() for _ in range(3)] if tags else []
                     anon_metadata = self.anonymize_json_metadata(metadata)
-                    shifted_updated_at = self.shift_date(created_at) + timedelta(minutes=30)
+                    shifted_updated_at = self.shift_date(created_at) + timedelta(
+                        minutes=30
+                    )
 
                     if self.dry_run:
                         print(f"  Entry {entry_id}: {title[:50]}... → {anon_title}")
                     else:
-                        cur.execute(query, (
-                            anon_title, anon_content, anon_tags,
-                            anon_metadata, shifted_updated_at, entry_id
-                        ))
+                        cur.execute(
+                            query,
+                            (
+                                anon_title,
+                                anon_content,
+                                anon_tags,
+                                anon_metadata,
+                                shifted_updated_at,
+                                entry_id,
+                            ),
+                        )
 
                     count += 1
 
-                self.log_change('journal_entries', 'anonymize_content', count)
+                self.log_change("journal_entries", "anonymize_content", count)
                 return count
 
     def anonymize_auth_sessions(self) -> int:
@@ -257,7 +284,9 @@ class DatabaseAnonymizer:
 
         with self.connect() as conn:
             with conn.cursor() as cur:
-                cur.execute("SELECT id, ip_address, user_agent, metadata FROM auth_sessions")
+                cur.execute(
+                    "SELECT id, ip_address, user_agent, metadata FROM auth_sessions"
+                )
                 sessions = cur.fetchall()
 
                 count = 0
@@ -271,11 +300,13 @@ class DatabaseAnonymizer:
                     if self.dry_run:
                         print(f"  Session {session_id}: {ip_address} → {anon_ip}")
                     else:
-                        cur.execute(query, (anon_ip, anon_user_agent, anon_metadata, session_id))
+                        cur.execute(
+                            query, (anon_ip, anon_user_agent, anon_metadata, session_id)
+                        )
 
                     count += 1
 
-                self.log_change('auth_sessions', 'anonymize_tracking', count)
+                self.log_change("auth_sessions", "anonymize_tracking", count)
                 return count
 
     def validate_anonymization(self) -> List[Dict]:
@@ -284,10 +315,10 @@ class DatabaseAnonymizer:
 
         # Patterns that should not exist in anonymized data
         pii_patterns = {
-            'email': r'\b[A-Za-z0-9._%+-]+@(?!example\.com|test\.com|localhost)[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b',
-            'phone': r'\b\d{3}-\d{3}-\d{4}\b|\b\(\d{3}\)\s*\d{3}-\d{4}\b',
-            'ssn': r'\b\d{3}-\d{2}-\d{4}\b',
-            'credit_card': r'\b\d{4}[\s-]?\d{4}[\s-]?\d{4}[\s-]?\d{4}\b',
+            "email": r"\b[A-Za-z0-9._%+-]+@(?!example\.com|test\.com|localhost)[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b",
+            "phone": r"\b\d{3}-\d{3}-\d{4}\b|\b\(\d{3}\)\s*\d{3}-\d{4}\b",
+            "ssn": r"\b\d{3}-\d{2}-\d{4}\b",
+            "credit_card": r"\b\d{4}[\s-]?\d{4}[\s-]?\d{4}[\s-]?\d{4}\b",
         }
 
         with self.connect() as conn:
@@ -298,49 +329,59 @@ class DatabaseAnonymizer:
 
                 for user in users:
                     user_id, email, name, phone = user
-                    for field_name, value in [('email', email), ('name', name), ('phone', phone)]:
+                    for field_name, value in [
+                        ("email", email),
+                        ("name", name),
+                        ("phone", phone),
+                    ]:
                         if value:
                             for pattern_name, pattern in pii_patterns.items():
                                 if re.search(pattern, str(value)):
-                                    issues.append({
-                                        'table': 'users',
-                                        'column': field_name,
-                                        'row_id': user_id,
-                                        'pattern': pattern_name,
-                                        'value': str(value)[:50]
-                                    })
+                                    issues.append(
+                                        {
+                                            "table": "users",
+                                            "column": field_name,
+                                            "row_id": user_id,
+                                            "pattern": pattern_name,
+                                            "value": str(value)[:50],
+                                        }
+                                    )
 
         return issues
 
     def run_anonymization(self) -> Dict:
         """Run complete anonymization process"""
-        print(f"🔄 {'DRY RUN: ' if self.dry_run else ''}Starting database anonymization...")
+        print(
+            f"🔄 {'DRY RUN: ' if self.dry_run else ''}Starting database anonymization..."
+        )
 
         results = {}
 
         try:
             # Anonymize users
             print("\n📧 Anonymizing user data...")
-            results['users'] = self.anonymize_users_table()
+            results["users"] = self.anonymize_users_table()
 
             # Anonymize journal entries
             print("\n📝 Anonymizing journal entries...")
-            results['journal_entries'] = self.anonymize_journal_entries()
+            results["journal_entries"] = self.anonymize_journal_entries()
 
             # Anonymize sessions
             print("\n🔐 Anonymizing auth sessions...")
-            results['auth_sessions'] = self.anonymize_auth_sessions()
+            results["auth_sessions"] = self.anonymize_auth_sessions()
 
             # Validate results
             if not self.dry_run:
                 print("\n✅ Validating anonymization...")
                 validation_issues = self.validate_anonymization()
-                results['validation_issues'] = validation_issues
+                results["validation_issues"] = validation_issues
 
                 if validation_issues:
                     print(f"⚠️  Found {len(validation_issues)} potential PII issues")
                     for issue in validation_issues[:5]:  # Show first 5
-                        print(f"   - {issue['table']}.{issue['column']}: {issue['pattern']}")
+                        print(
+                            f"   - {issue['table']}.{issue['column']}: {issue['pattern']}"
+                        )
                 else:
                     print("✅ No PII patterns detected")
 
@@ -348,20 +389,21 @@ class DatabaseAnonymizer:
 
         except Exception as e:
             print(f"❌ Anonymization failed: {e}")
-            return {'error': str(e)}
+            return {"error": str(e)}
 
     def generate_report(self, results: Dict):
         """Generate anonymization report"""
-        print("\n" + "="*50)
+        print("\n" + "=" * 50)
         print("ANONYMIZATION REPORT")
-        print("="*50)
+        print("=" * 50)
 
-        if 'error' in results:
+        if "error" in results:
             print(f"❌ Failed: {results['error']}")
             return
 
-        total_rows = sum(count for key, count in results.items()
-                        if isinstance(count, int))
+        total_rows = sum(
+            count for key, count in results.items() if isinstance(count, int)
+        )
 
         print(f"Mode: {'DRY RUN' if self.dry_run else 'EXECUTION'}")
         print(f"Total rows affected: {total_rows}")
@@ -372,8 +414,8 @@ class DatabaseAnonymizer:
             if isinstance(count, int):
                 print(f"  - {table}: {count} rows")
 
-        if 'validation_issues' in results:
-            issues = results['validation_issues']
+        if "validation_issues" in results:
+            issues = results["validation_issues"]
             if issues:
                 print(f"\n⚠️  Validation issues: {len(issues)}")
             else:
@@ -384,21 +426,33 @@ class DatabaseAnonymizer:
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Anonymize database for preview environments")
-    parser.add_argument('--dry-run', action='store_true', default=True,
-                       help='Preview changes without applying them')
-    parser.add_argument('--execute', action='store_true',
-                       help='Actually apply anonymization changes')
-    parser.add_argument('--validate', action='store_true',
-                       help='Only run PII validation checks')
-    parser.add_argument('--database-url',
-                       default=os.getenv('DATABASE_URL'),
-                       help='Database connection URL')
+    parser = argparse.ArgumentParser(
+        description="Anonymize database for preview environments"
+    )
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        default=True,
+        help="Preview changes without applying them",
+    )
+    parser.add_argument(
+        "--execute", action="store_true", help="Actually apply anonymization changes"
+    )
+    parser.add_argument(
+        "--validate", action="store_true", help="Only run PII validation checks"
+    )
+    parser.add_argument(
+        "--database-url",
+        default=os.getenv("DATABASE_URL"),
+        help="Database connection URL",
+    )
 
     args = parser.parse_args()
 
     if not args.database_url:
-        print("❌ Database URL required. Set DATABASE_URL env var or use --database-url")
+        print(
+            "❌ Database URL required. Set DATABASE_URL env var or use --database-url"
+        )
         sys.exit(1)
 
     # Determine mode
@@ -426,9 +480,9 @@ def main():
     results = anonymizer.run_anonymization()
     anonymizer.generate_report(results)
 
-    if 'error' in results:
+    if "error" in results:
         sys.exit(1)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

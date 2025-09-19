@@ -6,7 +6,6 @@ Coordinates parallel execution of documentation migration tasks across multiple 
 
 import asyncio
 import json
-import subprocess
 import sys
 from pathlib import Path
 from typing import Dict, List, Any, Optional
@@ -14,7 +13,6 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
 import shutil
-import concurrent.futures
 from threading import Lock
 
 # Add project root to path
@@ -38,6 +36,7 @@ class PhaseStatus(Enum):
 @dataclass
 class AgentTask:
     """Represents a task for an agent."""
+
     id: str
     name: str
     command: Optional[str] = None
@@ -52,6 +51,7 @@ class AgentTask:
 @dataclass
 class Agent:
     """Represents a worker agent."""
+
     id: str
     name: str
     status: AgentStatus = AgentStatus.IDLE
@@ -75,7 +75,7 @@ class DocumentationOrchestrator:
             "preparation": PhaseStatus.PENDING,
             "discovery": PhaseStatus.PENDING,
             "execution": PhaseStatus.PENDING,
-            "validation": PhaseStatus.PENDING
+            "validation": PhaseStatus.PENDING,
         }
         self.shared_state: Dict[str, Any] = {}
         self.state_lock = Lock()
@@ -110,20 +110,20 @@ class DocumentationOrchestrator:
                     id="scan_structure",
                     name="Scan current structure",
                     command="python scripts/reorganize_docs.py --dry-run",
-                    timeout=60
+                    timeout=60,
                 ),
                 AgentTask(
                     id="reorganize",
                     name="Execute reorganization",
                     command="python scripts/reorganize_docs.py --execute",
                     timeout=300,
-                    critical=True
+                    critical=True,
                 ),
                 AgentTask(
                     id="generate_redirects",
                     name="Generate redirect mappings",
                     script="self._generate_redirects()",
-                    timeout=60
+                    timeout=60,
                 ),
             ],
             "agent_2": [
@@ -131,7 +131,7 @@ class DocumentationOrchestrator:
                     id="analyze_frontmatter",
                     name="Analyze existing frontmatter",
                     script="self._analyze_frontmatter()",
-                    timeout=60
+                    timeout=60,
                 ),
                 AgentTask(
                     id="generate_frontmatter",
@@ -139,7 +139,7 @@ class DocumentationOrchestrator:
                     script="self._generate_all_frontmatter()",
                     timeout=600,
                     critical=True,
-                    parallel=True
+                    parallel=True,
                 ),
             ],
             "agent_3": [
@@ -147,14 +147,14 @@ class DocumentationOrchestrator:
                     id="load_schemas",
                     name="Load validation schemas",
                     script="self._load_validation_schemas()",
-                    timeout=30
+                    timeout=30,
                 ),
                 AgentTask(
                     id="validate_all",
                     name="Validate all documents",
                     command="python scripts/validate_docs.py",
                     timeout=300,
-                    dependencies=["agent_2.generate_frontmatter"]
+                    dependencies=["agent_2.generate_frontmatter"],
                 ),
             ],
             "agent_4": [
@@ -162,7 +162,7 @@ class DocumentationOrchestrator:
                     id="extract_openapi",
                     name="Extract OpenAPI spec",
                     script="self._extract_openapi()",
-                    timeout=60
+                    timeout=60,
                 ),
                 AgentTask(
                     id="generate_api_docs",
@@ -170,7 +170,7 @@ class DocumentationOrchestrator:
                     command="python scripts/generate_api_docs.py",
                     timeout=180,
                     critical=True,
-                    dependencies=["agent_1.reorganize"]
+                    dependencies=["agent_1.reorganize"],
                 ),
             ],
             "agent_5": [
@@ -178,14 +178,14 @@ class DocumentationOrchestrator:
                     id="scan_links",
                     name="Scan all document links",
                     script="self._scan_all_links()",
-                    timeout=120
+                    timeout=120,
                 ),
                 AgentTask(
                     id="fix_links",
                     name="Fix broken internal links",
                     script="self._fix_broken_links()",
                     timeout=300,
-                    dependencies=["agent_1.reorganize"]
+                    dependencies=["agent_1.reorganize"],
                 ),
             ],
             "agent_6": [
@@ -194,13 +194,13 @@ class DocumentationOrchestrator:
                     name="Scan for secrets",
                     command="python scripts/anonymize_docs.py --scan",
                     timeout=120,
-                    critical=True
+                    critical=True,
                 ),
                 AgentTask(
                     id="anonymize",
                     name="Anonymize sensitive data",
                     command="python scripts/anonymize_docs.py --execute",
-                    timeout=180
+                    timeout=180,
                 ),
             ],
             "agent_7": [
@@ -208,7 +208,7 @@ class DocumentationOrchestrator:
                     id="analyze_quality",
                     name="Analyze content quality",
                     script="self._analyze_content_quality()",
-                    timeout=120
+                    timeout=120,
                 ),
                 AgentTask(
                     id="enhance_content",
@@ -216,7 +216,7 @@ class DocumentationOrchestrator:
                     script="self._enhance_priority_docs()",
                     timeout=600,
                     dependencies=["agent_2.generate_frontmatter"],
-                    parallel=True
+                    parallel=True,
                 ),
             ],
             "agent_8": [
@@ -225,14 +225,14 @@ class DocumentationOrchestrator:
                     name="Generate documentation index",
                     command="python scripts/generate_doc_index.py",
                     timeout=120,
-                    dependencies=["agent_1.reorganize", "agent_2.generate_frontmatter"]
+                    dependencies=["agent_1.reorganize", "agent_2.generate_frontmatter"],
                 ),
                 AgentTask(
                     id="generate_report",
                     name="Generate final report",
                     command="python scripts/generate_doc_report.py",
                     timeout=120,
-                    dependencies=["agent_3.validate_all"]
+                    dependencies=["agent_3.validate_all"],
                 ),
             ],
         }
@@ -242,7 +242,7 @@ class DocumentationOrchestrator:
         print("🚀 Starting Documentation Migration Orchestration")
         print(f"   Project: {self.project_root}")
         print(f"   Agents: {len(self.agents)}")
-        print("="*60)
+        print("=" * 60)
 
         try:
             # Phase 0: Preparation
@@ -273,7 +273,10 @@ class DocumentationOrchestrator:
         self.phase_status["preparation"] = PhaseStatus.IN_PROGRESS
 
         # Backup documentation
-        backup_dir = self.docs_dir.parent / f"docs.backup.{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+        backup_dir = (
+            self.docs_dir.parent
+            / f"docs.backup.{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+        )
         print(f"   Creating backup: {backup_dir}")
         shutil.copytree(self.docs_dir, backup_dir)
 
@@ -283,7 +286,7 @@ class DocumentationOrchestrator:
             "start_time": datetime.now().isoformat(),
             "total_files": len(list(self.docs_dir.rglob("*.md"))),
             "conflicts": [],
-            "completed_tasks": []
+            "completed_tasks": [],
         }
 
         self.phase_status["preparation"] = PhaseStatus.COMPLETE
@@ -394,7 +397,9 @@ class DocumentationOrchestrator:
                 result = {"status": "success"}
 
             agent.completed_tasks.append(task.id)
-            agent.progress = len(agent.completed_tasks) / len(self.agent_tasks[agent.id]) * 100
+            agent.progress = (
+                len(agent.completed_tasks) / len(self.agent_tasks[agent.id]) * 100
+            )
 
             with self.state_lock:
                 self.shared_state["completed_tasks"].append(f"{agent.id}.{task.id}")
@@ -411,7 +416,9 @@ class DocumentationOrchestrator:
         finally:
             agent.current_task = None
             if not agent.errors:
-                agent.status = AgentStatus.COMPLETE if agent.progress >= 100 else AgentStatus.IDLE
+                agent.status = (
+                    AgentStatus.COMPLETE if agent.progress >= 100 else AgentStatus.IDLE
+                )
 
     async def _run_command(self, command: str, timeout: int) -> Dict:
         """Run a shell command asynchronously."""
@@ -420,19 +427,16 @@ class DocumentationOrchestrator:
                 command,
                 stdout=asyncio.subprocess.PIPE,
                 stderr=asyncio.subprocess.PIPE,
-                cwd=self.project_root
+                cwd=self.project_root,
             )
 
-            stdout, stderr = await asyncio.wait_for(
-                proc.communicate(),
-                timeout=timeout
-            )
+            stdout, stderr = await asyncio.wait_for(proc.communicate(), timeout=timeout)
 
             return {
                 "status": "success" if proc.returncode == 0 else "error",
                 "stdout": stdout.decode() if stdout else "",
                 "stderr": stderr.decode() if stderr else "",
-                "returncode": proc.returncode
+                "returncode": proc.returncode,
             }
         except asyncio.TimeoutError:
             return {"status": "error", "error": f"Command timed out after {timeout}s"}
@@ -469,10 +473,12 @@ class DocumentationOrchestrator:
     async def _generate_final_report(self):
         """Generate final orchestration report."""
         print("\n📊 Final Report")
-        print("="*60)
+        print("=" * 60)
 
         # Calculate metrics
-        total_time = (datetime.now() - datetime.fromisoformat(self.shared_state["start_time"])).total_seconds() / 60
+        total_time = (
+            datetime.now() - datetime.fromisoformat(self.shared_state["start_time"])
+        ).total_seconds() / 60
 
         print(f"   Total Time: {total_time:.1f} minutes")
         print(f"   Files Processed: {self.shared_state['total_files']}")
@@ -512,11 +518,11 @@ class DocumentationOrchestrator:
                     "status": agent.status.value,
                     "progress": agent.progress,
                     "current_task": agent.current_task,
-                    "errors": agent.errors
+                    "errors": agent.errors,
                 }
                 for agent_id, agent in self.agents.items()
             },
-            "shared_state": self.shared_state
+            "shared_state": self.shared_state,
         }
 
 
@@ -531,7 +537,7 @@ async def main():
         # Save final status
         status_file = project_root / "docs" / "_generated" / "orchestration_status.json"
         status_file.parent.mkdir(parents=True, exist_ok=True)
-        with open(status_file, 'w') as f:
+        with open(status_file, "w") as f:
             json.dump(orchestrator.get_status(), f, indent=2, default=str)
 
         print(f"\n📁 Status saved to: {status_file}")

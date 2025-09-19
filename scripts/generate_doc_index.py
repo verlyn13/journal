@@ -30,7 +30,7 @@ class DocumentationIndexGenerator:
             "tags": {},
             "search_index": [],
             "navigation": {},
-            "statistics": {}
+            "statistics": {},
         }
 
     def generate_index(self) -> Dict[str, Any]:
@@ -47,7 +47,10 @@ class DocumentationIndexGenerator:
         for md_file in self.docs_dir.rglob("*.md"):
             p = str(md_file)
             # Skip generated/backups/duplicate archives
-            if any(tok in p for tok in ["/_generated/", "/.backups/", "/archive/duplicates/"]):
+            if any(
+                tok in p
+                for tok in ["/_generated/", "/.backups/", "/archive/duplicates/"]
+            ):
                 continue
 
             doc_data = self._process_document(md_file, relationships, taxonomy)
@@ -82,7 +85,7 @@ class DocumentationIndexGenerator:
         """Load document relationships."""
         relationships_file = self.docs_dir / "relationships.json"
         if relationships_file.exists():
-            with open(relationships_file, 'r') as f:
+            with open(relationships_file, "r") as f:
                 return json.load(f)
         return {"documents": {}}
 
@@ -90,14 +93,16 @@ class DocumentationIndexGenerator:
         """Load taxonomy configuration."""
         taxonomy_file = self.docs_dir / "taxonomy.yaml"
         if taxonomy_file.exists():
-            with open(taxonomy_file, 'r') as f:
+            with open(taxonomy_file, "r") as f:
                 return yaml.safe_load(f)
         return {}
 
-    def _process_document(self, file_path: Path, relationships: Dict, taxonomy: Dict) -> Optional[Dict]:
+    def _process_document(
+        self, file_path: Path, relationships: Dict, taxonomy: Dict
+    ) -> Optional[Dict]:
         """Process a single document file."""
         try:
-            with open(file_path, 'r', encoding='utf-8') as f:
+            with open(file_path, "r", encoding="utf-8") as f:
                 content = f.read()
 
             # Parse frontmatter
@@ -125,18 +130,30 @@ class DocumentationIndexGenerator:
                     return val.strftime("%Y-%m-%d")
                 if isinstance(val, str):
                     # Accept ISO, use date part
-                    return val.split('T', 1)[0]
+                    return val.split("T", 1)[0]
                 return datetime.fromtimestamp(stat.st_mtime).strftime("%Y-%m-%d")
 
-            created_val = _norm_date_val(metadata.get("created", datetime.fromtimestamp(stat.st_ctime).strftime("%Y-%m-%d")))
-            updated_val = _norm_date_val(metadata.get("updated", datetime.fromtimestamp(stat.st_mtime).strftime("%Y-%m-%d")))
+            created_val = _norm_date_val(
+                metadata.get(
+                    "created",
+                    datetime.fromtimestamp(stat.st_ctime).strftime("%Y-%m-%d"),
+                )
+            )
+            updated_val = _norm_date_val(
+                metadata.get(
+                    "updated",
+                    datetime.fromtimestamp(stat.st_mtime).strftime("%Y-%m-%d"),
+                )
+            )
 
             # Build document data
             doc_data = {
                 "id": doc_id,
                 "path": str(relative_path),
                 "metadata": {
-                    "title": metadata.get("title", file_path.stem.replace("-", " ").title()),
+                    "title": metadata.get(
+                        "title", file_path.stem.replace("-", " ").title()
+                    ),
                     "type": metadata.get("type", self._determine_type(file_path)),
                     "version": metadata.get("version", "1.0.0"),
                     "created": created_val,
@@ -146,7 +163,7 @@ class DocumentationIndexGenerator:
                     "priority": metadata.get("priority", "medium"),
                     "status": metadata.get("status", "draft"),
                     "visibility": metadata.get("visibility", "internal"),
-                    "schema_version": metadata.get("schema_version", "v1")
+                    "schema_version": metadata.get("schema_version", "v1"),
                 },
                 "relationships": {
                     "parent": doc_relationships.get("parent"),
@@ -155,7 +172,7 @@ class DocumentationIndexGenerator:
                     "related": doc_relationships.get("related", []),
                     "supersedes": doc_relationships.get("supersedes", []),
                     "superseded_by": doc_relationships.get("superseded_by"),
-                    "implements": doc_relationships.get("implements", [])
+                    "implements": doc_relationships.get("implements", []),
                 },
                 "content": {
                     "summary": self._extract_summary(text_content),
@@ -163,13 +180,13 @@ class DocumentationIndexGenerator:
                     "headings": self._extract_headings(content),
                     "links": self._extract_links(content),
                     "code_blocks": self._count_code_blocks(content),
-                    "images": self._extract_images(content)
+                    "images": self._extract_images(content),
                 },
                 "file": {
                     "size": stat.st_size,
                     "hash": content_hash,
-                    "last_modified": datetime.fromtimestamp(stat.st_mtime).isoformat()
-                }
+                    "last_modified": datetime.fromtimestamp(stat.st_mtime).isoformat(),
+                },
             }
 
             return doc_data
@@ -180,8 +197,8 @@ class DocumentationIndexGenerator:
 
     def _parse_frontmatter(self, content: str) -> Dict:
         """Parse YAML frontmatter from content."""
-        if content.startswith('---'):
-            parts = content.split('---', 2)
+        if content.startswith("---"):
+            parts = content.split("---", 2)
             if len(parts) >= 3:
                 try:
                     return yaml.safe_load(parts[1]) or {}
@@ -193,102 +210,107 @@ class DocumentationIndexGenerator:
         """Determine document type from path."""
         path_str = str(file_path).lower()
 
-        if 'api' in path_str:
-            return 'api'
-        elif 'architecture' in path_str:
-            return 'architecture'
-        elif 'deployment' in path_str or 'deploy' in path_str:
-            return 'deployment'
-        elif 'guide' in path_str or 'tutorial' in path_str:
-            return 'guide'
-        elif 'test' in path_str:
-            return 'testing'
-        elif 'decision' in path_str or 'adr' in path_str:
-            return 'decision'
-        elif 'reference' in path_str:
-            return 'reference'
+        if "api" in path_str:
+            return "api"
+        elif "architecture" in path_str:
+            return "architecture"
+        elif "deployment" in path_str or "deploy" in path_str:
+            return "deployment"
+        elif "guide" in path_str or "tutorial" in path_str:
+            return "guide"
+        elif "test" in path_str:
+            return "testing"
+        elif "decision" in path_str or "adr" in path_str:
+            return "decision"
+        elif "reference" in path_str:
+            return "reference"
         else:
-            return 'unknown'
+            return "unknown"
 
     def _extract_text(self, content: str) -> str:
         """Extract plain text from markdown content."""
         # Remove frontmatter
-        if content.startswith('---'):
-            parts = content.split('---', 2)
+        if content.startswith("---"):
+            parts = content.split("---", 2)
             if len(parts) >= 3:
                 content = parts[2]
 
         # Remove code blocks
         import re
-        content = re.sub(r'```[\s\S]*?```', '', content)
-        content = re.sub(r'`[^`]+`', '', content)
+
+        content = re.sub(r"```[\s\S]*?```", "", content)
+        content = re.sub(r"`[^`]+`", "", content)
 
         # Remove markdown formatting
-        content = re.sub(r'#{1,6}\s+', '', content)  # Headers
-        content = re.sub(r'\[([^\]]+)\]\([^\)]+\)', r'\1', content)  # Links
-        content = re.sub(r'[*_]{1,2}([^*_]+)[*_]{1,2}', r'\1', content)  # Bold/italic
+        content = re.sub(r"#{1,6}\s+", "", content)  # Headers
+        content = re.sub(r"\[([^\]]+)\]\([^\)]+\)", r"\1", content)  # Links
+        content = re.sub(r"[*_]{1,2}([^*_]+)[*_]{1,2}", r"\1", content)  # Bold/italic
 
         return content.strip()
 
     def _extract_summary(self, text: str) -> str:
         """Extract document summary."""
-        sentences = text.split('. ')
-        summary = '. '.join(sentences[:3]) + '.' if sentences else text[:500]
+        sentences = text.split(". ")
+        summary = ". ".join(sentences[:3]) + "." if sentences else text[:500]
         return summary[:500]
 
     def _extract_headings(self, content: str) -> List[Dict]:
         """Extract headings from markdown."""
         import re
+
         headings = []
-        pattern = r'^(#{1,6})\s+(.+)$'
+        pattern = r"^(#{1,6})\s+(.+)$"
 
         for match in re.finditer(pattern, content, re.MULTILINE):
             level = len(match.group(1))
             text = match.group(2)
-            headings.append({
-                "level": level,
-                "text": text,
-                "id": re.sub(r'[^a-z0-9-]', '', text.lower().replace(' ', '-'))
-            })
+            headings.append(
+                {
+                    "level": level,
+                    "text": text,
+                    "id": re.sub(r"[^a-z0-9-]", "", text.lower().replace(" ", "-")),
+                }
+            )
 
         return headings
 
     def _extract_links(self, content: str) -> List[Dict]:
         """Extract links from markdown."""
         import re
+
         links = []
-        pattern = r'\[([^\]]+)\]\(([^\)]+)\)'
+        pattern = r"\[([^\]]+)\]\(([^\)]+)\)"
 
         for match in re.finditer(pattern, content):
             text = match.group(1)
             url = match.group(2)
-            links.append({
-                "text": text,
-                "url": url,
-                "type": "external" if url.startswith('http') else "internal"
-            })
+            links.append(
+                {
+                    "text": text,
+                    "url": url,
+                    "type": "external" if url.startswith("http") else "internal",
+                }
+            )
 
         return links
 
     def _count_code_blocks(self, content: str) -> int:
         """Count code blocks in markdown."""
         import re
-        return len(re.findall(r'```', content)) // 2
+
+        return len(re.findall(r"```", content)) // 2
 
     def _extract_images(self, content: str) -> List[Dict]:
         """Extract images from markdown."""
         import re
+
         images = []
-        pattern = r'!\[([^\]]*)\]\(([^\)]+)\)'
+        pattern = r"!\[([^\]]*)\]\(([^\)]+)\)"
 
         for match in re.finditer(pattern, content):
             alt_text = match.group(1)
             url = match.group(2)
-            images.append({
-                "alt": alt_text,
-                "url": url,
-                "has_alt": bool(alt_text)
-            })
+            images.append({"alt": alt_text, "url": url, "has_alt": bool(alt_text)})
 
         return images
 
@@ -302,7 +324,7 @@ class DocumentationIndexGenerator:
             "path": doc_data["path"],
             "summary": doc_data["content"]["summary"],
             "tags": doc_data["metadata"]["tags"],
-            "updated": doc_data["metadata"]["updated"]
+            "updated": doc_data["metadata"]["updated"],
         }
 
         # Add to search index
@@ -316,7 +338,7 @@ class DocumentationIndexGenerator:
             "primary": nav.get("primary", ["getting-started", "architecture-overview"]),
             "secondary": nav.get("secondary", []),
             "categories": list(self.index_data["categories"].keys()),
-            "tree": self._build_tree_structure()
+            "tree": self._build_tree_structure(),
         }
 
     def _build_tree_structure(self) -> Dict:
@@ -339,7 +361,7 @@ class DocumentationIndexGenerator:
         subtree = {
             "title": doc.get("metadata", {}).get("title", doc_id),
             "path": doc.get("path", ""),
-            "children": {}
+            "children": {},
         }
 
         for child_id in children:
@@ -375,7 +397,7 @@ class DocumentationIndexGenerator:
             elif isinstance(raw_updated, str):
                 try:
                     # Accept ISO or YYYY-MM-DD
-                    if 'T' in raw_updated:
+                    if "T" in raw_updated:
                         updated_dt = datetime.fromisoformat(raw_updated)
                     else:
                         updated_dt = datetime.strptime(raw_updated, "%Y-%m-%d")
@@ -395,7 +417,7 @@ class DocumentationIndexGenerator:
             "stale_documents": stale_count,
             "total_word_count": sum(d["content"]["word_count"] for d in docs.values()),
             "total_links": sum(len(d["content"]["links"]) for d in docs.values()),
-            "total_images": sum(len(d["content"]["images"]) for d in docs.values())
+            "total_images": sum(len(d["content"]["images"]) for d in docs.values()),
         }
 
     def save_index(self):
@@ -403,7 +425,7 @@ class DocumentationIndexGenerator:
         # Save JSON index
         index_file = self.docs_dir / "_generated" / "index.json"
         index_file.parent.mkdir(parents=True, exist_ok=True)
-        with open(index_file, 'w') as f:
+        with open(index_file, "w") as f:
             json.dump(self.index_data, f, indent=2)
         print(f"  Saved index to: {index_file.relative_to(self.project_root)}")
 
@@ -425,15 +447,17 @@ class DocumentationIndexGenerator:
             "---\n",
         ]
 
-        content = "\n".join(frontmatter) + f"""# Documentation Index
+        content = (
+            "\n".join(frontmatter)
+            + f"""# Documentation Index
 
-Generated: {self.index_data['generated_at']}
+Generated: {self.index_data["generated_at"]}
 
 ## Statistics
 
-- **Total Documents**: {self.index_data['statistics']['total_documents']}
-- **Total Words**: {self.index_data['statistics']['total_word_count']:,}
-- **Stale Documents**: {self.index_data['statistics']['stale_documents']}
+- **Total Documents**: {self.index_data["statistics"]["total_documents"]}
+- **Total Words**: {self.index_data["statistics"]["total_word_count"]:,}
+- **Stale Documents**: {self.index_data["statistics"]["stale_documents"]}
 
 ## Structure Overview
 
@@ -451,20 +475,23 @@ Generated: {self.index_data['generated_at']}
 ## Documents by Type
 
 """
+        )
         # Group by type
-        for doc_type, count in sorted(self.index_data['statistics']['by_type'].items()):
+        for doc_type, count in sorted(self.index_data["statistics"]["by_type"].items()):
             content += f"\n### {doc_type.title()} ({count})\n\n"
 
             docs_of_type = [
-                (doc_id, self.index_data['documents'][doc_id])
-                for doc_id in self.index_data['categories'].get(doc_type, [])
+                (doc_id, self.index_data["documents"][doc_id])
+                for doc_id in self.index_data["categories"].get(doc_type, [])
             ]
 
-            for doc_id, doc in sorted(docs_of_type, key=lambda x: x[1]['metadata']['title']):
-                title = doc['metadata']['title']
-                path = doc['path']
-                status = doc['metadata']['status']
-                updated = doc['metadata']['updated']
+            for doc_id, doc in sorted(
+                docs_of_type, key=lambda x: x[1]["metadata"]["title"]
+            ):
+                title = doc["metadata"]["title"]
+                path = doc["path"]
+                status = doc["metadata"]["status"]
+                updated = doc["metadata"]["updated"]
                 content += f"- [{title}]({path}) - {status} (updated: {updated})\n"
 
         content += """
@@ -473,7 +500,7 @@ Generated: {self.index_data['generated_at']}
 ```
 """
         # Add tree structure
-        for root_id, subtree in self.index_data['navigation']['tree'].items():
+        for root_id, subtree in self.index_data["navigation"]["tree"].items():
             content += self._format_tree(root_id, subtree, 0)
 
         content += """```
@@ -482,12 +509,12 @@ Generated: {self.index_data['generated_at']}
 
 """
         # List tags with counts
-        for tag, doc_ids in sorted(self.index_data['tags'].items()):
+        for tag, doc_ids in sorted(self.index_data["tags"].items()):
             content += f"- **{tag}** ({len(doc_ids)} documents)\n"
 
         # Save markdown index
         index_md = self.docs_dir / "INDEX.md"
-        with open(index_md, 'w') as f:
+        with open(index_md, "w") as f:
             f.write(content)
         print(f"  Saved markdown index to: {index_md.relative_to(self.project_root)}")
 
@@ -496,7 +523,7 @@ Generated: {self.index_data['generated_at']}
         indent = "  " * level
         result = f"{indent}├── {node_data['title']}\n"
 
-        for child_id, child_data in node_data.get('children', {}).items():
+        for child_id, child_data in node_data.get("children", {}).items():
             result += self._format_tree(child_id, child_data, level + 1)
 
         return result
@@ -514,14 +541,14 @@ def main():
     generator.save_index()
 
     # Print summary
-    stats = index_data['statistics']
-    print(f"\n📚 Documentation Index Generated:")
+    stats = index_data["statistics"]
+    print("\n📚 Documentation Index Generated:")
     print(f"  Total documents: {stats['total_documents']}")
     print(f"  Document types: {len(stats['by_type'])}")
     print(f"  Total tags: {stats['total_tags']}")
     print(f"  Stale documents: {stats['stale_documents']}")
 
-    print(f"\n✅ Index generation complete!")
+    print("\n✅ Index generation complete!")
 
 
 if __name__ == "__main__":

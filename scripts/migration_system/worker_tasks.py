@@ -9,7 +9,7 @@ import re
 import subprocess
 import sys
 from pathlib import Path
-from typing import Dict, List, Optional, Any, Tuple
+from typing import Dict, List, Optional, Any
 from datetime import datetime
 import yaml
 import shutil
@@ -22,6 +22,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 @dataclass
 class TaskResult:
     """Result of a task execution."""
+
     success: bool
     task_id: str
     output: Any = None
@@ -58,14 +59,10 @@ class WorkerTaskLibrary:
                 success=True,
                 task_id=task_id,
                 output={"backup_path": str(backup_dir)},
-                metrics={"files_backed_up": file_count}
+                metrics={"files_backed_up": file_count},
             )
         except Exception as e:
-            return TaskResult(
-                success=False,
-                task_id=task_id,
-                error=str(e)
-            )
+            return TaskResult(success=False, task_id=task_id, error=str(e))
 
     def task_analyze_structure(self, task_id: str, **kwargs) -> TaskResult:
         """Analyze current documentation structure."""
@@ -90,27 +87,29 @@ class WorkerTaskLibrary:
 
             # Save analysis
             analysis_file = self.reports_dir / "structure_analysis.json"
-            with open(analysis_file, 'w') as f:
-                json.dump({
-                    "structure": structure,
-                    "total_files": total_files,
-                    "timestamp": datetime.now().isoformat()
-                }, f, indent=2)
+            with open(analysis_file, "w") as f:
+                json.dump(
+                    {
+                        "structure": structure,
+                        "total_files": total_files,
+                        "timestamp": datetime.now().isoformat(),
+                    },
+                    f,
+                    indent=2,
+                )
 
             return TaskResult(
                 success=True,
                 task_id=task_id,
                 output={"analysis_file": str(analysis_file)},
-                metrics={"total_files": total_files, "directories": len(structure)}
+                metrics={"total_files": total_files, "directories": len(structure)},
             )
         except Exception as e:
-            return TaskResult(
-                success=False,
-                task_id=task_id,
-                error=str(e)
-            )
+            return TaskResult(success=False, task_id=task_id, error=str(e))
 
-    def task_reorganize_docs(self, task_id: str, dry_run: bool = True, **kwargs) -> TaskResult:
+    def task_reorganize_docs(
+        self, task_id: str, dry_run: bool = True, **kwargs
+    ) -> TaskResult:
         """Execute documentation reorganization."""
         try:
             script_path = self.scripts_dir / "reorganize_docs.py"
@@ -119,7 +118,7 @@ class WorkerTaskLibrary:
                 return TaskResult(
                     success=False,
                     task_id=task_id,
-                    error=f"Script not found: {script_path}"
+                    error=f"Script not found: {script_path}",
                 )
 
             cmd = ["python", str(script_path)]
@@ -129,38 +128,27 @@ class WorkerTaskLibrary:
                 cmd.append("--execute")
 
             result = subprocess.run(
-                cmd,
-                capture_output=True,
-                text=True,
-                cwd=self.project_root
+                cmd, capture_output=True, text=True, cwd=self.project_root
             )
 
             if result.returncode != 0:
-                return TaskResult(
-                    success=False,
-                    task_id=task_id,
-                    error=result.stderr
-                )
+                return TaskResult(success=False, task_id=task_id, error=result.stderr)
 
             # Parse output for metrics
             operations = []
             if "operations:" in result.stdout:
-                for line in result.stdout.split('\n'):
-                    if '->' in line:
+                for line in result.stdout.split("\n"):
+                    if "->" in line:
                         operations.append(line.strip())
 
             return TaskResult(
                 success=True,
                 task_id=task_id,
                 output={"operations": operations},
-                metrics={"operations_count": len(operations), "dry_run": dry_run}
+                metrics={"operations_count": len(operations), "dry_run": dry_run},
             )
         except Exception as e:
-            return TaskResult(
-                success=False,
-                task_id=task_id,
-                error=str(e)
-            )
+            return TaskResult(success=False, task_id=task_id, error=str(e))
 
     def task_generate_redirects(self, task_id: str, **kwargs) -> TaskResult:
         """Generate redirect mappings for moved files."""
@@ -179,21 +167,17 @@ class WorkerTaskLibrary:
 
             # Save redirects
             redirects_file = self.docs_dir / "_redirects.json"
-            with open(redirects_file, 'w') as f:
+            with open(redirects_file, "w") as f:
                 json.dump(redirects, f, indent=2)
 
             return TaskResult(
                 success=True,
                 task_id=task_id,
                 output={"redirects_file": str(redirects_file)},
-                metrics={"redirects_count": len(redirects)}
+                metrics={"redirects_count": len(redirects)},
             )
         except Exception as e:
-            return TaskResult(
-                success=False,
-                task_id=task_id,
-                error=str(e)
-            )
+            return TaskResult(success=False, task_id=task_id, error=str(e))
 
     # ==================== METADATA TASKS ====================
 
@@ -204,21 +188,25 @@ class WorkerTaskLibrary:
             missing_frontmatter = []
 
             for md_file in self.docs_dir.rglob("*.md"):
-                with open(md_file, 'r', encoding='utf-8') as f:
+                with open(md_file, "r", encoding="utf-8") as f:
                     first_line = f.readline().strip()
-                    if first_line == '---':
+                    if first_line == "---":
                         has_frontmatter.append(str(md_file))
                     else:
                         missing_frontmatter.append(str(md_file))
 
             # Save results
             scan_file = self.reports_dir / "frontmatter_scan.json"
-            with open(scan_file, 'w') as f:
-                json.dump({
-                    "has_frontmatter": has_frontmatter,
-                    "missing_frontmatter": missing_frontmatter,
-                    "timestamp": datetime.now().isoformat()
-                }, f, indent=2)
+            with open(scan_file, "w") as f:
+                json.dump(
+                    {
+                        "has_frontmatter": has_frontmatter,
+                        "missing_frontmatter": missing_frontmatter,
+                        "timestamp": datetime.now().isoformat(),
+                    },
+                    f,
+                    indent=2,
+                )
 
             return TaskResult(
                 success=True,
@@ -226,17 +214,15 @@ class WorkerTaskLibrary:
                 output={"scan_file": str(scan_file)},
                 metrics={
                     "with_frontmatter": len(has_frontmatter),
-                    "without_frontmatter": len(missing_frontmatter)
-                }
+                    "without_frontmatter": len(missing_frontmatter),
+                },
             )
         except Exception as e:
-            return TaskResult(
-                success=False,
-                task_id=task_id,
-                error=str(e)
-            )
+            return TaskResult(success=False, task_id=task_id, error=str(e))
 
-    def task_generate_frontmatter_batch(self, task_id: str, batch_files: List[str], **kwargs) -> TaskResult:
+    def task_generate_frontmatter_batch(
+        self, task_id: str, batch_files: List[str], **kwargs
+    ) -> TaskResult:
         """Generate frontmatter for a batch of files."""
         try:
             processed = []
@@ -253,19 +239,21 @@ class WorkerTaskLibrary:
                     metadata = self._generate_metadata_for_file(path)
 
                     # Read existing content
-                    with open(path, 'r', encoding='utf-8') as f:
+                    with open(path, "r", encoding="utf-8") as f:
                         content = f.read()
 
                     # Skip if already has frontmatter
-                    if content.startswith('---'):
+                    if content.startswith("---"):
                         continue
 
                     # Add frontmatter
-                    frontmatter = yaml.dump(metadata, default_flow_style=False, sort_keys=False)
+                    frontmatter = yaml.dump(
+                        metadata, default_flow_style=False, sort_keys=False
+                    )
                     new_content = f"---\n{frontmatter}---\n\n{content}"
 
                     # Write back
-                    with open(path, 'w', encoding='utf-8') as f:
+                    with open(path, "w", encoding="utf-8") as f:
                         f.write(new_content)
 
                     processed.append(file_path)
@@ -278,30 +266,26 @@ class WorkerTaskLibrary:
                 task_id=task_id,
                 output={"processed": processed, "errors": errors},
                 metrics={"processed_count": len(processed), "error_count": len(errors)},
-                files_affected=processed
+                files_affected=processed,
             )
         except Exception as e:
-            return TaskResult(
-                success=False,
-                task_id=task_id,
-                error=str(e)
-            )
+            return TaskResult(success=False, task_id=task_id, error=str(e))
 
     def _generate_metadata_for_file(self, file_path: Path) -> Dict:
         """Generate metadata for a single file."""
-        rel_path = file_path.relative_to(self.docs_dir)
+        file_path.relative_to(self.docs_dir)
 
         # Read content
-        with open(file_path, 'r', encoding='utf-8') as f:
+        with open(file_path, "r", encoding="utf-8") as f:
             content = f.read()
 
         # Extract title
         title = "Untitled"
-        h1_match = re.search(r'^#\s+(.+)$', content, re.MULTILINE)
+        h1_match = re.search(r"^#\s+(.+)$", content, re.MULTILINE)
         if h1_match:
             title = h1_match.group(1).strip()
         else:
-            title = file_path.stem.replace('-', ' ').replace('_', ' ').title()
+            title = file_path.stem.replace("-", " ").replace("_", " ").title()
 
         # Determine type
         doc_type = self._determine_doc_type(file_path, content)
@@ -311,11 +295,11 @@ class WorkerTaskLibrary:
 
         # Get file stats
         stat = file_path.stat()
-        created = datetime.fromtimestamp(stat.st_ctime).strftime('%Y-%m-%d')
-        updated = datetime.fromtimestamp(stat.st_mtime).strftime('%Y-%m-%d')
+        created = datetime.fromtimestamp(stat.st_ctime).strftime("%Y-%m-%d")
+        updated = datetime.fromtimestamp(stat.st_mtime).strftime("%Y-%m-%d")
 
         return {
-            "id": file_path.stem.lower().replace('_', '-').replace(' ', '-'),
+            "id": file_path.stem.lower().replace("_", "-").replace(" ", "-"),
             "title": title,
             "type": doc_type,
             "version": "1.0.0",
@@ -326,7 +310,7 @@ class WorkerTaskLibrary:
             "priority": self._determine_priority(file_path, doc_type),
             "status": "draft" if "TODO" in content or "WIP" in content else "approved",
             "visibility": "internal",
-            "schema_version": "v1"
+            "schema_version": "v1",
         }
 
     def _determine_doc_type(self, file_path: Path, content: str) -> str:
@@ -334,18 +318,18 @@ class WorkerTaskLibrary:
         path_str = str(file_path).lower()
         content_lower = content.lower()
 
-        if 'api' in path_str or 'endpoint' in content_lower:
-            return 'api'
-        elif 'architecture' in path_str or 'design' in path_str:
-            return 'architecture'
-        elif 'deploy' in path_str:
-            return 'deployment'
-        elif 'guide' in path_str or 'tutorial' in content_lower:
-            return 'guide'
-        elif 'test' in path_str:
-            return 'testing'
+        if "api" in path_str or "endpoint" in content_lower:
+            return "api"
+        elif "architecture" in path_str or "design" in path_str:
+            return "architecture"
+        elif "deploy" in path_str:
+            return "deployment"
+        elif "guide" in path_str or "tutorial" in content_lower:
+            return "guide"
+        elif "test" in path_str:
+            return "testing"
         else:
-            return 'reference'
+            return "reference"
 
     def _generate_tags(self, file_path: Path, content: str, doc_type: str) -> List[str]:
         """Generate appropriate tags."""
@@ -353,16 +337,16 @@ class WorkerTaskLibrary:
         content_lower = content.lower()
 
         # Technology tags
-        if 'fastapi' in content_lower:
-            tags.append('fastapi')
-        if 'react' in content_lower:
-            tags.append('react')
-        if 'typescript' in content_lower:
-            tags.append('typescript')
-        if 'python' in content_lower:
-            tags.append('python')
-        if 'docker' in content_lower:
-            tags.append('docker')
+        if "fastapi" in content_lower:
+            tags.append("fastapi")
+        if "react" in content_lower:
+            tags.append("react")
+        if "typescript" in content_lower:
+            tags.append("typescript")
+        if "python" in content_lower:
+            tags.append("python")
+        if "docker" in content_lower:
+            tags.append("docker")
 
         return list(set(tags))[:10]  # Limit to 10 tags
 
@@ -370,16 +354,18 @@ class WorkerTaskLibrary:
         """Determine document priority."""
         path_str = str(file_path).lower()
 
-        if 'deploy' in path_str or 'security' in path_str:
-            return 'critical'
-        elif doc_type in ['api', 'architecture']:
-            return 'high'
+        if "deploy" in path_str or "security" in path_str:
+            return "critical"
+        elif doc_type in ["api", "architecture"]:
+            return "high"
         else:
-            return 'medium'
+            return "medium"
 
     # ==================== VALIDATION TASKS ====================
 
-    def task_validate_schema(self, task_id: str, file_path: str, **kwargs) -> TaskResult:
+    def task_validate_schema(
+        self, task_id: str, file_path: str, **kwargs
+    ) -> TaskResult:
         """Validate a document against its schema."""
         try:
             script_path = self.scripts_dir / "validate_docs.py"
@@ -388,7 +374,7 @@ class WorkerTaskLibrary:
                 ["python", str(script_path), "--file", file_path],
                 capture_output=True,
                 text=True,
-                cwd=self.project_root
+                cwd=self.project_root,
             )
 
             success = result.returncode == 0
@@ -398,14 +384,10 @@ class WorkerTaskLibrary:
                 task_id=task_id,
                 output={"validation_output": result.stdout},
                 error=result.stderr if not success else None,
-                files_affected=[file_path]
+                files_affected=[file_path],
             )
         except Exception as e:
-            return TaskResult(
-                success=False,
-                task_id=task_id,
-                error=str(e)
-            )
+            return TaskResult(success=False, task_id=task_id, error=str(e))
 
     def task_check_freshness(self, task_id: str, **kwargs) -> TaskResult:
         """Check document freshness against SLAs."""
@@ -420,7 +402,7 @@ class WorkerTaskLibrary:
             if taxonomy_file.exists():
                 with open(taxonomy_file) as f:
                     taxonomy = yaml.safe_load(f)
-                    freshness_slas = taxonomy.get('freshness_slas', {})
+                    freshness_slas = taxonomy.get("freshness_slas", {})
 
             for md_file in self.docs_dir.rglob("*.md"):
                 stat = md_file.stat()
@@ -431,22 +413,28 @@ class WorkerTaskLibrary:
                 max_days = freshness_slas.get(doc_type, 180)
 
                 if days_old > max_days:
-                    stale_docs.append({
-                        "path": str(md_file),
-                        "days_old": days_old,
-                        "max_days": max_days
-                    })
+                    stale_docs.append(
+                        {
+                            "path": str(md_file),
+                            "days_old": days_old,
+                            "max_days": max_days,
+                        }
+                    )
                 else:
                     fresh_docs.append(str(md_file))
 
             # Save report
             freshness_file = self.reports_dir / "freshness_report.json"
-            with open(freshness_file, 'w') as f:
-                json.dump({
-                    "stale_docs": stale_docs,
-                    "fresh_docs_count": len(fresh_docs),
-                    "timestamp": datetime.now().isoformat()
-                }, f, indent=2)
+            with open(freshness_file, "w") as f:
+                json.dump(
+                    {
+                        "stale_docs": stale_docs,
+                        "fresh_docs_count": len(fresh_docs),
+                        "timestamp": datetime.now().isoformat(),
+                    },
+                    f,
+                    indent=2,
+                )
 
             return TaskResult(
                 success=True,
@@ -454,15 +442,11 @@ class WorkerTaskLibrary:
                 output={"report_file": str(freshness_file)},
                 metrics={
                     "stale_count": len(stale_docs),
-                    "fresh_count": len(fresh_docs)
-                }
+                    "fresh_count": len(fresh_docs),
+                },
             )
         except Exception as e:
-            return TaskResult(
-                success=False,
-                task_id=task_id,
-                error=str(e)
-            )
+            return TaskResult(success=False, task_id=task_id, error=str(e))
 
     # ==================== API TASKS ====================
 
@@ -477,7 +461,7 @@ class WorkerTaskLibrary:
 
             # Create extraction script if it doesn't exist
             if not script_path.exists():
-                script_content = '''#!/usr/bin/env python3
+                script_content = """#!/usr/bin/env python3
 import json
 import sys
 from pathlib import Path
@@ -497,8 +481,8 @@ with open(output_file, 'w') as f:
     json.dump(openapi_spec, f, indent=2)
 
 print(f"OpenAPI spec saved to {output_file}")
-'''
-                with open(script_path, 'w') as f:
+"""
+                with open(script_path, "w") as f:
                     f.write(script_content)
                 script_path.chmod(0o755)
 
@@ -506,35 +490,27 @@ print(f"OpenAPI spec saved to {output_file}")
                 ["python", str(script_path)],
                 capture_output=True,
                 text=True,
-                cwd=self.project_root
+                cwd=self.project_root,
             )
 
             if result.returncode != 0:
-                return TaskResult(
-                    success=False,
-                    task_id=task_id,
-                    error=result.stderr
-                )
+                return TaskResult(success=False, task_id=task_id, error=result.stderr)
 
             # Count endpoints
             endpoint_count = 0
             if output_file.exists():
                 with open(output_file) as f:
                     spec = json.load(f)
-                    endpoint_count = len(spec.get('paths', {}))
+                    endpoint_count = len(spec.get("paths", {}))
 
             return TaskResult(
                 success=True,
                 task_id=task_id,
                 output={"openapi_file": str(output_file)},
-                metrics={"endpoint_count": endpoint_count}
+                metrics={"endpoint_count": endpoint_count},
             )
         except Exception as e:
-            return TaskResult(
-                success=False,
-                task_id=task_id,
-                error=str(e)
-            )
+            return TaskResult(success=False, task_id=task_id, error=str(e))
 
     def task_generate_api_docs(self, task_id: str, **kwargs) -> TaskResult:
         """Generate API documentation from OpenAPI spec."""
@@ -545,40 +521,34 @@ print(f"OpenAPI spec saved to {output_file}")
                 return TaskResult(
                     success=False,
                     task_id=task_id,
-                    error=f"Script not found: {script_path}"
+                    error=f"Script not found: {script_path}",
                 )
 
             result = subprocess.run(
                 ["python", str(script_path)],
                 capture_output=True,
                 text=True,
-                cwd=self.project_root
+                cwd=self.project_root,
             )
 
             if result.returncode != 0:
-                return TaskResult(
-                    success=False,
-                    task_id=task_id,
-                    error=result.stderr
-                )
+                return TaskResult(success=False, task_id=task_id, error=result.stderr)
 
             # Count generated files
             api_docs_dir = self.docs_dir / "api" / "endpoints"
-            generated_files = list(api_docs_dir.glob("*.md")) if api_docs_dir.exists() else []
+            generated_files = (
+                list(api_docs_dir.glob("*.md")) if api_docs_dir.exists() else []
+            )
 
             return TaskResult(
                 success=True,
                 task_id=task_id,
                 output={"generated_files": [str(f) for f in generated_files]},
                 metrics={"files_generated": len(generated_files)},
-                files_affected=[str(f) for f in generated_files]
+                files_affected=[str(f) for f in generated_files],
             )
         except Exception as e:
-            return TaskResult(
-                success=False,
-                task_id=task_id,
-                error=str(e)
-            )
+            return TaskResult(success=False, task_id=task_id, error=str(e))
 
     # ==================== LINK TASKS ====================
 
@@ -589,10 +559,10 @@ print(f"OpenAPI spec saved to {output_file}")
             external_links = []
             broken_links = []
 
-            link_pattern = re.compile(r'\[([^\]]+)\]\(([^\)]+)\)')
+            link_pattern = re.compile(r"\[([^\]]+)\]\(([^\)]+)\)")
 
             for md_file in self.docs_dir.rglob("*.md"):
-                with open(md_file, 'r', encoding='utf-8') as f:
+                with open(md_file, "r", encoding="utf-8") as f:
                     content = f.read()
 
                 for match in link_pattern.finditer(content):
@@ -602,29 +572,33 @@ print(f"OpenAPI spec saved to {output_file}")
                     link_info = {
                         "file": str(md_file),
                         "text": link_text,
-                        "url": link_url
+                        "url": link_url,
                     }
 
-                    if link_url.startswith(('http://', 'https://')):
+                    if link_url.startswith(("http://", "https://")):
                         external_links.append(link_info)
                     else:
                         internal_links.append(link_info)
 
                         # Check if internal link is valid
-                        if not link_url.startswith('#'):
+                        if not link_url.startswith("#"):
                             target_path = (md_file.parent / link_url).resolve()
                             if not target_path.exists():
                                 broken_links.append(link_info)
 
             # Save report
             links_file = self.reports_dir / "links_report.json"
-            with open(links_file, 'w') as f:
-                json.dump({
-                    "internal_links": internal_links,
-                    "external_links": external_links,
-                    "broken_links": broken_links,
-                    "timestamp": datetime.now().isoformat()
-                }, f, indent=2)
+            with open(links_file, "w") as f:
+                json.dump(
+                    {
+                        "internal_links": internal_links,
+                        "external_links": external_links,
+                        "broken_links": broken_links,
+                        "timestamp": datetime.now().isoformat(),
+                    },
+                    f,
+                    indent=2,
+                )
 
             return TaskResult(
                 success=True,
@@ -633,15 +607,11 @@ print(f"OpenAPI spec saved to {output_file}")
                 metrics={
                     "internal_count": len(internal_links),
                     "external_count": len(external_links),
-                    "broken_count": len(broken_links)
-                }
+                    "broken_count": len(broken_links),
+                },
             )
         except Exception as e:
-            return TaskResult(
-                success=False,
-                task_id=task_id,
-                error=str(e)
-            )
+            return TaskResult(success=False, task_id=task_id, error=str(e))
 
     def task_fix_internal_links(self, task_id: str, **kwargs) -> TaskResult:
         """Fix broken internal links based on redirect mappings."""
@@ -654,17 +624,17 @@ print(f"OpenAPI spec saved to {output_file}")
                     success=True,
                     task_id=task_id,
                     output={"message": "No redirects file found"},
-                    metrics={"fixed_count": 0}
+                    metrics={"fixed_count": 0},
                 )
 
             with open(redirects_file) as f:
                 redirects = json.load(f)
 
-            link_pattern = re.compile(r'\[([^\]]+)\]\(([^\)]+)\)')
+            link_pattern = re.compile(r"\[([^\]]+)\]\(([^\)]+)\)")
 
             for md_file in self.docs_dir.rglob("*.md"):
                 content_changed = False
-                with open(md_file, 'r', encoding='utf-8') as f:
+                with open(md_file, "r", encoding="utf-8") as f:
                     content = f.read()
 
                 def replace_link(match):
@@ -677,11 +647,9 @@ print(f"OpenAPI spec saved to {output_file}")
                         if link_url.endswith(old_path):
                             new_url = link_url.replace(old_path, new_path)
                             content_changed = True
-                            fixed_links.append({
-                                "file": str(md_file),
-                                "old": link_url,
-                                "new": new_url
-                            })
+                            fixed_links.append(
+                                {"file": str(md_file), "old": link_url, "new": new_url}
+                            )
                             return f"[{link_text}]({new_url})"
 
                     return match.group(0)
@@ -689,7 +657,7 @@ print(f"OpenAPI spec saved to {output_file}")
                 new_content = link_pattern.sub(replace_link, content)
 
                 if content_changed:
-                    with open(md_file, 'w', encoding='utf-8') as f:
+                    with open(md_file, "w", encoding="utf-8") as f:
                         f.write(new_content)
 
             return TaskResult(
@@ -697,14 +665,10 @@ print(f"OpenAPI spec saved to {output_file}")
                 task_id=task_id,
                 output={"fixed_links": fixed_links},
                 metrics={"fixed_count": len(fixed_links)},
-                files_affected=list(set(link["file"] for link in fixed_links))
+                files_affected=list(set(link["file"] for link in fixed_links)),
             )
         except Exception as e:
-            return TaskResult(
-                success=False,
-                task_id=task_id,
-                error=str(e)
-            )
+            return TaskResult(success=False, task_id=task_id, error=str(e))
 
     # ==================== SECURITY TASKS ====================
 
@@ -717,29 +681,27 @@ print(f"OpenAPI spec saved to {output_file}")
                 ["python", str(script_path), "--scan"],
                 capture_output=True,
                 text=True,
-                cwd=self.project_root
+                cwd=self.project_root,
             )
 
             # Parse output for secrets found
             secrets_found = []
             if "potential secrets found" in result.stdout:
                 # Extract secrets info from output
-                for line in result.stdout.split('\n'):
-                    if 'File:' in line or 'Pattern:' in line:
+                for line in result.stdout.split("\n"):
+                    if "File:" in line or "Pattern:" in line:
                         secrets_found.append(line.strip())
 
             return TaskResult(
                 success=result.returncode == 0,
                 task_id=task_id,
                 output={"scan_output": result.stdout},
-                metrics={"secrets_found": len(secrets_found) // 2}  # Divide by 2 for file/pattern pairs
+                metrics={
+                    "secrets_found": len(secrets_found) // 2
+                },  # Divide by 2 for file/pattern pairs
             )
         except Exception as e:
-            return TaskResult(
-                success=False,
-                task_id=task_id,
-                error=str(e)
-            )
+            return TaskResult(success=False, task_id=task_id, error=str(e))
 
     def task_anonymize_sensitive(self, task_id: str, **kwargs) -> TaskResult:
         """Anonymize sensitive data in documents."""
@@ -750,18 +712,18 @@ print(f"OpenAPI spec saved to {output_file}")
                 ["python", str(script_path), "--execute"],
                 capture_output=True,
                 text=True,
-                cwd=self.project_root
+                cwd=self.project_root,
             )
 
             # Parse output for anonymized files
             anonymized_files = []
             if "Anonymized" in result.stdout:
-                for line in result.stdout.split('\n'):
-                    if '.md' in line and 'Anonymized' in line:
+                for line in result.stdout.split("\n"):
+                    if ".md" in line and "Anonymized" in line:
                         # Extract file path from output
                         parts = line.split()
                         for part in parts:
-                            if '.md' in part:
+                            if ".md" in part:
                                 anonymized_files.append(part)
                                 break
 
@@ -770,14 +732,10 @@ print(f"OpenAPI spec saved to {output_file}")
                 task_id=task_id,
                 output={"anonymized_files": anonymized_files},
                 metrics={"files_anonymized": len(anonymized_files)},
-                files_affected=anonymized_files
+                files_affected=anonymized_files,
             )
         except Exception as e:
-            return TaskResult(
-                success=False,
-                task_id=task_id,
-                error=str(e)
-            )
+            return TaskResult(success=False, task_id=task_id, error=str(e))
 
     # ==================== QUALITY TASKS ====================
 
@@ -790,7 +748,7 @@ print(f"OpenAPI spec saved to {output_file}")
                 "missing_sections": [],
                 "code_blocks_without_language": [],
                 "images_without_alt": [],
-                "long_documents": []
+                "long_documents": [],
             }
 
             total_words = 0
@@ -798,7 +756,7 @@ print(f"OpenAPI spec saved to {output_file}")
             for md_file in self.docs_dir.rglob("*.md"):
                 quality_metrics["total_files"] += 1
 
-                with open(md_file, 'r', encoding='utf-8') as f:
+                with open(md_file, "r", encoding="utf-8") as f:
                     content = f.read()
 
                 # Word count
@@ -809,44 +767,43 @@ print(f"OpenAPI spec saved to {output_file}")
                     quality_metrics["long_documents"].append(str(md_file))
 
                 # Check for code blocks without language
-                code_blocks = re.findall(r'```\n', content)
+                code_blocks = re.findall(r"```\n", content)
                 if code_blocks:
                     quality_metrics["code_blocks_without_language"].append(str(md_file))
 
                 # Check for images without alt text
-                images = re.findall(r'!\[\]\(', content)
+                images = re.findall(r"!\[\]\(", content)
                 if images:
                     quality_metrics["images_without_alt"].append(str(md_file))
 
                 # Check for missing sections (simplified)
-                if '## Overview' not in content and quality_metrics["total_files"] < 50:
-                    quality_metrics["missing_sections"].append({
-                        "file": str(md_file),
-                        "missing": "Overview section"
-                    })
+                if "## Overview" not in content and quality_metrics["total_files"] < 50:
+                    quality_metrics["missing_sections"].append(
+                        {"file": str(md_file), "missing": "Overview section"}
+                    )
 
             if quality_metrics["total_files"] > 0:
-                quality_metrics["avg_word_count"] = total_words // quality_metrics["total_files"]
+                quality_metrics["avg_word_count"] = (
+                    total_words // quality_metrics["total_files"]
+                )
 
             # Save report
             quality_file = self.reports_dir / "quality_report.json"
-            with open(quality_file, 'w') as f:
+            with open(quality_file, "w") as f:
                 json.dump(quality_metrics, f, indent=2)
 
             return TaskResult(
                 success=True,
                 task_id=task_id,
                 output={"report_file": str(quality_file)},
-                metrics=quality_metrics
+                metrics=quality_metrics,
             )
         except Exception as e:
-            return TaskResult(
-                success=False,
-                task_id=task_id,
-                error=str(e)
-            )
+            return TaskResult(success=False, task_id=task_id, error=str(e))
 
-    def task_enhance_content(self, task_id: str, file_paths: List[str], **kwargs) -> TaskResult:
+    def task_enhance_content(
+        self, task_id: str, file_paths: List[str], **kwargs
+    ) -> TaskResult:
         """Enhance content quality for specified files."""
         try:
             enhanced = []
@@ -856,28 +813,30 @@ print(f"OpenAPI spec saved to {output_file}")
                 if not path.exists():
                     continue
 
-                with open(path, 'r', encoding='utf-8') as f:
+                with open(path, "r", encoding="utf-8") as f:
                     content = f.read()
 
                 original_content = content
 
                 # Add language specifiers to code blocks
                 content = re.sub(
-                    r'```\n(.*?)\n```',
-                    lambda m: f'```python\n{m.group(1)}\n```' if 'def ' in m.group(1) or 'import ' in m.group(1) else m.group(0),
+                    r"```\n(.*?)\n```",
+                    lambda m: f"```python\n{m.group(1)}\n```"
+                    if "def " in m.group(1) or "import " in m.group(1)
+                    else m.group(0),
                     content,
-                    flags=re.DOTALL
+                    flags=re.DOTALL,
                 )
 
                 # Add alt text to images (placeholder)
                 content = re.sub(
-                    r'!\[\]\(([^)]+)\)',
-                    lambda m: f'![{Path(m.group(1)).stem.replace("-", " ").title()}]({m.group(1)})',
-                    content
+                    r"!\[\]\(([^)]+)\)",
+                    lambda m: f"![{Path(m.group(1)).stem.replace('-', ' ').title()}]({m.group(1)})",
+                    content,
                 )
 
                 if content != original_content:
-                    with open(path, 'w', encoding='utf-8') as f:
+                    with open(path, "w", encoding="utf-8") as f:
                         f.write(content)
                     enhanced.append(file_path)
 
@@ -886,14 +845,10 @@ print(f"OpenAPI spec saved to {output_file}")
                 task_id=task_id,
                 output={"enhanced_files": enhanced},
                 metrics={"enhanced_count": len(enhanced)},
-                files_affected=enhanced
+                files_affected=enhanced,
             )
         except Exception as e:
-            return TaskResult(
-                success=False,
-                task_id=task_id,
-                error=str(e)
-            )
+            return TaskResult(success=False, task_id=task_id, error=str(e))
 
     # ==================== REPORTING TASKS ====================
 
@@ -906,22 +861,18 @@ print(f"OpenAPI spec saved to {output_file}")
                 return TaskResult(
                     success=False,
                     task_id=task_id,
-                    error=f"Script not found: {script_path}"
+                    error=f"Script not found: {script_path}",
                 )
 
             result = subprocess.run(
                 ["python", str(script_path)],
                 capture_output=True,
                 text=True,
-                cwd=self.project_root
+                cwd=self.project_root,
             )
 
             if result.returncode != 0:
-                return TaskResult(
-                    success=False,
-                    task_id=task_id,
-                    error=result.stderr
-                )
+                return TaskResult(success=False, task_id=task_id, error=result.stderr)
 
             # Check if index was created
             index_file = self.docs_dir / "_generated" / "index.json"
@@ -930,20 +881,16 @@ print(f"OpenAPI spec saved to {output_file}")
             if index_file.exists():
                 with open(index_file) as f:
                     index = json.load(f)
-                    doc_count = len(index.get('documents', []))
+                    doc_count = len(index.get("documents", []))
 
             return TaskResult(
                 success=True,
                 task_id=task_id,
                 output={"index_file": str(index_file)},
-                metrics={"documents_indexed": doc_count}
+                metrics={"documents_indexed": doc_count},
             )
         except Exception as e:
-            return TaskResult(
-                success=False,
-                task_id=task_id,
-                error=str(e)
-            )
+            return TaskResult(success=False, task_id=task_id, error=str(e))
 
     def task_generate_dashboard(self, task_id: str, **kwargs) -> TaskResult:
         """Generate documentation dashboard."""
@@ -958,7 +905,7 @@ print(f"OpenAPI spec saved to {output_file}")
                 "validation_passed": 0,
                 "broken_links": 0,
                 "api_endpoints": 0,
-                "last_updated": datetime.now().isoformat()
+                "last_updated": datetime.now().isoformat(),
             }
 
             # Read various reports to populate metrics
@@ -967,7 +914,9 @@ print(f"OpenAPI spec saved to {output_file}")
                 with open(frontmatter_scan) as f:
                     data = json.load(f)
                     metrics["with_frontmatter"] = len(data.get("has_frontmatter", []))
-                    metrics["total_documents"] = metrics["with_frontmatter"] + len(data.get("missing_frontmatter", []))
+                    metrics["total_documents"] = metrics["with_frontmatter"] + len(
+                        data.get("missing_frontmatter", [])
+                    )
 
             links_report = self.reports_dir / "links_report.json"
             if links_report.exists():
@@ -995,48 +944,44 @@ print(f"OpenAPI spec saved to {output_file}")
     <div class="metrics">
         <div class="metric">
             <h3>Total Documents</h3>
-            <div class="value">{metrics['total_documents']}</div>
+            <div class="value">{metrics["total_documents"]}</div>
         </div>
         <div class="metric">
             <h3>With Frontmatter</h3>
-            <div class="value">{metrics['with_frontmatter']}</div>
+            <div class="value">{metrics["with_frontmatter"]}</div>
         </div>
         <div class="metric">
             <h3>Broken Links</h3>
-            <div class="value">{metrics['broken_links']}</div>
+            <div class="value">{metrics["broken_links"]}</div>
         </div>
         <div class="metric">
             <h3>API Endpoints</h3>
-            <div class="value">{metrics['api_endpoints']}</div>
+            <div class="value">{metrics["api_endpoints"]}</div>
         </div>
         <div class="metric">
             <h3>Validation Passed</h3>
-            <div class="value">{metrics['validation_passed']}</div>
+            <div class="value">{metrics["validation_passed"]}</div>
         </div>
         <div class="metric">
             <h3>Coverage</h3>
-            <div class="value">{round(metrics['with_frontmatter'] / max(metrics['total_documents'], 1) * 100)}%</div>
+            <div class="value">{round(metrics["with_frontmatter"] / max(metrics["total_documents"], 1) * 100)}%</div>
         </div>
     </div>
-    <div class="timestamp">Last updated: {metrics['last_updated']}</div>
+    <div class="timestamp">Last updated: {metrics["last_updated"]}</div>
 </body>
 </html>"""
 
-            with open(dashboard_file, 'w') as f:
+            with open(dashboard_file, "w") as f:
                 f.write(html_content)
 
             return TaskResult(
                 success=True,
                 task_id=task_id,
                 output={"dashboard_file": str(dashboard_file)},
-                metrics=metrics
+                metrics=metrics,
             )
         except Exception as e:
-            return TaskResult(
-                success=False,
-                task_id=task_id,
-                error=str(e)
-            )
+            return TaskResult(success=False, task_id=task_id, error=str(e))
 
     def task_generate_final_report(self, task_id: str, **kwargs) -> TaskResult:
         """Generate comprehensive final report."""
@@ -1047,22 +992,18 @@ print(f"OpenAPI spec saved to {output_file}")
                 return TaskResult(
                     success=False,
                     task_id=task_id,
-                    error=f"Script not found: {script_path}"
+                    error=f"Script not found: {script_path}",
                 )
 
             result = subprocess.run(
                 ["python", str(script_path)],
                 capture_output=True,
                 text=True,
-                cwd=self.project_root
+                cwd=self.project_root,
             )
 
             if result.returncode != 0:
-                return TaskResult(
-                    success=False,
-                    task_id=task_id,
-                    error=result.stderr
-                )
+                return TaskResult(success=False, task_id=task_id, error=result.stderr)
 
             # Check report files
             html_report = self.docs_dir / "_generated" / "doc_report.html"
@@ -1075,16 +1016,12 @@ print(f"OpenAPI spec saved to {output_file}")
                 task_id=task_id,
                 output={
                     "html_report": str(html_report) if html_report.exists() else None,
-                    "json_report": str(json_report) if json_report.exists() else None
+                    "json_report": str(json_report) if json_report.exists() else None,
                 },
-                metrics={"reports_generated": 2 if reports_exist else 0}
+                metrics={"reports_generated": 2 if reports_exist else 0},
             )
         except Exception as e:
-            return TaskResult(
-                success=False,
-                task_id=task_id,
-                error=str(e)
-            )
+            return TaskResult(success=False, task_id=task_id, error=str(e))
 
 
 # Task registry mapping task types to methods
@@ -1094,35 +1031,28 @@ TASK_REGISTRY = {
     "analyze_structure": "task_analyze_structure",
     "reorganize_docs": "task_reorganize_docs",
     "generate_redirects": "task_generate_redirects",
-
     # Metadata tasks
     "scan_frontmatter": "task_scan_frontmatter",
     "generate_frontmatter_batch": "task_generate_frontmatter_batch",
-
     # Validation tasks
     "validate_schema": "task_validate_schema",
     "check_freshness": "task_check_freshness",
-
     # API tasks
     "extract_openapi": "task_extract_openapi",
     "generate_api_docs": "task_generate_api_docs",
-
     # Link tasks
     "scan_links": "task_scan_links",
     "fix_internal_links": "task_fix_internal_links",
-
     # Security tasks
     "scan_secrets": "task_scan_secrets",
     "anonymize_sensitive": "task_anonymize_sensitive",
-
     # Quality tasks
     "analyze_quality": "task_analyze_quality",
     "enhance_content": "task_enhance_content",
-
     # Reporting tasks
     "generate_index": "task_generate_index",
     "generate_dashboard": "task_generate_dashboard",
-    "generate_final_report": "task_generate_final_report"
+    "generate_final_report": "task_generate_final_report",
 }
 
 
@@ -1135,9 +1065,7 @@ def execute_task(task: Dict, project_root: Path) -> TaskResult:
 
     if task_type not in TASK_REGISTRY:
         return TaskResult(
-            success=False,
-            task_id=task_id,
-            error=f"Unknown task type: {task_type}"
+            success=False, task_id=task_id, error=f"Unknown task type: {task_type}"
         )
 
     method_name = TASK_REGISTRY[task_type]

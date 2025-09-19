@@ -8,8 +8,6 @@ import re
 import sys
 from pathlib import Path
 from typing import Dict, List, Tuple
-import json
-import hashlib
 
 # Add project root to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -26,62 +24,51 @@ class DocumentAnonymizer:
         self.patterns = {
             # API Keys and Tokens
             "api_key": r'(?i)(api[_-]?key|apikey|api_token)[\s:=]+[\'"]?([a-zA-Z0-9_\-]{20,})[\'"]?',
-            "bearer_token": r'(?i)bearer\s+([a-zA-Z0-9_\-\.]{20,})',
+            "bearer_token": r"(?i)bearer\s+([a-zA-Z0-9_\-\.]{20,})",
             "auth_token": r'(?i)(auth[_-]?token|access[_-]?token)[\s:=]+[\'"]?([a-zA-Z0-9_\-\.]{20,})[\'"]?',
-
             # JWT Tokens
-            "jwt": r'eyJ[a-zA-Z0-9_\-]+\.eyJ[a-zA-Z0-9_\-]+\.[a-zA-Z0-9_\-]+',
-
+            "jwt": r"eyJ[a-zA-Z0-9_\-]+\.eyJ[a-zA-Z0-9_\-]+\.[a-zA-Z0-9_\-]+",
             # Database URLs
-            "postgres_url": r'postgres(?:ql)?://[^:]+:([^@]+)@[^/]+/[^\s]+',
-            "mongodb_url": r'mongodb(?:\+srv)?://[^:]+:([^@]+)@[^/]+/[^\s]+',
-            "redis_url": r'redis://(?::[^@]+@)?[^/]+(?:/\d+)?',
-
+            "postgres_url": r"postgres(?:ql)?://[^:]+:([^@]+)@[^/]+/[^\s]+",
+            "mongodb_url": r"mongodb(?:\+srv)?://[^:]+:([^@]+)@[^/]+/[^\s]+",
+            "redis_url": r"redis://(?::[^@]+@)?[^/]+(?:/\d+)?",
             # AWS
-            "aws_access_key": r'(?i)AWS[A-Z0-9]{16,}',
+            "aws_access_key": r"(?i)AWS[A-Z0-9]{16,}",
             "aws_secret": r'(?i)aws[_-]?secret[_-]?access[_-]?key[\s:=]+[\'"]?([a-zA-Z0-9/+=]{40})[\'"]?',
-
             # SSH Keys
-            "ssh_private": r'-----BEGIN (?:RSA |DSA |EC |OPENSSH )?PRIVATE KEY-----[\s\S]+?-----END (?:RSA |DSA |EC |OPENSSH )?PRIVATE KEY-----',
-
+            "ssh_private": r"-----BEGIN (?:RSA |DSA |EC |OPENSSH )?PRIVATE KEY-----[\s\S]+?-----END (?:RSA |DSA |EC |OPENSSH )?PRIVATE KEY-----",
             # Email addresses (be careful not to remove documentation emails)
-            "email": r'\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\b',
-
+            "email": r"\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\b",
             # IP Addresses
-            "ipv4": r'\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b',
-            "ipv6": r'(?:[0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}',
-
+            "ipv4": r"\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b",
+            "ipv6": r"(?:[0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}",
             # Credit Card Numbers
-            "credit_card": r'\b(?:\d[ -]*?){13,19}\b',
-
+            "credit_card": r"\b(?:\d[ -]*?){13,19}\b",
             # Social Security Numbers
-            "ssn": r'\b\d{3}-\d{2}-\d{4}\b',
-
+            "ssn": r"\b\d{3}-\d{2}-\d{4}\b",
             # Generic Secrets
             "secret": r'(?i)(secret|password|passwd|pwd)[\s:=]+[\'"]?([^\s\'"]+)[\'"]?',
             "private_key": r'(?i)(private[_-]?key)[\s:=]+[\'"]?([a-zA-Z0-9_\-]+)[\'"]?',
-
             # Environment Variables with values
-            "env_var": r'^([A-Z_]+)=([^\n]+)$',
-
+            "env_var": r"^([A-Z_]+)=([^\n]+)$",
             # Infisical/Vault paths
-            "infisical_path": r'(?i)/auth/[^\s]+',
+            "infisical_path": r"(?i)/auth/[^\s]+",
         }
 
         # Whitelist patterns (don't anonymize these)
         self.whitelist = [
-            r'example\.com',
-            r'localhost',
-            r'127\.0\.0\.1',
-            r'0\.0\.0\.0',
-            r'placeholder',
-            r'your[_-]?api[_-]?key',
-            r'<[^>]+>',  # Template variables
-            r'\$\{[^}]+\}',  # Template variables
-            r'XXX+',
-            r'abc123',
-            r'test@example\.com',
-            r'user@domain\.com',
+            r"example\.com",
+            r"localhost",
+            r"127\.0\.0\.1",
+            r"0\.0\.0\.0",
+            r"placeholder",
+            r"your[_-]?api[_-]?key",
+            r"<[^>]+>",  # Template variables
+            r"\$\{[^}]+\}",  # Template variables
+            r"XXX+",
+            r"abc123",
+            r"test@example\.com",
+            r"user@domain\.com",
         ]
 
         # Replacement mappings
@@ -103,12 +90,14 @@ class DocumentAnonymizer:
             "ssn": "XXX-XX-XXXX",
             "secret": "SECRET_REDACTED",
             "private_key": "PRIVATE_KEY_REDACTED",
-            "infisical_path": "/auth/REDACTED"
+            "infisical_path": "/auth/REDACTED",
         }
 
-    def anonymize_file(self, file_path: Path, dry_run: bool = True) -> Tuple[str, List[Dict]]:
+    def anonymize_file(
+        self, file_path: Path, dry_run: bool = True
+    ) -> Tuple[str, List[Dict]]:
         """Anonymize a single file."""
-        with open(file_path, 'r', encoding='utf-8') as f:
+        with open(file_path, "r", encoding="utf-8") as f:
             content = f.read()
 
         findings = []
@@ -124,13 +113,15 @@ class DocumentAnonymizer:
                     continue
 
                 # Record finding
-                line_num = content[:match.start()].count('\n') + 1
-                findings.append({
-                    "type": pattern_name,
-                    "line": line_num,
-                    "match": self._mask_sensitive(match.group(0)),
-                    "position": match.start()
-                })
+                line_num = content[: match.start()].count("\n") + 1
+                findings.append(
+                    {
+                        "type": pattern_name,
+                        "line": line_num,
+                        "match": self._mask_sensitive(match.group(0)),
+                        "position": match.start(),
+                    }
+                )
 
                 # Replace in content
                 replacement = self.replacements.get(pattern_name, "REDACTED")
@@ -138,9 +129,17 @@ class DocumentAnonymizer:
                     # Keep the key, replace the value
                     if match.lastindex and match.lastindex > 1:
                         key = match.group(1)
-                        anonymized = anonymized[:match.start()] + f"{key}={replacement}" + anonymized[match.end():]
+                        anonymized = (
+                            anonymized[: match.start()]
+                            + f"{key}={replacement}"
+                            + anonymized[match.end() :]
+                        )
                 else:
-                    anonymized = anonymized[:match.start()] + replacement + anonymized[match.end():]
+                    anonymized = (
+                        anonymized[: match.start()]
+                        + replacement
+                        + anonymized[match.end() :]
+                    )
 
         # Sort findings by position (reverse order for replacement)
         findings.sort(key=lambda x: x["position"], reverse=True)
@@ -168,7 +167,9 @@ class DocumentAnonymizer:
         else:
             return "***"
 
-    def scan_directory(self, directory: Path = None, file_pattern: str = "*.md") -> Dict[str, List[Dict]]:
+    def scan_directory(
+        self, directory: Path = None, file_pattern: str = "*.md"
+    ) -> Dict[str, List[Dict]]:
         """Scan directory for sensitive information."""
         if directory is None:
             directory = self.docs_dir
@@ -186,7 +187,9 @@ class DocumentAnonymizer:
 
         return all_findings
 
-    def anonymize_directory(self, directory: Path = None, output_dir: Path = None, dry_run: bool = True):
+    def anonymize_directory(
+        self, directory: Path = None, output_dir: Path = None, dry_run: bool = True
+    ):
         """Anonymize all files in directory."""
         if directory is None:
             directory = self.docs_dir
@@ -197,11 +200,7 @@ class DocumentAnonymizer:
         if not dry_run:
             output_dir.mkdir(parents=True, exist_ok=True)
 
-        results = {
-            "anonymized_files": [],
-            "total_findings": 0,
-            "findings_by_type": {}
-        }
+        results = {"anonymized_files": [], "total_findings": 0, "findings_by_type": {}}
 
         for file_path in directory.rglob("*.md"):
             # Skip generated files
@@ -214,16 +213,20 @@ class DocumentAnonymizer:
                 relative_path = file_path.relative_to(directory)
 
                 if dry_run:
-                    print(f"  Would anonymize: {relative_path} ({len(findings)} findings)")
+                    print(
+                        f"  Would anonymize: {relative_path} ({len(findings)} findings)"
+                    )
                 else:
                     # Save anonymized version
                     output_path = output_dir / relative_path
                     output_path.parent.mkdir(parents=True, exist_ok=True)
 
-                    with open(output_path, 'w', encoding='utf-8') as f:
+                    with open(output_path, "w", encoding="utf-8") as f:
                         f.write(anonymized_content)
 
-                    print(f"  Anonymized: {relative_path} -> {output_path.relative_to(self.project_root)}")
+                    print(
+                        f"  Anonymized: {relative_path} -> {output_path.relative_to(self.project_root)}"
+                    )
 
                 results["anonymized_files"].append(str(relative_path))
                 results["total_findings"] += len(findings)
@@ -251,13 +254,13 @@ class DocumentAnonymizer:
 
             # Check if it contains real values
             try:
-                with open(env_file, 'r') as f:
+                with open(env_file, "r") as f:
                     content = f.read()
 
                 real_values = []
-                for line in content.split('\n'):
-                    if '=' in line and not line.startswith('#'):
-                        key, value = line.split('=', 1)
+                for line in content.split("\n"):
+                    if "=" in line and not line.startswith("#"):
+                        key, value = line.split("=", 1)
                         if value and not self._is_whitelisted(value):
                             real_values.append(key)
 
@@ -274,31 +277,25 @@ def main():
     """Main function."""
     import argparse
 
-    parser = argparse.ArgumentParser(description='Anonymize sensitive information in documentation')
-    parser.add_argument(
-        '--scan',
-        action='store_true',
-        help='Scan for sensitive information without anonymizing'
+    parser = argparse.ArgumentParser(
+        description="Anonymize sensitive information in documentation"
     )
     parser.add_argument(
-        '--anonymize',
-        action='store_true',
-        help='Anonymize files (dry run by default)'
+        "--scan",
+        action="store_true",
+        help="Scan for sensitive information without anonymizing",
     )
     parser.add_argument(
-        '--execute',
-        action='store_true',
-        help='Execute anonymization (not dry run)'
+        "--anonymize", action="store_true", help="Anonymize files (dry run by default)"
     )
     parser.add_argument(
-        '--check-env',
-        action='store_true',
-        help='Check .env files for real values'
+        "--execute", action="store_true", help="Execute anonymization (not dry run)"
     )
     parser.add_argument(
-        '--output-dir',
-        type=Path,
-        help='Output directory for anonymized files'
+        "--check-env", action="store_true", help="Check .env files for real values"
+    )
+    parser.add_argument(
+        "--output-dir", type=Path, help="Output directory for anonymized files"
     )
 
     args = parser.parse_args()
@@ -315,7 +312,9 @@ def main():
             for file_path, file_findings in findings.items():
                 print(f"\n  {file_path}:")
                 for finding in file_findings[:3]:  # Show first 3
-                    print(f"    Line {finding['line']}: {finding['type']} - {finding['match']}")
+                    print(
+                        f"    Line {finding['line']}: {finding['type']} - {finding['match']}"
+                    )
                 if len(file_findings) > 3:
                     print(f"    ... and {len(file_findings) - 3} more")
         else:
@@ -326,16 +325,17 @@ def main():
         print(f"{'DRY RUN: ' if dry_run else ''}Anonymizing documentation...")
 
         results = anonymizer.anonymize_directory(
-            output_dir=args.output_dir,
-            dry_run=dry_run
+            output_dir=args.output_dir, dry_run=dry_run
         )
 
-        print(f"\n{'Would anonymize' if dry_run else 'Anonymized'} {len(results['anonymized_files'])} files")
+        print(
+            f"\n{'Would anonymize' if dry_run else 'Anonymized'} {len(results['anonymized_files'])} files"
+        )
         print(f"Total findings: {results['total_findings']}")
 
-        if results['findings_by_type']:
+        if results["findings_by_type"]:
             print("\nFindings by type:")
-            for finding_type, count in sorted(results['findings_by_type'].items()):
+            for finding_type, count in sorted(results["findings_by_type"].items()):
                 print(f"  {finding_type}: {count}")
 
         if dry_run:
@@ -346,7 +346,7 @@ def main():
         findings = anonymizer.check_env_files()
 
         if findings:
-            print(f"\n⚠️ Found .env files with real values:")
+            print("\n⚠️ Found .env files with real values:")
             for file_path, keys in findings.items():
                 print(f"  {file_path}:")
                 for key in keys[:5]:

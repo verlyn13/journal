@@ -7,7 +7,6 @@ Reorganizes docs into the new hierarchical structure while preserving links.
 import shutil
 import sys
 from pathlib import Path
-from typing import Dict, List, Tuple
 import re
 import json
 
@@ -47,7 +46,9 @@ class DocumentationReorganizer:
         # Create redirects file
         self._create_redirects()
 
-        print(f"\n{'Would reorganize' if self.dry_run else 'Reorganized'} {len(self.moves)} files")
+        print(
+            f"\n{'Would reorganize' if self.dry_run else 'Reorganized'} {len(self.moves)} files"
+        )
 
     def _create_directory_structure(self):
         """Create the new directory hierarchy."""
@@ -85,7 +86,7 @@ class DocumentationReorganizer:
             "_generated/changelog",
             "_generated/coverage",
             "_generated/metrics",
-            "_generated/reports"
+            "_generated/reports",
         ]
 
         for dir_path in directories:
@@ -107,44 +108,35 @@ class DocumentationReorganizer:
             r"DEPLOYMENT_AWARE_AUTH\.md": "architecture/security/deployment-aware-auth.md",
             r"architecture.*overview": "architecture/overview.md",
             r"editor.*architecture": "architecture/components/editor.md",
-
             # API documentation
             r"api.*contract.*guide": "api/contract-guide.md",
             r"api.*reference": "api/reference.md",
             r"guides/api.*": "api/",
-
             # Deployment files
             r"CI_.*\.md": "deployment/ci-cd/",
             r"ci-cd\.md": "deployment/ci-cd/pipeline.md",
             r"deployment.*": "deployment/",
             r"hosting.*secure": "deployment/environments/hosting-secure.md",
             r"dev-setup\.md": "deployment/environments/development.md",
-
             # Guides
             r"guides/getting-started": "guides/getting-started/",
             r"guides/authentication": "guides/development/authentication.md",
             r"guides/codemirror": "guides/development/codemirror-integration.md",
             r"guides/documentation.*": "guides/development/documentation/",
             r"guides/.*": "guides/",
-
             # Testing
             r"testing.*": "testing/",
             r"vitest.*": "testing/strategies/vitest.md",
-
             # Decisions (ADRs)
             r"adr/.*": "decisions/",
-
             # Reference
             r"error.*handling": "reference/errors/handling.md",
             r"configuration.*": "reference/configuration/",
-
             # Implementation phases (move to _generated/archive)
             r"implementation/\d+-phase-.*": "_generated/archive/phases/",
             r"status/.*": "_generated/archive/status/",
-
             # Editor upgrade docs
             r"editor-upgrade/.*": "guides/development/editor-upgrade/",
-
             # Documentation meta
             r"DOCUMENTATION_.*\.md": ".",  # Keep at root
             r"doc-upgrade\.md": ".",  # Keep at root
@@ -183,19 +175,19 @@ class DocumentationReorganizer:
     def _categorize_by_content(self, file_path: Path, relative_path: Path) -> Path:
         """Categorize file based on content analysis."""
         try:
-            with open(file_path, 'r', encoding='utf-8') as f:
+            with open(file_path, "r", encoding="utf-8") as f:
                 content = f.read().lower()
 
             # Analyze content for categorization
-            if 'api' in content and ('endpoint' in content or 'route' in content):
+            if "api" in content and ("endpoint" in content or "route" in content):
                 return Path("api") / file_path.name
-            elif 'architecture' in content or 'design' in content:
+            elif "architecture" in content or "design" in content:
                 return Path("architecture") / file_path.name
-            elif 'deploy' in content or 'vercel' in content or 'supabase' in content:
+            elif "deploy" in content or "vercel" in content or "supabase" in content:
                 return Path("deployment") / file_path.name
-            elif 'test' in content and ('pytest' in content or 'vitest' in content):
+            elif "test" in content and ("pytest" in content or "vitest" in content):
                 return Path("testing") / file_path.name
-            elif 'guide' in str(relative_path) or 'tutorial' in content:
+            elif "guide" in str(relative_path) or "tutorial" in content:
                 return Path("guides") / file_path.name
             else:
                 return Path("reference") / file_path.name
@@ -235,33 +227,27 @@ class DocumentationReorganizer:
         link_map = {}
         for src, dst in self.link_updates:
             # Handle various link formats
-            src_variations = [
-                str(src),
-                f"./{src}",
-                f"../{src}",
-                f"/{src}",
-                src.name
-            ]
+            src_variations = [str(src), f"./{src}", f"../{src}", f"/{src}", src.name]
             for variant in src_variations:
                 link_map[variant] = str(dst)
 
         # Update links in all markdown files
         for md_file in self.docs_dir.rglob("*.md"):
             updated = False
-            with open(md_file, 'r', encoding='utf-8') as f:
+            with open(md_file, "r", encoding="utf-8") as f:
                 content = f.read()
 
             # Update markdown links
             for old_path, new_path in link_map.items():
                 # Match [text](path) pattern
-                pattern = rf'\[([^\]]+)\]\({re.escape(old_path)}\)'
-                replacement = rf'[\1]({new_path})'
+                pattern = rf"\[([^\]]+)\]\({re.escape(old_path)}\)"
+                replacement = rf"[\1]({new_path})"
                 if re.search(pattern, content):
                     content = re.sub(pattern, replacement, content)
                     updated = True
 
             if updated:
-                with open(md_file, 'w', encoding='utf-8') as f:
+                with open(md_file, "w", encoding="utf-8") as f:
                     f.write(content)
                 print(f"  Updated links in: {md_file.relative_to(self.docs_dir)}")
 
@@ -287,28 +273,28 @@ This directory contains {description}.
         directories = {
             "architecture": {
                 "title": "Architecture Documentation",
-                "description": "system architecture and design documentation"
+                "description": "system architecture and design documentation",
             },
             "api": {
                 "title": "API Documentation",
-                "description": "API endpoint references and schemas"
+                "description": "API endpoint references and schemas",
             },
             "guides": {
                 "title": "Guides and Tutorials",
-                "description": "how-to guides and tutorials"
+                "description": "how-to guides and tutorials",
             },
             "deployment": {
                 "title": "Deployment Documentation",
-                "description": "deployment and infrastructure documentation"
+                "description": "deployment and infrastructure documentation",
             },
             "testing": {
                 "title": "Testing Documentation",
-                "description": "testing strategies and coverage reports"
+                "description": "testing strategies and coverage reports",
             },
             "reference": {
                 "title": "Reference Documentation",
-                "description": "technical reference materials"
-            }
+                "description": "technical reference materials",
+            },
         }
 
         for dir_name, meta in directories.items():
@@ -319,23 +305,25 @@ This directory contains {description}.
             # List contents
             contents = []
             for item in sorted(dir_path.iterdir()):
-                if item.is_dir() and not item.name.startswith('_'):
+                if item.is_dir() and not item.name.startswith("_"):
                     contents.append(f"- [{item.name}/](./{item.name}/)")
-                elif item.suffix == '.md' and item.name != 'README.md':
+                elif item.suffix == ".md" and item.name != "README.md":
                     contents.append(f"- [{item.stem}](./{item.name})")
 
             if contents:
                 index_content = index_template.format(
                     title=meta["title"],
                     description=meta["description"],
-                    contents='\n'.join(contents) if contents else "*(No documents yet)*"
+                    contents="\n".join(contents)
+                    if contents
+                    else "*(No documents yet)*",
                 )
 
                 index_file = dir_path / "README.md"
                 if self.dry_run:
                     print(f"  Would create index: {dir_name}/README.md")
                 else:
-                    with open(index_file, 'w') as f:
+                    with open(index_file, "w") as f:
                         f.write(index_content)
                     print(f"  Created index: {dir_name}/README.md")
 
@@ -343,14 +331,10 @@ This directory contains {description}.
         """Create a redirects mapping file for moved documents."""
         redirects = {
             "moved_files": [
-                {
-                    "old": str(src),
-                    "new": str(dst),
-                    "permanent": True
-                }
+                {"old": str(src), "new": str(dst), "permanent": True}
                 for src, dst in self.moves
             ],
-            "generated_at": Path(__file__).stat().st_mtime
+            "generated_at": Path(__file__).stat().st_mtime,
         }
 
         redirects_file = self.docs_dir / "_generated" / "redirects.json"
@@ -358,43 +342,44 @@ This directory contains {description}.
             print(f"\nWould create redirects file with {len(self.moves)} entries")
         else:
             redirects_file.parent.mkdir(parents=True, exist_ok=True)
-            with open(redirects_file, 'w') as f:
+            with open(redirects_file, "w") as f:
                 json.dump(redirects, f, indent=2)
-            print(f"\nCreated redirects file: {redirects_file.relative_to(self.docs_dir)}")
+            print(
+                f"\nCreated redirects file: {redirects_file.relative_to(self.docs_dir)}"
+            )
 
 
 def main():
     """Main function."""
     import argparse
 
-    parser = argparse.ArgumentParser(description='Reorganize documentation structure')
+    parser = argparse.ArgumentParser(description="Reorganize documentation structure")
     parser.add_argument(
-        '--execute',
-        action='store_true',
-        help='Execute the reorganization (default is dry run)'
+        "--execute",
+        action="store_true",
+        help="Execute the reorganization (default is dry run)",
     )
     parser.add_argument(
-        '--project-root',
+        "--project-root",
         type=Path,
         default=Path(__file__).parent.parent,
-        help='Project root directory'
+        help="Project root directory",
     )
 
     args = parser.parse_args()
 
     reorganizer = DocumentationReorganizer(
-        project_root=args.project_root,
-        dry_run=not args.execute
+        project_root=args.project_root, dry_run=not args.execute
     )
 
     reorganizer.reorganize()
 
     if not args.execute:
-        print("\n" + "="*60)
+        print("\n" + "=" * 60)
         print("This was a DRY RUN. No files were moved.")
         print("To execute the reorganization, run with --execute flag:")
         print("  uv run python scripts/reorganize_docs.py --execute")
-        print("="*60)
+        print("=" * 60)
 
 
 if __name__ == "__main__":

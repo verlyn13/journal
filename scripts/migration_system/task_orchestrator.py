@@ -8,27 +8,32 @@ import asyncio
 import sqlite3
 import json
 import multiprocessing as mp
-from multiprocessing import Process, Queue, Manager, Pool
-from queue import PriorityQueue, Empty
+from multiprocessing import Process, Queue, Manager
+from queue import Empty
 from pathlib import Path
-from typing import Dict, List, Set, Optional, Any, Tuple
+from typing import Dict, List, Set, Optional, Any
 from dataclasses import dataclass, field, asdict
 from datetime import datetime
 from enum import Enum
 import signal
 import sys
-import time
 import logging
-from contextlib import contextmanager
 
 # Add rich for beautiful progress monitoring
 try:
     from rich.console import Console
     from rich.table import Table
-    from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TimeElapsedColumn
+    from rich.progress import (
+        Progress,
+        SpinnerColumn,
+        TextColumn,
+        BarColumn,
+        TimeElapsedColumn,
+    )
     from rich.live import Live
     from rich.layout import Layout
     from rich.panel import Panel
+
     RICH_AVAILABLE = True
 except ImportError:
     RICH_AVAILABLE = False
@@ -36,14 +41,14 @@ except ImportError:
 
 # Configure logging
 logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
 logger = logging.getLogger(__name__)
 
 
 class TaskStatus(Enum):
     """Task execution status."""
+
     PENDING = "pending"
     QUEUED = "queued"
     RUNNING = "running"
@@ -55,6 +60,7 @@ class TaskStatus(Enum):
 
 class TaskPriority(Enum):
     """Task priority levels."""
+
     CRITICAL = 0  # Highest priority
     HIGH = 1
     MEDIUM = 2
@@ -65,6 +71,7 @@ class TaskPriority(Enum):
 @dataclass
 class Task:
     """Represents a migration task."""
+
     id: str
     type: str  # Task type (e.g., "backup_docs", "analyze_structure")
     priority: int = 50  # Higher priority = executed first
@@ -84,18 +91,28 @@ class Task:
         """Convert task to dictionary."""
         data = asdict(self)
         # Priority is already an int, no need for .value
-        data['status'] = self.status.value
-        data['started_at'] = self.started_at.isoformat() if self.started_at else None
-        data['completed_at'] = self.completed_at.isoformat() if self.completed_at else None
+        data["status"] = self.status.value
+        data["started_at"] = self.started_at.isoformat() if self.started_at else None
+        data["completed_at"] = (
+            self.completed_at.isoformat() if self.completed_at else None
+        )
         return data
 
     @classmethod
-    def from_dict(cls, data: Dict) -> 'Task':
+    def from_dict(cls, data: Dict) -> "Task":
         """Create task from dictionary."""
         # Priority is already an int, no need for TaskPriority enum
-        data['status'] = TaskStatus(data['status'])
-        data['started_at'] = datetime.fromisoformat(data['started_at']) if data.get('started_at') else None
-        data['completed_at'] = datetime.fromisoformat(data['completed_at']) if data.get('completed_at') else None
+        data["status"] = TaskStatus(data["status"])
+        data["started_at"] = (
+            datetime.fromisoformat(data["started_at"])
+            if data.get("started_at")
+            else None
+        )
+        data["completed_at"] = (
+            datetime.fromisoformat(data["completed_at"])
+            if data.get("completed_at")
+            else None
+        )
         return cls(**data)
 
 
@@ -110,21 +127,21 @@ class StateStore:
     def _init_db(self):
         """Initialize database schema."""
         cursor = self.conn.cursor()
-        cursor.execute('''
+        cursor.execute("""
             CREATE TABLE IF NOT EXISTS tasks (
                 id TEXT PRIMARY KEY,
                 data TEXT NOT NULL,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
-        ''')
-        cursor.execute('''
+        """)
+        cursor.execute("""
             CREATE TABLE IF NOT EXISTS state (
                 key TEXT PRIMARY KEY,
                 value TEXT NOT NULL,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
-        ''')
-        cursor.execute('''
+        """)
+        cursor.execute("""
             CREATE TABLE IF NOT EXISTS worker_logs (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 worker_id INTEGER,
@@ -133,22 +150,25 @@ class StateStore:
                 message TEXT,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
-        ''')
+        """)
         self.conn.commit()
 
     def save_task(self, task: Task):
         """Save task to database."""
         cursor = self.conn.cursor()
-        cursor.execute('''
+        cursor.execute(
+            """
             INSERT OR REPLACE INTO tasks (id, data, updated_at)
             VALUES (?, ?, CURRENT_TIMESTAMP)
-        ''', (task.id, json.dumps(task.to_dict())))
+        """,
+            (task.id, json.dumps(task.to_dict())),
+        )
         self.conn.commit()
 
     def load_task(self, task_id: str) -> Optional[Task]:
         """Load task from database."""
         cursor = self.conn.cursor()
-        cursor.execute('SELECT data FROM tasks WHERE id = ?', (task_id,))
+        cursor.execute("SELECT data FROM tasks WHERE id = ?", (task_id,))
         row = cursor.fetchone()
         if row:
             return Task.from_dict(json.loads(row[0]))
@@ -157,7 +177,7 @@ class StateStore:
     def load_all_tasks(self) -> List[Task]:
         """Load all tasks from database."""
         cursor = self.conn.cursor()
-        cursor.execute('SELECT data FROM tasks')
+        cursor.execute("SELECT data FROM tasks")
         tasks = []
         for row in cursor.fetchall():
             tasks.append(Task.from_dict(json.loads(row[0])))
@@ -166,16 +186,19 @@ class StateStore:
     def save_state(self, key: str, value: Any):
         """Save state value."""
         cursor = self.conn.cursor()
-        cursor.execute('''
+        cursor.execute(
+            """
             INSERT OR REPLACE INTO state (key, value, updated_at)
             VALUES (?, ?, CURRENT_TIMESTAMP)
-        ''', (key, json.dumps(value)))
+        """,
+            (key, json.dumps(value)),
+        )
         self.conn.commit()
 
     def load_state(self, key: str) -> Optional[Any]:
         """Load state value."""
         cursor = self.conn.cursor()
-        cursor.execute('SELECT value FROM state WHERE key = ?', (key,))
+        cursor.execute("SELECT value FROM state WHERE key = ?", (key,))
         row = cursor.fetchone()
         if row:
             return json.loads(row[0])
@@ -183,33 +206,40 @@ class StateStore:
 
     def update_statistics(self, stats: Dict[str, Any]):
         """Update statistics in state."""
-        self.save_state('statistics', stats)
+        self.save_state("statistics", stats)
 
     def get_statistics(self) -> Optional[Dict[str, Any]]:
         """Get statistics from state."""
-        return self.load_state('statistics')
+        return self.load_state("statistics")
 
     def get_incomplete_tasks(self) -> List[Task]:
         """Get all incomplete tasks."""
         cursor = self.conn.cursor()
-        cursor.execute('SELECT data FROM tasks')
+        cursor.execute("SELECT data FROM tasks")
         rows = cursor.fetchall()
 
         # Filter by status in the loaded data
         tasks = []
         for row in rows:
             task = Task.from_dict(json.loads(row[0]))
-            if task.status in [TaskStatus.PENDING, TaskStatus.FAILED, TaskStatus.RUNNING]:
+            if task.status in [
+                TaskStatus.PENDING,
+                TaskStatus.FAILED,
+                TaskStatus.RUNNING,
+            ]:
                 tasks.append(task)
         return tasks
 
     def log_worker(self, worker_id: int, task_id: str, level: str, message: str):
         """Log worker activity."""
         cursor = self.conn.cursor()
-        cursor.execute('''
+        cursor.execute(
+            """
             INSERT INTO worker_logs (worker_id, task_id, level, message)
             VALUES (?, ?, ?, ?)
-        ''', (worker_id, task_id, level, message))
+        """,
+            (worker_id, task_id, level, message),
+        )
         self.conn.commit()
 
     def close(self):
@@ -322,11 +352,11 @@ class TaskOrchestrator:
 
         # Shared state
         self.shared_state = self.manager.dict()
-        self.shared_state['status'] = 'initializing'
-        self.shared_state['start_time'] = datetime.now().isoformat()
-        self.shared_state['tasks_total'] = 0
-        self.shared_state['tasks_completed'] = 0
-        self.shared_state['tasks_failed'] = 0
+        self.shared_state["status"] = "initializing"
+        self.shared_state["start_time"] = datetime.now().isoformat()
+        self.shared_state["tasks_total"] = 0
+        self.shared_state["tasks_completed"] = 0
+        self.shared_state["tasks_failed"] = 0
 
         # Task management
         self.tasks: Dict[str, Task] = {}
@@ -358,7 +388,7 @@ class TaskOrchestrator:
             raise ValueError(f"Circular dependencies detected: {cycles}")
 
         # Update shared state
-        self.shared_state['tasks_total'] = len(self.tasks)
+        self.shared_state["tasks_total"] = len(self.tasks)
 
         # Save tasks to state store
         for task in task_definitions:
@@ -401,13 +431,20 @@ class TaskOrchestrator:
         for i in range(self.num_workers):
             worker = Process(
                 target=worker_process,
-                args=(i, self.task_queue, self.result_queue, self.control_queue, self.shared_state, self.project_root)
+                args=(
+                    i,
+                    self.task_queue,
+                    self.result_queue,
+                    self.control_queue,
+                    self.shared_state,
+                    self.project_root,
+                ),
             )
             worker.start()
             self.workers.append(worker)
 
-        self.shared_state['status'] = 'running'
-        self.shared_state['num_workers'] = self.num_workers
+        self.shared_state["status"] = "running"
+        self.shared_state["num_workers"] = self.num_workers
 
     def schedule_tasks(self):
         """Schedule ready tasks to queue."""
@@ -434,7 +471,7 @@ class TaskOrchestrator:
 
             # Start monitoring
             if RICH_AVAILABLE:
-                monitor_task = asyncio.create_task(self.monitor_progress())
+                asyncio.create_task(self.monitor_progress())
 
             # Main scheduling loop
             while True:
@@ -461,29 +498,31 @@ class TaskOrchestrator:
         while not self.result_queue.empty():
             try:
                 result = self.result_queue.get_nowait()
-                task_id = result['task_id']
+                task_id = result["task_id"]
                 task = self.tasks[task_id]
 
-                if result['status'] == 'completed':
+                if result["status"] == "completed":
                     task.status = TaskStatus.COMPLETED
                     task.completed_at = datetime.now()
-                    task.result = result.get('result')
+                    task.result = result.get("result")
                     self.dependency_resolver.mark_completed(task_id)
-                    self.shared_state['tasks_completed'] += 1
+                    self.shared_state["tasks_completed"] += 1
                     logger.info(f"Task completed: {task_id}")
 
-                elif result['status'] == 'failed':
+                elif result["status"] == "failed":
                     task.status = TaskStatus.FAILED
-                    task.error = result.get('error')
+                    task.error = result.get("error")
                     task.retry_count += 1
 
                     if task.retry_count < task.max_retries:
                         # Retry task
                         task.status = TaskStatus.PENDING
-                        logger.warning(f"Task failed, retrying ({task.retry_count}/{task.max_retries}): {task_id}")
+                        logger.warning(
+                            f"Task failed, retrying ({task.retry_count}/{task.max_retries}): {task_id}"
+                        )
                     else:
                         self.dependency_resolver.mark_failed(task_id)
-                        self.shared_state['tasks_failed'] += 1
+                        self.shared_state["tasks_failed"] += 1
                         logger.error(f"Task failed permanently: {task_id}")
 
                 self.state_store.save_task(task)
@@ -493,7 +532,11 @@ class TaskOrchestrator:
 
     def is_complete(self) -> bool:
         """Check if all tasks are complete."""
-        pending = sum(1 for t in self.tasks.values() if t.status in [TaskStatus.PENDING, TaskStatus.QUEUED, TaskStatus.RUNNING])
+        pending = sum(
+            1
+            for t in self.tasks.values()
+            if t.status in [TaskStatus.PENDING, TaskStatus.QUEUED, TaskStatus.RUNNING]
+        )
         return pending == 0
 
     async def monitor_progress(self):
@@ -507,17 +550,15 @@ class TaskOrchestrator:
             BarColumn(),
             TextColumn("[progress.percentage]{task.percentage:>3.0f}%"),
             TimeElapsedColumn(),
-            console=self.console
+            console=self.console,
         ) as progress:
-
             overall_task = progress.add_task(
-                "[cyan]Overall Progress",
-                total=self.shared_state['tasks_total']
+                "[cyan]Overall Progress", total=self.shared_state["tasks_total"]
             )
 
             while not self.is_complete():
-                completed = self.shared_state.get('tasks_completed', 0)
-                failed = self.shared_state.get('tasks_failed', 0)
+                completed = self.shared_state.get("tasks_completed", 0)
+                failed = self.shared_state.get("tasks_failed", 0)
 
                 progress.update(overall_task, completed=completed + failed)
 
@@ -529,7 +570,9 @@ class TaskOrchestrator:
 
                 status_counts = {}
                 for task in self.tasks.values():
-                    status_counts[task.status.value] = status_counts.get(task.status.value, 0) + 1
+                    status_counts[task.status.value] = (
+                        status_counts.get(task.status.value, 0) + 1
+                    )
 
                 for status, count in status_counts.items():
                     table.add_row("Tasks", status, str(count))
@@ -546,7 +589,7 @@ class TaskOrchestrator:
 
         # Signal workers to stop
         for _ in self.workers:
-            self.control_queue.put('STOP')
+            self.control_queue.put("STOP")
 
         # Wait for workers to finish
         for worker in self.workers:
@@ -555,53 +598,66 @@ class TaskOrchestrator:
                 worker.terminate()
 
         # Save final state
-        self.state_store.save_state('final_state', {
-            'completed': self.shared_state.get('tasks_completed', 0),
-            'failed': self.shared_state.get('tasks_failed', 0),
-            'end_time': datetime.now().isoformat()
-        })
+        self.state_store.save_state(
+            "final_state",
+            {
+                "completed": self.shared_state.get("tasks_completed", 0),
+                "failed": self.shared_state.get("tasks_failed", 0),
+                "end_time": datetime.now().isoformat(),
+            },
+        )
 
         # Close state store
         self.state_store.close()
 
-        self.shared_state['status'] = 'stopped'
+        self.shared_state["status"] = "stopped"
         logger.info("Orchestrator shutdown complete")
 
     def all_tasks_done(self) -> bool:
         """Check if all tasks are complete."""
         for task in self.tasks.values():
-            if task.status not in [TaskStatus.COMPLETED, TaskStatus.FAILED, TaskStatus.CANCELLED]:
+            if task.status not in [
+                TaskStatus.COMPLETED,
+                TaskStatus.FAILED,
+                TaskStatus.CANCELLED,
+            ]:
                 return False
         return True
 
     def get_statistics(self) -> Dict[str, int]:
         """Get current task statistics."""
         stats = {
-            'total': len(self.tasks),
-            'completed': 0,
-            'failed': 0,
-            'pending': 0,
-            'running': 0,
-            'blocked': 0
+            "total": len(self.tasks),
+            "completed": 0,
+            "failed": 0,
+            "pending": 0,
+            "running": 0,
+            "blocked": 0,
         }
 
         for task in self.tasks.values():
             if task.status == TaskStatus.COMPLETED:
-                stats['completed'] += 1
+                stats["completed"] += 1
             elif task.status == TaskStatus.FAILED:
-                stats['failed'] += 1
+                stats["failed"] += 1
             elif task.status == TaskStatus.PENDING:
-                stats['pending'] += 1
+                stats["pending"] += 1
             elif task.status == TaskStatus.RUNNING:
-                stats['running'] += 1
+                stats["running"] += 1
             elif task.status == TaskStatus.BLOCKED:
-                stats['blocked'] += 1
+                stats["blocked"] += 1
 
         return stats
 
 
-def worker_process(worker_id: int, task_queue: Queue, result_queue: Queue,
-                   control_queue: Queue, shared_state: dict, project_root: Path):
+def worker_process(
+    worker_id: int,
+    task_queue: Queue,
+    result_queue: Queue,
+    control_queue: Queue,
+    shared_state: dict,
+    project_root: Path,
+):
     """Worker process for executing tasks."""
     logger = logging.getLogger(f"Worker-{worker_id}")
     logger.info(f"Worker {worker_id} started")
@@ -610,7 +666,7 @@ def worker_process(worker_id: int, task_queue: Queue, result_queue: Queue,
         # Check for control messages
         try:
             control_msg = control_queue.get_nowait()
-            if control_msg == 'STOP':
+            if control_msg == "STOP":
                 logger.info(f"Worker {worker_id} received stop signal")
                 break
         except Empty:
@@ -626,13 +682,15 @@ def worker_process(worker_id: int, task_queue: Queue, result_queue: Queue,
             result = execute_task(task, project_root)
 
             # Send result back
-            result_queue.put({
-                'task_id': task.id,
-                'worker_id': worker_id,
-                'status': 'completed' if result['success'] else 'failed',
-                'result': result.get('output'),
-                'error': result.get('error')
-            })
+            result_queue.put(
+                {
+                    "task_id": task.id,
+                    "worker_id": worker_id,
+                    "status": "completed" if result["success"] else "failed",
+                    "result": result.get("output"),
+                    "error": result.get("error"),
+                }
+            )
 
         except Empty:
             continue
@@ -648,28 +706,20 @@ def execute_task(task: Task, project_root: Path) -> Dict[str, Any]:
 
     try:
         # Convert Task to dict for worker
-        task_dict = {
-            'id': task.id,
-            'type': task.type,
-            'params': task.params
-        }
+        task_dict = {"id": task.id, "type": task.type, "params": task.params}
 
         # Execute using worker library
         result = worker_execute(task_dict, project_root)
 
         return {
-            'success': result.success,
-            'output': result.output,
-            'error': result.error,
-            'metrics': result.metrics
+            "success": result.success,
+            "output": result.output,
+            "error": result.error,
+            "metrics": result.metrics,
         }
 
     except Exception as e:
-        return {
-            'success': False,
-            'output': None,
-            'error': str(e)
-        }
+        return {"success": False, "output": None, "error": str(e)}
 
 
 if __name__ == "__main__":
@@ -681,10 +731,19 @@ if __name__ == "__main__":
 
     # Define sample tasks
     test_tasks = [
-        Task(id="scan", name="Scan docs", category="discovery",
-             command="find docs -name '*.md' | wc -l"),
-        Task(id="list", name="List structure", category="discovery",
-             command="ls -la docs/", dependencies={"scan"}),
+        Task(
+            id="scan",
+            name="Scan docs",
+            category="discovery",
+            command="find docs -name '*.md' | wc -l",
+        ),
+        Task(
+            id="list",
+            name="List structure",
+            category="discovery",
+            command="ls -la docs/",
+            dependencies={"scan"},
+        ),
     ]
 
     orchestrator.load_tasks(test_tasks)

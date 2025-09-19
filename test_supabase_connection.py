@@ -3,8 +3,8 @@
 
 import asyncio
 import asyncpg
-import os
 from pathlib import Path
+
 
 async def test_connection():
     """Test database connection to Supabase."""
@@ -24,7 +24,7 @@ async def test_connection():
         return False
 
     print("📊 Testing Supabase database connection...")
-    print(f"🔗 Host: db.ecmnzrtsuajatmuahooa.supabase.co")
+    print("🔗 Host: db.ecmnzrtsuajatmuahooa.supabase.co")
 
     try:
         # Connect to database
@@ -32,7 +32,7 @@ async def test_connection():
 
         # Get PostgreSQL version
         version = await conn.fetchval("SELECT version()")
-        print(f"✅ Connected successfully!")
+        print("✅ Connected successfully!")
         print(f"📦 PostgreSQL version: {version.split(',')[0]}")
 
         # Check if pgvector is available
@@ -82,6 +82,7 @@ async def test_connection():
     except Exception as e:
         print(f"❌ Connection failed: {e}")
         return False
+
 
 if __name__ == "__main__":
     success = asyncio.run(test_connection())

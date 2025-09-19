@@ -17,9 +17,9 @@ def main():
     project_root = Path(__file__).parent.parent.parent
     library = WorkerTaskLibrary(project_root)
 
-    print("="*60)
+    print("=" * 60)
     print("Manual Documentation Migration")
-    print("="*60)
+    print("=" * 60)
 
     # Execute key tasks in order
     tasks = [
@@ -33,7 +33,7 @@ def main():
         ("generate_api_docs", "Generating API docs"),
         ("generate_index", "Generating documentation index"),
         ("generate_dashboard", "Generating dashboard"),
-        ("generate_final_report", "Generating final report")
+        ("generate_final_report", "Generating final report"),
     ]
 
     completed = 0
@@ -54,6 +54,7 @@ def main():
 
                     if scan_file.exists():
                         import json
+
                         with open(scan_file) as f:
                             scan_data = json.load(f)
                             files_to_process = scan_data.get("missing_frontmatter", [])
@@ -61,19 +62,22 @@ def main():
                         # Process in smaller batches to avoid issues
                         batch_size = 50
                         for i in range(0, len(files_to_process), batch_size):
-                            batch_files = files_to_process[i:i + batch_size]
-                            batch_id = f"batch_{i//batch_size}"
+                            batch_files = files_to_process[i : i + batch_size]
+                            batch_id = f"batch_{i // batch_size}"
 
                             result = library.task_generate_frontmatter_batch(
-                                batch_id,
-                                batch_files=batch_files
+                                batch_id, batch_files=batch_files
                             )
 
                             if not result.success:
-                                print(f"   Batch {i//batch_size} failed: {result.error}")
+                                print(
+                                    f"   Batch {i // batch_size} failed: {result.error}"
+                                )
                                 break
                             else:
-                                print(f"   Batch {i//batch_size}: {len(result.files_affected)} files processed")
+                                print(
+                                    f"   Batch {i // batch_size}: {len(result.files_affected)} files processed"
+                                )
 
                         result = scan_result  # Use scan result as overall result
                     else:
@@ -123,9 +127,9 @@ def main():
             print(f"   ❌ EXCEPTION ({elapsed:.1f}s): {e}")
             failed += 1
 
-    print("\n" + "="*60)
+    print("\n" + "=" * 60)
     print("Migration Summary")
-    print("="*60)
+    print("=" * 60)
     print(f"Completed: {completed}")
     print(f"Failed: {failed}")
     print(f"Total: {len(tasks)}")
@@ -149,16 +153,16 @@ def main():
         with_frontmatter = 0
         for md_file in md_files:
             try:
-                with open(md_file, 'r', encoding='utf-8') as f:
-                    if f.readline().strip() == '---':
+                with open(md_file, "r", encoding="utf-8") as f:
+                    if f.readline().strip() == "---":
                         with_frontmatter += 1
             except:
                 pass
 
-        print(f"\nDocumentation state:")
+        print("\nDocumentation state:")
         print(f"  Total files: {len(md_files)}")
         print(f"  With frontmatter: {with_frontmatter}")
-        print(f"  Coverage: {with_frontmatter/len(md_files)*100:.1f}%")
+        print(f"  Coverage: {with_frontmatter / len(md_files) * 100:.1f}%")
 
     else:
         print(f"\n⚠️  {failed} tasks failed. Check output above for details.")

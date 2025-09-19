@@ -63,7 +63,19 @@ async def get_auth_service(
     infisical_client = None
     if settings.infisical_enabled and settings.env == "production":
         try:
-            infisical_client = EnhancedInfisicalClient()
+            # Get token from environment or configuration
+            import os
+
+            token = os.getenv("INFISICAL_TOKEN", "")
+            if token:
+                infisical_client = EnhancedInfisicalClient(
+                    base_url=settings.infisical_server_url,
+                    token=token,
+                    redis=redis,
+                    cache_ttl=settings.infisical_cache_ttl,
+                    timeout=int(settings.infisical_timeout),
+                    max_retries=settings.infisical_max_retries,
+                )
         except Exception as e:
             # Log warning but continue with simple key manager
             import logging

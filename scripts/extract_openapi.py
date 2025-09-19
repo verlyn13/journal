@@ -14,7 +14,7 @@ openapi_spec = app.openapi()
 output_file = Path(__file__).parent.parent / "docs" / "api" / "openapi.json"
 output_file.parent.mkdir(parents=True, exist_ok=True)
 
-with open(output_file, 'w') as f:
+with open(output_file, "w") as f:
     json.dump(openapi_spec, f, indent=2)
 
 print(f"OpenAPI spec saved to {output_file}")

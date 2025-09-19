@@ -5,7 +5,7 @@ from __future__ import annotations
 from datetime import UTC, datetime
 import logging
 import os
-from typing import cast
+from typing import Any, cast
 from uuid import UUID
 
 from redis.asyncio import Redis
@@ -314,7 +314,7 @@ class SimpleKeyManager(KeyManager):
         self._runtime_next_key = None
         await self.redis.delete(self._next_key_cache)
 
-    async def verify_key_integrity(self) -> dict[str, any]:
+    async def verify_key_integrity(self) -> dict[str, Any]:
         """Verify the integrity of the key system.
 
         Returns:

@@ -7,7 +7,7 @@ Generates structured API documentation from FastAPI OpenAPI spec.
 import json
 import sys
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 from datetime import datetime
 import yaml
 
@@ -36,7 +36,7 @@ class OpenAPIToMarkdownGenerator:
                 title=app.title,
                 version=app.version,
                 description=app.description,
-                routes=app.routes
+                routes=app.routes,
             )
 
             return openapi_spec
@@ -53,11 +53,9 @@ class OpenAPIToMarkdownGenerator:
             "info": {
                 "title": "Journal API",
                 "version": "1.0.0",
-                "description": "Personal journaling application API"
+                "description": "Personal journaling application API",
             },
-            "servers": [
-                {"url": "/api/v1", "description": "API v1"}
-            ],
+            "servers": [{"url": "/api/v1", "description": "API v1"}],
             "paths": {},
             "components": {
                 "schemas": {},
@@ -65,10 +63,10 @@ class OpenAPIToMarkdownGenerator:
                     "bearerAuth": {
                         "type": "http",
                         "scheme": "bearer",
-                        "bearerFormat": "JWT"
+                        "bearerFormat": "JWT",
                     }
-                }
-            }
+                },
+            },
         }
 
         # Scan API route files
@@ -84,7 +82,6 @@ class OpenAPIToMarkdownGenerator:
     def _extract_routes_from_file(self, file_path: Path, spec: Dict):
         """Extract route information from a Python file."""
         resource = file_path.stem
-        base_path = f"/{resource}"
 
         # Common CRUD patterns
         if resource == "auth":
@@ -99,25 +96,27 @@ class OpenAPIToMarkdownGenerator:
                             "application/json": {
                                 "schema": {"$ref": "#/components/schemas/LoginRequest"}
                             }
-                        }
+                        },
                     },
                     "responses": {
                         "200": {
                             "description": "Successful login",
                             "content": {
                                 "application/json": {
-                                    "schema": {"$ref": "#/components/schemas/TokenResponse"}
+                                    "schema": {
+                                        "$ref": "#/components/schemas/TokenResponse"
+                                    }
                                 }
-                            }
+                            },
                         }
-                    }
+                    },
                 }
             }
             spec["paths"]["/auth/refresh"] = {
                 "post": {
                     "summary": "Refresh access token",
                     "tags": ["Authentication"],
-                    "security": [{"bearerAuth": []}]
+                    "security": [{"bearerAuth": []}],
                 }
             }
 
@@ -129,14 +128,14 @@ class OpenAPIToMarkdownGenerator:
                     "security": [{"bearerAuth": []}],
                     "parameters": [
                         {"name": "skip", "in": "query", "schema": {"type": "integer"}},
-                        {"name": "limit", "in": "query", "schema": {"type": "integer"}}
-                    ]
+                        {"name": "limit", "in": "query", "schema": {"type": "integer"}},
+                    ],
                 },
                 "post": {
                     "summary": "Create journal entry",
                     "tags": ["Entries"],
-                    "security": [{"bearerAuth": []}]
-                }
+                    "security": [{"bearerAuth": []}],
+                },
             }
             spec["paths"]["/entries/{entry_id}"] = {
                 "get": {
@@ -144,19 +143,24 @@ class OpenAPIToMarkdownGenerator:
                     "tags": ["Entries"],
                     "security": [{"bearerAuth": []}],
                     "parameters": [
-                        {"name": "entry_id", "in": "path", "required": True, "schema": {"type": "string"}}
-                    ]
+                        {
+                            "name": "entry_id",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        }
+                    ],
                 },
                 "put": {
                     "summary": "Update entry",
                     "tags": ["Entries"],
-                    "security": [{"bearerAuth": []}]
+                    "security": [{"bearerAuth": []}],
                 },
                 "delete": {
                     "summary": "Delete entry",
                     "tags": ["Entries"],
-                    "security": [{"bearerAuth": []}]
-                }
+                    "security": [{"bearerAuth": []}],
+                },
             }
 
     def generate_markdown(self, openapi_spec: Dict) -> Dict[str, str]:
@@ -173,7 +177,9 @@ class OpenAPIToMarkdownGenerator:
             markdown_files[filename] = content
 
         # Generate overview file
-        markdown_files["README.md"] = self._generate_overview_markdown(openapi_spec, paths_by_tag)
+        markdown_files["README.md"] = self._generate_overview_markdown(
+            openapi_spec, paths_by_tag
+        )
 
         return markdown_files
 
@@ -190,11 +196,9 @@ class OpenAPIToMarkdownGenerator:
                 for tag in tags:
                     if tag not in paths_by_tag:
                         paths_by_tag[tag] = []
-                    paths_by_tag[tag].append({
-                        "path": path,
-                        "method": method.upper(),
-                        "operation": operation
-                    })
+                    paths_by_tag[tag].append(
+                        {"path": path, "method": method.upper(), "operation": operation}
+                    )
 
         return paths_by_tag
 
@@ -210,7 +214,7 @@ class OpenAPIToMarkdownGenerator:
             "author": "API Generator",
             "tags": ["api", tag.lower().replace(" ", "-")],
             "priority": "high",
-            "status": "approved"
+            "status": "approved",
         }
 
         content = f"""---
@@ -273,9 +277,9 @@ Rate limit headers:
 
         content = f"""### {method} {path}
 
-**{operation.get('summary', 'No summary')}**
+**{operation.get("summary", "No summary")}**
 
-{operation.get('description', '')}
+{operation.get("description", "")}
 
 """
         # Operation ID
@@ -338,7 +342,9 @@ Rate limit headers:
                             content += "\n```\n\n"
                         elif "$ref" in schema_info.get("schema", {}):
                             ref = schema_info["schema"]["$ref"].split("/")[-1]
-                            content += f"Schema: [{ref}](#/components/schemas/{ref})\n\n"
+                            content += (
+                                f"Schema: [{ref}](#/components/schemas/{ref})\n\n"
+                            )
 
         content += "---\n\n"
         return content
@@ -356,24 +362,24 @@ Rate limit headers:
             "author": "API Generator",
             "tags": ["api", "reference", "overview"],
             "priority": "high",
-            "status": "approved"
+            "status": "approved",
         }
 
         content = f"""---
 {yaml.dump(frontmatter, default_flow_style=False)}---
 
-# {info.get('title', 'API')} Reference
+# {info.get("title", "API")} Reference
 
-Version: {info.get('version', '1.0.0')}
+Version: {info.get("version", "1.0.0")}
 
 ## Description
 
-{info.get('description', 'API documentation for the Journal application.')}
+{info.get("description", "API documentation for the Journal application.")}
 
 ## Base URL
 
 ```
-{spec.get('servers', [{'url': '/api/v1'}])[0]['url']}
+{spec.get("servers", [{"url": "/api/v1"}])[0]["url"]}
 ```
 
 ## Authentication
@@ -442,7 +448,7 @@ List endpoints support pagination:
             "missing_summaries": [],
             "missing_descriptions": [],
             "missing_examples": [],
-            "coverage_percentage": 0
+            "coverage_percentage": 0,
         }
 
         for path, methods in spec.get("paths", {}).items():
@@ -473,7 +479,9 @@ List endpoints support pagination:
                     coverage["missing_examples"].append(f"{method.upper()} {path}")
 
         if coverage["total_paths"] > 0:
-            coverage["coverage_percentage"] = (coverage["documented_paths"] / coverage["total_paths"]) * 100
+            coverage["coverage_percentage"] = (
+                coverage["documented_paths"] / coverage["total_paths"]
+            ) * 100
 
         return coverage
 
@@ -491,7 +499,7 @@ def main():
     # Save OpenAPI spec
     spec_file = project_root / "docs" / "api" / "openapi.json"
     spec_file.parent.mkdir(parents=True, exist_ok=True)
-    with open(spec_file, 'w') as f:
+    with open(spec_file, "w") as f:
         json.dump(openapi_spec, f, indent=2)
     print(f"  Saved OpenAPI spec to: {spec_file.relative_to(project_root)}")
 
@@ -504,7 +512,7 @@ def main():
     # Validate coverage
     coverage = generator.validate_coverage(openapi_spec)
 
-    print(f"\nAPI Documentation Coverage:")
+    print("\nAPI Documentation Coverage:")
     print(f"  Total endpoints: {coverage['total_paths']}")
     print(f"  Documented: {coverage['documented_paths']}")
     print(f"  Coverage: {coverage['coverage_percentage']:.1f}%")
@@ -516,12 +524,14 @@ def main():
         print(f"  Missing examples: {len(coverage['missing_examples'])}")
 
     # Save coverage report
-    coverage_file = project_root / "docs" / "_generated" / "reports" / "api_coverage.json"
+    coverage_file = (
+        project_root / "docs" / "_generated" / "reports" / "api_coverage.json"
+    )
     coverage_file.parent.mkdir(parents=True, exist_ok=True)
-    with open(coverage_file, 'w') as f:
+    with open(coverage_file, "w") as f:
         json.dump(coverage, f, indent=2)
 
-    print(f"\n✅ API documentation generated successfully!")
+    print("\n✅ API documentation generated successfully!")
 
 
 if __name__ == "__main__":

@@ -27,8 +27,12 @@ def normalize_content(text: str) -> str:
     text = re.sub(r"\b(?:uv\s+)+", "uv ", text)
 
     # 2) Collapse repeated '(managed by Bun)' phrases
-    text = re.sub(r"(\(managed by Bun\))(?:\s*\(managed by Bun\))+", r"\1", text,
-                  flags=re.IGNORECASE)
+    text = re.sub(
+        r"(\(managed by Bun\))(?:\s*\(managed by Bun\))+",
+        r"\1",
+        text,
+        flags=re.IGNORECASE,
+    )
 
     return text if text != original else original
 
@@ -60,4 +64,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-
