@@ -156,7 +156,9 @@ class JWKSService:
 
             # Update last modified time
             now = datetime.now(UTC)
-            await self.redis.setex(self._jwks_last_modified_key, self.CACHE_TTL, now.isoformat())
+            await self.redis.setex(
+                self._jwks_last_modified_key, self.CACHE_TTL, now.isoformat()
+            )
 
             # Store ETag
             etag = hashlib.sha256(response_json.encode()).hexdigest()

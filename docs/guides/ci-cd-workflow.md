@@ -1,3 +1,20 @@
+---
+id: ci-cd-workflow
+title: CI/CD Workflow Guide
+type: guide
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags:
+- python
+priority: medium
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 ***
 
 title: "CI/CD Workflow Guide"
@@ -48,7 +65,7 @@ This workflow enforces documentation quality by running markdown linting and lin
 
 **Jobs:**
 
-- **Lint Markdown & Check Links**: Runs both `npm run lint:md` and `npm run lint:links` to ensure documentation meets quality standards
+- **Lint Markdown & Check Links**: Runs both `bun run lint:md` and `bun run lint:links` to ensure documentation meets quality standards
 
 ### 2.2. Python Tests (`python-tests.yml`)
 
@@ -62,7 +79,7 @@ This workflow runs tests and linting for the Python codebase.
 
 **Jobs:**
 
-- **Run Tests & Linting**: Sets up Python, installs dependencies, runs flake8 for linting, and executes pytest with coverage reporting
+- **Run Tests & Linting**: Sets up Python, installs dependencies, runs Ruff for linting, and executes pytest with coverage reporting
 
 ### 2.3. Frontend Build (`frontend-build.yml`)
 
@@ -76,7 +93,7 @@ This workflow validates and builds the frontend assets.
 
 **Jobs:**
 
-- **Build Frontend Assets**: Sets up Node.js, installs dependencies, and builds the frontend assets using Rollup
+- **Build Frontend Assets**: Sets up Node.js, installs dependencies, and builds the frontend assets using Vite
 
 ### 2.4. Deploy Documentation (`deploy-docs.yml`)
 
@@ -113,7 +130,7 @@ The *source* documentation files reside in the `/docs` directory on the `main` b
 **Workflow Process:**
 
 1. The workflow checks out the code.
-2. It generates JSDoc API documentation (`npm run docs`).
+2. It generates JSDoc API documentation (`bun run docs`).
 3. It prepares a build directory (`_site`) containing source docs and generated API docs.
 4. This build directory is uploaded as a GitHub Pages artifact.
 5. The `deploy` job deploys this artifact to GitHub Pages.
@@ -142,7 +159,7 @@ To maintain code quality, configure branch protection rules for the `main` branc
 
 ### 5.4. Using the GitHub CLI (`gh`)
 
-Many CI/CD tasks, such as triggering workflows, viewing run logs, or managing releases, can be performed using the [GitHub CLI Developer Guide](gh-cli.md). Familiarizing yourself with `gh` can significantly streamline your development workflow.
+Many CI/CD tasks, such as triggering workflows, viewing run logs, or managing releases, can be performed using the GitHub CLI Developer Guide. Familiarizing yourself with `gh` can significantly streamline your development workflow.
 4\. Add the CI workflow status checks as required
 
 ### 5.2. Conventional Commits
@@ -193,7 +210,7 @@ If you need to set up these workflows manually in a new repository:
 
 - **Workflow didn't trigger**: Check the `paths` filter in the workflow file
 - **Documentation deployment failed**: Verify GitHub Pages permissions and settings
-- **Broken links detected**: Run `npm run lint:links` locally to identify and fix broken links
+- **Broken links detected**: Run `bun run lint:links` locally to identify and fix broken links
 - **Tests failing in CI but passing locally**: Check for environment-specific dependencies or issues
 
 ### 7.2. GitHub Actions Log Debugging

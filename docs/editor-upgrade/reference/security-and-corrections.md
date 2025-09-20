@@ -1,3 +1,23 @@
+---
+id: security-and-corrections
+title: Must-fix items
+type: api
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags:
+- api
+- python
+- react
+- fastapi
+priority: critical
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 The V2 plan closes a bunch of gaps—but a few things need tightening before you ship. Here’s a focused review with precise fixes, backed by primary docs.
 
 # Must-fix items
@@ -203,7 +223,7 @@ If you want, I can turn the above into the exact `MarkdownPreview.tsx`, CM6 setu
 
 [13]: https://github.com/tailwindlabs/tailwindcss-typography?utm_source=chatgpt.com "tailwindlabs/tailwindcss-typography"
 
-[14]: https://forge.univ-lyon1.fr/p2210733/portfolio/-/blob/main/node_modules/rehype-raw/readme.md?ref_type=heads&utm_source=chatgpt.com "node_modules/rehype-raw/readme.md · main"
+[14]: https://forge.univ-lyon1.fr/p2210733/portfolio/-/blob/main/node_modules (managed by Bun)/rehype-raw/readme.md?ref_type=heads&utm_source=chatgpt.com "node_modules (managed by Bun)/rehype-raw/readme.md · main"
 
 [15]: https://codemirror.net/examples/autocompletion/?utm_source=chatgpt.com "Example: Autocompletion"
 

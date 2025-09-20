@@ -48,7 +48,9 @@ class LoginRequest(BaseModel):
 class RefreshRequest(BaseModel):
     """Refresh token request."""
 
-    refresh_token: str | None = Field(None, description="Refresh token (if not in cookie)")
+    refresh_token: str | None = Field(
+        None, description="Refresh token (if not in cookie)"
+    )
 
 
 class M2MTokenRequest(BaseModel):
@@ -123,7 +125,9 @@ async def login(
     """
     # Find user by username or email
     result = await session.execute(
-        select(User).where((User.username == body.username) | (User.email == body.username))
+        select(User).where(
+            (User.username == body.username) | (User.email == body.username)
+        )
     )
     user = result.scalar_one_or_none()
 

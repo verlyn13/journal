@@ -1,3 +1,20 @@
+---
+id: agentic-workflow
+title: Agentic Orchestration Plan
+type: reference
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags:
+- python
+priority: medium
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 ***
 
 title: "Agentic Orchestration Plan for Flask Journal MVP"
@@ -16,27 +33,27 @@ tags: \["planning", "workflow", "agentic", "orchestration", "mvp", "flask", "roo
 
 ## MVP Orchestration Plan: Flask Journal System with Roo Code Automation
 
-**Project Goal:** Deliver the defined MVP (core CRUD, auth, SQLite, basic UI, systemd deployment) of the Flask Journal application, adhering strictly to the "lean and mean" philosophy and leveraging Roo Code automation effectively.
+**Project Goal:** Deliver the defined MVP (core CRUD, auth, PostgreSQL, basic UI, systemd deployment) of the Flask Journal application, adhering strictly to the "lean and mean" philosophy and leveraging Roo Code automation effectively.
 
 **Underlying Principle:** Roo Code acts as an intelligent, automated assistant, accelerating development by handling boilerplate, performing analysis, generating code/diffs, and executing commands, **always under expert human guidance and critical review.** The human developer remains the architect and quality gatekeeper.
 
 **Assumptions:**
 
-1. The **Detailed MVP Implementation Steps** (broken down from the [high-level guide](./mvp-high-level-implementation-guide.md)) have been created by the Major Project Architect and are available.
+1. The **Detailed MVP Implementation Steps** (broken down from the high-level guide) have been created by the Major Project Architect and are available.
 2. The target **Fedora environment** is set up with necessary base tools (Python, pip, git, systemd, Redis).
 3. Developers assigned have the prerequisite **technical skills and personality traits** outlined previously.
-4. Roo Code **[Custom Modes](../roo-code/custom-modes.md) and [Custom Instructions](../roo-code/custom-instructions.md)** (as recommended) are configured for the project workspace.
+4. Roo Code **Custom Modes and Custom Instructions** (as recommended) are configured for the project workspace.
 
 ### Roles & Responsibilities (Simulated for Workflow Clarity)
 
 1. **Lead Developer / Architect (Human):**
 
 - **Responsibilities:** Oversees the entire process, makes architectural decisions *within* MVP scope, defines micro-tasks based on the detailed implementation plan, crafts precise prompts for Roo, *critically reviews all Roo output* (code, diffs, plans, command executions), applies or approves application of changes, performs final verification, writes/reviews core tests, manages Git commits.
-- **Required Skills:** Deep Flask/Python/SQLAlchemy knowledge, systemd understanding, testing expertise, **Disciplined Scope Management**, **Implementation Precision**, **Structured Communication with Roo**, excellent **[Prompt Engineering](../roo-code/prompt-engineering-tips.md)**, critical review skills. Acts as the primary **Roo Operator**.
+- **Required Skills:** Deep Flask/Python/SQLAlchemy knowledge, systemd understanding, testing expertise, **Disciplined Scope Management**, **Implementation Precision**, **Structured Communication with Roo**, excellent **Prompt Engineering**, critical review skills. Acts as the primary **Roo Operator**.
 
 2. **Roo Code (AI Assistant):**
 
-- **Responsibilities:** Executes tasks as directed by the Lead Dev via prompts, utilizes its toolset ([`read_file`](../roo-code/read_file-tool.md), [`write_to_file`](../roo-code/write_to_file-tool.md), [`apply_diff`](../roo-code/apply_diff-tool.md), [`execute_command`](../roo-code/execute_command-tool.md), [`list_files`](../roo-code/list_files-tool.md), etc. - see [Tool Overview](../roo-code/tool-use-overview.md)) to interact with the codebase and environment, generates code snippets/diffs/files, performs analysis ([`list_code_definition_names`](../roo-code/list_code_definition_names-tool.md)), asks clarifying questions ([`ask_followup_question`](../roo-code/ask_followup_question-tool.md)), executes commands, attempts task completion ([`attempt_completion`](../roo-code/attempt_completion-tool.md)). Operates within the constraints defined by custom modes and instructions.
+- **Responsibilities:** Executes tasks as directed by the Lead Dev via prompts, utilizes its toolset (`read_file`, `write_to_file`, `apply_diff`, `execute_command`, `list_files`, etc. - see Tool Overview) to interact with the codebase and environment, generates code snippets/diffs/files, performs analysis (`list_code_definition_names`), asks clarifying questions (`ask_followup_question`), executes commands, attempts task completion (`attempt_completion`). Operates within the constraints defined by custom modes and instructions.
 
 3. **Quality Assurance (Human - Integrated Role):**
 
@@ -53,12 +70,12 @@ This workflow follows the **Staged MVP Implementation Guide**, applying Roo Code
 
 - Identify the *precise* goal for the current micro-task from the Architect's detailed breakdown (e.g., "Define the `User` model class structure in `app/models/user.py`").
 - Determine the best Roo tools (`write_to_file` for new file, `apply_diff` for modification, `execute_command`, etc.).
-- Select the appropriate Roo **[Custom Mode](../roo-code/custom-modes.md)** (e.g., `flask-lead-architect`, `db-designer-mode`).
+- Select the appropriate Roo **Custom Mode** (e.g., `flask-lead-architect`, `db-designer-mode`).
 
 2. **Prompt Crafting (Lead Dev -> Roo):**
 
-- Provide clear, concise instructions to Roo in the selected mode. See [Prompt Engineering Tips](../roo-code/prompt-engineering-tips.md).
-- **Context is Key:** Specify file paths ([`@` mentions](../roo-code/context-mentions.md)), existing code context (if modifying), function/class names, required imports, **MVP constraints** (e.g., "Generate only the `User` model, exclude preference/draft relationships for MVP").
+- Provide clear, concise instructions to Roo in the selected mode. See Prompt Engineering Tips.
+- **Context is Key:** Specify file paths (`@` mentions), existing code context (if modifying), function/class names, required imports, **MVP constraints** (e.g., "Generate only the `User` model, exclude preference/draft relationships for MVP").
 - **Desired Output:** Clearly state whether Roo should generate a full file (`write_to_file`), a diff (`apply_diff` plan), a code snippet, or execute a command.
 - *Example Prompt (for User Model):* "In mode `db-designer-mode`, using `write_to_file` for `app/models/user.py`: Create the SQLAlchemy `User` model. Include imports for `db`, `UserMixin`, `generate_password_hash`, `check_password_hash`, `datetime`. Define columns: `id` (PK), `username` (String 80, unique, non-null), `email` (String 120, unique, non-null), `password_hash` (String 256, non-null), `created_at` (DateTime, default utcnow). Implement `set_password` using `generate_password_hash(method='argon2')` and `check_password`. Add a basic `__repr__`. **MVP Constraint:** Do *not* add `is_active` or `last_login` yet. Do *not* add relationships."
 
@@ -66,7 +83,7 @@ This workflow follows the **Staged MVP Implementation Guide**, applying Roo Code
 
 - Roo analyzes the request within the mode's constraints.
 - May use `read_file` or `list_files` for context.
-- May [`ask_followup_question`](../roo-code/ask_followup_question-tool.md) if ambiguity exists.
+- May `ask_followup_question` if ambiguity exists.
 - Generates the requested output: a plan for `write_to_file`, a diff block for `apply_diff`, or a plan for `execute_command`.
 
 4. **CRITICAL REVIEW (Lead Dev):**
@@ -106,32 +123,32 @@ This workflow follows the **Staged MVP Implementation Guide**, applying Roo Code
 
 **Tool Usage Strategy within Workflow:**
 
-- **[`write_to_file`](../roo-code/write_to_file-tool.md):** Best for creating *new* files (configs, initial model/service/route/test skeletons). Requires **thorough review** of the *entire* generated content.
-- **[`apply_diff`](../roo-code/apply_diff-tool.md) / [Fast Edits](../roo-code/fast-edits.md):** Preferred method for *modifying existing* files. Allows precise, targeted changes. Requires **meticulous review** of search/replace blocks before approval. Ideal for adding methods, fixing bugs, implementing features incrementally.
-- **Read Tools** ([`list_files`](../roo-code/list_files-tool.md), [`read_file`](../roo-code/read_file-tool.md), [`list_code_definition_names`](../roo-code/list_code_definition_names-tool.md), [`search_files`](../roo-code/search_files-tool.md)): Used by Roo for context gathering or by the Lead Dev (via prompts) to understand the current state before planning modifications.
-- **[`execute_command`](../roo-code/execute_command-tool.md):** Use with **extreme caution**. Best for running well-understood, safe commands like `pip install`, `flask db upgrade`, `pytest`, `git status`. Review the exact command *before* execution. Avoid complex shell pipelines or commands with destructive potential unless absolutely necessary and fully understood.
-- **[`ask_followup_question`](../roo-code/ask_followup_question-tool.md):** Essential for interactive clarification between Lead Dev and Roo.
-- **[`new_task`](../roo-code/new_task-tool.md) / [Boomerang Tasks](../roo-code/boomerang-tasks.md):** Less critical for the linear MVP, but could be used if a specific sub-problem requires a temporary mode switch (e.g., switching to `debug-mode` to analyze a test failure, then returning).
-- **[`attempt_completion`](../roo-code/attempt_completion-tool.md):** Used by Roo to signal it believes a task segment is done. Triggers the Lead Dev's review/verification cycle.
+- **`write_to_file`:** Best for creating *new* files (configs, initial model/service/route/test skeletons). Requires **thorough review** of the *entire* generated content.
+- **`apply_diff` / Fast Edits:** Preferred method for *modifying existing* files. Allows precise, targeted changes. Requires **meticulous review** of search/replace blocks before approval. Ideal for adding methods, fixing bugs, implementing features incrementally.
+- **Read Tools** (`list_files`, `read_file`, `list_code_definition_names`, `search_files`): Used by Roo for context gathering or by the Lead Dev (via prompts) to understand the current state before planning modifications.
+- **`execute_command`:** Use with **extreme caution**. Best for running well-understood, safe commands like `uv pip install`, `flask db upgrade`, `uv run pytest`, `git status`. Review the exact command *before* execution. Avoid complex shell pipelines or commands with destructive potential unless absolutely necessary and fully understood.
+- **`ask_followup_question`:** Essential for interactive clarification between Lead Dev and Roo.
+- **`new_task` / Boomerang Tasks:** Less critical for the linear MVP, but could be used if a specific sub-problem requires a temporary mode switch (e.g., switching to `debug-mode` to analyze a test failure, then returning).
+- **`attempt_completion`:** Used by Roo to signal it believes a task segment is done. Triggers the Lead Dev's review/verification cycle.
 - **MCP Tools:** **Not used** for MVP implementation as per prior analysis.
 
 ### Roo Configuration Strategy
 
-1. **`.roorules` / [Custom Instructions](../roo-code/custom-instructions.md):**
+1. **`.roorules` / Custom Instructions:**
 
 - Load the recommended custom instructions globally or for the workspace.
 - Emphasize MVP scope constraints, coding standards, verification needs, and the "lean" philosophy.
 
-2. **[Custom Modes](../roo-code/custom-modes.md):**
+2. **Custom Modes:**
 
 - Implement the suggested modes (`flask-lead-architect`, `db-designer-mode`, `auth-specialist-mode`, `test-writer-mode`) with appropriate `roleDefinition`, restricted tool `groups` (e.g., testing mode might not need `execute_command`), and tailored `customInstructions`.
-- The Lead Dev explicitly selects the relevant mode when prompting Roo for specific tasks using [Mode Switching](../roo-code/using-modes.md).
+- The Lead Dev explicitly selects the relevant mode when prompting Roo for specific tasks using Mode Switching.
 
 ### Verification & Quality Assurance
 
 - Verification steps defined in the Architect's detailed breakdown are executed *after each micro-task*.
-- Unit and integration tests are written *concurrently* with feature implementation. See [Testing Strategy Guide: Flask Journal System](./testing.md).
-- The full test suite (`pytest`) is run frequently, especially before commits.
+- Unit and integration tests are written *concurrently* with feature implementation. See Testing Strategy Guide: Flask Journal System.
+- The full test suite (`uv run pytest`) is run frequently, especially before commits.
 - Code reviews (even if self-review by the Lead Dev for MVP) focus on correctness, security, MVP adherence, and style.
 
 ***

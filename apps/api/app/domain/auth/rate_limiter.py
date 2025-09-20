@@ -57,7 +57,9 @@ class AuthRateLimiter:
             return await value
         return value
 
-    async def check_rate_limit(self, action: str, identifier: str) -> tuple[bool, int | None]:
+    async def check_rate_limit(
+        self, action: str, identifier: str
+    ) -> tuple[bool, int | None]:
         """Check if an action is rate limited.
 
         Args:
@@ -144,7 +146,8 @@ class AuthRateLimiter:
                     ip_address=ip_address,
                 )
             except (TimeoutError, RedisError, RuntimeError, ValueError) as e:
-                # Do not fail the request if audit logging is unavailable or FK not present
+                # Do not fail the request if audit logging is unavailable or FK
+                # not present
                 self._logger.debug("Audit log event failed for rate limiter: %s", e)
 
         # Track failure patterns for anomaly detection

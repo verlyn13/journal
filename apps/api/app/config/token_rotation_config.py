@@ -21,12 +21,16 @@ ACCESS_JWT_REFRESH_AT: Final[timedelta] = timedelta(minutes=7)  # Refresh at 7-8
 # Refresh Token
 REFRESH_TOKEN_TTL: Final[timedelta] = timedelta(days=14)  # 14 days sliding window
 REFRESH_TOKEN_SINGLE_USE: Final[bool] = True  # One-time use only
-REFRESH_TOKEN_REUSE_DETECTION_TTL: Final[timedelta] = timedelta(hours=24)  # Detection window
+REFRESH_TOKEN_REUSE_DETECTION_TTL: Final[timedelta] = timedelta(
+    hours=24
+)  # Detection window
 
 # Session Cookie
 SESSION_IDLE_TIMEOUT: Final[timedelta] = timedelta(minutes=30)  # 30 min idle
 SESSION_HARD_LIMIT: Final[timedelta] = timedelta(hours=12)  # 12 hour absolute max
-SESSION_ROTATION_INTERVAL: Final[timedelta] = timedelta(minutes=15)  # Rotate every 15 min
+SESSION_ROTATION_INTERVAL: Final[timedelta] = timedelta(
+    minutes=15
+)  # Rotate every 15 min
 
 # M2M Token
 M2M_TOKEN_DEFAULT_TTL: Final[timedelta] = timedelta(minutes=30)  # 30 min default
@@ -35,7 +39,9 @@ M2M_TOKEN_MAX_TTL: Final[timedelta] = timedelta(hours=1)  # 1 hour maximum
 
 # Service Token (CI/Bootstrap)
 SERVICE_TOKEN_TTL: Final[timedelta] = timedelta(days=30)  # 30 days max
-SERVICE_TOKEN_OVERLAP: Final[timedelta] = timedelta(hours=24)  # 24h overlap during rotation
+SERVICE_TOKEN_OVERLAP: Final[timedelta] = timedelta(
+    hours=24
+)  # 24h overlap during rotation
 
 # ============================================================================
 # Key Rotation Configuration
@@ -43,13 +49,17 @@ SERVICE_TOKEN_OVERLAP: Final[timedelta] = timedelta(hours=24)  # 24h overlap dur
 
 # JWT Signing Keys (EdDSA/Ed25519)
 JWT_KEY_ROTATION_INTERVAL: Final[timedelta] = timedelta(days=60)  # Rotate every 60 days
-JWT_KEY_OVERLAP_WINDOW: Final[timedelta] = timedelta(minutes=20)  # 20 min overlap minimum
+JWT_KEY_OVERLAP_WINDOW: Final[timedelta] = timedelta(
+    minutes=20
+)  # 20 min overlap minimum
 JWT_KEY_WARNING_THRESHOLD: Final[timedelta] = timedelta(days=50)  # Warn at 50 days
 JWT_KEY_CRITICAL_THRESHOLD: Final[timedelta] = timedelta(days=55)  # Critical at 55 days
 
 # AES-GCM Encryption Keys
 AES_KEY_ROTATION_INTERVAL: Final[timedelta] = timedelta(days=90)  # Rotate every 90 days
-AES_KEY_READ_OVERLAP: Final[timedelta] = timedelta(hours=48)  # 48h dual-key read support
+AES_KEY_READ_OVERLAP: Final[timedelta] = timedelta(
+    hours=48
+)  # 48h dual-key read support
 AES_KEY_WARNING_THRESHOLD: Final[timedelta] = timedelta(days=80)  # Warn at 80 days
 AES_KEY_CRITICAL_THRESHOLD: Final[timedelta] = timedelta(days=85)  # Critical at 85 days
 

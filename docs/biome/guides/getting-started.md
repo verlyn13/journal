@@ -1,3 +1,19 @@
+---
+id: getting-started
+title: GETTING STARTED
+type: guide
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags: []
+priority: medium
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 # GETTING STARTED
 
 *Source: <https://biomejs.dev/guides/getting-started>*
@@ -13,11 +29,11 @@
 
 also available as a [standalone executable](/guides/manual-installation) that doesn’t require Node.js.
 
-- [  npm ](#tab-panel-152)
+- [  bun ](#tab-panel-152)
 - [  pnpm ](#tab-panel-153)
 - [  bun ](#tab-panel-154)
 - [  deno ](#tab-panel-155)
-- [  yarn ](#tab-panel-156)
+- [  bun ](#tab-panel-156)
 
   ```
   ```
@@ -62,11 +78,11 @@ for more information about [why pinning the version is important](/internals/ver
 Although Biome can run with zero configuration, you’ll likely want to tweak some
 settings to suit your project’s needs, in which case you can run the following
 command to generate a `biome.json` configuration file.
-   -  [  npm ](#tab-panel-157)
+   -  [  bun ](#tab-panel-157)
 -  [  pnpm ](#tab-panel-158)
 -  [  bun ](#tab-panel-159)
 -  [  deno ](#tab-panel-160)
--  [  yarn ](#tab-panel-161)
+-  [  bun ](#tab-panel-161)
 
      ```
 1npx @biomejs/biome init
@@ -106,11 +122,11 @@ Lets get a quick overview of how to use Biome in your project.
 [Section titled “Command-line interface”](#command-line-interface)
 Biome provides a [command-line interface](/reference/cli) to format, lint, and check your code.
 
-- [  npm ](#tab-panel-162)
+- [  bun ](#tab-panel-162)
 - [  pnpm ](#tab-panel-163)
 - [  bun ](#tab-panel-164)
 - [  deno ](#tab-panel-165)
-- [  yarn ](#tab-panel-166)
+- [  bun ](#tab-panel-166)
 
   ```
   ```
@@ -124,7 +140,7 @@ Biome provides a [command-line interface](/reference/cli) to format, lint, and c
 
 ````
 
-# Lint files and apply safe fixes to all filesnpx @biomejs/biome lint --write# Lint files and apply safe fixes to specific filesnpx @biomejs/biome lint --write # Format, lint, and organize imports of all filesnpx @biomejs/biome check --write# Format, lint, and organize imports of specific filesnpx @biomejs/biome check --write ">  ```
+# Lint files and apply safe fixes to all filesbunx @biomejs/biome lint --write# Lint files and apply safe fixes to specific filesbunx @biomejs/biome lint --write # Format, lint, and organize imports of all filesbunx @biomejs/biome check --write# Format, lint, and organize imports of specific filesbunx @biomejs/biome check --write ">  ```
 1# Format all files2pnpm exec biome format --write3
 4# Format specific files5pnpm exec biome format --write &#x3C;files>6
 7# Lint and apply safe fixes to all files8pnpm exec biome lint --write9
@@ -162,7 +178,7 @@ Biome provides a [command-line interface](/reference/cli) to format, lint, and c
 
 ```
 
-# Lint files and apply safe fixes to all filesyarn exec biome lint --write# Lint files and apply safe fixes to specific filesyarn exec biome lint --write # Format, lint, and organize imports of all filesyarn exec biome check --write# Format, lint, and organize imports of specific filesyarn exec biome check --write ">
+# Lint files and apply safe fixes to all filesbun exec biome lint --write# Lint files and apply safe fixes to specific filesbun exec biome lint --write # Format, lint, and organize imports of all filesbun exec biome check --write# Format, lint, and organize imports of specific filesbun exec biome check --write ">
 ### Editor integrations
 
 [Section titled “Editor integrations”](#editor-integrations)
@@ -195,7 +211,7 @@ See the [Continuous Integration](/recipes/continuous-integration) recipes for mo
 [Section titled “Next Steps”](#next-steps)
 Success! You’re now ready to use Biome. 🥳
 
-- [Migrate from ESLint and Prettier](/guides/migrate-eslint-prettier)
+- [Migrate from Biome and Biome](/guides/migrate-Biome-Biome)
 
 - Learn more about how to [configure Biome](/guides/configure-biome)
 

@@ -100,7 +100,9 @@ class TestInfisicalSecretsClientIntegration:
 
         try:
             # Store secret
-            await infisical_client.store_secret(test_path, test_value, SecretType.API_KEY)
+            await infisical_client.store_secret(
+                test_path, test_value, SecretType.API_KEY
+            )
 
             # Fetch secret
             fetched_value = await infisical_client.fetch_secret(test_path)
@@ -111,7 +113,9 @@ class TestInfisicalSecretsClientIntegration:
             assert cached_value == test_value
 
             # Force refresh
-            fresh_value = await infisical_client.fetch_secret(test_path, force_refresh=True)
+            fresh_value = await infisical_client.fetch_secret(
+                test_path, force_refresh=True
+            )
             assert fresh_value == test_value
 
         finally:

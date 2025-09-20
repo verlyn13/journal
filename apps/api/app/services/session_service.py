@@ -276,7 +276,9 @@ class SessionService:
         session_data.elevation_expires = datetime.now(UTC) + duration
 
         # Rotate session on privilege change
-        session_data = await self.rotate_session(session_data, response, "privilege_elevation")
+        session_data = await self.rotate_session(
+            session_data, response, "privilege_elevation"
+        )
 
         # Store updated session
         await self._store_session(session_data)
@@ -396,7 +398,9 @@ class SessionService:
         value = json.dumps(session_data.to_dict())
 
         # Use shorter of idle timeout or remaining hard limit
-        remaining_hard_limit = SESSION_HARD_LIMIT - (datetime.now(UTC) - session_data.created_at)
+        remaining_hard_limit = SESSION_HARD_LIMIT - (
+            datetime.now(UTC) - session_data.created_at
+        )
         ttl = min(SESSION_IDLE_TIMEOUT, remaining_hard_limit)
 
         await self.redis.setex(key, int(ttl.total_seconds()), value)

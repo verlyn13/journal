@@ -1,3 +1,21 @@
+---
+id: documentation-specialist-role
+title: Documentation Specialist Role
+type: api
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags:
+- api
+- python
+priority: high
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 ***
 
 title: "Documentation Specialist Role"
@@ -80,7 +98,7 @@ When improving markdown files, follow these principles:
 
 ### Primary Tools
 
-- **JSDoc:** For JavaScript code documentation (`npm run docs`)
+- **JSDoc:** For JavaScript code documentation (`bun run docs`)
 - **Markdown Linters:** For enforcing consistent formatting
 - **Link Validators:** For checking cross-reference integrity
 - **Diagram Generators:** For creating visual documentation aids

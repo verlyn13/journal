@@ -24,13 +24,18 @@ class TestEntriesQuality:
         """Test that partial updates don't corrupt existing data."""
         # Start with a complete entry
         entry_id = str(sample_entry.id)
-        original_response = await client.get(f"/api/v1/entries/{entry_id}", headers=auth_headers)
+        original_response = await client.get(
+            f"/api/v1/entries/{entry_id}", headers=auth_headers
+        )
         original_data = original_response.json()
 
         # Update only the title
         update_response = await client.put(
             f"/api/v1/entries/{entry_id}",
-            json={"title": "Updated Title Only", "expected_version": original_data["version"]},
+            json={
+                "title": "Updated Title Only",
+                "expected_version": original_data["version"],
+            },
             headers=auth_headers,
         )
         assert update_response.status_code == 200
@@ -71,7 +76,10 @@ class TestEntriesQuality:
         current = await client.get(f"/api/v1/entries/{entry_id}", headers=auth_headers)
         title_response = await client.put(
             f"/api/v1/entries/{entry_id}",
-            json={"title": "Updated Title", "expected_version": current.json()["version"]},
+            json={
+                "title": "Updated Title",
+                "expected_version": current.json()["version"],
+            },
             headers=auth_headers,
         )
         assert title_response.status_code == 200
@@ -88,7 +96,9 @@ class TestEntriesQuality:
         assert content_response.status_code == 200
 
         # Final state should have both updates
-        final_response = await client.get(f"/api/v1/entries/{entry_id}", headers=auth_headers)
+        final_response = await client.get(
+            f"/api/v1/entries/{entry_id}", headers=auth_headers
+        )
         final_data = final_response.json()
 
         # Both updates should be reflected
@@ -115,10 +125,14 @@ class TestEntriesQuality:
 
         # Get with markdown preference
         markdown_headers = {**auth_headers, "X-Editor-Mode": "markdown"}
-        md_response = await client.get(f"/api/v1/entries/{entry_id}", headers=markdown_headers)
+        md_response = await client.get(
+            f"/api/v1/entries/{entry_id}", headers=markdown_headers
+        )
 
         # Get with HTML preference (default)
-        html_response = await client.get(f"/api/v1/entries/{entry_id}", headers=auth_headers)
+        html_response = await client.get(
+            f"/api/v1/entries/{entry_id}", headers=auth_headers
+        )
 
         md_data = md_response.json()
         html_data = html_response.json()
@@ -131,7 +145,9 @@ class TestEntriesQuality:
         assert "<strong>" in html_data["content"] or "<b>" in html_data["content"]
 
     @pytest.mark.asyncio()
-    async def test_content_length_tracking(self, client: AsyncClient, auth_headers: dict[str, str]):
+    async def test_content_length_tracking(
+        self, client: AsyncClient, auth_headers: dict[str, str]
+    ):
         """Test that content length is tracked appropriately."""
         test_cases = [
             {"content": "<p>This is a simple test.</p>", "min_length": 10},
@@ -147,7 +163,9 @@ class TestEntriesQuality:
 
         for case in test_cases:
             response = await client.post(
-                "/api/v1/entries", json={"title": "Content Test", **case}, headers=auth_headers
+                "/api/v1/entries",
+                json={"title": "Content Test", **case},
+                headers=auth_headers,
             )
             assert response.status_code == 201
             data = response.json()
@@ -205,7 +223,10 @@ class TestEntriesQuality:
             cur = await client.get(f"/api/v1/entries/{entry_id}", headers=auth_headers)
             update_response = await client.put(
                 f"/api/v1/entries/{entry_id}",
-                json={"title": f"Update {i + 1}", "expected_version": cur.json()["version"]},
+                json={
+                    "title": f"Update {i + 1}",
+                    "expected_version": cur.json()["version"],
+                },
                 headers=auth_headers,
             )
             assert update_response.status_code == 200
@@ -227,12 +248,16 @@ class TestEntriesQuality:
 
         # But direct access might still work (depending on implementation)
         # This tests for consistent behavior
-        get_response = await client.get(f"/api/v1/entries/{entry_id}", headers=auth_headers)
+        get_response = await client.get(
+            f"/api/v1/entries/{entry_id}", headers=auth_headers
+        )
         # Should be 404 after soft delete
         assert get_response.status_code == 404
 
     @pytest.mark.asyncio()
-    async def test_large_content_handling(self, client: AsyncClient, auth_headers: dict[str, str]):
+    async def test_large_content_handling(
+        self, client: AsyncClient, auth_headers: dict[str, str]
+    ):
         """Test handling of large content entries."""
         # Generate large but realistic content
         large_markdown = "# Large Document\n\n"
@@ -243,7 +268,11 @@ class TestEntriesQuality:
 
         response = await client.post(
             "/api/v1/entries",
-            json={"title": "Large Entry", "markdown_content": large_markdown, "content_version": 2},
+            json={
+                "title": "Large Entry",
+                "markdown_content": large_markdown,
+                "content_version": 2,
+            },
             headers=auth_headers,
         )
 
@@ -251,7 +280,9 @@ class TestEntriesQuality:
         data = response.json()
 
         # Verify it was stored and can be retrieved
-        get_response = await client.get(f"/api/v1/entries/{data['id']}", headers=auth_headers)
+        get_response = await client.get(
+            f"/api/v1/entries/{data['id']}", headers=auth_headers
+        )
         assert get_response.status_code == 200
         retrieved = get_response.json()
 
@@ -279,7 +310,9 @@ Emoji: 🎉 🚀 ✨
 """,
         }
 
-        response = await client.post("/api/v1/entries", json=special_content, headers=auth_headers)
+        response = await client.post(
+            "/api/v1/entries", json=special_content, headers=auth_headers
+        )
         assert response.status_code == 201
         data = response.json()
 
@@ -289,7 +322,8 @@ Emoji: 🎉 🚀 ✨
 
         # Retrieve and verify
         get_response = await client.get(
-            f"/api/v1/entries/{data['id']}", headers={**auth_headers, "X-Editor-Mode": "markdown"}
+            f"/api/v1/entries/{data['id']}",
+            headers={**auth_headers, "X-Editor-Mode": "markdown"},
         )
         retrieved = get_response.json()
         assert "🎉" in retrieved["markdown_content"]

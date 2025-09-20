@@ -40,7 +40,9 @@ class TestEntriesMarkdownAPI:
         # Should have generated HTML
         assert "<h1>" in data["content"] or "Updated Title" in data["content"]
         assert (
-            "<strong>" in data["content"] or "<b>" in data["content"] or "bold" in data["content"]
+            "<strong>" in data["content"]
+            or "<b>" in data["content"]
+            or "bold" in data["content"]
         )
         assert "<a" in data["content"] or "https://example.com" in data["content"]
 
@@ -202,7 +204,10 @@ Some text here.
         data = response.json()
 
         # Should have image tags
-        assert "<img" in data["content"] or "https://example.com/image.jpg" in data["content"]
+        assert (
+            "<img" in data["content"]
+            or "https://example.com/image.jpg" in data["content"]
+        )
         assert "Alt text" in data["content"] or "alt=" in data["content"]
 
     @pytest.mark.asyncio()
@@ -253,7 +258,9 @@ Math: 5 < 10 && 10 > 5
         # Should escape HTML entities
         assert "&amp;" in data["content"] or "ampersands" in data["content"]
         assert (
-            "&lt;" in data["content"] or "&gt;" in data["content"] or "brackets" in data["content"]
+            "&lt;" in data["content"]
+            or "&gt;" in data["content"]
+            or "brackets" in data["content"]
         )
 
     @pytest.mark.asyncio()
@@ -282,7 +289,9 @@ Math: 5 < 10 && 10 > 5
         assert "markdown_content" in data
 
         # Get with markdown preference
-        response = await client.get(f"/api/v1/entries/{sample_entry.id}", headers=headers)
+        response = await client.get(
+            f"/api/v1/entries/{sample_entry.id}", headers=headers
+        )
 
         assert response.status_code == 200
         data = response.json()
@@ -318,7 +327,10 @@ Math: 5 < 10 && 10 > 5
     ):
         """Test that null markdown_content is allowed."""
         # First set markdown content
-        update1 = {"markdown_content": "# Has content", "expected_version": sample_entry.version}
+        update1 = {
+            "markdown_content": "# Has content",
+            "expected_version": sample_entry.version,
+        }
         response = await client.put(
             f"/api/v1/entries/{sample_entry.id}",
             json=update1,

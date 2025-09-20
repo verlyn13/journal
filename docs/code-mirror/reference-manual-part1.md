@@ -1,3 +1,20 @@
+---
+id: reference-manual-part1
+title: CodeMirror Reference Manual
+type: reference
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags:
+- typescript
+priority: medium
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 ***
 
 title: CodeMirror Reference Manual - Part 1 (State)
@@ -79,7 +96,7 @@ version: "6.0"
 
 ## Introduction
 
-CodeMirror is published as a set of NPM packages under the @codemirror scope. This reference guide documents the core packages.
+CodeMirror is published as a set of bun packages under the @codemirror scope. This reference guide documents the core packages.
 
 Each package exposes ECMAScript and CommonJS modules that require a bundler or loader to run in the browser.
 

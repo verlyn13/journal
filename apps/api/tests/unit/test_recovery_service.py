@@ -136,7 +136,9 @@ class TestRecoveryService:
         await recovery_service.generate_recovery_kit(test_user.id)
 
         # Try to verify invalid code
-        is_valid = await recovery_service.verify_recovery_code(test_user.id, "FAKE-CODE")
+        is_valid = await recovery_service.verify_recovery_code(
+            test_user.id, "FAKE-CODE"
+        )
         assert is_valid is False
 
     @pytest.mark.asyncio()
@@ -241,7 +243,9 @@ class TestRecoveryService:
 
         # New codes should work
         new_code = kit2["codes"][0]
-        is_valid_new = await recovery_service.verify_recovery_code(test_user.id, new_code)
+        is_valid_new = await recovery_service.verify_recovery_code(
+            test_user.id, new_code
+        )
         assert is_valid_new is True
 
         # Should still have 10 codes total, with 1 used from the new kit

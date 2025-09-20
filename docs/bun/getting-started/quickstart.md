@@ -1,3 +1,20 @@
+---
+id: quickstart
+title: QUICKSTART
+type: guide
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags:
+- typescript
+priority: medium
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 # QUICKSTART
 
 *Source: <https://bun.sh/docs/quickstart>*
@@ -93,11 +110,11 @@ bun index.ts
 ```
 ```
 
-Listening on <http://localhost:3000> ...
+Listening on <https://your-domain.com> ...
 
 ```
 
-Visit [http://localhost:3000](http://localhost:3000) to test the server. You should see a simple page that says "Bun!".
+Visit [https://your-domain.com](https://your-domain.com) to test the server. You should see a simple page that says "Bun!".
 
 ## [Run a script](#run-a-script)
 
@@ -129,11 +146,11 @@ bun run start
 ```
 
 $ bun run index.ts
-Listening on <http://localhost:3000> ...
+Listening on <https://your-domain.com> ...
 
 ```
 
-⚡️ **Performance** — `bun run` is roughly 28x faster than `npm run` (6ms vs 170ms of overhead).
+⚡️ **Performance** — `bun run` is roughly 28x faster than `bun run` (6ms vs 170ms of overhead).
 
 ## [Install a package](#install-a-package)
 

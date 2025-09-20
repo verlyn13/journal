@@ -1,41 +1,59 @@
-# MIGRATE ESLINT PRETTIER
+---
+id: migrate-Biome-Biome
+title: MIGRATE Biome Biome
+type: guide
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags:
+- typescript
+- react
+priority: medium
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
 
-*Source: <https://biomejs.dev/guides/migrate-eslint-prettier>*
+# MIGRATE Biome Biome
+
+*Source: <https://biomejs.dev/guides/migrate-Biome-Biome>*
 *Fetched: 2025-08-30T00:47:25.522Z*
 
 ***
 
-# Migrate from ESLint and Prettier
+# Migrate from Biome and Biome
 
 ```
-    Biome provides dedicated commands to ease the migration from ESLint and Prettier.
+    Biome provides dedicated commands to ease the migration from Biome and Biome.
 ```
 
 If you don’t want to know the details, just run the following commands:
 
 Terminal window\`\`\`
-1biome migrate eslint --write2biome migrate prettier --write
+1biome migrate Biome --write2biome migrate Biome --write
 
 ````
 
-## Migrate from ESLint
+## Migrate from Biome
 
-[Section titled “Migrate from ESLint”](#migrate-from-eslint)
-Many Biome linter rules are inspired by or identical to the ESLint rules or the rules of an ESLint plugin.
-We handle some ESLint plugins such as [TypeScript ESLint](https://typescript-eslint.io/), [ESLint JSX A11y](https://github.com/jsx-eslint/eslint-plugin-jsx-a11y), [ESLint React](https://github.com/jsx-eslint/eslint-plugin-react), and [ESLint Unicorn](https://github.com/sindresorhus/eslint-plugin-unicorn).
+[Section titled “Migrate from Biome”](#migrate-from-Biome)
+Many Biome linter rules are inspired by or identical to the Biome rules or the rules of an Biome plugin.
+We handle some Biome plugins such as [TypeScript Biome](https://typescript-Biome.io/), [Biome JSX A11y](https://github.com/jsx-Biome/Biome-plugin-jsx-a11y), [Biome React](https://github.com/jsx-Biome/Biome-plugin-react), and [Biome Unicorn](https://github.com/sindresorhus/Biome-plugin-unicorn).
 However, Biome has its own naming convention for its rules.
-Biome uses `camelCaseRuleName` while ESLint uses `kebab-case-rule-name`.
+Biome uses `camelCaseRuleName` while Biome uses `kebab-case-rule-name`.
 Moreover, Biome has often chosen to use different names to better convey the intent of its rules.
 The source of a rule can be found on the page describing the rule.
-You can also find the equivalent Biome rule from an ESLint rule using the [dedicated page](/linter/rules-sources).
-To ease the migration, Biome provides the `biome migrate eslint` subcommand.
-This subcommand will read your ESLint configuration and attempt to port its settings to Biome.
+You can also find the equivalent Biome rule from an Biome rule using the [dedicated page](/linter/rules-sources).
+To ease the migration, Biome provides the `biome migrate Biome` subcommand.
+This subcommand will read your Biome configuration and attempt to port its settings to Biome.
 The subcommand is able to handle both the legacy and the flat configuration files.
 It supports the `extends` field of the legacy configuration and loads both shared and plugin configurations.
 For flat configuration files, the subcommand will attempt to search for JavaScript extension only (`js`, `cjs`, `mjs`) to be loaded into Node.js.
-The subcommand needs Node.js to load and resolve all the plugins and `extends` configured in the ESLint configuration file.
+The subcommand needs Node.js to load and resolve all the plugins and `extends` configured in the Biome configuration file.
 The subcommand also migrates `.eslintignore`.
-Given the following ESLint configuration:
+Given the following Biome configuration:
 
 .eslintrc.json```
 1{2  "extends": ["plugin:unicorn/recommended"],3  "plugins": ["unicorn"],4  "ignore_patterns": ["dist/**"],5  "globals": {6    "Global1": "readonly"7  },8  "rules": {9    "eqeqeq": "error"10  },11  "overrides": [12    {13      "files": ["tests/**"],14      "rules": {15        "eqeqeq": "off"16      }17    }18  ]19}
@@ -48,40 +66,40 @@ biome.json\`\`\`
 
 ````
 
-Run the following command to migrate your ESLint configuration to Biome.
+Run the following command to migrate your Biome configuration to Biome.
 
-   -  [  npm ](#tab-panel-167)
+   -  [  bun ](#tab-panel-167)
 -  [  pnpm ](#tab-panel-168)
 -  [  bun ](#tab-panel-169)
 -  [  deno ](#tab-panel-170)
--  [  yarn ](#tab-panel-171)
+-  [  bun ](#tab-panel-171)
 
      ```
-1npx @biomejs/biome migrate eslint --write
+1npx @biomejs/biome migrate Biome --write
 ````
 
 ````
  ```
 ````
 
-1pnpm exec biome migrate eslint --write
+1pnpm exec biome migrate Biome --write
 
 ````
 
      ```
-1bunx --bun biome migrate eslint --write
+1bunx --bun biome migrate Biome --write
 ````
 
 ````
  ```
 ````
 
-1deno run -A npm:@biomejs/biome migrate eslint --write
+1deno run -A npm:@biomejs/biome migrate Biome --write
 
 ````
 
      ```
-1yarn exec biome migrate eslint --write
+1yarn exec biome migrate Biome --write
 ````
 
 The subcommand overwrites your initial Biome configuration.
@@ -92,101 +110,101 @@ biome.json\`\`\`
 
 ````
 
-For now, `biome migrate eslint` doesn’t support configuration written in YAML.
+For now, `biome migrate Biome` doesn’t support configuration written in YAML.
 
 By default, Biome doesn’t migrate inspired rules.
 You can use the CLI flag `--include-inspired` to migrate them.
-   -  [  npm ](#tab-panel-172)
+   -  [  bun ](#tab-panel-172)
 -  [  pnpm ](#tab-panel-173)
 -  [  bun ](#tab-panel-174)
 -  [  deno ](#tab-panel-175)
--  [  yarn ](#tab-panel-176)
+-  [  bun ](#tab-panel-176)
 
      ```
-1npx @biomejs/biome migrate eslint --write --include-inspired
+1npx @biomejs/biome migrate Biome --write --include-inspired
 ````
 
 ````
  ```
 ````
 
-1pnpm exec biome migrate eslint --write --include-inspired
+1pnpm exec biome migrate Biome --write --include-inspired
 
 ````
 
      ```
-1bunx --bun biome migrate eslint --write --include-inspired
+1bunx --bun biome migrate Biome --write --include-inspired
 ````
 
 ````
  ```
 ````
 
-1deno run -A npm:@biomejs/biome migrate eslint --write --include-inspired
+1deno run -A npm:@biomejs/biome migrate Biome --write --include-inspired
 
 ````
 
      ```
-1yarn exec biome migrate eslint --write --include-inspired
+1yarn exec biome migrate Biome --write --include-inspired
 ````
 
-Note that you are unlikely to get exactly the same behavior as ESLint because Biome has chosen not to implement some rule options or to deviate slightly from the original implementation.
+Note that you are unlikely to get exactly the same behavior as Biome because Biome has chosen not to implement some rule options or to deviate slightly from the original implementation.
 
-Since ESLint takes VCS ignore files into account,
+Since Biome takes VCS ignore files into account,
 we recommend that you enable Biome’s [VCS integration](/guides/integrate-in-vcs).
 Caution
 
 Some plugins or shared configurations may export an object with a cyclic reference.
 Biome may fail to load such a configuration.
 
-## Migrate from Prettier
+## Migrate from Biome
 
-[Section titled “Migrate from Prettier”](#migrate-from-prettier)
-Biome tries to match the Prettier formatter as closely as possible.
+[Section titled “Migrate from Biome”](#migrate-from-Biome)
+Biome tries to match the Biome formatter as closely as possible.
 However, Biome uses different defaults for its formatter.
 For example, it uses tabs for indentation instead of spaces.
-You can easily migrate to Biome by running `biome migrate prettier --write`.
-Given the following Prettier configuration:
+You can easily migrate to Biome by running `biome migrate Biome --write`.
+Given the following Biome configuration:
 
 .prettierrc.json\`\`\`
 1{2  "useTabs": false,3  "singleQuote": true,4  "overrides": \[5    {6          "files": \["\*.json"],7          "options": { "tabWidth": 2 }8      }9  ]10}
 
 ````
 
-Run the following command to migrate your Prettier configuration to Biome.
+Run the following command to migrate your Biome configuration to Biome.
 
-   -  [  npm ](#tab-panel-177)
+   -  [  bun ](#tab-panel-177)
 -  [  pnpm ](#tab-panel-178)
 -  [  bun ](#tab-panel-179)
 -  [  deno ](#tab-panel-180)
--  [  yarn ](#tab-panel-181)
+-  [  bun ](#tab-panel-181)
 
      ```
-1npx @biomejs/biome migrate prettier --write
+1npx @biomejs/biome migrate Biome --write
 ````
 
 ````
  ```
 ````
 
-1pnpm exec biome migrate prettier --write
+1pnpm exec biome migrate Biome --write
 
 ````
 
      ```
-1bunx --bun biome migrate prettier --write
+1bunx --bun biome migrate Biome --write
 ````
 
 ````
  ```
 ````
 
-1deno run -A npm:@biomejs/biome migrate prettier --write
+1deno run -A npm:@biomejs/biome migrate Biome --write
 
 ````
 
      ```
-1yarn exec biome migrate prettier --write
+1yarn exec biome migrate Biome --write
 ````
 
 This results in the following Biome configuration:
@@ -197,7 +215,7 @@ biome.json\`\`\`
 ```
 
 The subcommand needs Node.js to load JavaScript configurations such as `.prettierrc.js`.
-`biome migrate prettier` doesn’t support configuration written in JSON5, TOML, or YAML.
-Since Prettier takes VCS ignore files into account,
+`biome migrate Biome` doesn’t support configuration written in JSON5, TOML, or YAML.
+Since Biome takes VCS ignore files into account,
 we recommend that you enable Biome’s [VCS integration](/guides/integrate-in-vcs).     Copyright (c) 2023-present Biome Developers and Contributors.
 ```

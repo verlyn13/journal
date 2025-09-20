@@ -78,12 +78,16 @@ class TestOutboxPatternExtended:
             assert "ts" in msg[1]
 
         # Verify events are marked as published
-        result = await db_session.execute(select(Event).where(Event.published_at.is_not(None)))
+        result = await db_session.execute(
+            select(Event).where(Event.published_at.is_not(None))
+        )
         published_events = result.scalars().all()
         assert len(published_events) == 3
 
     @pytest.mark.asyncio()
-    async def test_process_outbox_batch_with_no_events(self, db_session: AsyncSession, monkeypatch):
+    async def test_process_outbox_batch_with_no_events(
+        self, db_session: AsyncSession, monkeypatch
+    ):
         """Test process_outbox_batch when there are no unpublished events."""
         # Mock NATS connection
         published_messages = []
@@ -115,7 +119,9 @@ class TestOutboxPatternExtended:
         assert len(published_messages) == 0
 
     @pytest.mark.asyncio()
-    async def test_process_outbox_batch_respects_limit(self, db_session: AsyncSession, monkeypatch):
+    async def test_process_outbox_batch_respects_limit(
+        self, db_session: AsyncSession, monkeypatch
+    ):
         """Test that process_outbox_batch respects the batch limit."""
         # Create more events than the limit (100)
         for i in range(105):
@@ -270,7 +276,9 @@ class TestOutboxPatternExtended:
         assert payload["ts"] == "2024-06-15T14:30:00"
 
     @pytest.mark.asyncio()
-    async def test_relay_outbox_continuous_processing(self, db_session: AsyncSession, monkeypatch):
+    async def test_relay_outbox_continuous_processing(
+        self, db_session: AsyncSession, monkeypatch
+    ):
         """Test that relay_outbox continuously processes events."""
         # Create initial event
         event1 = Event(
@@ -307,7 +315,9 @@ class TestOutboxPatternExtended:
             yield db_session
 
         # Run relay in a task and cancel it after processing
-        task = asyncio.create_task(relay_outbox(mock_session_factory, poll_seconds=0.01))
+        task = asyncio.create_task(
+            relay_outbox(mock_session_factory, poll_seconds=0.01)
+        )
 
         # Wait for event to be processed
         await asyncio.sleep(0.1)
@@ -321,7 +331,9 @@ class TestOutboxPatternExtended:
         assert len(published_messages) == 1
 
     @pytest.mark.asyncio()
-    async def test_process_outbox_batch_idempotency(self, db_session: AsyncSession, monkeypatch):
+    async def test_process_outbox_batch_idempotency(
+        self, db_session: AsyncSession, monkeypatch
+    ):
         """Test that already published events are not re-published."""
         # Create mix of published and unpublished events
         published_event = Event(
@@ -424,7 +436,9 @@ class TestOutboxPatternExtended:
         # update may not be visible to the test session even though it occurred
 
     @pytest.mark.asyncio()
-    async def test_relay_outbox_error_handling(self, db_session: AsyncSession, monkeypatch):
+    async def test_relay_outbox_error_handling(
+        self, db_session: AsyncSession, monkeypatch
+    ):
         """Test that relay_outbox handles errors gracefully."""
         # Create event
         event = Event(
@@ -465,7 +479,9 @@ class TestOutboxPatternExtended:
             yield db_session
 
         # Run relay in a task
-        task = asyncio.create_task(relay_outbox(mock_session_factory, poll_seconds=0.01))
+        task = asyncio.create_task(
+            relay_outbox(mock_session_factory, poll_seconds=0.01)
+        )
 
         # Wait for retries
         await asyncio.sleep(0.2)

@@ -1,3 +1,21 @@
+---
+id: adr-0001-python-3.13-ruff-0.13
+title: 'ADR-0001: Python 3.13 and Ruff 0.13.0 Standardization'
+type: reference
+version: 1.0.0
+created: '2025-09-16'
+updated: '2025-09-16'
+author: Journal Team
+tags:
+- python
+- docker
+priority: medium
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-16'
+---
+
 # ADR-0001: Python 3.13 and Ruff 0.13.0 Standardization
 
 ## Status
@@ -9,7 +27,7 @@ The Journal project has been using mixed Python versions (3.11, 3.12) and variou
 
 ### Current State (Before Decision)
 - Multiple Python versions in use: 3.11, 3.12
-- Mixed tooling: Black for formatting, isort for imports, Ruff for some linting
+- Mixed tooling: Ruff for formatting, Ruff for imports, Ruff for some linting
 - Inconsistent configuration across CI and local development
 - Matrix testing increasing CI complexity and runtime
 
@@ -31,7 +49,7 @@ We will standardize the entire project on:
 - Removal of Python version matrices in CI
 
 ### Ruff 0.13.0 as Single Tool
-- Replace Black, isort, and flake8 entirely
+- Replace Ruff, Ruff, and Ruff entirely
 - Unified configuration in pyproject.toml
 - Preview features enabled with explicit control
 - Consistent behavior across all environments
@@ -52,14 +70,14 @@ We will standardize the entire project on:
 5. **Simplification**: Single version reduces complexity and maintenance
 
 ### Ruff 0.13.0 Benefits
-1. **Speed**: 10-100x faster than Black+isort+flake8 combined
+1. **Speed**: 10-100x faster than Ruff+Ruff+Ruff combined
 2. **Unified Workflow**: Single tool for linting, formatting, and import sorting
 3. **Rust Foundation**: Memory-safe, reliable, actively maintained
 4. **Compatibility**: Drop-in replacement for existing tools
 5. **Advanced Features**: Preview rules, explicit control, comprehensive rule set
 
 ### Tooling Consolidation
-- **Before**: Black + isort + flake8 + pyupgrade (4 tools, 4 configs, dependency conflicts)
+- **Before**: Ruff + Ruff + Ruff + pyupgrade (4 tools, 4 configs, dependency conflicts)
 - **After**: Ruff 0.13.0 only (1 tool, 1 config, consistent behavior)
 
 ## Implementation
@@ -117,7 +135,7 @@ docstring-code-format = true
 ## Compliance
 
 ### Enforcement Rules
-1. **No Stale References**: CI fails on any mention of Python 3.11/3.12 or Black/isort/flake8
+1. **No Stale References**: CI fails on any mention of Python 3.11/3.12 or Ruff/Ruff/Ruff
 2. **Configuration Validation**: Ruff preview mode and explicit rules must be enabled
 3. **Version Pinning**: Exact versions required in all environments
 4. **Documentation Alignment**: All docs must reference correct versions
@@ -125,7 +143,7 @@ docstring-code-format = true
 ### Validation Commands
 ```bash
 # Stale reference check
-git grep -nE 'python.*3\.(11|12)|black|isort|flake8' && exit 1
+git grep -nE 'python.*3\.(11|12)|Ruff|Ruff|Ruff' && exit 1
 
 # Configuration verification
 uvx ruff config --show | grep 'preview = true'
@@ -152,8 +170,8 @@ uvx ruff --version | grep '0.13.0'
 - [Python 3.13 Release Notes](https://docs.python.org/3.13/whatsnew/3.13.html)
 - [Ruff 0.13.0 Documentation](https://docs.astral.sh/ruff/)
 - [Migration Implementation PR](https://github.com/verlyn13/journal/pull/TBD)
-- [Project Contributing Guidelines](../CONTRIBUTING.md)
-- [Development Setup Guide](../dev-setup.md)
+- Project Contributing Guidelines
+- Development Setup Guide
 
 ---
 

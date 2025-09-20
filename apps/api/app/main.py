@@ -12,7 +12,10 @@ from fastapi.responses import PlainTextResponse
 from strawberry.fastapi import GraphQLRouter
 
 from app.api import health as health_api
-from app.api.internal import security_monitoring as security_api, webhooks as webhook_api
+from app.api.internal import (
+    security_monitoring as security_api,
+    webhooks as webhook_api,
+)
 from app.api.v1 import (
     admin as admin_api,
     admin_enhanced as admin_v2_api,
@@ -32,7 +35,10 @@ from app.infra.db import build_engine, sessionmaker_for
 from app.infra.ip_extraction import configure_trusted_proxies
 from app.infra.outbox import relay_outbox
 from app.infra.secrets.auth_bootstrap import ensure_authenticated
-from app.services.monitoring_scheduler import start_monitoring_scheduler, stop_monitoring_scheduler
+from app.services.monitoring_scheduler import (
+    start_monitoring_scheduler,
+    stop_monitoring_scheduler,
+)
 from app.settings import settings
 from app.telemetry.metrics_runtime import render_prom
 from app.telemetry.otel import setup_otel
@@ -107,7 +113,9 @@ async def _startup() -> None:
         if success:
             logger.info("Infisical authentication initialized successfully")
         else:
-            logger.warning("Infisical authentication failed - some features may not work correctly")
+            logger.warning(
+                "Infisical authentication failed - some features may not work correctly"
+            )
     except Exception:
         logger.exception("Failed to initialize Infisical authentication")
         # Continue startup even if auth fails - app may work with static tokens

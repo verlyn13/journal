@@ -1,0 +1,42 @@
+name: Reusable - Docs
+on: workflow_call
+jobs:
+  docs:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+
+      - name: Setup Python
+        uses: actions/setup-python@e797f83bcb11b83ae66e0230d6156d7c80228e7c
+        with:
+          python-version: '3.13'
+
+      - name: Install documentation tools
+        run: |
+          # Install lychee for link checking
+          curl -LO https://github.com/lycheeverse/lychee/releases/download/v0.15.1/lychee-v0.15.1-x86_64-unknown-linux-gnu.tar.gz
+          tar -xzf lychee-v0.15.1-x86_64-unknown-linux-gnu.tar.gz
+          sudo mv lychee /usr/local/bin/
+
+          # Install Vale for prose linting
+          curl -LO https://github.com/errata-ai/vale/releases/download/v3.7.0/vale_3.7.0_Linux_64-bit.tar.gz
+          tar -xzf vale_3.7.0_Linux_64-bit.tar.gz
+          sudo mv vale /usr/local/bin/
+
+      - name: Validate docs (schemas + policies)
+        run: |
+          python3 scripts/validate_documentation.py --strict
+
+      - name: Link check (required)
+        run: |
+          echo "::group::Checking links in documentation"
+          lychee --config lychee.toml --no-progress --format detailed docs
+          echo "::endgroup::"
+
+      - name: Prose linting with Vale (warnings only)
+        continue-on-error: true
+        run: |
+          echo "::group::Checking prose quality with Vale"
+          vale --config docs/.vale/config.ini --output line docs || echo "Vale found issues (non-blocking)"
+          echo "::endgroup::"
+

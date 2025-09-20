@@ -125,8 +125,12 @@ class TestTokenValidator:
         admin_claims = {
             "scopes": ["admin:system"],
         }
-        assert token_validator.check_scope(admin_claims, "entries:read", allow_admin=True)
-        assert not token_validator.check_scope(admin_claims, "entries:read", allow_admin=False)
+        assert token_validator.check_scope(
+            admin_claims, "entries:read", allow_admin=True
+        )
+        assert not token_validator.check_scope(
+            admin_claims, "entries:read", allow_admin=False
+        )
 
     async def test_check_wildcard_scopes(self, token_validator: TokenValidator) -> None:
         """Test wildcard scope checking."""
@@ -249,7 +253,9 @@ class TestTokenValidator:
         age = token_validator.get_token_age(claims)
         assert 1790 < age < 1810  # Around 30 minutes
 
-    async def test_get_token_remaining_ttl(self, token_validator: TokenValidator) -> None:
+    async def test_get_token_remaining_ttl(
+        self, token_validator: TokenValidator
+    ) -> None:
         """Test getting remaining TTL."""
         # Token with 1 hour left
         claims = {
@@ -267,7 +273,9 @@ class TestTokenValidator:
         ttl = token_validator.get_token_remaining_ttl(expired_claims)
         assert ttl == 0
 
-    async def test_validate_service_token(self, token_validator: TokenValidator) -> None:
+    async def test_validate_service_token(
+        self, token_validator: TokenValidator
+    ) -> None:
         """Test service token validation."""
         service_id = "embedding-worker"
 

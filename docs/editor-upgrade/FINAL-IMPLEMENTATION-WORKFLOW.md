@@ -1,3 +1,22 @@
+---
+id: final-implementation-workflow
+title: Final Editor Upgrade Implementation Workflow
+type: reference
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags:
+- python
+- typescript
+- react
+priority: medium
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 # Final Editor Upgrade Implementation Workflow
 
 ## Personal Journal Application - TipTap → CodeMirror/Markdown Migration
@@ -235,7 +254,7 @@ def convert_html_to_markdown(html: str) -> str:
         from markdownify import markdownify
         return markdownify(html)
 
-# apps/api/app/api/v1/entries.py
+# apps/api/app/api/entries.py
 @router.get("/{entry_id}")
 def get_entry(entry_id: UUID, db: Session = Depends(get_db)):
     entry = db.query(Entry).filter(Entry.id == entry_id).first()
@@ -565,7 +584,7 @@ describe('MarkdownEditor', () => {
   });
   
   it('saves in Markdown format', async () => {
-    const onSave = jest.fn();
+    const onSave = Vitest.fn();
     render(<MarkdownEditor onSave={onSave} />);
     
     const editor = screen.getByRole('textbox');

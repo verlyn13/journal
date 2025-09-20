@@ -2,29 +2,53 @@ repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.6.0
     hooks:
-      - id: detect-private-key
-      - id: check-merge-conflict
-      - id: end-of-file-fixer
       - id: trailing-whitespace
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.12.11
-    hooks:
-      - id: ruff-check
-        args: [--fix]
-      - id: ruff-format
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-json
+      - id: check-toml
+      - id: check-merge-conflict
+      - id: check-added-large-files
+        args: ['--maxkb=1024']
+      - id: detect-private-key
 
-  - repo: https://github.com/astral-sh/uv-pre-commit
-    rev: 0.8.14
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.41.0
     hooks:
-      - id: uv-lock
-      - id: uv-export
-        args: ["--no-hashes", "--output-file=requirements.txt"]
+      - id: markdownlint
+        files: \.(md|mdx)$
+        args: ["--config", ".markdownlint.json"]
 
   - repo: local
     hooks:
-      - id: biome
-        name: Biome check (apps/web)
-        entry: bash -lc 'cd apps/web && bunx @biomejs/biome check'
+      - id: docs-validate
+        name: docs-validate
+        entry: uv run python scripts/validate_documentation.py --strict
         language: system
-        files: \.(js|jsx|ts|tsx|json|jsonc|css|yaml|yml)$
         pass_filenames: false
+        files: ^docs/.*\.md$
+
+      - id: link-check
+        name: link-check (lychee)
+        entry: bash -lc 'command -v lychee >/dev/null 2>&1 && lychee --offline --no-progress docs || true'
+        language: system
+        pass_filenames: false
+
+      - id: vale
+        name: prose-lint (vale)
+        entry: bash -lc 'command -v vale >/dev/null 2>&1 && vale docs || true'
+        language: system
+        pass_filenames: false
+
+ci:
+  autofix_commit_msg: |
+    [pre-commit.ci] auto fixes from pre-commit.com hooks
+
+    for more information, see https://pre-commit.ci
+  autofix_prs: true
+  autoupdate_branch: ''
+  autoupdate_commit_msg: '[pre-commit.ci] pre-commit autoupdate'
+  autoupdate_schedule: weekly
+  skip: []
+  submodules: false
+

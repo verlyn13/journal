@@ -1,0 +1,41 @@
+name: CI Contract
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-contract-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: '1'
+
+jobs:
+  lint:
+    uses: ./.github/workflows/_reusable/lint.yml
+
+  docs:
+    uses: ./.github/workflows/_reusable/docs.yml
+
+  api_tests:
+    needs: [lint]
+    uses: ./.github/workflows/_reusable/api-tests.yml
+
+  db_smoke:
+    needs: [lint]
+    uses: ./.github/workflows/_reusable/db-smoke.yml
+
+  web_tests:
+    needs: [lint, docs]
+    uses: ./.github/workflows/_reusable/web-tests.yml
+
+  full_smoke:
+    needs: [api_tests, db_smoke, web_tests]
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Summary
+        run: |
+          echo "## CI Contract passed initial gates" >> $GITHUB_STEP_SUMMARY
+

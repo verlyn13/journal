@@ -125,7 +125,9 @@ class SecureTokenService:
         if expected_user_id and payload.get("user_id") != str(expected_user_id):
             raise ValueError("User ID mismatch")
 
-        if expected_session_id and payload.get("session_id") != str(expected_session_id):
+        if expected_session_id and payload.get("session_id") != str(
+            expected_session_id
+        ):
             raise ValueError("Session ID mismatch")
 
         return dict(payload)

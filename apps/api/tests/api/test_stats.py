@@ -112,7 +112,9 @@ class TestStatsAPI:
         assert data["favorite_entries"] == 0  # Not implemented yet
 
     @pytest.mark.asyncio()
-    async def test_stats_with_no_entries(self, client: AsyncClient, auth_headers: dict[str, str]):
+    async def test_stats_with_no_entries(
+        self, client: AsyncClient, auth_headers: dict[str, str]
+    ):
         """Test stats when there are no entries."""
         response = await client.get("/api/v1/stats", headers=auth_headers)
 

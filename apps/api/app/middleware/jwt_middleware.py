@@ -33,7 +33,8 @@ class JWTMiddleware:
         require_auth: bool = True,
         required_scopes: list[str] | None = None,
         allow_expired_for_refresh: bool = False,
-        expected_token_type: Literal["access", "refresh", "m2m", "session"] | None = None,
+        expected_token_type: Literal["access", "refresh", "m2m", "session"]
+        | None = None,
     ) -> None:
         """Initialize JWT middleware.
 

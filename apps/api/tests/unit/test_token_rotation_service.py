@@ -44,7 +44,9 @@ class TestTokenRotationService:
         return user
 
     @pytest.fixture()
-    async def test_session(self, db_session: AsyncSession, test_user: User) -> UserSession:
+    async def test_session(
+        self, db_session: AsyncSession, test_user: User
+    ) -> UserSession:
         """Create test session."""
         session = UserSession(
             id=uuid4(),
@@ -71,7 +73,9 @@ class TestTokenRotationService:
 
         assert result is False  # Not a reuse
         redis_mock.exists.assert_called_once_with(f"used_refresh:{token_hash}")
-        redis_mock.setex.assert_called_once_with(f"used_refresh:{token_hash}", 86400, "1")
+        redis_mock.setex.assert_called_once_with(
+            f"used_refresh:{token_hash}", 86400, "1"
+        )
 
     @pytest.mark.asyncio()
     async def test_check_refresh_token_reuse_detected(
@@ -222,4 +226,6 @@ class TestTokenRotationService:
 
         # Verify step-up keys were deleted
         assert redis_mock.scan.call_count == 2
-        redis_mock.delete.assert_any_call(b"stepup:user:delete_account", b"stepup:user:export_data")
+        redis_mock.delete.assert_any_call(
+            b"stepup:user:delete_account", b"stepup:user:export_data"
+        )

@@ -14,7 +14,14 @@ from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.domain.auth.audit_service import AuditService
-from app.infra.sa_models import AuditLogEntry, DeletionRequest, Entry, User, UserDevice, UserSession
+from app.infra.sa_models import (
+    AuditLogEntry,
+    DeletionRequest,
+    Entry,
+    User,
+    UserDevice,
+    UserSession,
+)
 
 
 class PrivacyService:
@@ -43,7 +50,10 @@ class PrivacyService:
         await self.audit_service.log_event(
             user_id=user_id,
             event_type=AuditService.EVENT_DATA_EXPORT,
-            event_data={"format": export_format, "timestamp": datetime.now(UTC).isoformat()},
+            event_data={
+                "format": export_format,
+                "timestamp": datetime.now(UTC).isoformat(),
+            },
         )
 
         # Format the data
@@ -66,7 +76,9 @@ class PrivacyService:
             raise ValueError("User not found")
 
         # Get entries (journal content)
-        entries_result = await self.session.scalars(select(Entry).where(Entry.author_id == user_id))
+        entries_result = await self.session.scalars(
+            select(Entry).where(Entry.author_id == user_id)
+        )
         entries = list(entries_result)
 
         # Get devices
@@ -133,7 +145,9 @@ class PrivacyService:
                     "issued_at": session.issued_at.isoformat(),
                     "last_used_at": session.last_used_at.isoformat(),
                     "expires_at": session.expires_at.isoformat(),
-                    "revoked_at": session.revoked_at.isoformat() if session.revoked_at else None,
+                    "revoked_at": session.revoked_at.isoformat()
+                    if session.revoked_at
+                    else None,
                 }
                 for session in sessions
             ],
@@ -163,7 +177,9 @@ class PrivacyService:
             Tuple of (filename, content_type, data_bytes)
         """
         json_data = json.dumps(data, indent=2, sort_keys=True)
-        filename = f"user_data_{user_id}_{datetime.now(UTC).strftime('%Y%m%d_%H%M%S')}.json"
+        filename = (
+            f"user_data_{user_id}_{datetime.now(UTC).strftime('%Y%m%d_%H%M%S')}.json"
+        )
         return filename, "application/json", json_data.encode()
 
     @staticmethod
@@ -206,7 +222,9 @@ class PrivacyService:
                 })
 
         csv_data = output.getvalue()
-        filename = f"user_entries_{user_id}_{datetime.now(UTC).strftime('%Y%m%d_%H%M%S')}.csv"
+        filename = (
+            f"user_entries_{user_id}_{datetime.now(UTC).strftime('%Y%m%d_%H%M%S')}.csv"
+        )
         return filename, "text/csv", csv_data.encode()
 
     async def schedule_deletion(
@@ -359,7 +377,9 @@ class PrivacyService:
             select(func.count()).select_from(Entry).where(Entry.author_id == user_id)
         )
         devices_count = await self.session.scalar(
-            select(func.count()).select_from(UserDevice).where(UserDevice.user_id == user_id)
+            select(func.count())
+            .select_from(UserDevice)
+            .where(UserDevice.user_id == user_id)
         )
         sessions_count = await self.session.scalar(
             select(func.count())

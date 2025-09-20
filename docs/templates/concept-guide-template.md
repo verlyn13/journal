@@ -1,3 +1,20 @@
+---
+id: concept-guide-template
+title: Concept Title
+type: guide
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags:
+- python
+priority: medium
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 ***
 
 title: "Concept Title"
@@ -71,6 +88,6 @@ Describe common mistakes or misconceptions related to this concept:
 
 ## See Also
 
-- [Related Document 1](link/to/document.md)
-- [Related Document 2](link/to/document.md)
-- [External Reference](https://example.com)
+- Related Document 1
+- Related Document 2
+- [External Reference](https://journal.local)

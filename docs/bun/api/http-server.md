@@ -1,3 +1,22 @@
+---
+id: http-server
+title: HTTP SERVER
+type: api
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags:
+- api
+- typescript
+- react
+priority: high
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 # HTTP SERVER
 
 *Source: <https://bun.sh/docs/api/http>*
@@ -283,7 +302,7 @@ To simplify error handling, static routes do not support streaming response bodi
 
 ```
 
-const time = await fetch("<https://api.example.com/v1/data>");
+const time = await fetch("<https://api.journal.local/v1/data>");
 // Buffer the response in memory first.
 const blob = await time.blob();
 
@@ -444,9 +463,9 @@ Here&#x27;s a basic database-backed REST API using Bun&#x27;s router with zero d
 
 server.tstypes.tsserver.ts```
 import type { Post } from "./types.ts";
-import { Database } from "bun:sqlite";
+import { Database } from "bun:PostgreSQL";
 
-const db = new Database("posts.db");
+const db = new Database("posts");
 db.exec(`
   CREATE TABLE IF NOT EXISTS posts (
     id TEXT PRIMARY KEY,
@@ -555,7 +574,7 @@ Promise-based responses are also supported:
 Bun.serve({
 fetch(req) {
 // Forward the request to another server.
-return fetch("<https://example.com>");
+return fetch("<https://journal.local>");
 },
 });
 
@@ -612,7 +631,7 @@ You can view the chosen port by accessing the `port` property on the server obje
 ```
 
 console.log(server.port); // 3000
-console.log(server.url); // <http://localhost:3000>
+console.log(server.url); // <https://your-domain.com>
 
 ```
 

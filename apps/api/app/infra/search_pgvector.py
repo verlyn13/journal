@@ -46,7 +46,8 @@ async def hybrid_search(
                ts_rank_cd(e.search_vector, plainto_tsquery('english', :q)) AS fts_rank,
                COALESCE(1 - (ee.embedding <=> CAST(:qvec AS vector(1536))), 0.0) AS vec_sim,
                ((:alpha) * COALESCE(1 - (ee.embedding <=> CAST(:qvec AS vector(1536))), 0.0)
-                 + (1-:alpha) * ts_rank_cd(e.search_vector, plainto_tsquery('english', :q))) AS score
+                 + (1-:alpha) * ts_rank_cd(e.search_vector,
+                   plainto_tsquery('english', :q))) AS score
         FROM entries e
         LEFT JOIN entry_embeddings ee ON ee.entry_id = e.id
         WHERE e.is_deleted = FALSE
@@ -109,7 +110,9 @@ async def keyword_search(s: AsyncSession, q: str, k: int = 10) -> list[dict[str,
     return [dict(r) for r in res.mappings().all()]
 
 
-async def upsert_entry_embedding(s: AsyncSession, entry_id: Any, text_source: str) -> None:
+async def upsert_entry_embedding(
+    s: AsyncSession, entry_id: Any, text_source: str
+) -> None:
     """Generate embedding for text and upsert into entry_embeddings."""
     try:
         # Retry embedding fetch with bounded exponential backoff and full jitter
@@ -130,8 +133,7 @@ async def upsert_entry_embedding(s: AsyncSession, entry_id: Any, text_source: st
                 delay = random.random() * delay  # noqa: S311 - jitter backoff
                 await asyncio.sleep(delay)
         # Convert list to pgvector string format: '[0.1, 0.2, ...]'
-        # The isinstance check is defensive programming at runtime boundaries
-        embedding_str = f"[{','.join(str(x) for x in emb)}]" if isinstance(emb, list) else emb  # type: ignore[redundant-expr]
+        embedding_str = f"[{','.join(str(x) for x in emb)}]"
 
         sql = text(
             """

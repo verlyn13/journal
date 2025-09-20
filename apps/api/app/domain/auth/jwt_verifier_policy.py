@@ -70,14 +70,18 @@ class VerifierPolicy:
             raise ValueError("Algorithm 'none' is explicitly forbidden (RFC 8725)")
 
         if alg not in self.allowed_algorithms:
-            raise ValueError(f"Algorithm '{alg}' not allowed. Allowed: {self.allowed_algorithms}")
+            raise ValueError(
+                f"Algorithm '{alg}' not allowed. Allowed: {self.allowed_algorithms}"
+            )
 
         # Type validation (RFC 9068 for access tokens)
         if self.require_typ:
             typ = header.get("typ")
             if not typ or typ not in self.allowed_types:
                 allowed = ", ".join(sorted(self.allowed_types))
-                raise ValueError(f"Token type '{typ}' not allowed. Allowed: {{{allowed}}}")
+                raise ValueError(
+                    f"Token type '{typ}' not allowed. Allowed: {{{allowed}}}"
+                )
 
         # Forbidden headers check (RFC 8725 Section 3.2)
         for forbidden in self.forbidden_headers:
@@ -173,7 +177,9 @@ class VerifierPolicy:
             elif not isinstance(aud, list):
                 raise ValueError("'aud' claim must be string or array")
 
-            if self.expected_audiences and not any(a in self.expected_audiences for a in aud):
+            if self.expected_audiences and not any(
+                a in self.expected_audiences for a in aud
+            ):
                 raise ValueError(
                     f"No matching audience. Token audiences: {aud}, "
                     f"Expected: {self.expected_audiences}"

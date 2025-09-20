@@ -1,0 +1,322 @@
+# Documentation Taxonomy
+# Controlled vocabulary for Journal application documentation
+# Version: 1.0.0
+# Last Updated: 2025-09-16
+
+metadata:
+  schema_version: "1.0.0"
+  description: "Controlled vocabulary and taxonomy for documentation metadata"
+
+# Document types with descriptions
+document_types:
+  - name: guide
+    description: "How-to guides and tutorials"
+    priority_default: medium
+    freshness_sla_days: 90
+
+  - name: reference
+    description: "Technical reference documentation"
+    priority_default: medium
+    freshness_sla_days: 90
+
+  - name: tutorial
+    description: "Step-by-step learning materials"
+    priority_default: low
+    freshness_sla_days: 120
+
+  - name: api
+    description: "API endpoint documentation"
+    priority_default: high
+    freshness_sla_days: 30
+    required_sections:
+      - Authentication
+      - Endpoints
+      - Errors
+      - Rate Limiting
+
+  - name: architecture
+    description: "System design and architecture"
+    priority_default: high
+    freshness_sla_days: 60
+    required_sections:
+      - Overview
+      - Components
+      - Data Flow
+      - Security
+
+  - name: deployment
+    description: "Deployment and infrastructure"
+    priority_default: critical
+    freshness_sla_days: 30
+    required_sections:
+      - Prerequisites
+      - Setup
+      - Configuration
+      - Verification
+
+  - name: testing
+    description: "Testing strategies and procedures"
+    priority_default: medium
+    freshness_sla_days: 90
+    required_sections:
+      - Strategy
+      - Setup
+      - Execution
+      - Coverage
+
+  - name: decision
+    description: "Architecture Decision Records (ADRs)"
+    priority_default: high
+    freshness_sla_days: 365
+    required_fields:
+      - adr_number
+      - status
+      - participants
+      - context
+      - decision
+      - consequences
+
+  - name: status
+    description: "Project status updates"
+    priority_default: low
+    freshness_sla_days: 180
+
+  - name: security
+    description: "Security documentation"
+    priority_default: critical
+    freshness_sla_days: 30
+    required_sections:
+      - Overview
+      - Threats
+      - Mitigations
+      - Compliance
+
+# Allowed tags (categories and topics)
+tags:
+  # Technical categories
+  - authentication
+  - authorization
+  - api
+  - database
+  - frontend
+  - backend
+  - infrastructure
+  - deployment
+  - testing
+  - security
+  - performance
+  - monitoring
+  - logging
+  - configuration
+
+  # Features
+  - entries
+  - tags
+  - search
+  - export
+  - import
+  - webauthn
+  - jwt
+  - oauth
+
+  # Technologies
+  - fastapi
+  - react
+  - typescript
+  - python
+  - postgresql
+  - redis
+  - docker
+  - kubernetes
+  - vercel
+  - supabase
+  - github-actions
+
+  # Processes
+  - ci-cd
+  - code-review
+  - release
+  - migration
+  - backup
+  - recovery
+  - debugging
+  - optimization
+
+  # Documentation meta
+  - getting-started
+  - troubleshooting
+  - best-practices
+  - changelog
+  - roadmap
+  - contributing
+
+# Priority levels
+priorities:
+  - name: critical
+    description: "Blocking deployment or operations"
+    sla_multiplier: 0.5  # Halve the freshness SLA
+
+  - name: high
+    description: "Important for core functionality"
+    sla_multiplier: 0.75
+
+  - name: medium
+    description: "Standard priority"
+    sla_multiplier: 1.0
+
+  - name: low
+    description: "Nice to have"
+    sla_multiplier: 1.5
+
+# Document statuses
+statuses:
+  - name: draft
+    description: "Work in progress"
+    publishable: false
+
+  - name: review
+    description: "Under review"
+    publishable: false
+
+  - name: approved
+    description: "Approved and current"
+    publishable: true
+
+  - name: deprecated
+    description: "Outdated but retained for reference"
+    publishable: true
+
+  - name: archived
+    description: "No longer maintained"
+    publishable: false
+
+# ADR-specific statuses
+adr_statuses:
+  - name: proposed
+    description: "Under consideration"
+    transitions: [accepted, rejected]
+
+  - name: accepted
+    description: "Decision made and implemented"
+    transitions: [deprecated, superseded]
+
+  - name: rejected
+    description: "Decision not taken"
+    transitions: []
+
+  - name: deprecated
+    description: "No longer relevant"
+    transitions: []
+
+  - name: superseded
+    description: "Replaced by another ADR"
+    transitions: []
+    requires: [superseded_by]
+
+# Visibility levels
+visibility:
+  - name: public
+    description: "Can be published externally"
+    allow_publish: true
+
+  - name: internal
+    description: "Internal documentation only"
+    allow_publish: false
+
+  - name: private
+    description: "Restricted access"
+    allow_publish: false
+
+# Language support (for future i18n)
+languages:
+  - code: en
+    name: English
+    default: true
+
+  - code: es
+    name: Spanish
+    default: false
+
+  - code: fr
+    name: French
+    default: false
+
+# Legacy term mappings (for migration)
+legacy_mappings:
+  # Old types -> new types
+  types:
+    spec: architecture
+    howto: guide
+    manual: reference
+    adr: decision
+
+  # Old tags -> new tags
+  tags:
+    auth: authentication
+    authz: authorization
+    db: database
+    fe: frontend
+    be: backend
+    k8s: kubernetes
+    gh-actions: github-actions
+
+  # Old statuses -> new statuses
+  statuses:
+    wip: draft
+    published: approved
+    obsolete: deprecated
+
+# Compliance control mappings (future-ready)
+compliance_controls:
+  SOC2:
+    A1:
+      description: "Access control documentation"
+      required_docs: [auth-architecture, security-policies]
+    A2:
+      description: "Change management"
+      required_docs: [deployment-guide, ci-cd-pipeline]
+
+  ISO27001:
+    A5:
+      description: "Information security policies"
+      required_docs: [security-policies, incident-response]
+    A12:
+      description: "Operations security"
+      required_docs: [deployment-guide, monitoring-guide]
+
+# Validation rules
+validation_rules:
+  # Taxonomy enforcement
+  enforce_controlled_vocabulary: true
+  allow_custom_tags: false
+
+  # Freshness enforcement
+  enforce_freshness_sla: true
+  freshness_warning_days: 7  # Warn 7 days before SLA
+
+  # ADR rules
+  enforce_unique_adr_numbers: true
+  enforce_adr_transitions: true
+
+  # Required fields by priority
+  priority_required_fields:
+    critical:
+      - reviewers
+      - last_verified
+    high:
+      - reviewers
+
+  # Image and code requirements
+  require_image_alt_text: true
+  require_code_language: true
+  require_diagram_compilation: true
+
+  # Link validation
+  validate_internal_links: true
+  validate_external_links: false  # Too slow for pre-commit
+
+  # Readability thresholds
+  readability_thresholds:
+    flesch_ease_minimum: 30  # Technical docs can be complex
+    sentence_length_maximum: 40
+    paragraph_length_maximum: 200

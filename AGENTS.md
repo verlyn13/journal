@@ -1,318 +1,118 @@
-# Journal Project - Agent Instructions
+# AGENTS.md — Agent Operating Guide
 
-## Modern TypeScript/Python Monorepo - September 2025
+This repository is set up for agent‑assisted development with a focus on deterministic, high‑quality documentation. Follow these conventions and use the provided scripts to discover, validate, and maintain the docs system.
 
-This project uses a modern monorepo architecture with strict package management and comprehensive testing.
+## Quick Start
+
+- Primary shell: `fish` (bash/zsh also available)
+- Python: 3.13 via `uv` (virtualenvs managed in-project)
+- JS runtime: Node v22 (npm for package management)
+- Linting: Ruff (Python), Biome (JS)
+- Testing: Pytest (Python), Vitest (JS)
 
 ## Project Structure
 
 ```
-journal/
+.
 ├── apps/
-│   ├── api/         # FastAPI backend (Python 3.13+, uv, SQLModel, pgvector)
-│   └── web/         # Vite + React frontend (TypeScript, Tailwind, Shadcn)
-├── docs/            # Documentation (Markdown, technical specs)
-├── scripts/         # Automation and deployment scripts
-└── tests/           # E2E tests (Playwright)
+│   ├── api/         # FastAPI backend
+│   └── web/         # React frontend
+├── docs/            # Documentation system
+├── scripts/         # Automation tools
+└── packages/        # Shared packages
 ```
 
-## Critical Package Management Rules
+## Documentation System
 
-### Python (API) - NEVER use pip, poetry, conda
+- Source directory: `docs/`
+- Deterministic generators and validators live in `scripts/`
+- **Master Guide**: `DOCUMENTATION_SYSTEM.md` (start here for docs work)
+- Makefile entry points:
+  - `make docs-validate` — full validation suite
+  - `make docs-fix` — auto-fix documentation issues
+  - `make docs-status` — consolidated status report (JSON + Markdown)
+  - `make docs-check` — quick integrity check (heuristics)
+  - `make docs-taxonomy` — taxonomy conformance report
+  - `make docs-relationships` — relationships consistency report
+  - `make docs-graph` — docs graph (links, backlinks, tags)
+  - `make docs-serve` — serve docs locally
 
-**ALL Python operations in `apps/api/` must use `uv` with virtual environment:**
+Outputs are written under `docs/_generated/` and human‑readable reports under `docs/_generated/reports/`.
 
-- **Virtual env management**: `uv venv`, `uv sync`, `uv lock`
-- **Package operations**: `uv add <package>`, `uv remove <package>`
-- **Development sync**: `uv sync --all-extras --dev`
-- **Command execution**: `uv run <command>` (auto-activates venv)
-- **Python execution**: `uv run python <script>`
-- **Tests**: `uv run pytest`, `uv run pytest -m "unit or component"`
-- **Database migrations**: `uv run alembic upgrade head`
-- **Server**: `uv run fastapi run app/main.py --host 0.0.0.0 --port 5000`
+## Conventions
 
-### TypeScript/JavaScript - Use Bun exclusively (Node 22+ required)
+- All Markdown files must include YAML frontmatter with fields: `title`, `category`, `subcategory`, `status`, `created`, `updated`, `tags`
+- Use controlled vocabulary from `docs/taxonomy.yaml` for `category` and `tags`
+- Use npm + Biome and uv + Ruff throughout docs
+- Internal links must be relative and point to existing `*.md` files
+- Follow security best practices - never commit secrets
 
-**ALL JS/TS operations must use `bun`:**
+## Agent Discovery Tips
 
-- Root level: `bun install`, `bun run <script>`
-- Web app: `cd apps/web && bun install`, `bun run dev`
-- Never use npm or yarn for package management
-- **Node requirement**: Node 22+ for modern JavaScript features
+- **Start Here**: `DOCUMENTATION_SYSTEM.md` for complete documentation guide
+- Navigation: `docs/INDEX.md` and `docs/README.md`
+- Visual Dashboard: `docs/_generated/dashboard.html`
+- Use `make docs-graph` to build `docs/_generated/graph.json` with:
+  - nodes: `id`, `path`, `category`, `tags`
+  - edges: outbound links and backlinks
+- Use `make docs-validate` for full validation
+- Use `make docs-status` to see health metrics and orphans
+- Use `make docs-taxonomy` to check controlled vocabulary compliance
+- Use `make docs-relationships` to validate `docs/relationships.json`
 
-## Development Environment
+## Pull Request Checklist
 
-### Required Services
+- Run: `make docs-validate` (includes all checks)
+- Fix issues: `make docs-fix`
+- Ensure no broken links and taxonomy violations
+- Keep README/INDEX links consistent
+- Update documentation when changing functionality
+- Run tests: `make test`
 
-Before running tests or development servers:
+## Security & Secrets
+
+- Never commit secrets. Use environment variables and gopass (limited agent access under `development/`)
+- Authentication: JWT with refresh tokens, WebAuthn support
+- Secrets: Gopass (local), Infisical (production)
+- Rate limiting on all API endpoints
+
+## Style
+
+- Python: type hints, 4‑space indent, alphabetical imports, Ruff formatting
+- Web: 2‑space indent, TypeScript strict mode, Biome formatting
+- Prefer readability over cleverness
+- Use TodoWrite tool for task tracking
+- Always validate documentation after changes
+
+## Current Development Status
+
+- Branch: `pre-deployment-prep`
+- Focus: Preparing for Vercel + Supabase deployment
+- Documentation system: Fully operational
+- Next: Complete deployment configuration
+
+## Key Commands
 
 ```bash
-cd apps/api && docker compose up -d db nats
+# Backend Development
+cd apps/api
+uv run server      # Start FastAPI
+uv run test        # Run tests
+uv run lint        # Lint with Ruff
+
+# Frontend Development
+cd apps/web
+npm run dev        # Start Vite
+npm run test       # Run Vitest
+npm run lint       # Lint with Biome
+
+# Documentation
+make docs-validate # Validate all docs
+make docs-fix      # Auto-fix issues
+make docs-graph    # Generate graph
+
+# Full Test Suite
+make test          # All tests
+make check-deploy  # Deployment readiness
 ```
 
-### Environment Variables
-
-- `TEST_DB_URL=postgresql+asyncpg://journal:journal@localhost:5433/journal_test`
-- `JOURNAL_DB_URL=postgresql+asyncpg://journal:journal@localhost:5433/journal`
-
-### Quick Development Commands
-
-```bash
-# Backend development
-cd apps/api && uv run fastapi run app/main.py --host 0.0.0.0 --port 5000
-
-# Frontend development  
-cd apps/web && bun run dev
-
-# Database migrations
-cd apps/api && uv run alembic -c alembic.ini upgrade head
-
-# Backend tests
-cd apps/api && uv run pytest -m "unit or component"
-cd apps/api && uv run pytest -m integration
-
-# Frontend tests
-cd apps/web && bun run test:coverage
-
-# E2E tests
-npm ci && npx playwright install && npm test
-```
-
-## Testing Strategy
-
-### Test Markers
-
-- `@pytest.mark.unit` - Fast, pure logic tests
-- `@pytest.mark.component` - HTTP + DB integration tests
-- `@pytest.mark.integration` - Full integration with external services
-- `@pytest.mark.e2e` - End-to-end scenarios
-
-### Coverage Requirements
-
-- Maintain 70%+ test coverage (honest coverage, no cheating)
-- Only exclude integration-heavy modules from coverage
-- All feature code (API endpoints, services, models) must be covered
-
-## Architecture Principles
-
-### Backend (apps/api/)
-
-- **Framework**: FastAPI with async/await
-- **Database**: PostgreSQL 16+ with pgvector extension
-- **ORM**: SQLModel (SQLAlchemy + Pydantic)
-- **Auth**: JWT with refresh tokens
-- **Queue**: Redis for sessions, NATS for events
-- **Search**: pgvector for semantic search
-- **Testing**: pytest with asyncio support
-
-### Frontend (apps/web/)
-
-- **Framework**: React 19 with TypeScript
-- **Build**: Vite for fast HMR and bundling
-- **Styling**: Tailwind CSS + Shadcn/ui components
-- **State**: Zustand for global state management
-- **Forms**: React Hook Form + Zod validation
-- **Testing**: Vitest + React Testing Library
-
-## Code Standards
-
-### Python Style
-
-- PEP 8 via Ruff (configured in pyproject.toml)
-- Full type hints with SQLModel for ORM
-- Async/await throughout
-- 100-character line length
-- Docstrings for public APIs
-
-### TypeScript Style
-
-- Strict mode, no implicit any
-- Biome for formatting and linting
-- Functional React components with hooks
-- 2-space indentation
-- Import organization: external → internal → local
-
-## Security Guidelines
-
-1. **Never commit secrets** - Use environment variables
-2. **Validate all input** - Use Pydantic/Zod for validation
-3. **Parameterized queries** - SQLModel handles this automatically
-4. **Rate limiting** - Implement for all public endpoints
-5. **CORS** - Configured for localhost:5173 in development
-
-## Performance Targets
-
-- API response time: < 200ms p95
-- Frontend TTI: < 2s on 3G
-- Test execution: < 30s for unit/component tests
-- Build time: < 60s for production builds
-
-## Git Workflow
-
-1. **Never force push** to main branch
-2. **Feature branches** with descriptive names
-3. **Atomic commits** with conventional commit messages
-4. **PR reviews** required for main branch
-5. **CI/CD** must pass before merge
-
-## Common Workflows
-
-### Adding New API Endpoint
-
-1. Define SQLModel schema in `apps/api/app/models/`
-2. Create service layer in `apps/api/app/services/`
-3. Add FastAPI route in `apps/api/app/api/v1/`
-4. Write tests in `apps/api/tests/`
-5. Update OpenAPI documentation
-
-### Adding New React Component
-
-1. Create component in `apps/web/src/components/`
-2. Add Storybook story if UI component
-3. Write unit tests alongside component
-4. Update barrel exports if needed
-
-### Database Changes
-
-1. Modify SQLModel in `apps/api/app/models/`
-2. Generate migration: `cd apps/api && uv run alembic revision --autogenerate -m "description"`
-3. Review generated migration carefully
-4. Apply: `cd apps/api && uv run alembic upgrade head`
-
-## Troubleshooting
-
-### Common Issues
-
-1. **Import errors**: Check virtual environment activation
-2. **Database connection**: Ensure Docker services are running
-3. **Type errors**: Run `bun run typecheck` or `uv run mypy`
-4. **Test failures**: Check database state and cleanup
-5. **Port conflicts**: Ensure ports 5000, 5173, 5433, 4222 are free
-
-### Service Dependencies
-
-- **PostgreSQL**: Required for all database operations
-- **NATS**: Required for event streaming (optional for basic testing)
-- **Redis**: Required for session management
-- **Docker**: Required for local service orchestration
-
-## Agent Permissions & Constraints
-
-When running as Codex agent in this project:
-
-- **Sandbox**: `danger-full-access` (filesystem, network, processes)
-- **Approvals**: `never` (non-interactive execution)
-- **Timeout**: 15 minutes (for long operations like Playwright install)
-- **Commands**: Restricted from using pip/npm directly
-- **Services**: Permission to start/stop Docker services
-- **Git**: Permission to create feature branches and commit
-- **CI**: Permission to modify GitHub Actions workflows
-
-## Codex Configuration
-
-### Project Bootstrap
-
-To set up or refresh Codex configuration for this project:
-
-```bash
-# Read system configuration and create/update project config
-codex "Read ~/Projects/verlyn13/system-setup/PROJECT-AGENT-BOOTSTRAP.md and update project configuration"
-```
-
-### Model Selection & Usage
-
-#### Available Profiles (from \~/.codex/config.toml)
-
-- **speed** (default): `gpt-5-mini`, fast iteration, routine tasks
-- **depth**: `gpt-5` with high reasoning, complex analysis
-- **permissive**: `gpt-5`, auto-approves successful commands
-- **agent**: `gpt-5-mini`, for CI/CD automation
-- **budget**: `gpt-5-mini`, minimal tokens, cost-optimized
-
-#### Profile-Based Execution
-
-```bash
-# Fast profile (default) - routine tasks, simple fixes
-codex --profile speed "run the test suite and fix any linting errors"
-mise run codex:fast "implement the new endpoint"
-
-# Deep reasoning - complex debugging, architecture  
-codex --profile depth "analyze why the database connection is timing out"
-mise run codex:deep "refactor the authentication system"
-
-# Permissive mode - rapid iteration, auto-approval
-codex --profile permissive "update all dependencies and fix breaking changes"
-mise run codex:permissive "scaffold new components"
-```
-
-### Mise Integration
-
-The project includes `.mise.toml` with predefined tasks:
-
-```bash
-# Quick Codex invocations
-mise run codex:fast "quick fix"     # Uses speed profile
-mise run codex:deep "complex task"  # Uses depth profile
-
-# Development workflow
-mise run setup        # Complete project setup
-mise run dev         # Start both API and web dev servers
-mise run test        # Run all tests
-mise run ci          # Simulate CI pipeline locally
-```
-
-### Context Inheritance
-
-1. **Global Config**: `~/.codex/config.toml` - Models and profiles
-2. **Global Context**: `~/.codex/AGENTS.md` - System preferences
-3. **Project Context**: `./AGENTS.md` (this file) - Project specifics
-4. **Mise Tasks**: `./.mise.toml` - Task automation
-
-### Recommended Usage by Task Type
-
-| Task Type          | Profile     | Example                                          |
-| ------------------ | ----------- | ------------------------------------------------ |
-| Bug fixes          | speed       | `codex "fix the failing test"`                   |
-| New features       | speed/depth | `codex "add user profile endpoint"`              |
-| Refactoring        | depth       | `codex --profile depth "refactor service layer"` |
-| Architecture       | depth       | `codex --profile depth "design event system"`    |
-| Dependency updates | permissive  | `codex --profile permissive "update packages"`   |
-| CI/CD tasks        | agent       | `codex --profile agent "fix CI pipeline"`        |
-
-### Security Note
-
-API key is retrieved from gopass at `codex/openai/api-key`. Never commit API keys or use environment variables directly.
-
-## Do Not
-
-- Run `pip install` or `npm install` directly
-- Create files without checking existing patterns
-- Ignore type errors or linting warnings
-- Commit without running tests
-- Use synchronous code in async contexts
-- Mix concerns between API and web layers
-- Exclude feature code from test coverage
-
-## Environment Setup Verification
-
-```bash
-# Verify all tools are available
-python3 --version    # 3.13.7+
-uv --version         # latest (with virtual env support)
-node --version       # 22.0.0+ (latest LTS or current)
-bun --version        # 1.2.x+ (latest)
-docker --version     # with compose
-psql --version       # PostgreSQL client
-
-# Verify virtual environment capabilities
-cd apps/api && uv venv --python 3.13  # Create venv if needed
-cd apps/api && uv sync --all-extras --dev  # Sync dependencies
-cd apps/api && uv run python --version  # Test venv activation
-
-# Start services and run health checks
-cd apps/api && docker compose up -d
-cd apps/api && uv run python -c "import asyncpg; print('AsyncPG OK')"
-cd apps/web && bun run typecheck
-```
-
-This configuration ensures reliable, fast development with proper testing and deployment practices.

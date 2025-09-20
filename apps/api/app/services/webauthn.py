@@ -66,7 +66,9 @@ class WebAuthnService:
             Registration options for the client
         """
         # Get existing credentials to exclude
-        existing_credentials = await WebAuthnCredential.find_user_credentials(self.session, user.id)
+        existing_credentials = await WebAuthnCredential.find_user_credentials(
+            self.session, user.id
+        )
 
         exclude_credentials = [
             PublicKeyCredentialDescriptor(
@@ -197,7 +199,9 @@ class WebAuthnService:
 
         # For specific user authentication, provide their credentials
         if user_id and not conditional_ui:
-            credentials = await WebAuthnCredential.find_user_credentials(self.session, user_id)
+            credentials = await WebAuthnCredential.find_user_credentials(
+                self.session, user_id
+            )
             allow_credentials = [
                 PublicKeyCredentialDescriptor(
                     id=cred.credential_id,
@@ -280,7 +284,9 @@ class WebAuthnService:
         self.session.add(challenge)
 
         # Update credential usage
-        await webauthn_credential.update_usage(self.session, verification.new_sign_count)
+        await webauthn_credential.update_usage(
+            self.session, verification.new_sign_count
+        )
 
         # Get the user
         user = webauthn_credential.user
@@ -296,14 +302,18 @@ class WebAuthnService:
         Returns:
             List of credential information (safe for client display)
         """
-        credentials = await WebAuthnCredential.find_user_credentials(self.session, user_id)
+        credentials = await WebAuthnCredential.find_user_credentials(
+            self.session, user_id
+        )
 
         return [
             {
                 "id": str(cred.id),
                 "nickname": cred.nickname,
                 "created_at": cred.created_at.isoformat(),
-                "last_used_at": cred.last_used_at.isoformat() if cred.last_used_at else None,
+                "last_used_at": cred.last_used_at.isoformat()
+                if cred.last_used_at
+                else None,
                 "backup_eligible": cred.backup_eligible,
                 "backup_state": cred.backup_state,
                 "transports": cred.transports.split(",") if cred.transports else [],
@@ -401,7 +411,9 @@ class WebAuthnService:
         ]
 
     @staticmethod
-    def _format_transports(transports: list[AuthenticatorTransport] | None) -> str | None:
+    def _format_transports(
+        transports: list[AuthenticatorTransport] | None,
+    ) -> str | None:
         """Format transports list to CSV string."""
         if not transports:
             return None

@@ -39,7 +39,10 @@ class RecoveryService:
         for code in codes:
             hashed = RecoveryService.hash_recovery_code(code, user_id)
             recovery_code = RecoveryCode(
-                user_id=user_id, code_hash=hashed, used=False, created_at=datetime.now(UTC)
+                user_id=user_id,
+                code_hash=hashed,
+                used=False,
+                created_at=datetime.now(UTC),
             )
             self.session.add(recovery_code)
 
@@ -140,7 +143,9 @@ class RecoveryService:
             "used_codes": used,
             "remaining_codes": remaining,
             "has_codes": total > 0,
-            "latest_generation": latest_generation.isoformat() if latest_generation else None,
+            "latest_generation": latest_generation.isoformat()
+            if latest_generation
+            else None,
         }
 
     async def revoke_recovery_codes(self, user_id: UUID) -> int:
@@ -186,9 +191,12 @@ class RecoveryService:
             "steps": [
                 "Store these codes in a secure location (password manager, safe, etc.)",
                 "Each code can only be used once",
-                "Use these codes if you lose access to your passkeys or other authentication methods",
-                "You can generate new codes at any time, which will invalidate the old ones",
-                "Keep these codes confidential - anyone with access can use them to access your account",
+                "Use these codes if you lose access to your passkeys "
+                "or other authentication methods",
+                "You can generate new codes at any time, "
+                "which will invalidate the old ones",
+                "Keep these codes confidential - anyone with access "
+                "can use them to access your account",
             ],
             "usage": {
                 "when_to_use": "When you cannot access your account through normal means",

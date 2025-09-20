@@ -9,7 +9,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.infra.db import get_session
 from app.infra.sa_models import Entry
-from app.infra.search_pgvector import hybrid_search, semantic_search, upsert_entry_embedding
+from app.infra.search_pgvector import (
+    hybrid_search,
+    semantic_search,
+    upsert_entry_embedding,
+)
 
 
 router = APIRouter(prefix="", tags=["search"])

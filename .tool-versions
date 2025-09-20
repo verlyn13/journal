@@ -1,0 +1,5 @@
+python 3.13.7
+bun 1.2.21
+node 22.9.0
+jq 1.7
+shellcheck 0.10.0

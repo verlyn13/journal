@@ -69,7 +69,9 @@ class TokenCipher:
         }
 
         # Return base64-encoded JSON
-        return base64.urlsafe_b64encode(json.dumps(encrypted_data).encode()).decode("ascii")
+        return base64.urlsafe_b64encode(json.dumps(encrypted_data).encode()).decode(
+            "ascii"
+        )
 
     def decrypt(self, encrypted_token: str) -> str | None:
         """Decrypt a token using the appropriate key.
@@ -176,7 +178,9 @@ class TokenCipher:
         keys_json = json.dumps(self.keys)
         # In production, this would trigger an alert to update the key in secure storage
         # For development, log the new keys (would be sent to monitoring service in prod)
-        logger.warning("Key rotation required. Update JOURNAL_ENCRYPTION_KEYS: %s", keys_json)
+        logger.warning(
+            "Key rotation required. Update JOURNAL_ENCRYPTION_KEYS: %s", keys_json
+        )
 
     def _get_current_key_id(self) -> str:
         """Get the ID of the most recent key."""

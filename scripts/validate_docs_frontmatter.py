@@ -6,9 +6,10 @@ ensuring they have the required fields and follow a consistent format.
 """
 
 import os
+from pathlib import Path
 import re
 import sys
-from pathlib import Path
+
 
 # Required frontmatter fields for different document types
 REQUIRED_FIELDS = {

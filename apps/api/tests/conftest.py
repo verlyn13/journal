@@ -17,7 +17,12 @@ from httpx import ASGITransport, AsyncClient
 import pytest
 import pytest_asyncio
 from sqlalchemy import text
-from sqlalchemy.ext.asyncio import AsyncConnection, AsyncEngine, AsyncSession, create_async_engine
+from sqlalchemy.ext.asyncio import (
+    AsyncConnection,
+    AsyncEngine,
+    AsyncSession,
+    create_async_engine,
+)
 from sqlalchemy.orm import sessionmaker
 
 from app.infra.auth import require_user
@@ -37,10 +42,12 @@ requires_infisical = pytest.mark.skipif(
 settings.testing = True
 
 TEST_DB_URL_ASYNC = os.getenv(
-    "TEST_DB_URL_ASYNC", "postgresql+asyncpg://journal:journal@localhost:5433/journal_test"
+    "TEST_DB_URL_ASYNC",
+    "postgresql+asyncpg://journal:journal@localhost:5433/journal_test",
 )
 TEST_DB_URL_SYNC = os.getenv(
-    "TEST_DB_URL_SYNC", "postgresql+psycopg://journal:journal@localhost:5433/journal_test"
+    "TEST_DB_URL_SYNC",
+    "postgresql+psycopg://journal:journal@localhost:5433/journal_test",
 )
 
 # Ensure Alembic and the app use the same test database URL
@@ -214,7 +221,9 @@ async def sample_entry(db_session: AsyncSession) -> Entry:
         word_count=8,
     )
     db_session.add(entry)
-    await db_session.flush()  # Flush but don't commit - let the test manage the transaction
+    await (
+        db_session.flush()
+    )  # Flush but don't commit - let the test manage the transaction
     return entry
 
 

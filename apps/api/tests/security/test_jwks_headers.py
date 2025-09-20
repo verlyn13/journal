@@ -29,7 +29,9 @@ async def test_jwks_headers(monkeypatch) -> None:
     async def _stable_response(self: JWKSService) -> dict[str, Any]:
         return {"keys": [{"kty": "OKP", "crv": "Ed25519", "kid": "k1", "x": "A"}]}
 
-    monkeypatch.setattr(JWKSService, "_build_jwks_response", _stable_response, raising=True)
+    monkeypatch.setattr(
+        JWKSService, "_build_jwks_response", _stable_response, raising=True
+    )
 
     # Call route handler directly with fakes
     response = Response()

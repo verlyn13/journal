@@ -4,7 +4,9 @@ import pytest
 
 @pytest.mark.asyncio()
 @pytest.mark.component()
-async def test_dual_write_saves_both_formats(client: AsyncClient, auth_headers: dict[str, str]):
+async def test_dual_write_saves_both_formats(
+    client: AsyncClient, auth_headers: dict[str, str]
+):
     payload = {
         "title": "MD Entry",
         "markdown_content": "# Title\n\nBody",
@@ -20,7 +22,9 @@ async def test_dual_write_saves_both_formats(client: AsyncClient, auth_headers: 
 
 @pytest.mark.asyncio()
 @pytest.mark.component()
-async def test_backward_compatibility(client: AsyncClient, auth_headers: dict[str, str]):
+async def test_backward_compatibility(
+    client: AsyncClient, auth_headers: dict[str, str]
+):
     # Default returns HTML
     r = await client.get("/api/v1/entries", headers=auth_headers)
     assert r.status_code == 200
@@ -31,7 +35,9 @@ async def test_backward_compatibility(client: AsyncClient, auth_headers: dict[st
 
 @pytest.mark.asyncio()
 @pytest.mark.component()
-async def test_new_clients_get_markdown(client: AsyncClient, auth_headers: dict[str, str]):
+async def test_new_clients_get_markdown(
+    client: AsyncClient, auth_headers: dict[str, str]
+):
     headers = {**auth_headers, "X-Content-Format": "markdown"}
     r = await client.get("/api/v1/entries", headers=headers)
     assert r.status_code == 200

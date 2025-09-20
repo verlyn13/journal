@@ -1,3 +1,25 @@
+---
+id: infisical-secret-paths-setup
+title: Infisical Secret Paths Configuration Guide
+description: This guide implements the exact secret taxonomy from the token enhancement
+  plan for the Journal API's Infisical integration.
+type: api
+created: '2025-09-17'
+updated: '2025-09-17'
+author: Journal Team
+tags:
+- /
+- home
+- verlyn13
+- projects
+- journal
+priority: 2
+status: current
+visibility: public
+schema_version: v1
+version: 1.0.0
+---
+
 # Infisical Secret Paths Configuration Guide
 
 This guide implements the exact secret taxonomy from the token enhancement plan for the Journal API's Infisical integration.

@@ -47,7 +47,9 @@ class TestAuthAPI:
         # Create a valid refresh token
         refresh_token = create_refresh_token("user-123")
 
-        response = await client.post("/api/v1/auth/refresh", json={"refresh_token": refresh_token})
+        response = await client.post(
+            "/api/v1/auth/refresh", json={"refresh_token": refresh_token}
+        )
         assert response.status_code == 200
         data = response.json()
         assert "access_token" in data
@@ -67,7 +69,9 @@ class TestAuthAPI:
         # Create an access token (wrong type)
         access_token = create_access_token("user-123")
 
-        response = await client.post("/api/v1/auth/refresh", json={"refresh_token": access_token})
+        response = await client.post(
+            "/api/v1/auth/refresh", json={"refresh_token": access_token}
+        )
         assert response.status_code == 401
 
     @pytest.mark.asyncio()

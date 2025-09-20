@@ -24,7 +24,9 @@ def create_access_token(sub: str, scopes: list[str] | None = None) -> str:
         "aud": settings.jwt_aud,
         "iat": int(now.timestamp()),
         "nbf": int(now.timestamp()),
-        "exp": int((now + timedelta(minutes=settings.access_token_minutes)).timestamp()),
+        "exp": int(
+            (now + timedelta(minutes=settings.access_token_minutes)).timestamp()
+        ),
         "sub": sub,
         "scope": " ".join(scopes or []),
         "typ": "access",
@@ -62,7 +64,9 @@ def create_verify_token(sub: str, minutes: int = 30) -> str:
     return jwt.encode(payload, settings.jwt_secret, algorithm="HS256")
 
 
-def require_user(creds: HTTPAuthorizationCredentials | None = Depends(bearer_scheme)) -> str:
+def require_user(
+    creds: HTTPAuthorizationCredentials | None = Depends(bearer_scheme),
+) -> str:
     if creds is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

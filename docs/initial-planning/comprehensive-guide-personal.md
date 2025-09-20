@@ -1,3 +1,22 @@
+---
+id: comprehensive-guide-personal
+title: Core Technologies
+type: api
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags:
+- api
+- python
+- react
+priority: high
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 ***
 
 title: "Comprehensive Guide: Personal Flask Blog/Journal System"
@@ -14,12 +33,19 @@ related\_topics:
 version: "1.0"
 tags:
 
+> Note: This document is being split into smaller sections under `initial-planning/personal-guide/` for easier navigation. See:
+> - [Overview](personal-guide/overview.md)
+> - [Architecture](personal-guide/architecture.md)
+> - [Backend](personal-guide/backend.md)
+> - [Frontend](personal-guide/frontend.md)
+> - [Deployment](personal-guide/deployment.md)
+
 # Core Technologies
 
 ```
   - "flask"
   - "sqlalchemy"
-  - "sqlite"
+  - "PostgreSQL"
   - "redis"
   - "htmx"
   - "alpinejs"
@@ -111,7 +137,7 @@ tags:
 
 ```
   - "testing"
-  - "pytest"
+  - "uv run pytest"
   - "unit testing"
   - "integration testing"
   - "ui testing"
@@ -213,7 +239,7 @@ The personal blog/journal system is designed with the following characteristics:
 The application leverages:
 
 - **Flask**: For the web framework
-- **SQLite**: For lightweight database storage
+- **PostgreSQL**: For lightweight database storage
 - **HTMX + Alpine.js**: For frontend interactivity without a heavy framework
 - **Redis**: For session storage and caching
 - **MathJax**: For LaTeX rendering
@@ -317,7 +343,7 @@ The backend is structured into four main layers:
 #### 1. Data Access Layer
 
 - **Responsibility**: Define, store, and retrieve application data
-- **Technologies**: SQLAlchemy, SQLite
+- **Technologies**: SQLAlchemy, PostgreSQL
 - **Components**:
   \- ORM models (User, Entry, Tag)
   \- Query operations
@@ -883,7 +909,7 @@ def load_user(user_id):
 ### API Endpoints
 
 - Defined using Flask Blueprints (e.g., `api_bp`).
-- Follow RESTful principles outlined in [API Contract Guide](./api-contract-guide.md).
+- Follow RESTful principles outlined in API Contract Guide.
 - Use JSON for request/response bodies.
 
 ```python
@@ -1043,7 +1069,7 @@ def load_user(user_id):
 ```html
 <!-- Example: HTMX form submission with Alpine state -->
 <div x-data="{ isSubmitting: false, errorMessage: '' }">
-    <form hx-post="/api/v1/entries" hx-target="#entry-list" hx-swap="beforeend"
+    <form hx-post="/api/entries" hx-target="#entry-list" hx-swap="beforeend"
           @htmx:before-request="isSubmitting = true; errorMessage = ''"
           @htmx:after-request="isSubmitting = false; if($event.detail.failed) errorMessage = 'Submission failed';"
           @htmx:response-error="errorMessage = 'Server error: ' + $event.detail.xhr.status">
@@ -1722,7 +1748,7 @@ Create a Markdown editor with Alpine.js:
     updatePreview() {
         this.isPreviewLoading = true;
         
-        fetch('/api/v1/markdown', {
+        fetch('/api/markdown', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -2238,7 +2264,7 @@ from app.models.content import Entry, Tag, EntryVersion, EntryDraft
 
 config = context.config
 config.set_main_option('sqlalchemy.url', current_app.config.get('SQLALCHEMY_DATABASE_URI'))
-target_metadata = current_app.extensions['migrate'].db.metadata
+target_metadata = current_app.extensions['migrate'].metadata
 
 def run_migrations_online():
     """Run migrations in 'online' mode."""
@@ -2780,7 +2806,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             // Send to server
-            fetch('/api/v1/drafts', {
+            fetch('/api/drafts', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -3417,9 +3443,9 @@ log "INFO" "Creating pre-deployment backup"
 mkdir -p "$BACKUP_DIR"
 
 # Backup database
-DB_BACKUP="$BACKUP_DIR/db_pre_deploy_$TIMESTAMP.sqlite"
-if [ -f "$APP_DIR/instance/journal.db" ]; then
-    sqlite3 "$APP_DIR/instance/journal.db" ".backup '$DB_BACKUP'"
+DB_BACKUP="$BACKUP_DIR/db_pre_deploy_$TIMESTAMP.PostgreSQL"
+if [ -f "$APP_DIR/instance/journal" ]; then
+    PostgreSQL "$APP_DIR/instance/journal" ".backup '$DB_BACKUP'"
     log "INFO" "Database backed up to $DB_BACKUP"
 else
     log "WARN" "Database file not found, skipping backup"
@@ -3451,8 +3477,7 @@ source "$VENV_DIR/bin/activate" || {
     exit 1
 }
 
-pip install --upgrade pip
-pip install -r requirements.txt || {
+uv pip install --upgrade uv pip uv pip install -r requirements.txt || {
     log "ERROR" "Failed to install dependencies"
     exit 1
 }
@@ -3465,8 +3490,8 @@ flask db upgrade || {
     log "INFO" "Attempting to restore database from backup"
     
     if [ -f "$DB_BACKUP" ]; then
-        cp "$APP_DIR/instance/journal.db" "$APP_DIR/instance/journal.db.failed"
-        sqlite3 "$APP_DIR/instance/journal.db" ".restore '$DB_BACKUP'"
+        cp "$APP_DIR/instance/journal" "$APP_DIR/instance/journal.failed"
+        PostgreSQL "$APP_DIR/instance/journal" ".restore '$DB_BACKUP'"
         log "INFO" "Database restored from backup"
     else
         log "ERROR" "No database backup found for restoration"
@@ -3492,7 +3517,7 @@ fi
 
 # Clean up old backups
 log "INFO" "Cleaning up old backups"
-find "$BACKUP_DIR" -name "db_pre_deploy_*.sqlite" -type f -mtime +30 -delete
+find "$BACKUP_DIR" -name "db_pre_deploy_*.PostgreSQL" -type f -mtime +30 -delete
 
 # Deployment successful
 log "INFO" "Deployment completed successfully"
@@ -3543,7 +3568,7 @@ ReadWritePaths=/path/to/journal/instance /path/to/journal/logs
 ReadOnlyPaths=/path/to/journal/app /path/to/journal/static
 
 # Startup command
-ExecStart=/path/to/journal/venv/bin/gunicorn --workers 2 --bind 127.0.0.1:8000 wsgi:app
+ExecStart=/path/to/journal/venv/bin/gunicorn --workers 2 --bind your-domain.com wsgi:app
 
 # Standard output settings
 StandardOutput=journal
@@ -3693,14 +3718,14 @@ log() {
 log "INFO" "Starting backup"
 
 # Backup database
-DB_PATH="$APP_DIR/instance/journal.db"
+DB_PATH="$APP_DIR/instance/journal"
 if [ -f "$DB_PATH" ]; then
     # Create a temporary directory
     TEMP_DIR=$(mktemp -d)
     log "INFO" "Created temporary directory: $TEMP_DIR"
     
     # Copy database to temp dir
-    sqlite3 "$DB_PATH" ".backup '$TEMP_DIR/journal.db'"
+    PostgreSQL "$DB_PATH" ".backup '$TEMP_DIR/journal'"
     log "INFO" "Database backed up"
     
     # Backup configuration files
@@ -3937,9 +3962,9 @@ if [ -f "$CONFIG_DIR/.env" ]; then
 fi
 
 # Set permissions on database file
-if [ -f "$CONFIG_DIR/journal.db" ]; then
-    sudo chmod 640 "$CONFIG_DIR/journal.db"
-    echo "Set permissions on journal.db to 640 (-rw-r-----)"
+if [ -f "$CONFIG_DIR/journal" ]; then
+    sudo chmod 640 "$CONFIG_DIR/journal"
+    echo "Set permissions on journal to 640 (-rw-r-----)"
 fi
 
 # Set permissions on log directory
@@ -4096,11 +4121,11 @@ Create pytest configuration:
 
 ```python
 # tests/conftest.py
-import pytest
+import uv run pytest
 from app import create_app
 from app.models import db as _db
 
-@pytest.fixture(scope='session')
+@uv run pytest.fixture(scope='session')
 def app():
     """Create a Flask app for testing."""
     app = create_app('testing')
@@ -4109,14 +4134,14 @@ def app():
     with app.app_context():
         yield app
 
-@pytest.fixture(scope='session')
+@uv run pytest.fixture(scope='session')
 def db(app):
     """Set up the database and clean up after tests."""
     _db.create_all()
     yield _db
     _db.drop_all()
 
-@pytest.fixture(scope='function')
+@uv run pytest.fixture(scope='function')
 def session(db):
     """Create a new database session for each test."""
     connection = db.engine.connect()
@@ -4134,17 +4159,17 @@ def session(db):
     connection.close()
     session.remove()
 
-@pytest.fixture(scope='function')
+@uv run pytest.fixture(scope='function')
 def client(app):
     """Create a test client."""
     return app.test_client()
 
-@pytest.fixture(scope='function')
+@uv run pytest.fixture(scope='function')
 def authenticated_client(app, session):
     """Create an authenticated test client."""
     # Create a test user
     from app.models.user import User
-    user = User(username="testuser", email="test@example.com")
+    user = User(username="testuser", email="test@journal.local")
     user.set_password("password123")
     session.add(user)
     session.commit()
@@ -4163,7 +4188,7 @@ Write tests for models:
 
 ```python
 # tests/unit/test_models/test_entry.py
-import pytest
+import uv run pytest
 from datetime import datetime
 from app.models.content import Entry, Tag
 
@@ -4235,12 +4260,12 @@ Write tests for services:
 
 ```python
 # tests/unit/test_services/test_entry_service.py
-import pytest
+import uv run pytest
 from app.services.entry_service import EntryService
 from app.models.content import Entry, Tag
 
 class TestEntryService:
-    @pytest.fixture
+    @uv run pytest.fixture
     def entry_service(self):
         """Create an instance of EntryService for testing."""
         return EntryService()
@@ -4336,7 +4361,7 @@ Test route handlers:
 
 ```python
 # tests/integration/test_routes/test_entry_routes.py
-import pytest
+import uv run pytest
 from flask import url_for
 
 class TestEntryRoutes:
@@ -4384,14 +4409,14 @@ Test API endpoints:
 
 ```python
 # tests/integration/test_api/test_entry_api.py
-import pytest
+import uv run pytest
 import json
 from flask import url_for
 
 class TestEntryAPI:
     def test_get_entries(self, authenticated_client):
         """Test getting entries via API."""
-        response = authenticated_client.get('/api/v1/entries')
+        response = authenticated_client.get('/api/entries')
         
         assert response.status_code == 200
         data = json.loads(response.data)
@@ -4409,7 +4434,7 @@ class TestEntryAPI:
         }
         
         response = authenticated_client.post(
-            '/api/v1/entries',
+            '/api/entries',
             data=json.dumps(entry_data),
             content_type='application/json'
         )
@@ -4427,7 +4452,7 @@ Test template rendering:
 
 ````python
 # tests/ui/test_templates.py
-import pytest
+import uv run pytest
 from flask import render_template_string, render_template, current_app
 
 class TestTemplates:
@@ -4568,12 +4593,12 @@ Write tests for services:
 
 ```python
 # tests/unit/test_services/test_entry_service.py
-import pytest
+import uv run pytest
 from app.services.entry_service import EntryService
 from app.models.content import Entry, Tag
 
 class TestEntryService:
-    @pytest.fixture
+    @uv run pytest.fixture
     def entry_service(self):
         """Create an instance of EntryService for testing."""
         return EntryService()
@@ -4669,7 +4694,7 @@ Test route handlers:
 
 ```python
 # tests/integration/test_routes/test_entry_routes.py
-import pytest
+import uv run pytest
 from flask import url_for
 
 class TestEntryRoutes:
@@ -4717,14 +4742,14 @@ Test API endpoints:
 
 ```python
 # tests/integration/test_api/test_entry_api.py
-import pytest
+import uv run pytest
 import json
 from flask import url_for
 
 class TestEntryAPI:
     def test_get_entries(self, authenticated_client):
         """Test getting entries via API."""
-        response = authenticated_client.get('/api/v1/entries')
+        response = authenticated_client.get('/api/entries')
         
         assert response.status_code == 200
         data = json.loads(response.data)
@@ -4742,7 +4767,7 @@ class TestEntryAPI:
         }
         
         response = authenticated_client.post(
-            '/api/v1/entries',
+            '/api/entries',
             data=json.dumps(entry_data),
             content_type='application/json'
         )
@@ -4760,7 +4785,7 @@ Test template rendering:
 
 ````python
 # tests/ui/test_templates.py
-import pytest
+import uv run pytest
 from flask import render_template_string, render_template, current_app
 
 class TestTemplates:

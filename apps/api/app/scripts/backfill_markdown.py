@@ -23,7 +23,9 @@ async def backfill_markdown_content(
     """
     if session is None:
         engine = get_async_engine()
-        sm = async_sessionmaker(bind=engine, class_=AsyncSession, expire_on_commit=False)
+        sm = async_sessionmaker(
+            bind=engine, class_=AsyncSession, expire_on_commit=False
+        )
         async with sm() as sess:
             return await backfill_markdown_content(sess, batch_size, dry_run)
 

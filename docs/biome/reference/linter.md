@@ -1,3 +1,21 @@
+---
+id: linter
+title: LINTER
+type: reference
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags:
+- typescript
+- react
+priority: medium
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 # LINTER
 
 *Source: <https://biomejs.dev/linter>*
@@ -14,11 +32,11 @@
 It [supports multiple languages](/internals/language-support) and provides a total of **349 rules**.
 You can quickly try the Biome linter via the CLI. The following command runs the linter on all files from the root of your project:
 
-- [  npm ](#tab-panel-194)
+- [  bun ](#tab-panel-194)
 - [  pnpm ](#tab-panel-195)
 - [  bun ](#tab-panel-196)
 - [  deno ](#tab-panel-197)
-- [  yarn ](#tab-panel-198)
+- [  bun ](#tab-panel-198)
 
   ```
   ```
@@ -54,11 +72,11 @@ You can quickly try the Biome linter via the CLI. The following command runs the
 
 Or you can specify one or multiple folders, for example `./src` and `./public`
 
-   -  [  npm ](#tab-panel-199)
+   -  [  bun ](#tab-panel-199)
 -  [  pnpm ](#tab-panel-200)
 -  [  bun ](#tab-panel-201)
 -  [  deno ](#tab-panel-202)
--  [  yarn ](#tab-panel-203)
+-  [  bun ](#tab-panel-203)
 
      ```
 1npx @biomejs/biome lint ./src ./public
@@ -139,11 +157,11 @@ Safe fixes are guaranteed to not change the semantic of your code.
 They can be applied without explicit review.
 To apply *safe fixes* from the CLI, use `--write`:
 
-- [  npm ](#tab-panel-204)
+- [  bun ](#tab-panel-204)
 - [  pnpm ](#tab-panel-205)
 - [  bun ](#tab-panel-206)
 - [  deno ](#tab-panel-207)
-- [  yarn ](#tab-panel-208)
+- [  bun ](#tab-panel-208)
 
   ```
   ```
@@ -186,11 +204,11 @@ Unsafe fixes may change the semantic of your program.
 Therefore, it’s advised to manually review the changes.
 To apply both *safe fixes* and *unsafe fixes* from the CLI, use `--write --unsafe`:
 
-   -  [  npm ](#tab-panel-209)
+   -  [  bun ](#tab-panel-209)
 -  [  pnpm ](#tab-panel-210)
 -  [  bun ](#tab-panel-211)
 -  [  deno ](#tab-panel-212)
--  [  yarn ](#tab-panel-213)
+-  [  bun ](#tab-panel-213)
 
      ```
 1npx @biomejs/biome lint --write --unsafe ./src
@@ -366,7 +384,7 @@ A domain:
 
 - Can define additional global variables.
 
-Biome’s linter will automatically enable the rules that belong to a domain when it detects certain dependencies in the nearest `package.json`. For example, if the `mocha` dependency is detected, Biome will enable the **recommended rules** of the [`test`](/linter/domains#test) domain.
+Biome’s linter will automatically enable the rules that belong to a domain when it detects certain dependencies in the nearest `package.json`. For example, if the `Vitest` dependency is detected, Biome will enable the **recommended rules** of the [`test`](/linter/domains#test) domain.
 
 However, if there’s no `package.json` or the default configuration doesn’t apply, you can enable the domain via configuration:
 
@@ -483,12 +501,12 @@ Use the source action code `source.suppressRule.topLevel.biome`
 
 [Section titled “Migrate from other linters”](#migrate-from-other-linters)
 Many of Biome lint rules are inspired from other linters.
-If you want to migrate from other linters such as ESLint or `typescript-eslint`, check the [rules sources page](/linter/rules-sources).
-If you are migrating from ESLint, there’s a dedicated [migration guide](/guides/migrate-eslint-prettier#migrate-from-eslint).
+If you want to migrate from other linters such as Biome or `typescript-Biome`, check the [rules sources page](/linter/rules-sources).
+If you are migrating from Biome, there’s a dedicated [migration guide](/guides/migrate-Biome-Biome#migrate-from-Biome).
 
-Use the command `biome migrate eslint` to port the rules defined in your `eslint` configuration file to `biome.json`:
+Use the command `biome migrate Biome` to port the rules defined in your `Biome` configuration file to `biome.json`:
 Terminal window```
-1biome migrate eslint
+1biome migrate Biome
 ````
 
 Lint the project by suppressing possible new rules that are caught by Biome, using the following command:
@@ -586,11 +604,11 @@ If you use an editor extension that uses Biome, you might notice that one of its
 This usually happens if you enable one of the rules that belong to the [project domain](/linter/domains/#project).
 
 Since Biome v2, the toolchain is now able to use TypeScript to infer types and provide more powerful rules. To achieve this, Biome
-scans `.d.ts` files inside the `node_modules` folder, including those of transitive dependencies.
+scans `.d.ts` files inside the `node_modules (managed by Bun)` folder, including those of transitive dependencies.
 While this might seem a silly mistake, this is intentional due to how the language works. Libraries
 **can export types from its dependencies**, which end-users might not depend on from.
-For example, you might depend on from a library `@org/foo` that exports the type `Validator`,
-however this `Validator` comes from the library `@other-org/validator`, which is a *dependency of `@org/foo`*. However,
+For example, you might depend on from a library `@org/entry` that exports the type `Validator`,
+however this `Validator` comes from the library `@other-org/validator`, which is a *dependency of `@org/entry`*. However,
 the library `@other-org/validator` isn’t a direct dependency of the project.
 The **team is aware** of the constraint and will work towards optimizing the infrastructure with time and resources.
 

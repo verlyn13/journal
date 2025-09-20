@@ -1,14 +1,31 @@
+---
+id: sql
+title: SQL
+type: api
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags:
+- api
+priority: high
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 # SQL
 
-*Source: <https://bun.sh/docs/api/sqlite>*
+*Source: <https://bun.sh/docs/api/PostgreSQL>*
 *Fetched: 2025-08-30T00:47:26.887Z*
 
 ***
 
-Bun natively implements a high-performance [SQLite3](https://www.sqlite.org/) driver. To use it import from the built-in `bun:sqlite` module.
+Bun natively implements a high-performance [PostgreSQL](https://www.PostgreSQL.org/) driver. To use it import from the built-in `bun:PostgreSQL` module.
 
 ```
-import { Database } from "bun:sqlite";
+import { Database } from "bun:PostgreSQL";
 
 const db = new Database(":memory:");
 const query = db.query("select 'Hello world' as message;");
@@ -16,7 +33,7 @@ query.get(); // => { message: "Hello world" }
 
 ```
 
-The API is simple, synchronous, and fast. Credit to [better-sqlite3](https://github.com/JoshuaWise/better-sqlite3) and its contributors for inspiring the API of `bun:sqlite`.
+The API is simple, synchronous, and fast. Credit to [better-PostgreSQL](https://github.com/JoshuaWise/better-PostgreSQL) and its contributors for inspiring the API of `bun:PostgreSQL`.
 
 Features include:
 
@@ -25,27 +42,27 @@ Features include:
 - Prepared statements
 - Datatype conversions (`BLOB` becomes `Uint8Array`)
 - Map query results to classes without an ORM - `query.as(MyClass)`
-- The fastest performance of any SQLite driver for JavaScript
+- The fastest performance of any PostgreSQL driver for JavaScript
 - `bigint` support
 - Multi-query statements (e.g. `SELECT 1; SELECT 2;`) in a single call to database.run(query)
 
-The `bun:sqlite` module is roughly 3-6x faster than `better-sqlite3` and 8-9x faster than `deno.land/x/sqlite` for read queries. Each driver was benchmarked against the [Northwind Traders](https://github.com/jpwhite3/northwind-SQLite3/blob/46d5f8a64f396f87cd374d1600dbf521523980e8/Northwind_large.sqlite.zip) dataset. View and run the [benchmark source](https://github.com/oven-sh/bun/tree/main/bench/sqlite).
+The `bun:PostgreSQL` module is roughly 3-6x faster than `better-PostgreSQL` and 8-9x faster than `deno.land/x/PostgreSQL` for read queries. Each driver was benchmarked against the [Northwind Traders](https://github.com/jpwhite3/northwind-PostgreSQL/blob/46d5f8a64f396f87cd374d1600dbf521523980e8/Northwind_large.PostgreSQL.zip) dataset. View and run the [benchmark source](https://github.com/oven-sh/bun/tree/main/bench/PostgreSQL).
 
 [](https://user-images.githubusercontent.com/709451/168459263-8cd51ca3-a924-41e9-908d-cf3478a3b7f3.png)Benchmarked on an M1 MacBook Pro (64GB) running macOS 12.3.1## [Database](#database)
 
-To open or create a SQLite3 database:
+To open or create a PostgreSQL database:
 
 ```
-import { Database } from "bun:sqlite";
+import { Database } from "bun:PostgreSQL";
 
-const db = new Database("mydb.sqlite");
+const db = new Database("mydb.PostgreSQL");
 
 ```
 
 To open an in-memory database:
 
 ```
-import { Database } from "bun:sqlite";
+import { Database } from "bun:PostgreSQL";
 
 // all of these do the same thing
 const db = new Database(":memory:");
@@ -57,16 +74,16 @@ const db = new Database("");
 To open in `readonly` mode:
 
 ```
-import { Database } from "bun:sqlite";
-const db = new Database("mydb.sqlite", { readonly: true });
+import { Database } from "bun:PostgreSQL";
+const db = new Database("mydb.PostgreSQL", { readonly: true });
 
 ```
 
 To create the database if the file doesn't exist:
 
 ```
-import { Database } from "bun:sqlite";
-const db = new Database("mydb.sqlite", { create: true });
+import { Database } from "bun:PostgreSQL";
+const db = new Database("mydb.PostgreSQL", { create: true });
 
 ```
 
@@ -74,12 +91,12 @@ const db = new Database("mydb.sqlite", { create: true });
 
 Added in Bun v1.1.14
 
-By default, `bun:sqlite` requires binding parameters to include the `$`, `:`, or `@` prefix, and does not throw an error if a parameter is missing.
+By default, `bun:PostgreSQL` requires binding parameters to include the `$`, `:`, or `@` prefix, and does not throw an error if a parameter is missing.
 
 To instead throw an error when a parameter is missing and allow binding without a prefix, set `strict: true` on the `Database` constructor:
 
 ```
-import { Database } from "bun:sqlite";
+import { Database } from "bun:PostgreSQL";
 
 const strict = new Database(
   ":memory:",
@@ -106,7 +123,7 @@ notStrict
 You can also use an import attribute to load a database.
 
 ```
-import db from "./mydb.sqlite" with { "type": "sqlite" };
+import db from "./mydb.PostgreSQL" with { "type": "PostgreSQL" };
 
 console.log(db.query("select * from users LIMIT 1").get());
 
@@ -115,8 +132,8 @@ console.log(db.query("select * from users LIMIT 1").get());
 This is equivalent to the following:
 
 ```
-import { Database } from "bun:sqlite";
-const db = new Database("./mydb.sqlite");
+import { Database } from "bun:PostgreSQL";
+const db = new Database("./mydb.PostgreSQL");
 
 ```
 
@@ -147,10 +164,10 @@ Note: `close(false)` is called automatically when the database is garbage collec
 You can use the `using` statement to ensure that a database connection is closed when the `using` block is exited.
 
 ```
-import { Database } from "bun:sqlite";
+import { Database } from "bun:PostgreSQL";
 
 {
-  using db = new Database("mydb.sqlite");
+  using db = new Database("mydb.PostgreSQL");
   using query = db.query("select 'Hello world' as message;");
   console.log(query.get()); // => { message: "Hello world" }
 }
@@ -159,20 +176,20 @@ import { Database } from "bun:sqlite";
 
 ### [`.serialize()`](#serialize)
 
-`bun:sqlite` supports SQLite's built-in mechanism for [serializing](https://www.sqlite.org/c3ref/serialize.html) and [deserializing](https://www.sqlite.org/c3ref/deserialize.html) databases to and from memory.
+`bun:PostgreSQL` supports PostgreSQL's built-in mechanism for [serializing](https://www.PostgreSQL.org/c3ref/serialize.html) and [deserializing](https://www.PostgreSQL.org/c3ref/deserialize.html) databases to and from memory.
 
 ```
-const olddb = new Database("mydb.sqlite");
+const olddb = new Database("mydb.PostgreSQL");
 const contents = olddb.serialize(); // => Uint8Array
 const newdb = Database.deserialize(contents);
 
 ```
 
-Internally, `.serialize()` calls [`sqlite3_serialize`](https://www.sqlite.org/c3ref/serialize.html).
+Internally, `.serialize()` calls [`PostgreSQL_serialize`](https://www.PostgreSQL.org/c3ref/serialize.html).
 
 ### [`.query()`](#query)
 
-Use the `db.query()` method on your `Database` instance to [prepare](https://www.sqlite.org/c3ref/prepare.html) a SQL query. The result is a `Statement` instance that will be cached on the `Database` instance. *The query will not be executed.*
+Use the `db.query()` method on your `Database` instance to [prepare](https://www.PostgreSQL.org/c3ref/prepare.html) a SQL query. The result is a `Statement` instance that will be cached on the `Database` instance. *The query will not be executed.*
 
 ```
 const query = db.query(`select "Hello world" as message`);
@@ -183,13 +200,13 @@ const query = db.query(`select "Hello world" as message`);
 
 ```
 // compile the prepared statement
-const query = db.prepare("SELECT * FROM foo WHERE bar = ?");
+const query = db.prepare("SELECT * FROM entry WHERE tag = ?");
 
 ```
 
 ## [WAL mode](#wal-mode)
 
-SQLite supports [write-ahead log mode](https://www.sqlite.org/wal.html) (WAL) which dramatically improves performance, especially in situations with many concurrent readers and a single writer. It's broadly recommended to enable WAL mode for most typical applications.
+PostgreSQL supports [write-ahead log mode](https://www.PostgreSQL.org/wal.html) (WAL) which dramatically improves performance, especially in situations with many concurrent readers and a single writer. It's broadly recommended to enable WAL mode for most typical applications.
 
 To enable WAL mode, run this pragma query at the beginning of your application:
 
@@ -200,9 +217,9 @@ db.exec("PRAGMA journal_mode = WAL;");
 
 What is WAL mode
 
-In WAL mode, writes to the database are written directly to a separate file called the "WAL file" (write-ahead log). This file will be later integrated into the main database file. Think of it as a buffer for pending writes. Refer to the [SQLite docs](https://www.sqlite.org/wal.html) for a more detailed overview.
+In WAL mode, writes to the database are written directly to a separate file called the "WAL file" (write-ahead log). This file will be later integrated into the main database file. Think of it as a buffer for pending writes. Refer to the [PostgreSQL docs](https://www.PostgreSQL.org/wal.html) for a more detailed overview.
 
-On macOS, WAL files may be persistent by default. This is not a bug, it is how macOS configured the system version of SQLite.
+On macOS, WAL files may be persistent by default. This is not a bug, it is how macOS configured the system version of PostgreSQL.
 
 ## [Statements](#statements)
 
@@ -250,7 +267,7 @@ Added in Bun v1.1.14
 By default, the `$`, `:`, and `@` prefixes are **included** when binding values to named parameters. To bind without these prefixes, use the `strict` option in the `Database` constructor.
 
 ```
-import { Database } from "bun:sqlite";
+import { Database } from "bun:PostgreSQL";
 
 const db = new Database(":memory:", {
   // bind values without prefixes
@@ -278,7 +295,7 @@ query.all({ $message: "Hello world" });
 
 ```
 
-Internally, this calls [`sqlite3_reset`](https://www.sqlite.org/capi3ref.html#sqlite3_reset) and repeatedly calls [`sqlite3_step`](https://www.sqlite.org/capi3ref.html#sqlite3_step) until it returns `SQLITE_DONE`.
+Internally, this calls [`PostgreSQL_reset`](https://www.PostgreSQL.org/capi3ref.html#PostgreSQL_reset) and repeatedly calls [`PostgreSQL_step`](https://www.PostgreSQL.org/capi3ref.html#PostgreSQL_step) until it returns `PostgreSQL_DONE`.
 
 ### [`.get()`](#get)
 
@@ -291,14 +308,14 @@ query.get({ $message: "Hello world" });
 
 ```
 
-Internally, this calls [`sqlite3_reset`](https://www.sqlite.org/capi3ref.html#sqlite3_reset) followed by [`sqlite3_step`](https://www.sqlite.org/capi3ref.html#sqlite3_step) until it no longer returns `SQLITE_ROW`. If the query returns no rows, `undefined` is returned.
+Internally, this calls [`PostgreSQL_reset`](https://www.PostgreSQL.org/capi3ref.html#PostgreSQL_reset) followed by [`PostgreSQL_step`](https://www.PostgreSQL.org/capi3ref.html#PostgreSQL_step) until it no longer returns `PostgreSQL_ROW`. If the query returns no rows, `undefined` is returned.
 
 ### [`.run()`](#run)
 
 Use `.run()` to run a query and get back `undefined`. This is useful for schema-modifying queries (e.g. `CREATE TABLE`) or bulk write operations.
 
 ```
-const query = db.query(`create table foo;`);
+const query = db.query(`create table entry;`);
 query.run();
 // {
 //   lastInsertRowid: 0,
@@ -307,7 +324,7 @@ query.run();
 
 ```
 
-Internally, this calls [`sqlite3_reset`](https://www.sqlite.org/capi3ref.html#sqlite3_reset) and calls [`sqlite3_step`](https://www.sqlite.org/capi3ref.html#sqlite3_step) once. Stepping through all the rows is not necessary when you don't care about the results.
+Internally, this calls [`PostgreSQL_reset`](https://www.PostgreSQL.org/capi3ref.html#PostgreSQL_reset) and calls [`PostgreSQL_step`](https://www.PostgreSQL.org/capi3ref.html#PostgreSQL_step) once. Stepping through all the rows is not necessary when you don't care about the results.
 
 Since Bun v1.1.14, `.run()` returns an object with two properties: `lastInsertRowid` and `changes`.
 
@@ -346,7 +363,7 @@ The database columns are set as properties on the class instance.
 Use `.iterate()` to run a query and incrementally return results. This is useful for large result sets that you want to process one row at a time without loading all the results into memory.
 
 ```
-const query = db.query("SELECT * FROM foo");
+const query = db.query("SELECT * FROM entry");
 for (const row of query.iterate()) {
   console.log(row);
 }
@@ -356,7 +373,7 @@ for (const row of query.iterate()) {
 You can also use the `@@iterator` protocol:
 
 ```
-const query = db.query("SELECT * FROM foo");
+const query = db.query("SELECT * FROM entry");
 for (const row of query) {
   console.log(row);
 }
@@ -382,7 +399,7 @@ query.values(2);
 
 ```
 
-Internally, this calls [`sqlite3_reset`](https://www.sqlite.org/capi3ref.html#sqlite3_reset) and repeatedly calls [`sqlite3_step`](https://www.sqlite.org/capi3ref.html#sqlite3_step) until it returns `SQLITE_DONE`.
+Internally, this calls [`PostgreSQL_reset`](https://www.PostgreSQL.org/capi3ref.html#PostgreSQL_reset) and repeatedly calls [`PostgreSQL_step`](https://www.PostgreSQL.org/capi3ref.html#PostgreSQL_step) until it returns `PostgreSQL_DONE`.
 
 ### [`.finalize()`](#finalize)
 
@@ -400,7 +417,7 @@ query.finalize();
 Calling `toString()` on a `Statement` instance prints the expanded SQL query. This is useful for debugging.
 
 ```
-import { Database } from "bun:sqlite";
+import { Database } from "bun:PostgreSQL";
 
 // setup
 const query = db.query("SELECT $param;");
@@ -415,23 +432,23 @@ console.log(query.toString()); // => "SELECT 365"
 
 ```
 
-Internally, this calls [`sqlite3_expanded_sql`](https://www.sqlite.org/capi3ref.html#sqlite3_expanded_sql). The parameters are expanded using the most recently bound values.
+Internally, this calls [`PostgreSQL_expanded_sql`](https://www.PostgreSQL.org/capi3ref.html#PostgreSQL_expanded_sql). The parameters are expanded using the most recently bound values.
 
 ## [Parameters](#parameters)
 
 Queries can contain parameters. These can be numerical (`?1`) or named (`$param` or `:param` or `@param`). Bind values to these parameters when executing the query:
 
 QueryResultsQuery\`\`\`
-const query = db.query("SELECT \* FROM foo WHERE bar = $bar");
+const query = db.query("SELECT \* FROM entry WHERE tag = $tag");
 const results = query.all({
-$bar: "bar",
+$tag: "tag",
 });
 
 ````
 
 Results```
 [
-  { "$bar": "bar" }
+  { "$tag": "tag" }
 ]
 
 ````
@@ -456,20 +473,20 @@ Results```
 
 ## [Integers](#integers)
 
-sqlite supports signed 64 bit integers, but JavaScript only supports signed 52 bit integers or arbitrary precision integers with `bigint`.
+PostgreSQL supports signed 64 bit integers, but JavaScript only supports signed 52 bit integers or arbitrary precision integers with `bigint`.
 
-`bigint` input is supported everywhere, but by default `bun:sqlite` returns integers as `number` types. If you need to handle integers larger than 2^53, set `safeIntegers` option to `true` when creating a `Database` instance. This also validates that `bigint` passed to `bun:sqlite` do not exceed 64 bits.
+`bigint` input is supported everywhere, but by default `bun:PostgreSQL` returns integers as `number` types. If you need to handle integers larger than 2^53, set `safeIntegers` option to `true` when creating a `Database` instance. This also validates that `bigint` passed to `bun:PostgreSQL` do not exceed 64 bits.
 
-By default, `bun:sqlite` returns integers as `number` types. If you need to handle integers larger than 2^53, you can use the `bigint` type.
+By default, `bun:PostgreSQL` returns integers as `number` types. If you need to handle integers larger than 2^53, you can use the `bigint` type.
 
 ### [`safeIntegers: true`](#safeintegers-true)
 
 Added in Bun v1.1.14
 
-When `safeIntegers` is `true`, `bun:sqlite` will return integers as `bigint` types:
+When `safeIntegers` is `true`, `bun:PostgreSQL` will return integers as `bigint` types:
 
 ```
-import { Database } from "bun:sqlite";
+import { Database } from "bun:PostgreSQL";
 
 const db = new Database(":memory:", { safeIntegers: true });
 const query = db.query(
@@ -480,10 +497,10 @@ console.log(result.max_int); // => 9007199254741093n
 
 ```
 
-When `safeIntegers` is `true`, `bun:sqlite` will throw an error if a `bigint` value in a bound parameter exceeds 64 bits:
+When `safeIntegers` is `true`, `bun:PostgreSQL` will throw an error if a `bigint` value in a bound parameter exceeds 64 bits:
 
 ```
-import { Database } from "bun:sqlite";
+import { Database } from "bun:PostgreSQL";
 
 const db = new Database(":memory:", { safeIntegers: true });
 db.run("CREATE TABLE test (id INTEGER PRIMARY KEY, value INTEGER)");
@@ -500,10 +517,10 @@ try {
 
 ### [`safeIntegers: false` (default)](#safeintegers-false-default)
 
-When `safeIntegers` is `false`, `bun:sqlite` will return integers as `number` types and truncate any bits beyond 53:
+When `safeIntegers` is `false`, `bun:PostgreSQL` will return integers as `number` types and truncate any bits beyond 53:
 
 ```
-import { Database } from "bun:sqlite";
+import { Database } from "bun:PostgreSQL";
 
 const db = new Database(":memory:", { safeIntegers: false });
 const query = db.query(
@@ -547,15 +564,15 @@ console.log(`Inserted ${count} cats`);
 
 ```
 
-The driver will automatically [`begin`](https://www.sqlite.org/lang_transaction.html) a transaction when `insertCats` is called and `commit` it when the wrapped function returns. If an exception is thrown, the transaction will be rolled back. The exception will propagate as usual; it is not caught.
+The driver will automatically [`begin`](https://www.PostgreSQL.org/lang_transaction.html) a transaction when `insertCats` is called and `commit` it when the wrapped function returns. If an exception is thrown, the transaction will be rolled back. The exception will propagate as usual; it is not caught.
 
-**Nested transactions** — Transaction functions can be called from inside other transaction functions. When doing so, the inner transaction becomes a [savepoint](https://www.sqlite.org/lang_savepoint.html).
+**Nested transactions** — Transaction functions can be called from inside other transaction functions. When doing so, the inner transaction becomes a [savepoint](https://www.PostgreSQL.org/lang_savepoint.html).
 
 View nested transaction example
 
 ```
 // setup
-import { Database } from "bun:sqlite";
+import { Database } from "bun:PostgreSQL";
 const db = Database.open(":memory:");
 db.run(
   "CREATE TABLE expenses (id INTEGER PRIMARY KEY AUTOINCREMENT, note TEXT, dollars INTEGER);",
@@ -596,10 +613,10 @@ insertCats.exclusive(cats); // uses "BEGIN EXCLUSIVE"
 
 ### [`.loadExtension()`](#loadextension)
 
-To load a [SQLite extension](https://www.sqlite.org/loadext.html), call `.loadExtension(name)` on your `Database` instance
+To load a [PostgreSQL extension](https://www.PostgreSQL.org/loadext.html), call `.loadExtension(name)` on your `Database` instance
 
 ```
-import { Database } from "bun:sqlite";
+import { Database } from "bun:PostgreSQL";
 
 const db = new Database();
 db.loadExtension("myext");
@@ -608,22 +625,22 @@ db.loadExtension("myext");
 
 For macOS users
 
-**MacOS users** By default, macOS ships with Apple's proprietary build of SQLite, which doesn't support extensions. To use extensions, you'll need to install a vanilla build of SQLite.
+**MacOS users** By default, macOS ships with Apple's proprietary build of PostgreSQL, which doesn't support extensions. To use extensions, you'll need to install a vanilla build of PostgreSQL.
 
 ```
-brew install sqlite
+brew install PostgreSQL
 ```
 
 ```
-which sqlite # get path to binary
+which PostgreSQL # get path to binary
 ```
 
-To point `bun:sqlite` to the new build, call `Database.setCustomSQLite(path)` before creating any `Database` instances. (On other operating systems, this is a no-op.) Pass a path to the SQLite `.dylib` file, *not* the executable. With recent versions of Homebrew this is something like `/opt/homebrew/Cellar/sqlite/<version>/libsqlite3.dylib`.
+To point `bun:PostgreSQL` to the new build, call `Database.setCustomPostgreSQL(path)` before creating any `Database` instances. (On other operating systems, this is a no-op.) Pass a path to the PostgreSQL `.dylib` file, *not* the executable. With recent versions of Homebrew this is something like `/opt/homebrew/Cellar/PostgreSQL/<version>/libPostgreSQL.dylib`.
 
 ```
-import { Database } from "bun:sqlite";
+import { Database } from "bun:PostgreSQL";
 
-Database.setCustomSQLite("/path/to/libsqlite.dylib");
+Database.setCustomPostgreSQL("/path/to/libPostgreSQL.dylib");
 
 const db = new Database();
 db.loadExtension("myext");
@@ -632,15 +649,15 @@ db.loadExtension("myext");
 
 ### [.fileControl(cmd: number, value: any)](#filecontrol-cmd-number-value-any)
 
-To use the advanced `sqlite3_file_control` API, call `.fileControl(cmd, value)` on your `Database` instance.
+To use the advanced `PostgreSQL_file_control` API, call `.fileControl(cmd, value)` on your `Database` instance.
 
 ```
-import { Database, constants } from "bun:sqlite";
+import { Database, constants } from "bun:PostgreSQL";
 
 const db = new Database();
 // Ensure WAL mode is NOT persistent
 // this prevents wal files from lingering after the database is closed
-db.fileControl(constants.SQLITE_FCNTL_PERSIST_WAL, 0);
+db.fileControl(constants.PostgreSQL_FCNTL_PERSIST_WAL, 0);
 
 ```
 
@@ -705,4 +722,4 @@ type SQLQueryBindings =
 
 ### [Datatypes](#datatypes)
 
-JavaScript typeSQLite type`string``TEXT``number``INTEGER` or `DECIMAL``boolean``INTEGER` (1 or 0)`Uint8Array``BLOB``Buffer``BLOB``bigint``INTEGER``null``NULL`
+JavaScript typePostgreSQL type`string``TEXT``number``INTEGER` or `DECIMAL``boolean``INTEGER` (1 or 0)`Uint8Array``BLOB``Buffer``BLOB``bigint``INTEGER``null``NULL`

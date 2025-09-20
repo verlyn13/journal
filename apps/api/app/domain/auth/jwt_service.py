@@ -13,7 +13,8 @@ from uuid import UUID
 
 from cryptography.exceptions import InvalidSignature
 
-# Note: signing/verification uses keys from KeyManager; direct crypto imports not needed here
+# Note: signing/verification uses keys from KeyManager; direct crypto imports
+# not needed here
 from redis.asyncio import Redis
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -64,7 +65,9 @@ class JWTService:
         self.session = session
         self.redis = redis
         self.key_manager = key_manager or KeyManager(session, redis)
-        self.jwks_service = jwks_service or JWKSService(session, redis, self.key_manager)
+        self.jwks_service = jwks_service or JWKSService(
+            session, redis, self.key_manager
+        )
         self.audit_service = AuditService(session)
 
     async def sign_jwt(
@@ -194,7 +197,9 @@ class JWTService:
             header_b64, payload_b64, signature_b64 = parts
 
             # Decode header
-            header = cast("dict[str, Any]", json.loads(self._base64url_decode(header_b64)))
+            header = cast(
+                "dict[str, Any]", json.loads(self._base64url_decode(header_b64))
+            )
 
             # Build verifier policy (RFC 8725/9068)
             # Support passing a VerifierPolicy directly for advanced tests
@@ -248,15 +253,19 @@ class JWTService:
                 raise ValueError("Invalid signature") from sig_err
 
             # Decode payload
-            payload = cast("dict[str, Any]", json.loads(self._base64url_decode(payload_b64)))
+            payload = cast(
+                "dict[str, Any]", json.loads(self._base64url_decode(payload_b64))
+            )
 
-            # Validate claims using policy (iss, sub, aud, exp, nbf/iat with leeway, max lifetime)
+            # Validate claims using policy (iss, sub, aud, exp,
+            # nbf/iat with leeway, max lifetime)
             policy.validate_claims(payload)
 
             # Check logical token type claim if specified
             if logical_expected_type and payload.get("type") != logical_expected_type:
                 raise ValueError(
-                    f"Invalid token type: expected {logical_expected_type}, got {payload.get('type')}"
+                    f"Invalid token type: expected {logical_expected_type}, "
+                    f"got {payload.get('type')}"
                 )
 
             # Check scopes
@@ -389,7 +398,11 @@ class JWTService:
         expected_type: TokenType | None, expected_audience: str | None
     ) -> VerifierPolicy:
         """Create a VerifierPolicy based on expected type and audience."""
-        policy = refresh_token_policy() if expected_type == "refresh" else access_token_policy()
+        policy = (
+            refresh_token_policy()
+            if expected_type == "refresh"
+            else access_token_policy()
+        )
         # Apply issuer and audience expectations
         policy.expected_issuer = settings.jwt_iss
         if expected_audience:

@@ -1,0 +1,24 @@
+{
+  "total_paths": 7,
+  "documented_paths": 7,
+  "missing_summaries": [],
+  "missing_descriptions": [
+    "GET /entries",
+    "POST /entries",
+    "GET /entries/{entry_id}",
+    "PUT /entries/{entry_id}",
+    "DELETE /entries/{entry_id}",
+    "POST /auth/login",
+    "POST /auth/refresh"
+  ],
+  "missing_examples": [
+    "GET /entries",
+    "POST /entries",
+    "GET /entries/{entry_id}",
+    "PUT /entries/{entry_id}",
+    "DELETE /entries/{entry_id}",
+    "POST /auth/login",
+    "POST /auth/refresh"
+  ],
+  "coverage_percentage": 100.0
+}

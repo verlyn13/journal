@@ -1,3 +1,19 @@
+---
+id: quick-reference
+title: CodeMirror Quick Reference Guide
+type: reference
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags: []
+priority: medium
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 ***
 
 title: CodeMirror Quick Reference
@@ -28,7 +44,7 @@ const editor = new EditorView({
 })
 ```
 
-**See:** [Basic Example](./example-basic.md) | [System Guide](./system-guide.md)
+**See:** Basic Example | System Guide
 
 ## Getting and Setting Content
 
@@ -47,7 +63,7 @@ editor.dispatch(
 )
 ```
 
-**See:** [Reference Manual Part 1](./reference-manual-part1.md) (EditorState section)
+**See:** Reference Manual Part 1 (EditorState section)
 
 ## Working with Selection
 
@@ -72,7 +88,7 @@ editor.dispatch({
 })
 ```
 
-**See:** [Reference Manual Part 1](./reference-manual-part1.md) (Selection section)
+**See:** Reference Manual Part 1 (Selection section)
 
 ## Handling Events
 
@@ -97,7 +113,7 @@ const editor = new EditorView({
 })
 ```
 
-**See:** [Reference Manual Part 2](./reference-manual-part2.md) (Events section)
+**See:** Reference Manual Part 2 (Events section)
 
 ## Styling and Theming
 
@@ -129,7 +145,7 @@ const editor = new EditorView({
 })
 ```
 
-**See:** [Styling Example](./example-styling.md) | [Reference Manual Part 2](./reference-manual-part2.md)
+**See:** Styling Example | Reference Manual Part 2
 
 ## Using Markdown Support
 
@@ -156,7 +172,7 @@ const editor = new EditorView({
 })
 ```
 
-**See:** [Reference Manual Part 3](./reference-manual-part3.md) (Language Support section)
+**See:** Reference Manual Part 3 (Language Support section)
 
 ## Common Editor Actions
 
@@ -197,7 +213,7 @@ const editor = new EditorView({
 })
 ```
 
-**See:** [Tab Handling Example](./example-tab-handling.md) | [Reference Manual Part 2](./reference-manual-part2.md) (Commands section)
+**See:** Tab Handling Example | Reference Manual Part 2 (Commands section)
 
 ## Persistence Integration
 
@@ -240,7 +256,7 @@ const persistenceListener = EditorView.updateListener.of(update => {
 })
 ```
 
-**See:** [Reference Manual Part 2](./reference-manual-part2.md) (Events section) | Journal [Editor Persistence](../guides/editor-architecture.md)
+**See:** Reference Manual Part 2 (Events section) | Journal [Editor Persistence](../guides/editor-architecture.md)
 
 ## Accessibility Features
 
@@ -294,7 +310,7 @@ function makeAccessible(view) {
 makeAccessible(editor)
 ```
 
-**See:** [Tab Handling Example](./example-tab-handling.md) | [Reference Manual Part 4](./reference-manual-part4.md) (Accessibility)
+**See:** Tab Handling Example | Reference Manual Part 4 (Accessibility)
 
 ## Journal-Specific Integration
 

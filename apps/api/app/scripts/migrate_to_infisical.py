@@ -43,7 +43,9 @@ async def get_migration_session() -> AsyncGenerator[AsyncSession]:
         yield session
 
 
-app = typer.Typer(name="infisical-migration", help="Migrate secrets from environment to Infisical")
+app = typer.Typer(
+    name="infisical-migration", help="Migrate secrets from environment to Infisical"
+)
 console = Console()
 logger = logging.getLogger(__name__)
 
@@ -171,7 +173,9 @@ async def migrate_jwt_keys(
         # Check if keys already exist in Infisical
         try:
             await infisical_client.fetch_secret("/auth/jwt/current_private_key")
-            result.add_warning("JWT keys already exist in Infisical, skipping migration")
+            result.add_warning(
+                "JWT keys already exist in Infisical, skipping migration"
+            )
             return
         except SecretNotFoundError:
             # Good, no existing keys to conflict with
@@ -210,7 +214,9 @@ async def migrate_aes_keys(
         # Check if keys already exist in Infisical
         try:
             await infisical_client.fetch_secret("/auth/aes/active_kid")
-            result.add_warning("AES keys already exist in Infisical, skipping migration")
+            result.add_warning(
+                "AES keys already exist in Infisical, skipping migration"
+            )
             return
         except SecretNotFoundError:
             # Good, no existing keys to conflict with
@@ -316,7 +322,9 @@ async def migrate_webhook_secrets(
 
         if webhook_secret:
             await infisical_client.store_secret(
-                "/auth/webhooks/infisical_secret", webhook_secret, SecretType.WEBHOOK_SECRET
+                "/auth/webhooks/infisical_secret",
+                webhook_secret,
+                SecretType.WEBHOOK_SECRET,
             )
             result.webhook_secrets_migrated = True
             console.print("✅ Webhook secrets migrated")
@@ -347,7 +355,9 @@ async def verify_migration(
         if result.jwt_keys_migrated:
             try:
                 signing_key = await key_manager.get_current_signing_key()
-                console.print(f"  ✅ JWT signing key available (kid: {signing_key.kid})")
+                console.print(
+                    f"  ✅ JWT signing key available (kid: {signing_key.kid})"
+                )
             except Exception as e:
                 result.add_error(f"JWT key verification failed: {e}")
 
@@ -361,7 +371,9 @@ async def verify_migration(
                 decrypted = cipher.decrypt(encrypted)
 
                 if decrypted == test_plaintext:
-                    console.print(f"  ✅ AES encryption working (active_kid: {cipher.active_kid})")
+                    console.print(
+                        f"  ✅ AES encryption working (active_kid: {cipher.active_kid})"
+                    )
                 else:
                     result.add_error("AES encryption verification failed")
             except Exception as e:
@@ -372,7 +384,9 @@ async def verify_migration(
         if infisical_health["status"] == "healthy":
             console.print("  ✅ Infisical connection verified")
         else:
-            result.add_error(f"Infisical connection verification failed: {infisical_health}")
+            result.add_error(
+                f"Infisical connection verification failed: {infisical_health}"
+            )
 
         console.print("✅ Migration verification completed")
 
@@ -513,9 +527,13 @@ def validate_env(
             if process.returncode == 0:
                 console.print(f"✅ Infisical CLI found: {stdout.decode().strip()}")
             else:
-                console.print("⚠️ [yellow]Infisical CLI not found or not working properly[/yellow]")
+                console.print(
+                    "⚠️ [yellow]Infisical CLI not found or not working properly[/yellow]"
+                )
         except (TimeoutError, OSError):
-            console.print("⚠️ [yellow]Infisical CLI not installed or not responding[/yellow]")
+            console.print(
+                "⚠️ [yellow]Infisical CLI not installed or not responding[/yellow]"
+            )
 
     # Run the async check
     asyncio.run(check_cli_version())
@@ -584,7 +602,9 @@ def migrate(
     backup: bool = typer.Option(
         True, "--backup/--no-backup", help="Create backup before migration"
     ),
-    force: bool = typer.Option(False, "--force", help="Force migration even if secrets exist"),
+    force: bool = typer.Option(
+        False, "--force", help="Force migration even if secrets exist"
+    ),
 ) -> None:
     """Migrate secrets from environment to Infisical."""
 
@@ -631,17 +651,23 @@ def migrate(
                         progress.remove_task(task)
 
                         # Database secrets
-                        task = progress.add_task("Migrating database secrets...", total=None)
+                        task = progress.add_task(
+                            "Migrating database secrets...", total=None
+                        )
                         await migrate_database_secrets(infisical_client, result)
                         progress.remove_task(task)
 
                         # Infrastructure secrets
-                        task = progress.add_task("Migrating infrastructure secrets...", total=None)
+                        task = progress.add_task(
+                            "Migrating infrastructure secrets...", total=None
+                        )
                         await migrate_infrastructure_secrets(infisical_client, result)
                         progress.remove_task(task)
 
                         # Webhook secrets
-                        task = progress.add_task("Migrating webhook secrets...", total=None)
+                        task = progress.add_task(
+                            "Migrating webhook secrets...", total=None
+                        )
                         await migrate_webhook_secrets(infisical_client, result)
                         progress.remove_task(task)
 
@@ -751,7 +777,9 @@ def status() -> None:
                 table.add_column("Details")
 
                 # Overall status
-                overall_color = "green" if health["overall_status"] == "healthy" else "red"
+                overall_color = (
+                    "green" if health["overall_status"] == "healthy" else "red"
+                )
                 table.add_row(
                     "Overall",
                     f"[{overall_color}]{health['overall_status'].upper()}[/{overall_color}]",
@@ -778,11 +806,19 @@ def status() -> None:
 
                 # Infisical connection
                 infisical_status = health.get("infisical_connection", {})
-                infisical_color = "green" if infisical_status.get("status") == "healthy" else "red"
+                infisical_color = (
+                    "green" if infisical_status.get("status") == "healthy" else "red"
+                )
                 table.add_row(
                     "Infisical",
-                    f"[{infisical_color}]{infisical_status.get('status', 'unknown').upper()}[/{infisical_color}]",
-                    infisical_status.get("error", f"Connected to {settings.infisical_server_url}"),
+                    (
+                        f"[{infisical_color}]"
+                        f"{infisical_status.get('status', 'unknown').upper()}"
+                        f"[/{infisical_color}]"
+                    ),
+                    infisical_status.get(
+                        "error", f"Connected to {settings.infisical_server_url}"
+                    ),
                 )
 
                 console.print(table)
@@ -799,7 +835,8 @@ def status() -> None:
 if __name__ == "__main__":
     # Set up logging
     logging.basicConfig(
-        level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+        level=logging.INFO,
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     )
 
     app()

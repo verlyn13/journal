@@ -36,11 +36,15 @@ class TestEmbeddingWorker:
     """Test cases for embedding worker functionality."""
 
     @pytest.mark.asyncio()
-    async def test_embedding_written_on_entry_event(self, monkeypatch, db_session: AsyncSession):
+    async def test_embedding_written_on_entry_event(
+        self, monkeypatch, db_session: AsyncSession
+    ):
         """Test that embedding is created when entry.created event is received."""
         # Create an entry without embeddings
         e = Entry(
-            title="Embed Me", content="Some text", author_id="11111111-1111-1111-1111-111111111111"
+            title="Embed Me",
+            content="Some text",
+            author_id="11111111-1111-1111-1111-111111111111",
         )
         db_session.add(e)
         await db_session.commit()
@@ -49,8 +53,12 @@ class TestEmbeddingWorker:
         async def _yield_session():
             yield db_session
 
-        monkeypatch.setattr("app.infra.search_pgvector.get_embedding", lambda txt: [0.0] * 1536)
-        monkeypatch.setattr("app.workers.embedding_consumer.get_session", _yield_session)
+        monkeypatch.setattr(
+            "app.infra.search_pgvector.get_embedding", lambda txt: [0.0] * 1536
+        )
+        monkeypatch.setattr(
+            "app.workers.embedding_consumer.get_session", _yield_session
+        )
 
         consumer = EmbeddingConsumer()
 
@@ -65,7 +73,8 @@ class TestEmbeddingWorker:
 
         # Verify embedding upsert occurred
         res = await db_session.execute(
-            text("SELECT COUNT(*) FROM entry_embeddings WHERE entry_id = :id"), {"id": str(e.id)}
+            text("SELECT COUNT(*) FROM entry_embeddings WHERE entry_id = :id"),
+            {"id": str(e.id)},
         )
         assert (res.scalar() or 0) == 1
 
@@ -76,24 +85,35 @@ class TestEmbeddingWorker:
         })
         await consumer.process_entry_event(msg2)
         res2 = await db_session.execute(
-            text("SELECT COUNT(*) FROM entry_embeddings WHERE entry_id = :id"), {"id": str(e.id)}
+            text("SELECT COUNT(*) FROM entry_embeddings WHERE entry_id = :id"),
+            {"id": str(e.id)},
         )
         assert (res2.scalar() or 0) == 1
 
     @pytest.mark.asyncio()
-    async def test_reindex_job_is_idempotent(self, monkeypatch, db_session: AsyncSession):
+    async def test_reindex_job_is_idempotent(
+        self, monkeypatch, db_session: AsyncSession
+    ):
         """Test that reindex operation is idempotent."""
         # Seed multiple entries without embeddings
-        e1 = Entry(title="alpha", content="a", author_id="11111111-1111-1111-1111-111111111111")
-        e2 = Entry(title="beta", content="b", author_id="11111111-1111-1111-1111-111111111111")
+        e1 = Entry(
+            title="alpha", content="a", author_id="11111111-1111-1111-1111-111111111111"
+        )
+        e2 = Entry(
+            title="beta", content="b", author_id="11111111-1111-1111-1111-111111111111"
+        )
         db_session.add_all([e1, e2])
         await db_session.commit()
 
         async def _yield_session():
             yield db_session
 
-        monkeypatch.setattr("app.infra.search_pgvector.get_embedding", lambda txt: [0.0] * 1536)
-        monkeypatch.setattr("app.workers.embedding_consumer.get_session", _yield_session)
+        monkeypatch.setattr(
+            "app.infra.search_pgvector.get_embedding", lambda txt: [0.0] * 1536
+        )
+        monkeypatch.setattr(
+            "app.workers.embedding_consumer.get_session", _yield_session
+        )
 
         consumer = EmbeddingConsumer()
 
@@ -153,7 +173,9 @@ class TestEmbeddingWorker:
         async def mock_connect_fail(servers):
             raise Exception("Connection refused")
 
-        monkeypatch.setattr("app.workers.embedding_consumer.nats.connect", mock_connect_fail)
+        monkeypatch.setattr(
+            "app.workers.embedding_consumer.nats.connect", mock_connect_fail
+        )
 
         consumer = EmbeddingConsumer()
 
@@ -234,7 +256,9 @@ class TestEmbeddingWorker:
     ):
         """Test worker handles entries with empty content."""
         # Create entry with no content
-        entry = Entry(title="", content="", author_id="11111111-1111-1111-1111-111111111111")
+        entry = Entry(
+            title="", content="", author_id="11111111-1111-1111-1111-111111111111"
+        )
         db_session.add(entry)
         await db_session.commit()
 
@@ -246,15 +270,21 @@ class TestEmbeddingWorker:
         async def mock_upsert_embedding(session, entry_id, text):
             embeddings_created.append((entry_id, text))
 
-        monkeypatch.setattr("app.workers.embedding_consumer.get_session", _yield_session)
         monkeypatch.setattr(
-            "app.workers.embedding_consumer.upsert_entry_embedding", mock_upsert_embedding
+            "app.workers.embedding_consumer.get_session", _yield_session
+        )
+        monkeypatch.setattr(
+            "app.workers.embedding_consumer.upsert_entry_embedding",
+            mock_upsert_embedding,
         )
 
         consumer = EmbeddingConsumer()
 
         # Send created event
-        msg = FakeMsg({"event_type": "entry.created", "event_data": {"entry_id": str(entry.id)}})
+        msg = FakeMsg({
+            "event_type": "entry.created",
+            "event_data": {"entry_id": str(entry.id)},
+        })
 
         await consumer.process_entry_event(msg)
 
@@ -270,7 +300,9 @@ class TestEmbeddingWorker:
         """Test worker handles database errors during embedding upsert."""
         # Create entry
         entry = Entry(
-            title="Test", content="Content", author_id="11111111-1111-1111-1111-111111111111"
+            title="Test",
+            content="Content",
+            author_id="11111111-1111-1111-1111-111111111111",
         )
         db_session.add(entry)
         await db_session.commit()
@@ -281,7 +313,9 @@ class TestEmbeddingWorker:
         async def mock_upsert_error(session, entry_id, text):
             raise Exception("Database error")
 
-        monkeypatch.setattr("app.workers.embedding_consumer.get_session", _yield_session)
+        monkeypatch.setattr(
+            "app.workers.embedding_consumer.get_session", _yield_session
+        )
         monkeypatch.setattr(
             "app.workers.embedding_consumer.upsert_entry_embedding", mock_upsert_error
         )
@@ -289,7 +323,10 @@ class TestEmbeddingWorker:
         consumer = EmbeddingConsumer()
 
         # Send created event
-        msg = FakeMsg({"event_type": "entry.created", "event_data": {"entry_id": str(entry.id)}})
+        msg = FakeMsg({
+            "event_type": "entry.created",
+            "event_data": {"entry_id": str(entry.id)},
+        })
 
         await consumer.process_entry_event(msg)
 
@@ -338,9 +375,12 @@ class TestEmbeddingWorker:
                 raise Exception("Embedding creation failed")
             embeddings_created.append((entry_id, text))
 
-        monkeypatch.setattr("app.workers.embedding_consumer.get_session", _yield_session)
         monkeypatch.setattr(
-            "app.workers.embedding_consumer.upsert_entry_embedding", mock_upsert_embedding
+            "app.workers.embedding_consumer.get_session", _yield_session
+        )
+        monkeypatch.setattr(
+            "app.workers.embedding_consumer.upsert_entry_embedding",
+            mock_upsert_embedding,
         )
 
         consumer = EmbeddingConsumer()

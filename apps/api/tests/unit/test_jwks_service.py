@@ -41,7 +41,9 @@ def mock_key_manager():
     test_key_1 = Ed25519KeyGenerator.generate_key_pair(kid="test-key-001")
     test_key_2 = Ed25519KeyGenerator.generate_key_pair(kid="test-key-002")
 
-    mock_manager.get_verification_keys = AsyncMock(return_value=[test_key_1, test_key_2])
+    mock_manager.get_verification_keys = AsyncMock(
+        return_value=[test_key_1, test_key_2]
+    )
 
     return mock_manager
 

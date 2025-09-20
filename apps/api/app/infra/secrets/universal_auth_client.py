@@ -194,7 +194,9 @@ class UniversalAuthClient:
 
             # Update token state
             self._current_token = token
-            self._token_expires_at = datetime.now(UTC) + timedelta(seconds=self.token_ttl_seconds)
+            self._token_expires_at = datetime.now(UTC) + timedelta(
+                seconds=self.token_ttl_seconds
+            )
 
             # Set environment variable for CLI commands
             os.environ["INFISICAL_TOKEN"] = token
@@ -203,22 +205,27 @@ class UniversalAuthClient:
             logger.info("Universal Auth login successful (%.2fs)", duration)
 
             metrics_inc(
-                "infisical_auth_login_total", {"method": "universal_auth", "status": "success"}
+                "infisical_auth_login_total",
+                {"method": "universal_auth", "status": "success"},
             )
             metrics_inc(
-                "infisical_auth_login_duration_seconds", {"method": "universal_auth"}, duration
+                "infisical_auth_login_duration_seconds",
+                {"method": "universal_auth"},
+                duration,
             )
 
         except TimeoutError as e:
             logger.error("Universal Auth login timeout")
             metrics_inc(
-                "infisical_auth_login_total", {"method": "universal_auth", "status": "timeout"}
+                "infisical_auth_login_total",
+                {"method": "universal_auth", "status": "timeout"},
             )
             raise UniversalAuthError("Login timeout") from e
         except Exception as e:
             logger.exception("Universal Auth login failed")
             metrics_inc(
-                "infisical_auth_login_total", {"method": "universal_auth", "status": "error"}
+                "infisical_auth_login_total",
+                {"method": "universal_auth", "status": "error"},
             )
             raise UniversalAuthError(f"Login failed: {e}") from e
 

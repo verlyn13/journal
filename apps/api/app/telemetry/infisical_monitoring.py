@@ -208,7 +208,9 @@ class InfisicalMonitoringService:
 
             if self.infisical_client.cache:
                 # Count cached items
-                cache_keys = await self.redis.keys(f"{self.infisical_client._cache_prefix}*")
+                cache_keys = await self.redis.keys(
+                    f"{self.infisical_client._cache_prefix}*"
+                )
                 cache_stats["cached_items"] = len(cache_keys)
 
                 # Estimate cache memory usage
@@ -237,14 +239,22 @@ class InfisicalMonitoringService:
             last_jwt_rotation = await self.key_manager._get_last_rotation_time()
 
             # Check if rotation is needed
-            jwt_needs_rotation, jwt_reason = await self.key_manager.check_rotation_needed()
-            aes_needs_rotation, aes_reason = await self.key_manager._check_aes_rotation_needed()
+            (
+                jwt_needs_rotation,
+                jwt_reason,
+            ) = await self.key_manager.check_rotation_needed()
+            (
+                aes_needs_rotation,
+                aes_reason,
+            ) = await self.key_manager._check_aes_rotation_needed()
 
             # Get rotation history from cache
             rotation_history = await self._get_rotation_history()
 
             return {
-                "last_jwt_rotation": last_jwt_rotation.isoformat() if last_jwt_rotation else None,
+                "last_jwt_rotation": last_jwt_rotation.isoformat()
+                if last_jwt_rotation
+                else None,
                 "jwt_rotation_needed": jwt_needs_rotation,
                 "jwt_rotation_reason": jwt_reason if jwt_needs_rotation else None,
                 "aes_rotation_needed": aes_needs_rotation,
@@ -269,7 +279,9 @@ class InfisicalMonitoringService:
             metrics = {}
             for key, value in webhook_stats.items():
                 try:
-                    metrics[key.decode()] = int(value) if value.isdigit() else value.decode()
+                    metrics[key.decode()] = (
+                        int(value) if value.isdigit() else value.decode()
+                    )
                 except (AttributeError, ValueError):
                     continue
 
@@ -365,7 +377,8 @@ class InfisicalMonitoringService:
             return {
                 "current_key_exists": current_key is not None,
                 "next_key_exists": next_key is not None,
-                "keys_properly_configured": current_key is not None and next_key is not None,
+                "keys_properly_configured": current_key is not None
+                and next_key is not None,
             }
 
         except Exception as e:
@@ -479,7 +492,9 @@ class InfisicalMonitoringService:
             # Store in time series (keep last 24 hours)
             timestamp_key = int(time.time() // 300) * 300  # 5-minute buckets
             await self.redis.hset(
-                f"{self._monitoring_key}:timeseries", str(timestamp_key), json.dumps(metrics)
+                f"{self._monitoring_key}:timeseries",
+                str(timestamp_key),
+                json.dumps(metrics),
             )
 
             # Cleanup old timeseries data (keep 24 hours)
@@ -510,7 +525,9 @@ class InfisicalMonitoringService:
 
             # Check performance thresholds
             secret_latency = (
-                metrics.get("performance", {}).get("secret_retrieval", {}).get("latency_seconds", 0)
+                metrics.get("performance", {})
+                .get("secret_retrieval", {})
+                .get("latency_seconds", 0)
             )
             if secret_latency > 5.0:  # 5 second threshold
                 alerts.append({

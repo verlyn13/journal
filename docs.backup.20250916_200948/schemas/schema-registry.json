@@ -1,0 +1,64 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Schema Registry",
+  "description": "Registry of all documentation schemas with version support",
+  "type": "object",
+  "properties": {
+    "current_version": {
+      "type": "string",
+      "pattern": "^v\\d+$",
+      "description": "Current schema version"
+    },
+    "versions": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["released", "schemas", "migration"],
+        "properties": {
+          "released": {
+            "type": "string",
+            "format": "date"
+          },
+          "deprecated": {
+            "type": "string",
+            "format": "date"
+          },
+          "schemas": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["name", "path", "description"],
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "path": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "migration": {
+            "type": "object",
+            "properties": {
+              "from_version": {
+                "type": "string"
+              },
+              "breaking_changes": {
+                "type": "array",
+                "items": {"type": "string"}
+              },
+              "migration_guide": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "required": ["current_version", "versions"]
+}

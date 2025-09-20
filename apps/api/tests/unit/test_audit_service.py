@@ -35,7 +35,9 @@ class TestAuditService:
         return user
 
     @pytest.fixture()
-    async def test_device(self, db_session: AsyncSession, test_user: User) -> UserDevice:
+    async def test_device(
+        self, db_session: AsyncSession, test_user: User
+    ) -> UserDevice:
         """Create test device."""
         device = UserDevice(
             id=uuid4(),

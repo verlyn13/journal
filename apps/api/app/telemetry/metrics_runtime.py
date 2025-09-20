@@ -41,7 +41,9 @@ COUNTER_JWKS_CACHE_MISS = Counter("jwks_cache_misses_total")
 HISTOGRAM_JWKS_RESPONSE_TIME = Histogram("jwks_response_time_ms")
 
 
-def _key(name: str, labels: dict[str, str] | None) -> tuple[str, tuple[tuple[str, str], ...]]:
+def _key(
+    name: str, labels: dict[str, str] | None
+) -> tuple[str, tuple[tuple[str, str], ...]]:
     items = tuple(sorted((labels or {}).items()))
     return (name, items)
 

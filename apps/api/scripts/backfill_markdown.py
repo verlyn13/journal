@@ -14,7 +14,9 @@ from app.infra.models import Entry
 logger = logging.getLogger(__name__)
 
 
-async def backfill_markdown_content(batch_size: int = 100, dry_run: bool = False) -> None:
+async def backfill_markdown_content(
+    batch_size: int = 100, dry_run: bool = False
+) -> None:
     if dry_run:
         logger.info("DRY RUN MODE - No changes will be saved")
 
@@ -27,7 +29,9 @@ async def backfill_markdown_content(batch_size: int = 100, dry_run: bool = False
             rows = (
                 (
                     await s.execute(
-                        select(Entry).where(Entry.markdown_content.is_(None)).limit(batch_size)  # type: ignore[union-attr]
+                        select(Entry)
+                        .where(Entry.markdown_content.is_(None))
+                        .limit(batch_size)  # type: ignore[union-attr]
                     )
                 )
                 .scalars()

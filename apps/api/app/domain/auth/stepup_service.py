@@ -93,7 +93,9 @@ class StepUpAuthService:
             "required": True,
             "challenge": challenge,
             "action": action,
-            "expires_at": (datetime.now(UTC) + timedelta(seconds=self.CHALLENGE_TTL)).isoformat(),
+            "expires_at": (
+                datetime.now(UTC) + timedelta(seconds=self.CHALLENGE_TTL)
+            ).isoformat(),
         }
 
     async def verify_step_up(
@@ -194,7 +196,9 @@ class StepUpAuthService:
 
         return challenge
 
-    async def _get_stored_challenge(self, user_id: UUID, action: SensitiveAction) -> str | None:
+    async def _get_stored_challenge(
+        self, user_id: UUID, action: SensitiveAction
+    ) -> str | None:
         """Retrieve a stored challenge.
 
         Args:
@@ -245,7 +249,9 @@ class StepUpAuthService:
         # Gather all keys across scans and delete once for deterministic behavior
         keys_to_delete: list[bytes] = []
         while True:
-            cursor, keys = await self._resolve(self.redis.scan(cursor, match=pattern, count=100))
+            cursor, keys = await self._resolve(
+                self.redis.scan(cursor, match=pattern, count=100)
+            )
             if keys:
                 keys_to_delete.extend(keys)
             if cursor == 0:
@@ -278,7 +284,9 @@ class StepUpAuthService:
         actions = []
 
         while True:
-            cursor, keys = await self._resolve(self.redis.scan(cursor, match=pattern, count=100))
+            cursor, keys = await self._resolve(
+                self.redis.scan(cursor, match=pattern, count=100)
+            )
             if keys:
                 for key in keys:
                     parts = key.decode().split(":")

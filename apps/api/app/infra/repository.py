@@ -22,7 +22,9 @@ class NotFoundError(RepositoryError):
     def __init__(self, entity_type: str, entity_id: str | UUID | None = None) -> None:
         self.entity_type = entity_type
         self.entity_id = entity_id
-        super().__init__(f"{entity_type} not found" + (f": {entity_id}" if entity_id else ""))
+        super().__init__(
+            f"{entity_type} not found" + (f": {entity_id}" if entity_id else "")
+        )
 
 
 class ConflictError(RepositoryError):
@@ -124,7 +126,9 @@ class EntryRepository:
         if author_id is not None:
             conditions.append(Entry.author_id == author_id)
 
-        result = await self.session.execute(select(Entry).where(*conditions).with_for_update())
+        result = await self.session.execute(
+            select(Entry).where(*conditions).with_for_update()
+        )
         entry = result.scalar_one_or_none()
 
         if not entry or entry.is_deleted:

@@ -50,7 +50,9 @@ webhook_deps = WebhookDependencies()
 
 async def verify_webhook_security(
     request: Request,
-    security_manager: WebhookSecurityManager = Depends(webhook_deps.get_security_manager),
+    security_manager: WebhookSecurityManager = Depends(
+        webhook_deps.get_security_manager
+    ),
 ) -> dict[str, Any]:
     """Verify webhook signature and rate limiting.
 
@@ -100,21 +102,28 @@ async def verify_webhook_security(
             verification_result["webhook_data"] = webhook_data
         except (json.JSONDecodeError, UnicodeDecodeError) as e:
             raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST, detail=f"Invalid webhook payload: {e}"
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Invalid webhook payload: {e}",
             ) from e
 
         return verification_result
 
     except WebhookVerificationError as e:
         logger.warning(
-            "Webhook verification failed", extra={"error": str(e), "client_ip": client_ip}
+            "Webhook verification failed",
+            extra={"error": str(e), "client_ip": client_ip},
         )
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail=f"Webhook verification failed: {e}"
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=f"Webhook verification failed: {e}",
         ) from e
     except ValueError as e:
-        logger.warning("Webhook rate limited", extra={"error": str(e), "client_ip": client_ip})
-        raise HTTPException(status_code=status.HTTP_429_TOO_MANY_REQUESTS, detail=str(e)) from e
+        logger.warning(
+            "Webhook rate limited", extra={"error": str(e), "client_ip": client_ip}
+        )
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS, detail=str(e)
+        ) from e
 
 
 @router.post("/keys/changed")
@@ -273,7 +282,9 @@ async def handle_aes_key_rotation(
 
         # Update active key ID if provided
         if new_key_id:
-            await redis.setex("auth:aes:active_key_id", 3600, new_key_id)  # 1-hour cache
+            await redis.setex(
+                "auth:aes:active_key_id", 3600, new_key_id
+            )  # 1-hour cache
 
         # Log to audit trail
         audit_service = AuditService(session)

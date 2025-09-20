@@ -1,3 +1,20 @@
+---
+id: error-handling
+title: Error Handling Guide for Flask Blog/Journal System
+type: reference
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags:
+- python
+priority: medium
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 ***
 
 title: "Error Handling Guide: Flask Journal System"
@@ -1126,7 +1143,7 @@ After=network.target
 User=your_username
 Group=your_username
 WorkingDirectory=/path/to/your/app
-ExecStart=/path/to/your/venv/bin/gunicorn --workers=2 --bind=127.0.0.1:8000 wsgi:app
+ExecStart=/path/to/your/venv/bin/gunicorn --workers=2 --bind=your-domain.com wsgi:app
 Restart=on-failure
 StandardOutput=journal
 StandardError=journal

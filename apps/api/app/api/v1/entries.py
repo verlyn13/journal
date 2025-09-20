@@ -10,11 +10,12 @@ from fastapi import APIRouter, Depends, HTTPException, Query, Request, Response
 from pydantic import BaseModel, Field
 from sqlalchemy.ext.asyncio import AsyncSession
 
-# Local imports
-from app.infra.auth import require_user
 from app.infra.auto_embed import ensure_embedding_for_entry
 from app.infra.conversion import markdown_to_html
 from app.infra.db import get_session
+
+# Local imports
+from app.infra.enhanced_auth import require_user
 from app.infra.metrics import count_words_chars, extract_text_for_metrics
 from app.infra.repository import ConflictError, EntryRepository, NotFoundError
 from app.infra.sa_models import Entry
@@ -42,7 +43,9 @@ class EntryUpdate(BaseModel):
     content: str | None = None
     markdown_content: str | None = None
     content_version: int | None = None
-    expected_version: int = Field(..., description="Expected version for optimistic locking")
+    expected_version: int = Field(
+        ..., description="Expected version for optimistic locking"
+    )
 
 
 class ContentBlock(BaseModel):
@@ -97,7 +100,9 @@ def _entry_response(row: Entry, prefer_md: bool = False) -> dict[str, Any]:
     )
 
     # Legacy content field for backward compatibility
-    legacy_content = row.markdown_content if prefer_md and row.markdown_content else row.content
+    legacy_content = (
+        row.markdown_content if prefer_md and row.markdown_content else row.content
+    )
 
     # Create response using Pydantic model
     response = EntryResponse(
@@ -129,8 +134,12 @@ async def get_entries(
     s: Annotated[AsyncSession, Depends(get_session)],
     # Support both skip and offset for pagination
     skip: Annotated[int, Query(ge=0, description="Number of entries to skip")] = 0,
-    limit: Annotated[int, Query(ge=1, le=100, description="Maximum entries to return")] = 20,
-    offset: Annotated[int | None, Query(ge=0, description="Legacy offset parameter")] = None,
+    limit: Annotated[
+        int, Query(ge=1, le=100, description="Maximum entries to return")
+    ] = 20,
+    offset: Annotated[
+        int | None, Query(ge=0, description="Legacy offset parameter")
+    ] = None,
 ) -> list[dict[str, Any]]:
     """List entries with pagination support.
 
@@ -259,7 +268,10 @@ async def update_entry(
     if body.markdown_content is not None:
         update_data["content"] = markdown_to_html(body.markdown_content)
         # Default content_version to 2 for markdown when not explicitly provided
-        if "content_version" not in update_data or update_data["content_version"] is None:
+        if (
+            "content_version" not in update_data
+            or update_data["content_version"] is None
+        ):
             update_data["content_version"] = 2
 
     # Update metrics if content changed (HTML and/or markdown)
@@ -274,7 +286,9 @@ async def update_entry(
     try:
         # Pass author_id for ownership check if user management is enabled
         author_id = UUID(user_id) if settings.user_mgmt_enabled else None
-        entry = await repo.update_entry(eid, update_data, body.expected_version, author_id)
+        entry = await repo.update_entry(
+            eid, update_data, body.expected_version, author_id
+        )
         await s.commit()
 
         # Generate embedding after successful update
@@ -288,7 +302,11 @@ async def update_entry(
     except ConflictError as c:
         raise HTTPException(
             status_code=409,
-            detail={"message": str(c), "expected_version": c.expected, "actual_version": c.actual},
+            detail={
+                "message": str(c),
+                "expected_version": c.expected,
+                "actual_version": c.actual,
+            },
         ) from c
 
 
@@ -301,7 +319,9 @@ async def update_entry(
 )
 async def delete_entry(
     entry_id: str,
-    expected_version: Annotated[int, Query(description="Expected version for optimistic locking")],
+    expected_version: Annotated[
+        int, Query(description="Expected version for optimistic locking")
+    ],
     user_id: Annotated[str, Depends(require_user)],
     s: Annotated[AsyncSession, Depends(get_session)],
 ) -> None:

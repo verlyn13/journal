@@ -1,4 +1,5 @@
-"""Enhanced key management with comprehensive Infisical integration and security hardening."""
+"""Enhanced key management with comprehensive Infisical integration and
+security hardening."""
 
 from __future__ import annotations
 
@@ -64,7 +65,9 @@ class SecurityMonitor:
             event: Security event to record
         """
         # Store event in Redis for real-time monitoring
-        event_key = f"{self._alert_prefix}{event.event_type}:{int(event.timestamp.timestamp())}"
+        event_key = (
+            f"{self._alert_prefix}{event.event_type}:{int(event.timestamp.timestamp())}"
+        )
         await self.redis.setex(event_key, 86400, json.dumps(event.to_dict()))  # 24h TTL
 
         # Update metrics
@@ -424,7 +427,9 @@ class EnhancedKeyManager(KeyManager):
                 raise RuntimeError("No emergency fallback key available")
 
             key_data = json.loads(fallback_data.decode())
-            private_key = Ed25519KeyGenerator.load_private_key_from_pem(key_data["private_key_pem"])
+            private_key = Ed25519KeyGenerator.load_private_key_from_pem(
+                key_data["private_key_pem"]
+            )
 
             return KeyPair(
                 private_key=private_key,
@@ -457,7 +462,9 @@ class EnhancedKeyManager(KeyManager):
             )
 
         except Exception as e:  # noqa: BLE001 - fallback storage shouldn't break rotation
-            logger.warning("Failed to store emergency fallback", extra={"error": str(e)})
+            logger.warning(
+                "Failed to store emergency fallback", extra={"error": str(e)}
+            )
 
     async def _comprehensive_health_check(self) -> dict[str, Any]:
         """Perform comprehensive health check before rotation.
@@ -488,7 +495,10 @@ class EnhancedKeyManager(KeyManager):
                     health_status["healthy"] = False
             except Exception as e:  # noqa: BLE001 - health check should be resilient
                 health_status["healthy"] = False
-                health_status["checks"]["infisical"] = {"status": "unhealthy", "error": str(e)}
+                health_status["checks"]["infisical"] = {
+                    "status": "unhealthy",
+                    "error": str(e),
+                }
 
         # Check key integrity
         try:
@@ -498,7 +508,10 @@ class EnhancedKeyManager(KeyManager):
                 health_status["healthy"] = False
         except Exception as e:  # noqa: BLE001 - health check should be resilient
             health_status["healthy"] = False
-            health_status["checks"]["key_integrity"] = {"status": "failed", "error": str(e)}
+            health_status["checks"]["key_integrity"] = {
+                "status": "failed",
+                "error": str(e),
+            }
 
         return health_status
 
@@ -546,19 +559,25 @@ class EnhancedKeyManager(KeyManager):
                 if current_cached:
                     security_results["cache_consistency"] = True
         except Exception as e:  # noqa: BLE001 - security check should be resilient
-            logger.warning("Security check (cache consistency) failed unexpectedly: %s", e)
+            logger.warning(
+                "Security check (cache consistency) failed unexpectedly: %s", e
+            )
 
         # Check if emergency fallback is available
         try:
             fallback_exists = await self.redis.exists(self._emergency_fallback_cache)
             security_results["fallback_available"] = bool(fallback_exists)
         except Exception as e:  # noqa: BLE001 - security check should be resilient
-            logger.warning("Security check (fallback available) failed unexpectedly: %s", e)
+            logger.warning(
+                "Security check (fallback available) failed unexpectedly: %s", e
+            )
 
         # Check rotation lock status
         try:
             lock_exists = await self.redis.exists(self._rotation_lock)
-            security_results["rotation_lock_status"] = "locked" if lock_exists else "free"
+            security_results["rotation_lock_status"] = (
+                "locked" if lock_exists else "free"
+            )
         except Exception as e:  # noqa: BLE001 - security check should be resilient
             logger.warning("Security check (rotation lock) failed unexpectedly: %s", e)
 

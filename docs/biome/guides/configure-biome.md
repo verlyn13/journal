@@ -1,3 +1,20 @@
+---
+id: configure-biome
+title: CONFIGURE BIOME
+type: guide
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags:
+- typescript
+priority: medium
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 # CONFIGURE BIOME
 
 *Source: <https://biomejs.dev/guides/configure-biome>*
@@ -101,7 +118,7 @@ At the moment, the following files are protected:
 
 - `package-lock.json`
 
-- `yarn.lock`
+- `bun.lock`
 
 ### Include files via CLI
 

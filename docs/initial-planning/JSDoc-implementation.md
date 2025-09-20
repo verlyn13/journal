@@ -1,3 +1,19 @@
+---
+id: jsdoc-implementation
+title: Jsdoc Implementation
+type: reference
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags: []
+priority: medium
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 ***
 
 title: JSDoc Implementation Guide
@@ -29,7 +45,7 @@ Hence, when someone says "JavaDoc for JavaScript," they usually mean "JSDoc."
 
 1. **Install JSDoc:**
    ```bash
-   npm install --save-dev jsdoc
+   bun install --save-dev jsdoc
    ```
    This will install JSDoc as a dev dependency in your project.
 
@@ -42,12 +58,12 @@ Hence, when someone says "JavaDoc for JavaScript," they usually mean "JSDoc."
      },
      "source": {
        "include": ["src/js"], 
-       "exclude": ["node_modules"]
+       "exclude": ["node_modules (managed by Bun)"]
      },
      "opts": {
        "destination": "docs/js-api", 
        "recurse": true,
-       "template": "node_modules/minami" 
+       "template": "node_modules (managed by Bun)/minami" 
      },
      "templates": {
        "systemName": "My Project JS Docs",
@@ -70,7 +86,7 @@ Hence, when someone says "JavaDoc for JavaScript," they usually mean "JSDoc."
      }
    }
    ```
-   This way, you can run `npm run docs` to generate your JavaScript API docs.
+   This way, you can run `bun run docs` to generate your JavaScript API docs.
 
 > **Note**: The `exclude` field can omit test directories or other files that you don't want documented.
 
@@ -123,14 +139,14 @@ You already have a robust Markdown-based documentation system (e.g., Debugging S
 
 3. **Continuous Integration**
 
-- If you have a CI pipeline, add a step to run `npm run docs` automatically.
+- If you have a CI pipeline, add a step to run `bun run docs` automatically.
 - Optionally, deploy the HTML docs to GitHub Pages or any artifact hosting so your entire team sees updated JS docs.
 
 > **Tip**: Tools like [jsdoc-to-markdown](https://github.com/jsdoc2md/jsdoc-to-markdown) can convert JSDoc comments into Markdown files if you prefer all docs in Markdown rather than HTML.
 
 ## 5. Strategy for Large Projects or Multiple Bundles
 
-Since you have multiple Rollup bundles (JS and CSS separately), keep in mind:
+Since you have multiple Vite bundles (JS and CSS separately), keep in mind:
 
 - **JSDoc** only concerns itself with the JavaScript source. It *won't* parse CSS.
 - If you have multiple JS entry points—like `src/js/main.js`, `src/js/admin.js`, etc.—just make sure your `source.include` includes all relevant JS folders and files.
@@ -142,19 +158,19 @@ Given your mention of *thoroughness*, a single set of well-organized docs with c
 
 Because your main "documentation strategy" is to keep everything consistent and versioned:
 
-1. **Keep `jsdoc.conf.json` under source control** alongside your `rollup.config.js`.
-2. **Reference** your JavaScript file paths in `jsdoc.conf.json` the same way you do in `rollup.config.js`. This ensures any refactor (e.g., `src/js/` → `frontend/js/`) is updated in both places.
+1. **Keep `jsdoc.conf.json` under source control** alongside your `Vite.config.js`.
+2. **Reference** your JavaScript file paths in `jsdoc.conf.json` the same way you do in `Vite.config.js`. This ensures any refactor (e.g., `src/js/` → `frontend/js/`) is updated in both places.
 3. **Do not** rely on the hashed build outputs for documentation. JSDoc needs the *original source files*; it's not meant to parse your final minified/hashed bundles.
 
 Essentially, continue using your manifest-based strategy for production code, but point JSDoc to the raw source.
 
 ## 7. Summary of Recommended Steps
 
-1. **Install JSDoc** (`npm install --save-dev jsdoc`).
+1. **Install JSDoc** (`bun install --save-dev jsdoc`).
 2. **Add a `jsdoc.conf.json`** to specify what to include/exclude, where to output docs, etc.
 3. **Use JSDoc tags** (`@param`, `@returns`, `@example`, etc.) in your JS source for thorough coverage.
 4. **Link** the generated docs from your Markdown-based "phase" or "debugging" documentation.
-5. **Automate** doc generation in your build or CI pipeline (i.e., `npm run docs`).
+5. **Automate** doc generation in your build or CI pipeline (i.e., `bun run docs`).
 
 This setup ensures that:
 

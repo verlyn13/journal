@@ -15,7 +15,10 @@ class TestEntriesAPIErrors:
 
     @pytest.mark.asyncio()
     async def test_get_entries_with_pagination(
-        self, client: AsyncClient, auth_headers: dict[str, str], db_session: AsyncSession
+        self,
+        client: AsyncClient,
+        auth_headers: dict[str, str],
+        db_session: AsyncSession,
     ):
         """Test getting entries with pagination parameters."""
         # Create multiple entries
@@ -29,7 +32,9 @@ class TestEntriesAPIErrors:
         await db_session.flush()
 
         # Test with limit
-        response = await client.get("/api/v1/entries", params={"limit": 5}, headers=auth_headers)
+        response = await client.get(
+            "/api/v1/entries", params={"limit": 5}, headers=auth_headers
+        )
         assert response.status_code == 200
         entries = response.json()
         assert len(entries) == 5
@@ -124,7 +129,9 @@ class TestEntriesAPIErrors:
         assert response.status_code == 404  # Invalid UUID treated as not found
 
     @pytest.mark.asyncio()
-    async def test_create_entry_with_tags(self, client: AsyncClient, auth_headers: dict[str, str]):
+    async def test_create_entry_with_tags(
+        self, client: AsyncClient, auth_headers: dict[str, str]
+    ):
         """Test creating entry with tags."""
         entry_data = {
             "title": "Entry with tags",
@@ -132,7 +139,9 @@ class TestEntriesAPIErrors:
             "tags": ["python", "testing", "api"],
         }
 
-        response = await client.post("/api/v1/entries", json=entry_data, headers=auth_headers)
+        response = await client.post(
+            "/api/v1/entries", json=entry_data, headers=auth_headers
+        )
         assert response.status_code == 201
         data = response.json()
         assert data["title"] == entry_data["title"]
@@ -140,7 +149,10 @@ class TestEntriesAPIErrors:
 
     @pytest.mark.asyncio()
     async def test_get_entries_with_search_query(
-        self, client: AsyncClient, auth_headers: dict[str, str], db_session: AsyncSession
+        self,
+        client: AsyncClient,
+        auth_headers: dict[str, str],
+        db_session: AsyncSession,
     ):
         """Test getting entries with search query parameter."""
         # Create test entries
@@ -158,7 +170,9 @@ class TestEntriesAPIErrors:
         await db_session.flush()
 
         # Search for Python
-        response = await client.get("/api/v1/entries", params={"q": "Python"}, headers=auth_headers)
+        response = await client.get(
+            "/api/v1/entries", params={"q": "Python"}, headers=auth_headers
+        )
         assert response.status_code == 200
         entries = response.json()
         # Should return Python entry

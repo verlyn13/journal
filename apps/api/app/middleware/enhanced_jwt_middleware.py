@@ -99,11 +99,16 @@ class EnhancedJWTMiddleware:
             ):
                 raise ValueError("Invalid audience")
 
-            if SecurityPolicies.REQUIRE_ISSUER_VALIDATION and claims.get("iss") != settings.jwt_iss:
+            if (
+                SecurityPolicies.REQUIRE_ISSUER_VALIDATION
+                and claims.get("iss") != settings.jwt_iss
+            ):
                 raise ValueError("Invalid issuer")
 
             # Check token type using payload 'type' (primary), supporting legacy aliases
-            token_type = claims.get("type") or claims.get("token_type") or claims.get("typ")
+            token_type = (
+                claims.get("type") or claims.get("token_type") or claims.get("typ")
+            )
             if token_type not in {"access", "m2m", "at+jwt"}:
                 raise ValueError(f"Invalid token type: {token_type}")
 
@@ -305,7 +310,9 @@ async def require_scopes(
             status_code=status.HTTP_403_FORBIDDEN,
             detail=f"Missing required scopes: {', '.join(missing_scopes)}",
             headers={
-                "WWW-Authenticate": f'Bearer error="insufficient_scope", scope="{" ".join(required_scopes)}"'
+                "WWW-Authenticate": (
+                    f'Bearer error="insufficient_scope", scope="{" ".join(required_scopes)}"'
+                )
             },
         )
 

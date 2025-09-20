@@ -1,3 +1,24 @@
+---
+id: quality-quality-audit
+title: Quality Audit Report
+description: Documentation for Journal application
+type: api
+created: '2025-09-17'
+updated: '2025-09-17'
+author: Journal Team
+tags:
+- /
+- home
+- verlyn13
+- projects
+- journal
+priority: 2
+status: current
+visibility: public
+schema_version: v1
+version: 1.0.0
+---
+
 # Quality Audit Report
 
 ## PR Status Summary

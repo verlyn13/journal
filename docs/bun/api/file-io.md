@@ -1,3 +1,20 @@
+---
+id: file-io
+title: FILE IO
+type: api
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags:
+- api
+priority: high
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 # FILE IO
 
 *Source: <https://bun.sh/docs/api/file-io>*
@@ -16,21 +33,21 @@ Bun provides a set of optimized APIs for reading and writing files.
 Create a `BunFile` instance with the `Bun.file(path)` function. A `BunFile` represents a lazily-loaded file; initializing it does not actually read the file from disk.
 
 ```
-const foo = Bun.file("foo.txt"); // relative to cwd
-foo.size; // number of bytes
-foo.type; // MIME type
+const entry = Bun.file("example.txt"); // relative to cwd
+example.size; // number of bytes
+example.type; // MIME type
 
 ```
 
 The reference conforms to the [`Blob`](https://developer.mozilla.org/en-US/docs/Web/API/Blob) interface, so the contents can be read in various formats.
 
 ```
-const foo = Bun.file("foo.txt");
+const entry = Bun.file("example.txt");
 
-await foo.text(); // contents as a string
-await foo.stream(); // contents as ReadableStream
-await foo.arrayBuffer(); // contents as ArrayBuffer
-await foo.bytes(); // contents as Uint8Array
+await example.text(); // contents as a string
+await example.stream(); // contents as ReadableStream
+await example.arrayBuffer(); // contents as ArrayBuffer
+await example.bytes(); // contents as Uint8Array
 
 ```
 

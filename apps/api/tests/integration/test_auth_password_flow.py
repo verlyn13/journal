@@ -24,7 +24,11 @@ async def test_register_verify_login(client):
     # Register
     r = await client.post(
         "/api/v1/auth/register",
-        json={"email": "auth.t2@example.com", "password": "CorrectHorse9!", "username": "auth2"},
+        json={
+            "email": "auth.t2@example.com",
+            "password": "CorrectHorse9!",
+            "username": "auth2",
+        },
     )
     assert r.status_code == 202, r.text
     data = r.json()
@@ -43,4 +47,8 @@ async def test_register_verify_login(client):
     )
     assert r.status_code == 200, r.text
     body = r.json()
-    assert "access_token" in body and "refresh_token" in body and body["token_type"] == "bearer"
+    assert (
+        "access_token" in body
+        and "refresh_token" in body
+        and body["token_type"] == "bearer"
+    )

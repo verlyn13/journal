@@ -25,7 +25,9 @@ def count_words_chars(text: str | None) -> tuple[int, int]:
     return words, chars
 
 
-def extract_text_for_metrics(content: dict[str, Any] | str | None, markdown: str | None) -> str:
+def extract_text_for_metrics(
+    content: dict[str, Any] | str | None, markdown: str | None
+) -> str:
     """Extract plain text for metrics calculation.
 
     Args:

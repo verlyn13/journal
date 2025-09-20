@@ -74,7 +74,9 @@ class Event(SQLModel, table=True):
             if isinstance(v, (bytes, bytearray)) and len(v) == 16:
                 return UUID(bytes=bytes(v))
         except ValueError as exc:
-            logging.getLogger(__name__).debug("aggregate_id pre-validate coercion skipped: %s", exc)
+            logging.getLogger(__name__).debug(
+                "aggregate_id pre-validate coercion skipped: %s", exc
+            )
         return v
 
 
@@ -83,7 +85,10 @@ class Event(SQLModel, table=True):
 def _event_before_insert(mapper: object, connection: object, target: Event) -> None:
     try:
         # Runtime coercion for tests that might assign raw bytes
-        if isinstance(target.aggregate_id, (bytes, bytearray)) and len(target.aggregate_id) == 16:
+        if (
+            isinstance(target.aggregate_id, (bytes, bytearray))
+            and len(target.aggregate_id) == 16
+        ):
             target.aggregate_id = UUID(bytes=bytes(target.aggregate_id))
     except ValueError as exc:
         logging.getLogger(__name__).debug("aggregate_id coercion skipped: %s", exc)
@@ -148,7 +153,9 @@ class UserSession(SQLModel, table=True):
 
     id: UUID = Field(default_factory=uuid4, primary_key=True, nullable=False)
     user_id: UUID = Field(foreign_key="users.id", index=True, nullable=False)
-    refresh_id: UUID = Field(default_factory=uuid4, unique=True, index=True, nullable=False)
+    refresh_id: UUID = Field(
+        default_factory=uuid4, unique=True, index=True, nullable=False
+    )
     user_agent: str | None = None
     ip_address: str | None = None
     issued_at: datetime = Field(
@@ -159,7 +166,9 @@ class UserSession(SQLModel, table=True):
         default_factory=lambda: datetime.now(UTC),
         sa_column=Column(DateTime(timezone=True), nullable=False),
     )
-    expires_at: datetime = Field(sa_column=Column(DateTime(timezone=True), nullable=False))
+    expires_at: datetime = Field(
+        sa_column=Column(DateTime(timezone=True), nullable=False)
+    )
     revoked_at: datetime | None = Field(
         default=None, sa_column=Column(DateTime(timezone=True), nullable=True)
     )

@@ -21,7 +21,11 @@ async def test_entry_api_edge_cases(client: AsyncClient, auth_headers):
     # Test markdown content handling
     r2 = await client.post(
         "/api/v1/entries",
-        json={"title": "MD Test", "markdown_content": "# Header\n\nContent", "content_version": 2},
+        json={
+            "title": "MD Test",
+            "markdown_content": "# Header\n\nContent",
+            "content_version": 2,
+        },
         headers=auth_headers,
     )
     assert r2.status_code == 201
@@ -96,7 +100,9 @@ async def test_invalid_entry_ids(client: AsyncClient, auth_headers):
     )
     assert r2.status_code == 404
 
-    r3 = await client.delete("/api/v1/entries/not-a-uuid?expected_version=1", headers=auth_headers)
+    r3 = await client.delete(
+        "/api/v1/entries/not-a-uuid?expected_version=1", headers=auth_headers
+    )
     assert r3.status_code == 404
 
     # Valid UUID but non-existent entry
@@ -111,5 +117,7 @@ async def test_invalid_entry_ids(client: AsyncClient, auth_headers):
     )
     assert r5.status_code == 404
 
-    r6 = await client.delete(f"/api/v1/entries/{fake_id}?expected_version=1", headers=auth_headers)
+    r6 = await client.delete(
+        f"/api/v1/entries/{fake_id}?expected_version=1", headers=auth_headers
+    )
     assert r6.status_code == 404

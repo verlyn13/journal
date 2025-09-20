@@ -180,3 +180,4 @@ repo_scan.json
 # Allow web src TS library modules (override generic lib/ ignore)
 !apps/web/src/lib/
 !apps/web/src/lib/**
+.vercel

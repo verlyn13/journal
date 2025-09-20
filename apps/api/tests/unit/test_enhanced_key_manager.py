@@ -44,16 +44,23 @@ class TestInfisicalKeyManager:
                 "/auth/aes/active-kid": "test-kid-123",
                 "/auth/aes/keys-map": json.dumps({
                     "keys": {
-                        "test-kid-123": "dGVzdC1rZXktMTIzNDU2Nzg5MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTI="  # 32-byte key base64
+                        "test-kid-123": "dGVzdC1rZXktMTIzNDU2Nzg5MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTI="
+                        # 32-byte key base64
                     },
                     "current_kid": "test-kid-123",
                 }),
-                "/auth/jwt/private-key": "-----BEGIN PRIVATE KEY-----\ntest-key\n-----END PRIVATE KEY-----",
-                "/auth/jwt/public-key": "-----BEGIN PUBLIC KEY-----\ntest-key\n-----END PUBLIC KEY-----",
+                "/auth/jwt/private-key": (
+                    "-----BEGIN PRIVATE KEY-----\ntest-key\n-----END PRIVATE KEY-----"
+                ),
+                "/auth/jwt/public-key": (
+                    "-----BEGIN PUBLIC KEY-----\ntest-key\n-----END PUBLIC KEY-----"
+                ),
             }.get(path, "default-value")
         )
         # Setup health_check to return a proper dict, not AsyncMock
-        client.health_check = AsyncMock(return_value={"status": "healthy", "connection": "ok"})
+        client.health_check = AsyncMock(
+            return_value={"status": "healthy", "connection": "ok"}
+        )
         return client
 
     @pytest.fixture()
@@ -114,9 +121,13 @@ class TestInfisicalKeyManager:
         mock_redis.setex.assert_called_once()
 
     @pytest.mark.asyncio()
-    async def test_get_token_cipher_fallback_to_env(self, key_manager, mock_infisical_client):
+    async def test_get_token_cipher_fallback_to_env(
+        self, key_manager, mock_infisical_client
+    ):
         """Test fallback to environment when Infisical fails."""
-        mock_infisical_client.fetch_secret.side_effect = SecretNotFoundError("Not found")
+        mock_infisical_client.fetch_secret.side_effect = SecretNotFoundError(
+            "Not found"
+        )
 
         with patch.object(TokenCipher, "from_env") as mock_from_env:
             mock_cipher = MagicMock(spec=TokenCipher)
@@ -158,7 +169,9 @@ class TestInfisicalKeyManager:
         with (
             patch.object(key_manager, "get_token_cipher", return_value=mock_cipher),
             patch.object(
-                key_manager, "_check_aes_rotation_needed", return_value=(True, "Test rotation")
+                key_manager,
+                "_check_aes_rotation_needed",
+                return_value=(True, "Test rotation"),
             ),
         ):
             result = await key_manager.rotate_aes_keys()
@@ -180,7 +193,9 @@ class TestInfisicalKeyManager:
         with (
             patch.object(key_manager, "get_token_cipher", return_value=mock_cipher),
             patch.object(
-                key_manager, "_check_aes_rotation_needed", return_value=(False, "Not needed")
+                key_manager,
+                "_check_aes_rotation_needed",
+                return_value=(False, "Not needed"),
             ),
         ):
             result = await key_manager.rotate_aes_keys()
@@ -248,7 +263,9 @@ class TestInfisicalKeyManager:
             assert len(result["errors"]) == 0
 
     @pytest.mark.asyncio()
-    async def test_health_check_all_healthy(self, key_manager, mock_redis, mock_infisical_client):
+    async def test_health_check_all_healthy(
+        self, key_manager, mock_redis, mock_infisical_client
+    ):
         """Test health check when all systems are healthy."""
         mock_redis.get.return_value = None  # No cached health
 
@@ -273,7 +290,9 @@ class TestInfisicalKeyManager:
 
         with (
             patch.object(
-                key_manager.__class__.__bases__[0], "verify_key_integrity", return_value=jwt_health
+                key_manager.__class__.__bases__[0],
+                "verify_key_integrity",
+                return_value=jwt_health,
             ),
             patch.object(key_manager, "get_token_cipher", return_value=mock_cipher),
         ):
@@ -285,7 +304,9 @@ class TestInfisicalKeyManager:
             assert result["infisical_connection"]["status"] == "healthy"
 
     @pytest.mark.asyncio()
-    async def test_health_check_jwt_unhealthy(self, key_manager, mock_redis, mock_infisical_client):
+    async def test_health_check_jwt_unhealthy(
+        self, key_manager, mock_redis, mock_infisical_client
+    ):
         """Test health check when JWT system is unhealthy."""
         # Setup Redis mock properly
         mock_redis.get = AsyncMock(return_value=None)
@@ -408,18 +429,26 @@ class TestInfisicalKeyManager:
         assert "Invalid rotation_type" in result["results"]["error"]
 
     @pytest.mark.asyncio()
-    async def test_initialize_aes_key_system_new(self, key_manager, mock_infisical_client):
+    async def test_initialize_aes_key_system_new(
+        self, key_manager, mock_infisical_client
+    ):
         """Test initializing new AES key system."""
         # Mock that no existing keys found
-        mock_infisical_client.fetch_secret.side_effect = SecretNotFoundError("Not found")
+        mock_infisical_client.fetch_secret.side_effect = SecretNotFoundError(
+            "Not found"
+        )
 
         await key_manager._initialize_aes_key_system()
 
         # Verify new keys were stored
-        assert mock_infisical_client.store_secret.call_count == 2  # keys_map and active_kid
+        assert (
+            mock_infisical_client.store_secret.call_count == 2
+        )  # keys_map and active_kid
 
     @pytest.mark.asyncio()
-    async def test_initialize_aes_key_system_existing(self, key_manager, mock_infisical_client):
+    async def test_initialize_aes_key_system_existing(
+        self, key_manager, mock_infisical_client
+    ):
         """Test initializing AES key system when keys already exist."""
         # Mock existing active_kid
         mock_infisical_client.fetch_secret.return_value = "existing_kid"

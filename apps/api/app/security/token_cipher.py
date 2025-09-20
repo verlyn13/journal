@@ -126,7 +126,9 @@ class TokenCipher:
 
         # Verify AAD matches if provided in envelope
         if "aad" in obj:
-            envelope_aad = base64.urlsafe_b64decode(obj["aad"] + "=" * (-len(obj["aad"]) % 4))
+            envelope_aad = base64.urlsafe_b64decode(
+                obj["aad"] + "=" * (-len(obj["aad"]) % 4)
+            )
             if aad != envelope_aad:
                 raise ValueError("AAD mismatch")
 

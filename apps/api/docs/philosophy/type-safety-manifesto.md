@@ -1,3 +1,24 @@
+---
+id: philosophy-type-safety-manifesto
+title: Our Type Safety Manifesto
+description: Documentation for Journal application
+type: api
+created: '2025-09-17'
+updated: '2025-09-17'
+author: Journal Team
+tags:
+- /
+- home
+- verlyn13
+- projects
+- journal
+priority: 2
+status: current
+visibility: public
+schema_version: v1
+version: 1.0.0
+---
+
 # Our Type Safety Manifesto
 
 ## We Believe

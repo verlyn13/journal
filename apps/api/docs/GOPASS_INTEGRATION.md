@@ -1,3 +1,25 @@
+---
+id: gopass-integration
+title: Gopass Integration with Infisical Universal Auth
+description: Complete guide for using gopass to securely manage Infisical Universal
+  Auth credentials and other secrets for the Journal API.
+type: api
+created: '2025-09-17'
+updated: '2025-09-17'
+author: Journal Team
+tags:
+- /
+- home
+- verlyn13
+- projects
+- journal
+priority: 2
+status: current
+visibility: public
+schema_version: v1
+version: 1.0.0
+---
+
 # Gopass Integration with Infisical Universal Auth
 
 Complete guide for using gopass to securely manage Infisical Universal Auth credentials and other secrets for the Journal API.

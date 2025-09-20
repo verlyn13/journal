@@ -25,7 +25,9 @@ class TestStepUpAuthService:
         return AsyncMock(spec=Redis)
 
     @pytest.fixture()
-    def stepup_service(self, db_session: AsyncSession, redis_mock: AsyncMock) -> StepUpAuthService:
+    def stepup_service(
+        self, db_session: AsyncSession, redis_mock: AsyncMock
+    ) -> StepUpAuthService:
         """Create StepUpAuthService instance."""
         return StepUpAuthService(db_session, redis_mock)
 
@@ -139,7 +141,9 @@ class TestStepUpAuthService:
         # Verify verification was stored
         redis_mock.setex.assert_called()
         verify_call = [
-            c for c in redis_mock.setex.call_args_list if "stepup_verified" in str(c[0][0])
+            c
+            for c in redis_mock.setex.call_args_list
+            if "stepup_verified" in str(c[0][0])
         ]
         assert len(verify_call) > 0
 
@@ -181,7 +185,9 @@ class TestStepUpAuthService:
         """Test step-up verification when no challenge exists."""
         redis_mock.get.return_value = None
 
-        result = await stepup_service.verify_step_up(test_user.id, "export_data", "any_challenge")
+        result = await stepup_service.verify_step_up(
+            test_user.id, "export_data", "any_challenge"
+        )
 
         assert result is False
 

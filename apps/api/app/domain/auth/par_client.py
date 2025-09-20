@@ -63,7 +63,9 @@ class PARClient:
         Returns:
             Tuple of (authorization_url, query_params, pkce_verifier)
         """
-        verifier = base64.urlsafe_b64encode(secrets.token_bytes(32)).decode().rstrip("=")
+        verifier = (
+            base64.urlsafe_b64encode(secrets.token_bytes(32)).decode().rstrip("=")
+        )
         challenge = (
             base64.urlsafe_b64encode(hashlib.sha256(verifier.encode()).digest())
             .decode()

@@ -7,7 +7,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 @pytest.mark.asyncio()
 async def test_alembic_applied_schema(db_session: AsyncSession):
     # Vector extension exists
-    ext = await db_session.execute(text("SELECT extname FROM pg_extension WHERE extname='vector'"))
+    ext = await db_session.execute(
+        text("SELECT extname FROM pg_extension WHERE extname='vector'")
+    )
     assert ext.scalar() == "vector"
 
     # Critical indexes exist
@@ -18,7 +20,8 @@ async def test_alembic_applied_schema(db_session: AsyncSession):
     }
     res = await db_session.execute(
         text(
-            "SELECT indexname FROM pg_indexes WHERE tablename='entries' OR tablename='entry_embeddings'"
+            "SELECT indexname FROM pg_indexes WHERE tablename='entries'"
+            " OR tablename='entry_embeddings'"
         )
     )
     have = {row[0] for row in res.fetchall()}

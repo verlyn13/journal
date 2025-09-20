@@ -26,15 +26,22 @@ class User(Base):
 
     __tablename__ = "users"
 
-    id: Mapped[UUID] = mapped_column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
+    id: Mapped[UUID] = mapped_column(
+        PGUUID(as_uuid=True), primary_key=True, default=uuid4
+    )
     email: Mapped[str] = mapped_column(String, unique=True, index=True, nullable=False)
     username: Mapped[str | None] = mapped_column(String, index=True, nullable=True)
     password_hash: Mapped[str | None] = mapped_column(String, nullable=True)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
     is_verified: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
-    roles: Mapped[list[str]] = mapped_column(JSONB, default=lambda: ["user"], nullable=False)
+    roles: Mapped[list[str]] = mapped_column(
+        JSONB, default=lambda: ["user"], nullable=False
+    )
     created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), default=lambda: datetime.now(UTC), nullable=False, index=True
+        DateTime(timezone=True),
+        default=lambda: datetime.now(UTC),
+        nullable=False,
+        index=True,
     )
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=lambda: datetime.now(UTC), nullable=False
@@ -43,11 +50,15 @@ class User(Base):
     # Relationships
     sessions: Mapped[list[UserSession]] = relationship(back_populates="user")
     entries: Mapped[list[Entry]] = relationship(back_populates="author")
-    webauthn_credentials: Mapped[list[WebAuthnCredential]] = relationship(back_populates="user")
+    webauthn_credentials: Mapped[list[WebAuthnCredential]] = relationship(
+        back_populates="user"
+    )
     devices: Mapped[list[UserDevice]] = relationship(back_populates="user")
     recovery_codes: Mapped[list[RecoveryCode]] = relationship(back_populates="user")
     audit_log: Mapped[list[AuditLogEntry]] = relationship(back_populates="user")
-    deletion_request: Mapped[DeletionRequest | None] = relationship(back_populates="user")
+    deletion_request: Mapped[DeletionRequest | None] = relationship(
+        back_populates="user"
+    )
 
 
 class UserSession(Base):
@@ -55,8 +66,12 @@ class UserSession(Base):
 
     __tablename__ = "user_sessions"
 
-    id: Mapped[UUID] = mapped_column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
-    user_id: Mapped[UUID] = mapped_column(ForeignKey("users.id"), index=True, nullable=False)
+    id: Mapped[UUID] = mapped_column(
+        PGUUID(as_uuid=True), primary_key=True, default=uuid4
+    )
+    user_id: Mapped[UUID] = mapped_column(
+        ForeignKey("users.id"), index=True, nullable=False
+    )
     device_id: Mapped[UUID | None] = mapped_column(
         ForeignKey("user_devices.id", ondelete="SET NULL"), index=True, nullable=True
     )
@@ -66,13 +81,20 @@ class UserSession(Base):
     user_agent: Mapped[str | None] = mapped_column(String, nullable=True)
     ip_address: Mapped[str | None] = mapped_column(String, nullable=True)
     issued_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), default=lambda: datetime.now(UTC), nullable=False, index=True
+        DateTime(timezone=True),
+        default=lambda: datetime.now(UTC),
+        nullable=False,
+        index=True,
     )
     last_used_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=lambda: datetime.now(UTC), nullable=False
     )
-    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
-    revoked_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    expires_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False
+    )
+    revoked_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
 
     # Relationships
     user: Mapped[User] = relationship(back_populates="sessions")
@@ -84,7 +106,9 @@ class UserDevice(Base):
 
     __tablename__ = "user_devices"
 
-    id: Mapped[UUID] = mapped_column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
+    id: Mapped[UUID] = mapped_column(
+        PGUUID(as_uuid=True), primary_key=True, default=uuid4
+    )
     user_id: Mapped[UUID] = mapped_column(
         ForeignKey("users.id", ondelete="CASCADE"), index=True, nullable=False
     )
@@ -118,7 +142,9 @@ class RecoveryCode(Base):
 
     __tablename__ = "recovery_codes"
 
-    id: Mapped[UUID] = mapped_column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
+    id: Mapped[UUID] = mapped_column(
+        PGUUID(as_uuid=True), primary_key=True, default=uuid4
+    )
     user_id: Mapped[UUID] = mapped_column(
         ForeignKey("users.id", ondelete="CASCADE"), index=True, nullable=False
     )
@@ -128,7 +154,9 @@ class RecoveryCode(Base):
 
     # Tracking
     used: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
-    used_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    used_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=lambda: datetime.now(UTC), nullable=False
     )
@@ -142,8 +170,12 @@ class Entry(Base):
 
     __tablename__ = "entries"
 
-    id: Mapped[UUID] = mapped_column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
-    author_id: Mapped[UUID] = mapped_column(ForeignKey("users.id"), index=True, nullable=False)
+    id: Mapped[UUID] = mapped_column(
+        PGUUID(as_uuid=True), primary_key=True, default=uuid4
+    )
+    author_id: Mapped[UUID] = mapped_column(
+        ForeignKey("users.id"), index=True, nullable=False
+    )
     title: Mapped[str] = mapped_column(String, nullable=False)
     content: Mapped[str | None] = mapped_column(Text, nullable=True)
     markdown_content: Mapped[str | None] = mapped_column(Text, nullable=True)
@@ -156,7 +188,9 @@ class Entry(Base):
     updated_at: Mapped[datetime] = mapped_column(
         default=datetime.utcnow, nullable=False, index=True
     )
-    is_deleted: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False, index=True)
+    is_deleted: Mapped[bool] = mapped_column(
+        Boolean, default=False, nullable=False, index=True
+    )
     version: Mapped[int] = mapped_column(Integer, default=1, nullable=False)
 
     # Relationships
@@ -168,8 +202,12 @@ class Event(Base):
 
     __tablename__ = "events"
 
-    id: Mapped[UUID] = mapped_column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
-    aggregate_id: Mapped[UUID] = mapped_column(PGUUID(as_uuid=True), index=True, nullable=False)
+    id: Mapped[UUID] = mapped_column(
+        PGUUID(as_uuid=True), primary_key=True, default=uuid4
+    )
+    aggregate_id: Mapped[UUID] = mapped_column(
+        PGUUID(as_uuid=True), index=True, nullable=False
+    )
     aggregate_type: Mapped[str] = mapped_column(String, nullable=False)
     event_type: Mapped[str] = mapped_column(String, nullable=False)
     event_data: Mapped[dict[str, Any]] = mapped_column(JSON, nullable=False)
@@ -203,7 +241,9 @@ class AuditLogEntry(Base):
 
     __tablename__ = "audit_log"
 
-    id: Mapped[UUID] = mapped_column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
+    id: Mapped[UUID] = mapped_column(
+        PGUUID(as_uuid=True), primary_key=True, default=uuid4
+    )
     user_id: Mapped[UUID] = mapped_column(
         ForeignKey("users.id", ondelete="CASCADE"), index=True, nullable=False
     )
@@ -222,7 +262,10 @@ class AuditLogEntry(Base):
     entry_hash: Mapped[str] = mapped_column(String(64), unique=True, nullable=False)
 
     created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), default=lambda: datetime.now(UTC), nullable=False, index=True
+        DateTime(timezone=True),
+        default=lambda: datetime.now(UTC),
+        nullable=False,
+        index=True,
     )
 
     # Relationships
@@ -235,7 +278,9 @@ class DeletionRequest(Base):
 
     __tablename__ = "deletion_requests"
 
-    id: Mapped[UUID] = mapped_column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
+    id: Mapped[UUID] = mapped_column(
+        PGUUID(as_uuid=True), primary_key=True, default=uuid4
+    )
     user_id: Mapped[UUID] = mapped_column(
         ForeignKey("users.id", ondelete="CASCADE"), unique=True, nullable=False
     )
@@ -244,15 +289,23 @@ class DeletionRequest(Base):
     requested_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=lambda: datetime.now(UTC), nullable=False
     )
-    scheduled_for: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    scheduled_for: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False
+    )
 
     # Undo mechanism
     undo_token: Mapped[str] = mapped_column(String(64), unique=True, nullable=False)
-    undo_expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    undo_expires_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False
+    )
 
     # Status tracking
-    cancelled_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
-    executed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    cancelled_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    executed_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
 
     # Relationships
     user: Mapped[User] = relationship(back_populates="deletion_request")
