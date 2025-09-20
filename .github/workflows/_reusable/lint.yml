@@ -6,12 +6,8 @@ jobs:
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
       - name: Setup uv
-        uses: astral-sh/setup-uv@v5
-      - name: Cache uv
-        uses: actions/cache@0400d5f644dc74513175e3cd8d07132dd4860809
-        with:
-          path: ~/.cache/uv
-          key: uv-${{ hashFiles('apps/api/uv.lock') }}
+        uses: astral-sh/setup-uv@208b0c0ee42039b2cbf5fd3ca0ec7d6d8a49336f
+      # Caching optional; uv is fast and deterministic. Enable later with pinned SHAs per policy.
       - name: Sync (frozen)
         run: uv sync --frozen
       - name: Ruff format (check)
@@ -21,4 +17,3 @@ jobs:
       - name: Pyright (if configured)
         run: |
           if uv run pyright --version >/dev/null 2>&1; then uv run pyright --warnings; else echo "pyright not configured"; fi
-

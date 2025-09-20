@@ -15,7 +15,7 @@ jobs:
           --health-cmd="pg_isready -U journal" --health-interval=10s --health-timeout=5s --health-retries=5
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
-      - uses: astral-sh/setup-uv@v5
+      - uses: astral-sh/setup-uv@208b0c0ee42039b2cbf5fd3ca0ec7d6d8a49336f
       - name: Sync (frozen)
         working-directory: apps/api
         run: uv sync --frozen --all-extras --dev
@@ -36,4 +36,3 @@ jobs:
         env:
           TEST_DB_URL: postgresql+asyncpg://journal:journal@localhost:5432/journal
         run: uv run pytest -q
-

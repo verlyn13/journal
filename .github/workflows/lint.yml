@@ -22,14 +22,14 @@ jobs:
 
       # Option A: Using official Astral Ruff Action (recommended)
       - name: Run Ruff linter
-        uses: astral-sh/ruff-action@f18f95d449e31b9540969c84d046a57a861648b4
+        uses: astral-sh/ruff-action@57714a7c8a2e59f32539362ba31877a1957dded1
         with:
           version: "0.13.0"
           args: "check --output-format=github apps/api deploy"
           src: "."
 
       - name: Check formatting with Ruff
-        uses: astral-sh/ruff-action@f18f95d449e31b9540969c84d046a57a861648b4
+        uses: astral-sh/ruff-action@57714a7c8a2e59f32539362ba31877a1957dded1
         with:
           version: "0.13.0"
           args: "format --check apps/api deploy"
@@ -64,7 +64,7 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
       
       - name: Install uv
-        uses: astral-sh/setup-uv@v5
+        uses: astral-sh/setup-uv@208b0c0ee42039b2cbf5fd3ca0ec7d6d8a49336f
         with:
           enable-cache: true
           cache-dependency-glob: "apps/api/uv.lock"
