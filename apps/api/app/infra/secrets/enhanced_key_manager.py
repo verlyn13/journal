@@ -111,10 +111,14 @@ class InfisicalKeyManager(KeyManager):
         # Load from Infisical
         try:
             # Get active key ID
-            active_kid = await self.infisical_client.fetch_secret(self.AES_ACTIVE_KID_PATH)
+            active_kid = await self.infisical_client.fetch_secret(
+                self.AES_ACTIVE_KID_PATH
+            )
 
             # Get keys map
-            keys_map_json = await self.infisical_client.fetch_secret(self.AES_KEYS_MAP_PATH)
+            keys_map_json = await self.infisical_client.fetch_secret(
+                self.AES_KEYS_MAP_PATH
+            )
             keys_map = json.loads(keys_map_json)
 
             # Decode base64 keys
@@ -176,7 +180,9 @@ class InfisicalKeyManager(KeyManager):
             new_key = self._generate_aes_key()
 
             # Get current keys map
-            keys_map_json = await self.infisical_client.fetch_secret(self.AES_KEYS_MAP_PATH)
+            keys_map_json = await self.infisical_client.fetch_secret(
+                self.AES_KEYS_MAP_PATH
+            )
             keys_map = json.loads(keys_map_json)
 
             # Add new key to map
@@ -212,7 +218,8 @@ class InfisicalKeyManager(KeyManager):
             )
 
             metrics_inc(
-                "aes_key_rotation_total", {"method": "automatic" if not force else "forced"}
+                "aes_key_rotation_total",
+                {"method": "automatic" if not force else "forced"},
             )
 
             return {
@@ -398,7 +405,10 @@ class InfisicalKeyManager(KeyManager):
         # Determine overall status
         jwt_healthy = health_results["jwt_system"]["status"] == "healthy"
         aes_healthy = health_results["aes_system"]["status"] == "healthy"
-        infisical_ok = health_results["infisical_connection"]["status"] in {"healthy", "disabled"}
+        infisical_ok = health_results["infisical_connection"]["status"] in {
+            "healthy",
+            "disabled",
+        }
 
         if jwt_healthy and aes_healthy and infisical_ok:
             health_results["overall_status"] = "healthy"
@@ -451,7 +461,10 @@ class InfisicalKeyManager(KeyManager):
                 event_data=results,
             )
 
-            metrics_inc("webhook_key_rotation_total", {"type": rotation_type, "status": "success"})
+            metrics_inc(
+                "webhook_key_rotation_total",
+                {"type": rotation_type, "status": "success"},
+            )
 
             return results
 
@@ -468,7 +481,9 @@ class InfisicalKeyManager(KeyManager):
                 event_data=results,
             )
 
-            metrics_inc("webhook_key_rotation_total", {"type": rotation_type, "status": "error"})
+            metrics_inc(
+                "webhook_key_rotation_total", {"type": rotation_type, "status": "error"}
+            )
 
             return results
 
@@ -539,7 +554,9 @@ class InfisicalKeyManager(KeyManager):
         return base64.urlsafe_b64decode(padded)
 
     @staticmethod
-    def _serialize_token_cipher(cipher: TokenCipher, keys_map: dict[str, str]) -> dict[str, Any]:
+    def _serialize_token_cipher(
+        cipher: TokenCipher, keys_map: dict[str, str]
+    ) -> dict[str, Any]:
         """Serialize TokenCipher for caching."""
         return {
             "active_kid": cipher.active_kid,

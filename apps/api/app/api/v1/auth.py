@@ -20,7 +20,12 @@ from app.infra.auth import (
     create_verify_token,
     get_current_user,
 )
-from app.infra.auth_counters import login_fail, login_success, refresh_rotated, session_revoked
+from app.infra.auth_counters import (
+    login_fail,
+    login_success,
+    refresh_rotated,
+    session_revoked,
+)
 from app.infra.cookies import (
     clear_refresh_cookie,
     ensure_csrf_cookie,
@@ -125,7 +130,9 @@ async def login(
         # Demo login with new JWT service
         expected_user = settings.demo_username or "demo"
         expected_pass = settings.demo_password or ("demo" + "123")  # not a real secret
-        if (body.username or body.email) == expected_user and body.password == expected_pass:
+        if (
+            body.username or body.email
+        ) == expected_user and body.password == expected_pass:
             demo_user_id = UUID("123e4567-e89b-12d3-a456-426614174000")
         else:
             login_fail("invalid_credentials")
@@ -158,9 +165,12 @@ async def login(
 
     # Real login (flag on)
     key = f"login:{(body.email or body.username or '').lower()}"
-    if not allow(key, settings.rate_limit_max_attempts, settings.rate_limit_window_seconds):
+    if not allow(
+        key, settings.rate_limit_max_attempts, settings.rate_limit_window_seconds
+    ):
         raise HTTPException(
-            status_code=status.HTTP_429_TOO_MANY_REQUESTS, detail="Please try again later"
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail="Please try again later",
         )
 
     stmt = select(User).where(User.email == (body.email or ""))
@@ -173,14 +183,18 @@ async def login(
         and verify_password(user.password_hash, body.password)
         and (user.is_verified or not settings.auth_require_email_verify)
     )
-    if not ok or user is None:  # Type guard: after this check, user is guaranteed non-None
+    if (
+        not ok or user is None
+    ):  # Type guard: after this check, user is guaranteed non-None
         reason = (
             "not_verified"
             if user and not user.is_verified and settings.auth_require_email_verify
             else "invalid_credentials"
         )
         login_fail(reason)
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials"
+        )
 
     # At this point, user is guaranteed to be non-None due to the check above
     # Create server-side session and include rid in refresh
@@ -224,9 +238,12 @@ async def register(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
 
     key = f"register:{request.client.host if request.client else 'unknown'}"
-    if not allow(key, settings.rate_limit_max_attempts, settings.rate_limit_window_seconds):
+    if not allow(
+        key, settings.rate_limit_max_attempts, settings.rate_limit_window_seconds
+    ):
         raise HTTPException(
-            status_code=status.HTTP_429_TOO_MANY_REQUESTS, detail="Please try again later"
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail="Please try again later",
         )
 
     # Do not enumerate existing emails
@@ -239,7 +256,9 @@ async def register(
         }
 
     user = User(
-        email=body.email, username=body.username, password_hash=hash_password(body.password)
+        email=body.email,
+        username=body.username,
+        password_hash=hash_password(body.password),
     )
     s.add(user)
     await s.commit()
@@ -275,19 +294,27 @@ async def verify_email(
             options={"require": ["exp", "iat"]},
         )
     except jwt.PyJWTError as e:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid token") from e
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid token"
+        ) from e
 
     if decoded.get("typ") != "verify":
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid token type")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid token type"
+        )
 
     uid = decoded.get("sub")
     if not uid:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid token")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid token"
+        )
 
     res = await s.execute(select(User).where(User.id == uuid.UUID(uid)))
     user = res.scalars().first()
     if not user:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="User not found")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="User not found"
+        )
 
     user.is_verified = True
     await s.merge(user)
@@ -350,7 +377,8 @@ async def refresh(
 ) -> dict[str, str]:
     """Exchange a valid refresh token for a new access token.
 
-    Now supports both new EdDSA tokens and legacy HMAC tokens for backward compatibility.
+    Now supports both new EdDSA tokens and legacy HMAC tokens for backward
+    compatibility.
     """
     # Extract token from cookie or body
     token_src = None
@@ -447,7 +475,11 @@ async def refresh(
         max_age = settings.refresh_token_days * 24 * 60 * 60
         set_refresh_cookie(response, refresh_new, max_age)
         return {"access_token": access_new, "token_type": "bearer"}
-    return {"access_token": access_new, "refresh_token": refresh_new, "token_type": "bearer"}
+    return {
+        "access_token": access_new,
+        "refresh_token": refresh_new,
+        "token_type": "bearer",
+    }
 
 
 @router.get("/me")
@@ -456,7 +488,9 @@ async def get_me(user_id: str = Depends(get_current_user)) -> dict[str, str]:
     return {
         "id": user_id,
         "username": "demo" if user_id == demo_uuid else f"user_{user_id[:8]}",
-        "email": "demo@example.com" if user_id == demo_uuid else f"user_{user_id[:8]}@example.com",
+        "email": "demo@example.com"
+        if user_id == demo_uuid
+        else f"user_{user_id[:8]}@example.com",
     }
 
 

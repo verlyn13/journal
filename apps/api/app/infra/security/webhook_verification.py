@@ -49,7 +49,9 @@ class WebhookSignatureVerifier:
         """
         self.redis = redis
         self.webhook_secret = (
-            webhook_secret.encode() if isinstance(webhook_secret, str) else webhook_secret
+            webhook_secret.encode()
+            if isinstance(webhook_secret, str)
+            else webhook_secret
         )
         self._nonce_prefix = "webhook:nonce:"
 
@@ -134,7 +136,9 @@ class WebhookSignatureVerifier:
         signing_payload = f"{timestamp}.".encode() + payload
 
         # Compute HMAC-SHA256
-        signature = hmac.new(self.webhook_secret, signing_payload, hashlib.sha256).hexdigest()
+        signature = hmac.new(
+            self.webhook_secret, signing_payload, hashlib.sha256
+        ).hexdigest()
 
         return f"sha256={signature}"
 
@@ -186,7 +190,9 @@ class WebhookSignatureVerifier:
 class WebhookRateLimiter:
     """Rate limiter for webhook endpoints to prevent abuse."""
 
-    def __init__(self, redis: Redis, max_requests: int = 100, window_seconds: int = 3600) -> None:
+    def __init__(
+        self, redis: Redis, max_requests: int = 100, window_seconds: int = 3600
+    ) -> None:
         """Initialize rate limiter.
 
         Args:

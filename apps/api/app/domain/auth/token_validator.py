@@ -187,7 +187,9 @@ class TokenValidator:
         Returns:
             True if all scopes are present
         """
-        return all(self.check_scope(claims, scope, allow_admin) for scope in required_scopes)
+        return all(
+            self.check_scope(claims, scope, allow_admin) for scope in required_scopes
+        )
 
     def check_any_scope(
         self,
@@ -205,7 +207,9 @@ class TokenValidator:
         Returns:
             True if any scope is present
         """
-        return any(self.check_scope(claims, scope, allow_admin) for scope in required_scopes)
+        return any(
+            self.check_scope(claims, scope, allow_admin) for scope in required_scopes
+        )
 
     def get_user_permissions(self, claims: dict[str, Any]) -> dict[str, bool]:
         """Get user permissions based on token scopes.

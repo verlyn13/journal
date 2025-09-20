@@ -35,8 +35,12 @@ class TestInfisicalMonitoringService:
     ) -> None:
         """Test successful metrics collection."""
         with (
-            patch.object(monitoring_service.infisical_client, "health_check") as mock_client_health,
-            patch.object(monitoring_service.key_manager, "health_check") as mock_key_health,
+            patch.object(
+                monitoring_service.infisical_client, "health_check"
+            ) as mock_client_health,
+            patch.object(
+                monitoring_service.key_manager, "health_check"
+            ) as mock_key_health,
         ):
             # Mock health checks
             mock_client_health.return_value = {"status": "healthy"}
@@ -53,14 +57,20 @@ class TestInfisicalMonitoringService:
             )
 
             # Mock secret retrieval
-            monitoring_service.infisical_client.get_secret = AsyncMock(return_value="test_value")
+            monitoring_service.infisical_client.get_secret = AsyncMock(
+                return_value="test_value"
+            )
 
             # Mock key manager methods
             monitoring_service.key_manager.get_current_private_key = AsyncMock(
                 return_value="current_key"
             )
-            monitoring_service.key_manager.get_next_private_key = AsyncMock(return_value="next_key")
-            monitoring_service.key_manager.get_aes_cipher = AsyncMock(return_value=MagicMock())
+            monitoring_service.key_manager.get_next_private_key = AsyncMock(
+                return_value="next_key"
+            )
+            monitoring_service.key_manager.get_aes_cipher = AsyncMock(
+                return_value=MagicMock()
+            )
             monitoring_service.key_manager.check_rotation_needed = AsyncMock(
                 return_value=(False, None)
             )
@@ -115,11 +125,18 @@ class TestInfisicalMonitoringService:
     ) -> None:
         """Test metrics collection when components are unhealthy."""
         with (
-            patch.object(monitoring_service.infisical_client, "health_check") as mock_client_health,
-            patch.object(monitoring_service.key_manager, "health_check") as mock_key_health,
+            patch.object(
+                monitoring_service.infisical_client, "health_check"
+            ) as mock_client_health,
+            patch.object(
+                monitoring_service.key_manager, "health_check"
+            ) as mock_key_health,
         ):
             # Mock unhealthy state
-            mock_client_health.return_value = {"status": "unhealthy", "error": "Connection failed"}
+            mock_client_health.return_value = {
+                "status": "unhealthy",
+                "error": "Connection failed",
+            }
             mock_key_health.return_value = {
                 "overall_status": "unhealthy",
                 "errors": ["Key not found"],
@@ -158,7 +175,9 @@ class TestInfisicalMonitoringService:
             "collection_duration": 1.5,
         }
 
-        monitoring_service.redis.hget = AsyncMock(return_value=json.dumps(cached_metrics))
+        monitoring_service.redis.hget = AsyncMock(
+            return_value=json.dumps(cached_metrics)
+        )
 
         # Get current metrics
         result = await monitoring_service.get_current_metrics()
@@ -273,7 +292,9 @@ class TestInfisicalMonitoringService:
         assert webhook_metrics["events_total"] == 150
         assert "last_updated" in webhook_metrics
 
-    async def test_cleanup_old_data(self, monitoring_service: InfisicalMonitoringService) -> None:
+    async def test_cleanup_old_data(
+        self, monitoring_service: InfisicalMonitoringService
+    ) -> None:
         """Test cleanup of old monitoring data."""
         # Mock old data
         old_timestamp = int((datetime.now(UTC) - timedelta(days=10)).timestamp())
@@ -307,7 +328,9 @@ class TestInfisicalMonitoringService:
 class TestMonitoringAPI:
     """Test monitoring API endpoints."""
 
-    async def test_health_endpoint_with_cached_data(self, client, monitoring_service) -> None:
+    async def test_health_endpoint_with_cached_data(
+        self, client, monitoring_service
+    ) -> None:
         """Test health endpoint returns cached data when available."""
         # This would require a full API test setup
         # For now, we verify the endpoint structure exists
@@ -316,14 +339,18 @@ class TestMonitoringAPI:
         # Verify function exists and has correct signature
         assert callable(get_health_status)
 
-    async def test_metrics_endpoint_refresh_parameter(self, client, monitoring_service) -> None:
+    async def test_metrics_endpoint_refresh_parameter(
+        self, client, monitoring_service
+    ) -> None:
         """Test metrics endpoint with refresh parameter."""
         from app.api.v1.monitoring import get_current_metrics
 
         # Verify function exists
         assert callable(get_current_metrics)
 
-    async def test_dashboard_endpoint_aggregation(self, client, monitoring_service) -> None:
+    async def test_dashboard_endpoint_aggregation(
+        self, client, monitoring_service
+    ) -> None:
         """Test dashboard endpoint data aggregation."""
         from app.api.v1.monitoring import get_monitoring_dashboard
 

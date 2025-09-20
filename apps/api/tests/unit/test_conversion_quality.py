@@ -177,7 +177,9 @@ code block content
     def test_special_characters_escaped_properly(self):
         """Test that special characters are handled correctly."""
         # Test markdown -> HTML escaping
-        markdown_with_special = "Text with < > & \" ' characters and *asterisks* _underscores_"
+        markdown_with_special = (
+            "Text with < > & \" ' characters and *asterisks* _underscores_"
+        )
         html = markdown_to_html(markdown_with_special)
 
         # HTML escaping is applied

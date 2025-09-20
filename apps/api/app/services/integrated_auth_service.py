@@ -92,7 +92,9 @@ class IntegratedAuthService:
         # Create session cookie if enabled
         session_data = None
         if use_session_cookie:
-            session_data = await self.session_service.create_session(user_id, request, response)
+            session_data = await self.session_service.create_session(
+                user_id, request, response
+            )
 
         # Generate EdDSA-signed access token
         access_token = await self.jwt_service.sign_jwt(
@@ -179,12 +181,15 @@ class IntegratedAuthService:
 
         # Check for refresh token reuse
         token_hash = hashlib.sha256(refresh_token.encode()).hexdigest()
-        is_reused = await self.rotation_service.check_refresh_token_reuse(token_hash, user_id)
+        is_reused = await self.rotation_service.check_refresh_token_reuse(
+            token_hash, user_id
+        )
 
         if is_reused:
             # SECURITY INCIDENT: Token reuse detected!
             logger.critical(
-                "Refresh token reuse detected for user %s. Revoking all sessions.", user_id
+                "Refresh token reuse detected for user %s. Revoking all sessions.",
+                user_id,
             )
 
             # Revoke all user sessions immediately
@@ -239,7 +244,9 @@ class IntegratedAuthService:
         if claims.get("sid"):
             session_data = await self.session_service.get_session(request)
             if session_data and session_data.needs_rotation():
-                await self.session_service.rotate_session(session_data, response, "token_refresh")
+                await self.session_service.rotate_session(
+                    session_data, response, "token_refresh"
+                )
 
         # Set new refresh cookie if enabled
         if settings.auth_cookie_refresh:
@@ -280,7 +287,9 @@ class IntegratedAuthService:
         # Destroy session if exists
         session_data = await self.session_service.get_session(request)
         if session_data:
-            await self.session_service.destroy_session(session_data.session_id, response)
+            await self.session_service.destroy_session(
+                session_data.session_id, response
+            )
 
         # Revoke tokens
         if revoke_all:
@@ -382,7 +391,9 @@ class IntegratedAuthService:
         await self.session.commit()
         return db_session
 
-    async def _get_db_session_by_refresh_id(self, refresh_id: UUID) -> UserSession | None:
+    async def _get_db_session_by_refresh_id(
+        self, refresh_id: UUID
+    ) -> UserSession | None:
         """Get database session by refresh ID.
 
         Args:

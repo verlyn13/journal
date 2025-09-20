@@ -57,8 +57,13 @@ class SimpleKeyManager(KeyManager):
             if env_key_pem:
                 # Use key from environment
                 try:
-                    private_key = Ed25519KeyGenerator.load_private_key_from_pem(env_key_pem)
-                    kid = os.getenv("JOURNAL_JWT_KEY_ID") or Ed25519KeyGenerator._generate_kid()
+                    private_key = Ed25519KeyGenerator.load_private_key_from_pem(
+                        env_key_pem
+                    )
+                    kid = (
+                        os.getenv("JOURNAL_JWT_KEY_ID")
+                        or Ed25519KeyGenerator._generate_kid()
+                    )
 
                     self._runtime_current_key = KeyPair(
                         private_key=private_key,
@@ -252,7 +257,9 @@ class SimpleKeyManager(KeyManager):
             next_pem = await self.redis.get(self._next_key_cache)
             if next_pem:
                 pem_text = (
-                    next_pem.decode() if isinstance(next_pem, (bytes, bytearray)) else next_pem
+                    next_pem.decode()
+                    if isinstance(next_pem, (bytes, bytearray))
+                    else next_pem
                 )
                 private_key = Ed25519KeyGenerator.load_private_key_from_pem(pem_text)
                 metadata = await self._get_next_key_metadata()
@@ -281,11 +288,15 @@ class SimpleKeyManager(KeyManager):
                 current_meta = await self._get_current_key_metadata()
                 if current_meta:
                     await self._store_key_metadata_with_ttl(
-                        current_meta, KeyStatus.RETIRING, int(self.overlap_window.total_seconds())
+                        current_meta,
+                        KeyStatus.RETIRING,
+                        int(self.overlap_window.total_seconds()),
                     )
 
                 # Serialize current key for overlap window
-                current_material = Ed25519KeyGenerator.serialize_key_pair(self._runtime_current_key)
+                current_material = Ed25519KeyGenerator.serialize_key_pair(
+                    self._runtime_current_key
+                )
                 await self.redis.setex(
                     self._retiring_key_cache,
                     int(self.overlap_window.total_seconds()),

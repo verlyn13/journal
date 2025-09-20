@@ -17,7 +17,10 @@ class TestWorkflowsQuality:
 
     @pytest.mark.asyncio()
     async def test_complete_journal_workflow(
-        self, client: AsyncClient, auth_headers: dict[str, str], db_session: AsyncSession
+        self,
+        client: AsyncClient,
+        auth_headers: dict[str, str],
+        db_session: AsyncSession,
     ):
         """Test a complete user journey through the journal application."""
         # Step 1: User logs in (headers already provided)
@@ -45,7 +48,9 @@ class TestWorkflowsQuality:
 
         # Generate embeddings for search (if needed)
         for entry in entries_created:
-            await client.post(f"/api/v1/search/entries/{entry['id']}/embed", headers=auth_headers)
+            await client.post(
+                f"/api/v1/search/entries/{entry['id']}/embed", headers=auth_headers
+            )
 
         # Step 4: Search for entries
         search_response = await client.get(
@@ -59,7 +64,9 @@ class TestWorkflowsQuality:
         # Step 5: Update an entry
         entry_to_update = entries_created[0]
         # include optimistic locking version
-        cur = await client.get(f"/api/v1/entries/{entry_to_update['id']}", headers=auth_headers)
+        cur = await client.get(
+            f"/api/v1/entries/{entry_to_update['id']}", headers=auth_headers
+        )
         update_response = await client.put(
             f"/api/v1/entries/{entry_to_update['id']}",
             json={
@@ -79,7 +86,9 @@ class TestWorkflowsQuality:
 
         # Step 7: Delete an entry
         # delete with expected_version
-        cur2 = await client.get(f"/api/v1/entries/{entries_created[2]['id']}", headers=auth_headers)
+        cur2 = await client.get(
+            f"/api/v1/entries/{entries_created[2]['id']}", headers=auth_headers
+        )
         delete_response = await client.delete(
             f"/api/v1/entries/{entries_created[2]['id']}",
             headers=auth_headers,
@@ -110,7 +119,9 @@ class TestWorkflowsQuality:
             )
 
         async def search_entries(query: str) -> object:
-            return await client.get("/api/v1/search", params={"q": query}, headers=auth_headers)
+            return await client.get(
+                "/api/v1/search", params={"q": query}, headers=auth_headers
+            )
 
         async def get_stats() -> object:
             return await client.get("/api/v1/stats", headers=auth_headers)
@@ -150,7 +161,9 @@ class TestWorkflowsQuality:
         assert all(r.status_code == 200 for r in stats_results)
 
     @pytest.mark.asyncio()
-    async def test_error_recovery_workflow(self, client: AsyncClient, auth_headers: dict[str, str]):
+    async def test_error_recovery_workflow(
+        self, client: AsyncClient, auth_headers: dict[str, str]
+    ):
         """Test system recovery from various error conditions."""
 
         # Test 1: Invalid data recovery
@@ -172,11 +185,15 @@ class TestWorkflowsQuality:
 
         # Test 2: Not found recovery
         fake_id = "550e8400-e29b-41d4-a716-446655440000"
-        not_found_response = await client.get(f"/api/v1/entries/{fake_id}", headers=auth_headers)
+        not_found_response = await client.get(
+            f"/api/v1/entries/{fake_id}", headers=auth_headers
+        )
         assert not_found_response.status_code == 404
 
         # System should still find real entries
-        real_response = await client.get(f"/api/v1/entries/{entry_id}", headers=auth_headers)
+        real_response = await client.get(
+            f"/api/v1/entries/{entry_id}", headers=auth_headers
+        )
         assert real_response.status_code == 200
 
         # Test 3: Duplicate operation handling
@@ -198,7 +215,10 @@ class TestWorkflowsQuality:
 
     @pytest.mark.asyncio()
     async def test_data_consistency_across_operations(
-        self, client: AsyncClient, auth_headers: dict[str, str], db_session: AsyncSession
+        self,
+        client: AsyncClient,
+        auth_headers: dict[str, str],
+        db_session: AsyncSession,
     ):
         """Test that data remains consistent across different operations."""
 
@@ -219,7 +239,9 @@ class TestWorkflowsQuality:
         # Verify via different endpoints
 
         # 1. Direct GET
-        get_response = await client.get(f"/api/v1/entries/{entry_id}", headers=auth_headers)
+        get_response = await client.get(
+            f"/api/v1/entries/{entry_id}", headers=auth_headers
+        )
         assert get_response.status_code == 200
         get_data = get_response.json()
         assert get_data["title"] == original_data["title"]
@@ -251,7 +273,9 @@ class TestWorkflowsQuality:
         assert db_entry.markdown_content == original_data["markdown_content"]
 
     @pytest.mark.asyncio()
-    async def test_pagination_workflow(self, client: AsyncClient, auth_headers: dict[str, str]):
+    async def test_pagination_workflow(
+        self, client: AsyncClient, auth_headers: dict[str, str]
+    ):
         """Test pagination across multiple pages of entries."""
 
         # Create enough entries to require pagination
@@ -272,7 +296,9 @@ class TestWorkflowsQuality:
 
         # Get first page (API uses offset, not skip)
         page1_response = await client.get(
-            "/api/v1/entries", params={"offset": 0, "limit": page_size}, headers=auth_headers
+            "/api/v1/entries",
+            params={"offset": 0, "limit": page_size},
+            headers=auth_headers,
         )
         assert page1_response.status_code == 200
         page1_entries = page1_response.json()
@@ -323,7 +349,9 @@ class TestWorkflowsQuality:
 
         # Step 2: Update to markdown format
         for entry in html_entries:
-            curv = await client.get(f"/api/v1/entries/{entry['id']}", headers=auth_headers)
+            curv = await client.get(
+                f"/api/v1/entries/{entry['id']}", headers=auth_headers
+            )
             update_response = await client.put(
                 f"/api/v1/entries/{entry['id']}",
                 json={
@@ -342,14 +370,18 @@ class TestWorkflowsQuality:
         # Step 3: Verify backward compatibility
         for entry in html_entries:
             # Get without markdown header - should return HTML
-            html_response = await client.get(f"/api/v1/entries/{entry['id']}", headers=auth_headers)
+            html_response = await client.get(
+                f"/api/v1/entries/{entry['id']}", headers=auth_headers
+            )
             assert html_response.status_code == 200
             html_data = html_response.json()
             assert "<h1>" in html_data["content"] or "Migrated" in html_data["content"]
 
             # Get with markdown header - should return markdown
             md_headers = {**auth_headers, "X-Editor-Mode": "markdown"}
-            md_response = await client.get(f"/api/v1/entries/{entry['id']}", headers=md_headers)
+            md_response = await client.get(
+                f"/api/v1/entries/{entry['id']}", headers=md_headers
+            )
             assert md_response.status_code == 200
             md_data = md_response.json()
             if md_data.get("markdown_content"):
@@ -370,7 +402,9 @@ class TestWorkflowsQuality:
 
         # Test with malformed auth header
         malformed_headers = {"Authorization": "NotBearer token"}
-        malformed_response = await client.get("/api/v1/entries", headers=malformed_headers)
+        malformed_response = await client.get(
+            "/api/v1/entries", headers=malformed_headers
+        )
         assert malformed_response.status_code in [401, 403]
 
         # After auth errors, valid auth should still work

@@ -123,7 +123,9 @@ async def get_or_404[T: Base](
         try:
             resource_id = UUID(resource_id)
         except ValueError:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=error_message)
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail=error_message
+            )
 
     result = await session.get(model, resource_id)
 
@@ -146,6 +148,8 @@ async def get_entry_or_404(
     entry = await get_or_404(session, Entry, entry_id, "Entry not found")
 
     if check_deleted and entry.is_deleted:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Entry not found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Entry not found"
+        )
 
     return entry

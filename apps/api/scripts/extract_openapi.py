@@ -31,8 +31,12 @@ try:
     md_file = output_dir / "openapi.md"
     with md_file.open("w", encoding="utf-8") as f:
         f.write("# API Specification\n\n")
-        f.write(f"**Title**: {openapi_schema.get('info', {}).get('title', 'Journal API')}\n")
-        f.write(f"**Version**: {openapi_schema.get('info', {}).get('version', '0.1.0')}\n\n")
+        f.write(
+            f"**Title**: {openapi_schema.get('info', {}).get('title', 'Journal API')}\n"
+        )
+        f.write(
+            f"**Version**: {openapi_schema.get('info', {}).get('version', '0.1.0')}\n\n"
+        )
 
         if "paths" in openapi_schema:
             f.write("## Endpoints\n\n")

@@ -23,7 +23,11 @@ from typing import Any, Literal, Protocol
 from redis.asyncio import Redis
 from redis.exceptions import RedisError
 
-from app.infra.secrets.version import format_version, is_compatible_version, parse_cli_version
+from app.infra.secrets.version import (
+    format_version,
+    is_compatible_version,
+    parse_cli_version,
+)
 from app.telemetry.metrics_runtime import inc as metrics_inc
 
 
@@ -166,7 +170,8 @@ class RedisSecretsCache:
             if keys:
                 await self.redis.delete(*keys)
                 metrics_inc(
-                    "infisical_cache_invalidate_total", {"pattern": pattern, "count": len(keys)}
+                    "infisical_cache_invalidate_total",
+                    {"pattern": pattern, "count": len(keys)},
                 )
         except RedisError as e:
             logger.warning("Cache pattern invalidation failed for %s: %s", pattern, e)
@@ -346,7 +351,9 @@ class InfisicalSecretsClient:
             if not force_refresh and self.cache:
                 cached = await self.cache.get(path)
                 if cached and self._is_cache_valid(cached):
-                    metrics_inc("infisical_fetch_total", {"source": "cache", "path": path})
+                    metrics_inc(
+                        "infisical_fetch_total", {"source": "cache", "path": path}
+                    )
                     return cached.value
 
             # Fetch from Infisical with retries
@@ -368,7 +375,10 @@ class InfisicalSecretsClient:
             return value
 
         except Exception as e:
-            metrics_inc("infisical_fetch_errors_total", {"path": path, "error": type(e).__name__})
+            metrics_inc(
+                "infisical_fetch_errors_total",
+                {"path": path, "error": type(e).__name__},
+            )
             raise
         finally:
             duration = time.time() - start_time
@@ -401,7 +411,10 @@ class InfisicalSecretsClient:
             metrics_inc("infisical_store_total", {"path": path})
 
         except Exception as e:
-            metrics_inc("infisical_store_errors_total", {"path": path, "error": type(e).__name__})
+            metrics_inc(
+                "infisical_store_errors_total",
+                {"path": path, "error": type(e).__name__},
+            )
             raise
         finally:
             duration = time.time() - start_time
@@ -454,7 +467,9 @@ class InfisicalSecretsClient:
                 )
             except TimeoutError as e:
                 process.kill()
-                raise ConnectionError(f"Timeout listing secrets at {path_prefix}") from e
+                raise ConnectionError(
+                    f"Timeout listing secrets at {path_prefix}"
+                ) from e
 
             if process.returncode is not None and process.returncode != 0:
                 self._handle_cli_error(process.returncode, stderr.decode())
@@ -471,7 +486,9 @@ class InfisicalSecretsClient:
                     if isinstance(secret, dict) and "secretKey" in secret
                 )
 
-            metrics_inc("infisical_list_total", {"prefix": path_prefix, "count": len(paths)})
+            metrics_inc(
+                "infisical_list_total", {"prefix": path_prefix, "count": len(paths)}
+            )
 
             return sorted(paths)
 
@@ -479,7 +496,8 @@ class InfisicalSecretsClient:
             raise InfisicalError(f"Invalid JSON response: {e}") from e
         except Exception as e:
             metrics_inc(
-                "infisical_list_errors_total", {"prefix": path_prefix, "error": type(e).__name__}
+                "infisical_list_errors_total",
+                {"prefix": path_prefix, "error": type(e).__name__},
             )
             raise
 
@@ -505,7 +523,10 @@ class InfisicalSecretsClient:
             metrics_inc("infisical_delete_total", {"path": path})
 
         except Exception as e:
-            metrics_inc("infisical_delete_errors_total", {"path": path, "error": type(e).__name__})
+            metrics_inc(
+                "infisical_delete_errors_total",
+                {"path": path, "error": type(e).__name__},
+            )
             raise
 
     async def health_check(self) -> dict[str, Any]:
@@ -594,7 +615,13 @@ class InfisicalSecretsClient:
                     raise
                 if attempt < self.max_retries:
                     await asyncio.sleep(self.retry_delay * attempt)
-                    logger.debug("Retry %d/%d for path %s: %s", attempt, self.max_retries, path, e)
+                    logger.debug(
+                        "Retry %d/%d for path %s: %s",
+                        attempt,
+                        self.max_retries,
+                        path,
+                        e,
+                    )
                 else:
                     logger.exception("All retries exhausted for path %s", path)
 
@@ -699,7 +726,10 @@ class InfisicalSecretsClient:
                     # If path is provided, verify it matches
                     if secret_path:
                         # Check if this secret is from our parent path
-                        if secret_path == parent_path or secret_path == parent_path.rstrip("/"):
+                        if (
+                            secret_path == parent_path
+                            or secret_path == parent_path.rstrip("/")
+                        ):
                             return secret.get("secretValue", "")
                     else:
                         # No path in schema, match by key only
@@ -795,7 +825,15 @@ class InfisicalSecretsClient:
         if "not found" in stderr_lower or "does not exist" in stderr_lower:
             raise SecretNotFoundError(f"Secret not found: {stderr}", exit_code, stderr)
         if "authentication" in stderr_lower or "unauthorized" in stderr_lower:
-            raise AuthenticationError(f"Authentication failed: {stderr}", exit_code, stderr)
-        if "connection" in stderr_lower or "network" in stderr_lower or "timeout" in stderr_lower:
+            raise AuthenticationError(
+                f"Authentication failed: {stderr}", exit_code, stderr
+            )
+        if (
+            "connection" in stderr_lower
+            or "network" in stderr_lower
+            or "timeout" in stderr_lower
+        ):
             raise ConnectionError(f"Connection error: {stderr}", exit_code, stderr)
-        raise InfisicalError(f"CLI error (code {exit_code}): {stderr}", exit_code, stderr)
+        raise InfisicalError(
+            f"CLI error (code {exit_code}): {stderr}", exit_code, stderr
+        )

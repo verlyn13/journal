@@ -73,7 +73,9 @@ async def test_worker_handles_malformed_message(monkeypatch, db_session: AsyncSe
         yield db_session
 
     monkeypatch.setattr("app.workers.embedding_consumer.get_session", _yield_session)
-    monkeypatch.setattr("app.infra.search_pgvector.get_embedding", lambda txt: [0.0] * 1536)
+    monkeypatch.setattr(
+        "app.infra.search_pgvector.get_embedding", lambda txt: [0.0] * 1536
+    )
 
     consumer = EmbeddingConsumer()
 
@@ -134,11 +136,15 @@ async def test_worker_handles_missing_entry(monkeypatch, db_session: AsyncSessio
 
 @pytest.mark.integration()
 @pytest.mark.asyncio()
-async def test_worker_handles_entry_deleted_event(monkeypatch, db_session: AsyncSession):
+async def test_worker_handles_entry_deleted_event(
+    monkeypatch, db_session: AsyncSession
+):
     """Test worker handles entry.deleted event."""
     # Create an entry with embedding
     entry = Entry(
-        title="To Delete", content="Content", author_id="11111111-1111-1111-1111-111111111111"
+        title="To Delete",
+        content="Content",
+        author_id="11111111-1111-1111-1111-111111111111",
     )
     db_session.add(entry)
     await db_session.commit()
@@ -157,7 +163,8 @@ async def test_worker_handles_entry_deleted_event(monkeypatch, db_session: Async
 
     # Verify embedding exists
     result = await db_session.execute(
-        text("SELECT COUNT(*) FROM entry_embeddings WHERE entry_id = :id"), {"id": str(entry.id)}
+        text("SELECT COUNT(*) FROM entry_embeddings WHERE entry_id = :id"),
+        {"id": str(entry.id)},
     )
     assert result.scalar() == 1
 
@@ -185,7 +192,8 @@ async def test_worker_handles_entry_deleted_event(monkeypatch, db_session: Async
 
     # Embedding should be removed
     result = await db_session.execute(
-        text("SELECT COUNT(*) FROM entry_embeddings WHERE entry_id = :id"), {"id": str(entry.id)}
+        text("SELECT COUNT(*) FROM entry_embeddings WHERE entry_id = :id"),
+        {"id": str(entry.id)},
     )
     assert result.scalar() == 0
 
@@ -195,7 +203,9 @@ async def test_worker_handles_entry_deleted_event(monkeypatch, db_session: Async
 async def test_worker_rate_limit_nak(monkeypatch, db_session: AsyncSession):
     """Test worker NAKs on rate limit (circuit open) scenario."""
     # Provide a real entry
-    entry = Entry(title="RL", content="Content", author_id="11111111-1111-1111-1111-111111111111")
+    entry = Entry(
+        title="RL", content="Content", author_id="11111111-1111-1111-1111-111111111111"
+    )
     db_session.add(entry)
     await db_session.commit()
 
@@ -279,7 +289,9 @@ async def test_worker_poison_to_dlq(monkeypatch):
 
 @pytest.mark.integration()
 @pytest.mark.asyncio()
-async def test_worker_handles_entry_updated_event(monkeypatch, db_session: AsyncSession):
+async def test_worker_handles_entry_updated_event(
+    monkeypatch, db_session: AsyncSession
+):
     """Test worker handles entry.updated event."""
     # Create an entry
     entry = Entry(
@@ -294,7 +306,9 @@ async def test_worker_handles_entry_updated_event(monkeypatch, db_session: Async
         yield db_session
 
     monkeypatch.setattr("app.workers.embedding_consumer.get_session", _yield_session)
-    monkeypatch.setattr("app.infra.search_pgvector.get_embedding", lambda txt: [0.5] * 1536)
+    monkeypatch.setattr(
+        "app.infra.search_pgvector.get_embedding", lambda txt: [0.5] * 1536
+    )
 
     consumer = EmbeddingConsumer()
 
@@ -315,7 +329,8 @@ async def test_worker_handles_entry_updated_event(monkeypatch, db_session: Async
 
     # Embedding should exist
     result = await db_session.execute(
-        text("SELECT COUNT(*) FROM entry_embeddings WHERE entry_id = :id"), {"id": str(entry.id)}
+        text("SELECT COUNT(*) FROM entry_embeddings WHERE entry_id = :id"),
+        {"id": str(entry.id)},
     )
     assert result.scalar() == 1
 
@@ -340,7 +355,9 @@ async def test_worker_batch_processing(monkeypatch, db_session: AsyncSession):
         yield db_session
 
     monkeypatch.setattr("app.workers.embedding_consumer.get_session", _yield_session)
-    monkeypatch.setattr("app.infra.search_pgvector.get_embedding", lambda txt: [0.0] * 1536)
+    monkeypatch.setattr(
+        "app.infra.search_pgvector.get_embedding", lambda txt: [0.0] * 1536
+    )
 
     consumer = EmbeddingConsumer()
 

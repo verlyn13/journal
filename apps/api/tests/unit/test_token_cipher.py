@@ -158,7 +158,9 @@ class TestTokenCipher:  # noqa: PLR0904
 
         assert decrypted == plaintext
 
-    def test_decrypt_with_missing_key_fails(self, sample_keys: dict[str, bytes]) -> None:
+    def test_decrypt_with_missing_key_fails(
+        self, sample_keys: dict[str, bytes]
+    ) -> None:
         """Test decryption fails when key is not available."""
         cipher1 = TokenCipher(keys={"key1": sample_keys["key1"]}, active_kid="key1")
         envelope = cipher1.encrypt("Secret")

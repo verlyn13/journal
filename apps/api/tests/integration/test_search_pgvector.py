@@ -2,7 +2,11 @@ import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.infra.models import Entry
-from app.infra.search_pgvector import hybrid_search, semantic_search, upsert_entry_embedding
+from app.infra.search_pgvector import (
+    hybrid_search,
+    semantic_search,
+    upsert_entry_embedding,
+)
 
 
 @pytest.mark.integration()
@@ -10,11 +14,19 @@ from app.infra.search_pgvector import hybrid_search, semantic_search, upsert_ent
 async def test_vector_search_ranking(db_session: AsyncSession):
     # Seed three entries
     e1 = Entry(
-        title="alpha", content="alpha only", author_id="11111111-1111-1111-1111-111111111111"
+        title="alpha",
+        content="alpha only",
+        author_id="11111111-1111-1111-1111-111111111111",
     )
-    e2 = Entry(title="beta", content="beta only", author_id="11111111-1111-1111-1111-111111111111")
+    e2 = Entry(
+        title="beta",
+        content="beta only",
+        author_id="11111111-1111-1111-1111-111111111111",
+    )
     e3 = Entry(
-        title="alpha beta", content="both words", author_id="11111111-1111-1111-1111-111111111111"
+        title="alpha beta",
+        content="both words",
+        author_id="11111111-1111-1111-1111-111111111111",
     )
     db_session.add_all([e1, e2, e3])
     await db_session.flush()
@@ -34,7 +46,9 @@ async def test_vector_search_ranking(db_session: AsyncSession):
 @pytest.mark.integration()
 @pytest.mark.asyncio()
 async def test_search_excludes_soft_deleted(db_session: AsyncSession):
-    e1 = Entry(title="keep", content="live", author_id="11111111-1111-1111-1111-111111111111")
+    e1 = Entry(
+        title="keep", content="live", author_id="11111111-1111-1111-1111-111111111111"
+    )
     e2 = Entry(
         title="gone",
         content="deleted",

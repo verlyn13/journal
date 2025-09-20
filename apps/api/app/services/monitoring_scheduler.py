@@ -123,10 +123,14 @@ class MonitoringScheduler:
                 current_metrics = await monitoring_service.get_current_metrics()
 
                 if current_metrics:
-                    health_status = current_metrics.get("health", {}).get("overall_status")
+                    health_status = current_metrics.get("health", {}).get(
+                        "overall_status"
+                    )
 
                     if health_status != "healthy":
-                        logger.warning("Infisical integration unhealthy: %s", health_status)
+                        logger.warning(
+                            "Infisical integration unhealthy: %s", health_status
+                        )
 
                         # Trigger immediate metrics collection for detailed status
                         await monitoring_service.collect_metrics()
@@ -160,7 +164,10 @@ class MonitoringScheduler:
                     key_manager = InfisicalKeyManager(session, redis, infisical_client)
 
                     # Check if JWT rotation is needed
-                    jwt_needs_rotation, jwt_reason = await key_manager.check_rotation_needed()
+                    (
+                        jwt_needs_rotation,
+                        jwt_reason,
+                    ) = await key_manager.check_rotation_needed()
                     if jwt_needs_rotation:
                         logger.warning("JWT rotation needed: %s", jwt_reason)
 
@@ -168,7 +175,10 @@ class MonitoringScheduler:
                         await self._store_rotation_alert("jwt", jwt_reason)
 
                     # Check if AES rotation is needed
-                    aes_needs_rotation, aes_reason = await key_manager._check_aes_rotation_needed()
+                    (
+                        aes_needs_rotation,
+                        aes_reason,
+                    ) = await key_manager._check_aes_rotation_needed()
                     if aes_needs_rotation:
                         logger.warning("AES rotation needed: %s", aes_reason)
 

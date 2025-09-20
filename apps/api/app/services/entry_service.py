@@ -37,7 +37,10 @@ async def create_entry(
         )
     else:
         e = Entry(
-            author_id=author_id, title=title, content=content, word_count=len(content.split())
+            author_id=author_id,
+            title=title,
+            content=content,
+            word_count=len(content.split()),
         )
     s.add(e)
     await s.flush()
@@ -74,7 +77,10 @@ async def get_entry_by_id(
 
 
 async def list_entries(
-    s: AsyncSession, author_id: UUID | None = None, limit: int | None = None, offset: int = 0
+    s: AsyncSession,
+    author_id: UUID | None = None,
+    limit: int | None = None,
+    offset: int = 0,
 ) -> list[Entry]:
     """List entries, optionally filtered by author.
 

@@ -51,7 +51,9 @@ async def _hybrid(s: AsyncSession, q: str, k: int, alpha: float) -> list[SearchH
 @strawberry.type
 class Query:
     @strawberry.field
-    async def search_entries(self, q: str, k: int = 10, alpha: float = 0.6) -> list[SearchHit]:  # noqa: PLR6301
+    async def search_entries(
+        self, q: str, k: int = 10, alpha: float = 0.6
+    ) -> list[SearchHit]:  # noqa: PLR6301
         s: AsyncSession = await anext(get_session())
         try:
             return await _hybrid(s, q, k, alpha)

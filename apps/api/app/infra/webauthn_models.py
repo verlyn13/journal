@@ -28,7 +28,9 @@ class WebAuthnCredential(Base):
     __tablename__ = "webauthn_credentials"
 
     # Primary key
-    id: Mapped[UUID] = mapped_column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
+    id: Mapped[UUID] = mapped_column(
+        PGUUID(as_uuid=True), primary_key=True, default=uuid4
+    )
 
     # User association
     user_id: Mapped[UUID] = mapped_column(
@@ -37,7 +39,10 @@ class WebAuthnCredential(Base):
 
     # FIDO2 credential data
     credential_id: Mapped[bytes] = mapped_column(
-        LargeBinary, unique=True, nullable=False, comment="Raw credential ID from authenticator"
+        LargeBinary,
+        unique=True,
+        nullable=False,
+        comment="Raw credential ID from authenticator",
     )
     public_key: Mapped[bytes] = mapped_column(
         LargeBinary, nullable=False, comment="COSE public key for verification"
@@ -45,12 +50,17 @@ class WebAuthnCredential(Base):
 
     # Security counters
     sign_count: Mapped[int] = mapped_column(
-        Integer, default=0, nullable=False, comment="Signature counter for clone detection"
+        Integer,
+        default=0,
+        nullable=False,
+        comment="Signature counter for clone detection",
     )
 
     # Authenticator metadata
     transports: Mapped[str | None] = mapped_column(
-        String(120), nullable=True, comment="CSV of transport types (usb,nfc,ble,internal)"
+        String(120),
+        nullable=True,
+        comment="CSV of transport types (usb,nfc,ble,internal)",
     )
     aaguid: Mapped[str | None] = mapped_column(
         String(64), nullable=True, comment="Authenticator Attestation GUID"
@@ -73,7 +83,9 @@ class WebAuthnCredential(Base):
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )
-    last_used_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    last_used_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
 
     # Relationships
     user: Mapped[User] = relationship(back_populates="webauthn_credentials")
@@ -83,7 +95,9 @@ class WebAuthnCredential(Base):
         cls, session: AsyncSession, credential_id: bytes
     ) -> WebAuthnCredential | None:
         """Find credential by its raw ID."""
-        return await session.scalar(select(cls).where(cls.credential_id == credential_id))  # type: ignore[no-any-return]
+        return await session.scalar(
+            select(cls).where(cls.credential_id == credential_id)
+        )  # type: ignore[no-any-return]
 
     @classmethod
     async def find_user_credentials(
@@ -108,11 +122,16 @@ class WebAuthnChallenge(Base):
 
     __tablename__ = "webauthn_challenges"
 
-    id: Mapped[UUID] = mapped_column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
+    id: Mapped[UUID] = mapped_column(
+        PGUUID(as_uuid=True), primary_key=True, default=uuid4
+    )
 
     # Session/user binding
     session_id: Mapped[str] = mapped_column(
-        String(255), index=True, nullable=False, comment="Session or user ID for challenge"
+        String(255),
+        index=True,
+        nullable=False,
+        comment="Session or user ID for challenge",
     )
 
     # Challenge data
@@ -138,7 +157,9 @@ class WebAuthnChallenge(Base):
     @classmethod
     async def cleanup_expired(cls, session: AsyncSession) -> int:
         """Remove expired challenges."""
-        result = await session.execute(select(cls).where(cls.expires_at < datetime.now(UTC)))
+        result = await session.execute(
+            select(cls).where(cls.expires_at < datetime.now(UTC))
+        )
         expired = result.scalars().all()
         for challenge in expired:
             await session.delete(challenge)

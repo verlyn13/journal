@@ -65,7 +65,9 @@ class KeyMetadata:
             "kid": self.kid,
             "status": self.status.value,
             "created_at": self.created_at.isoformat(),
-            "activated_at": self.activated_at.isoformat() if self.activated_at else None,
+            "activated_at": self.activated_at.isoformat()
+            if self.activated_at
+            else None,
             "expires_at": self.expires_at.isoformat() if self.expires_at else None,
         }
 
@@ -95,7 +97,11 @@ class KeyMetadata:
                 if isinstance(activated_at_raw, str)
                 else None
             ),
-            expires_at=(datetime.fromisoformat(data["expires_at"]) if data["expires_at"] else None),
+            expires_at=(
+                datetime.fromisoformat(data["expires_at"])
+                if data["expires_at"]
+                else None
+            ),
         )
 
 
@@ -360,7 +366,9 @@ class KeyManager:
             next_key = await self._get_next_key()
             if next_key:
                 # Test key pair validity
-                if Ed25519KeyGenerator.verify_key_pair(next_key.private_key, next_key.public_key):
+                if Ed25519KeyGenerator.verify_key_pair(
+                    next_key.private_key, next_key.public_key
+                ):
                     results["next_key_valid"] = True
                 else:
                     issues.append("Next key pair mismatch")
@@ -377,7 +385,9 @@ class KeyManager:
                     "/auth/jwt/current_private_key"
                 )
                 results["cache_consistent"] = (
-                    cached_current.decode() == stored_current if cached_current else False
+                    cached_current.decode() == stored_current
+                    if cached_current
+                    else False
                 )
         except (TimeoutError, RedisError, ValueError) as e:
             issues.append(f"Cache consistency error: {e}")
@@ -440,7 +450,9 @@ class KeyManager:
             return None
 
         try:
-            next_pem = await self.infisical_client.fetch_secret("/auth/jwt/next_private_key")
+            next_pem = await self.infisical_client.fetch_secret(
+                "/auth/jwt/next_private_key"
+            )
             private_key = Ed25519KeyGenerator.load_private_key_from_pem(next_pem)
             metadata = await self._get_next_key_metadata()
 
@@ -464,25 +476,36 @@ class KeyManager:
 
         # Cache retiring key material and metadata for overlap window
         try:
-            current_pem = await self.infisical_client.fetch_secret("/auth/jwt/current_private_key")
+            current_pem = await self.infisical_client.fetch_secret(
+                "/auth/jwt/current_private_key"
+            )
             current_meta = await self._get_current_key_metadata()
             if current_meta:
                 # store metadata as retiring with short TTL via Redis directly
                 await self._store_key_metadata_with_ttl(
-                    current_meta, KeyStatus.RETIRING, int(self.overlap_window.total_seconds())
+                    current_meta,
+                    KeyStatus.RETIRING,
+                    int(self.overlap_window.total_seconds()),
                 )
             await self.redis.setex(
-                self._retiring_key_cache, int(self.overlap_window.total_seconds()), current_pem
+                self._retiring_key_cache,
+                int(self.overlap_window.total_seconds()),
+                current_pem,
             )
         except (TimeoutError, RuntimeError, RedisError) as e:
-            # If this fails, rotation still proceeds; overlap just won't include retiring
+            # If this fails, rotation still proceeds; overlap just won't
+            # include retiring
             logger.debug("Could not cache retiring key: %s", e)
 
         # Get next key
-        next_pem = await self.infisical_client.fetch_secret("/auth/jwt/next_private_key")
+        next_pem = await self.infisical_client.fetch_secret(
+            "/auth/jwt/next_private_key"
+        )
 
         # Promote to current
-        await self.infisical_client.store_secret("/auth/jwt/current_private_key", next_pem)
+        await self.infisical_client.store_secret(
+            "/auth/jwt/current_private_key", next_pem
+        )
 
         # Update metadata
         next_metadata = await self._get_next_key_metadata()
@@ -503,7 +526,9 @@ class KeyManager:
         """Get metadata for retiring key."""
         return await self._get_key_metadata_by_status(KeyStatus.RETIRING)
 
-    async def _get_key_metadata_by_status(self, status: KeyStatus) -> KeyMetadata | None:
+    async def _get_key_metadata_by_status(
+        self, status: KeyStatus
+    ) -> KeyMetadata | None:
         """Get key metadata by status."""
         # This would typically query a database or cache
         # For now, we'll use Redis as a simple store

@@ -69,7 +69,9 @@ class TestJWTSecurity:
         header["alg"] = "none"
 
         # Re-encode header
-        tampered_header = base64.urlsafe_b64encode(json.dumps(header).encode()).decode().rstrip("=")
+        tampered_header = (
+            base64.urlsafe_b64encode(json.dumps(header).encode()).decode().rstrip("=")
+        )
         tampered_token = f"{tampered_header}.{parts[1]}."  # No signature
 
         # Verification should fail
@@ -182,7 +184,9 @@ class TestJWTSecurity:
         validated = await token_validator.validate_claims(claims, validate_user=False)
 
         # Check that admin scope is not present
-        assert not token_validator.check_scope(validated, "admin:system", allow_admin=False)
+        assert not token_validator.check_scope(
+            validated, "admin:system", allow_admin=False
+        )
         assert not token_validator.check_scope(validated, "entries:delete")
         assert token_validator.check_scope(validated, "entries:read")
 
@@ -236,7 +240,9 @@ class TestJWTSecurity:
         # All JTIs should be unique
         assert len(jtis) == 10
 
-    async def test_token_replay_attack_prevention(self, jwt_service: JWTService) -> None:
+    async def test_token_replay_attack_prevention(
+        self, jwt_service: JWTService
+    ) -> None:
         """Test prevention of token replay attacks."""
         # Sign a one-time use token (like refresh token)
         user_id = uuid4()
@@ -333,7 +339,9 @@ class TestTokenValidatorSecurity:
         # But admin:* shouldn't work unless explicitly allowed
         permissions = token_validator.get_user_permissions(claims)
         # Admin check should use exact match, not wildcard
-        assert permissions["is_admin"] is False  # Because it checks admin:system exactly
+        assert (
+            permissions["is_admin"] is False
+        )  # Because it checks admin:system exactly
 
     async def test_cache_poisoning_prevention(
         self,

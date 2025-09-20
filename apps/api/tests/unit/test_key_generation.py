@@ -10,7 +10,11 @@ from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import ed25519
 import pytest
 
-from app.infra.crypto.key_generation import Ed25519KeyGenerator, KeyMaterial, KeyValidation
+from app.infra.crypto.key_generation import (
+    Ed25519KeyGenerator,
+    KeyMaterial,
+    KeyValidation,
+)
 
 
 class TestEd25519KeyGenerator:
@@ -68,7 +72,9 @@ class TestEd25519KeyGenerator:
         key_pair = Ed25519KeyGenerator.generate_key_pair()
         key_material = Ed25519KeyGenerator.serialize_key_pair(key_pair)
 
-        loaded_key = Ed25519KeyGenerator.load_private_key_from_pem(key_material.private_key_pem)
+        loaded_key = Ed25519KeyGenerator.load_private_key_from_pem(
+            key_material.private_key_pem
+        )
 
         assert isinstance(loaded_key, ed25519.Ed25519PrivateKey)
         # Verify it's the same key by comparing signatures
@@ -90,7 +96,9 @@ class TestEd25519KeyGenerator:
         key_pair = Ed25519KeyGenerator.generate_key_pair()
         key_material = Ed25519KeyGenerator.serialize_key_pair(key_pair)
 
-        loaded_key = Ed25519KeyGenerator.load_public_key_from_pem(key_material.public_key_pem)
+        loaded_key = Ed25519KeyGenerator.load_public_key_from_pem(
+            key_material.public_key_pem
+        )
 
         assert isinstance(loaded_key, ed25519.Ed25519PublicKey)
         # Verify it's the same key by using it to verify a signature
@@ -108,7 +116,9 @@ class TestEd25519KeyGenerator:
         key_pair = Ed25519KeyGenerator.generate_key_pair()
         key_material = Ed25519KeyGenerator.serialize_key_pair(key_pair)
 
-        loaded_key = Ed25519KeyGenerator.load_private_key_from_raw(key_material.private_key_raw)
+        loaded_key = Ed25519KeyGenerator.load_private_key_from_raw(
+            key_material.private_key_raw
+        )
 
         assert isinstance(loaded_key, ed25519.Ed25519PrivateKey)
 
@@ -122,7 +132,9 @@ class TestEd25519KeyGenerator:
         key_pair = Ed25519KeyGenerator.generate_key_pair()
         key_material = Ed25519KeyGenerator.serialize_key_pair(key_pair)
 
-        loaded_key = Ed25519KeyGenerator.load_public_key_from_raw(key_material.public_key_raw)
+        loaded_key = Ed25519KeyGenerator.load_public_key_from_raw(
+            key_material.public_key_raw
+        )
 
         assert isinstance(loaded_key, ed25519.Ed25519PublicKey)
 
@@ -135,7 +147,9 @@ class TestEd25519KeyGenerator:
         """Test verification of valid key pair."""
         key_pair = Ed25519KeyGenerator.generate_key_pair()
 
-        result = Ed25519KeyGenerator.verify_key_pair(key_pair.private_key, key_pair.public_key)
+        result = Ed25519KeyGenerator.verify_key_pair(
+            key_pair.private_key, key_pair.public_key
+        )
 
         assert result is True
 
@@ -144,7 +158,9 @@ class TestEd25519KeyGenerator:
         key_pair1 = Ed25519KeyGenerator.generate_key_pair()
         key_pair2 = Ed25519KeyGenerator.generate_key_pair()
 
-        result = Ed25519KeyGenerator.verify_key_pair(key_pair1.private_key, key_pair2.public_key)
+        result = Ed25519KeyGenerator.verify_key_pair(
+            key_pair1.private_key, key_pair2.public_key
+        )
 
         assert result is False
 
@@ -196,8 +212,12 @@ class TestEd25519KeyGenerator:
         key_material = Ed25519KeyGenerator.serialize_key_pair(original_key_pair)
 
         # Recreate key pair from serialized data
-        loaded_private = Ed25519KeyGenerator.load_private_key_from_pem(key_material.private_key_pem)
-        loaded_public = Ed25519KeyGenerator.load_public_key_from_pem(key_material.public_key_pem)
+        loaded_private = Ed25519KeyGenerator.load_private_key_from_pem(
+            key_material.private_key_pem
+        )
+        loaded_public = Ed25519KeyGenerator.load_public_key_from_pem(
+            key_material.public_key_pem
+        )
 
         # Verify keys work the same
         test_message = b"roundtrip_test_message"
@@ -355,7 +375,9 @@ class TestKeyMaterialSerialization:
         private_key = serialization.load_pem_private_key(
             key_material.private_key_pem.encode(), password=None
         )
-        public_key = serialization.load_pem_public_key(key_material.public_key_pem.encode())
+        public_key = serialization.load_pem_public_key(
+            key_material.public_key_pem.encode()
+        )
 
         assert isinstance(private_key, ed25519.Ed25519PrivateKey)
         assert isinstance(public_key, ed25519.Ed25519PublicKey)
@@ -383,7 +405,9 @@ class TestSecurityFeatures:
             key_pair = Ed25519KeyGenerator.generate_key_pair()
 
             # Verify key pair works
-            assert Ed25519KeyGenerator.verify_key_pair(key_pair.private_key, key_pair.public_key)
+            assert Ed25519KeyGenerator.verify_key_pair(
+                key_pair.private_key, key_pair.public_key
+            )
 
             # Private key should not be all zeros
             private_bytes = key_pair.private_key.private_bytes_raw()
@@ -405,7 +429,9 @@ class TestSecurityFeatures:
     def test_secure_random_entropy(self):
         """Test that secure random generation has good entropy."""
         # Generate multiple random values and check they're different
-        random_values = [Ed25519KeyGenerator.generate_secure_random(32) for _ in range(10)]
+        random_values = [
+            Ed25519KeyGenerator.generate_secure_random(32) for _ in range(10)
+        ]
 
         # All values should be unique
         assert len(set(random_values)) == len(random_values)

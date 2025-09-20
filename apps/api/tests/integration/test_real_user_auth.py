@@ -22,7 +22,9 @@ def enable_user_management():
 
 
 @pytest.mark.asyncio()
-async def test_real_user_registration_and_login(client: AsyncClient, db_session: AsyncSession):
+async def test_real_user_registration_and_login(
+    client: AsyncClient, db_session: AsyncSession
+):
     """Test that users can register, verify email, and login."""
     # Register a new user
     register_data = {
@@ -66,10 +68,14 @@ async def test_entry_ownership(client: AsyncClient, db_session: AsyncSession):
     """Test that users can only access their own entries."""
     # Create two users directly in the database
     user1 = User(
-        email="user1@example.com", password_hash=hash_password("password1"), is_verified=True
+        email="user1@example.com",
+        password_hash=hash_password("password1"),
+        is_verified=True,
     )
     user2 = User(
-        email="user2@example.com", password_hash=hash_password("password2"), is_verified=True
+        email="user2@example.com",
+        password_hash=hash_password("password2"),
+        is_verified=True,
     )
     db_session.add(user1)
     db_session.add(user2)
@@ -79,14 +85,16 @@ async def test_entry_ownership(client: AsyncClient, db_session: AsyncSession):
 
     # Login as user1
     login1 = await client.post(
-        "/api/v1/auth/login", json={"email": "user1@example.com", "password": "password1"}
+        "/api/v1/auth/login",
+        json={"email": "user1@example.com", "password": "password1"},
     )
     assert login1.status_code == 200
     token1 = login1.json()["access_token"]
 
     # Login as user2
     login2 = await client.post(
-        "/api/v1/auth/login", json={"email": "user2@example.com", "password": "password2"}
+        "/api/v1/auth/login",
+        json={"email": "user2@example.com", "password": "password2"},
     )
     assert login2.status_code == 200
     token2 = login2.json()["access_token"]
@@ -95,7 +103,9 @@ async def test_entry_ownership(client: AsyncClient, db_session: AsyncSession):
     entry_data = {"title": "User1's Entry", "content": "This belongs to user1"}
 
     create_response = await client.post(
-        "/api/v1/entries", json=entry_data, headers={"Authorization": f"Bearer {token1}"}
+        "/api/v1/entries",
+        json=entry_data,
+        headers={"Authorization": f"Bearer {token1}"},
     )
     assert create_response.status_code == 201
     entry = create_response.json()
@@ -142,16 +152,23 @@ async def test_user_entries_isolation(client: AsyncClient, db_session: AsyncSess
     """Test that users only see their own entries in list endpoint."""
     # Create two users with entries
     user1 = User(
-        email="alice@example.com", password_hash=hash_password("alicepass"), is_verified=True
+        email="alice@example.com",
+        password_hash=hash_password("alicepass"),
+        is_verified=True,
     )
-    user2 = User(email="bob@example.com", password_hash=hash_password("bobpass"), is_verified=True)
+    user2 = User(
+        email="bob@example.com",
+        password_hash=hash_password("bobpass"),
+        is_verified=True,
+    )
     db_session.add(user1)
     db_session.add(user2)
     await db_session.commit()
 
     # Login as both users
     alice_login = await client.post(
-        "/api/v1/auth/login", json={"email": "alice@example.com", "password": "alicepass"}
+        "/api/v1/auth/login",
+        json={"email": "alice@example.com", "password": "alicepass"},
     )
     alice_token = alice_login.json()["access_token"]
 

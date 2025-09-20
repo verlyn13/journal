@@ -104,7 +104,9 @@ def verify_webhook_signature(request: Request, body: bytes) -> None:
         )
 
     # Verify HMAC signature
-    expected_signature = hmac.new(webhook_secret.encode(), body, hashlib.sha256).hexdigest()
+    expected_signature = hmac.new(
+        webhook_secret.encode(), body, hashlib.sha256
+    ).hexdigest()
 
     # Use constant-time comparison
     if not hmac.compare_digest(f"sha256={expected_signature}", signature):
@@ -150,7 +152,11 @@ async def handle_infisical_webhook(
         event_data = json.loads(body.decode())
         event = WebhookEvent.model_validate(event_data)
 
-        logger.info("Received Infisical webhook: %s for project %s", event.event, event.project_id)
+        logger.info(
+            "Received Infisical webhook: %s for project %s",
+            event.event,
+            event.project_id,
+        )
 
         # Validate project ID
         if event.project_id != settings.infisical_project_id:
@@ -167,14 +173,21 @@ async def handle_infisical_webhook(
         response_message = "Event received"
 
         if event.event in {"secret.created", "secret.updated", "secret.deleted"}:
-            response_message = await _handle_secret_event(event, key_manager, background_tasks)
+            response_message = await _handle_secret_event(
+                event, key_manager, background_tasks
+            )
         elif event.event == "project.updated":
-            response_message = await _handle_project_event(event, key_manager, background_tasks)
+            response_message = await _handle_project_event(
+                event, key_manager, background_tasks
+            )
         else:
             logger.info("Ignoring unsupported event type: %s", event.event)
             response_message = f"Ignored unsupported event: {event.event}"
 
-        metrics_inc("infisical_webhook_events_total", {"event": event.event, "status": "success"})
+        metrics_inc(
+            "infisical_webhook_events_total",
+            {"event": event.event, "status": "success"},
+        )
 
         return WebhookResponse(
             status="success",
@@ -185,15 +198,21 @@ async def handle_infisical_webhook(
 
     except json.JSONDecodeError as e:
         logger.exception("Invalid JSON in webhook payload")
-        metrics_inc("infisical_webhook_events_total", {"event": "unknown", "status": "json_error"})
+        metrics_inc(
+            "infisical_webhook_events_total",
+            {"event": "unknown", "status": "json_error"},
+        )
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid JSON payload"
         ) from e
     except Exception as e:
         logger.exception("Webhook processing failed")
-        metrics_inc("infisical_webhook_events_total", {"event": "unknown", "status": "error"})
+        metrics_inc(
+            "infisical_webhook_events_total", {"event": "unknown", "status": "error"}
+        )
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Webhook processing failed"
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Webhook processing failed",
         ) from e
 
 
@@ -318,7 +337,10 @@ async def infisical_health_check(
             "tested_at": datetime.now(UTC).isoformat(),
         }
     except Exception as e:
-        health_results["components"]["database"] = {"status": "unhealthy", "error": str(e)}
+        health_results["components"]["database"] = {
+            "status": "unhealthy",
+            "error": str(e),
+        }
         health_results["errors"].append(f"Database: {e}")
 
     try:
@@ -361,7 +383,10 @@ async def infisical_health_check(
     if infisical_client:
         try:
             key_manager = InfisicalKeyManager(session, redis, infisical_client)
-            health_results["components"]["key_manager"] = {"status": "healthy", "initialized": True}
+            health_results["components"]["key_manager"] = {
+                "status": "healthy",
+                "initialized": True,
+            }
         except Exception as e:
             health_results["components"]["key_manager"] = {
                 "status": "unhealthy",
@@ -393,11 +418,16 @@ async def infisical_health_check(
             client_health = await infisical_client.health_check()
             health_results["client_health"] = client_health
         except Exception as e:
-            health_results["components"]["client_health"] = {"status": "unhealthy", "error": str(e)}
+            health_results["components"]["client_health"] = {
+                "status": "unhealthy",
+                "error": str(e),
+            }
             health_results["errors"].append(f"Client health check: {e}")
 
     # Determine overall status
-    component_statuses = [comp.get("status") for comp in health_results["components"].values()]
+    component_statuses = [
+        comp.get("status") for comp in health_results["components"].values()
+    ]
     if all(status == "healthy" for status in component_statuses if status != "skipped"):
         health_results["overall_status"] = "healthy"
     elif any(status == "healthy" for status in component_statuses):
@@ -411,7 +441,8 @@ async def infisical_health_check(
         "has_infisical_server_url": bool(os.getenv("INFISICAL_SERVER_URL")),
         "has_infisical_token": bool(os.getenv("INFISICAL_TOKEN")),
         "has_ua_credentials": bool(
-            os.getenv("UA_CLIENT_ID_TOKEN_SERVICE") and os.getenv("UA_CLIENT_SECRET_TOKEN_SERVICE")
+            os.getenv("UA_CLIENT_ID_TOKEN_SERVICE")
+            and os.getenv("UA_CLIENT_SECRET_TOKEN_SERVICE")
         ),
     }
 
@@ -483,7 +514,9 @@ async def _handle_secret_event(
 
     # Check if this is a key-related secret
     if any(key_path in secret_path for key_path in ["/auth/jwt/", "/auth/aes/"]):
-        logger.info("Key-related secret event: %s for path %s", event.event, event.secret_path)
+        logger.info(
+            "Key-related secret event: %s for path %s", event.event, event.secret_path
+        )
 
         # Invalidate relevant caches
         if "/auth/jwt/" in secret_path:

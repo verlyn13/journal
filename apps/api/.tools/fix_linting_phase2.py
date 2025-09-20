@@ -75,10 +75,14 @@ def fix_missing_annotations(content: str) -> str:
     """
     try:
         # Fix __init__ methods missing return type
-        content = re.sub(r"def __init__\(self([^)]*)\):", r"def __init__(self\1) -> None:", content)
+        content = re.sub(
+            r"def __init__\(self([^)]*)\):", r"def __init__(self\1) -> None:", content
+        )
         # Fix async functions missing return type
         return re.sub(
-            r"async def (\w+)\(([^)]*)\)(\s*)(?!->)", r"async def \1(\2) -> None\3", content
+            r"async def (\w+)\(([^)]*)\)(\s*)(?!->)",
+            r"async def \1(\2) -> None\3",
+            content,
         )
     except re.error:
         logger.exception("Regex error in fix_missing_annotations")
@@ -277,7 +281,9 @@ def main() -> int:
             if process_file(full_path):
                 fixed_count += 1
 
-        logger.info("Processing complete: %d files fixed, %d errors", fixed_count, error_count)
+        logger.info(
+            "Processing complete: %d files fixed, %d errors", fixed_count, error_count
+        )
         return 1 if error_count > 0 else 0
 
     except Exception:

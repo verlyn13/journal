@@ -74,7 +74,9 @@ def markdown_to_html(md: str) -> str:
         html = _md_processor.render(md)
 
         # Sanitize HTML to prevent XSS
-        return bleach.clean(html, tags=_ALLOWED_TAGS, attributes=_ALLOWED_ATTRIBUTES, strip=True)
+        return bleach.clean(
+            html, tags=_ALLOWED_TAGS, attributes=_ALLOWED_ATTRIBUTES, strip=True
+        )
 
     except Exception as e:  # noqa: BLE001 - robust fallback for parsing failures
         # Fallback to escaped plain text if parsing fails
@@ -134,7 +136,11 @@ def html_to_markdown(html: str) -> str:
 
         # Paragraph handling and line breaks
         out = out.replace("<p>", "").replace("</p>", "\n\n")
-        out = out.replace("<br>", "  \n").replace("<br/>", "  \n").replace("<br />", "  \n")
+        out = (
+            out.replace("<br>", "  \n")
+            .replace("<br/>", "  \n")
+            .replace("<br />", "  \n")
+        )
 
         # Links (handle various attribute formats)
         link_pattern = r'<a\s+[^>]*href="([^"]+)"[^>]*>([^<]+)</a>'

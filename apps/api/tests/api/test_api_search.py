@@ -22,12 +22,16 @@ class TestSearchAPI:
     @pytest.mark.asyncio()
     async def test_search_empty_results(self, client: AsyncClient):
         """Test search with query that returns no results."""
-        response = await client.get("/api/v1/search", params={"q": "nonexistentquery12345"})
+        response = await client.get(
+            "/api/v1/search", params={"q": "nonexistentquery12345"}
+        )
         assert response.status_code == 200
         assert response.json() == []
 
     @pytest.mark.asyncio()
-    async def test_search_with_results(self, client: AsyncClient, db_session: AsyncSession):
+    async def test_search_with_results(
+        self, client: AsyncClient, db_session: AsyncSession
+    ):
         """Test search that returns matching entries."""
         # Create test entries
         entry1 = Entry(
@@ -70,7 +74,9 @@ class TestSearchAPI:
         # Patch in the search module where it's imported
         monkeypatch.setattr("app.api.v1.search.semantic_search", mock_semantic_search)
 
-        response = await client.post("/api/v1/search/semantic", json={"q": "test query"})
+        response = await client.post(
+            "/api/v1/search/semantic", json={"q": "test query"}
+        )
         assert response.status_code == 200
         results = response.json()
         assert len(results) == 1
@@ -86,7 +92,9 @@ class TestSearchAPI:
 
         monkeypatch.setattr("app.api.v1.search.hybrid_search", mock_hybrid_search)
 
-        response = await client.get("/api/v1/search", params={"q": "test", "alpha": 0.7})
+        response = await client.get(
+            "/api/v1/search", params={"q": "test", "alpha": 0.7}
+        )
         assert response.status_code == 200
         results = response.json()
         assert len(results) == 1
@@ -95,6 +103,8 @@ class TestSearchAPI:
     @pytest.mark.asyncio()
     async def test_search_invalid_alpha(self, client: AsyncClient):
         """Test search with invalid alpha parameter."""
-        response = await client.get("/api/v1/search", params={"q": "test", "alpha": 1.5})
+        response = await client.get(
+            "/api/v1/search", params={"q": "test", "alpha": 1.5}
+        )
         assert response.status_code == 400
         assert "alpha must be" in response.json()["detail"]

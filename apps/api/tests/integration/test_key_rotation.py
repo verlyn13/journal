@@ -59,7 +59,9 @@ class TestKeyRotationScenarios:
     """Test complete key rotation scenarios with overlap windows."""
 
     @pytest.mark.asyncio()
-    async def test_complete_rotation_cycle(self, key_manager, mock_redis, mock_infisical):
+    async def test_complete_rotation_cycle(
+        self, key_manager, mock_redis, mock_infisical
+    ):
         """Test complete key rotation cycle from generation to retirement."""
         # Step 1: Initial key generation
         initial_key = Ed25519KeyGenerator.generate_key_pair(kid="initial-key-123")
@@ -94,7 +96,9 @@ class TestKeyRotationScenarios:
 
         with (
             patch.object(
-                key_manager, "_store_key_metadata", side_effect=store_metadata_side_effect
+                key_manager,
+                "_store_key_metadata",
+                side_effect=store_metadata_side_effect,
             ),
             patch.object(key_manager, "_get_key_metadata_by_status") as mock_get_meta,
             patch.object(key_manager, "_generate_next_key") as mock_gen_next,
@@ -104,7 +108,8 @@ class TestKeyRotationScenarios:
             current_metadata = KeyMetadata(
                 kid="initial-key-123",
                 status=KeyStatus.CURRENT,
-                created_at=datetime.now(UTC) - timedelta(hours=25),  # Expired (older than 24h TTL)
+                created_at=datetime.now(UTC)
+                - timedelta(hours=25),  # Expired (older than 24h TTL)
                 activated_at=datetime.now(UTC) - timedelta(hours=25),
             )
 
@@ -141,7 +146,9 @@ class TestKeyRotationScenarios:
             assert audit_call["event_type"] == "key_rotated"
 
     @pytest.mark.asyncio()
-    async def test_overlap_window_verification(self, key_manager, mock_redis, mock_infisical):
+    async def test_overlap_window_verification(
+        self, key_manager, mock_redis, mock_infisical
+    ):
         """Test that overlap window allows both current and next keys for verification."""
         current_key = Ed25519KeyGenerator.generate_key_pair(kid="current-key-123")
         next_key = Ed25519KeyGenerator.generate_key_pair(kid="next-key-456")
@@ -197,10 +204,14 @@ class TestKeyRotationScenarios:
             verification_keys[1].public_key.verify(next_signature, test_message)
 
     @pytest.mark.asyncio()
-    async def test_rotation_failure_recovery(self, key_manager, mock_redis, mock_infisical):
+    async def test_rotation_failure_recovery(
+        self, key_manager, mock_redis, mock_infisical
+    ):
         """Test recovery from rotation failures."""
         # Mock rotation failure
-        mock_infisical.fetch_secret.side_effect = Exception("Infisical connection failed")
+        mock_infisical.fetch_secret.side_effect = Exception(
+            "Infisical connection failed"
+        )
 
         with (
             patch.object(key_manager, "_get_current_key_metadata") as mock_metadata,
@@ -241,15 +252,21 @@ class TestKeyRotationScenarios:
             return {"status": "success"}
 
         # Start two rotations concurrently
-        with patch.object(key_manager, "rotate_keys", side_effect=mock_rotate_with_lock):
+        with patch.object(
+            key_manager, "rotate_keys", side_effect=mock_rotate_with_lock
+        ):
             rotation1_task = asyncio.create_task(key_manager.rotate_keys(force=True))
             rotation2_task = asyncio.create_task(key_manager.rotate_keys(force=True))
 
             # One should succeed, one should fail
-            results = await asyncio.gather(rotation1_task, rotation2_task, return_exceptions=True)
+            results = await asyncio.gather(
+                rotation1_task, rotation2_task, return_exceptions=True
+            )
 
             success_count = sum(
-                1 for r in results if isinstance(r, dict) and r.get("status") == "success"
+                1
+                for r in results
+                if isinstance(r, dict) and r.get("status") == "success"
             )
             error_count = sum(1 for r in results if isinstance(r, Exception))
 
@@ -321,7 +338,9 @@ class TestKeyRotationScenarios:
         for case in test_cases:
             key_created_at = current_time - case["age"]
 
-            with patch.object(key_manager, "_get_current_key_metadata") as mock_metadata:
+            with patch.object(
+                key_manager, "_get_current_key_metadata"
+            ) as mock_metadata:
                 mock_metadata.return_value = KeyMetadata(
                     kid=f"key-{case['age'].total_seconds()}",
                     status=KeyStatus.CURRENT,
@@ -339,7 +358,9 @@ class TestKeyRotationScenarios:
                     assert case["reason"].replace("_", " ") in reason.lower()
 
     @pytest.mark.asyncio()
-    async def test_zero_downtime_rotation(self, key_manager, mock_redis, mock_infisical):
+    async def test_zero_downtime_rotation(
+        self, key_manager, mock_redis, mock_infisical
+    ):
         """Test that rotation provides zero downtime for token verification."""
         # Simulate a complete rotation cycle while maintaining verification capability
 
@@ -393,7 +414,9 @@ class TestKeyRotationScenarios:
 
             # Get verification keys before rotation
             verification_keys_before = await key_manager.get_verification_keys()
-            _ = [key.kid for key in verification_keys_before]  # before_kids - for debugging
+            _ = [
+                key.kid for key in verification_keys_before
+            ]  # before_kids - for debugging
 
             # Execute rotation
             await key_manager.rotate_keys(force=True)
@@ -558,8 +581,12 @@ class TestRotationErrorHandling:
 
         with (
             patch.object(key_manager, "_get_next_key") as mock_get_next,
-            patch.object(key_manager, "_promote_next_to_current", side_effect=track_promotion),
-            patch.object(key_manager, "_generate_next_key", side_effect=fail_next_generation),
+            patch.object(
+                key_manager, "_promote_next_to_current", side_effect=track_promotion
+            ),
+            patch.object(
+                key_manager, "_generate_next_key", side_effect=fail_next_generation
+            ),
             patch.object(key_manager.audit_service, "log_event") as mock_audit,
         ):
             mock_get_next.return_value = Ed25519KeyGenerator.generate_key_pair()

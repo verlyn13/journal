@@ -133,7 +133,9 @@ async def test_with_env_override():
 
     print("\n📝 Manual connection test")
     print("Get your connection string from Supabase Dashboard:")
-    print("1. Go to: https://supabase.com/dashboard/project/ecmnzrtsuajatmuahooa/settings/database")
+    print(
+        "1. Go to: https://supabase.com/dashboard/project/ecmnzrtsuajatmuahooa/settings/database"
+    )
     print("2. Copy 'Connection string' → 'Session Mode'")
     print("3. It should look like:")
     print(

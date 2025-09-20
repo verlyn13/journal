@@ -70,11 +70,15 @@ class JWKSMetrics:
                 if cache_hit:
                     pipeline.hincrby(f"{self._metrics_prefix}counters", "cache_hits", 1)
                 else:
-                    pipeline.hincrby(f"{self._metrics_prefix}counters", "cache_misses", 1)
+                    pipeline.hincrby(
+                        f"{self._metrics_prefix}counters", "cache_misses", 1
+                    )
 
                 # Track ETag matches (304 responses)
                 if etag_match:
-                    pipeline.hincrby(f"{self._metrics_prefix}counters", "etag_matches", 1)
+                    pipeline.hincrby(
+                        f"{self._metrics_prefix}counters", "etag_matches", 1
+                    )
 
                 # Store response time in histogram buckets
                 bucket = self._get_histogram_bucket(response_time_ms)
@@ -115,7 +119,9 @@ class JWKSMetrics:
                 # Increment rotation counter
                 pipeline.hincrby(f"{self._metrics_prefix}counters", "key_rotations", 1)
                 pipeline.hincrby(
-                    f"{self._metrics_prefix}counters", "total_keys_rotated", rotated_keys
+                    f"{self._metrics_prefix}counters",
+                    "total_keys_rotated",
+                    rotated_keys,
                 )
 
                 # Store rotation timestamp
@@ -154,7 +160,8 @@ class JWKSMetrics:
 
             # Get last request time
             last_request = await cast(
-                "Awaitable[bytes | None]", self.redis.get(f"{self._metrics_prefix}last_request")
+                "Awaitable[bytes | None]",
+                self.redis.get(f"{self._metrics_prefix}last_request"),
             )
 
             # Get recent rotation history
@@ -166,7 +173,9 @@ class JWKSMetrics:
             # Calculate cache hit rate
             total_requests = int(counters.get(b"total_requests", 0))
             cache_hits = int(counters.get(b"cache_hits", 0))
-            cache_hit_rate = (cache_hits / total_requests * 100) if total_requests > 0 else 0
+            cache_hit_rate = (
+                (cache_hits / total_requests * 100) if total_requests > 0 else 0
+            )
 
             # Calculate response time percentiles from histogram
             response_times = JWKSMetrics._calculate_percentiles(histogram)
@@ -285,6 +294,10 @@ class JWKSMetrics:
 
         return {
             "p50": response_times[int(total * 0.5)],
-            "p95": response_times[int(total * 0.95)] if total > 1 else response_times[0],
-            "p99": response_times[int(total * 0.99)] if total > 1 else response_times[0],
+            "p95": response_times[int(total * 0.95)]
+            if total > 1
+            else response_times[0],
+            "p99": response_times[int(total * 0.99)]
+            if total > 1
+            else response_times[0],
         }

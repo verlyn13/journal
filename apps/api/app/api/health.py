@@ -52,7 +52,9 @@ class HealthReport(BaseModel):
     checks: list[Check]
 
 
-async def _timed(fn: Callable[[], Awaitable[None]], name: str, timeout_s: float = 1.0) -> Check:
+async def _timed(
+    fn: Callable[[], Awaitable[None]], name: str, timeout_s: float = 1.0
+) -> Check:
     """Execute a health check with timeout and specific exception handling.
 
     Args:
@@ -148,7 +150,9 @@ async def readiness(response: Response) -> HealthReport:
 
     # Database check
     db_url = (
-        os.getenv("DATABASE_URL") or os.getenv("DATABASE_URL_SYNC") or os.getenv("JOURNAL_DB_URL")
+        os.getenv("DATABASE_URL")
+        or os.getenv("DATABASE_URL_SYNC")
+        or os.getenv("JOURNAL_DB_URL")
     )
     if db_url:
 
@@ -220,4 +224,7 @@ async def legacy_health() -> dict[str, str]:
     Returns:
         Simple status response
     """
-    return {"status": "ok", "message": "Use /healthz or /readyz for detailed health checks"}
+    return {
+        "status": "ok",
+        "message": "Use /healthz or /readyz for detailed health checks",
+    }

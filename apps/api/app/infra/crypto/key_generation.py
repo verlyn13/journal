@@ -122,7 +122,9 @@ class Ed25519KeyGenerator:
             ValueError: If PEM data is invalid
         """
         try:
-            private_key = serialization.load_pem_private_key(pem_data.encode(), password=None)
+            private_key = serialization.load_pem_private_key(
+                pem_data.encode(), password=None
+            )
             if not isinstance(private_key, ed25519.Ed25519PrivateKey):
                 raise ValueError("Key is not Ed25519")
             return private_key
@@ -316,7 +318,9 @@ class KeyValidation:
             x_value = jwk.get("x", "")
             # Add padding if needed for base64url decoding
             missing_padding = len(x_value) % 4
-            padded_x = x_value + "=" * (4 - missing_padding) if missing_padding else x_value
+            padded_x = (
+                x_value + "=" * (4 - missing_padding) if missing_padding else x_value
+            )
             decoded = base64.urlsafe_b64decode(padded_x)
             return len(decoded) == 32  # Ed25519 public key is 32 bytes
         except (ValueError, TypeError, binascii.Error):

@@ -17,7 +17,10 @@ class TestSearchQuality:
 
     @pytest.mark.asyncio()
     async def test_semantic_search_relevance(
-        self, client: AsyncClient, auth_headers: dict[str, str], db_session: AsyncSession
+        self,
+        client: AsyncClient,
+        auth_headers: dict[str, str],
+        db_session: AsyncSession,
     ):
         """Test that semantic search returns relevant results."""
         # Create entries with different topics
@@ -26,7 +29,10 @@ class TestSearchQuality:
                 "title": "Machine Learning Basics",
                 "content": "Neural networks, deep learning, and AI fundamentals",
             },
-            {"title": "Cooking Recipe", "content": "How to make pasta with tomato sauce"},
+            {
+                "title": "Cooking Recipe",
+                "content": "How to make pasta with tomato sauce",
+            },
             {
                 "title": "Python Programming",
                 "content": "Writing code, functions, and object-oriented programming",
@@ -39,7 +45,9 @@ class TestSearchQuality:
 
         created_ids = []
         for entry_data in entries:
-            response = await client.post("/api/v1/entries", json=entry_data, headers=auth_headers)
+            response = await client.post(
+                "/api/v1/entries", json=entry_data, headers=auth_headers
+            )
             assert response.status_code == 201
             created_ids.append(response.json()["id"])
 
@@ -79,7 +87,10 @@ class TestSearchQuality:
                 "title": "FastAPI Documentation",
                 "content": "FastAPI is a modern web framework for building APIs with Python",
             },
-            {"title": "Django Tutorial", "content": "Django is a high-level Python web framework"},
+            {
+                "title": "Django Tutorial",
+                "content": "Django is a high-level Python web framework",
+            },
             {
                 "title": "Express Guide",
                 "content": "Express.js is a Node.js web application framework",
@@ -88,18 +99,25 @@ class TestSearchQuality:
 
         created_ids = []
         for entry_data in entries:
-            response = await client.post("/api/v1/entries", json=entry_data, headers=auth_headers)
+            response = await client.post(
+                "/api/v1/entries", json=entry_data, headers=auth_headers
+            )
             assert response.status_code == 201
             created_ids.append(response.json()["id"])
 
         # Generate embeddings for hybrid search
         for entry_id in created_ids:
-            await client.post(f"/api/v1/search/entries/{entry_id}/embed", headers=auth_headers)
+            await client.post(
+                f"/api/v1/search/entries/{entry_id}/embed", headers=auth_headers
+            )
 
         # Search with both keyword and semantic intent
         search_response = await client.get(
             "/api/v1/search",
-            params={"q": "Python web framework", "alpha": 0.5},  # 50/50 keyword/semantic
+            params={
+                "q": "Python web framework",
+                "alpha": 0.5,
+            },  # 50/50 keyword/semantic
             headers=auth_headers,
         )
         assert search_response.status_code == 200
@@ -128,7 +146,9 @@ class TestSearchQuality:
 
         # Verify the entry can now be found via semantic search
         search_response = await client.post(
-            "/api/v1/search/semantic", json={"q": sample_entry.title, "k": 5}, headers=auth_headers
+            "/api/v1/search/semantic",
+            json={"q": sample_entry.title, "k": 5},
+            headers=auth_headers,
         )
         assert search_response.status_code == 200
         results = search_response.json()
@@ -175,7 +195,9 @@ class TestSearchQuality:
 
             # Test semantic search
             semantic_response = await client.post(
-                "/api/v1/search/semantic", json={"q": "anything", "k": 10}, headers=auth_headers
+                "/api/v1/search/semantic",
+                json={"q": "anything", "k": 10},
+                headers=auth_headers,
             )
             assert semantic_response.status_code == 200
             assert semantic_response.json() == []
@@ -201,7 +223,9 @@ class TestSearchQuality:
 
         # Generate embeddings for semantic search
         for entry_id in created_ids:
-            await client.post(f"/api/v1/search/entries/{entry_id}/embed", headers=auth_headers)
+            await client.post(
+                f"/api/v1/search/entries/{entry_id}/embed", headers=auth_headers
+            )
 
         # Test different k values
         for k in [1, 3, 5, 20]:
@@ -242,12 +266,16 @@ class TestSearchQuality:
 
         for query in queries:
             # Keyword search
-            response = await client.get("/api/v1/search", params={"q": query}, headers=auth_headers)
+            response = await client.get(
+                "/api/v1/search", params={"q": query}, headers=auth_headers
+            )
             assert response.status_code in [200, 400]  # Either success or bad request
 
             # Semantic search
             semantic_response = await client.post(
-                "/api/v1/search/semantic", json={"q": query, "k": 5}, headers=auth_headers
+                "/api/v1/search/semantic",
+                json={"q": query, "k": 5},
+                headers=auth_headers,
             )
             assert semantic_response.status_code in [200, 400]
 
@@ -267,7 +295,9 @@ class TestSearchQuality:
         invalid_alphas = [-0.1, 1.1, 2.0, -1.0]
         for alpha in invalid_alphas:
             response = await client.get(
-                "/api/v1/search", params={"q": "test", "alpha": alpha}, headers=auth_headers
+                "/api/v1/search",
+                params={"q": "test", "alpha": alpha},
+                headers=auth_headers,
             )
             # Should either reject or clamp to valid range
             assert response.status_code in [200, 400]
@@ -276,7 +306,9 @@ class TestSearchQuality:
         valid_alphas = [0.0, 0.5, 1.0]
         for alpha in valid_alphas:
             response = await client.get(
-                "/api/v1/search", params={"q": "test", "alpha": alpha}, headers=auth_headers
+                "/api/v1/search",
+                params={"q": "test", "alpha": alpha},
+                headers=auth_headers,
             )
             assert response.status_code == 200
 

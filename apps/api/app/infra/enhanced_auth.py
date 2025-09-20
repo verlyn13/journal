@@ -114,7 +114,9 @@ async def require_user_enhanced(
         request.state.jwt_claims = claims
         request.state.user_id = sub
         request.state.token_type = claims.get("type", "access")
-        request.state.scopes = claims.get("scope", "").split() if claims.get("scope") else []
+        request.state.scopes = (
+            claims.get("scope", "").split() if claims.get("scope") else []
+        )
 
         logger.debug("Authenticated user with new JWT service: %s", sub)
         return str(sub)
@@ -138,7 +140,9 @@ async def require_user_enhanced(
 
         except HTTPException as legacy_error:
             logger.warning(
-                "Both new and legacy JWT verification failed: new=%s, legacy=%s", e, legacy_error
+                "Both new and legacy JWT verification failed: new=%s, legacy=%s",
+                e,
+                legacy_error,
             )
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
@@ -207,7 +211,9 @@ def require_scopes(*required_scopes: str) -> Any:
         user_scopes = getattr(request.state, "scopes", [])
 
         # Check if all required scopes are present
-        missing_scopes = [scope for scope in required_scopes if scope not in user_scopes]
+        missing_scopes = [
+            scope for scope in required_scopes if scope not in user_scopes
+        ]
         if missing_scopes:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,

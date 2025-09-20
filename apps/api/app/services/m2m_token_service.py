@@ -151,7 +151,9 @@ class M2MTokenService:
 
         # Validate IP if restrictions exist
         if ip_address and not identity.validate_ip(ip_address):
-            raise ValueError(f"IP {ip_address} not allowed for identity {identity.service_name}")
+            raise ValueError(
+                f"IP {ip_address} not allowed for identity {identity.service_name}"
+            )
 
         # Determine actual scopes
         if requested_scopes:
@@ -162,7 +164,9 @@ class M2MTokenService:
                     granted_scopes.append(scope)
                 else:
                     logger.warning(
-                        "Scope %s not allowed for identity %s", scope, identity.service_name
+                        "Scope %s not allowed for identity %s",
+                        scope,
+                        identity.service_name,
                     )
 
             if not granted_scopes:
@@ -212,7 +216,11 @@ class M2MTokenService:
             },
         )
 
-        logger.info("M2M token issued for %s with scopes %s", identity.service_name, granted_scopes)
+        logger.info(
+            "M2M token issued for %s with scopes %s",
+            identity.service_name,
+            granted_scopes,
+        )
 
         return jwt_token, expiration
 
@@ -439,7 +447,9 @@ class M2MTokenService:
         }
 
         ttl = int((expiration - datetime.now(UTC)).total_seconds())
-        await self.redis.setex(f"{M2M_CACHE_PREFIX}{token_id}", ttl, json.dumps(metadata))
+        await self.redis.setex(
+            f"{M2M_CACHE_PREFIX}{token_id}", ttl, json.dumps(metadata)
+        )
 
     async def _is_token_revoked(self, token_id: str) -> bool:
         """Check if a token is revoked.
@@ -481,7 +491,9 @@ class M2MTokenService:
         return count
 
     # Backward-compatible hook for tests to patch
-    async def _validate_identity_with_infisical(self, identity_token: str) -> MachineIdentity:
+    async def _validate_identity_with_infisical(
+        self, identity_token: str
+    ) -> MachineIdentity:
         """Validate identity token via Infisical (delegates to _validate_machine_identity).
 
         This indirection exists to support test patches that target this method name.

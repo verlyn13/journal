@@ -151,7 +151,9 @@ async def get_security_metrics(
             "summary": {
                 "total_events": total_events,
                 "critical_events": critical_events,
-                "health_score": max(0, 100 - (critical_events * 10)),  # Simple health score
+                "health_score": max(
+                    0, 100 - (critical_events * 10)
+                ),  # Simple health score
             },
             "timestamp": datetime.now(UTC).isoformat(),
         }
@@ -200,7 +202,10 @@ async def toggle_emergency_mode(
                     event_type="emergency_mode_enabled",
                     severity="critical",
                     message=f"Emergency mode enabled: {reason}",
-                    metadata={"reason": reason, "enabled_at": datetime.now(UTC).isoformat()},
+                    metadata={
+                        "reason": reason,
+                        "enabled_at": datetime.now(UTC).isoformat(),
+                    },
                 )
             )
 
@@ -218,7 +223,10 @@ async def toggle_emergency_mode(
                 event_type="emergency_mode_disabled",
                 severity="medium",
                 message=f"Emergency mode disabled: {reason}",
-                metadata={"reason": reason, "disabled_at": datetime.now(UTC).isoformat()},
+                metadata={
+                    "reason": reason,
+                    "disabled_at": datetime.now(UTC).isoformat(),
+                },
             )
         )
 
@@ -313,7 +321,9 @@ async def invalidate_secrets_cache(
             )
 
         # Invalidate cache
-        invalidated_count = await key_manager.infisical_client.invalidate_cache(secret_path)
+        invalidated_count = await key_manager.infisical_client.invalidate_cache(
+            secret_path
+        )
 
         # Record security event
         await key_manager.security_monitor.record_event(

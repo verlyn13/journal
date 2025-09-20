@@ -223,7 +223,9 @@ class EnhancedInfisicalClient(SecretsClient):
             # Try fallback sources
             fallback_secret = await self._try_fallback_sources(path)
             if fallback_secret is not None:
-                logger.warning("Using fallback secret due to circuit breaker", extra={"path": path})
+                logger.warning(
+                    "Using fallback secret due to circuit breaker", extra={"path": path}
+                )
                 return fallback_secret
 
             raise InfisicalUnavailableError(
@@ -242,7 +244,8 @@ class EnhancedInfisicalClient(SecretsClient):
                 self.circuit_breaker.record_success()
 
                 logger.info(
-                    "Secret fetched from Infisical", extra={"path": path, "attempt": attempt + 1}
+                    "Secret fetched from Infisical",
+                    extra={"path": path, "attempt": attempt + 1},
                 )
                 return secret_value
 
@@ -290,7 +293,9 @@ class EnhancedInfisicalClient(SecretsClient):
         """
         # Check circuit breaker
         if not self.circuit_breaker.can_execute():
-            raise InfisicalUnavailableError(f"Circuit breaker open, cannot store secret at {path}")
+            raise InfisicalUnavailableError(
+                f"Circuit breaker open, cannot store secret at {path}"
+            )
 
         for attempt in range(self.max_retries + 1):
             try:
@@ -303,7 +308,8 @@ class EnhancedInfisicalClient(SecretsClient):
                 self.circuit_breaker.record_success()
 
                 logger.info(
-                    "Secret stored to Infisical", extra={"path": path, "attempt": attempt + 1}
+                    "Secret stored to Infisical",
+                    extra={"path": path, "attempt": attempt + 1},
                 )
                 return
 
@@ -418,7 +424,8 @@ class EnhancedInfisicalClient(SecretsClient):
                 return self.encryption.decrypt(encrypted_value.decode())
         except Exception as e:  # noqa: BLE001 - cache failures shouldn't break flow
             logger.warning(
-                "Failed to retrieve cached secret", extra={"path": path, "error": str(e)}
+                "Failed to retrieve cached secret",
+                extra={"path": path, "error": str(e)},
             )
 
         return None
@@ -447,7 +454,9 @@ class EnhancedInfisicalClient(SecretsClient):
             await self.redis.setex(metadata_key, self.cache_ttl, json.dumps(metadata))
 
         except Exception as e:  # noqa: BLE001 - cache failures shouldn't break flow
-            logger.warning("Failed to cache secret", extra={"path": path, "error": str(e)})
+            logger.warning(
+                "Failed to cache secret", extra={"path": path, "error": str(e)}
+            )
 
     async def _try_fallback_sources(self, path: str) -> str | None:
         """Try to get secret from fallback sources.
@@ -528,9 +537,14 @@ class EnhancedInfisicalClient(SecretsClient):
             logger.info("Invalidated cached secret", extra={"path": path})
             return deleted
         # Invalidate all secrets
-        pattern_keys = [key async for key in self.redis.scan_iter(match=f"{self._cache_prefix}*")]
+        pattern_keys = [
+            key async for key in self.redis.scan_iter(match=f"{self._cache_prefix}*")
+        ]
         pattern_keys.extend([
-            key async for key in self.redis.scan_iter(match=f"{self._cache_metadata_prefix}*")
+            key
+            async for key in self.redis.scan_iter(
+                match=f"{self._cache_metadata_prefix}*"
+            )
         ])
 
         if pattern_keys:

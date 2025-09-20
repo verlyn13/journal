@@ -72,7 +72,9 @@ class TestCircuitBreaker:
         assert circuit_breaker.state == "closed"
         assert circuit_breaker.can_execute() is True
 
-    def test_failure_threshold_opens_circuit(self, circuit_breaker: CircuitBreaker) -> None:
+    def test_failure_threshold_opens_circuit(
+        self, circuit_breaker: CircuitBreaker
+    ) -> None:
         """Test circuit opens after failure threshold."""
         # Record failures up to threshold
         circuit_breaker.record_failure()
@@ -83,7 +85,9 @@ class TestCircuitBreaker:
         assert circuit_breaker.state == "open"
         assert circuit_breaker.can_execute() is False
 
-    def test_success_resets_failure_count(self, circuit_breaker: CircuitBreaker) -> None:
+    def test_success_resets_failure_count(
+        self, circuit_breaker: CircuitBreaker
+    ) -> None:
         """Test success resets failure count."""
         circuit_breaker.record_failure()
         assert circuit_breaker.failure_count == 1
@@ -92,7 +96,9 @@ class TestCircuitBreaker:
         assert circuit_breaker.failure_count == 0
         assert circuit_breaker.state == "closed"
 
-    def test_recovery_timeout_allows_half_open(self, circuit_breaker: CircuitBreaker) -> None:
+    def test_recovery_timeout_allows_half_open(
+        self, circuit_breaker: CircuitBreaker
+    ) -> None:
         """Test circuit moves to half-open after recovery timeout."""
         # Open the circuit
         circuit_breaker.record_failure()
@@ -135,7 +141,9 @@ class TestEnhancedInfisicalClient:
         )
 
     @pytest.mark.asyncio()
-    async def test_client_context_manager(self, client: EnhancedInfisicalClient) -> None:
+    async def test_client_context_manager(
+        self, client: EnhancedInfisicalClient
+    ) -> None:
         """Test client as async context manager."""
         async with client as managed_client:
             assert managed_client is client
@@ -306,7 +314,9 @@ class TestEnhancedInfisicalClient:
         mock_redis.setex.assert_called()
 
     @pytest.mark.asyncio()
-    async def test_store_secret_circuit_breaker_open(self, client: EnhancedInfisicalClient) -> None:
+    async def test_store_secret_circuit_breaker_open(
+        self, client: EnhancedInfisicalClient
+    ) -> None:
         """Test store secret fails when circuit breaker is open."""
         secret_path = "/test/secret"
         secret_value = "new-secret-value"
@@ -335,7 +345,9 @@ class TestEnhancedInfisicalClient:
         assert "circuit_breaker_state" in health_status
 
     @pytest.mark.asyncio()
-    async def test_health_check_circuit_breaker_open(self, client: EnhancedInfisicalClient) -> None:
+    async def test_health_check_circuit_breaker_open(
+        self, client: EnhancedInfisicalClient
+    ) -> None:
         """Test health check with circuit breaker open."""
         # Open circuit breaker
         client.circuit_breaker.state = "open"

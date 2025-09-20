@@ -46,7 +46,9 @@ def main() -> None:
     avg = statistics.mean(latencies) if latencies else 0.0
     print(f"Samples={len(latencies)} avg_ms={avg:.1f} p95_ms={p95:.1f}")
     if p95 > args.p95_threshold_ms:
-        raise SystemExit(f"p95 {p95:.1f}ms exceeds threshold {args.p95_threshold_ms:.1f}ms")
+        raise SystemExit(
+            f"p95 {p95:.1f}ms exceeds threshold {args.p95_threshold_ms:.1f}ms"
+        )
 
 
 if __name__ == "__main__":

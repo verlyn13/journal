@@ -26,7 +26,9 @@ async def test_nats_request_reply_contract():
     nc = await nats.connect(settings.nats_url)
     try:
         await nc.subscribe(subject, cb=replier)
-        resp = await nc.request(subject, json.dumps({"x": 42}).encode("utf-8"), timeout=1.0)
+        resp = await nc.request(
+            subject, json.dumps({"x": 42}).encode("utf-8"), timeout=1.0
+        )
         data = json.loads(resp.data.decode())
         assert data == {"ok": True, "echo": 42}
     finally:

@@ -11,7 +11,15 @@ import json
 import logging
 from typing import Any
 
-from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query, Request, status
+from fastapi import (
+    APIRouter,
+    BackgroundTasks,
+    Depends,
+    HTTPException,
+    Query,
+    Request,
+    status,
+)
 from pydantic import BaseModel, Field
 from redis.asyncio import Redis
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -104,7 +112,9 @@ async def get_health_status(
 
             return HealthStatus(
                 status=health_data.get("overall_status", "unknown"),
-                timestamp=current_metrics.get("timestamp", datetime.now(UTC).isoformat()),
+                timestamp=current_metrics.get(
+                    "timestamp", datetime.now(UTC).isoformat()
+                ),
                 components={
                     "infisical_client": health_data.get("infisical_client", {}),
                     "key_manager": health_data.get("key_manager", {}),
@@ -179,7 +189,8 @@ async def get_current_metrics(
 
                 if age_seconds > 300:  # 5 minutes
                     logger.info(
-                        "Cached metrics are stale (%d seconds), collecting fresh", age_seconds
+                        "Cached metrics are stale (%d seconds), collecting fresh",
+                        age_seconds,
                     )
                     metrics = await monitoring_service.collect_metrics()
 
@@ -199,7 +210,9 @@ async def get_current_metrics(
 @router.get("/metrics/history", response_model=list[MonitoringMetrics])
 async def get_metrics_history(
     request: Request,
-    hours: int = Query(24, ge=1, le=168, description="Hours of history to retrieve (max 7 days)"),
+    hours: int = Query(
+        24, ge=1, le=168, description="Hours of history to retrieve (max 7 days)"
+    ),
     monitoring_service: InfisicalMonitoringService = Depends(get_monitoring_service),
 ) -> list[MonitoringMetrics]:
     """Get historical metrics for the specified time period.
@@ -248,7 +261,8 @@ async def get_active_alerts(
         logger.exception("Failed to get alerts")
         metrics_inc("monitoring_alerts_request_errors_total")
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Failed to get alerts: {e}"
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to get alerts: {e}",
         ) from e
 
 
@@ -316,12 +330,15 @@ async def get_monitoring_dashboard(
             trends["health"] = {
                 "current": latest_health,
                 "previous": previous_health,
-                "improving": latest_health == "healthy" and previous_health != "healthy",
+                "improving": latest_health == "healthy"
+                and previous_health != "healthy",
             }
 
             # Performance trend
             latest_latency = (
-                latest.get("performance", {}).get("secret_retrieval", {}).get("latency_seconds", 0)
+                latest.get("performance", {})
+                .get("secret_retrieval", {})
+                .get("latency_seconds", 0)
             )
             previous_latency = (
                 previous.get("performance", {})
@@ -397,7 +414,9 @@ async def acknowledge_alert(
                 continue
 
         if not removed:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Alert not found")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Alert not found"
+            )
 
         metrics_inc("monitoring_alert_acknowledged_total")
 

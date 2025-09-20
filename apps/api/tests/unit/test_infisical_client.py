@@ -172,7 +172,10 @@ class TestInfisicalSecretsClient:
 
         with patch("asyncio.create_subprocess_exec") as mock_subprocess:
             mock_process = AsyncMock()
-            mock_process.communicate.return_value = (json.dumps(mock_response).encode(), b"")
+            mock_process.communicate.return_value = (
+                json.dumps(mock_response).encode(),
+                b"",
+            )
             mock_process.returncode = 0
             mock_subprocess.return_value = mock_process
 
@@ -202,7 +205,10 @@ class TestInfisicalSecretsClient:
 
         with patch("asyncio.create_subprocess_exec") as mock_subprocess:
             mock_process = AsyncMock()
-            mock_process.communicate.return_value = (b"", b"Error: authentication failed")
+            mock_process.communicate.return_value = (
+                b"",
+                b"Error: authentication failed",
+            )
             mock_process.returncode = 1
             mock_subprocess.return_value = mock_process
 
@@ -283,7 +289,10 @@ class TestInfisicalSecretsClient:
 
         with patch("asyncio.create_subprocess_exec") as mock_subprocess:
             mock_process = AsyncMock()
-            mock_process.communicate.return_value = (json.dumps(mock_response).encode(), b"")
+            mock_process.communicate.return_value = (
+                json.dumps(mock_response).encode(),
+                b"",
+            )
             mock_process.returncode = 0
             mock_subprocess.return_value = mock_process
 
@@ -341,7 +350,9 @@ class TestInfisicalSecretsClient:
     async def test_invalidate_cache(self, client):
         """Test cache invalidation."""
         # Spy on invalidate_pattern
-        with patch.object(client.cache, "invalidate_pattern", new=AsyncMock()) as mock_inv:
+        with patch.object(
+            client.cache, "invalidate_pattern", new=AsyncMock()
+        ) as mock_inv:
             await client.invalidate_cache("/auth/*")
             mock_inv.assert_called_once_with("/auth/*")
 

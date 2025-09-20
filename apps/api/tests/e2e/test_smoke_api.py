@@ -20,7 +20,9 @@ async def test_auth_missing_token(client: AsyncClient):
 @pytest.mark.asyncio()
 @pytest.mark.component()
 async def test_auth_bad_token(client: AsyncClient):
-    r = await client.get("/api/v1/entries", headers={"Authorization": "Bearer not-a-jwt"})
+    r = await client.get(
+        "/api/v1/entries", headers={"Authorization": "Bearer not-a-jwt"}
+    )
     assert r.status_code in (401, 403)
 
 
@@ -44,7 +46,12 @@ async def test_stats_empty(client: AsyncClient, auth_headers):
     assert r.status_code == 200
     data = r.json()
     # tolerate shape differences but require some reasonable keys
-    expected_keys = {"entries_today", "entries_this_week", "entries_this_month", "total_entries"}
+    expected_keys = {
+        "entries_today",
+        "entries_this_week",
+        "entries_this_month",
+        "total_entries",
+    }
     actual_keys = set(data.keys())
     assert len(expected_keys & actual_keys) >= 2  # at least 2 expected keys present
 
@@ -53,5 +60,7 @@ async def test_stats_empty(client: AsyncClient, auth_headers):
 @pytest.mark.component()
 async def test_entries_validation_errors(client: AsyncClient, auth_headers):
     # missing title -> 422
-    r = await client.post("/api/v1/entries", json={"content": "x"}, headers=auth_headers)
+    r = await client.post(
+        "/api/v1/entries", json={"content": "x"}, headers=auth_headers
+    )
     assert r.status_code == 422

@@ -14,7 +14,10 @@ import logging
 import os
 from typing import Any
 
-from app.infra.secrets.universal_auth_client import UniversalAuthError, get_universal_auth_client
+from app.infra.secrets.universal_auth_client import (
+    UniversalAuthError,
+    get_universal_auth_client,
+)
 
 
 logger = logging.getLogger(__name__)
@@ -145,7 +148,9 @@ async def auth_lifespan() -> AsyncGenerator[None]:
     success = await auth_service.initialize()
 
     if not success:
-        logger.error("Authentication initialization failed - application may not work correctly")
+        logger.error(
+            "Authentication initialization failed - application may not work correctly"
+        )
     else:
         logger.info("Authentication bootstrap completed successfully")
 

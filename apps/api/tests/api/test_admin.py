@@ -22,7 +22,9 @@ class TestAdminAPI:
         assert response.json() == {"status": "pong"}
 
     @pytest.mark.asyncio()
-    async def test_admin_health(self, client: AsyncClient, auth_headers: dict[str, str]):
+    async def test_admin_health(
+        self, client: AsyncClient, auth_headers: dict[str, str]
+    ):
         """Test admin health check endpoint."""
         response = await client.get("/api/v1/admin/health", headers=auth_headers)
         assert response.status_code == 200
@@ -51,7 +53,9 @@ class TestAdminAPI:
 
         async def mock_get_session():
             mock_session = AsyncMock()
-            mock_session.execute = AsyncMock(side_effect=Exception("Database connection failed"))
+            mock_session.execute = AsyncMock(
+                side_effect=Exception("Database connection failed")
+            )
             yield mock_session
 
         # Override the dependency in the FastAPI app
@@ -91,7 +95,9 @@ class TestAdminAPI:
         monkeypatch.setattr("app.api.v1.admin.nats_conn", mock_nats_conn)
 
         # Test without body
-        response = await client.post("/api/v1/admin/reindex-embeddings", headers=auth_headers)
+        response = await client.post(
+            "/api/v1/admin/reindex-embeddings", headers=auth_headers
+        )
 
         assert response.status_code == 200
         data = response.json()
@@ -141,7 +147,9 @@ class TestAdminAPI:
         assert message_data["event_data"]["start_date"] == "2024-01-01"
 
     @pytest.mark.asyncio()
-    async def test_reindex_does_not_require_authentication(self, client: AsyncClient, monkeypatch):
+    async def test_reindex_does_not_require_authentication(
+        self, client: AsyncClient, monkeypatch
+    ):
         """Test that reindex endpoint doesn't require authentication (current implementation)."""
 
         # Mock NATS connection

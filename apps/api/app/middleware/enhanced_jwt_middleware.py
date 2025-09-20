@@ -99,11 +99,16 @@ class EnhancedJWTMiddleware:
             ):
                 raise ValueError("Invalid audience")
 
-            if SecurityPolicies.REQUIRE_ISSUER_VALIDATION and claims.get("iss") != settings.jwt_iss:
+            if (
+                SecurityPolicies.REQUIRE_ISSUER_VALIDATION
+                and claims.get("iss") != settings.jwt_iss
+            ):
                 raise ValueError("Invalid issuer")
 
             # Check token type using payload 'type' (primary), supporting legacy aliases
-            token_type = claims.get("type") or claims.get("token_type") or claims.get("typ")
+            token_type = (
+                claims.get("type") or claims.get("token_type") or claims.get("typ")
+            )
             if token_type not in {"access", "m2m", "at+jwt"}:
                 raise ValueError(f"Invalid token type: {token_type}")
 

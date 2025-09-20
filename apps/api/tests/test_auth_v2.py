@@ -153,7 +153,9 @@ class TestV2AuthEndpoints:
         # Verify old refresh token is marked as rotated in Redis
         rotation_service = TokenRotationService(db_session, redis_client)
         old_hash = hashlib.sha256(old_refresh.encode()).hexdigest()
-        is_rotated = await rotation_service.check_refresh_token_reuse(old_hash, test_user.id)
+        is_rotated = await rotation_service.check_refresh_token_reuse(
+            old_hash, test_user.id
+        )
         assert is_rotated is False  # Should not trigger reuse on first check
 
     async def test_refresh_token_reuse_detection(

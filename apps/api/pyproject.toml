@@ -111,7 +111,7 @@ packages = ["app"]
 [tool.ruff]
 required-version = "==0.13.0"  # Lock version for consistency
 preview = true
-line-length = 100
+line-length = 88
 fix = true
 unsafe-fixes = false  # Start conservative, promote with extend-safe-fixes
 show-fixes = true
@@ -273,7 +273,7 @@ max-returns = 6
 max-statements = 50
 
 [tool.ruff.lint.pycodestyle]
-max-doc-length = 100
+max-doc-length = 88
 ignore-overlong-task-comments = true
 
 [tool.ruff.lint.mccabe]

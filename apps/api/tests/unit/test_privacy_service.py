@@ -56,7 +56,9 @@ class TestPrivacyService:
         return entry
 
     @pytest.fixture()
-    async def test_device(self, db_session: AsyncSession, test_user: User) -> UserDevice:
+    async def test_device(
+        self, db_session: AsyncSession, test_user: User
+    ) -> UserDevice:
         """Create test device."""
         device = UserDevice(
             id=uuid4(),
@@ -230,7 +232,9 @@ class TestPrivacyService:
         await db_session.flush()
 
         # Try to cancel
-        success = await privacy_service.cancel_deletion(test_user.id, deletion_request.undo_token)
+        success = await privacy_service.cancel_deletion(
+            test_user.id, deletion_request.undo_token
+        )
         assert success is False
 
     @pytest.mark.asyncio()

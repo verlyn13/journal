@@ -37,7 +37,9 @@ class MockNC:
 
 @pytest.mark.integration()
 @pytest.mark.asyncio()
-async def test_outbox_retry_schedules_next_attempt(monkeypatch, db_session: AsyncSession):
+async def test_outbox_retry_schedules_next_attempt(
+    monkeypatch, db_session: AsyncSession
+):
     os.environ["OUTBOX_RETRY_ENABLED"] = "1"
     os.environ["OUTBOX_DLQ_ENABLED"] = "0"
     os.environ["OUTBOX_RETRY_BASE_SECS"] = "0.01"

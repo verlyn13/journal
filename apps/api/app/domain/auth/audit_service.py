@@ -118,12 +118,18 @@ class AuditService:
         for entry in entries:
             # Check that prev_hash matches
             if entry.prev_hash != prev_hash:
-                return False, f"Hash chain broken at entry {entry.id}: prev_hash mismatch"
+                return (
+                    False,
+                    f"Hash chain broken at entry {entry.id}: prev_hash mismatch",
+                )
 
             # Recompute and verify entry hash
             expected_hash = AuditService._compute_entry_hash(entry)
             if entry.entry_hash != expected_hash:
-                return False, f"Hash chain broken at entry {entry.id}: entry_hash mismatch"
+                return (
+                    False,
+                    f"Hash chain broken at entry {entry.id}: entry_hash mismatch",
+                )
 
             prev_hash = entry.entry_hash
 
@@ -161,7 +167,9 @@ class AuditService:
         result = await self.session.scalars(query)
         return list(result)
 
-    async def get_device_audit_log(self, device_id: UUID, user_id: UUID) -> list[AuditLogEntry]:
+    async def get_device_audit_log(
+        self, device_id: UUID, user_id: UUID
+    ) -> list[AuditLogEntry]:
         """Get audit log entries for a specific device.
 
         Args:

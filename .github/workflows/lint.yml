@@ -25,14 +25,14 @@ jobs:
         uses: astral-sh/ruff-action@57714a7c8a2e59f32539362ba31877a1957dded1
         with:
           version: "0.13.0"
-          args: "check --output-format=github apps/api deploy"
+          args: "check --config apps/api/pyproject.toml --output-format=github apps/api deploy"
           src: "."
 
       - name: Check formatting with Ruff
         uses: astral-sh/ruff-action@57714a7c8a2e59f32539362ba31877a1957dded1
         with:
           version: "0.13.0"
-          args: "format --check apps/api deploy"
+          args: "format --config apps/api/pyproject.toml --check apps/api deploy"
           src: "."
 
       # Alternative Option B: Using uv (kept for reference)

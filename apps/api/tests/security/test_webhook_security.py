@@ -29,7 +29,9 @@ class TestWebhookSignatureVerifier:
         return "test-webhook-secret-key-12345"
 
     @pytest.fixture()
-    def verifier(self, redis_client: Redis, webhook_secret: str) -> WebhookSignatureVerifier:
+    def verifier(
+        self, redis_client: Redis, webhook_secret: str
+    ) -> WebhookSignatureVerifier:
         """Create webhook signature verifier."""
         return WebhookSignatureVerifier(redis_client, webhook_secret)
 
@@ -62,7 +64,9 @@ class TestWebhookSignatureVerifier:
         assert actual_signature == expected_full
 
     @pytest.mark.asyncio()
-    async def test_verify_webhook_success(self, verifier: WebhookSignatureVerifier) -> None:
+    async def test_verify_webhook_success(
+        self, verifier: WebhookSignatureVerifier
+    ) -> None:
         """Test successful webhook verification."""
         timestamp = str(int(datetime.now(UTC).timestamp()))
         payload = b'{"event": "test"}'
@@ -87,7 +91,9 @@ class TestWebhookSignatureVerifier:
         payload = b'{"event": "test"}'
         invalid_signature = "sha256=invalid_signature_hash"
 
-        with pytest.raises(SignatureVerificationError, match="Invalid webhook signature"):
+        with pytest.raises(
+            SignatureVerificationError, match="Invalid webhook signature"
+        ):
             await verifier.verify_webhook(
                 signature=invalid_signature,
                 timestamp=timestamp,
@@ -95,7 +101,9 @@ class TestWebhookSignatureVerifier:
             )
 
     @pytest.mark.asyncio()
-    async def test_verify_webhook_timestamp_drift(self, verifier: WebhookSignatureVerifier) -> None:
+    async def test_verify_webhook_timestamp_drift(
+        self, verifier: WebhookSignatureVerifier
+    ) -> None:
         """Test webhook verification with excessive timestamp drift."""
         # Timestamp 10 minutes in the past
         old_timestamp = str(int(datetime.now(UTC).timestamp()) - 600)
@@ -144,7 +152,9 @@ class TestWebhookSignatureVerifier:
         assert result["verified"] is True
 
     @pytest.mark.asyncio()
-    async def test_verify_webhook_replay_attack(self, verifier: WebhookSignatureVerifier) -> None:
+    async def test_verify_webhook_replay_attack(
+        self, verifier: WebhookSignatureVerifier
+    ) -> None:
         """Test webhook verification prevents replay attacks."""
         timestamp = str(int(datetime.now(UTC).timestamp()))
         payload = b'{"event": "test"}'
@@ -211,7 +221,9 @@ class TestWebhookRateLimiter:
         return WebhookRateLimiter(redis_client, max_requests=5, window_seconds=60)
 
     @pytest.mark.asyncio()
-    async def test_rate_limit_within_limit(self, rate_limiter: WebhookRateLimiter) -> None:
+    async def test_rate_limit_within_limit(
+        self, rate_limiter: WebhookRateLimiter
+    ) -> None:
         """Test requests within rate limit."""
         identifier = "test-client-1"
 
@@ -242,7 +254,9 @@ class TestWebhookRateLimiter:
         assert "reset_time" in metadata
 
     @pytest.mark.asyncio()
-    async def test_rate_limit_different_identifiers(self, rate_limiter: WebhookRateLimiter) -> None:
+    async def test_rate_limit_different_identifiers(
+        self, rate_limiter: WebhookRateLimiter
+    ) -> None:
         """Test rate limiting with different identifiers."""
         # Each identifier should have its own limit
         for i in range(3):
@@ -262,7 +276,9 @@ class TestWebhookSecurityManager:
         return "test-security-manager-secret"
 
     @pytest.fixture()
-    def security_manager(self, redis_client: Redis, webhook_secret: str) -> WebhookSecurityManager:
+    def security_manager(
+        self, redis_client: Redis, webhook_secret: str
+    ) -> WebhookSecurityManager:
         """Create webhook security manager."""
         return WebhookSecurityManager(
             redis=redis_client,
@@ -359,7 +375,9 @@ class TestWebhookEndpoints:
 
         # Compute signature
         signing_payload = f"{timestamp}.".encode() + payload_bytes
-        signature = hmac.new(webhook_secret.encode(), signing_payload, hashlib.sha256).hexdigest()
+        signature = hmac.new(
+            webhook_secret.encode(), signing_payload, hashlib.sha256
+        ).hexdigest()
 
         headers = {
             "X-Infisical-Signature": f"sha256={signature}",
@@ -378,7 +396,9 @@ class TestWebhookEndpoints:
     ) -> None:
         """Test successful JWT key rotation webhook."""
         # Mock the webhook secret setting
-        monkeypatch.setattr("app.settings.settings.infisical_webhook_secret", webhook_secret)
+        monkeypatch.setattr(
+            "app.settings.settings.infisical_webhook_secret", webhook_secret
+        )
 
         payload_data = {
             "event": "secret.updated",
@@ -386,7 +406,9 @@ class TestWebhookEndpoints:
             "projectId": "test-project-123",
         }
 
-        headers, payload = self.create_valid_webhook_request(webhook_secret, payload_data)
+        headers, payload = self.create_valid_webhook_request(
+            webhook_secret, payload_data
+        )
 
         response = client.post(
             "/internal/keys/changed",
@@ -405,7 +427,9 @@ class TestWebhookEndpoints:
         monkeypatch,
     ) -> None:
         """Test successful AES key rotation webhook."""
-        monkeypatch.setattr("app.settings.settings.infisical_webhook_secret", webhook_secret)
+        monkeypatch.setattr(
+            "app.settings.settings.infisical_webhook_secret", webhook_secret
+        )
 
         payload_data = {
             "event": "secret.created",
@@ -414,7 +438,9 @@ class TestWebhookEndpoints:
             "newKeyId": "new-key-id-456",
         }
 
-        headers, payload = self.create_valid_webhook_request(webhook_secret, payload_data)
+        headers, payload = self.create_valid_webhook_request(
+            webhook_secret, payload_data
+        )
 
         response = client.post(
             "/internal/aes/activekid",

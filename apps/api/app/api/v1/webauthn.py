@@ -56,7 +56,9 @@ class RegistrationVerifyRequest(BaseModel):
 class AuthenticationOptionsRequest(BaseModel):
     """Request for authentication options."""
 
-    email: str | None = Field(None, description="Email for user-specific authentication")
+    email: str | None = Field(
+        None, description="Email for user-specific authentication"
+    )
     conditional_ui: bool = Field(False, description="Enable conditional UI (autofill)")
 
 
@@ -120,7 +122,8 @@ async def registration_verify(
 ) -> dict[str, str]:
     """Verify WebAuthn registration and store credential.
 
-    Requires authenticated user. Verifies the credential from navigator.credentials.create().
+    Requires authenticated user. Verifies the credential from
+    navigator.credentials.create().
     """
     if not settings.user_mgmt_enabled:
         raise HTTPException(status_code=404, detail="Not found")
@@ -172,7 +175,9 @@ async def authentication_options(
     user_id = None
     if request.email:
         # This is for explicit authentication with email
-        result = await session.scalar(select(User.id).where(User.email == request.email.lower()))
+        result = await session.scalar(
+            select(User.id).where(User.email == request.email.lower())
+        )
         if result:
             user_id = result
 
@@ -202,7 +207,9 @@ async def authentication_verify(
         raise HTTPException(status_code=404, detail="Not found")
 
     # Rate limit authentication attempts
-    if not allow(f"webauthn:auth:{request.session_id}", max_attempts=5, window_seconds=60):
+    if not allow(
+        f"webauthn:auth:{request.session_id}", max_attempts=5, window_seconds=60
+    ):
         raise HTTPException(
             status_code=status.HTTP_429_TOO_MANY_REQUESTS,
             detail="Too many authentication attempts",
@@ -226,7 +233,9 @@ async def authentication_verify(
 
         # Create tokens
         access_token = create_access_token(str(user.id))
-        refresh_token = create_refresh_token(str(user.id), refresh_id=str(user_session.refresh_id))
+        refresh_token = create_refresh_token(
+            str(user.id), refresh_id=str(user_session.refresh_id)
+        )
 
         # Set refresh token in secure cookie (30 days)
         set_refresh_cookie(response, refresh_token, max_age=30 * 24 * 60 * 60)

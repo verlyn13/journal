@@ -64,7 +64,9 @@ class TokenRotationService:
             user_id: User ID for audit logging
         """
         # Mark old token as rotated
-        await self._resolve(self.redis.setex(f"rotated:{old_token_hash}", 86400, new_token_hash))
+        await self._resolve(
+            self.redis.setex(f"rotated:{old_token_hash}", 86400, new_token_hash)
+        )
 
         # Track rotation in audit log
         await self.audit_service.log_event(
@@ -76,7 +78,9 @@ class TokenRotationService:
             },
         )
 
-    async def _handle_token_reuse_incident(self, user_id: UUID, token_hash: str) -> None:
+    async def _handle_token_reuse_incident(
+        self, user_id: UUID, token_hash: str
+    ) -> None:
         """Handle a detected token reuse incident.
 
         Args:
@@ -132,7 +136,9 @@ class TokenRotationService:
         cursor = 0
         keys_to_delete: list[bytes] = []
         while True:
-            cursor, keys = await self._resolve(self.redis.scan(cursor, match=pattern, count=100))
+            cursor, keys = await self._resolve(
+                self.redis.scan(cursor, match=pattern, count=100)
+            )
             if keys:
                 keys_to_delete.extend(keys)
             if cursor == 0:

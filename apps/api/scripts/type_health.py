@@ -123,7 +123,9 @@ def count_pattern(pattern: str, file_pattern: str = "*.py") -> int:
     return total
 
 
-def get_trend(current: int, previous_file: Path) -> Literal["improving", "stable", "degrading"]:
+def get_trend(
+    current: int, previous_file: Path
+) -> Literal["improving", "stable", "degrading"]:
     """Determine trend based on previous metrics."""
     if not previous_file.exists():
         return "stable"
@@ -153,7 +155,9 @@ def generate_report() -> TypeHealth:
 
     # Calculate coverage
     coverage_percent = (
-        ((files_checked - files_with_errors) / files_checked * 100) if files_checked else 0
+        ((files_checked - files_with_errors) / files_checked * 100)
+        if files_checked
+        else 0
     )
 
     # Determine trend
@@ -188,7 +192,9 @@ def print_report(health: TypeHealth) -> None:
     print(" TYPE SAFETY HEALTH REPORT ".center(60))  # noqa: T201
     print("=" * 60)  # noqa: T201
 
-    print(f"\n📊 Overall Health Score: {health.health_score}/100 (Grade: {health.health_grade})")  # noqa: T201
+    print(
+        f"\n📊 Overall Health Score: {health.health_score}/100 (Grade: {health.health_grade})"
+    )  # noqa: T201
     print(f"📈 Trend: {health.error_trend.upper()}")  # noqa: T201
 
     print("\n🔍 Coverage Metrics:")  # noqa: T201

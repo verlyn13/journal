@@ -15,7 +15,11 @@ async def test_refresh_rotation_and_logout(client):
     # Register
     r = await client.post(
         "/api/v1/auth/register",
-        json={"email": "rot@example.com", "password": "CorrectHorse9!", "username": "rot"},
+        json={
+            "email": "rot@example.com",
+            "password": "CorrectHorse9!",
+            "username": "rot",
+        },
     )
     assert r.status_code == 202, r.text
     token = r.json().get("dev_verify_token")

@@ -70,7 +70,9 @@ class DeviceService:
             .where(UserDevice.user_id == user_id)
         )
 
-    async def update_device_name(self, device_id: UUID, user_id: UUID, new_name: str) -> bool:
+    async def update_device_name(
+        self, device_id: UUID, user_id: UUID, new_name: str
+    ) -> bool:
         """Update device name."""
         device = await self.get_device(device_id, user_id)
         if not device:
@@ -94,7 +96,9 @@ class DeviceService:
 
     async def update_device_last_seen(self, device_id: UUID) -> None:
         """Update device last seen timestamp."""
-        device = await self.session.scalar(select(UserDevice).where(UserDevice.id == device_id))
+        device = await self.session.scalar(
+            select(UserDevice).where(UserDevice.id == device_id)
+        )
         if device:
             device.last_seen_at = datetime.now(UTC)
             await self.session.flush()
@@ -117,7 +121,9 @@ class DeviceService:
         await self.session.flush()
         return True
 
-    async def get_device_sessions(self, device_id: UUID, user_id: UUID) -> list[UserSession]:
+    async def get_device_sessions(
+        self, device_id: UUID, user_id: UUID
+    ) -> list[UserSession]:
         """Get all sessions for a device."""
         # Verify device belongs to user
         device = await self.get_device(device_id, user_id)

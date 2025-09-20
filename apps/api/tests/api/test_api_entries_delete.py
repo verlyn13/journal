@@ -30,11 +30,15 @@ class TestEntriesDeleteAPI:
         assert response.content == b""
 
         # Verify entry is deleted
-        response = await client.get(f"/api/v1/entries/{sample_entry.id}", headers=auth_headers)
+        response = await client.get(
+            f"/api/v1/entries/{sample_entry.id}", headers=auth_headers
+        )
         assert response.status_code == 404
 
     @pytest.mark.asyncio()
-    async def test_delete_entry_not_found(self, client: AsyncClient, auth_headers: dict[str, str]):
+    async def test_delete_entry_not_found(
+        self, client: AsyncClient, auth_headers: dict[str, str]
+    ):
         """Test deleting non-existent entry."""
         fake_id = str(uuid4())
         response = await client.delete(
@@ -85,7 +89,10 @@ class TestEntriesDeleteAPI:
 
     @pytest.mark.asyncio()
     async def test_delete_entry_with_embedding(
-        self, client: AsyncClient, auth_headers: dict[str, str], db_session: AsyncSession
+        self,
+        client: AsyncClient,
+        auth_headers: dict[str, str],
+        db_session: AsyncSession,
     ):
         """Test deleting entry that has an embedding."""
         # Create entry
@@ -141,7 +148,9 @@ class TestEntriesDeleteAPI:
         assert response.status_code == 404
 
     @pytest.mark.asyncio()
-    async def test_delete_entry_requires_auth(self, client: AsyncClient, sample_entry: Entry):
+    async def test_delete_entry_requires_auth(
+        self, client: AsyncClient, sample_entry: Entry
+    ):
         """Test that deletion requires authentication."""
         response = await client.delete(f"/api/v1/entries/{sample_entry.id}")
 
@@ -149,7 +158,10 @@ class TestEntriesDeleteAPI:
 
     @pytest.mark.asyncio()
     async def test_delete_entry_different_user_allowed(
-        self, client: AsyncClient, auth_headers: dict[str, str], db_session: AsyncSession
+        self,
+        client: AsyncClient,
+        auth_headers: dict[str, str],
+        db_session: AsyncSession,
     ):
         """Test that any authenticated user can delete any entry (current behavior)."""
         # Create entry by different user
@@ -183,7 +195,8 @@ class TestEntriesDeleteAPI:
 
         # Check initial state
         result = await db_session.execute(
-            text("SELECT is_deleted, updated_at FROM entries WHERE id = :id"), {"id": entry_id}
+            text("SELECT is_deleted, updated_at FROM entries WHERE id = :id"),
+            {"id": entry_id},
         )
         row = result.first()
         assert row[0] is False  # is_deleted should be False initially
@@ -198,7 +211,8 @@ class TestEntriesDeleteAPI:
 
         # Check is_deleted is set and updated_at changed
         result = await db_session.execute(
-            text("SELECT is_deleted, updated_at FROM entries WHERE id = :id"), {"id": entry_id}
+            text("SELECT is_deleted, updated_at FROM entries WHERE id = :id"),
+            {"id": entry_id},
         )
         row = result.first()
         assert row[0] is True  # is_deleted should be True

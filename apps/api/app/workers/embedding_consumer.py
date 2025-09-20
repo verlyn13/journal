@@ -91,7 +91,11 @@ class EmbeddingConsumer:
             event_data = data.get("event_data", {})
             event_id = data.get("id")
 
-            logger.info("Processing %s event for entry %s", event_type, event_data.get("entry_id"))
+            logger.info(
+                "Processing %s event for entry %s",
+                event_type,
+                event_data.get("entry_id"),
+            )
 
             # Idempotency: skip if already processed
             if event_id:
@@ -142,21 +146,28 @@ class EmbeddingConsumer:
             # Poison message: DLQ + TERM if enabled
             if os.getenv("OUTBOX_DLQ_ENABLED", "0") == "1":
                 await self._publish_dlq(
-                    {"error": "json_decode", "raw": msg.data.decode(errors="ignore")}, reason=str(e)
+                    {"error": "json_decode", "raw": msg.data.decode(errors="ignore")},
+                    reason=str(e),
                 )
                 if hasattr(msg, "term"):
                     await msg.term()
-                    metrics_inc("worker_process_total", {"result": "term", "reason": "poison"})
+                    metrics_inc(
+                        "worker_process_total", {"result": "term", "reason": "poison"}
+                    )
                     return
             # Default: NAK for redelivery
             if hasattr(msg, "nak"):
                 await msg.nak()
             metrics_inc("worker_process_total", {"result": "retry", "reason": "json"})
         except RateLimitedError:
-            logger.warning("Embedding provider rate-limited or circuit open; NAK for redelivery")
+            logger.warning(
+                "Embedding provider rate-limited or circuit open; NAK for redelivery"
+            )
             if hasattr(msg, "nak"):
                 await msg.nak()
-            metrics_inc("worker_process_total", {"result": "retry", "reason": "ratelimited"})
+            metrics_inc(
+                "worker_process_total", {"result": "retry", "reason": "ratelimited"}
+            )
         except Exception:
             logger.exception("Error processing message")
             # Don't ack on error - let NATS retry
@@ -226,7 +237,9 @@ class EmbeddingConsumer:
             try:
                 # Get all entries that need reindexing
                 result = await session.execute(
-                    select(Entry.id, Entry.title, Entry.content).where(Entry.is_deleted == False)  # noqa: E712 - SQLAlchemy requires ==
+                    select(Entry.id, Entry.title, Entry.content).where(
+                        Entry.is_deleted == False
+                    )  # noqa: E712 - SQLAlchemy requires ==
                 )
                 rows = result.fetchall()
 
@@ -268,7 +281,9 @@ class EmbeddingConsumer:
                 queue="embedding_workers",
                 cb=self.process_entry_event,
                 manual_ack=True,
-                config=ConsumerConfig(max_deliver=int(os.getenv("JS_MAX_DELIVER", "3"))),
+                config=ConsumerConfig(
+                    max_deliver=int(os.getenv("JS_MAX_DELIVER", "3"))
+                ),
             )
 
             # Subscribe to reindex events
@@ -336,7 +351,8 @@ class EmbeddingConsumer:
 async def main() -> None:
     """Main entry point for the embedding consumer worker."""
     logging.basicConfig(
-        level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+        level=logging.INFO,
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     )
 
     consumer = EmbeddingConsumer()

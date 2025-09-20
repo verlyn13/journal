@@ -86,7 +86,9 @@ class TestKeyManager:
 
         with (
             patch.object(key_manager, "_get_current_key_metadata") as mock_get_current,
-            patch.object(key_manager, "_generate_and_activate_initial_key") as mock_init,
+            patch.object(
+                key_manager, "_generate_and_activate_initial_key"
+            ) as mock_init,
             patch.object(key_manager, "_generate_next_key") as mock_next,
         ):
             mock_get_current.return_value = None
@@ -99,11 +101,15 @@ class TestKeyManager:
             mock_next.assert_called_once()
 
     @pytest.mark.asyncio()
-    async def test_initialize_key_system_keys_exist(self, key_manager, sample_key_metadata):
+    async def test_initialize_key_system_keys_exist(
+        self, key_manager, sample_key_metadata
+    ):
         """Test key system initialization when keys already exist."""
         with (
             patch.object(key_manager, "_get_current_key_metadata") as mock_get_current,
-            patch.object(key_manager, "_generate_and_activate_initial_key") as mock_init,
+            patch.object(
+                key_manager, "_generate_and_activate_initial_key"
+            ) as mock_init,
         ):
             mock_get_current.return_value = sample_key_metadata
 
@@ -157,11 +163,15 @@ class TestKeyManager:
             result = await key_manager.get_current_signing_key()
 
             assert result.kid == sample_key_pair.kid
-            mock_infisical.fetch_secret.assert_called_once_with("/auth/jwt/current_private_key")
+            mock_infisical.fetch_secret.assert_called_once_with(
+                "/auth/jwt/current_private_key"
+            )
             mock_redis.setex.assert_called_once()
 
     @pytest.mark.asyncio()
-    async def test_get_current_signing_key_not_found(self, key_manager, mock_redis, mock_infisical):
+    async def test_get_current_signing_key_not_found(
+        self, key_manager, mock_redis, mock_infisical
+    ):
         """Test error when no current signing key is available."""
         # Mock no key found anywhere
         mock_redis.get.return_value = None
@@ -189,7 +199,9 @@ class TestKeyManager:
             assert keys[1].kid == next_key_pair.kid
 
     @pytest.mark.asyncio()
-    async def test_get_verification_keys_current_only(self, key_manager, sample_key_pair):
+    async def test_get_verification_keys_current_only(
+        self, key_manager, sample_key_pair
+    ):
         """Test retrieving verification keys when only current key exists."""
         with (
             patch.object(key_manager, "get_current_signing_key") as mock_current,
@@ -224,7 +236,8 @@ class TestKeyRotation:
         old_metadata = KeyMetadata(
             kid="old-key-123",
             status=KeyStatus.CURRENT,
-            created_at=datetime.now(UTC) - timedelta(days=90),  # Older than DEFAULT_KEY_TTL
+            created_at=datetime.now(UTC)
+            - timedelta(days=90),  # Older than DEFAULT_KEY_TTL
             activated_at=datetime.now(UTC) - timedelta(days=90),
         )
 
@@ -466,7 +479,9 @@ class TestKeyIntegrity:
             assert "Current key invalid" in result["issues"][0]
 
     @pytest.mark.asyncio()
-    async def test_verify_key_integrity_next_key_invalid(self, key_manager, sample_key_pair):
+    async def test_verify_key_integrity_next_key_invalid(
+        self, key_manager, sample_key_pair
+    ):
         """Test integrity verification with invalid next key."""
         with (
             patch.object(key_manager, "get_current_signing_key") as mock_current,
@@ -501,7 +516,9 @@ class TestKeyManagerInternalMethods:
     """Test internal methods of KeyManager."""
 
     @pytest.mark.asyncio()
-    async def test_store_key_metadata(self, key_manager, mock_redis, sample_key_metadata):
+    async def test_store_key_metadata(
+        self, key_manager, mock_redis, sample_key_metadata
+    ):
         """Test storing key metadata in Redis."""
         await key_manager._store_key_metadata(sample_key_metadata)
 
@@ -512,7 +529,9 @@ class TestKeyManagerInternalMethods:
         assert call_args[0][1] == 86400  # 24 hour TTL
 
     @pytest.mark.asyncio()
-    async def test_get_key_metadata_by_status(self, key_manager, mock_redis, sample_key_metadata):
+    async def test_get_key_metadata_by_status(
+        self, key_manager, mock_redis, sample_key_metadata
+    ):
         """Test retrieving key metadata by status."""
         metadata_dict = sample_key_metadata.to_dict()
         mock_redis.get.return_value = json.dumps(metadata_dict).encode()
@@ -562,7 +581,9 @@ class TestKeyManagerInternalMethods:
             mock_audit.assert_called_once()
 
     @pytest.mark.asyncio()
-    async def test_promote_next_to_current(self, key_manager, mock_infisical, sample_key_metadata):
+    async def test_promote_next_to_current(
+        self, key_manager, mock_infisical, sample_key_metadata
+    ):
         """Test promoting next key to current."""
         key_material = Ed25519KeyGenerator.serialize_key_pair(
             Ed25519KeyGenerator.generate_key_pair()
@@ -604,7 +625,9 @@ class TestPerformanceRequirements:
         end_time = time.time()
 
         avg_time = ((end_time - start_time) / 10) * 1000  # Convert to ms
-        assert avg_time < 10, f"Average key generation time {avg_time:.2f}ms exceeds 10ms limit"
+        assert avg_time < 10, (
+            f"Average key generation time {avg_time:.2f}ms exceeds 10ms limit"
+        )
 
     @pytest.mark.asyncio()
     async def test_verification_performance(self, sample_key_pair):
@@ -620,7 +643,9 @@ class TestPerformanceRequirements:
         end_time = time.time()
 
         avg_time = ((end_time - start_time) / 100) * 1000  # Convert to ms
-        assert avg_time < 1, f"Average verification time {avg_time:.2f}ms exceeds 1ms limit"
+        assert avg_time < 1, (
+            f"Average verification time {avg_time:.2f}ms exceeds 1ms limit"
+        )
 
     @pytest.mark.asyncio()
     async def test_serialization_performance(self, sample_key_pair):
@@ -633,7 +658,9 @@ class TestPerformanceRequirements:
         end_time = time.time()
 
         avg_time = ((end_time - start_time) / 100) * 1000  # Convert to ms
-        assert avg_time < 5, f"Average serialization time {avg_time:.2f}ms exceeds 5ms limit"
+        assert avg_time < 5, (
+            f"Average serialization time {avg_time:.2f}ms exceeds 5ms limit"
+        )
 
 
 class TestKeyStatus:
