@@ -283,8 +283,8 @@ jobs:
           echo "3. Manual verification" >> $GITHUB_STEP_SUMMARY
           echo "4. Merge to main" >> $GITHUB_STEP_SUMMARY
 
-      - name: Set commit status
-        if: always()
+      - name: Set commit status (push only)
+        if: always() && github.event_name == 'push'
         uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea
         with:
           script: |

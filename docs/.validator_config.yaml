@@ -1,21 +1,10 @@
 duplicate_name_whitelist:
-  # Allow multiple README.md in scoped subdirectories
-  - README.md
-  - implementation/README.md
-  - guides/README.md
-  - js-api/README.md
-  - user-guide/README.md
-  - schemas/README.md
-  - ci-cd/README.md
-  - development/README.md
-  - schemas/v1/README.md
-  - js-api/fonts/README.md
-  - js-api/scripts/README.md
-  - js-api/styles/README.md
-  - js-api/scripts/prettify/README.md
+  # Whitelist by base filename (lowercase, '-' and ' ' normalized to '_')
+  # The validator compares against base_name.md
+  - readme.md
+  - environment_variables.md
 
 skip_tokens:
   - _generated
   - .backups
   - archive
-

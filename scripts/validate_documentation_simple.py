@@ -41,7 +41,7 @@ def validate_docs(docs_dir: Path = None) -> bool:
     if empty_files:
         print(f"⚠️ Empty files found: {', '.join(str(f) for f in empty_files)}")
 
-    print(f"✅ Documentation validation passed")
+    print("✅ Documentation validation passed")
     print(f"📊 Found {len(md_files)} markdown files")
     return True
 
