@@ -4,19 +4,20 @@ Documentation report generator for Journal application.
 Generates comprehensive HTML and JSON reports for documentation quality.
 """
 
-import json
-import sys
-from pathlib import Path
-from typing import Any, Dict, List
 from datetime import datetime
 from html import escape
+import json
+from pathlib import Path
+import sys
+from typing import Any, Dict, List
+
 
 # Add project root to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 # Import other validation scripts
-from scripts.validate_docs import DocumentValidator
 from scripts.check_doc_coverage import DocumentationCoverageChecker
+from scripts.validate_docs import DocumentValidator
 
 
 class DocumentationReportGenerator:

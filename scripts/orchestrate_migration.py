@@ -5,15 +5,16 @@ Coordinates parallel execution of documentation migration tasks across multiple 
 """
 
 import asyncio
-import json
-import sys
-from pathlib import Path
-from typing import Dict, List, Any, Optional
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
+import json
+from pathlib import Path
 import shutil
+import sys
 from threading import Lock
+from typing import Any, Dict, List, Optional
+
 
 # Add project root to path
 sys.path.insert(0, str(Path(__file__).parent.parent))

@@ -4,11 +4,11 @@ Fix critical documentation issues identified in evaluation.
 Addresses security, localhost refs, and organizational problems.
 """
 
+from collections import defaultdict
+from datetime import datetime
+from pathlib import Path
 import re
 import shutil
-from pathlib import Path
-from datetime import datetime
-from collections import defaultdict
 
 
 class CriticalIssuesFixer:

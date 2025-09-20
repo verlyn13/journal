@@ -4,13 +4,15 @@ Documentation coverage checker for Journal application.
 Analyzes documentation completeness and identifies gaps.
 """
 
-import json
-import sys
-from pathlib import Path
-from typing import Any, Dict
 from collections import defaultdict
 from datetime import datetime
+import json
+from pathlib import Path
+import sys
+from typing import Any, Dict
+
 import yaml
+
 
 # Add project root to path
 sys.path.insert(0, str(Path(__file__).parent.parent))

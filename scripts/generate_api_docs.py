@@ -4,12 +4,14 @@ OpenAPI to Markdown generator for Journal application.
 Generates structured API documentation from FastAPI OpenAPI spec.
 """
 
-import json
-import sys
-from pathlib import Path
-from typing import Any, Dict, List
 from datetime import datetime
+import json
+from pathlib import Path
+import sys
+from typing import Any, Dict, List
+
 import yaml
+
 
 # Add project root to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -28,8 +30,9 @@ class OpenAPIToMarkdownGenerator:
         try:
             # Import FastAPI app
             sys.path.insert(0, str(self.project_root / "apps" / "api"))
-            from app.main import app
             from fastapi.openapi.utils import get_openapi
+
+            from app.main import app
 
             # Generate OpenAPI spec
             openapi_spec = get_openapi(

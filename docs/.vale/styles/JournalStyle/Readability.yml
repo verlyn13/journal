@@ -1,0 +1,7 @@
+---
+extends: readability
+message: "Sentence is too complex (Grade level: %s)."
+level: suggestion
+grade: 12
+metrics:
+  - Flesch-Kincaid

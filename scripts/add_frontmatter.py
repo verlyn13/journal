@@ -4,12 +4,14 @@ Add frontmatter to all documentation files that don't have it.
 Intelligently generates metadata based on file content and location.
 """
 
+from datetime import datetime
+from pathlib import Path
 import re
 import sys
-from pathlib import Path
-from typing import Dict, Optional, List
-from datetime import datetime
+from typing import Dict, List, Optional
+
 import yaml
+
 
 # Add project root to path
 sys.path.insert(0, str(Path(__file__).parent.parent))

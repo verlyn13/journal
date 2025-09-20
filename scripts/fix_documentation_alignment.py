@@ -3,8 +3,8 @@
 Fix misaligned information in documentation files.
 """
 
-import re
 from pathlib import Path
+import re
 
 
 def fix_file(file_path: Path) -> int:

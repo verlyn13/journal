@@ -103,7 +103,7 @@ jobs:
 
       # Python/uv for API + Alembic
       - name: Setup Python
-        uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90311
+        uses: actions/setup-python@e797f83bcb11b83ae66e0230d6156d7c80228e7c
         with:
           python-version: "3.13"
 

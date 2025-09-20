@@ -4,14 +4,15 @@ Documentation validation script to verify documentation is in good shape.
 Run this anytime to check documentation health.
 """
 
-import re
-import yaml
-import json
-from pathlib import Path
-from typing import Dict, Tuple
 from collections import defaultdict
 import contextlib
 import io
+import json
+from pathlib import Path
+import re
+from typing import Dict, Tuple
+
+import yaml
 
 
 class DocumentationValidator:
@@ -435,8 +436,8 @@ class DocumentationValidator:
 
 def main():
     """Main function to run validation."""
-    import sys
     import argparse
+    import sys
 
     parser = argparse.ArgumentParser(description="Validate documentation health")
     parser.add_argument(

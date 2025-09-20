@@ -3,12 +3,13 @@
 Comprehensive Critical Evaluation of Documentation System
 """
 
-import yaml
-import re
-from pathlib import Path
-from collections import defaultdict, Counter
+from collections import Counter, defaultdict
 from datetime import datetime
+from pathlib import Path
+import re
 import statistics
+
+import yaml
 
 
 class DocumentationEvaluator:

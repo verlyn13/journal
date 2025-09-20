@@ -10,8 +10,8 @@ Skips: docs/_generated, docs/archive, docs/.backups
 
 from __future__ import annotations
 
-import re
 from pathlib import Path
+import re
 
 
 def should_skip(path: Path) -> bool:

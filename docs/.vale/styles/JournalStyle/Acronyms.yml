@@ -45,5 +45,3 @@ exceptions:
   - PWA
   - RSA
   - EdDSA
-tokens:
-  - '[A-Z]{3,}'

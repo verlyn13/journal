@@ -17,11 +17,12 @@ from __future__ import annotations
 
 import argparse
 import datetime as dt
-import re
 from pathlib import Path
+import re
 from typing import Any, Dict, Tuple
 
 import yaml
+
 
 DOCS = Path("docs")
 

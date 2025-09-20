@@ -4,10 +4,11 @@ Anonymization script for Journal documentation.
 Removes or replaces sensitive information from documentation.
 """
 
+from pathlib import Path
 import re
 import sys
-from pathlib import Path
 from typing import Dict, List, Tuple
+
 
 # Add project root to path
 sys.path.insert(0, str(Path(__file__).parent.parent))

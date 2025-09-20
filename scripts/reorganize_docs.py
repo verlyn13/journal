@@ -4,11 +4,12 @@ Documentation directory reorganization script for Journal application.
 Reorganizes docs into the new hierarchical structure while preserving links.
 """
 
-import shutil
-import sys
+import json
 from pathlib import Path
 import re
-import json
+import shutil
+import sys
+
 
 # Add project root to path
 sys.path.insert(0, str(Path(__file__).parent.parent))

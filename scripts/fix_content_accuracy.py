@@ -3,8 +3,8 @@
 Fix content accuracy issues in documentation.
 """
 
-import re
 from pathlib import Path
+import re
 
 
 class ContentFixer:

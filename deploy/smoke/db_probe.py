@@ -13,7 +13,7 @@ Usage:
 import os
 import sys
 import traceback
-from typing import Dict, List, Tuple
+from typing import Dict
 
 try:
     import psycopg
@@ -46,32 +46,37 @@ class DatabaseProbe:
                     result = cur.fetchone()
                     if result and result[0] == 1:
                         print("✅ Basic connectivity: OK")
-                        self.details['connectivity'] = "Successfully connected and executed query"
+                        self.details["connectivity"] = (
+                            "Successfully connected and executed query"
+                        )
                         return True
                     else:
                         print("❌ Basic connectivity: Failed - Invalid response")
                         return False
         except Exception as e:
             print(f"❌ Basic connectivity: Failed - {e}")
-            self.details['connectivity'] = f"Error: {e}"
+            self.details["connectivity"] = f"Error: {e}"
             return False
 
     def test_required_extensions(self) -> bool:
         """Test that required PostgreSQL extensions are available"""
         print("🔄 Testing required extensions...")
 
-        required_extensions = ['vector', 'pg_trgm', 'btree_gin']
+        required_extensions = ["vector", "pg_trgm", "btree_gin"]
 
         try:
             with self.connect() as conn:
                 with conn.cursor() as cur:
                     # Check installed extensions
-                    cur.execute("""
+                    cur.execute(
+                        """
                         SELECT extname, extversion
                         FROM pg_extension
                         WHERE extname = ANY(%s)
                         ORDER BY extname;
-                    """, (required_extensions,))
+                    """,
+                        (required_extensions,),
+                    )
 
                     installed = {row[0]: row[1] for row in cur.fetchall()}
 
@@ -84,16 +89,20 @@ class DatabaseProbe:
                             all_present = False
 
                     if all_present:
-                        self.details['extensions'] = f"All required extensions present: {list(installed.keys())}"
+                        self.details["extensions"] = (
+                            f"All required extensions present: {list(installed.keys())}"
+                        )
                         return True
                     else:
                         missing = set(required_extensions) - set(installed.keys())
-                        self.details['extensions'] = f"Missing extensions: {list(missing)}"
+                        self.details["extensions"] = (
+                            f"Missing extensions: {list(missing)}"
+                        )
                         return False
 
         except Exception as e:
             print(f"❌ Extension check failed: {e}")
-            self.details['extensions'] = f"Error: {e}"
+            self.details["extensions"] = f"Error: {e}"
             return False
 
     def test_pgvector_functionality(self) -> bool:
@@ -105,7 +114,7 @@ class DatabaseProbe:
                 with conn.cursor() as cur:
                     # Test vector creation and operations
                     cur.execute("SELECT '[1,2,3]'::vector")
-                    vector1 = cur.fetchone()[0]
+                    cur.fetchone()[0]
 
                     # Test vector distance calculation
                     cur.execute("SELECT '[1,2,3]'::vector <-> '[4,5,6]'::vector")
@@ -113,7 +122,9 @@ class DatabaseProbe:
 
                     # Test vector similarity (should be distance in this case)
                     if distance > 0:
-                        print(f"✅ pgvector: Vector distance calculation works (distance: {distance:.3f})")
+                        print(
+                            f"✅ pgvector: Vector distance calculation works (distance: {distance:.3f})"
+                        )
 
                         # Test with realistic dimensions (OpenAI embedding size)
                         test_vector = f"[{','.join(['0.1'] * 1536)}]"
@@ -121,8 +132,12 @@ class DatabaseProbe:
                         result = cur.fetchone()
 
                         if result:
-                            print("✅ pgvector: 1536-dimension vectors supported (OpenAI compatible)")
-                            self.details['pgvector'] = f"Working with distance calc: {distance:.3f}, 1536-dim supported"
+                            print(
+                                "✅ pgvector: 1536-dimension vectors supported (OpenAI compatible)"
+                            )
+                            self.details["pgvector"] = (
+                                f"Working with distance calc: {distance:.3f}, 1536-dim supported"
+                            )
                             return True
 
                     print("❌ pgvector: Distance calculation returned invalid result")
@@ -130,7 +145,7 @@ class DatabaseProbe:
 
         except Exception as e:
             print(f"❌ pgvector test failed: {e}")
-            self.details['pgvector'] = f"Error: {e}"
+            self.details["pgvector"] = f"Error: {e}"
             return False
 
     def test_full_text_search(self) -> bool:
@@ -141,8 +156,10 @@ class DatabaseProbe:
             with self.connect() as conn:
                 with conn.cursor() as cur:
                     # Test tsvector creation
-                    cur.execute("SELECT to_tsvector('english', 'The quick brown fox jumps over the lazy dog')")
-                    tsvector = cur.fetchone()[0]
+                    cur.execute(
+                        "SELECT to_tsvector('english', 'The quick brown fox jumps over the lazy dog')"
+                    )
+                    cur.fetchone()[0]
 
                     # Test tsquery matching
                     cur.execute("""
@@ -152,7 +169,9 @@ class DatabaseProbe:
                     match_result = cur.fetchone()[0]
 
                     if match_result:
-                        print("✅ Full-text search: Basic tsvector/tsquery operations work")
+                        print(
+                            "✅ Full-text search: Basic tsvector/tsquery operations work"
+                        )
 
                         # Check if entries table has search_vector column
                         cur.execute("""
@@ -163,9 +182,13 @@ class DatabaseProbe:
                         has_search_col = cur.fetchone()[0] > 0
 
                         if has_search_col:
-                            print("✅ Full-text search: entries.search_vector column exists")
+                            print(
+                                "✅ Full-text search: entries.search_vector column exists"
+                            )
 
-                        self.details['fts'] = "tsvector/tsquery working, search_vector column present"
+                        self.details["fts"] = (
+                            "tsvector/tsquery working, search_vector column present"
+                        )
                         return True
                     else:
                         print("❌ Full-text search: Query matching failed")
@@ -173,7 +196,7 @@ class DatabaseProbe:
 
         except Exception as e:
             print(f"❌ Full-text search test failed: {e}")
-            self.details['fts'] = f"Error: {e}"
+            self.details["fts"] = f"Error: {e}"
             return False
 
     def run_all_tests(self) -> Dict[str, bool]:
@@ -181,10 +204,10 @@ class DatabaseProbe:
         print("🚀 Starting comprehensive database probe...\n")
 
         tests = [
-            ('connectivity', self.test_basic_connectivity),
-            ('extensions', self.test_required_extensions),
-            ('pgvector', self.test_pgvector_functionality),
-            ('fts', self.test_full_text_search),
+            ("connectivity", self.test_basic_connectivity),
+            ("extensions", self.test_required_extensions),
+            ("pgvector", self.test_pgvector_functionality),
+            ("fts", self.test_full_text_search),
         ]
 
         for test_name, test_func in tests:
@@ -226,19 +249,23 @@ class DatabaseProbe:
             print("🎉 Database is ready for Supabase deployment!")
             return True
         else:
-            print("⚠️  Database has issues that must be resolved before Supabase deployment.")
+            print(
+                "⚠️  Database has issues that must be resolved before Supabase deployment."
+            )
             return False
 
 
 def main():
     """Main entry point"""
-    database_url = os.getenv('DATABASE_URL')
+    database_url = os.getenv("DATABASE_URL")
     if not database_url:
         print("❌ DATABASE_URL environment variable is required")
         print("Example: DATABASE_URL=postgresql://user:pass@host:port/dbname")
         sys.exit(1)
 
-    print(f"🔍 Probing database: {database_url.split('@')[-1] if '@' in database_url else 'localhost'}")
+    print(
+        f"🔍 Probing database: {database_url.split('@')[-1] if '@' in database_url else 'localhost'}"
+    )
     print()
 
     probe = DatabaseProbe(database_url)
@@ -248,5 +275,5 @@ def main():
     sys.exit(0 if success else 1)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

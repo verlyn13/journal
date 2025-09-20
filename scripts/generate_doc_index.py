@@ -4,13 +4,15 @@ Documentation index generator for Journal application.
 Creates comprehensive index.json and INDEX.md for search and navigation.
 """
 
-import json
-import sys
-from pathlib import Path
-from typing import Any, Dict, List, Optional
 from datetime import datetime
-import yaml
 import hashlib
+import json
+from pathlib import Path
+import sys
+from typing import Any, Dict, List, Optional
+
+import yaml
+
 
 # Add project root to path
 sys.path.insert(0, str(Path(__file__).parent.parent))

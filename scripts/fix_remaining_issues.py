@@ -4,9 +4,9 @@ Fix remaining documentation issues systematically.
 Targets: broken links, tool references, quality issues, outdated content.
 """
 
-import re
-from pathlib import Path
 from collections import defaultdict
+from pathlib import Path
+import re
 
 
 class RemainingIssuesFixer:

@@ -13,10 +13,10 @@ Outputs:
 
 from __future__ import annotations
 
+from dataclasses import asdict, dataclass
 import json
-import re
-from dataclasses import dataclass, asdict
 from pathlib import Path
+import re
 from typing import Any, Dict, List, Set, Tuple
 
 import yaml

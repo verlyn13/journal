@@ -4,15 +4,16 @@ Test script for the parallel documentation migration system.
 Tests basic functionality and parallel execution.
 """
 
+from pathlib import Path
 import sys
 import time
-from pathlib import Path
+
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 from scripts.migration_system.task_orchestrator import (
-    TaskOrchestrator,
     Task as TaskDefinition,
+    TaskOrchestrator,
     TaskStatus,
 )
 from scripts.migration_system.worker_tasks import WorkerTaskLibrary

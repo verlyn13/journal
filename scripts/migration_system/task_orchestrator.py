@@ -5,34 +5,35 @@ Manages task distribution, worker coordination, and state persistence.
 """
 
 import asyncio
-import sqlite3
-import json
-import multiprocessing as mp
-from multiprocessing import Process, Queue, Manager
-from queue import Empty
-from pathlib import Path
-from typing import Dict, List, Set, Optional, Any
-from dataclasses import dataclass, field, asdict
+from dataclasses import asdict, dataclass, field
 from datetime import datetime
 from enum import Enum
-import signal
-import sys
+import json
 import logging
+import multiprocessing as mp
+from multiprocessing import Manager, Process, Queue
+from pathlib import Path
+from queue import Empty
+import signal
+import sqlite3
+import sys
+from typing import Any, Dict, List, Optional, Set
+
 
 # Add rich for beautiful progress monitoring
 try:
     from rich.console import Console
-    from rich.table import Table
+    from rich.layout import Layout
+    from rich.live import Live
+    from rich.panel import Panel
     from rich.progress import (
+        BarColumn,
         Progress,
         SpinnerColumn,
         TextColumn,
-        BarColumn,
         TimeElapsedColumn,
     )
-    from rich.live import Live
-    from rich.layout import Layout
-    from rich.panel import Panel
+    from rich.table import Table
 
     RICH_AVAILABLE = True
 except ImportError:

@@ -15,18 +15,19 @@ Usage:
 """
 
 import argparse
+from datetime import datetime, timedelta
+import hashlib
+import json
 import os
+import random
 import re
 import sys
-from datetime import datetime, timedelta
 from typing import Dict, List, Optional
-import json
-import hashlib
-import random
+
 
 try:
-    import psycopg
     from faker import Faker
+    import psycopg
 except ImportError:
     print("Error: Required packages not installed")
     print("Run: pip install psycopg[binary] faker")

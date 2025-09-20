@@ -10,10 +10,10 @@ Fails if a revision file is produced.
 from __future__ import annotations
 
 import os
+from pathlib import Path
 import shutil
 import sys
 import tempfile
-from pathlib import Path
 
 from alembic import command
 from alembic.config import Config

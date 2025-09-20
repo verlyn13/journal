@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 import json
-import sys
 from pathlib import Path
+import sys
+
 
 sys.path.insert(0, str(Path(__file__).parent.parent / "apps" / "api"))
 
 from app.main import app
+
 
 # Extract OpenAPI spec
 openapi_spec = app.openapi()

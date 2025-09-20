@@ -60,7 +60,7 @@ class DatabaseLoadTester:
                     # Test 3: Small read operation (if entries table exists)
                     try:
                         cur.execute("SELECT COUNT(*) FROM entries")
-                        entry_count = cur.fetchone()[0]
+                        cur.fetchone()[0]
                     except psycopg.errors.UndefinedTable:
                         # Table doesn't exist - skip this test
                         pass
@@ -84,8 +84,12 @@ class DatabaseLoadTester:
 
     def run_load_test(self) -> dict:
         """Run concurrent load test"""
-        print(f"🔄 Starting load test with {self.num_connections} concurrent connections...")
-        print(f"🔗 Database: {self.database_url.split('@')[-1] if '@' in self.database_url else 'localhost'}")
+        print(
+            f"🔄 Starting load test with {self.num_connections} concurrent connections..."
+        )
+        print(
+            f"🔗 Database: {self.database_url.split('@')[-1] if '@' in self.database_url else 'localhost'}"
+        )
 
         # Use ThreadPoolExecutor for concurrent connections
         with cf.ThreadPoolExecutor(max_workers=self.num_connections) as executor:
@@ -112,23 +116,27 @@ class DatabaseLoadTester:
         """Calculate performance statistics"""
         if not self.results:
             return {
-                'success_rate': 0.0,
-                'total_tests': self.num_connections,
-                'successful_tests': 0,
-                'failed_tests': len(self.errors)
+                "success_rate": 0.0,
+                "total_tests": self.num_connections,
+                "successful_tests": 0,
+                "failed_tests": len(self.errors),
             }
 
         stats = {
-            'success_rate': len(self.results) / self.num_connections * 100,
-            'total_tests': self.num_connections,
-            'successful_tests': len(self.results),
-            'failed_tests': len(self.errors),
-            'latency_min_ms': min(self.results),
-            'latency_max_ms': max(self.results),
-            'latency_mean_ms': statistics.mean(self.results),
-            'latency_median_ms': statistics.median(self.results),
-            'latency_p95_ms': statistics.quantiles(self.results, n=20)[18] if len(self.results) > 10 else max(self.results),
-            'latency_p99_ms': statistics.quantiles(self.results, n=100)[98] if len(self.results) > 50 else max(self.results)
+            "success_rate": len(self.results) / self.num_connections * 100,
+            "total_tests": self.num_connections,
+            "successful_tests": len(self.results),
+            "failed_tests": len(self.errors),
+            "latency_min_ms": min(self.results),
+            "latency_max_ms": max(self.results),
+            "latency_mean_ms": statistics.mean(self.results),
+            "latency_median_ms": statistics.median(self.results),
+            "latency_p95_ms": statistics.quantiles(self.results, n=20)[18]
+            if len(self.results) > 10
+            else max(self.results),
+            "latency_p99_ms": statistics.quantiles(self.results, n=100)[98]
+            if len(self.results) > 50
+            else max(self.results),
         }
 
         return stats
@@ -140,21 +148,23 @@ class DatabaseLoadTester:
         print("=" * 60)
 
         # Connection success rate
-        success_rate = stats['success_rate']
-        print(f"Success Rate: {success_rate:.1f}% ({stats['successful_tests']}/{stats['total_tests']})")
+        success_rate = stats["success_rate"]
+        print(
+            f"Success Rate: {success_rate:.1f}% ({stats['successful_tests']}/{stats['total_tests']})"
+        )
 
-        if stats['failed_tests'] > 0:
+        if stats["failed_tests"] > 0:
             print(f"Failed Tests: {stats['failed_tests']}")
             print("First few errors:")
             for error in self.errors[:3]:
                 print(f"  - {error}")
 
-        if stats['successful_tests'] == 0:
+        if stats["successful_tests"] == 0:
             print("❌ No successful connections - cannot calculate latency stats")
             return False
 
         # Latency statistics
-        print(f"\nLatency Statistics:")
+        print("\nLatency Statistics:")
         print(f"  Minimum:  {stats['latency_min_ms']:.1f}ms")
         print(f"  Maximum:  {stats['latency_max_ms']:.1f}ms")
         print(f"  Mean:     {stats['latency_mean_ms']:.1f}ms")
@@ -163,20 +173,24 @@ class DatabaseLoadTester:
         print(f"  P99:      {stats['latency_p99_ms']:.1f}ms")
 
         # Performance assessment
-        print(f"\nPerformance Assessment:")
+        print("\nPerformance Assessment:")
 
         # Thresholds for different environments
-        p95_threshold = float(os.getenv('DB_MAX_LATENCY_P95_MS', '120'))
-        success_threshold = float(os.getenv('DB_MIN_SUCCESS_RATE', '95'))
+        p95_threshold = float(os.getenv("DB_MAX_LATENCY_P95_MS", "120"))
+        success_threshold = float(os.getenv("DB_MIN_SUCCESS_RATE", "95"))
 
-        p95_pass = stats['latency_p95_ms'] <= p95_threshold
+        p95_pass = stats["latency_p95_ms"] <= p95_threshold
         success_pass = success_rate >= success_threshold
 
-        print(f"  P95 Latency: {stats['latency_p95_ms']:.1f}ms {'✅' if p95_pass else '❌'} (target: <{p95_threshold}ms)")
-        print(f"  Success Rate: {success_rate:.1f}% {'✅' if success_pass else '❌'} (target: >{success_threshold}%)")
+        print(
+            f"  P95 Latency: {stats['latency_p95_ms']:.1f}ms {'✅' if p95_pass else '❌'} (target: <{p95_threshold}ms)"
+        )
+        print(
+            f"  Success Rate: {success_rate:.1f}% {'✅' if success_pass else '❌'} (target: >{success_threshold}%)"
+        )
 
         # Connection pooling recommendations
-        if stats['latency_p95_ms'] > 200:
+        if stats["latency_p95_ms"] > 200:
             print("\n⚠️  High latency detected. Consider:")
             print("   - Using Supabase pooled connection string")
             print("   - Reducing DATABASE_POOL_SIZE (try 3-5)")
@@ -191,9 +205,9 @@ class DatabaseLoadTester:
         overall_pass = p95_pass and success_pass
 
         if overall_pass:
-            print(f"\n🎉 Load test PASSED - Ready for Supabase deployment!")
+            print("\n🎉 Load test PASSED - Ready for Supabase deployment!")
         else:
-            print(f"\n❌ Load test FAILED - Issues must be resolved before deployment")
+            print("\n❌ Load test FAILED - Issues must be resolved before deployment")
 
         return overall_pass
 
@@ -221,20 +235,20 @@ class DatabaseLoadTester:
 
 def main():
     """Main entry point"""
-    database_url = os.getenv('DATABASE_URL')
+    database_url = os.getenv("DATABASE_URL")
     if not database_url:
         print("❌ DATABASE_URL environment variable is required")
         print("Example: DATABASE_URL=postgresql://user:pass@host:port/dbname")
         sys.exit(1)
 
     # Get number of concurrent connections to test
-    num_connections = int(os.getenv('DB_LOAD_N', '20'))
+    num_connections = int(os.getenv("DB_LOAD_N", "20"))
     if num_connections > 50:
         print("⚠️  Warning: Testing with >50 connections may overwhelm database")
         print("   Recommended: 5-20 connections for Supabase")
         num_connections = 50
 
-    print(f"🚀 Database Load Testing - Supabase Ready")
+    print("🚀 Database Load Testing - Supabase Ready")
     print(f"📊 Testing {num_connections} concurrent connections\n")
 
     tester = DatabaseLoadTester(database_url, num_connections)
@@ -246,5 +260,5 @@ def main():
     sys.exit(0 if success else 1)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

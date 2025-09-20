@@ -4,15 +4,17 @@ Documentation validation script for Journal application.
 Validates markdown documents against JSON schemas and policy rules.
 """
 
-import json
-import re
-import sys
-from pathlib import Path
-from typing import Any, Dict, List, Tuple
 from dataclasses import dataclass
 from datetime import datetime
+import json
+from pathlib import Path
+import re
+import sys
+from typing import Any, Dict, List, Tuple
+
+from jsonschema import ValidationError, validate
 import yaml
-from jsonschema import validate, ValidationError
+
 
 # Add project root to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -46,7 +48,7 @@ class DocumentValidator:
                 with schema_file.open("r", encoding="utf-8") as f:
                     schema = json.load(f)
                 schemas[schema_file.stem] = schema
-            except Exception as e:
+            except Exception:
                 # Record a minimal placeholder to avoid KeyErrors downstream
                 schemas.setdefault(schema_file.stem, {"$schema": "http://json-schema.org/draft-07/schema#", "type": "object"})
         return schemas

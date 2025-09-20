@@ -5,8 +5,9 @@ This script validates the structure of the documentation directory,
 ensuring that the expected directories exist and contain required files.
 """
 
-import sys
 from pathlib import Path
+import sys
+
 
 # Define the expected structure of the docs directory
 EXPECTED_STRUCTURE = {

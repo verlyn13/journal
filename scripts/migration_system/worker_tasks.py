@@ -4,16 +4,18 @@ Worker task definitions for the documentation migration system.
 Defines all tasks that can be executed by the worker pool.
 """
 
+from dataclasses import dataclass, field
+from datetime import datetime
 import json
+from pathlib import Path
 import re
+import shutil
 import subprocess
 import sys
-from pathlib import Path
-from typing import Dict, List, Optional, Any
-from datetime import datetime
+from typing import Any, Dict, List, Optional
+
 import yaml
-import shutil
-from dataclasses import dataclass, field
+
 
 # Add project root to path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))

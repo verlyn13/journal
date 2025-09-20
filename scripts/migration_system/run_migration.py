@@ -4,18 +4,19 @@ Main runner for the parallel documentation migration system.
 Orchestrates the complete migration process using the task orchestrator.
 """
 
-import sys
-import json
-import time
 import argparse
+import json
 from pathlib import Path
+import sys
+import time
 from typing import Dict, List
+
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 from scripts.migration_system.task_orchestrator import (
-    TaskOrchestrator,
     Task as TaskDefinition,
+    TaskOrchestrator,
 )
 
 

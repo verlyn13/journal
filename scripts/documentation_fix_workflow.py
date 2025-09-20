@@ -8,17 +8,18 @@ Designed for thorough, high-quality, accurate fixes.
 Run with: python scripts/documentation_fix_workflow.py [--step STEP] [--dry-run]
 """
 
-import re
-import yaml
-import json
-import shutil
-from pathlib import Path
-from datetime import datetime
-from typing import Dict, List, Optional
+import argparse
 from collections import defaultdict
+from datetime import datetime
+import json
+from pathlib import Path
+import re
+import shutil
 import subprocess
 import sys
-import argparse
+from typing import Dict, List, Optional
+
+import yaml
 
 
 class DocumentationFixWorkflow:
