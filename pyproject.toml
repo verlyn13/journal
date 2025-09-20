@@ -1,0 +1,27 @@
+# Root-level ruff configuration for CI/CD
+[tool.ruff]
+exclude = [
+    "scripts",
+    "docs.backup.*",
+    ".backups",
+    "_generated",
+    "node_modules",
+    ".git",
+    "__pycache__",
+    ".venv",
+    "venv",
+    ".mypy_cache",
+    ".pytest_cache",
+    ".ruff_cache",
+    "build",
+    "dist",
+    "*.egg-info",
+]
+
+# Minimal configuration - defer to apps/api for detailed rules
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]  # Basic essentials only
+ignore = []
+
+# Apply only to app code, not legacy scripts
+extend-exclude = ["scripts/**"]
