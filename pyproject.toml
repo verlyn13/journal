@@ -2,7 +2,9 @@
 [tool.ruff]
 exclude = [
     "scripts",
+    "scripts/**",
     "docs.backup.*",
+    "docs.backup.*/**",
     ".backups",
     "_generated",
     "node_modules",
@@ -22,6 +24,3 @@ exclude = [
 [tool.ruff.lint]
 select = ["E", "F", "W", "I"]  # Basic essentials only
 ignore = []
-
-# Apply only to app code, not legacy scripts
-extend-exclude = ["scripts/**"]
