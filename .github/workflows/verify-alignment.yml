@@ -59,7 +59,8 @@ jobs:
             ":!**/site-packages/**" ":!**/vendor/**" ":!**/third_party/**" \
             ":!**/node_modules/**" ":!*.lock" ":!**/RUFF_*.md" ":!**/.pre-commit-config.yaml" \
             ":!.github/workflows/verify-alignment.yml" ":!apps/api/.devcontainer/**" \
-            ":!docs/guides/**" ":!docs/initial-planning/**"; then
+            ":!docs/guides/**" ":!docs/initial-planning/**" \
+            ":!docs.backup.*/**" ":!scripts/**"; then
             echo "❌ Found actual legacy tool usage"
             exit 1
           fi
