@@ -133,6 +133,7 @@ exclude = [
     "*.egg-info",
     "alembic/versions",
     "alembic/versions_legacy",
+    "../../scripts",  # Exclude legacy scripts directory
 ]
 
 [tool.ruff.lint]
