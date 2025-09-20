@@ -1,19 +1,18 @@
 from __future__ import annotations
 
 from datetime import UTC, datetime
+import logging
+import os
 from typing import Any
 import uuid
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
-
-# Third-party imports
 import jwt
 from pydantic import BaseModel, EmailStr, Field
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-# Local imports
 from app.domain.auth.auth_service import AuthService
 from app.infra.auth import (
     create_access_token,
@@ -44,6 +43,7 @@ from app.settings import settings
 
 
 router = APIRouter(prefix="/auth", tags=["auth"])
+logger = logging.getLogger(__name__)
 
 
 async def get_auth_service(
@@ -64,8 +64,6 @@ async def get_auth_service(
     if settings.infisical_enabled and settings.env == "production":
         try:
             # Get token from environment or configuration
-            import os
-
             token = os.getenv("INFISICAL_TOKEN", "")
             if token:
                 infisical_client = EnhancedInfisicalClient(
@@ -78,9 +76,6 @@ async def get_auth_service(
                 )
         except Exception as e:
             # Log warning but continue with simple key manager
-            import logging
-
-            logger = logging.getLogger(__name__)
             logger.warning("Failed to initialize Infisical client: %s", e)
 
     auth_service = AuthService(session, redis, infisical_client)
@@ -89,9 +84,6 @@ async def get_auth_service(
     try:
         await auth_service.initialize()
     except Exception as e:
-        import logging
-
-        logger = logging.getLogger(__name__)
         logger.warning("Auth service initialization warning: %s", e)
 
     return auth_service
@@ -157,9 +149,6 @@ async def login(
             }
         except Exception as e:
             # Fallback to legacy tokens if new service fails
-            import logging
-
-            logger = logging.getLogger(__name__)
             logger.warning("New JWT service failed, using legacy: %s", e)
             return {
                 "access_token": create_access_token(str(demo_user_id)),
@@ -211,9 +200,6 @@ async def login(
         )
     except Exception as e:
         # Fallback to legacy tokens
-        import logging
-
-        logger = logging.getLogger(__name__)
         logger.warning("New JWT service failed for real login, using legacy: %s", e)
         access = create_access_token(str(user.id), scopes=user.roles)
         refresh = create_refresh_token(str(user.id), refresh_id=str(sess.refresh_id))
@@ -264,9 +250,6 @@ async def register(
         token = await auth_service.create_verify_token(user_id=user.id)
     except Exception as e:
         # Fallback to legacy token
-        import logging
-
-        logger = logging.getLogger(__name__)
         logger.warning("New JWT service failed for verify token, using legacy: %s", e)
         token = create_verify_token(str(user.id))
 
@@ -337,9 +320,6 @@ async def demo_login(
         }
     except Exception as e:
         # Fallback to legacy tokens
-        import logging
-
-        logger = logging.getLogger(__name__)
         logger.warning("New JWT service failed for demo, using legacy: %s", e)
         user_id = str(demo_user_id)
         return {
@@ -415,9 +395,6 @@ async def refresh(
                 }
             except Exception as e:
                 # Fall through to legacy handling
-                import logging
-
-                logger = logging.getLogger(__name__)
                 logger.warning("New JWT refresh failed, trying legacy: %s", e)
                 raise ValueError("New service failed") from e
 
@@ -537,10 +514,7 @@ async def get_jwks(
     try:
         return await auth_service.get_jwks()
     except Exception as e:
-        import logging
-
-        logger = logging.getLogger(__name__)
-        logger.error("Failed to get JWKS: %s", e)
+        logger.exception("Failed to get JWKS")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to retrieve verification keys",
@@ -558,10 +532,7 @@ async def auth_health(
     try:
         return await auth_service.get_system_health()
     except Exception as e:
-        import logging
-
-        logger = logging.getLogger(__name__)
-        logger.error("Auth health check failed: %s", e)
+        logger.exception("Auth health check failed")
         return {
             "healthy": False,
             "error": str(e),

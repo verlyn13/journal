@@ -3,10 +3,10 @@
 Add frontmatter to documentation files that don't have it.
 """
 
-from datetime import datetime
+from datetime import UTC, datetime
 from pathlib import Path
 import sys
-from typing import Dict
+from typing import Any
 
 import yaml
 
@@ -56,7 +56,7 @@ def extract_description(content: str) -> str:
     return description or "Documentation for Journal application"
 
 
-def categorize_file(file_path: Path) -> Dict[str, any]:
+def categorize_file(file_path: Path) -> dict[str, Any]:
     """Categorize file based on path and content."""
     path_str = str(file_path)
 
@@ -102,7 +102,7 @@ def categorize_file(file_path: Path) -> Dict[str, any]:
     tags = []
     parts = file_path.parts
     for part in parts:
-        if part not in ["docs", ".", ".."] and not part.endswith(".md"):
+        if part not in {"docs", ".", ".."} and not part.endswith(".md"):
             # Clean up the part
             tag = part.replace("-", "_").replace(" ", "_").lower()
             if tag and tag not in tags:
@@ -148,8 +148,8 @@ def generate_frontmatter(file_path: Path, content: str) -> str:
         "title": title,
         "description": description,
         "type": categories["type"],
-        "created": datetime.now().strftime("%Y-%m-%d"),
-        "updated": datetime.now().strftime("%Y-%m-%d"),
+        "created": datetime.now(UTC).strftime("%Y-%m-%d"),
+        "updated": datetime.now(UTC).strftime("%Y-%m-%d"),
         "author": "Journal Team",
         "tags": categories["tags"],
         "priority": categories["priority"],
@@ -159,7 +159,7 @@ def generate_frontmatter(file_path: Path, content: str) -> str:
     }
 
     # Add version for certain types
-    if categories["type"] in ["api", "implementation"]:
+    if categories["type"] in {"api", "implementation"}:
         frontmatter["version"] = "1.0.0"
 
     return yaml.dump(frontmatter, default_flow_style=False, sort_keys=False)

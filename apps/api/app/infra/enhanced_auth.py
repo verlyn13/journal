@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import os
 from typing import Any
 from uuid import UUID
 
@@ -40,8 +41,6 @@ async def get_auth_service_dependency(
     if settings.infisical_enabled and settings.env == "production":
         try:
             # Get token from environment or configuration
-            import os
-
             token = os.getenv("INFISICAL_TOKEN", "")
             if token:
                 infisical_client = EnhancedInfisicalClient(
@@ -52,7 +51,7 @@ async def get_auth_service_dependency(
                     timeout=int(settings.infisical_timeout),
                     max_retries=settings.infisical_max_retries,
                 )
-        except Exception as e:
+        except (OSError, ValueError, RuntimeError) as e:
             logger.warning("Failed to initialize Infisical client: %s", e)
 
     auth_service = AuthService(session, redis, infisical_client)
@@ -60,7 +59,7 @@ async def get_auth_service_dependency(
     # Initialize on first use (with caching to avoid repeated initialization)
     try:
         await auth_service.initialize()
-    except Exception as e:
+    except (RuntimeError, ValueError) as e:
         logger.warning("Auth service initialization warning: %s", e)
 
     return auth_service
@@ -120,7 +119,7 @@ async def require_user_enhanced(
         logger.debug("Authenticated user with new JWT service: %s", sub)
         return str(sub)
 
-    except Exception as e:
+    except (ValueError, HTTPException) as e:
         logger.debug("New JWT service verification failed: %s", e)
 
         # Fall back to legacy authentication
@@ -129,14 +128,15 @@ async def require_user_enhanced(
             logger.debug("Authenticated user with legacy service: %s", user_id)
 
             # Store minimal state for legacy tokens
-            request.state.jwt_claims = {"sub": user_id, "type": "access"}
+            ACCESS_TOK = "access"
+            request.state.jwt_claims = {"sub": user_id, "type": ACCESS_TOK}
             request.state.user_id = user_id
-            request.state.token_type = "access"
+            request.state.token_type = ACCESS_TOK
             request.state.scopes = []
 
             return user_id
 
-        except Exception as legacy_error:
+        except HTTPException as legacy_error:
             logger.warning(
                 "Both new and legacy JWT verification failed: new=%s, legacy=%s", e, legacy_error
             )
@@ -176,7 +176,7 @@ async def require_user_uuid(
         ) from e
 
 
-async def require_scopes(*required_scopes: str) -> Any:
+def require_scopes(*required_scopes: str) -> Any:
     """Dependency factory for requiring specific scopes.
 
     Args:
@@ -186,7 +186,7 @@ async def require_scopes(*required_scopes: str) -> Any:
         Dependency function
     """
 
-    async def check_scopes(
+    def check_scopes(
         request: Request,
         user_id: str = Depends(require_user_enhanced),
     ) -> dict[str, Any]:

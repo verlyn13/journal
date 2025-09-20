@@ -18,20 +18,24 @@ except ImportError:
     sys.exit(1)
 
 
+def _read_env_vars(env_file: Path) -> dict[str, str]:
+    env_vars: dict[str, str] = {}
+    if env_file.exists():
+        with env_file.open() as f:
+            for line_raw in f:
+                line = line_raw.strip()
+                if line and not line.startswith("#") and "=" in line:
+                    key, value = line.split("=", 1)
+                    env_vars[key] = value
+    return env_vars
+
+
 async def test_connection():
     """Test database connection to Supabase using pooler URLs."""
 
     # Read env file
     env_file = Path(__file__).parent.parent.parent / ".env.production.minimal"
-    env_vars = {}
-
-    if env_file.exists():
-        with open(env_file) as f:
-            for line in f:
-                line = line.strip()
-                if line and not line.startswith("#") and "=" in line:
-                    key, value = line.split("=", 1)
-                    env_vars[key] = value
+    env_vars = _read_env_vars(env_file)
 
     # Try session mode first (port 5432) for local dev
     session_url = env_vars.get("DATABASE_URL_SESSION")
@@ -95,7 +99,7 @@ async def test_connection():
             print("\n✅ Session mode connection test passed!")
             return True
 
-        except Exception as e:
+        except (asyncpg.PostgresError, OSError, ValueError) as e:
             print(f"❌ Session mode connection failed: {e}")
             print("\nTroubleshooting:")
             print("1. Check connection string format:")
@@ -117,7 +121,7 @@ async def test_connection():
             print(f"✅ Transaction mode connected: {version.split(',')[0]}")
             await conn.close()
             return True
-        except Exception as e:
+        except (asyncpg.PostgresError, OSError, ValueError) as e:
             print(f"❌ Transaction mode failed: {e}")
 
     return False
@@ -149,7 +153,7 @@ async def test_with_env_override():
             print(f"✅ Connected with manual URL: {version}")
             await conn.close()
             return True
-        except Exception as e:
+        except (asyncpg.PostgresError, OSError, ValueError) as e:
             print(f"❌ Manual connection failed: {e}")
 
     return False
