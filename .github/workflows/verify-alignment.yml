@@ -61,8 +61,8 @@ jobs:
         working-directory: apps/api
         run: |
           uvx ruff==0.13.0 clean
-          uvx ruff==0.13.0 check . --output-format=github
-          uvx ruff==0.13.0 format --check .
+          uvx ruff==0.13.0 check . --config pyproject.toml --output-format=github
+          uvx ruff==0.13.0 format --config pyproject.toml --check .
           echo "✅ All linting and formatting checks pass"
 
       - name: Docker Python version check
