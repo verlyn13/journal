@@ -1,12 +1,12 @@
 {
-  "generated_at": "2025-09-18T20:17:04.021281",
+  "generated_at": "2025-09-19T16:05:33.395237",
   "stats": {
-    "total_files": 222,
+    "total_files": 229,
     "unknown_types": 31,
-    "unknown_tags": 7,
-    "missing_sections": 299,
-    "stale_docs": 0,
-    "invalid_status": 24,
+    "unknown_tags": 16,
+    "missing_sections": 303,
+    "stale_docs": 4,
+    "invalid_status": 27,
     "invalid_priority": 0
   },
   "issues": [
@@ -184,6 +184,71 @@
       "file": "deployment/PRE_DEPLOYMENT_CHECKLIST.md",
       "message": "Invalid status 'active'",
       "kind": "status"
+    },
+    {
+      "file": "deployment/PRE_DEPLOYMENT_CHECKLIST.md",
+      "message": "Stale by 154 days (age 244d > SLA 90d)",
+      "kind": "freshness"
+    },
+    {
+      "file": "deployment/supabase-configuration.md",
+      "message": "Invalid status 'current'",
+      "kind": "status"
+    },
+    {
+      "file": "deployment/supabase-configuration.md",
+      "message": "Stale by 153 days (age 243d > SLA 90d)",
+      "kind": "freshness"
+    },
+    {
+      "file": "deployment/environment-variables.md",
+      "message": "Unknown tags: environment",
+      "kind": "tags"
+    },
+    {
+      "file": "deployment/environment-variables.md",
+      "message": "Invalid status 'current'",
+      "kind": "status"
+    },
+    {
+      "file": "deployment/environment-variables.md",
+      "message": "Stale by 153 days (age 243d > SLA 90d)",
+      "kind": "freshness"
+    },
+    {
+      "file": "deployment/vercel-deployment.md",
+      "message": "Unknown tags: hosting, cdn",
+      "kind": "tags"
+    },
+    {
+      "file": "deployment/vercel-deployment.md",
+      "message": "Invalid status 'current'",
+      "kind": "status"
+    },
+    {
+      "file": "deployment/vercel-deployment.md",
+      "message": "Stale by 153 days (age 243d > SLA 90d)",
+      "kind": "freshness"
+    },
+    {
+      "file": "deployment/architecture.md",
+      "message": "Missing sections: Overview, Components, Data Flow, Security",
+      "kind": "sections"
+    },
+    {
+      "file": "deployment/architecture.md",
+      "message": "Unknown tags: architecture",
+      "kind": "tags"
+    },
+    {
+      "file": "deployment/monitoring.md",
+      "message": "Unknown tags: observability, alerts",
+      "kind": "tags"
+    },
+    {
+      "file": "deployment/runbook.md",
+      "message": "Unknown tags: runbook, operations, oncall",
+      "kind": "tags"
     },
     {
       "file": "security/ADVANCED_AUTH.md",

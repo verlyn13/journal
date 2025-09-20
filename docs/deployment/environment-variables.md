@@ -6,6 +6,7 @@ type: reference
 status: current
 created: 2025-01-19
 updated: 2025-01-19
+author: Journal Team
 dependencies:
   - supabase-configuration
   - vercel-deployment
@@ -48,7 +49,7 @@ journal/
 
 ```env
 # API Configuration
-VITE_API_URL=/api                    # Production: /api, Dev: http://localhost:8000
+VITE_API_URL=/api                    # Production: /api, Dev: http://localhost:5000
 VITE_APP_NAME=Journal                 # Application name
 VITE_APP_VERSION=1.0.0                # Version for display
 
@@ -102,7 +103,7 @@ JOURNAL_ENV                           # development | staging | production
 
 # Server
 API_HOST=0.0.0.0                      # Bind host
-API_PORT=8000                         # API port
+API_PORT=5000                         # API port
 
 # CORS
 CORS_ORIGINS                          # Comma-separated allowed origins
@@ -115,9 +116,9 @@ CORS_ORIGINS                          # Comma-separated allowed origins
 ```env
 NODE_ENV=development
 JOURNAL_ENV=development
-VITE_API_URL=http://localhost:8000
+VITE_API_URL=http://localhost:5000
 DATABASE_URL=postgresql://postgres.ecmnzrtsuajatmuahooa:[PASSWORD]@aws-1-us-west-1.pooler.supabase.com:5432/postgres
-CORS_ORIGINS=http://localhost:3000,http://localhost:5173,http://localhost:8000
+CORS_ORIGINS=http://localhost:5173,http://localhost:5000
 JOURNAL_WEBAUTHN_RP_ID=localhost
 JOURNAL_WEBAUTHN_ORIGIN=http://localhost:5173
 ```

@@ -2,8 +2,8 @@
 id: docs-status-report
 title: Documentation Status Report
 type: report
-created: 2025-09-18T20:18:04.195332
-updated: 2025-09-18T20:18:04.195332
+created: 2025-09-19T16:05:29.322371
+updated: 2025-09-19T16:05:29.322371
 author: documentation-system
 tags: [documentation, status]
 ---
@@ -13,19 +13,26 @@ tags: [documentation, status]
 ## Summary
 
 - Health (quick): 80/100
-- Frontmatter: 226 (100%)
-- Validator total files: 206
-- Broken links: 5
+- Frontmatter: 233 (100%)
+- Validator total files: 213
+- Broken links: 0
 - Tool issues: 0
 - Quality issues: 0
-- Outdated content: 0
-- Heuristic tool scan (context mentions): 65
+- Outdated content: 2
+- Heuristic tool scan (context mentions): 67
 
 ## Orphans
 
-- Count: 1
+- Count: 8
 - Examples:
   - `deployment/PRE_DEPLOYMENT_CHECKLIST.md`
+  - `deployment/architecture.md`
+  - `deployment/database-migration.md`
+  - `deployment/environment-variables.md`
+  - `deployment/monitoring.md`
+  - `deployment/runbook.md`
+  - `deployment/supabase-configuration.md`
+  - `deployment/vercel-deployment.md`
 
 ## Large Documents
 
@@ -52,6 +59,6 @@ tags: [documentation, status]
   - docs/implementation/IMPLEMENTATION_GUIDE.md:1707: [npm] - Established a standard frontend build pipeline using modern JavaScript tools (npm, Vite).
   - docs/status/CHANGELOG.md:1074: [npm] - **Frontend Build Process:** Established using `npm`, Vite, and PostCSS. Dependencies installed and build configuration (`Vite.config.js`) created.
   - docs/code-mirror/example-bundled.md:36: [npm] Modern JavaScript libraries like CodeMirror are typically organized as a collection of modules. While browsers can now load ES modules natively, their current dependency resolution mechanisms aren't sophisticated enough to efficiently handle NPM-distributed module collections.
+  - docs/deployment/vercel-deployment.md:56: [npm] Vercel natively supports Bun (as of 2025). No need to convert to npm.
+  - docs/deployment/vercel-deployment.md:165: [npm] npm i -g vercel
   - docs/development/DEVELOPMENT_FRAMEWORK.md:184: [npm] **NEVER use npm, bun, or pnpm**
-  - docs/project-config/CLAUDE.md:23: [npm] - bun for frontend tooling (NEVER npm/bun)
-  - docs/project-config/CODEX-SETUP.md:131: [npm] - **ALWAYS** use `bun` for JS/TS operations (never npm/bun)

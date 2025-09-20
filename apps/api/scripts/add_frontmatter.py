@@ -182,7 +182,7 @@ def add_frontmatter_to_file(file_path: Path) -> bool:
     """Add frontmatter to a single file."""
     try:
         # Read file
-        with open(file_path, "r", encoding="utf-8") as f:
+        with file_path.open("r", encoding="utf-8") as f:
             content = f.read()
 
         # Check if already has frontmatter
@@ -197,13 +197,13 @@ def add_frontmatter_to_file(file_path: Path) -> bool:
         new_content = f"---\n{frontmatter}---\n\n{content}"
 
         # Write back
-        with open(file_path, "w", encoding="utf-8") as f:
+        with file_path.open("w", encoding="utf-8") as f:
             f.write(new_content)
 
         print(f"  ✓ Added frontmatter: {file_path}")
         return True
 
-    except Exception as e:
+    except (OSError, UnicodeDecodeError, yaml.YAMLError) as e:
         print(f"  ✗ Error processing {file_path}: {e}")
         return False
 

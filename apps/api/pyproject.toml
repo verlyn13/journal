@@ -132,6 +132,7 @@ exclude = [
     "dist",
     "*.egg-info",
     "alembic/versions",
+    "alembic/versions_legacy",
 ]
 
 [tool.ruff.lint]

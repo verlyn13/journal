@@ -758,15 +758,98 @@
       ]
     },
     "deployment/PRE_DEPLOYMENT_CHECKLIST.md": {
-      "id": "PRE_DEPLOYMENT_CHECKLIST",
+      "id": "pre-deployment-checklist",
       "path": "deployment/PRE_DEPLOYMENT_CHECKLIST.md",
       "title": "Pre-Deployment Checklist",
-      "type": "",
+      "type": "guide",
       "tags": [
         "deployment",
         "checklist",
         "vercel",
         "supabase"
+      ]
+    },
+    "deployment/supabase-configuration.md": {
+      "id": "supabase-configuration",
+      "path": "deployment/supabase-configuration.md",
+      "title": "Supabase Configuration",
+      "type": "guide",
+      "tags": [
+        "supabase",
+        "database",
+        "postgresql",
+        "deployment",
+        "configuration"
+      ]
+    },
+    "deployment/environment-variables.md": {
+      "id": "environment-variables",
+      "path": "deployment/environment-variables.md",
+      "title": "Environment Variables Configuration",
+      "type": "reference",
+      "tags": [
+        "environment",
+        "configuration",
+        "deployment",
+        "security"
+      ]
+    },
+    "deployment/vercel-deployment.md": {
+      "id": "vercel-deployment",
+      "path": "deployment/vercel-deployment.md",
+      "title": "Vercel Deployment Configuration",
+      "type": "guide",
+      "tags": [
+        "vercel",
+        "deployment",
+        "hosting",
+        "cdn",
+        "monitoring"
+      ]
+    },
+    "deployment/architecture.md": {
+      "id": "deployment-architecture",
+      "path": "deployment/architecture.md",
+      "title": "Deployment Architecture Overview",
+      "type": "architecture",
+      "tags": [
+        "deployment",
+        "architecture",
+        "vercel",
+        "supabase"
+      ]
+    },
+    "deployment/database-migration.md": {
+      "id": "database-migration",
+      "path": "deployment/database-migration.md",
+      "title": "Database Migration Guide",
+      "type": "guide",
+      "tags": [
+        "database",
+        "migration",
+        "supabase"
+      ]
+    },
+    "deployment/monitoring.md": {
+      "id": "monitoring-setup",
+      "path": "deployment/monitoring.md",
+      "title": "Monitoring & Observability Setup",
+      "type": "guide",
+      "tags": [
+        "monitoring",
+        "observability",
+        "alerts"
+      ]
+    },
+    "deployment/runbook.md": {
+      "id": "production-runbook",
+      "path": "deployment/runbook.md",
+      "title": "Production Runbook",
+      "type": "reference",
+      "tags": [
+        "runbook",
+        "operations",
+        "oncall"
       ]
     },
     "db/extensions.md": {
@@ -2564,6 +2647,26 @@
       "deployment/monitoring.md",
       "deployment/runbook.md"
     ],
+    "deployment/supabase-configuration.md": [
+      "deployment/data-policy.md",
+      "deployment/environment-variables.md",
+      "deployment/vercel-deployment.md",
+      "deployment/vercel-supabase-strategy.md"
+    ],
+    "deployment/environment-variables.md": [
+      "deployment/supabase-configuration.md",
+      "deployment/vercel-deployment.md",
+      "infrastructure/INFISICAL_ARCHITECTURE.md",
+      "infrastructure/error-handling-logging.md"
+    ],
+    "deployment/vercel-deployment.md": [
+      "deployment/environment-variables.md",
+      "deployment/supabase-configuration.md"
+    ],
+    "deployment/architecture.md": [],
+    "deployment/database-migration.md": [],
+    "deployment/monitoring.md": [],
+    "deployment/runbook.md": [],
     "db/extensions.md": [],
     "schemas/README.md": [],
     "security/ADVANCED_AUTH.md": [],
@@ -2720,113 +2823,35 @@
     "initial-planning/personal-guide/deployment.md": []
   },
   "backlinks": {
-    "implementation/documentation-specialist-role.md": [
+    "archive/implementation-phases/09-phase-nine-editor-refinement.md": [
+      "INDEX.md"
+    ],
+    "guides/docstring-tools-report.md": [
       "INDEX.md",
-      "implementation/README.md"
+      "guides/README.md"
     ],
-    "audits/documentation-assessment-report.md": [
-      "INDEX.md"
-    ],
-    "archive/status-updates/2025-04-08-code-mirror-documentation-integration.md": [
-      "INDEX.md"
-    ],
-    "initial-planning/editor-implementation.md": [
-      "INDEX.md",
-      "implementation/IMPLEMENTATION_GUIDE.md"
-    ],
-    "workflows/agent-workflows.md": [
-      "INDEX.md"
-    ],
-    "biome/internals/architecture.md": [
-      "INDEX.md"
-    ],
-    "audits/documentation-validation-report.md": [
-      "INDEX.md"
-    ],
-    "ci-cd/CI_CD_GUIDE.md": [
-      "INDEX.md",
-      "ci-cd/README.md"
-    ],
-    "templates/troubleshooting-template.md": [
-      "INDEX.md",
-      "guides/documentation-templates.md"
-    ],
-    "deployment/data-policy.md": [
-      "INDEX.md"
-    ],
-    "biome/reference/configuration.md": [
-      "INDEX.md"
-    ],
-    "archive/status-updates/2025-04-08-phase-18-started.md": [
+    "initial-planning/api-contract-guide.md": [
       "INDEX.md"
     ],
     "guides/data-model.md": [
       "INDEX.md",
       "guides/README.md"
     ],
-    "ci-cd/CI_CHECKLIST.md": [
+    "meta/REORGANIZATION_PLAN.md": [
+      "INDEX.md"
+    ],
+    "migrations/ruff-progressive-autofixing.md": [
+      "INDEX.md"
+    ],
+    "implementation/guide/01-overview.md": [
+      "INDEX.md",
+      "implementation/IMPLEMENTATION_GUIDE.md"
+    ],
+    "ci-cd/CI_INVESTIGATION_REPORT.md": [
       "INDEX.md",
       "ci-cd/README.md"
     ],
-    "ci-cd/MERGE-CHECKLIST.md": [
-      "INDEX.md",
-      "ci-cd/README.md"
-    ],
-    "archive/status-updates/2025-04-08-phase-12-complete.md": [
-      "INDEX.md"
-    ],
-    "guides/documentation-review-process.md": [
-      "INDEX.md",
-      "guides/README.md"
-    ],
-    "README.md": [
-      "INDEX.md"
-    ],
-    "guides/diagramming-approach.md": [
-      "INDEX.md",
-      "guides/README.md"
-    ],
-    "editor-upgrade/archive/editor-upgrade-v2.md": [
-      "INDEX.md"
-    ],
-    "editor-upgrade/archive/COMPREHENSIVE-DIFF-REPORT.md": [
-      "INDEX.md"
-    ],
-    "archive/REACT-19-MIGRATION.md": [
-      "INDEX.md"
-    ],
-    "archive/implementation-phases/13-phase-thirteen-structure-refactor.md": [
-      "INDEX.md"
-    ],
-    "archive/USER_MANAGEMENT_ORCHESTRATEV9.md": [
-      "INDEX.md"
-    ],
-    "archive/status-updates/2025-04-08-phase-15-complete.md": [
-      "INDEX.md"
-    ],
-    "archive/implementation-phases/07-phase-seven-summary.md": [
-      "INDEX.md"
-    ],
-    "archive/status-updates/2025-04-08-phase-14-complete.md": [
-      "INDEX.md"
-    ],
-    "guides/documentation-testing-process.md": [
-      "INDEX.md",
-      "guides/README.md"
-    ],
-    "archive/status-updates/2025-04-06-phase-2-complete.md": [
-      "INDEX.md"
-    ],
-    "archive/implementation-phases/01-phase-one-summary.md": [
-      "INDEX.md"
-    ],
-    "archive/implementation-phases/06-phase-six-summary.md": [
-      "INDEX.md"
-    ],
-    "editor-upgrade/archive/V2-COMPREHENSIVE-DIFF-REPORT.md": [
-      "INDEX.md"
-    ],
-    "project-config/CLAUDE.md": [
+    "audits/documentation-assessment-report.md": [
       "INDEX.md"
     ],
     "guides/js-api-docs.md": [
@@ -2834,36 +2859,803 @@
       "guides/README.md",
       "initial-planning/JSDoc-implementation.md"
     ],
-    "security/DEPLOYMENT_AWARE_AUTH.md": [
+    "project-config/GEMINI.md": [
       "INDEX.md"
     ],
-    "archive/USER_MANAGEMENT_ORCHESTRATEV6.md": [
+    "archive/status-updates/2025-04-08-phase-16-complete.md": [
       "INDEX.md"
     ],
-    "ci-cd/CI_INVESTIGATION_REPORT.md": [
-      "INDEX.md",
-      "ci-cd/README.md"
-    ],
-    "archive/implementation-phases/05-phase-five-testing-scripts.md": [
+    "development/python/RUFF_UPGRADE_PLAN.md": [
       "INDEX.md"
     ],
-    "bun/configuration/bunfig.md": [
+    "archive/status-updates/2025-04-07-stabilization-post-phase-8.md": [
       "INDEX.md"
     ],
-    "adr/adr-0001-python-3.13-ruff-0.13.md": [
+    "implementation-summaries/PROJECT-INTEGRATION.md": [
       "INDEX.md"
     ],
-    "archive/status-updates/2025-04-06-phase-3-complete.md": [
+    "archive/implementation-phases/12-phase-twelve-summary.md": [
       "INDEX.md"
     ],
-    "archive/status-updates/2025-04-08-phase-10-complete.md": [
+    "infrastructure/observability-setup.md": [
+      "INDEX.md"
+    ],
+    "planning/enhance-journal-app.md": [
+      "INDEX.md"
+    ],
+    "editor-upgrade/archive/editor-upgrade-v2.md": [
+      "INDEX.md"
+    ],
+    "migrations/to-typescript.md": [
       "INDEX.md"
     ],
     "initial-planning/deployment-script-guide.md": [
       "INDEX.md",
       "implementation/IMPLEMENTATION_GUIDE.md"
     ],
+    "project-config/CLAUDE.md": [
+      "INDEX.md"
+    ],
+    "guides/commands-quick-reference.md": [
+      "INDEX.md",
+      "README.md"
+    ],
+    "ci-cd/CI_CHECKLIST.md": [
+      "INDEX.md",
+      "ci-cd/README.md"
+    ],
+    "archive/implementation-phases/08-phase-eight-summary.md": [
+      "INDEX.md"
+    ],
+    "archive/status-updates/2025-04-08-code-mirror-documentation-integration.md": [
+      "INDEX.md"
+    ],
+    "biome/recipes/ci-setup.md": [
+      "INDEX.md"
+    ],
+    "reports/PYTHON_RUFF_ALIGNMENT_REPORT.md": [
+      "INDEX.md"
+    ],
+    "editor-upgrade/TYPE-SYSTEM-STRATEGY.md": [
+      "INDEX.md"
+    ],
+    "design/refactor-ui-design.md": [
+      "INDEX.md"
+    ],
+    "archive/implementation-phases/17-phase-seventeen-documentation-qa.md": [
+      "INDEX.md"
+    ],
+    "editor-upgrade/VITEST-MIGRATION-IMPACT.md": [
+      "INDEX.md"
+    ],
+    "code-mirror/quick-reference.md": [
+      "INDEX.md",
+      "guides/codemirror-integration.md",
+      "status/CHANGELOG.md"
+    ],
+    "development/USAGE-GUIDE.md": [
+      "INDEX.md",
+      "development/README.md"
+    ],
+    "archive/REACT-19-CHANGES.md": [
+      "INDEX.md",
+      "implementation-summaries/ROLLOUT-PLAN.md"
+    ],
+    "archive/status-updates/2025-04-08-phase-14-complete.md": [
+      "INDEX.md"
+    ],
+    "archive/implementation-phases/02-phase-two-entry-crud.md": [
+      "INDEX.md"
+    ],
+    "reports/docs-status.md": [
+      "INDEX.md"
+    ],
+    "adr/adr-0001-python-3.13-ruff-0.13.md": [
+      "INDEX.md"
+    ],
+    "initial-planning/testing.md": [
+      "INDEX.md",
+      "implementation/IMPLEMENTATION_GUIDE.md"
+    ],
+    "initial-planning/mvp-high-level-implementation-guide.md": [
+      "INDEX.md",
+      "implementation/IMPLEMENTATION_GUIDE.md"
+    ],
+    "archive/status-updates/2025-04-08-phase-16-started.md": [
+      "INDEX.md"
+    ],
+    "archive/REACT-19-FIXES.md": [
+      "INDEX.md",
+      "implementation-summaries/ROLLOUT-PLAN.md"
+    ],
+    "implementation/README.md": [
+      "INDEX.md"
+    ],
+    "ci-cd/MERGE-CHECKLIST.md": [
+      "INDEX.md",
+      "ci-cd/README.md"
+    ],
+    "archive/implementation-phases/06-phase-six-tags.md": [
+      "INDEX.md"
+    ],
+    "code-mirror/reference-manual-part3.md": [
+      "INDEX.md",
+      "guides/codemirror-integration.md"
+    ],
+    "bun/api/http-server.md": [
+      "INDEX.md"
+    ],
+    "archive/implementation-phases/05-phase-five-summary.md": [
+      "INDEX.md"
+    ],
+    "archive/REACT-19-MIGRATION.md": [
+      "INDEX.md"
+    ],
+    "meta/TESTING_STATUS.md": [
+      "INDEX.md"
+    ],
+    "archive/status-updates/2025-04-08-phase-11-complete.md": [
+      "INDEX.md"
+    ],
+    "bun/getting-started/package-manager.md": [
+      "INDEX.md"
+    ],
+    "initial-planning/structure-update.md": [
+      "INDEX.md"
+    ],
+    "guides/authentication.md": [
+      "INDEX.md",
+      "guides/README.md"
+    ],
+    "audits/documentation-inventory.md": [
+      "INDEX.md",
+      "status/CHANGELOG.md"
+    ],
+    "archive/STORYBOOK-9-MIGRATION.md": [
+      "INDEX.md"
+    ],
+    "guides/ci-cd-workflow.md": [
+      "INDEX.md",
+      "guides/README.md"
+    ],
+    "bun/deployment/environment-variables.md": [
+      "INDEX.md"
+    ],
+    "biome/reference/cli.md": [
+      "INDEX.md"
+    ],
+    "archive/USER_MANAGEMENT_ORCHESTRATEV7.md": [
+      "INDEX.md"
+    ],
+    "bun/deployment/standalone-executables.md": [
+      "INDEX.md"
+    ],
+    "initial-planning/editor-implementation.md": [
+      "INDEX.md",
+      "implementation/IMPLEMENTATION_GUIDE.md"
+    ],
+    "archive/status-updates/2025-04-06-phase-5-complete.md": [
+      "INDEX.md"
+    ],
+    "archive/implementation-phases/04-phase-four-deploy-test-setup.md": [
+      "INDEX.md"
+    ],
+    "archive/implementation-phases/14-phase-fourteen-documentation-foundation.md": [
+      "INDEX.md"
+    ],
+    "code-mirror/reference-manual-part4.md": [
+      "INDEX.md"
+    ],
+    "initial-planning/error-handling.md": [
+      "INDEX.md"
+    ],
+    "features/user-management/USER_MANAGEMENT_IMPLEMENTATION.md": [
+      "INDEX.md"
+    ],
+    "workflows/hx-ax-workflows.md": [
+      "INDEX.md"
+    ],
+    "design/UI_DESIGN_UPDATE_PLAN.md": [
+      "INDEX.md"
+    ],
+    "archive/status-updates/2025-04-06-phase-3-complete.md": [
+      "INDEX.md"
+    ],
+    "templates/api-reference-template.md": [
+      "INDEX.md",
+      "guides/documentation-templates.md"
+    ],
+    "ci-cd/PR-CHECKLIST.md": [
+      "INDEX.md",
+      "ci-cd/README.md"
+    ],
+    "templates/tutorial-template.md": [
+      "INDEX.md",
+      "guides/documentation-templates.md"
+    ],
+    "code-mirror/example-config.md": [
+      "INDEX.md"
+    ],
+    "archive/implementation-phases/15-phase-fifteen-core-documentation.md": [
+      "INDEX.md"
+    ],
+    "archive/implementation-phases/09-phase-nine-summary.md": [
+      "INDEX.md"
+    ],
+    "guides/documentation-contribution-guide.md": [
+      "INDEX.md",
+      "README.md"
+    ],
+    "implementation/documentation-specialist-execution-plan.md": [
+      "INDEX.md",
+      "implementation/README.md"
+    ],
+    "future-features/jwt-security-hardening.md": [
+      "INDEX.md"
+    ],
+    "editor-upgrade/archive/COMPREHENSIVE-DIFF-REPORT.md": [
+      "INDEX.md"
+    ],
+    "archive/implementation-phases/03-phase-three-ui-refinements.md": [
+      "INDEX.md"
+    ],
+    "editor-upgrade/archive/V2-COMPREHENSIVE-DIFF-REPORT.md": [
+      "INDEX.md"
+    ],
+    "guides/jsdoc-standards.md": [
+      "INDEX.md",
+      "guides/README.md",
+      "initial-planning/JSDoc-implementation.md"
+    ],
+    "archive/implementation-phases/06-phase-six-summary.md": [
+      "INDEX.md"
+    ],
+    "guides/documentation-update-checklist.md": [
+      "INDEX.md",
+      "guides/README.md"
+    ],
+    "debugging/phase-13-rollup-manifest-issue.md": [
+      "INDEX.md"
+    ],
+    "meta/doc-upgrade.md": [
+      "INDEX.md"
+    ],
+    "archive/status-updates/2025-04-07-phase-6-complete.md": [
+      "INDEX.md"
+    ],
+    "initial-planning/personal-guide/overview.md": [
+      "INDEX.md",
+      "initial-planning/comprehensive-guide-personal.md"
+    ],
+    "archive/REACT-19-MIGRATION-COMPLETE.md": [
+      "INDEX.md"
+    ],
+    "design/theme.md": [
+      "INDEX.md"
+    ],
+    "archive/status-updates/2025-04-08-phase-10-complete.md": [
+      "INDEX.md"
+    ],
+    "workflows/dual-language-setup.md": [
+      "INDEX.md"
+    ],
+    "archive/status-updates/2025-04-08-phase-15-complete.md": [
+      "INDEX.md"
+    ],
+    "security/DEPLOYMENT_AWARE_AUTH.md": [
+      "INDEX.md"
+    ],
+    "investigations/DEEP_INVESTIGATION_DIRECTIVE.md": [
+      "INDEX.md"
+    ],
+    "archive/REACT-19-MIGRATION-ISSUES.md": [
+      "INDEX.md"
+    ],
+    "archive/status-updates/2025-04-06-phase-2-complete.md": [
+      "INDEX.md"
+    ],
+    "archive/status-updates/2025-04-06-phase-1-complete.md": [
+      "INDEX.md"
+    ],
+    "archive/USER_MANAGEMENT_ORCHESTRATEV3.md": [
+      "INDEX.md"
+    ],
+    "guides/README.md": [
+      "INDEX.md"
+    ],
+    "ci-cd/overview.md": [
+      "INDEX.md",
+      "ci-cd/README.md"
+    ],
+    "biome/guides/configure-biome.md": [
+      "INDEX.md"
+    ],
+    "initial-planning/personal-guide/architecture.md": [
+      "INDEX.md",
+      "initial-planning/comprehensive-guide-personal.md"
+    ],
+    "initial-planning/personal-guide/frontend.md": [
+      "INDEX.md",
+      "initial-planning/comprehensive-guide-personal.md"
+    ],
+    "code-mirror/example-basic.md": [
+      "INDEX.md",
+      "guides/codemirror-integration.md"
+    ],
+    "initial-planning/single-config.md": [
+      "INDEX.md"
+    ],
+    "implementation/local-act-testing-plan.md": [
+      "INDEX.md",
+      "implementation/README.md"
+    ],
+    "archive/USER_MANAGEMENT_ORCHESTRATEV5.md": [
+      "INDEX.md"
+    ],
+    "code-mirror/system-guide.md": [
+      "INDEX.md",
+      "guides/codemirror-integration.md"
+    ],
+    "workflows/agent-workflows.md": [
+      "INDEX.md"
+    ],
+    "templates/concept-guide-template.md": [
+      "INDEX.md",
+      "guides/documentation-templates.md"
+    ],
+    "initial-planning/personal-guide/backend.md": [
+      "INDEX.md",
+      "initial-planning/comprehensive-guide-personal.md"
+    ],
+    "initial-planning/JSDoc-implementation.md": [
+      "INDEX.md",
+      "guides/js-api-docs.md"
+    ],
+    "editor-upgrade/archive/editor-upgrade.md": [
+      "INDEX.md"
+    ],
+    "meta/DOCUMENTATION_ARCHITECTURE.md": [
+      "INDEX.md"
+    ],
+    "archive/implementation-phases/12-phase-twelve-editor-bugfix-layout.md": [
+      "INDEX.md"
+    ],
+    "archive/status-updates/USER_MANAGEMENT_STATUS_2025-09-10.md": [
+      "INDEX.md"
+    ],
+    "testing/PERFORMANCE-BASELINE.md": [
+      "INDEX.md"
+    ],
+    "code-mirror/reference-manual-part1.md": [
+      "INDEX.md",
+      "guides/codemirror-integration.md"
+    ],
+    "deployment/vercel-supabase-strategy.md": [
+      "INDEX.md",
+      "deployment/supabase-configuration.md"
+    ],
+    "biome/reference/formatter.md": [
+      "INDEX.md"
+    ],
+    "code-mirror/extensions-reference.md": [
+      "INDEX.md",
+      "guides/codemirror-integration.md"
+    ],
+    "archive/implementation-phases/05-phase-five-testing-scripts.md": [
+      "INDEX.md"
+    ],
+    "archive/implementation-phases/11-phase-eleven-editor-features.md": [
+      "INDEX.md"
+    ],
+    "archive/status-updates/2025-04-06-phase-4-complete.md": [
+      "INDEX.md"
+    ],
+    "archive/USER_MANAGEMENT_ORCHESTRATEV9.md": [
+      "INDEX.md"
+    ],
+    "design/UI_DESIGN_SPECIFICATION.md": [
+      "INDEX.md"
+    ],
+    "archive/implementation-phases/18-phase-eighteen-ci-cd-implementation.md": [
+      "INDEX.md"
+    ],
+    "reports/large-docs-plan.md": [
+      "INDEX.md"
+    ],
+    "archive/status-updates/2025-04-08-phase-18-started.md": [
+      "INDEX.md"
+    ],
+    "typescript-migration/migration-guide.md": [
+      "INDEX.md"
+    ],
+    "project-config/CODEX-SETUP.md": [
+      "INDEX.md"
+    ],
+    "guides/act-reference.md": [
+      "INDEX.md",
+      "guides/README.md"
+    ],
+    "deployment/vercel-supabase-migration-assessment.md": [
+      "INDEX.md"
+    ],
+    "planning/PHASE_5_ENHANCEMENT_PLAN.md": [
+      "INDEX.md"
+    ],
+    "guides/documentation-metrics.md": [
+      "INDEX.md",
+      "guides/README.md"
+    ],
+    "project-config/documentation-instructions.md": [
+      "INDEX.md"
+    ],
+    "archive/status-updates/2025-04-08-phase-12-complete.md": [
+      "INDEX.md"
+    ],
+    "audits/documentation-validation-report.md": [
+      "INDEX.md"
+    ],
+    "initial-planning/comprehensive-guide-personal.md": [
+      "INDEX.md",
+      "implementation/IMPLEMENTATION_GUIDE.md"
+    ],
+    "features/user-management/USER_MANAGEMENT_STARTER_DIFFS.md": [
+      "INDEX.md"
+    ],
+    "meta/DEFINITION_OF_DONE.md": [
+      "INDEX.md"
+    ],
+    "db/extensions.md": [
+      "INDEX.md"
+    ],
+    "archive/status-updates/2025-04-08-phase-17-complete.md": [
+      "INDEX.md"
+    ],
+    "archive/status-updates/2025-04-07-phase-8-complete.md": [
+      "INDEX.md"
+    ],
+    "archive/status-updates/2025-04-08-phase-15-started.md": [
+      "INDEX.md"
+    ],
+    "archive/implementation-phases/13-phase-thirteen-structure-refactor.md": [
+      "INDEX.md"
+    ],
+    "planning/PHASE_5_MASTER_PLAN.md": [
+      "INDEX.md"
+    ],
+    "biome/guides/getting-started.md": [
+      "INDEX.md"
+    ],
+    "bun/api/sql.md": [
+      "INDEX.md"
+    ],
+    "editor-upgrade/FINAL-IMPLEMENTATION-WORKFLOW.md": [
+      "INDEX.md"
+    ],
+    "guides/documentation-templates.md": [
+      "INDEX.md",
+      "guides/README.md"
+    ],
+    "ci-cd/PR_SUMMARY.md": [
+      "INDEX.md",
+      "ci-cd/README.md"
+    ],
+    "guides/gh-cli.md": [
+      "INDEX.md",
+      "guides/README.md"
+    ],
+    "infrastructure/infisical-cli-useage.md": [
+      "INDEX.md"
+    ],
+    "bun/getting-started/installation.md": [
+      "INDEX.md"
+    ],
+    "archive/implementation-phases/11-phase-eleven-summary.md": [
+      "INDEX.md"
+    ],
+    "guides/editor-architecture.md": [
+      "INDEX.md",
+      "code-mirror/quick-reference.md",
+      "guides/README.md",
+      "status/CHANGELOG.md"
+    ],
+    "archive/USER_MANAGEMENT_ORCHESTRATEV8.md": [
+      "INDEX.md"
+    ],
+    "biome/reference/linter.md": [
+      "INDEX.md"
+    ],
+    "guides/api-reference.md": [
+      "INDEX.md",
+      "guides/README.md"
+    ],
+    "development/RUNNING_THE_APP.md": [
+      "INDEX.md",
+      "development/README.md"
+    ],
+    "templates/component-doc-template.md": [
+      "INDEX.md",
+      "guides/documentation-templates.md"
+    ],
+    "archive/implementation-phases/03-phase-three-summary.md": [
+      "INDEX.md"
+    ],
+    "development/python/RUFF_AND_PYTHON_UPGRADE_SUMMARY.md": [
+      "INDEX.md"
+    ],
+    "ci-cd/dev-setup.md": [
+      "INDEX.md",
+      "ci-cd/README.md"
+    ],
+    "bun/configuration/bunfig.md": [
+      "INDEX.md"
+    ],
+    "deployment/data-policy.md": [
+      "INDEX.md",
+      "deployment/supabase-configuration.md"
+    ],
+    "archive/implementation-phases/08-phase-eight-editor-integration.md": [
+      "INDEX.md"
+    ],
+    "development/BACKEND_ARCHITECTURE.md": [
+      "INDEX.md",
+      "development/README.md"
+    ],
+    "archive/status-updates/2025-04-08-phase-18-complete.md": [
+      "INDEX.md"
+    ],
+    "implementation/guide/05-ops.md": [
+      "INDEX.md",
+      "implementation/IMPLEMENTATION_GUIDE.md"
+    ],
+    "guides/request-lifecycle.md": [
+      "INDEX.md",
+      "guides/README.md"
+    ],
+    "editor-upgrade/VITEST-TESTING-SETUP.md": [
+      "INDEX.md"
+    ],
+    "archive/implementation-phases/01-phase-one-setup-auth.md": [
+      "INDEX.md"
+    ],
+    "meta/reference-docs.md": [
+      "INDEX.md"
+    ],
+    "reports/documentation-fix-report.md": [
+      "INDEX.md"
+    ],
+    "api/v1/entries.md": [
+      "INDEX.md"
+    ],
+    "reports/UI_UX_STRATEGY_REPORT.md": [
+      "INDEX.md"
+    ],
+    "implementation/guide/02-setup.md": [
+      "INDEX.md",
+      "implementation/IMPLEMENTATION_GUIDE.md"
+    ],
+    "biome/internals/changelog.md": [
+      "INDEX.md"
+    ],
+    "editor-upgrade/BULLETPROOF-IMPLEMENTATION-PLAN.md": [
+      "INDEX.md"
+    ],
+    "archive/implementation-phases/16-phase-sixteen-documentation-expansion.md": [
+      "INDEX.md"
+    ],
+    "biome/internals/architecture.md": [
+      "INDEX.md"
+    ],
+    "user-guide/troubleshooting.md": [
+      "INDEX.md"
+    ],
+    "code-mirror/example-tab-handling.md": [
+      "INDEX.md",
+      "guides/codemirror-integration.md"
+    ],
+    "infrastructure/error-handling-logging.md": [
+      "INDEX.md",
+      "deployment/environment-variables.md"
+    ],
+    "initial-planning/state-management-guide.md": [
+      "INDEX.md"
+    ],
+    "archive/implementation-phases/04-phase-four-summary.md": [
+      "INDEX.md"
+    ],
+    "archive/status-updates/2025-04-08-phase-14-started.md": [
+      "INDEX.md"
+    ],
+    "ci-cd/CI_CD_GUIDE.md": [
+      "INDEX.md",
+      "ci-cd/README.md"
+    ],
+    "infrastructure/hosting-secure.md": [
+      "INDEX.md"
+    ],
+    "biome/releases/v2-release.md": [
+      "INDEX.md"
+    ],
+    "archive/USER_MANAGEMENT_ORCHESTRATEV6.md": [
+      "INDEX.md"
+    ],
+    "archive/implementation-phases/18-phase-eighteen-documentation-integration.md": [
+      "INDEX.md"
+    ],
+    "user-guide/README.md": [
+      "INDEX.md"
+    ],
+    "code-mirror/example-bundled.md": [
+      "INDEX.md",
+      "guides/codemirror-integration.md"
+    ],
+    "archive/status-updates/2025-04-07-phase-7-complete.md": [
+      "INDEX.md"
+    ],
+    "archive/implementation-phases/10-phase-ten-summary.md": [
+      "INDEX.md"
+    ],
+    "migrations/REACT-19-WORKFLOW.md": [
+      "INDEX.md"
+    ],
+    "guides/markdown-linting-guide.md": [
+      "INDEX.md",
+      "guides/README.md"
+    ],
+    "archive/implementation-phases/07-phase-seven-summary.md": [
+      "INDEX.md"
+    ],
+    "biome/guides/editor-extensions.md": [
+      "INDEX.md"
+    ],
+    "guides/python-docstring-standards.md": [
+      "INDEX.md",
+      "guides/README.md"
+    ],
+    "features/user-management/USER_MANAGEMENT.md": [
+      "INDEX.md"
+    ],
+    "implementation/documentation-specialist-role.md": [
+      "INDEX.md",
+      "implementation/README.md"
+    ],
+    "reports/DESIGN_AND_TOOLING_REPORT.md": [
+      "INDEX.md"
+    ],
+    "guides/architecture-overview.md": [
+      "INDEX.md",
+      "guides/README.md"
+    ],
+    "archive/USER_MANAGEMENT_ORCHESTRATEV2.md": [
+      "INDEX.md"
+    ],
+    "migrations/move-to-fastapi.md": [
+      "INDEX.md"
+    ],
+    "security/ADVANCED_AUTH.md": [
+      "INDEX.md"
+    ],
+    "guides/documentation-testing-process.md": [
+      "INDEX.md",
+      "guides/README.md"
+    ],
+    "implementation/guide/04-features.md": [
+      "INDEX.md",
+      "implementation/IMPLEMENTATION_GUIDE.md"
+    ],
+    "editor-upgrade/reference/security-and-corrections.md": [
+      "INDEX.md"
+    ],
+    "bun/api/file-io.md": [
+      "INDEX.md"
+    ],
+    "biome/guides/migrate-eslint-prettier.md": [
+      "INDEX.md"
+    ],
+    "archive/status-updates/2025-04-08-phase-17-started.md": [
+      "INDEX.md"
+    ],
+    "proposals/ci-cd-documentation-checks.md": [
+      "INDEX.md"
+    ],
+    "archive/status-updates/2025-04-08-documentation-specialist-mode-added.md": [
+      "INDEX.md"
+    ],
+    "bun/getting-started/quickstart.md": [
+      "INDEX.md"
+    ],
+    "meta/reference-docs-started.md": [
+      "INDEX.md"
+    ],
+    "infrastructure/INFISICAL_ARCHITECTURE.md": [
+      "INDEX.md",
+      "deployment/environment-variables.md"
+    ],
+    "archive/implementation-phases/07-phase-seven-ui-ux.md": [
+      "INDEX.md"
+    ],
+    "archive/USER_MANAGEMENT_ORCHESTRATEV1.md": [
+      "INDEX.md"
+    ],
+    "implementation/guide/03-workflows.md": [
+      "INDEX.md",
+      "implementation/IMPLEMENTATION_GUIDE.md"
+    ],
+    "reports/LINTING_REPORT.md": [
+      "INDEX.md"
+    ],
+    "implementation-summaries/ROLLOUT-PLAN.md": [
+      "INDEX.md"
+    ],
+    "code-mirror/reference-manual-part2.md": [
+      "INDEX.md",
+      "guides/codemirror-integration.md"
+    ],
+    "archive/implementation-phases/01-phase-one-summary.md": [
+      "INDEX.md"
+    ],
+    "development/python/RUFF_VERIFICATION_REPORT.md": [
+      "INDEX.md"
+    ],
+    "bun/configuration/typescript.md": [
+      "INDEX.md"
+    ],
     "development/python/fastapi-boostrap-starter.md": [
+      "INDEX.md"
+    ],
+    "INDEX.md": [
+      "INDEX.md",
+      "README.md"
+    ],
+    "security/token-enhancement.md": [
+      "INDEX.md"
+    ],
+    "project-config/AGENTS.md": [
+      "INDEX.md"
+    ],
+    "implementation-summaries/SECURITY_HARDENING_IMPLEMENTATION.md": [
+      "INDEX.md"
+    ],
+    "development/README.md": [
+      "INDEX.md"
+    ],
+    "user-guide/faq.md": [
+      "INDEX.md"
+    ],
+    "initial-planning/agentic-workflow.md": [
+      "INDEX.md",
+      "implementation/IMPLEMENTATION_GUIDE.md"
+    ],
+    "archive/implementation-phases/02-phase-two-summary.md": [
+      "INDEX.md"
+    ],
+    "archive/status-updates/2025-04-08-phase-18-ci-cd-complete.md": [
+      "INDEX.md"
+    ],
+    "meta/MIGRATION_CHECKLIST.md": [
+      "INDEX.md"
+    ],
+    "biome/reference/configuration.md": [
+      "INDEX.md"
+    ],
+    "development/python/fastapi-boostrap-helper.md": [
+      "INDEX.md"
+    ],
+    "development/DEVELOPMENT_FRAMEWORK.md": [
+      "INDEX.md",
+      "development/README.md"
+    ],
+    "guides/diagramming-approach.md": [
+      "INDEX.md",
+      "guides/README.md"
+    ],
+    "guides/infisical-self-hosted.md": [
+      "INDEX.md",
+      "guides/README.md"
+    ],
+    "README.md": [
+      "INDEX.md"
+    ],
+    "debugging/phase-12-editor-summary.md": [
       "INDEX.md"
     ],
     "implementation/IMPLEMENTATION_GUIDE.md": [
@@ -2872,778 +3664,103 @@
       "implementation/README.md",
       "status/CHANGELOG.md"
     ],
-    "archive/USER_MANAGEMENT_ORCHESTRATEV8.md": [
+    "meta/ORCHESTRATION_WORKFLOW.md": [
       "INDEX.md"
-    ],
-    "implementation/guide/05-ops.md": [
-      "INDEX.md",
-      "implementation/IMPLEMENTATION_GUIDE.md"
-    ],
-    "archive/status-updates/2025-04-08-phase-18-ci-cd-complete.md": [
-      "INDEX.md"
-    ],
-    "archive/implementation-phases/10-phase-ten-summary.md": [
-      "INDEX.md"
-    ],
-    "bun/getting-started/package-manager.md": [
-      "INDEX.md"
-    ],
-    "archive/implementation-phases/09-phase-nine-summary.md": [
-      "INDEX.md"
-    ],
-    "guides/request-lifecycle.md": [
-      "INDEX.md",
-      "guides/README.md"
-    ],
-    "guides/editor-architecture.md": [
-      "INDEX.md",
-      "code-mirror/quick-reference.md",
-      "guides/README.md",
-      "status/CHANGELOG.md"
-    ],
-    "implementation/local-act-testing-plan.md": [
-      "INDEX.md",
-      "implementation/README.md"
-    ],
-    "archive/status-updates/2025-04-08-phase-18-complete.md": [
-      "INDEX.md"
-    ],
-    "templates/tutorial-template.md": [
-      "INDEX.md",
-      "guides/documentation-templates.md"
-    ],
-    "code-mirror/example-basic.md": [
-      "INDEX.md",
-      "guides/codemirror-integration.md"
-    ],
-    "archive/implementation-phases/08-phase-eight-editor-integration.md": [
-      "INDEX.md"
-    ],
-    "bun/api/sql.md": [
-      "INDEX.md"
-    ],
-    "biome/internals/changelog.md": [
-      "INDEX.md"
-    ],
-    "archive/status-updates/2025-04-08-phase-17-started.md": [
-      "INDEX.md"
-    ],
-    "code-mirror/example-bundled.md": [
-      "INDEX.md",
-      "guides/codemirror-integration.md"
-    ],
-    "ci-cd/dev-setup.md": [
-      "INDEX.md",
-      "ci-cd/README.md"
-    ],
-    "archive/status-updates/USER_MANAGEMENT_STATUS_2025-09-10.md": [
-      "INDEX.md"
-    ],
-    "debugging/phase-12-editor-summary.md": [
-      "INDEX.md"
-    ],
-    "code-mirror/reference-manual-part4.md": [
-      "INDEX.md"
-    ],
-    "meta/DOCUMENTATION_ROADMAP.md": [
-      "INDEX.md"
-    ],
-    "archive/REACT-19-CHANGES.md": [
-      "INDEX.md",
-      "implementation-summaries/ROLLOUT-PLAN.md"
-    ],
-    "ci-cd/PR-CHECKLIST.md": [
-      "INDEX.md",
-      "ci-cd/README.md"
-    ],
-    "investigations/DEEP_INVESTIGATION_DIRECTIVE.md": [
-      "INDEX.md"
-    ],
-    "project-config/GEMINI.md": [
-      "INDEX.md"
-    ],
-    "initial-planning/personal-guide/architecture.md": [
-      "INDEX.md",
-      "initial-planning/comprehensive-guide-personal.md"
-    ],
-    "guides/api-reference.md": [
-      "INDEX.md",
-      "guides/README.md"
-    ],
-    "guides/gh-cli.md": [
-      "INDEX.md",
-      "guides/README.md"
-    ],
-    "archive/USER_MANAGEMENT_ORCHESTRATEV2.md": [
-      "INDEX.md"
-    ],
-    "initial-planning/mvp-high-level-implementation-guide.md": [
-      "INDEX.md",
-      "implementation/IMPLEMENTATION_GUIDE.md"
-    ],
-    "deployment/vercel-supabase-strategy.md": [
-      "INDEX.md"
-    ],
-    "implementation-summaries/INFISICAL_IMPLEMENTATION_SUMMARY.md": [
-      "INDEX.md"
-    ],
-    "archive/implementation-phases/10-phase-ten-favicon.md": [
-      "INDEX.md"
-    ],
-    "archive/implementation-phases/03-phase-three-ui-refinements.md": [
-      "INDEX.md"
-    ],
-    "reports/large-docs-plan.md": [
-      "INDEX.md"
-    ],
-    "workflows/hx-ax-workflows.md": [
-      "INDEX.md"
-    ],
-    "archive/implementation-phases/04-phase-four-deploy-test-setup.md": [
-      "INDEX.md"
-    ],
-    "guides/infisical-self-hosted.md": [
-      "INDEX.md",
-      "guides/README.md"
-    ],
-    "archive/implementation-phases/18-phase-eighteen-documentation-integration.md": [
-      "INDEX.md"
-    ],
-    "db/extensions.md": [
-      "INDEX.md"
-    ],
-    "guides/act-reference.md": [
-      "INDEX.md",
-      "guides/README.md"
-    ],
-    "migrations/to-typescript.md": [
-      "INDEX.md"
-    ],
-    "archive/status-updates/2025-04-07-stabilization-post-phase-8.md": [
-      "INDEX.md"
-    ],
-    "archive/STORYBOOK-9-MIGRATION.md": [
-      "INDEX.md"
-    ],
-    "guides/documentation-update-checklist.md": [
-      "INDEX.md",
-      "guides/README.md"
     ],
     "ci-cd/CI_FIX_WORKFLOW.md": [
       "INDEX.md",
       "ci-cd/README.md"
     ],
-    "archive/status-updates/2025-04-08-phase-9-complete.md": [
-      "INDEX.md"
-    ],
-    "code-mirror/example-tab-handling.md": [
-      "INDEX.md",
-      "guides/codemirror-integration.md"
-    ],
-    "ci-cd/overview.md": [
-      "INDEX.md",
-      "ci-cd/README.md"
-    ],
-    "archive/status-updates/2025-04-07-phase-7-complete.md": [
-      "INDEX.md"
-    ],
-    "editor-upgrade/VITEST-TESTING-SETUP.md": [
-      "INDEX.md"
-    ],
-    "security/token-enhancement.md": [
-      "INDEX.md"
-    ],
-    "doc-update/doc-organize-plan.md": [
-      "INDEX.md"
-    ],
-    "ci-cd/README.md": [
-      "INDEX.md"
-    ],
-    "archive/implementation-phases/14-phase-fourteen-documentation-foundation.md": [
-      "INDEX.md"
-    ],
-    "guides/authentication.md": [
-      "INDEX.md",
-      "guides/README.md"
-    ],
-    "archive/implementation-phases/06-phase-six-tags.md": [
-      "INDEX.md"
-    ],
-    "implementation/guide/02-setup.md": [
-      "INDEX.md",
-      "implementation/IMPLEMENTATION_GUIDE.md"
-    ],
-    "development/USAGE-GUIDE.md": [
-      "INDEX.md",
-      "development/README.md"
-    ],
-    "reports/PYTHON_RUFF_ALIGNMENT_REPORT.md": [
-      "INDEX.md"
-    ],
-    "implementation/guide/03-workflows.md": [
-      "INDEX.md",
-      "implementation/IMPLEMENTATION_GUIDE.md"
-    ],
-    "biome/reference/cli.md": [
-      "INDEX.md"
-    ],
-    "code-mirror/reference-manual-part3.md": [
-      "INDEX.md",
-      "guides/codemirror-integration.md"
-    ],
-    "implementation/README.md": [
-      "INDEX.md"
-    ],
-    "biome/guides/migrate-eslint-prettier.md": [
-      "INDEX.md"
-    ],
-    "bun/deployment/environment-variables.md": [
-      "INDEX.md"
-    ],
-    "archive/status-updates/2025-04-08-phase-16-started.md": [
-      "INDEX.md"
-    ],
-    "bun/api/websockets.md": [
-      "INDEX.md"
-    ],
-    "archive/implementation-phases/05-phase-five-summary.md": [
-      "INDEX.md"
-    ],
-    "initial-planning/error-handling.md": [
-      "INDEX.md"
-    ],
-    "planning/PHASE_5_MASTER_PLAN.md": [
-      "INDEX.md"
-    ],
-    "reports/docs-status.md": [
-      "INDEX.md"
-    ],
-    "planning/enhance-journal-app.md": [
-      "INDEX.md"
-    ],
-    "biome/recipes/ci-setup.md": [
-      "INDEX.md"
-    ],
-    "templates/concept-guide-template.md": [
-      "INDEX.md",
-      "guides/documentation-templates.md"
-    ],
-    "archive/USER_MANAGEMENT_ORCHESTRATEV5.md": [
-      "INDEX.md"
-    ],
-    "INDEX.md": [
-      "INDEX.md",
-      "README.md"
-    ],
-    "features/user-management/USER_MANAGEMENT_STARTER_DIFFS.md": [
-      "INDEX.md"
-    ],
-    "archive/REACT-19-MIGRATION-ISSUES.md": [
-      "INDEX.md"
-    ],
-    "archive/status-updates/2025-04-08-phase-14-started.md": [
-      "INDEX.md"
-    ],
-    "development/DEVELOPMENT_FRAMEWORK.md": [
-      "INDEX.md",
-      "development/README.md"
-    ],
-    "reports/LINTING_REPORT.md": [
-      "INDEX.md"
-    ],
-    "bun/configuration/typescript.md": [
-      "INDEX.md"
-    ],
-    "guides/documentation-metrics.md": [
-      "INDEX.md",
-      "guides/README.md"
-    ],
-    "biome/guides/getting-started.md": [
-      "INDEX.md"
-    ],
-    "status/CHANGELOG.md": [
-      "INDEX.md",
-      "README.md"
-    ],
-    "meta/doc-upgrade.md": [
-      "INDEX.md"
-    ],
-    "initial-planning/personal-guide/frontend.md": [
-      "INDEX.md",
-      "initial-planning/comprehensive-guide-personal.md"
-    ],
-    "meta/ORCHESTRATION_WORKFLOW.md": [
-      "INDEX.md"
-    ],
-    "guides/python-docstring-standards.md": [
-      "INDEX.md",
-      "guides/README.md"
-    ],
-    "meta/DEFINITION_OF_DONE.md": [
-      "INDEX.md"
-    ],
-    "archive/status-updates/2025-04-08-documentation-specialist-mode-added.md": [
-      "INDEX.md"
-    ],
-    "bun/api/file-io.md": [
-      "INDEX.md"
-    ],
-    "infrastructure/INFISICAL_ARCHITECTURE.md": [
-      "INDEX.md"
-    ],
-    "meta/MIGRATION_CHECKLIST.md": [
-      "INDEX.md"
-    ],
-    "user-guide/troubleshooting.md": [
-      "INDEX.md"
-    ],
-    "code-mirror/reference-manual-part2.md": [
-      "INDEX.md",
-      "guides/codemirror-integration.md"
-    ],
-    "bun/features/modules.md": [
-      "INDEX.md"
-    ],
-    "bun/deployment/standalone-executables.md": [
-      "INDEX.md"
-    ],
-    "implementation-summaries/SECURITY_HARDENING_IMPLEMENTATION.md": [
-      "INDEX.md"
-    ],
-    "archive/status-updates/2025-04-07-phase-6-complete.md": [
-      "INDEX.md"
-    ],
-    "bun/api/http-server.md": [
-      "INDEX.md"
-    ],
-    "meta/reference-docs-started.md": [
-      "INDEX.md"
-    ],
-    "typescript-migration/migration-guide.md": [
-      "INDEX.md"
-    ],
-    "initial-planning/api-contract-guide.md": [
-      "INDEX.md"
-    ],
-    "archive/implementation-phases/12-phase-twelve-editor-bugfix-layout.md": [
-      "INDEX.md"
-    ],
-    "bun/getting-started/installation.md": [
-      "INDEX.md"
-    ],
-    "code-mirror/reference-manual-part1.md": [
-      "INDEX.md",
-      "guides/codemirror-integration.md"
-    ],
-    "project-config/CODEX-SETUP.md": [
-      "INDEX.md"
-    ],
-    "archive/status-updates/2025-04-06-phase-5-complete.md": [
-      "INDEX.md"
-    ],
-    "archive/USER_MANAGEMENT_ORCHESTRATEV1.md": [
-      "INDEX.md"
-    ],
-    "initial-planning/single-config.md": [
-      "INDEX.md"
-    ],
     "archive/USER_MANAGEMENT_ORCHESTRATEV4.md": [
-      "INDEX.md"
-    ],
-    "debugging/phase-13-rollup-manifest-issue.md": [
-      "INDEX.md"
-    ],
-    "editor-upgrade/FINAL-IMPLEMENTATION-WORKFLOW.md": [
-      "INDEX.md"
-    ],
-    "initial-planning/structure-update.md": [
-      "INDEX.md"
-    ],
-    "archive/implementation-phases/11-phase-eleven-summary.md": [
-      "INDEX.md"
-    ],
-    "project-config/documentation-instructions.md": [
-      "INDEX.md"
-    ],
-    "initial-planning/personal-guide/overview.md": [
-      "INDEX.md",
-      "initial-planning/comprehensive-guide-personal.md"
-    ],
-    "audits/documentation-inventory.md": [
-      "INDEX.md",
-      "status/CHANGELOG.md"
-    ],
-    "initial-planning/testing.md": [
-      "INDEX.md",
-      "implementation/IMPLEMENTATION_GUIDE.md"
-    ],
-    "meta/TESTING_STATUS.md": [
-      "INDEX.md"
-    ],
-    "archive/status-updates/2025-04-08-phase-17-complete.md": [
-      "INDEX.md"
-    ],
-    "project-config/AGENTS.md": [
-      "INDEX.md"
-    ],
-    "development/python/fastapi-boostrap-helper.md": [
-      "INDEX.md"
-    ],
-    "api/v1/entries.md": [
-      "INDEX.md"
-    ],
-    "features/user-management/USER_MANAGEMENT_IMPLEMENTATION.md": [
-      "INDEX.md"
-    ],
-    "templates/api-reference-template.md": [
-      "INDEX.md",
-      "guides/documentation-templates.md"
-    ],
-    "development/README.md": [
-      "INDEX.md"
-    ],
-    "biome/guides/editor-extensions.md": [
-      "INDEX.md"
-    ],
-    "archive/implementation-phases/11-phase-eleven-editor-features.md": [
-      "INDEX.md"
-    ],
-    "meta/DOCUMENTATION_ARCHITECTURE.md": [
-      "INDEX.md"
-    ],
-    "development/python/RUFF_UPGRADE_PLAN.md": [
-      "INDEX.md"
-    ],
-    "design/UI_DESIGN_SPECIFICATION.md": [
-      "INDEX.md"
-    ],
-    "archive/implementation-phases/08-phase-eight-summary.md": [
-      "INDEX.md"
-    ],
-    "infrastructure/error-handling-logging.md": [
-      "INDEX.md"
-    ],
-    "ci-cd/PR_SUMMARY.md": [
-      "INDEX.md",
-      "ci-cd/README.md"
-    ],
-    "user-guide/faq.md": [
-      "INDEX.md"
-    ],
-    "archive/implementation-phases/02-phase-two-entry-crud.md": [
-      "INDEX.md"
-    ],
-    "bun/features/shell.md": [
-      "INDEX.md"
-    ],
-    "guides/documentation-templates.md": [
-      "INDEX.md",
-      "guides/README.md"
-    ],
-    "migrations/move-to-fastapi.md": [
-      "INDEX.md"
-    ],
-    "reports/DESIGN_AND_TOOLING_REPORT.md": [
-      "INDEX.md"
-    ],
-    "migrations/ruff-progressive-autofixing.md": [
-      "INDEX.md"
-    ],
-    "guides/jsdoc-standards.md": [
-      "INDEX.md",
-      "guides/README.md",
-      "initial-planning/JSDoc-implementation.md"
-    ],
-    "initial-planning/agentic-workflow.md": [
-      "INDEX.md",
-      "implementation/IMPLEMENTATION_GUIDE.md"
-    ],
-    "development/BACKEND_ARCHITECTURE.md": [
-      "INDEX.md",
-      "development/README.md"
-    ],
-    "archive/implementation-phases/09-phase-nine-editor-refinement.md": [
-      "INDEX.md"
-    ],
-    "biome/releases/v2-release.md": [
-      "INDEX.md"
-    ],
-    "infrastructure/infisical-cli-useage.md": [
-      "INDEX.md"
-    ],
-    "design/theme.md": [
-      "INDEX.md"
-    ],
-    "biome/reference/formatter.md": [
-      "INDEX.md"
-    ],
-    "security/ADVANCED_AUTH.md": [
-      "INDEX.md"
-    ],
-    "archive/status-updates/2025-04-07-phase-8-complete.md": [
-      "INDEX.md"
-    ],
-    "planning/PHASE_5_ENHANCEMENT_PLAN.md": [
-      "INDEX.md"
-    ],
-    "planning/ROADMAP.md": [
-      "INDEX.md"
-    ],
-    "proposals/ci-cd-documentation-checks.md": [
-      "INDEX.md"
-    ],
-    "editor-upgrade/archive/editor-upgrade.md": [
-      "INDEX.md"
-    ],
-    "archive/status-updates/2025-04-06-phase-1-complete.md": [
-      "INDEX.md"
-    ],
-    "meta/reference-docs.md": [
-      "INDEX.md"
-    ],
-    "future-features/jwt-security-hardening.md": [
-      "INDEX.md"
-    ],
-    "guides/codemirror-integration.md": [
-      "INDEX.md",
-      "guides/README.md",
-      "status/CHANGELOG.md"
-    ],
-    "infrastructure/hosting-secure.md": [
-      "INDEX.md"
-    ],
-    "archive/implementation-phases/17-phase-seventeen-documentation-qa.md": [
-      "INDEX.md"
-    ],
-    "archive/status-updates/2025-04-08-phase-15-started.md": [
-      "INDEX.md"
-    ],
-    "guides/docstring-tools-report.md": [
-      "INDEX.md",
-      "guides/README.md"
-    ],
-    "migrations/REACT-19-WORKFLOW.md": [
-      "INDEX.md"
-    ],
-    "guides/ci-cd-workflow.md": [
-      "INDEX.md",
-      "guides/README.md"
-    ],
-    "guides/documentation-contribution-guide.md": [
-      "INDEX.md",
-      "README.md"
-    ],
-    "bun/getting-started/quickstart.md": [
-      "INDEX.md"
-    ],
-    "development/python/RUFF_VERIFICATION_REPORT.md": [
-      "INDEX.md"
-    ],
-    "archive/implementation-phases/18-phase-eighteen-ci-cd-implementation.md": [
-      "INDEX.md"
-    ],
-    "code-mirror/extensions-reference.md": [
-      "INDEX.md",
-      "guides/codemirror-integration.md"
-    ],
-    "implementation-summaries/PROJECT-INTEGRATION.md": [
-      "INDEX.md"
-    ],
-    "infrastructure/observability-setup.md": [
-      "INDEX.md"
-    ],
-    "archive/USER_MANAGEMENT_ORCHESTRATEV7.md": [
-      "INDEX.md"
-    ],
-    "features/user-management/USER_MANAGEMENT.md": [
-      "INDEX.md"
-    ],
-    "archive/implementation-phases/03-phase-three-summary.md": [
-      "INDEX.md"
-    ],
-    "meta/REORGANIZATION_PLAN.md": [
-      "INDEX.md"
-    ],
-    "testing/PERFORMANCE-BASELINE.md": [
-      "INDEX.md"
-    ],
-    "code-mirror/example-config.md": [
-      "INDEX.md"
-    ],
-    "editor-upgrade/BULLETPROOF-IMPLEMENTATION-PLAN.md": [
-      "INDEX.md"
-    ],
-    "design/UI_DESIGN_UPDATE_PLAN.md": [
-      "INDEX.md"
-    ],
-    "archive/implementation-phases/02-phase-two-summary.md": [
-      "INDEX.md"
-    ],
-    "biome/reference/linter.md": [
       "INDEX.md"
     ],
     "code-mirror/example-styling.md": [
       "INDEX.md",
       "guides/codemirror-integration.md"
     ],
-    "guides/markdown-linting-guide.md": [
-      "INDEX.md",
-      "guides/README.md"
-    ],
-    "archive/implementation-phases/04-phase-four-summary.md": [
+    "bun/features/shell.md": [
       "INDEX.md"
     ],
-    "archive/implementation-phases/16-phase-sixteen-documentation-expansion.md": [
-      "INDEX.md"
-    ],
-    "guides/README.md": [
-      "INDEX.md"
-    ],
-    "editor-upgrade/VITEST-MIGRATION-IMPACT.md": [
-      "INDEX.md"
-    ],
-    "workflows/dual-language-setup.md": [
-      "INDEX.md"
-    ],
-    "archive/implementation-phases/01-phase-one-setup-auth.md": [
-      "INDEX.md"
-    ],
-    "initial-planning/comprehensive-guide-personal.md": [
-      "INDEX.md",
-      "implementation/IMPLEMENTATION_GUIDE.md"
-    ],
-    "editor-upgrade/reference/security-and-corrections.md": [
-      "INDEX.md"
-    ],
-    "templates/component-doc-template.md": [
+    "templates/troubleshooting-template.md": [
       "INDEX.md",
       "guides/documentation-templates.md"
     ],
-    "archive/USER_MANAGEMENT_ORCHESTRATEV3.md": [
+    "guides/codemirror-integration.md": [
+      "INDEX.md",
+      "guides/README.md",
+      "status/CHANGELOG.md"
+    ],
+    "planning/ROADMAP.md": [
       "INDEX.md"
     ],
-    "initial-planning/personal-guide/backend.md": [
-      "INDEX.md",
-      "initial-planning/comprehensive-guide-personal.md"
-    ],
-    "development/python/RUFF_AND_PYTHON_UPGRADE_SUMMARY.md": [
+    "ci-cd/README.md": [
       "INDEX.md"
     ],
-    "implementation/documentation-specialist-execution-plan.md": [
-      "INDEX.md",
-      "implementation/README.md"
-    ],
-    "development/RUNNING_THE_APP.md": [
-      "INDEX.md",
-      "development/README.md"
-    ],
-    "guides/architecture-overview.md": [
-      "INDEX.md",
-      "guides/README.md"
-    ],
-    "biome/guides/configure-biome.md": [
+    "doc-update/doc-organize-plan.md": [
       "INDEX.md"
     ],
-    "initial-planning/personal-guide/deployment.md": [
-      "INDEX.md",
-      "initial-planning/comprehensive-guide-personal.md"
-    ],
-    "initial-planning/JSDoc-implementation.md": [
-      "INDEX.md",
-      "guides/js-api-docs.md"
-    ],
-    "reports/documentation-fix-report.md": [
+    "meta/DOCUMENTATION_ROADMAP.md": [
       "INDEX.md"
     ],
-    "initial-planning/state-management-guide.md": [
-      "INDEX.md"
+    "status/CHANGELOG.md": [
+      "INDEX.md",
+      "README.md"
     ],
-    "archive/REACT-19-MIGRATION-COMPLETE.md": [
+    "implementation-summaries/INFISICAL_IMPLEMENTATION_SUMMARY.md": [
       "INDEX.md"
     ],
     "bun/features/bundler.md": [
       "INDEX.md"
     ],
-    "user-guide/README.md": [
+    "archive/status-updates/2025-04-08-phase-9-complete.md": [
       "INDEX.md"
     ],
-    "implementation-summaries/ROLLOUT-PLAN.md": [
-      "INDEX.md"
-    ],
-    "deployment/vercel-supabase-migration-assessment.md": [
-      "INDEX.md"
-    ],
-    "design/refactor-ui-design.md": [
-      "INDEX.md"
-    ],
-    "archive/REACT-19-FIXES.md": [
+    "guides/documentation-review-process.md": [
       "INDEX.md",
-      "implementation-summaries/ROLLOUT-PLAN.md"
+      "guides/README.md"
     ],
-    "archive/status-updates/2025-04-08-phase-16-complete.md": [
-      "INDEX.md"
-    ],
-    "archive/implementation-phases/07-phase-seven-ui-ux.md": [
-      "INDEX.md"
-    ],
-    "code-mirror/quick-reference.md": [
+    "initial-planning/personal-guide/deployment.md": [
       "INDEX.md",
-      "guides/codemirror-integration.md",
-      "status/CHANGELOG.md"
+      "initial-planning/comprehensive-guide-personal.md"
     ],
-    "code-mirror/system-guide.md": [
-      "INDEX.md",
-      "guides/codemirror-integration.md"
-    ],
-    "archive/implementation-phases/15-phase-fifteen-core-documentation.md": [
+    "archive/implementation-phases/10-phase-ten-favicon.md": [
       "INDEX.md"
     ],
-    "archive/status-updates/2025-04-06-phase-4-complete.md": [
+    "bun/features/modules.md": [
       "INDEX.md"
     ],
-    "archive/implementation-phases/12-phase-twelve-summary.md": [
+    "bun/api/websockets.md": [
       "INDEX.md"
     ],
-    "archive/status-updates/2025-04-08-phase-11-complete.md": [
-      "INDEX.md"
-    ],
-    "guides/commands-quick-reference.md": [
-      "INDEX.md",
-      "README.md"
-    ],
-    "editor-upgrade/TYPE-SYSTEM-STRATEGY.md": [
-      "INDEX.md"
-    ],
-    "implementation/guide/04-features.md": [
-      "INDEX.md",
-      "implementation/IMPLEMENTATION_GUIDE.md"
-    ],
-    "implementation/guide/01-overview.md": [
-      "INDEX.md",
-      "implementation/IMPLEMENTATION_GUIDE.md"
-    ],
-    "reports/UI_UX_STRATEGY_REPORT.md": [
-      "INDEX.md"
-    ],
-    "deployment/environment-variables.md": [
+    "deployment/monitoring.md": [
       "deployment/PRE_DEPLOYMENT_CHECKLIST.md"
     ],
     "deployment/architecture.md": [
       "deployment/PRE_DEPLOYMENT_CHECKLIST.md"
     ],
+    "deployment/database-migration.md": [
+      "deployment/PRE_DEPLOYMENT_CHECKLIST.md"
+    ],
+    "deployment/environment-variables.md": [
+      "deployment/PRE_DEPLOYMENT_CHECKLIST.md",
+      "deployment/supabase-configuration.md",
+      "deployment/vercel-deployment.md"
+    ],
     "deployment/runbook.md": [
       "deployment/PRE_DEPLOYMENT_CHECKLIST.md"
     ],
-    "deployment/monitoring.md": [
-      "deployment/PRE_DEPLOYMENT_CHECKLIST.md"
+    "deployment/vercel-deployment.md": [
+      "deployment/environment-variables.md",
+      "deployment/supabase-configuration.md"
     ],
-    "deployment/database-migration.md": [
-      "deployment/PRE_DEPLOYMENT_CHECKLIST.md"
+    "deployment/supabase-configuration.md": [
+      "deployment/environment-variables.md",
+      "deployment/vercel-deployment.md"
     ]
   },
   "stats": {
-    "nodes": 222,
-    "edges": 364,
-    "with_backlinks": 278
+    "nodes": 229,
+    "edges": 374,
+    "with_backlinks": 280
   }
 }

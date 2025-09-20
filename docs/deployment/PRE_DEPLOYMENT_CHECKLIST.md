@@ -1,10 +1,12 @@
 ---
+id: pre-deployment-checklist
 title: Pre-Deployment Checklist
 category: deployment
-subcategory: preparation
+type: guide
 status: active
 created: 2025-01-18
 updated: 2025-01-18
+author: Journal Team
 tags: [deployment, checklist, vercel, supabase]
 ---
 

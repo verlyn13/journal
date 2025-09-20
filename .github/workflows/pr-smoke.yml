@@ -248,6 +248,8 @@ jobs:
           PGPASSWORD: journal
         run: |
           psql -h localhost -U journal -d journal -c "CREATE EXTENSION IF NOT EXISTS vector;"
+          psql -h localhost -U journal -d journal -c "CREATE EXTENSION IF NOT EXISTS pg_trgm;"
+          psql -h localhost -U journal -d journal -c "CREATE EXTENSION IF NOT EXISTS btree_gin;"
 
       - name: Run enhanced database probe
         env:

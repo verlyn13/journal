@@ -6,6 +6,7 @@ type: guide
 status: current
 created: 2025-01-18
 updated: 2025-01-19
+author: Journal Team
 dependencies:
   - supabase-configuration
   - environment-variables
@@ -203,7 +204,7 @@ vercel env pull .env.local
 ### CORS Settings
 
 ```env
-CORS_ORIGINS=https://journal.thenash.group,https://journal-*.vercel.app,http://localhost:3000,http://localhost:5173
+CORS_ORIGINS=https://journal.thenash.group,https://journal-*.vercel.app,http://localhost:5173,http://localhost:5000
 ```
 
 ### Trusted Proxies

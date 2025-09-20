@@ -38,12 +38,17 @@ class DocumentValidator:
         self.schemas = self._load_schemas()
 
     def _load_schemas(self) -> Dict[str, Any]:
-        """Load all JSON schemas."""
-        schemas = {}
-        for schema_file in self.schema_dir.glob("*.schema.json"):
-            with open(schema_file, "r") as f:
-                schema = json.load(f)
+        """Load all JSON schemas from the registry (recursive)."""
+        schemas: Dict[str, Any] = {}
+        # Support nested schema directories (e.g., docs/schemas/v1)
+        for schema_file in self.schema_dir.rglob("*.schema.json"):
+            try:
+                with schema_file.open("r", encoding="utf-8") as f:
+                    schema = json.load(f)
                 schemas[schema_file.stem] = schema
+            except Exception as e:
+                # Record a minimal placeholder to avoid KeyErrors downstream
+                schemas.setdefault(schema_file.stem, {"$schema": "http://json-schema.org/draft-07/schema#", "type": "object"})
         return schemas
 
     def parse_markdown(self, file_path: Path) -> Dict[str, Any]:

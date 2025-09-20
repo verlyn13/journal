@@ -1,27 +1,27 @@
 # Documentation Graph Summary
 
-- Nodes: 222
-- Edges: 364
-- Nodes with backlinks: 278
+- Nodes: 229
+- Edges: 374
+- Nodes with backlinks: 280
 
 ## Top Backlink Hubs
-- 4 backlinks — `implementation/IMPLEMENTATION_GUIDE.md`
 - 4 backlinks — `guides/editor-architecture.md`
+- 4 backlinks — `implementation/IMPLEMENTATION_GUIDE.md`
 - 3 backlinks — `guides/js-api-docs.md`
+- 3 backlinks — `code-mirror/quick-reference.md`
 - 3 backlinks — `guides/jsdoc-standards.md`
 - 3 backlinks — `guides/codemirror-integration.md`
-- 3 backlinks — `code-mirror/quick-reference.md`
-- 2 backlinks — `implementation/documentation-specialist-role.md`
-- 2 backlinks — `initial-planning/editor-implementation.md`
-- 2 backlinks — `ci-cd/CI_CD_GUIDE.md`
-- 2 backlinks — `templates/troubleshooting-template.md`
+- 3 backlinks — `deployment/environment-variables.md`
+- 2 backlinks — `guides/docstring-tools-report.md`
 - 2 backlinks — `guides/data-model.md`
-- 2 backlinks — `ci-cd/CI_CHECKLIST.md`
-- 2 backlinks — `ci-cd/MERGE-CHECKLIST.md`
-- 2 backlinks — `guides/documentation-review-process.md`
-- 2 backlinks — `guides/diagramming-approach.md`
-- 2 backlinks — `guides/documentation-testing-process.md`
+- 2 backlinks — `implementation/guide/01-overview.md`
 - 2 backlinks — `ci-cd/CI_INVESTIGATION_REPORT.md`
 - 2 backlinks — `initial-planning/deployment-script-guide.md`
-- 2 backlinks — `implementation/guide/05-ops.md`
-- 2 backlinks — `guides/request-lifecycle.md`
+- 2 backlinks — `guides/commands-quick-reference.md`
+- 2 backlinks — `ci-cd/CI_CHECKLIST.md`
+- 2 backlinks — `development/USAGE-GUIDE.md`
+- 2 backlinks — `archive/REACT-19-CHANGES.md`
+- 2 backlinks — `initial-planning/testing.md`
+- 2 backlinks — `initial-planning/mvp-high-level-implementation-guide.md`
+- 2 backlinks — `archive/REACT-19-FIXES.md`
+- 2 backlinks — `ci-cd/MERGE-CHECKLIST.md`

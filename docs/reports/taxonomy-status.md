@@ -2,8 +2,8 @@
 id: taxonomy-status-report
 title: Taxonomy Validation Report
 type: report
-created: 2025-09-18T20:17:04.021281
-updated: 2025-09-18T20:17:04.021281
+created: 2025-09-19T16:05:33.395237
+updated: 2025-09-19T16:05:33.395237
 author: documentation-system
 tags: [documentation, taxonomy]
 ---
@@ -11,12 +11,12 @@ tags: [documentation, taxonomy]
 # Taxonomy Validation Report
 
 ## Summary
-- Total files: 222
+- Total files: 229
 - Unknown types: 31
-- Unknown tags: 7
-- Missing required sections: 299
-- Stale docs: 0
-- Invalid status: 24
+- Unknown tags: 16
+- Missing required sections: 303
+- Stale docs: 4
+- Invalid status: 27
 - Invalid priority: 0
 
 ## Notable Issues (sample)

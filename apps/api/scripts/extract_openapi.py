@@ -22,14 +22,14 @@ try:
     output_dir.mkdir(parents=True, exist_ok=True)
 
     output_file = output_dir / "openapi.json"
-    with open(output_file, "w") as f:
+    with output_file.open("w", encoding="utf-8") as f:
         json.dump(openapi_schema, f, indent=2)
 
     print(f"OpenAPI spec extracted to: {output_file}")
 
     # Also save a markdown version
     md_file = output_dir / "openapi.md"
-    with open(md_file, "w") as f:
+    with md_file.open("w", encoding="utf-8") as f:
         f.write("# API Specification\n\n")
         f.write(f"**Title**: {openapi_schema.get('info', {}).get('title', 'Journal API')}\n")
         f.write(f"**Version**: {openapi_schema.get('info', {}).get('version', '0.1.0')}\n\n")
@@ -51,6 +51,6 @@ try:
 except ImportError as e:
     print(f"Error importing FastAPI app: {e}")
     sys.exit(1)
-except Exception as e:
+except (OSError, ValueError, RuntimeError) as e:
     print(f"Error extracting OpenAPI: {e}")
     sys.exit(1)

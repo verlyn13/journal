@@ -6,6 +6,7 @@ type: guide
 status: current
 created: 2025-01-19
 updated: 2025-01-19
+author: Journal Team
 dependencies:
   - vercel-supabase-strategy
   - environment-variables
