@@ -19,7 +19,7 @@ jobs:
         options: >-
           --health-cmd="pg_isready -U journal" --health-interval=10s --health-timeout=5s --health-retries=5
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
       - uses: astral-sh/setup-uv@v5
       - name: Sync (upgrade)
         working-directory: apps/api
@@ -52,8 +52,8 @@ jobs:
     runs-on: ubuntu-24.04
     needs: [canary-api]
     steps:
-      - uses: actions/checkout@v4
-      - uses: oven-sh/setup-bun@v2
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - uses: oven-sh/setup-bun@4bc047ad259df6fc24a6c9b0f9a0cb08cf17fbe5
         with:
           bun-version: '1.2.21'
       - name: Web deps

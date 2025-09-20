@@ -4,11 +4,11 @@ jobs:
   lint:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
       - name: Setup uv
         uses: astral-sh/setup-uv@v5
       - name: Cache uv
-        uses: actions/cache@v4
+        uses: actions/cache@6849a6489940f00c2f30c0fb92c6274307ccb58a
         with:
           path: ~/.cache/uv
           key: uv-${{ hashFiles('apps/api/uv.lock') }}

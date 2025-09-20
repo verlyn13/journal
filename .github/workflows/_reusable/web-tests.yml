@@ -8,9 +8,9 @@ jobs:
       matrix:
         shard: ["1/2", "2/2"]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
       - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
+        uses: oven-sh/setup-bun@4bc047ad259df6fc24a6c9b0f9a0cb08cf17fbe5
         with:
           bun-version: '1.2.21'
       - name: Install deps
@@ -24,7 +24,7 @@ jobs:
         if: failure()
         run: |
           tar -czf playwright-report-${{ matrix.shard }}.tgz playwright-report || true
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882
         if: always()
         with:
           name: playwright-report-${{ matrix.shard }}

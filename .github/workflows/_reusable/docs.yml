@@ -4,18 +4,39 @@ jobs:
   docs:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90311
         with:
           python-version: '3.13'
+
+      - name: Install documentation tools
+        run: |
+          # Install lychee for link checking
+          curl -LO https://github.com/lycheeverse/lychee/releases/download/v0.15.1/lychee-v0.15.1-x86_64-unknown-linux-gnu.tar.gz
+          tar -xzf lychee-v0.15.1-x86_64-unknown-linux-gnu.tar.gz
+          sudo mv lychee /usr/local/bin/
+
+          # Install Vale for prose linting
+          curl -LO https://github.com/errata-ai/vale/releases/download/v3.7.0/vale_3.7.0_Linux_64-bit.tar.gz
+          tar -xzf vale_3.7.0_Linux_64-bit.tar.gz
+          sudo mv vale /usr/local/bin/
+
       - name: Validate docs (schemas + policies)
         run: |
           python3 scripts/validate_documentation.py --strict
-      - name: Link check (if lychee available)
+
+      - name: Link check (required)
         run: |
-          if command -v lychee >/dev/null 2>&1; then lychee --offline --no-progress --max-concurrency 8 docs || true; else echo "lychee not installed"; fi
-      - name: Prose (Vale) optional
+          echo "::group::Checking links in documentation"
+          lychee --config lychee.toml --no-progress --format detailed docs
+          echo "::endgroup::"
+
+      - name: Prose linting with Vale (warnings only)
+        continue-on-error: true
         run: |
-          if command -v vale >/dev/null 2>&1; then vale docs || true; else echo "vale not installed"; fi
+          echo "::group::Checking prose quality with Vale"
+          vale --config docs/.vale/config.ini --output line docs || echo "Vale found issues (non-blocking)"
+          echo "::endgroup::"
 

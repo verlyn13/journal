@@ -96,10 +96,10 @@ jobs:
     
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
       
       - name: Install uv
-        uses: astral-sh/setup-uv@v4
+        uses: astral-sh/setup-uv@e779db74266a80753577425b0e4e3b6b2e7f4f6a
         with:
           version: "latest"
       
@@ -107,7 +107,7 @@ jobs:
         run: uv python install ${{ env.PYTHON_VERSION }}
       
       - name: Restore uv cache
-        uses: actions/cache@v4
+        uses: actions/cache@6849a6489940f00c2f30c0fb92c6274307ccb58a
         with:
           path: ${{ env.UV_CACHE_DIR }}
           key: uv-infisical-${{ runner.os }}-${{ hashFiles('apps/api/uv.lock') }}
@@ -406,7 +406,7 @@ jobs:
           fail_ci_if_error: false
       
       - name: Upload security scan results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882
         if: always()
         with:
           name: infisical-security-scan
@@ -459,10 +459,10 @@ jobs:
     
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
       
       - name: Install uv and dependencies
-        uses: astral-sh/setup-uv@v4
+        uses: astral-sh/setup-uv@e779db74266a80753577425b0e4e3b6b2e7f4f6a
         with:
           version: "latest"
       
@@ -750,10 +750,10 @@ jobs:
     
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
       
       - name: Install uv and dependencies
-        uses: astral-sh/setup-uv@v4
+        uses: astral-sh/setup-uv@e779db74266a80753577425b0e4e3b6b2e7f4f6a
         with:
           version: "latest"
       
@@ -853,7 +853,7 @@ jobs:
           echo "✅ Container diagnostics collection completed"
 
       - name: Upload Migration Plan
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882
         with:
           name: infisical-migration-plan
           path: apps/api/migration-plan.md

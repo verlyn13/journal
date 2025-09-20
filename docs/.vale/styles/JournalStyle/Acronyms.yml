@@ -1,0 +1,49 @@
+---
+extends: conditional
+message: "Spell out '%s' on first use, then use the acronym."
+level: warning
+ignorecase: true
+# Only enforce for first occurrence in a document
+first: true
+exceptions:
+  - API
+  - CLI
+  - CPU
+  - CSS
+  - DNS
+  - DOM
+  - FAQ
+  - GPU
+  - HTML
+  - HTTP
+  - HTTPS
+  - ID
+  - JSON
+  - JWT
+  - PDF
+  - RAM
+  - REST
+  - SDK
+  - SQL
+  - SSH
+  - SSL
+  - TCP
+  - TLS
+  - UDP
+  - UI
+  - URL
+  - USB
+  - UUID
+  - UX
+  - XML
+  - YAML
+# Project-specific
+  - CRUD
+  - FTS
+  - JWKS
+  - ORM
+  - PWA
+  - RSA
+  - EdDSA
+tokens:
+  - '[A-Z]{3,}'

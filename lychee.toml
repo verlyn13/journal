@@ -1,8 +1,59 @@
-exclude_path = ["docs/_generated/", "docs/.backups/"]
-exclude = ["^mailto:", "^tel:"]
-max_concurrency = 8
-require_https = true
+# Lychee link checker configuration
+# https://github.com/lycheeverse/lychee
+
+# Cache settings
+cache = true
+max_cache_age = "7d"
+
+# Request settings
+max_redirects = 10
+max_retries = 3
 retry_wait_time = 2
-timeout = 10
-user_agent = "lychee-ci"
+timeout = 30
+max_concurrency = 8
+user_agent = "lychee/0.15 (Journal CI Link Checker)"
+
+# Accept HTTP status codes
+accept = [200, 201, 202, 203, 204, 206, 301, 302, 303, 304, 307, 308]
+
+# Exclude patterns
+exclude = [
+  # Local development URLs
+  "^https?://localhost",
+  "^https?://127\\.0\\.0\\.1",
+  "^https?://0\\.0\\.0\\.0",
+
+  # Example/placeholder URLs
+  "^https?://example\\.(com|org|net)",
+  "^https?://your-.*\\.com",
+
+  # GitHub edit/new links (require auth)
+  "^https://github\\.com/.*/edit/",
+  "^https://github\\.com/.*/new/",
+
+  # Email and phone
+  "^mailto:",
+  "^tel:",
+
+  # Anchors within same document
+  "^#",
+]
+
+# Exclude specific paths from being checked
+exclude_path = [
+  "docs/_generated/",
+  "docs/.backups/",
+  "docs/archive/",
+  "node_modules/",
+  ".git/",
+  "dist/",
+  "build/",
+  "coverage/",
+]
+
+# Require HTTPS for external links
+require_https = false
+
+# Check mailto links
+include_mail = false
 

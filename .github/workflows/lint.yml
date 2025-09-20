@@ -18,18 +18,18 @@ jobs:
     continue-on-error: true  # Stage 1: warnings allowed, do not fail PRs
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
 
       # Option A: Using official Astral Ruff Action (recommended)
       - name: Run Ruff linter
-        uses: astral-sh/ruff-action@v3
+        uses: astral-sh/ruff-action@3a3a43aee5e6e9b908c774825e4c6e7b0948bf79
         with:
           version: "0.13.0"
           args: "check --output-format=github ."
           src: "./apps/api"
 
       - name: Check formatting with Ruff
-        uses: astral-sh/ruff-action@v3
+        uses: astral-sh/ruff-action@3a3a43aee5e6e9b908c774825e4c6e7b0948bf79
         with:
           version: "0.13.0"
           args: "format --check ."
@@ -50,7 +50,7 @@ jobs:
       
       - name: Upload Ruff results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882
         with:
           name: ruff-results
           path: apps/api/.ruff_cache/
@@ -61,7 +61,7 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
       
       - name: Install uv
         uses: astral-sh/setup-uv@v5
@@ -85,7 +85,7 @@ jobs:
       
       - name: Upload mypy cache
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882
         with:
           name: mypy-cache
           path: apps/api/.mypy_cache/
@@ -96,10 +96,10 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
       
       - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
+        uses: oven-sh/setup-bun@4bc047ad259df6fc24a6c9b0f9a0cb08cf17fbe5
         with:
           bun-version: latest
       
