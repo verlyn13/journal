@@ -25,15 +25,15 @@ jobs:
         uses: astral-sh/ruff-action@f18f95d449e31b9540969c84d046a57a861648b4
         with:
           version: "0.13.0"
-          args: "check --output-format=github ."
-          src: "./apps/api"
+          args: "check --output-format=github apps/api deploy"
+          src: "."
 
       - name: Check formatting with Ruff
         uses: astral-sh/ruff-action@f18f95d449e31b9540969c84d046a57a861648b4
         with:
           version: "0.13.0"
-          args: "format --check ."
-          src: "./apps/api"
+          args: "format --check apps/api deploy"
+          src: "."
 
       # Alternative Option B: Using uv (kept for reference)
       # - name: Install uv
