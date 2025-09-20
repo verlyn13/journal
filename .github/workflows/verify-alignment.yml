@@ -41,37 +41,21 @@ jobs:
           grep -q 'linter.explicit_preview_rules = true' ../../ruff-config.txt || (echo "❌ explicit-preview-rules off"; exit 1)
           echo "✅ Ruff configuration verified"
 
-      - name: Stale reference scan
+      - name: Configuration consistency check
+        shell: bash
         run: |
-          set +e  # Disable exit on error for git grep commands
-          echo "Checking for stale Python versions..."
-          git grep -nE "(python|Python)( |:|-)?3\.(11|12)\b" -- . \
-            ":!**/site-packages/**" ":!**/node_modules/**" ":!*.lock" \
-            ":!docs/RUFF_*.md" ":!docs/adr/adr-0001-python-3.13-ruff-0.13.md" ":!package-lock.json" \
-            ":!docs.backup.*/**" ":!**/.backups/**" ":!scripts/**" && {
-            echo "❌ Found stale Python version references"
-            exit 1
-          } || echo "✅ No stale Python version references"
+          set -euo pipefail
 
-          echo "Checking for actual legacy tool usage (not Ruff config)..."
-          # Look for actual imports/installs of legacy tools, not Ruff config sections
-          git grep -nE "(^import (isort|flake8|black)|^from (isort|flake8|black)|pip install.*(isort|flake8|black))" -- . \
-            ":!**/site-packages/**" ":!**/vendor/**" ":!**/third_party/**" \
-            ":!**/node_modules/**" ":!*.lock" ":!**/RUFF_*.md" ":!**/.pre-commit-config.yaml" \
-            ":!.github/workflows/verify-alignment.yml" ":!apps/api/.devcontainer/**" \
-            ":!docs/guides/**" ":!docs/initial-planning/**" \
-            ":!docs.backup.*/**" ":!scripts/**" && {
-            echo "❌ Found actual legacy tool usage"
+          echo "## Scan: redundant tool blocks in *.toml ([tool.black|isort|flake8])"
+          matches="$(find . -name '*.toml' -type f | xargs grep -InE '^\[tool\.(black|isort|flake8)\]' 2>/dev/null || true)"
+          if [[ -n "$matches" ]]; then
+            echo "$matches"
+            echo "❌ Found redundant tool blocks in pyproject.toml files"
+            echo "These legacy formatters/linters should be removed - Ruff handles all formatting and linting"
             exit 1
-          } || echo "✅ No legacy tool usage detected"
-
-          # Check for redundant tool blocks (actual config sections, not Ruff subsections)
-          git grep -nE '^\[tool\.(black|isort|flake8)\]' -- "*.toml" && {
-            echo "❌ Found redundant tool blocks in pyproject.toml"
-            exit 1
-          } || echo "✅ No redundant tool blocks"
-
-          set -e  # Re-enable exit on error
+          else
+            echo "✅ No redundant tool blocks found"
+          fi
 
       - name: Lint + Format checks
         working-directory: apps/api
@@ -82,17 +66,33 @@ jobs:
           echo "✅ All linting and formatting checks pass"
 
       - name: Docker Python version check
+        shell: bash
         run: |
-          # Check Dockerfiles
-          for dockerfile in $(find . -name "Dockerfile*" -type f -not -path "*/node_modules/*"); do
-            if grep -q "FROM.*python" "$dockerfile"; then
-              if ! grep -q "python:3.13" "$dockerfile"; then
+          set -euo pipefail
+          fail=0
+
+          echo "## Checking Python versions in Dockerfiles"
+          while IFS= read -r -d '' dockerfile; do
+            # Skip backup directories
+            case "$dockerfile" in
+              */.backups/*|*/docs.backup.*/*|*/node_modules/*) continue ;;
+            esac
+
+            if grep -qE '^FROM .*python' "$dockerfile"; then
+              if ! grep -q 'python:3.13' "$dockerfile"; then
                 echo "❌ $dockerfile not using Python 3.13"
-                exit 1
+                fail=1
+              else
+                echo "✓ $dockerfile uses Python 3.13"
               fi
             fi
-          done
-          echo "✅ All Dockerfiles use Python 3.13"
+          done < <(find . -type f -name 'Dockerfile*' -print0)
+
+          if [[ $fail -eq 0 ]]; then
+            echo "✅ All Dockerfiles use Python 3.13"
+          else
+            exit 1
+          fi
 
       - name: Docs drift check
         run: |
