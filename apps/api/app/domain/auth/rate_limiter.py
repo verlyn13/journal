@@ -147,7 +147,7 @@ class AuthRateLimiter:
                 )
             except (TimeoutError, RedisError, RuntimeError, ValueError) as e:
                 # Do not fail the request if audit logging is unavailable or FK
-                not present
+                # not present
                 self._logger.debug("Audit log event failed for rate limiter: %s", e)
 
         # Track failure patterns for anomaly detection

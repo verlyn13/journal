@@ -238,8 +238,8 @@ class EmbeddingConsumer:
                 # Get all entries that need reindexing
                 result = await session.execute(
                     select(Entry.id, Entry.title, Entry.content).where(
-                        Entry.is_deleted == False
-                    )  # noqa: E712 - SQLAlchemy requires ==
+                        Entry.is_deleted.is_(False)
+                    )
                 )
                 rows = result.fetchall()
 

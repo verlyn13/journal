@@ -41,7 +41,8 @@ async def _publish_rows(
     s: AsyncSession, rows: list[Event], retry_enabled: bool
 ) -> None:
     """Publish rows to NATS (JetStream if available) and mark as published."""
-    # Support monkeypatched nats_conn that returns a coroutine yielding a context manager
+    # Support monkeypatched nats_conn that returns a coroutine yielding a
+    # context manager
     ctx = nats_conn()
     if asyncio.iscoroutine(ctx):
         ctx = await ctx
