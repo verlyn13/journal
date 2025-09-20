@@ -44,34 +44,31 @@ jobs:
       - name: Stale reference scan
         run: |
           echo "Checking for stale Python versions..."
-          if git grep -nE "(python|Python)( |:|-)?3\.(11|12)\b" -- \
+          git grep -nE "(python|Python)( |:|-)?3\.(11|12)\b" -- . \
             ":!**/site-packages/**" ":!**/node_modules/**" ":!*.lock" \
             ":!docs/RUFF_*.md" ":!docs/adr/adr-0001-python-3.13-ruff-0.13.md" ":!package-lock.json" \
-            ":!docs.backup.*/**" ":!**/.backups/**" ":!scripts/**"; then
+            ":!docs.backup.*/**" ":!**/.backups/**" ":!scripts/**" && {
             echo "❌ Found stale Python version references"
             exit 1
-          fi
-          echo "✅ No stale Python version references"
+          } || echo "✅ No stale Python version references"
 
           echo "Checking for actual legacy tool usage (not Ruff config)..."
           # Look for actual imports/installs of legacy tools, not Ruff config sections
-          if git grep -nE "(^import (isort|flake8|black)|^from (isort|flake8|black)|pip install.*(isort|flake8|black))" -- . \
+          git grep -nE "(^import (isort|flake8|black)|^from (isort|flake8|black)|pip install.*(isort|flake8|black))" -- . \
             ":!**/site-packages/**" ":!**/vendor/**" ":!**/third_party/**" \
             ":!**/node_modules/**" ":!*.lock" ":!**/RUFF_*.md" ":!**/.pre-commit-config.yaml" \
             ":!.github/workflows/verify-alignment.yml" ":!apps/api/.devcontainer/**" \
             ":!docs/guides/**" ":!docs/initial-planning/**" \
-            ":!docs.backup.*/**" ":!scripts/**"; then
+            ":!docs.backup.*/**" ":!scripts/**" && {
             echo "❌ Found actual legacy tool usage"
             exit 1
-          fi
-          echo "✅ No legacy tool usage detected"
+          } || echo "✅ No legacy tool usage detected"
 
           # Check for redundant tool blocks (actual config sections, not Ruff subsections)
-          if git grep -nE '^\[tool\.(black|isort|flake8)\]' -- "*.toml"; then
+          git grep -nE '^\[tool\.(black|isort|flake8)\]' -- "*.toml" && {
             echo "❌ Found redundant tool blocks in pyproject.toml"
             exit 1
-          fi
-          echo "✅ No redundant tool blocks"
+          } || echo "✅ No redundant tool blocks"
 
       - name: Lint + Format checks
         working-directory: apps/api
