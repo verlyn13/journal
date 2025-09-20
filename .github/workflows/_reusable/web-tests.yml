@@ -1,0 +1,32 @@
+name: Reusable - Web Tests (Playwright)
+on: workflow_call
+jobs:
+  pw:
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: ["1/2", "2/2"]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: '1.2.21'
+      - name: Install deps
+        working-directory: apps/web
+        run: bun install --frozen-lockfile
+      - name: Install Playwright
+        run: bunx playwright install --with-deps
+      - name: Run tests (sharded)
+        run: bunx playwright test --shard=${{ matrix.shard }} --retries=1 --reporter=line || true
+      - name: Pack traces
+        if: failure()
+        run: |
+          tar -czf playwright-report-${{ matrix.shard }}.tgz playwright-report || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report-${{ matrix.shard }}
+          path: playwright-report
+

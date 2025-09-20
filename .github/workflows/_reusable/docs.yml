@@ -1,0 +1,21 @@
+name: Reusable - Docs
+on: workflow_call
+jobs:
+  docs:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Validate docs (schemas + policies)
+        run: |
+          python3 scripts/validate_documentation.py --strict
+      - name: Link check (if lychee available)
+        run: |
+          if command -v lychee >/dev/null 2>&1; then lychee --offline --no-progress --max-concurrency 8 docs || true; else echo "lychee not installed"; fi
+      - name: Prose (Vale) optional
+        run: |
+          if command -v vale >/dev/null 2>&1; then vale docs || true; else echo "vale not installed"; fi
+

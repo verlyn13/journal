@@ -1,9 +1,21 @@
-skip_tokens:
-  - journal-backend-bootstrap-pgvector-fts-reindex
-  - journal-backend-bootstrap-pgvector-fts-reindex/.ruff_cache
-
 duplicate_name_whitelist:
+  # Allow multiple README.md in scoped subdirectories
   - README.md
-  - overview.md
-  - architecture.md
-  - changelog.md
+  - implementation/README.md
+  - guides/README.md
+  - js-api/README.md
+  - user-guide/README.md
+  - schemas/README.md
+  - ci-cd/README.md
+  - development/README.md
+  - schemas/v1/README.md
+  - js-api/fonts/README.md
+  - js-api/scripts/README.md
+  - js-api/styles/README.md
+  - js-api/scripts/prettify/README.md
+
+skip_tokens:
+  - _generated
+  - .backups
+  - archive
+

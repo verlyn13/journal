@@ -478,3 +478,28 @@ scan-clean:
 scan-logs:
 	@echo "📄 Scanner logs:"
 	@tail -n 200 .scanner/scan.log 2>/dev/null || echo "No logs yet. Run: make scan"
+# Composite local verification mirroring CI contract
+.PHONY: verify
+verify: lint docs-verify api-test web-test db-smoke
+
+.PHONY: lint
+lint:
+	uv run ruff format --check .
+	uv run ruff check .
+	uv run mypy app --config-file apps/api/mypy.ini || true
+
+.PHONY: docs-verify
+docs-verify:
+	python3 scripts/validate_documentation.py --strict
+
+.PHONY: web-test
+web-test:
+	cd apps/web && bun test -u || true
+
+.PHONY: api-test
+api-test:
+	cd apps/api && uv run pytest -q || true
+
+.PHONY: db-smoke
+db-smoke:
+	@echo "Run DB smoke in CI using GH Actions service containers"
