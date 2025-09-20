@@ -193,7 +193,8 @@ def print_report(health: TypeHealth) -> None:
     print("=" * 60)  # noqa: T201
 
     print(
-        f"\n📊 Overall Health Score: {health.health_score}/100 (Grade: {health.health_grade})"
+        f"\n📊 Overall Health Score: {health.health_score}/100 "
+        f"(Grade: {health.health_grade})"
     )  # noqa: T201
     print(f"📈 Trend: {health.error_trend.upper()}")  # noqa: T201
 

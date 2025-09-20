@@ -40,7 +40,7 @@ def test_extract_description_after_title() -> None:
 
 
 @pytest.mark.parametrize(
-    ("path","doc_type"),
+    "path,doc_type",
     [
         (Path("docs/api/guide.md"), "api"),
         (Path("docs/adr/record.md"), "decision"),
