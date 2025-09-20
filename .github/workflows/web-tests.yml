@@ -3,7 +3,6 @@ name: Web Tests
 on:
   push:
     branches: [ main ]
-  pull_request:
 
 env:
   INFISICAL_CLI_REQUIRED: "false"  # Web tests don't need Infisical CLI

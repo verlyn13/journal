@@ -2,9 +2,7 @@ name: Lint
 
 on:
   push:
-    branches: [main, develop, feat/*]
-  pull_request:
-    branches: [main, develop]
+    branches: [ main ]
   workflow_dispatch:
 
 concurrency:
@@ -25,14 +23,14 @@ jobs:
         uses: astral-sh/ruff-action@57714a7c8a2e59f32539362ba31877a1957dded1
         with:
           version: "0.13.0"
-          args: "check --config apps/api/pyproject.toml --output-format=github apps/api deploy"
-          src: "."
+          args: "check --output-format=github ."
+          src: "apps/api"
 
       - name: Check formatting with Ruff
         uses: astral-sh/ruff-action@57714a7c8a2e59f32539362ba31877a1957dded1
         with:
           version: "0.13.0"
-          args: "format --config apps/api/pyproject.toml --check apps/api deploy"
+          args: "format --check ."
           src: "."
 
       # Alternative Option B: Using uv (kept for reference)

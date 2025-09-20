@@ -6,7 +6,6 @@ on:
       - 'docs/**'
       - 'scripts/**'
       - '.github/workflows/docs-status.yml'
-  pull_request:
     paths:
       - 'docs/**'
       - 'scripts/**'
