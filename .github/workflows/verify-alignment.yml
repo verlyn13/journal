@@ -47,7 +47,7 @@ jobs:
           set -euo pipefail
 
           echo "## Scan: redundant tool blocks in *.toml ([tool.black|isort|flake8])"
-          matches="$(find . -name '*.toml' -type f | xargs grep -InE '^\[tool\.(black|isort|flake8)\]' 2>/dev/null || true)"
+          matches="$(find . -name 'pyproject.toml' -type f | xargs grep -InE '^\[tool\.(black|isort|flake8)\]' 2>/dev/null || true)"
           if [[ -n "$matches" ]]; then
             echo "$matches"
             echo "❌ Found redundant tool blocks in pyproject.toml files"
