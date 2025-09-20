@@ -1,0 +1,69 @@
+name: Canary (Latest Toolchain)
+
+on:
+  schedule:
+    - cron: '0 3 * * 0'  # Weekly Sunday 03:00 UTC
+  workflow_dispatch:
+
+jobs:
+  canary-api:
+    runs-on: ubuntu-24.04
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16@sha256:c3c84b85691a264aa3c5b8fc1d611e67d42b0cca8596e3d3d22dc2424c12c4e2
+        env:
+          POSTGRES_USER: journal
+          POSTGRES_PASSWORD: journal
+          POSTGRES_DB: journal
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd="pg_isready -U journal" --health-interval=10s --health-timeout=5s --health-retries=5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - name: Sync (upgrade)
+        working-directory: apps/api
+        run: uv sync --upgrade --all-extras --dev
+      - name: Enable extensions
+        env:
+          PGPASSWORD: journal
+        run: |
+          psql -h localhost -U journal -d journal -c "CREATE EXTENSION IF NOT EXISTS vector;"
+          psql -h localhost -U journal -d journal -c "CREATE EXTENSION IF NOT EXISTS pg_trgm;"
+          psql -h localhost -U journal -d journal -c "CREATE EXTENSION IF NOT EXISTS btree_gin;"
+      - name: Alembic upgrade
+        env:
+          DATABASE_URL_SYNC: postgresql+psycopg://journal:journal@localhost:5432/journal
+        working-directory: apps/api
+        run: uv run alembic -x sqlalchemy.url=${DATABASE_URL_SYNC} upgrade head
+      - name: Ruff & Mypy (latest)
+        working-directory: apps/api
+        run: |
+          uv run ruff check .
+          uv run ruff format --check .
+          if uv run mypy --version >/dev/null 2>&1; then uv run mypy app; fi
+      - name: Pytest
+        working-directory: apps/api
+        env:
+          TEST_DB_URL: postgresql+asyncpg://journal:journal@localhost:5432/journal
+        run: uv run pytest -q
+
+  canary-web:
+    runs-on: ubuntu-24.04
+    needs: [canary-api]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: '1.2.21'
+      - name: Web deps
+        working-directory: apps/web
+        run: bun install --frozen-lockfile
+      - name: Build
+        working-directory: apps/web
+        run: bun run build
+      - name: Playwright (latest)
+        run: |
+          bunx playwright install --with-deps
+          bunx playwright test --retries=1 --trace=on-first-retry --reporter=line || true
+

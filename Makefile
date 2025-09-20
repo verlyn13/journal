@@ -490,7 +490,7 @@ lint:
 
 .PHONY: docs-verify
 docs-verify:
-	python3 scripts/validate_documentation.py --strict
+	uv run python scripts/validate_documentation.py --strict
 
 .PHONY: web-test
 web-test:

@@ -19,7 +19,7 @@ jobs:
       - name: Install Playwright
         run: bunx playwright install --with-deps
       - name: Run tests (sharded)
-        run: bunx playwright test --shard=${{ matrix.shard }} --retries=1 --reporter=line || true
+        run: bunx playwright test --shard=${{ matrix.shard }} --retries=1 --trace=on-first-retry --reporter=line || true
       - name: Pack traces
         if: failure()
         run: |
@@ -29,4 +29,3 @@ jobs:
         with:
           name: playwright-report-${{ matrix.shard }}
           path: playwright-report
-
