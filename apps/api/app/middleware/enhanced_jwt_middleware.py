@@ -305,7 +305,9 @@ async def require_scopes(
             status_code=status.HTTP_403_FORBIDDEN,
             detail=f"Missing required scopes: {', '.join(missing_scopes)}",
             headers={
-                "WWW-Authenticate": f'Bearer error="insufficient_scope", scope="{" ".join(required_scopes)}"'
+                "WWW-Authenticate": (
+                    f'Bearer error="insufficient_scope", scope="{" ".join(required_scopes)}"'
+                )
             },
         )
 

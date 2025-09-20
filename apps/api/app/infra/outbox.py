@@ -251,7 +251,9 @@ async def _schedule_retry_or_dead(
         # Attempt update; if columns missing, ignore
         await session.execute(
             _text(
-                "UPDATE events SET attempts = COALESCE(attempts, 0) + 1, next_attempt_at = :next_at, last_error = :err, state = COALESCE(state, 'pending') WHERE id = :id"
+                "UPDATE events SET attempts = COALESCE(attempts, 0) + 1, "
+                "next_attempt_at = :next_at, last_error = :err, "
+                "state = COALESCE(state, 'pending') WHERE id = :id"
             ),
             {"id": ev.id, "next_at": next_at, "err": err_str},
         )

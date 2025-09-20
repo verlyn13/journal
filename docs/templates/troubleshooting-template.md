@@ -1,3 +1,20 @@
+---
+id: troubleshooting-template
+title: 'Troubleshooting Guide: Topic Name'
+type: reference
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags:
+- python
+priority: medium
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 ***
 
 title: "Troubleshooting Guide: Topic Name"
@@ -186,6 +203,6 @@ Guidelines for when to escalate the issue or seek additional support:
 
 ## See Also
 
-- [Related Troubleshooting Guide](link/to/related-guide.md)
-- [Component Documentation](link/to/component-doc.md)
-- [External Knowledge Base Article](https://example.com)
+- Related Troubleshooting Guide
+- Component Documentation
+- [External Knowledge Base Article](https://journal.local)

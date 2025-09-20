@@ -1,0 +1,36 @@
+---
+extends: capitalization
+message: "Heading '%s' should use sentence case."
+level: warning
+scope: heading
+match: $sentence
+exceptions:
+  - API
+  - CLI
+  - CI/CD
+  - CSS
+  - HTML
+  - HTTP
+  - HTTPS
+  - JSON
+  - JWT
+  - SQL
+  - UI
+  - URL
+  - UX
+  - EdDSA
+  - PostgreSQL
+  - FastAPI
+  - Pydantic
+  - SQLAlchemy
+  - TypeScript
+  - JavaScript
+  - Python
+  - React
+  - Vite
+  - Vitest
+  - CodeMirror
+  - Supabase
+  - Vercel
+  - GitHub
+  - Docker

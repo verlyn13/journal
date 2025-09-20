@@ -1,3 +1,22 @@
+---
+id: editor-implementation
+title: 'UI/UX Editor Implementation Guide: CodeMirror 6 Integration'
+type: api
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags:
+- api
+- python
+- react
+priority: high
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 ***
 
 title: "UI/UX Editor Implementation Guide: CodeMirror 6 Integration"
@@ -21,7 +40,7 @@ tags:
 \- "ux"
 \- "frontend"
 \- "bundling"
-\- "rollup"
+\- "Vite"
 \- "flask-assets"
 \- "accessibility"
 \- "testing"
@@ -66,7 +85,7 @@ app/templates/entries/
 - **Alpine.js**: State management and reactivity
 - **HTMX**: Server interactions without page reloads
 - **MathJax**: LaTeX rendering in preview pane
-- **Rollup**: JavaScript/CSS bundling
+- **Vite**: JavaScript/CSS bundling
 - **Flask-Assets**: Asset management and delivery
 
 ## CodeMirror 6 Setup
@@ -278,7 +297,7 @@ document.addEventListener('alpine:init', () => {
       this.isPreviewLoading = true;
       const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
 
-      fetch('/api/v1/markdown', { // Ensure this API endpoint exists and is protected
+      fetch('/api/markdown', { // Ensure this API endpoint exists and is protected
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -591,7 +610,7 @@ src/css/                 # Source CSS files
 └── vendor/              # Any third-party CSS (if needed)
 
 app/static/gen/          # Generated/Bundled CSS
-├── editor.bundle.css    # Bundled CSS output from Rollup
+├── editor.bundle.css    # Bundled CSS output from Vite
 └── packed.css           # Final packed CSS from Flask-Assets
 ```
 
@@ -761,7 +780,7 @@ Instead of loading CodeMirror modules and MathJax from CDNs, we'll bundle assets
 1. **Update Dependencies Management (`package.json`)**:
 
 - Create `package.json` in the project root.
-- Add dependencies for CodeMirror, MathJax, Rollup, and necessary plugins.
+- Add dependencies for CodeMirror, MathJax, Vite, and necessary plugins.
   ```json
   # package.json (add to project root)
   {
@@ -769,8 +788,8 @@ Instead of loading CodeMirror modules and MathJax from CDNs, we'll bundle assets
     "version": "1.0.0",
     "private": true,
     "scripts": {
-      "build": "rollup -c",
-      "watch": "rollup -c -w"
+      "build": "Vite -c",
+      "watch": "Vite -c -w"
     },
     "dependencies": {
       "@codemirror/state": "^6.2.0",
@@ -782,24 +801,24 @@ Instead of loading CodeMirror modules and MathJax from CDNs, we'll bundle assets
       "mathjax": "^3.2.2"
     },
     "devDependencies": {
-      "@rollup/plugin-node-resolve": "^15.0.1", // Updated plugin name
-      "@rollup/plugin-terser": "^0.4.0", // Updated plugin name
-      "rollup": "^3.20.0",
-      "rollup-plugin-css-only": "^4.3.0" // For extracting CSS
+      "@Vite/plugin-node-resolve": "^15.0.1", // Updated plugin name
+      "@Vite/plugin-terser": "^0.4.0", // Updated plugin name
+      "Vite": "^3.20.0",
+      "Vite-plugin-css-only": "^4.3.0" // For extracting CSS
     }
   }
   ```
-- Run `npm install` to install these dependencies into `node_modules/`. Add `node_modules/` to `.gitignore`.
+- Run `bun install` to install these dependencies into `node_modules (managed by Bun)/`. Add `node_modules (managed by Bun)/` to `.gitignore`.
 
-2. **Create Rollup Configuration (`rollup.config.js`)**:
+2. **Create Vite Configuration (`Vite.config.js`)**:
 
-- Create `rollup.config.js` in the project root.
-- Configure Rollup to bundle JS from `src/js/editor/main.js` and extract CSS.
+- Create `Vite.config.js` in the project root.
+- Configure Vite to bundle JS from `src/js/editor/main.js` and extract CSS.
   ```javascript
-  // rollup.config.js
-  import resolve from '@rollup/plugin-node-resolve';
-  import terser from '@rollup/plugin-terser';
-  import css from 'rollup-plugin-css-only';
+  // Vite.config.js
+  import resolve from '@Vite/plugin-node-resolve';
+  import terser from '@Vite/plugin-terser';
+  import css from 'Vite-plugin-css-only';
 
   export default {
     input: 'src/js/editor/main.js', // Entry point for JS
@@ -810,7 +829,7 @@ Instead of loading CodeMirror modules and MathJax from CDNs, we'll bundle assets
       sourcemap: true // Generate source maps for debugging
     },
     plugins: [
-      resolve(), // Resolves node_modules imports
+      resolve(), // Resolves node_modules (managed by Bun) imports
       css({ output: 'editor.bundle.css' }), // Extract CSS to this file in the output dir
       terser() // Minify JS output
     ]
@@ -852,7 +871,7 @@ Instead of loading CodeMirror modules and MathJax from CDNs, we'll bundle assets
   // Import Alpine component setup if it's in a separate file
   // import './alpine-component.js';
 
-  // Import CSS - Rollup with css-only plugin will handle extraction
+  // Import CSS - Vite with css-only plugin will handle extraction
   import '../../css/base.css';
   import '../../css/components/editor.css';
   import '../../css/components/toolbar.css';
@@ -880,7 +899,7 @@ Instead of loading CodeMirror modules and MathJax from CDNs, we'll bundle assets
 
 5. **Update Flask-Assets Configuration (`journal/__init__.py`)**:
 
-- Configure Flask-Assets to use the bundles generated by Rollup.
+- Configure Flask-Assets to use the bundles generated by Vite.
   ```python
   # journal/__init__.py (or wherever Flask app is created)
   from flask_assets import Environment, Bundle
@@ -895,18 +914,18 @@ Instead of loading CodeMirror modules and MathJax from CDNs, we'll bundle assets
       # Initialize Flask-Assets
       assets.init_app(app)
 
-      # Define asset bundles using the output from Rollup
-      # Note: Rollup handles JS bundling and CSS extraction. Flask-Assets now just serves these.
+      # Define asset bundles using the output from Vite
+      # Note: Vite handles JS bundling and CSS extraction. Flask-Assets now just serves these.
       # If you have other CSS/JS not part of the editor bundle, define separate bundles.
 
       js_editor_bundle = Bundle(
-          'gen/editor.bundle.js', # The single JS file generated by Rollup
-          # filters='jsmin', # Optional: Apply further minification if needed (Terser in Rollup already does this)
+          'gen/editor.bundle.js', # The single JS file generated by Vite
+          # filters='jsmin', # Optional: Apply further minification if needed (Terser in Vite already does this)
           output='gen/packed.editor.%(version)s.js' # Add versioning
       )
 
       css_editor_bundle = Bundle(
-          'gen/editor.bundle.css', # The single CSS file extracted by Rollup
+          'gen/editor.bundle.css', # The single CSS file extracted by Vite
           # filters='cssmin', # Optional: Minify further if needed
           output='gen/packed.editor.%(version)s.css' # Add versioning
       )
@@ -962,7 +981,7 @@ Instead of loading CodeMirror modules and MathJax from CDNs, we'll bundle assets
 
 7. **Build Script Integration (`scripts/deploy.sh`)**:
 
-- Ensure the deployment process includes installing Node.js dependencies and running the Rollup build.
+- Ensure the deployment process includes installing Node.js dependencies and running the Vite build.
   ```bash
   #!/bin/bash
   echo "Starting deployment..."
@@ -975,17 +994,17 @@ Instead of loading CodeMirror modules and MathJax from CDNs, we'll bundle assets
 
   echo "Setting up Python environment..."
   source .venv/bin/activate
-  pip install -r requirements.txt
+  uv pip install -r requirements.txt
 
   echo "Setting up Node.js environment and building assets..."
-  # Check if npm is available
-  if ! command -v npm &> /dev/null
+  # Check if bun is available
+  if ! command -v bun &> /dev/null
   then
-      echo "npm could not be found. Please install Node.js and npm."
+      echo "bun could not be found. Please install Node.js and npm."
       exit 1
   fi
-  npm install       # Install frontend dependencies
-  npm run build     # Run Rollup build script defined in package.json
+  bun install       # Install frontend dependencies
+  bun run build     # Run Vite build script defined in package.json
 
   echo "Applying database migrations..."
   flask db upgrade
@@ -1022,7 +1041,7 @@ Implement comprehensive tests for the editor component:
 ### Unit Tests
 
 - **Location**: `tests/js/unit/`
-- **Framework**: Jest or Vitest
+- **Framework**: Vitest or Vitest
 - **Coverage**:
 - Test individual helper functions (`toolbar-actions.js`, `persistence.js`).
 - Test MathJax configuration and typesetting calls (mocking `window.MathJax`).

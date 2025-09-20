@@ -1,0 +1,3766 @@
+{
+  "nodes": {
+    "INDEX.md": {
+      "id": "index",
+      "path": "INDEX.md",
+      "title": "Documentation Index",
+      "type": "report",
+      "tags": []
+    },
+    "README.md": {
+      "id": "docs-landing",
+      "path": "README.md",
+      "title": "Documentation Landing Page",
+      "type": "guide",
+      "tags": []
+    },
+    "initial-planning/JSDoc-implementation.md": {
+      "id": "jsdoc-implementation",
+      "path": "initial-planning/JSDoc-implementation.md",
+      "title": "Jsdoc Implementation",
+      "type": "reference",
+      "tags": []
+    },
+    "initial-planning/agentic-workflow.md": {
+      "id": "agentic-workflow",
+      "path": "initial-planning/agentic-workflow.md",
+      "title": "Agentic Orchestration Plan",
+      "type": "reference",
+      "tags": [
+        "python"
+      ]
+    },
+    "initial-planning/api-contract-guide.md": {
+      "id": "api-contract-guide",
+      "path": "initial-planning/api-contract-guide.md",
+      "title": "API Contract Guide for Flask Blog/Journal System",
+      "type": "api",
+      "tags": [
+        "api",
+        "python"
+      ]
+    },
+    "initial-planning/comprehensive-guide-personal.md": {
+      "id": "comprehensive-guide-personal",
+      "path": "initial-planning/comprehensive-guide-personal.md",
+      "title": "Core Technologies",
+      "type": "api",
+      "tags": [
+        "api",
+        "python",
+        "react"
+      ]
+    },
+    "initial-planning/deployment-script-guide.md": {
+      "id": "deployment-script-guide",
+      "path": "initial-planning/deployment-script-guide.md",
+      "title": "Deployment Script Improvements Guide for Flask Blog/Journal System",
+      "type": "api",
+      "tags": [
+        "api",
+        "python"
+      ]
+    },
+    "initial-planning/editor-implementation.md": {
+      "id": "editor-implementation",
+      "path": "initial-planning/editor-implementation.md",
+      "title": "UI/UX Editor Implementation Guide: CodeMirror 6 Integration",
+      "type": "api",
+      "tags": [
+        "api",
+        "python",
+        "react"
+      ]
+    },
+    "initial-planning/error-handling.md": {
+      "id": "error-handling",
+      "path": "initial-planning/error-handling.md",
+      "title": "Error Handling Guide for Flask Blog/Journal System",
+      "type": "reference",
+      "tags": [
+        "python"
+      ]
+    },
+    "initial-planning/mvp-high-level-implementation-guide.md": {
+      "id": "mvp-high-level-implementation-guide",
+      "path": "initial-planning/mvp-high-level-implementation-guide.md",
+      "title": "Mvp High Level Implementation Guide",
+      "type": "guide",
+      "tags": [
+        "python"
+      ]
+    },
+    "initial-planning/single-config.md": {
+      "id": "single-config",
+      "path": "initial-planning/single-config.md",
+      "title": "Single Config",
+      "type": "reference",
+      "tags": []
+    },
+    "initial-planning/state-management-guide.md": {
+      "id": "state-management-guide",
+      "path": "initial-planning/state-management-guide.md",
+      "title": "State Management Guide for Flask Blog/Journal System",
+      "type": "guide",
+      "tags": [
+        "python",
+        "react"
+      ]
+    },
+    "initial-planning/structure-update.md": {
+      "id": "structure-update",
+      "path": "initial-planning/structure-update.md",
+      "title": "Structural and Procedural Recommendations",
+      "type": "api",
+      "tags": [
+        "api",
+        "python"
+      ]
+    },
+    "initial-planning/testing.md": {
+      "id": "testing",
+      "path": "initial-planning/testing.md",
+      "title": "Testing Strategy Guide for Flask Blog/Journal System",
+      "type": "api",
+      "tags": [
+        "api",
+        "python"
+      ]
+    },
+    "implementation/documentation-specialist-execution-plan.md": {
+      "id": "documentation-specialist-execution-plan",
+      "path": "implementation/documentation-specialist-execution-plan.md",
+      "title": "Documentation Specialist Execution Plan",
+      "type": "api",
+      "tags": [
+        "api",
+        "python"
+      ]
+    },
+    "implementation/documentation-specialist-role.md": {
+      "id": "documentation-specialist-role",
+      "path": "implementation/documentation-specialist-role.md",
+      "title": "Documentation Specialist Role",
+      "type": "api",
+      "tags": [
+        "api",
+        "python"
+      ]
+    },
+    "implementation/local-act-testing-plan.md": {
+      "id": "local-act-testing-plan",
+      "path": "implementation/local-act-testing-plan.md",
+      "title": "Plan: Integrating Local GitHub Actions Testing with `act`",
+      "type": "testing",
+      "tags": [
+        "docker",
+        "testing"
+      ]
+    },
+    "implementation/IMPLEMENTATION_GUIDE.md": {
+      "id": "implementation-guide",
+      "path": "implementation/IMPLEMENTATION_GUIDE.md",
+      "title": "Implementation Guide (Consolidated)",
+      "type": "guide",
+      "tags": []
+    },
+    "implementation/README.md": {
+      "id": "implementation-readme",
+      "path": "implementation/README.md",
+      "title": "Implementation Documentation",
+      "type": "documentation",
+      "tags": []
+    },
+    "status/CHANGELOG.md": {
+      "id": "project-changelog",
+      "path": "status/CHANGELOG.md",
+      "title": "Project Changelog",
+      "type": "documentation",
+      "tags": [
+        "changelog"
+      ]
+    },
+    "debugging/phase-12-editor-summary.md": {
+      "id": "phase-12-editor-summary",
+      "path": "debugging/phase-12-editor-summary.md",
+      "title": "Debugging Summary: Phase 12 - Editor Bugfix & Layout Correction",
+      "type": "reference",
+      "tags": []
+    },
+    "debugging/phase-13-rollup-manifest-issue.md": {
+      "id": "phase-13-Vite-manifest-issue",
+      "path": "debugging/phase-13-rollup-manifest-issue.md",
+      "title": "Debugging Vite Manifest Generation for Phase 13",
+      "type": "reference",
+      "tags": []
+    },
+    "audits/documentation-assessment-report.md": {
+      "id": "documentation-assessment-report",
+      "path": "audits/documentation-assessment-report.md",
+      "title": "Documentation Assessment Summary Report",
+      "type": "guide",
+      "tags": []
+    },
+    "audits/documentation-inventory.md": {
+      "id": "documentation-inventory",
+      "path": "audits/documentation-inventory.md",
+      "title": "Documentation Inventory and Assessment",
+      "type": "reference",
+      "tags": []
+    },
+    "audits/documentation-validation-report.md": {
+      "id": "documentation-validation-report",
+      "path": "audits/documentation-validation-report.md",
+      "title": "Documentation Validation Report",
+      "type": "reference",
+      "tags": []
+    },
+    "guides/act-reference.md": {
+      "id": "act-reference",
+      "path": "guides/act-reference.md",
+      "title": "Act Reference Guide: Run GitHub Actions Locally",
+      "type": "guide",
+      "tags": [
+        "docker"
+      ]
+    },
+    "guides/api-reference.md": {
+      "id": "api-reference",
+      "path": "guides/api-reference.md",
+      "title": "Flask Journal API Reference",
+      "type": "api",
+      "tags": [
+        "api",
+        "python"
+      ]
+    },
+    "guides/architecture-overview.md": {
+      "id": "architecture-overview",
+      "path": "guides/architecture-overview.md",
+      "title": "Architecture Overview",
+      "type": "api",
+      "tags": [
+        "api",
+        "python"
+      ]
+    },
+    "guides/authentication.md": {
+      "id": "authentication",
+      "path": "guides/authentication.md",
+      "title": "Authentication System Guide",
+      "type": "guide",
+      "tags": [
+        "python"
+      ]
+    },
+    "guides/ci-cd-workflow.md": {
+      "id": "ci-cd-workflow",
+      "path": "guides/ci-cd-workflow.md",
+      "title": "CI/CD Workflow Guide",
+      "type": "guide",
+      "tags": [
+        "python"
+      ]
+    },
+    "guides/codemirror-integration.md": {
+      "id": "codemirror-integration",
+      "path": "guides/codemirror-integration.md",
+      "title": "CodeMirror Integration Guide",
+      "type": "guide",
+      "tags": [
+        "react"
+      ]
+    },
+    "guides/data-model.md": {
+      "id": "data-model",
+      "path": "guides/data-model.md",
+      "title": "Data Model Guide",
+      "type": "guide",
+      "tags": [
+        "python"
+      ]
+    },
+    "guides/diagramming-approach.md": {
+      "id": "diagramming-approach",
+      "path": "guides/diagramming-approach.md",
+      "title": "Diagramming Approach for Flask Journal",
+      "type": "guide",
+      "tags": [
+        "python"
+      ]
+    },
+    "guides/docstring-tools-report.md": {
+      "id": "docstring-tools-report",
+      "path": "guides/docstring-tools-report.md",
+      "title": "Python Docstring Tools Report",
+      "type": "guide",
+      "tags": [
+        "python"
+      ]
+    },
+    "guides/documentation-metrics.md": {
+      "id": "documentation-metrics",
+      "path": "guides/documentation-metrics.md",
+      "title": "Documentation Health Metrics",
+      "type": "api",
+      "tags": [
+        "api",
+        "python"
+      ]
+    },
+    "guides/documentation-review-process.md": {
+      "id": "documentation-review-process",
+      "path": "guides/documentation-review-process.md",
+      "title": "Documentation Review Process",
+      "type": "api",
+      "tags": [
+        "api"
+      ]
+    },
+    "guides/documentation-templates.md": {
+      "id": "documentation-templates",
+      "path": "guides/documentation-templates.md",
+      "title": "Documentation Templates Guide",
+      "type": "api",
+      "tags": [
+        "api"
+      ]
+    },
+    "guides/documentation-testing-process.md": {
+      "id": "documentation-testing-process",
+      "path": "guides/documentation-testing-process.md",
+      "title": "Documentation Testing Process",
+      "type": "guide",
+      "tags": []
+    },
+    "guides/documentation-update-checklist.md": {
+      "id": "documentation-update-checklist",
+      "path": "guides/documentation-update-checklist.md",
+      "title": "Documentation Update Checklist",
+      "type": "api",
+      "tags": [
+        "api",
+        "python"
+      ]
+    },
+    "guides/editor-architecture.md": {
+      "id": "editor-architecture",
+      "path": "guides/editor-architecture.md",
+      "title": "Editor Architecture",
+      "type": "api",
+      "tags": [
+        "api",
+        "react"
+      ]
+    },
+    "guides/gh-cli.md": {
+      "id": "gh-cli",
+      "path": "guides/gh-cli.md",
+      "title": "GitHub CLI Developer Guide",
+      "type": "api",
+      "tags": [
+        "api"
+      ]
+    },
+    "guides/js-api-docs.md": {
+      "id": "js-api-docs",
+      "path": "guides/js-api-docs.md",
+      "title": "JavaScript API Documentation",
+      "type": "api",
+      "tags": [
+        "api"
+      ]
+    },
+    "guides/jsdoc-standards.md": {
+      "id": "jsdoc-standards",
+      "path": "guides/jsdoc-standards.md",
+      "title": "JSDoc Standards Guide",
+      "type": "guide",
+      "tags": []
+    },
+    "guides/markdown-linting-guide.md": {
+      "id": "markdown-linting-guide",
+      "path": "guides/markdown-linting-guide.md",
+      "title": "Markdown Linting and Link Validation Guide",
+      "type": "guide",
+      "tags": []
+    },
+    "guides/python-docstring-standards.md": {
+      "id": "python-docstring-standards",
+      "path": "guides/python-docstring-standards.md",
+      "title": "Python Docstring Standards Guide",
+      "type": "guide",
+      "tags": [
+        "python"
+      ]
+    },
+    "guides/request-lifecycle.md": {
+      "id": "request-lifecycle",
+      "path": "guides/request-lifecycle.md",
+      "title": "Request Lifecycle",
+      "type": "api",
+      "tags": [
+        "api"
+      ]
+    },
+    "guides/infisical-self-hosted.md": {
+      "id": "infisical-self-hosted",
+      "path": "guides/infisical-self-hosted.md",
+      "title": "Infisical Self-Host Options",
+      "type": "guide",
+      "tags": [
+        "docker",
+        "react"
+      ]
+    },
+    "guides/README.md": {
+      "id": "guides-readme",
+      "path": "guides/README.md",
+      "title": "Guides Documentation",
+      "type": "documentation",
+      "tags": []
+    },
+    "guides/commands-quick-reference.md": {
+      "id": "commands-quick-reference",
+      "path": "guides/commands-quick-reference.md",
+      "title": "Commands Quick Reference",
+      "type": "guide",
+      "tags": []
+    },
+    "guides/documentation-contribution-guide.md": {
+      "id": "documentation-contribution-guide",
+      "path": "guides/documentation-contribution-guide.md",
+      "title": "Documentation Contribution Guide",
+      "type": "guide",
+      "tags": []
+    },
+    "js-api/README.md": {
+      "id": "js-api",
+      "path": "js-api/README.md",
+      "title": "JS API Documentation Placeholder",
+      "type": "reference",
+      "tags": []
+    },
+    "templates/api-reference-template.md": {
+      "id": "api-reference-template",
+      "path": "templates/api-reference-template.md",
+      "title": "API Endpoint: `endpoint_path`",
+      "type": "api",
+      "tags": [
+        "api"
+      ]
+    },
+    "templates/component-doc-template.md": {
+      "id": "component-doc-template",
+      "path": "templates/component-doc-template.md",
+      "title": "Component: ComponentName",
+      "type": "api",
+      "tags": [
+        "api",
+        "python"
+      ]
+    },
+    "templates/concept-guide-template.md": {
+      "id": "concept-guide-template",
+      "path": "templates/concept-guide-template.md",
+      "title": "Concept Title",
+      "type": "guide",
+      "tags": [
+        "python"
+      ]
+    },
+    "templates/troubleshooting-template.md": {
+      "id": "troubleshooting-template",
+      "path": "templates/troubleshooting-template.md",
+      "title": "Troubleshooting Guide: Topic Name",
+      "type": "reference",
+      "tags": [
+        "python"
+      ]
+    },
+    "templates/tutorial-template.md": {
+      "id": "tutorial-template",
+      "path": "templates/tutorial-template.md",
+      "title": "Tutorial: Task Name",
+      "type": "guide",
+      "tags": [
+        "python"
+      ]
+    },
+    "user-guide/README.md": {
+      "id": "readme",
+      "path": "user-guide/README.md",
+      "title": "Flask Journal User Guide",
+      "type": "guide",
+      "tags": []
+    },
+    "user-guide/faq.md": {
+      "id": "faq",
+      "path": "user-guide/faq.md",
+      "title": "Frequently Asked Questions",
+      "type": "guide",
+      "tags": []
+    },
+    "user-guide/troubleshooting.md": {
+      "id": "troubleshooting",
+      "path": "user-guide/troubleshooting.md",
+      "title": "Troubleshooting Guide",
+      "type": "guide",
+      "tags": [
+        "python"
+      ]
+    },
+    "proposals/ci-cd-documentation-checks.md": {
+      "id": "ci-cd-documentation-checks",
+      "path": "proposals/ci-cd-documentation-checks.md",
+      "title": "Proposal: CI/CD Integration for Documentation Checks",
+      "type": "reference",
+      "tags": []
+    },
+    "code-mirror/example-basic.md": {
+      "id": "example-basic",
+      "path": "code-mirror/example-basic.md",
+      "title": "Setting Up a Basic CodeMirror Editor",
+      "type": "reference",
+      "tags": [
+        "typescript"
+      ]
+    },
+    "code-mirror/example-bundled.md": {
+      "id": "example-bundled",
+      "path": "code-mirror/example-bundled.md",
+      "title": "CodeMirror Bundling Guide: Using Vite",
+      "type": "reference",
+      "tags": [
+        "python"
+      ]
+    },
+    "code-mirror/example-config.md": {
+      "id": "example-config",
+      "path": "code-mirror/example-config.md",
+      "title": "Example Configuration (Flask Journal)",
+      "type": "reference",
+      "tags": [
+        "react"
+      ]
+    },
+    "code-mirror/example-styling.md": {
+      "id": "example-styling",
+      "path": "code-mirror/example-styling.md",
+      "title": "CodeMirror Styling Guide",
+      "type": "reference",
+      "tags": []
+    },
+    "code-mirror/example-tab-handling.md": {
+      "id": "example-tab-handling",
+      "path": "code-mirror/example-tab-handling.md",
+      "title": "CodeMirror Tab Handling Guide",
+      "type": "reference",
+      "tags": []
+    },
+    "code-mirror/extensions-reference.md": {
+      "id": "extensions-reference",
+      "path": "code-mirror/extensions-reference.md",
+      "title": "CodeMirror Core Extensions Reference",
+      "type": "reference",
+      "tags": []
+    },
+    "code-mirror/quick-reference.md": {
+      "id": "quick-reference",
+      "path": "code-mirror/quick-reference.md",
+      "title": "CodeMirror Quick Reference Guide",
+      "type": "reference",
+      "tags": []
+    },
+    "code-mirror/reference-manual-part1.md": {
+      "id": "reference-manual-part1",
+      "path": "code-mirror/reference-manual-part1.md",
+      "title": "CodeMirror Reference Manual",
+      "type": "reference",
+      "tags": [
+        "typescript"
+      ]
+    },
+    "code-mirror/reference-manual-part2.md": {
+      "id": "reference-manual-part2",
+      "path": "code-mirror/reference-manual-part2.md",
+      "title": "CodeMirror View Reference",
+      "type": "reference",
+      "tags": [
+        "typescript",
+        "react"
+      ]
+    },
+    "code-mirror/reference-manual-part3.md": {
+      "id": "reference-manual-part3",
+      "path": "code-mirror/reference-manual-part3.md",
+      "title": "CodeMirror Extensions Reference",
+      "type": "reference",
+      "tags": [
+        "typescript"
+      ]
+    },
+    "code-mirror/reference-manual-part4.md": {
+      "id": "reference-manual-part4",
+      "path": "code-mirror/reference-manual-part4.md",
+      "title": "CodeMirror Packages Reference",
+      "type": "reference",
+      "tags": [
+        "typescript"
+      ]
+    },
+    "code-mirror/system-guide.md": {
+      "id": "system-guide",
+      "path": "code-mirror/system-guide.md",
+      "title": "CodeMirror Reference Guide",
+      "type": "guide",
+      "tags": [
+        "typescript"
+      ]
+    },
+    "typescript-migration/migration-guide.md": {
+      "id": "migration-guide",
+      "path": "typescript-migration/migration-guide.md",
+      "title": "TypeScript Migration Guide for Journal Project",
+      "type": "guide",
+      "tags": [
+        "typescript",
+        "react"
+      ]
+    },
+    "journal-backend-bootstrap-pgvector-fts-reindex/README.md": {
+      "id": "journal-backend-bootstrap",
+      "path": "journal-backend-bootstrap-pgvector-fts-reindex/README.md",
+      "title": "Journal Backend Bootstrap (PGVector + FTS) Docs",
+      "type": "architecture",
+      "tags": [
+        "backend",
+        "postgresql"
+      ]
+    },
+    "editor-upgrade/BULLETPROOF-IMPLEMENTATION-PLAN.md": {
+      "id": "bulletproof-implementation-plan",
+      "path": "editor-upgrade/BULLETPROOF-IMPLEMENTATION-PLAN.md",
+      "title": "Bulletproof Implementation Plan",
+      "type": "api",
+      "tags": [
+        "api",
+        "typescript",
+        "react"
+      ]
+    },
+    "editor-upgrade/FINAL-IMPLEMENTATION-WORKFLOW.md": {
+      "id": "final-implementation-workflow",
+      "path": "editor-upgrade/FINAL-IMPLEMENTATION-WORKFLOW.md",
+      "title": "Final Editor Upgrade Implementation Workflow",
+      "type": "reference",
+      "tags": [
+        "python",
+        "typescript",
+        "react"
+      ]
+    },
+    "editor-upgrade/TYPE-SYSTEM-STRATEGY.md": {
+      "id": "type-system-strategy",
+      "path": "editor-upgrade/TYPE-SYSTEM-STRATEGY.md",
+      "title": "Type System Strategy",
+      "type": "reference",
+      "tags": [
+        "typescript"
+      ]
+    },
+    "editor-upgrade/VITEST-MIGRATION-IMPACT.md": {
+      "id": "vitest-migration-impact",
+      "path": "editor-upgrade/VITEST-MIGRATION-IMPACT.md",
+      "title": "Vitest Migration Impact Analysis",
+      "type": "testing",
+      "tags": [
+        "testing",
+        "typescript",
+        "react"
+      ]
+    },
+    "editor-upgrade/VITEST-TESTING-SETUP.md": {
+      "id": "vitest-testing-setup",
+      "path": "editor-upgrade/VITEST-TESTING-SETUP.md",
+      "title": "Vitest Testing Setup",
+      "type": "testing",
+      "tags": [
+        "testing",
+        "typescript",
+        "react"
+      ]
+    },
+    "doc-update/doc-organize-plan.md": {
+      "id": "doc-organize-plan",
+      "path": "doc-update/doc-organize-plan.md",
+      "title": "Run from your repository root",
+      "type": "reference",
+      "tags": [
+        "python",
+        "docker",
+        "fastapi"
+      ]
+    },
+    "future-features/jwt-security-hardening.md": {
+      "id": "jwt-security-hardening",
+      "path": "future-features/jwt-security-hardening.md",
+      "title": "JWT Security Hardening - Future Feature",
+      "type": "api",
+      "tags": [
+        "api",
+        "python"
+      ]
+    },
+    "adr/adr-0001-python-3.13-ruff-0.13.md": {
+      "id": "adr-0001-python-3.13-ruff-0.13",
+      "path": "adr/adr-0001-python-3.13-ruff-0.13.md",
+      "title": "ADR-0001: Python 3.13 and Ruff 0.13.0 Standardization",
+      "type": "reference",
+      "tags": [
+        "python",
+        "docker"
+      ]
+    },
+    "deployment/vercel-supabase-migration-assessment.md": {
+      "id": "vercel-supabase-migration-assessment",
+      "path": "deployment/vercel-supabase-migration-assessment.md",
+      "title": "Vercel + Supabase Migration Assessment - Journal App",
+      "type": "api",
+      "tags": [
+        "api",
+        "python",
+        "react",
+        "fastapi"
+      ]
+    },
+    "deployment/vercel-supabase-strategy.md": {
+      "id": "vercel-supabase-strategy",
+      "path": "deployment/vercel-supabase-strategy.md",
+      "title": "Vercel + Supabase Deployment Strategy",
+      "type": "deployment",
+      "tags": [
+        "python",
+        "fastapi",
+        "docker",
+        "react",
+        "deployment"
+      ]
+    },
+    "deployment/data-policy.md": {
+      "id": "data-policy",
+      "path": "deployment/data-policy.md",
+      "title": "Data Policy & Preview Environment Security",
+      "type": "deployment",
+      "tags": [
+        "python",
+        "deployment"
+      ]
+    },
+    "deployment/PRE_DEPLOYMENT_CHECKLIST.md": {
+      "id": "pre-deployment-checklist",
+      "path": "deployment/PRE_DEPLOYMENT_CHECKLIST.md",
+      "title": "Pre-Deployment Checklist",
+      "type": "guide",
+      "tags": [
+        "deployment",
+        "checklist",
+        "vercel",
+        "supabase"
+      ]
+    },
+    "deployment/supabase-configuration.md": {
+      "id": "supabase-configuration",
+      "path": "deployment/supabase-configuration.md",
+      "title": "Supabase Configuration",
+      "type": "guide",
+      "tags": [
+        "supabase",
+        "database",
+        "postgresql",
+        "deployment",
+        "configuration"
+      ]
+    },
+    "deployment/environment-variables.md": {
+      "id": "environment-variables",
+      "path": "deployment/environment-variables.md",
+      "title": "Environment Variables Configuration",
+      "type": "reference",
+      "tags": [
+        "environment",
+        "configuration",
+        "deployment",
+        "security"
+      ]
+    },
+    "deployment/vercel-deployment.md": {
+      "id": "vercel-deployment",
+      "path": "deployment/vercel-deployment.md",
+      "title": "Vercel Deployment Configuration",
+      "type": "guide",
+      "tags": [
+        "vercel",
+        "deployment",
+        "hosting",
+        "cdn",
+        "monitoring"
+      ]
+    },
+    "deployment/architecture.md": {
+      "id": "deployment-architecture",
+      "path": "deployment/architecture.md",
+      "title": "Deployment Architecture Overview",
+      "type": "architecture",
+      "tags": [
+        "deployment",
+        "architecture",
+        "vercel",
+        "supabase"
+      ]
+    },
+    "deployment/database-migration.md": {
+      "id": "database-migration",
+      "path": "deployment/database-migration.md",
+      "title": "Database Migration Guide",
+      "type": "guide",
+      "tags": [
+        "database",
+        "migration",
+        "supabase"
+      ]
+    },
+    "deployment/monitoring.md": {
+      "id": "monitoring-setup",
+      "path": "deployment/monitoring.md",
+      "title": "Monitoring & Observability Setup",
+      "type": "guide",
+      "tags": [
+        "monitoring",
+        "observability",
+        "alerts"
+      ]
+    },
+    "deployment/runbook.md": {
+      "id": "production-runbook",
+      "path": "deployment/runbook.md",
+      "title": "Production Runbook",
+      "type": "reference",
+      "tags": [
+        "runbook",
+        "operations",
+        "oncall"
+      ]
+    },
+    "db/extensions.md": {
+      "id": "extensions",
+      "path": "db/extensions.md",
+      "title": "PostgreSQL Extensions Compatibility",
+      "type": "reference",
+      "tags": [
+        "python"
+      ]
+    },
+    "schemas/README.md": {
+      "id": "schemas",
+      "path": "schemas/README.md",
+      "title": "Schemas Overview",
+      "type": "reference",
+      "tags": [
+        "database"
+      ]
+    },
+    "security/ADVANCED_AUTH.md": {
+      "id": "advanced-auth",
+      "path": "security/ADVANCED_AUTH.md",
+      "title": "\ud83d\udd10 Production User Management Implementation Plan",
+      "type": "api",
+      "tags": [
+        "api",
+        "python",
+        "typescript"
+      ]
+    },
+    "security/DEPLOYMENT_AWARE_AUTH.md": {
+      "id": "deployment-aware-auth",
+      "path": "security/DEPLOYMENT_AWARE_AUTH.md",
+      "title": "Deployment-Aware Authentication Strategy (2025+)",
+      "type": "api",
+      "tags": [
+        "api",
+        "python",
+        "typescript"
+      ]
+    },
+    "security/token-enhancement.md": {
+      "id": "token-enhancement",
+      "path": "security/token-enhancement.md",
+      "title": "0) Design goals",
+      "type": "api",
+      "tags": [
+        "api",
+        "docker"
+      ]
+    },
+    "ci-cd/CI_CD_GUIDE.md": {
+      "id": "ci-cd-guide",
+      "path": "ci-cd/CI_CD_GUIDE.md",
+      "title": "CI/CD Developer Guide",
+      "type": "guide",
+      "tags": [
+        "python",
+        "docker"
+      ]
+    },
+    "ci-cd/overview.md": {
+      "id": "ci-cd",
+      "path": "ci-cd/overview.md",
+      "title": "Modern CI/CD workflows for Python and TypeScript monorepos",
+      "type": "reference",
+      "tags": [
+        "python",
+        "typescript",
+        "docker"
+      ]
+    },
+    "ci-cd/CI_CHECKLIST.md": {
+      "id": "ci-checklist",
+      "path": "ci-cd/CI_CHECKLIST.md",
+      "title": "CI/CD Implementation Checklist",
+      "type": "api",
+      "tags": [
+        "api",
+        "python"
+      ]
+    },
+    "ci-cd/CI_INVESTIGATION_REPORT.md": {
+      "id": "ci-investigation-report",
+      "path": "ci-cd/CI_INVESTIGATION_REPORT.md",
+      "title": "CI Investigation Report \u2014 Web Build, Vitest, Playwright (September 2025)",
+      "type": "reference",
+      "tags": [
+        "python",
+        "fastapi",
+        "docker",
+        "typescript"
+      ]
+    },
+    "ci-cd/dev-setup.md": {
+      "id": "dev-setup",
+      "path": "ci-cd/dev-setup.md",
+      "title": "Development Environment Setup",
+      "type": "reference",
+      "tags": [
+        "python",
+        "typescript",
+        "docker"
+      ]
+    },
+    "ci-cd/CI_FIX_WORKFLOW.md": {
+      "id": "ci_fix_workflow",
+      "path": "ci-cd/CI_FIX_WORKFLOW.md",
+      "title": "Ci Fix Workflow",
+      "type": "workflow",
+      "tags": [
+        "python",
+        "typescript",
+        "database",
+        "testing"
+      ]
+    },
+    "ci-cd/PR-CHECKLIST.md": {
+      "id": "pr-checklist",
+      "path": "ci-cd/PR-CHECKLIST.md",
+      "title": "Pr Checklist",
+      "type": "documentation",
+      "tags": [
+        "typescript",
+        "react",
+        "testing",
+        "deployment"
+      ]
+    },
+    "ci-cd/MERGE-CHECKLIST.md": {
+      "id": "merge-checklist",
+      "path": "ci-cd/MERGE-CHECKLIST.md",
+      "title": "Merge Checklist",
+      "type": "documentation",
+      "tags": [
+        "typescript",
+        "react",
+        "testing",
+        "deployment"
+      ]
+    },
+    "ci-cd/PR_SUMMARY.md": {
+      "id": "pr_summary",
+      "path": "ci-cd/PR_SUMMARY.md",
+      "title": "Pr Summary",
+      "type": "documentation",
+      "tags": [
+        "python",
+        "typescript",
+        "react",
+        "database"
+      ]
+    },
+    "ci-cd/README.md": {
+      "id": "ci-cd-readme",
+      "path": "ci-cd/README.md",
+      "title": "CI/CD Documentation",
+      "type": "documentation",
+      "tags": [
+        "ci-cd"
+      ]
+    },
+    "migrations/REACT-19-WORKFLOW.md": {
+      "id": "react-19-workflow",
+      "path": "migrations/REACT-19-WORKFLOW.md",
+      "title": "React 19.1 Migration Workflow - Journal Application",
+      "type": "reference",
+      "tags": [
+        "typescript",
+        "react"
+      ]
+    },
+    "migrations/move-to-fastapi.md": {
+      "id": "move-to-fastapi",
+      "path": "migrations/move-to-fastapi.md",
+      "title": "Journal Backend \u2014 FastAPI \u201c2025-grade\u201d Stack",
+      "type": "api",
+      "tags": [
+        "api",
+        "python",
+        "docker",
+        "fastapi"
+      ]
+    },
+    "migrations/to-typescript.md": {
+      "id": "to-typescript",
+      "path": "migrations/to-typescript.md",
+      "title": "choose one of npm/pnpm/bun",
+      "type": "reference",
+      "tags": [
+        "typescript",
+        "react"
+      ]
+    },
+    "migrations/ruff-progressive-autofixing.md": {
+      "id": "ruff-progressive-autofixing",
+      "path": "migrations/ruff-progressive-autofixing.md",
+      "title": "Progressive Ruff Autofixing Strategy",
+      "type": "reference",
+      "tags": [
+        "python"
+      ]
+    },
+    "development/DEVELOPMENT_FRAMEWORK.md": {
+      "id": "development_framework",
+      "path": "development/DEVELOPMENT_FRAMEWORK.md",
+      "title": "Development Framework",
+      "type": "documentation",
+      "tags": [
+        "python",
+        "typescript",
+        "react",
+        "database"
+      ]
+    },
+    "development/BACKEND_ARCHITECTURE.md": {
+      "id": "backend_architecture",
+      "path": "development/BACKEND_ARCHITECTURE.md",
+      "title": "Backend Architecture",
+      "type": "architecture",
+      "tags": [
+        "typescript",
+        "database",
+        "testing",
+        "deployment"
+      ]
+    },
+    "development/RUNNING_THE_APP.md": {
+      "id": "running_the_app",
+      "path": "development/RUNNING_THE_APP.md",
+      "title": "Running The App",
+      "type": "documentation",
+      "tags": [
+        "python",
+        "typescript",
+        "react",
+        "database"
+      ]
+    },
+    "development/USAGE-GUIDE.md": {
+      "id": "usage-guide",
+      "path": "development/USAGE-GUIDE.md",
+      "title": "Usage Guide",
+      "type": "guide",
+      "tags": [
+        "python",
+        "typescript",
+        "testing",
+        "deployment",
+        "api"
+      ]
+    },
+    "development/README.md": {
+      "id": "development-readme",
+      "path": "development/README.md",
+      "title": "Development Documentation",
+      "type": "documentation",
+      "tags": []
+    },
+    "design/UI_DESIGN_SPECIFICATION.md": {
+      "id": "ui-design-specification",
+      "path": "design/UI_DESIGN_SPECIFICATION.md",
+      "title": "Journal Application - UI Design Specification",
+      "type": "architecture",
+      "tags": []
+    },
+    "design/UI_DESIGN_UPDATE_PLAN.md": {
+      "id": "ui-design-update-plan",
+      "path": "design/UI_DESIGN_UPDATE_PLAN.md",
+      "title": "Journal App UI/UX Orchestration Plan v2.0",
+      "type": "architecture",
+      "tags": [
+        "typescript",
+        "react"
+      ]
+    },
+    "design/theme.md": {
+      "id": "theme",
+      "path": "design/theme.md",
+      "title": "Theme",
+      "type": "reference",
+      "tags": []
+    },
+    "design/refactor-ui-design.md": {
+      "id": "refactor-ui-design",
+      "path": "design/refactor-ui-design.md",
+      "title": "Modern Journaling App \u2014 Final UI/UX + Implementation Plan (Aug 31, 2025)",
+      "type": "architecture",
+      "tags": [
+        "python",
+        "react"
+      ]
+    },
+    "planning/PHASE_5_ENHANCEMENT_PLAN.md": {
+      "id": "phase-5-enhancement-plan",
+      "path": "planning/PHASE_5_ENHANCEMENT_PLAN.md",
+      "title": "Phase 5 Enhancement Plan: Production-Grade Token System",
+      "type": "api",
+      "tags": [
+        "api",
+        "python"
+      ]
+    },
+    "planning/PHASE_5_MASTER_PLAN.md": {
+      "id": "phase-5-master-plan",
+      "path": "planning/PHASE_5_MASTER_PLAN.md",
+      "title": "Phase 5 Master Plan: Complete Modern Auth System",
+      "type": "api",
+      "tags": [
+        "api",
+        "python"
+      ]
+    },
+    "planning/enhance-journal-app.md": {
+      "id": "enhance-journal-app",
+      "path": "planning/enhance-journal-app.md",
+      "title": "**A Strategic Blueprint for the Modern Journaling Application**",
+      "type": "guide",
+      "tags": [
+        "python",
+        "fastapi",
+        "docker",
+        "react"
+      ]
+    },
+    "planning/ROADMAP.md": {
+      "id": "roadmap",
+      "path": "planning/ROADMAP.md",
+      "title": "Journal Roadmap (Live Document)",
+      "type": "api",
+      "tags": [
+        "api",
+        "react"
+      ]
+    },
+    "infrastructure/hosting-secure.md": {
+      "id": "hosting-secure",
+      "path": "infrastructure/hosting-secure.md",
+      "title": "Secure Hosting for a Personal Journal",
+      "type": "reference",
+      "tags": [
+        "docker"
+      ]
+    },
+    "infrastructure/observability-setup.md": {
+      "id": "observability-setup",
+      "path": "infrastructure/observability-setup.md",
+      "title": "Observability Setup (Logging, Errors, and OTLP)",
+      "type": "api",
+      "tags": [
+        "api",
+        "python",
+        "docker"
+      ]
+    },
+    "infrastructure/error-handling-logging.md": {
+      "id": "error-handling-logging",
+      "path": "infrastructure/error-handling-logging.md",
+      "title": "Modern error handling and logging architecture for Python and TypeScript projects",
+      "type": "api",
+      "tags": [
+        "api",
+        "python",
+        "typescript"
+      ]
+    },
+    "infrastructure/INFISICAL_ARCHITECTURE.md": {
+      "id": "infisical-architecture",
+      "path": "infrastructure/INFISICAL_ARCHITECTURE.md",
+      "title": "Infisical Integration Architecture",
+      "type": "api",
+      "tags": [
+        "api",
+        "python"
+      ]
+    },
+    "infrastructure/infisical-cli-useage.md": {
+      "id": "infisical-cli-useage",
+      "path": "infrastructure/infisical-cli-useage.md",
+      "title": "Infisical CLI Companion (for Token Handling & Rotation)",
+      "type": "api",
+      "tags": [
+        "api",
+        "docker",
+        "fastapi"
+      ]
+    },
+    "workflows/agent-workflows.md": {
+      "id": "agent-workflows",
+      "path": "workflows/agent-workflows.md",
+      "title": "Recommended: Install via bun (avoid using Bun due to Windows issues)",
+      "type": "api",
+      "tags": [
+        "python",
+        "fastapi",
+        "docker",
+        "react",
+        "typescript",
+        "api"
+      ]
+    },
+    "workflows/hx-ax-workflows.md": {
+      "id": "hx-ax-workflows",
+      "path": "workflows/hx-ax-workflows.md",
+      "title": "HX/AX Workflows: Human & Agent Experience for UI/UX Development",
+      "type": "api",
+      "tags": [
+        "api",
+        "python",
+        "typescript",
+        "react"
+      ]
+    },
+    "workflows/dual-language-setup.md": {
+      "id": "dual-language-setup",
+      "path": "workflows/dual-language-setup.md",
+      "title": "Python/TypeScript Dual-Language Project Setup Guide",
+      "type": "api",
+      "tags": [
+        "python",
+        "fastapi",
+        "react",
+        "typescript",
+        "api"
+      ]
+    },
+    "meta/DOCUMENTATION_ARCHITECTURE.md": {
+      "id": "documentation-architecture",
+      "path": "meta/DOCUMENTATION_ARCHITECTURE.md",
+      "title": "Documentation Architecture Blueprint for Journal Application",
+      "type": "api",
+      "tags": [
+        "api",
+        "python"
+      ]
+    },
+    "meta/DOCUMENTATION_ROADMAP.md": {
+      "id": "documentation-roadmap",
+      "path": "meta/DOCUMENTATION_ROADMAP.md",
+      "title": "Documentation System Implementation Roadmap",
+      "type": "api",
+      "tags": [
+        "api",
+        "python"
+      ]
+    },
+    "meta/DEFINITION_OF_DONE.md": {
+      "id": "definition-of-done",
+      "path": "meta/DEFINITION_OF_DONE.md",
+      "title": "Documentation System - Definition of Done",
+      "type": "api",
+      "tags": [
+        "api",
+        "python"
+      ]
+    },
+    "meta/MIGRATION_CHECKLIST.md": {
+      "id": "migration-checklist",
+      "path": "meta/MIGRATION_CHECKLIST.md",
+      "title": "Documentation Migration Checklist",
+      "type": "api",
+      "tags": [
+        "api",
+        "python",
+        "fastapi"
+      ]
+    },
+    "meta/ORCHESTRATION_WORKFLOW.md": {
+      "id": "orchestration-workflow",
+      "path": "meta/ORCHESTRATION_WORKFLOW.md",
+      "title": "Documentation Migration - Parallelized Orchestration Workflow",
+      "type": "api",
+      "tags": [
+        "api",
+        "python",
+        "fastapi"
+      ]
+    },
+    "meta/doc-upgrade.md": {
+      "id": "doc-upgrade",
+      "path": "meta/doc-upgrade.md",
+      "title": "**An Architectural Blueprint for Autonomous Documentation**",
+      "type": "reference",
+      "tags": [
+        "react"
+      ]
+    },
+    "meta/reference-docs.md": {
+      "id": "reference-docs",
+      "path": "meta/reference-docs.md",
+      "title": "\ud83d\udcda Documentation Management System",
+      "type": "reference",
+      "tags": [
+        "typescript"
+      ]
+    },
+    "meta/reference-docs-started.md": {
+      "id": "reference-docs-started",
+      "path": "meta/reference-docs-started.md",
+      "title": "Method 1: Direct TypeScript",
+      "type": "reference",
+      "tags": [
+        "typescript"
+      ]
+    },
+    "meta/TESTING_STATUS.md": {
+      "id": "testing-status",
+      "path": "meta/TESTING_STATUS.md",
+      "title": "Testing Work: Status & Plan",
+      "type": "api",
+      "tags": [
+        "api",
+        "python",
+        "docker",
+        "fastapi"
+      ]
+    },
+    "meta/REORGANIZATION_PLAN.md": {
+      "id": "reorganization-plan",
+      "path": "meta/REORGANIZATION_PLAN.md",
+      "title": "Documentation Reorganization Plan",
+      "type": "reference",
+      "tags": [
+        "python",
+        "authentication",
+        "typescript",
+        "react",
+        "fastapi",
+        "ci-cd"
+      ]
+    },
+    "project-config/CLAUDE.md": {
+      "id": "claude",
+      "path": "project-config/CLAUDE.md",
+      "title": "Claude",
+      "type": "configuration",
+      "tags": [
+        "python",
+        "typescript",
+        "react",
+        "database"
+      ]
+    },
+    "project-config/AGENTS.md": {
+      "id": "agents",
+      "path": "project-config/AGENTS.md",
+      "title": "Agents",
+      "type": "configuration",
+      "tags": [
+        "python",
+        "typescript",
+        "react",
+        "database"
+      ]
+    },
+    "project-config/GEMINI.md": {
+      "id": "gemini",
+      "path": "project-config/GEMINI.md",
+      "title": "Gemini",
+      "type": "configuration",
+      "tags": [
+        "python",
+        "typescript",
+        "react",
+        "database"
+      ]
+    },
+    "project-config/CODEX-SETUP.md": {
+      "id": "codex-setup",
+      "path": "project-config/CODEX-SETUP.md",
+      "title": "Codex Setup",
+      "type": "configuration",
+      "tags": [
+        "python",
+        "typescript",
+        "react",
+        "database"
+      ]
+    },
+    "project-config/documentation-instructions.md": {
+      "id": "documentation-instructions",
+      "path": "project-config/documentation-instructions.md",
+      "title": "Documentation Instructions",
+      "type": "configuration",
+      "tags": [
+        "typescript",
+        "react",
+        "testing",
+        "deployment",
+        "api"
+      ]
+    },
+    "testing/PERFORMANCE-BASELINE.md": {
+      "id": "performance-baseline",
+      "path": "testing/PERFORMANCE-BASELINE.md",
+      "title": "Performance Baseline",
+      "type": "testing",
+      "tags": [
+        "typescript",
+        "react",
+        "testing",
+        "deployment"
+      ]
+    },
+    "reports/DESIGN_AND_TOOLING_REPORT.md": {
+      "id": "design_and_tooling_report",
+      "path": "reports/DESIGN_AND_TOOLING_REPORT.md",
+      "title": "Design And Tooling Report",
+      "type": "documentation",
+      "tags": [
+        "python",
+        "typescript",
+        "react",
+        "database"
+      ]
+    },
+    "reports/LINTING_REPORT.md": {
+      "id": "linting_report",
+      "path": "reports/LINTING_REPORT.md",
+      "title": "Linting Report",
+      "type": "documentation",
+      "tags": [
+        "python",
+        "typescript",
+        "react",
+        "testing"
+      ]
+    },
+    "reports/PYTHON_RUFF_ALIGNMENT_REPORT.md": {
+      "id": "python_ruff_alignment_report",
+      "path": "reports/PYTHON_RUFF_ALIGNMENT_REPORT.md",
+      "title": "Python Ruff Alignment Report",
+      "type": "documentation",
+      "tags": [
+        "python",
+        "typescript",
+        "deployment",
+        "api"
+      ]
+    },
+    "reports/UI_UX_STRATEGY_REPORT.md": {
+      "id": "ui_ux_strategy_report",
+      "path": "reports/UI_UX_STRATEGY_REPORT.md",
+      "title": "Ui Ux Strategy Report",
+      "type": "documentation",
+      "tags": [
+        "typescript",
+        "react",
+        "testing",
+        "deployment"
+      ]
+    },
+    "reports/documentation-fix-report.md": {
+      "id": "documentation-fix-report",
+      "path": "reports/documentation-fix-report.md",
+      "title": "Documentation Fix Report",
+      "type": "report",
+      "tags": []
+    },
+    "reports/docs-status.md": {
+      "id": "docs-status-report",
+      "path": "reports/docs-status.md",
+      "title": "Documentation Status Report",
+      "type": "report",
+      "tags": [
+        "documentation",
+        "status"
+      ]
+    },
+    "reports/large-docs-plan.md": {
+      "id": "large-docs-plan",
+      "path": "reports/large-docs-plan.md",
+      "title": "Large Documents Split Plan",
+      "type": "report",
+      "tags": []
+    },
+    "reports/taxonomy-status.md": {
+      "id": "taxonomy-status-report",
+      "path": "reports/taxonomy-status.md",
+      "title": "Taxonomy Validation Report",
+      "type": "report",
+      "tags": [
+        "documentation",
+        "taxonomy"
+      ]
+    },
+    "reports/relationships-status.md": {
+      "id": "relationships-status-report",
+      "path": "reports/relationships-status.md",
+      "title": "Relationships Validation Report",
+      "type": "report",
+      "tags": [
+        "documentation",
+        "relationships"
+      ]
+    },
+    "implementation-summaries/INFISICAL_IMPLEMENTATION_SUMMARY.md": {
+      "id": "infisical_implementation_summary",
+      "path": "implementation-summaries/INFISICAL_IMPLEMENTATION_SUMMARY.md",
+      "title": "Infisical Implementation Summary",
+      "type": "documentation",
+      "tags": [
+        "python",
+        "typescript",
+        "react",
+        "database"
+      ]
+    },
+    "implementation-summaries/SECURITY_HARDENING_IMPLEMENTATION.md": {
+      "id": "security_hardening_implementation",
+      "path": "implementation-summaries/SECURITY_HARDENING_IMPLEMENTATION.md",
+      "title": "Security Hardening Implementation",
+      "type": "documentation",
+      "tags": [
+        "python",
+        "typescript",
+        "react",
+        "database"
+      ]
+    },
+    "implementation-summaries/PROJECT-INTEGRATION.md": {
+      "id": "project-integration",
+      "path": "implementation-summaries/PROJECT-INTEGRATION.md",
+      "title": "Project Integration",
+      "type": "documentation",
+      "tags": [
+        "typescript",
+        "deployment",
+        "api",
+        "security"
+      ]
+    },
+    "implementation-summaries/ROLLOUT-PLAN.md": {
+      "id": "rollout-plan",
+      "path": "implementation-summaries/ROLLOUT-PLAN.md",
+      "title": "Rollout Plan",
+      "type": "documentation",
+      "tags": [
+        "typescript",
+        "react",
+        "testing",
+        "deployment"
+      ]
+    },
+    "investigations/DEEP_INVESTIGATION_DIRECTIVE.md": {
+      "id": "deep_investigation_directive",
+      "path": "investigations/DEEP_INVESTIGATION_DIRECTIVE.md",
+      "title": "Deep Investigation Directive",
+      "type": "documentation",
+      "tags": [
+        "python",
+        "typescript",
+        "database",
+        "testing"
+      ]
+    },
+    "features/user-management/USER_MANAGEMENT_IMPLEMENTATION.md": {
+      "id": "user-management-implementation",
+      "path": "features/user-management/USER_MANAGEMENT_IMPLEMENTATION.md",
+      "title": "User Management Implementation Plan",
+      "type": "api",
+      "tags": [
+        "api",
+        "python",
+        "fastapi"
+      ]
+    },
+    "features/user-management/USER_MANAGEMENT.md": {
+      "id": "user-management",
+      "path": "features/user-management/USER_MANAGEMENT.md",
+      "title": "User Management: Current State and Implementation Considerations",
+      "type": "api",
+      "tags": [
+        "api",
+        "react",
+        "fastapi"
+      ]
+    },
+    "features/user-management/USER_MANAGEMENT_STARTER_DIFFS.md": {
+      "id": "user-management-starter-diffs",
+      "path": "features/user-management/USER_MANAGEMENT_STARTER_DIFFS.md",
+      "title": "User Management Starter Diffs",
+      "type": "reference",
+      "tags": []
+    },
+    "development/python/RUFF_AND_PYTHON_UPGRADE_SUMMARY.md": {
+      "id": "ruff-and-python-upgrade-summary",
+      "path": "development/python/RUFF_AND_PYTHON_UPGRADE_SUMMARY.md",
+      "title": "Ruff 0.13.0 & Python 3.13 Upgrade Summary",
+      "type": "reference",
+      "tags": [
+        "python"
+      ]
+    },
+    "development/python/RUFF_UPGRADE_PLAN.md": {
+      "id": "ruff-upgrade-plan",
+      "path": "development/python/RUFF_UPGRADE_PLAN.md",
+      "title": "Ruff Linting Upgrade Plan (2025)",
+      "type": "reference",
+      "tags": [
+        "python"
+      ]
+    },
+    "development/python/RUFF_VERIFICATION_REPORT.md": {
+      "id": "ruff-verification-report",
+      "path": "development/python/RUFF_VERIFICATION_REPORT.md",
+      "title": "Ruff 0.13.0 Configuration Verification Report",
+      "type": "reference",
+      "tags": []
+    },
+    "development/python/fastapi-boostrap-helper.md": {
+      "id": "fastapi-boostrap-helper",
+      "path": "development/python/fastapi-boostrap-helper.md",
+      "title": "bring up infra (pgvector-enabled PG, Redis, NATS)",
+      "type": "api",
+      "tags": [
+        "api",
+        "docker",
+        "fastapi"
+      ]
+    },
+    "development/python/fastapi-boostrap-starter.md": {
+      "id": "fastapi-boostrap-starter",
+      "path": "development/python/fastapi-boostrap-starter.md",
+      "title": "Bootstrap",
+      "type": "api",
+      "tags": [
+        "api",
+        "docker",
+        "fastapi"
+      ]
+    },
+    "api/v1/entries.md": {
+      "id": "entries-api",
+      "path": "api/v1/entries.md",
+      "title": "Entries API",
+      "type": "api",
+      "tags": [
+        "api",
+        "entries"
+      ]
+    },
+    "schemas/v1/README.md": {
+      "id": "schemas-v1",
+      "path": "schemas/v1/README.md",
+      "title": "Schemas v1",
+      "type": "reference",
+      "tags": [
+        "database"
+      ]
+    },
+    "editor-upgrade/reference/security-and-corrections.md": {
+      "id": "security-and-corrections",
+      "path": "editor-upgrade/reference/security-and-corrections.md",
+      "title": "Must-fix items",
+      "type": "api",
+      "tags": [
+        "api",
+        "python",
+        "react",
+        "fastapi"
+      ]
+    },
+    "journal-backend-bootstrap-pgvector-fts-reindex/migrations/README.md": {
+      "id": "journal-backend-migrations",
+      "path": "journal-backend-bootstrap-pgvector-fts-reindex/migrations/README.md",
+      "title": "Backend Migrations",
+      "type": "reference",
+      "tags": [
+        "backend",
+        "database"
+      ]
+    },
+    "journal-backend-bootstrap-pgvector-fts-reindex/app/README.md": {
+      "id": "journal-backend-app",
+      "path": "journal-backend-bootstrap-pgvector-fts-reindex/app/README.md",
+      "title": "Backend Application Modules",
+      "type": "architecture",
+      "tags": [
+        "backend"
+      ]
+    },
+    "journal-backend-bootstrap-pgvector-fts-reindex/tests/README.md": {
+      "id": "journal-backend-tests",
+      "path": "journal-backend-bootstrap-pgvector-fts-reindex/tests/README.md",
+      "title": "Tests",
+      "type": "testing",
+      "tags": [
+        "testing"
+      ]
+    },
+    "journal-backend-bootstrap-pgvector-fts-reindex/ops/README.md": {
+      "id": "journal-backend-ops",
+      "path": "journal-backend-bootstrap-pgvector-fts-reindex/ops/README.md",
+      "title": "Operations",
+      "type": "deployment",
+      "tags": [
+        "deployment"
+      ]
+    },
+    "journal-backend-bootstrap-pgvector-fts-reindex/.ruff_cache/README.md": {
+      "id": "journal-backend-ruff-cache",
+      "path": "journal-backend-bootstrap-pgvector-fts-reindex/.ruff_cache/README.md",
+      "title": "Ruff Cache Notes",
+      "type": "reference",
+      "tags": []
+    },
+    "journal-backend-bootstrap-pgvector-fts-reindex/.ruff_cache/0.12.11/README.md": {
+      "id": "journal-backend-ruff-cache-01211",
+      "path": "journal-backend-bootstrap-pgvector-fts-reindex/.ruff_cache/0.12.11/README.md",
+      "title": "Ruff Cache 0.12.11",
+      "type": "reference",
+      "tags": []
+    },
+    "journal-backend-bootstrap-pgvector-fts-reindex/app/telemetry/README.md": {
+      "id": "journal-backend-telemetry",
+      "path": "journal-backend-bootstrap-pgvector-fts-reindex/app/telemetry/README.md",
+      "title": "Telemetry",
+      "type": "reference",
+      "tags": [
+        "backend",
+        "monitoring"
+      ]
+    },
+    "journal-backend-bootstrap-pgvector-fts-reindex/app/infra/README.md": {
+      "id": "journal-backend-infra",
+      "path": "journal-backend-bootstrap-pgvector-fts-reindex/app/infra/README.md",
+      "title": "Infrastructure",
+      "type": "architecture",
+      "tags": [
+        "infrastructure",
+        "backend"
+      ]
+    },
+    "journal-backend-bootstrap-pgvector-fts-reindex/app/domain/README.md": {
+      "id": "journal-backend-domain",
+      "path": "journal-backend-bootstrap-pgvector-fts-reindex/app/domain/README.md",
+      "title": "Domain",
+      "type": "architecture",
+      "tags": [
+        "backend"
+      ]
+    },
+    "journal-backend-bootstrap-pgvector-fts-reindex/app/services/README.md": {
+      "id": "journal-backend-services",
+      "path": "journal-backend-bootstrap-pgvector-fts-reindex/app/services/README.md",
+      "title": "Services",
+      "type": "architecture",
+      "tags": [
+        "backend"
+      ]
+    },
+    "journal-backend-bootstrap-pgvector-fts-reindex/app/api/README.md": {
+      "id": "journal-backend-api",
+      "path": "journal-backend-bootstrap-pgvector-fts-reindex/app/api/README.md",
+      "title": "API",
+      "type": "api",
+      "tags": [
+        "api",
+        "backend"
+      ]
+    },
+    "journal-backend-bootstrap-pgvector-fts-reindex/app/graphql/README.md": {
+      "id": "journal-backend-graphql",
+      "path": "journal-backend-bootstrap-pgvector-fts-reindex/app/graphql/README.md",
+      "title": "GraphQL",
+      "type": "reference",
+      "tags": [
+        "backend"
+      ]
+    },
+    "journal-backend-bootstrap-pgvector-fts-reindex/app/workers/README.md": {
+      "id": "journal-backend-workers",
+      "path": "journal-backend-bootstrap-pgvector-fts-reindex/app/workers/README.md",
+      "title": "Workers",
+      "type": "reference",
+      "tags": [
+        "backend"
+      ]
+    },
+    "journal-backend-bootstrap-pgvector-fts-reindex/app/api/v1/README.md": {
+      "id": "journal-backend-api-v1",
+      "path": "journal-backend-bootstrap-pgvector-fts-reindex/app/api/v1/README.md",
+      "title": "API v1",
+      "type": "api",
+      "tags": [
+        "api",
+        "backend"
+      ]
+    },
+    "journal-backend-bootstrap-pgvector-fts-reindex/migrations/versions/README.md": {
+      "id": "journal-backend-migration-versions",
+      "path": "journal-backend-bootstrap-pgvector-fts-reindex/migrations/versions/README.md",
+      "title": "Migration Versions",
+      "type": "reference",
+      "tags": [
+        "backend",
+        "database"
+      ]
+    },
+    "bun/getting-started/installation.md": {
+      "id": "installation",
+      "path": "bun/getting-started/installation.md",
+      "title": "INSTALLATION",
+      "type": "reference",
+      "tags": [
+        "docker"
+      ]
+    },
+    "bun/getting-started/package-manager.md": {
+      "id": "package-manager",
+      "path": "bun/getting-started/package-manager.md",
+      "title": "PACKAGE MANAGER",
+      "type": "reference",
+      "tags": [
+        "react"
+      ]
+    },
+    "bun/getting-started/quickstart.md": {
+      "id": "quickstart",
+      "path": "bun/getting-started/quickstart.md",
+      "title": "QUICKSTART",
+      "type": "guide",
+      "tags": [
+        "typescript"
+      ]
+    },
+    "bun/configuration/bunfig.md": {
+      "id": "bunfig",
+      "path": "bun/configuration/bunfig.md",
+      "title": "BUNFIG",
+      "type": "reference",
+      "tags": [
+        "typescript",
+        "react"
+      ]
+    },
+    "bun/configuration/typescript.md": {
+      "id": "typescript",
+      "path": "bun/configuration/typescript.md",
+      "title": "TYPESCRIPT",
+      "type": "reference",
+      "tags": [
+        "typescript",
+        "react"
+      ]
+    },
+    "bun/features/bundler.md": {
+      "id": "bundler",
+      "path": "bun/features/bundler.md",
+      "title": "BUNDLER",
+      "type": "guide",
+      "tags": [
+        "typescript",
+        "react"
+      ]
+    },
+    "bun/features/modules.md": {
+      "id": "modules",
+      "path": "bun/features/modules.md",
+      "title": "MODULES",
+      "type": "reference",
+      "tags": [
+        "typescript",
+        "react"
+      ]
+    },
+    "bun/features/shell.md": {
+      "id": "shell",
+      "path": "bun/features/shell.md",
+      "title": "SHELL",
+      "type": "reference",
+      "tags": [
+        "docker",
+        "typescript"
+      ]
+    },
+    "bun/api/file-io.md": {
+      "id": "file-io",
+      "path": "bun/api/file-io.md",
+      "title": "FILE IO",
+      "type": "api",
+      "tags": [
+        "api"
+      ]
+    },
+    "bun/api/http-server.md": {
+      "id": "http-server",
+      "path": "bun/api/http-server.md",
+      "title": "HTTP SERVER",
+      "type": "api",
+      "tags": [
+        "api",
+        "typescript",
+        "react"
+      ]
+    },
+    "bun/api/sql.md": {
+      "id": "sql",
+      "path": "bun/api/sql.md",
+      "title": "SQL",
+      "type": "api",
+      "tags": [
+        "api"
+      ]
+    },
+    "bun/api/websockets.md": {
+      "id": "websockets",
+      "path": "bun/api/websockets.md",
+      "title": "WEBSOCKETS",
+      "type": "api",
+      "tags": [
+        "api",
+        "typescript"
+      ]
+    },
+    "bun/deployment/environment-variables.md": {
+      "id": "environment-variables",
+      "path": "bun/deployment/environment-variables.md",
+      "title": "ENVIRONMENT VARIABLES",
+      "type": "deployment",
+      "tags": [
+        "docker",
+        "deployment",
+        "react",
+        "typescript"
+      ]
+    },
+    "bun/deployment/standalone-executables.md": {
+      "id": "standalone-executables",
+      "path": "bun/deployment/standalone-executables.md",
+      "title": "STANDALONE EXECUTABLES",
+      "type": "deployment",
+      "tags": [
+        "deployment",
+        "typescript"
+      ]
+    },
+    "biome/guides/configure-biome.md": {
+      "id": "configure-biome",
+      "path": "biome/guides/configure-biome.md",
+      "title": "CONFIGURE BIOME",
+      "type": "guide",
+      "tags": [
+        "typescript"
+      ]
+    },
+    "biome/guides/editor-extensions.md": {
+      "id": "editor-extensions",
+      "path": "biome/guides/editor-extensions.md",
+      "title": "EDITOR EXTENSIONS",
+      "type": "guide",
+      "tags": []
+    },
+    "biome/guides/getting-started.md": {
+      "id": "getting-started",
+      "path": "biome/guides/getting-started.md",
+      "title": "GETTING STARTED",
+      "type": "guide",
+      "tags": []
+    },
+    "biome/guides/migrate-eslint-prettier.md": {
+      "id": "migrate-Biome-Biome",
+      "path": "biome/guides/migrate-eslint-prettier.md",
+      "title": "MIGRATE Biome Biome",
+      "type": "guide",
+      "tags": [
+        "typescript",
+        "react"
+      ]
+    },
+    "biome/reference/cli.md": {
+      "id": "cli",
+      "path": "biome/reference/cli.md",
+      "title": "CLI",
+      "type": "reference",
+      "tags": []
+    },
+    "biome/reference/configuration.md": {
+      "id": "configuration",
+      "path": "biome/reference/configuration.md",
+      "title": "CONFIGURATION",
+      "type": "reference",
+      "tags": [
+        "typescript",
+        "react"
+      ]
+    },
+    "biome/reference/formatter.md": {
+      "id": "formatter",
+      "path": "biome/reference/formatter.md",
+      "title": "FORMATTER",
+      "type": "reference",
+      "tags": []
+    },
+    "biome/reference/linter.md": {
+      "id": "linter",
+      "path": "biome/reference/linter.md",
+      "title": "LINTER",
+      "type": "reference",
+      "tags": [
+        "typescript",
+        "react"
+      ]
+    },
+    "biome/recipes/ci-setup.md": {
+      "id": "ci-setup",
+      "path": "biome/recipes/ci-setup.md",
+      "title": "CI SETUP",
+      "type": "reference",
+      "tags": [
+        "docker"
+      ]
+    },
+    "biome/releases/v2-release.md": {
+      "id": "v2-release",
+      "path": "biome/releases/v2-release.md",
+      "title": "V2 RELEASE",
+      "type": "reference",
+      "tags": [
+        "typescript"
+      ]
+    },
+    "biome/internals/architecture.md": {
+      "id": "architecture",
+      "path": "biome/internals/architecture.md",
+      "title": "ARCHITECTURE",
+      "type": "architecture",
+      "tags": [
+        "typescript"
+      ]
+    },
+    "biome/internals/changelog.md": {
+      "id": "changelog",
+      "path": "biome/internals/changelog.md",
+      "title": "CHANGELOG",
+      "type": "reference",
+      "tags": [
+        "typescript",
+        "react"
+      ]
+    },
+    "js-api/fonts/README.md": {
+      "id": "js-api-fonts",
+      "path": "js-api/fonts/README.md",
+      "title": "JS API Fonts Assets",
+      "type": "reference",
+      "tags": []
+    },
+    "js-api/scripts/README.md": {
+      "id": "js-api-scripts",
+      "path": "js-api/scripts/README.md",
+      "title": "JS API Scripts",
+      "type": "reference",
+      "tags": []
+    },
+    "js-api/styles/README.md": {
+      "id": "js-api-styles",
+      "path": "js-api/styles/README.md",
+      "title": "JS API Styles",
+      "type": "reference",
+      "tags": []
+    },
+    "js-api/scripts/prettify/README.md": {
+      "id": "js-api-scripts-prettify",
+      "path": "js-api/scripts/prettify/README.md",
+      "title": "JS API Prettify Scripts",
+      "type": "reference",
+      "tags": []
+    },
+    "implementation/guide/01-overview.md": {
+      "id": "implementation-guide-overview",
+      "path": "implementation/guide/01-overview.md",
+      "title": "Implementation Guide \u2014 Overview",
+      "type": "guide",
+      "tags": []
+    },
+    "implementation/guide/02-setup.md": {
+      "id": "implementation-guide-setup",
+      "path": "implementation/guide/02-setup.md",
+      "title": "Implementation Guide \u2014 Environment & Setup",
+      "type": "guide",
+      "tags": []
+    },
+    "implementation/guide/03-workflows.md": {
+      "id": "implementation-guide-workflows",
+      "path": "implementation/guide/03-workflows.md",
+      "title": "Implementation Guide \u2014 Workflows",
+      "type": "guide",
+      "tags": []
+    },
+    "implementation/guide/04-features.md": {
+      "id": "implementation-guide-features",
+      "path": "implementation/guide/04-features.md",
+      "title": "Implementation Guide \u2014 Features",
+      "type": "guide",
+      "tags": []
+    },
+    "implementation/guide/05-ops.md": {
+      "id": "implementation-guide-ops",
+      "path": "implementation/guide/05-ops.md",
+      "title": "Implementation Guide \u2014 Operations",
+      "type": "guide",
+      "tags": []
+    },
+    "initial-planning/personal-guide/overview.md": {
+      "id": "personal-guide-overview",
+      "path": "initial-planning/personal-guide/overview.md",
+      "title": "Personal Guide \u2014 Overview",
+      "type": "guide",
+      "tags": []
+    },
+    "initial-planning/personal-guide/architecture.md": {
+      "id": "personal-guide-architecture",
+      "path": "initial-planning/personal-guide/architecture.md",
+      "title": "Personal Guide \u2014 Architecture",
+      "type": "guide",
+      "tags": []
+    },
+    "initial-planning/personal-guide/backend.md": {
+      "id": "personal-guide-backend",
+      "path": "initial-planning/personal-guide/backend.md",
+      "title": "Personal Guide \u2014 Backend",
+      "type": "guide",
+      "tags": [
+        "backend"
+      ]
+    },
+    "initial-planning/personal-guide/frontend.md": {
+      "id": "personal-guide-frontend",
+      "path": "initial-planning/personal-guide/frontend.md",
+      "title": "Personal Guide \u2014 Frontend",
+      "type": "guide",
+      "tags": [
+        "frontend"
+      ]
+    },
+    "initial-planning/personal-guide/deployment.md": {
+      "id": "personal-guide-deployment",
+      "path": "initial-planning/personal-guide/deployment.md",
+      "title": "Personal Guide \u2014 Deployment",
+      "type": "guide",
+      "tags": [
+        "deployment"
+      ]
+    }
+  },
+  "edges": {
+    "INDEX.md": [
+      "INDEX.md",
+      "README.md",
+      "adr/adr-0001-python-3.13-ruff-0.13.md",
+      "api/v1/entries.md",
+      "archive/REACT-19-CHANGES.md",
+      "archive/REACT-19-FIXES.md",
+      "archive/REACT-19-MIGRATION-COMPLETE.md",
+      "archive/REACT-19-MIGRATION-ISSUES.md",
+      "archive/REACT-19-MIGRATION.md",
+      "archive/STORYBOOK-9-MIGRATION.md",
+      "archive/USER_MANAGEMENT_ORCHESTRATEV1.md",
+      "archive/USER_MANAGEMENT_ORCHESTRATEV2.md",
+      "archive/USER_MANAGEMENT_ORCHESTRATEV3.md",
+      "archive/USER_MANAGEMENT_ORCHESTRATEV4.md",
+      "archive/USER_MANAGEMENT_ORCHESTRATEV5.md",
+      "archive/USER_MANAGEMENT_ORCHESTRATEV6.md",
+      "archive/USER_MANAGEMENT_ORCHESTRATEV7.md",
+      "archive/USER_MANAGEMENT_ORCHESTRATEV8.md",
+      "archive/USER_MANAGEMENT_ORCHESTRATEV9.md",
+      "archive/implementation-phases/01-phase-one-setup-auth.md",
+      "archive/implementation-phases/01-phase-one-summary.md",
+      "archive/implementation-phases/02-phase-two-entry-crud.md",
+      "archive/implementation-phases/02-phase-two-summary.md",
+      "archive/implementation-phases/03-phase-three-summary.md",
+      "archive/implementation-phases/03-phase-three-ui-refinements.md",
+      "archive/implementation-phases/04-phase-four-deploy-test-setup.md",
+      "archive/implementation-phases/04-phase-four-summary.md",
+      "archive/implementation-phases/05-phase-five-summary.md",
+      "archive/implementation-phases/05-phase-five-testing-scripts.md",
+      "archive/implementation-phases/06-phase-six-summary.md",
+      "archive/implementation-phases/06-phase-six-tags.md",
+      "archive/implementation-phases/07-phase-seven-summary.md",
+      "archive/implementation-phases/07-phase-seven-ui-ux.md",
+      "archive/implementation-phases/08-phase-eight-editor-integration.md",
+      "archive/implementation-phases/08-phase-eight-summary.md",
+      "archive/implementation-phases/09-phase-nine-editor-refinement.md",
+      "archive/implementation-phases/09-phase-nine-summary.md",
+      "archive/implementation-phases/10-phase-ten-favicon.md",
+      "archive/implementation-phases/10-phase-ten-summary.md",
+      "archive/implementation-phases/11-phase-eleven-editor-features.md",
+      "archive/implementation-phases/11-phase-eleven-summary.md",
+      "archive/implementation-phases/12-phase-twelve-editor-bugfix-layout.md",
+      "archive/implementation-phases/12-phase-twelve-summary.md",
+      "archive/implementation-phases/13-phase-thirteen-structure-refactor.md",
+      "archive/implementation-phases/14-phase-fourteen-documentation-foundation.md",
+      "archive/implementation-phases/15-phase-fifteen-core-documentation.md",
+      "archive/implementation-phases/16-phase-sixteen-documentation-expansion.md",
+      "archive/implementation-phases/17-phase-seventeen-documentation-qa.md",
+      "archive/implementation-phases/18-phase-eighteen-ci-cd-implementation.md",
+      "archive/implementation-phases/18-phase-eighteen-documentation-integration.md",
+      "archive/status-updates/2025-04-06-phase-1-complete.md",
+      "archive/status-updates/2025-04-06-phase-2-complete.md",
+      "archive/status-updates/2025-04-06-phase-3-complete.md",
+      "archive/status-updates/2025-04-06-phase-4-complete.md",
+      "archive/status-updates/2025-04-06-phase-5-complete.md",
+      "archive/status-updates/2025-04-07-phase-6-complete.md",
+      "archive/status-updates/2025-04-07-phase-7-complete.md",
+      "archive/status-updates/2025-04-07-phase-8-complete.md",
+      "archive/status-updates/2025-04-07-stabilization-post-phase-8.md",
+      "archive/status-updates/2025-04-08-code-mirror-documentation-integration.md",
+      "archive/status-updates/2025-04-08-documentation-specialist-mode-added.md",
+      "archive/status-updates/2025-04-08-phase-10-complete.md",
+      "archive/status-updates/2025-04-08-phase-11-complete.md",
+      "archive/status-updates/2025-04-08-phase-12-complete.md",
+      "archive/status-updates/2025-04-08-phase-14-complete.md",
+      "archive/status-updates/2025-04-08-phase-14-started.md",
+      "archive/status-updates/2025-04-08-phase-15-complete.md",
+      "archive/status-updates/2025-04-08-phase-15-started.md",
+      "archive/status-updates/2025-04-08-phase-16-complete.md",
+      "archive/status-updates/2025-04-08-phase-16-started.md",
+      "archive/status-updates/2025-04-08-phase-17-complete.md",
+      "archive/status-updates/2025-04-08-phase-17-started.md",
+      "archive/status-updates/2025-04-08-phase-18-ci-cd-complete.md",
+      "archive/status-updates/2025-04-08-phase-18-complete.md",
+      "archive/status-updates/2025-04-08-phase-18-started.md",
+      "archive/status-updates/2025-04-08-phase-9-complete.md",
+      "archive/status-updates/USER_MANAGEMENT_STATUS_2025-09-10.md",
+      "audits/documentation-assessment-report.md",
+      "audits/documentation-inventory.md",
+      "audits/documentation-validation-report.md",
+      "biome/guides/configure-biome.md",
+      "biome/guides/editor-extensions.md",
+      "biome/guides/getting-started.md",
+      "biome/guides/migrate-eslint-prettier.md",
+      "biome/internals/architecture.md",
+      "biome/internals/changelog.md",
+      "biome/recipes/ci-setup.md",
+      "biome/reference/cli.md",
+      "biome/reference/configuration.md",
+      "biome/reference/formatter.md",
+      "biome/reference/linter.md",
+      "biome/releases/v2-release.md",
+      "bun/api/file-io.md",
+      "bun/api/http-server.md",
+      "bun/api/sql.md",
+      "bun/api/websockets.md",
+      "bun/configuration/bunfig.md",
+      "bun/configuration/typescript.md",
+      "bun/deployment/environment-variables.md",
+      "bun/deployment/standalone-executables.md",
+      "bun/features/bundler.md",
+      "bun/features/modules.md",
+      "bun/features/shell.md",
+      "bun/getting-started/installation.md",
+      "bun/getting-started/package-manager.md",
+      "bun/getting-started/quickstart.md",
+      "ci-cd/CI_CD_GUIDE.md",
+      "ci-cd/CI_CHECKLIST.md",
+      "ci-cd/CI_FIX_WORKFLOW.md",
+      "ci-cd/CI_INVESTIGATION_REPORT.md",
+      "ci-cd/MERGE-CHECKLIST.md",
+      "ci-cd/PR-CHECKLIST.md",
+      "ci-cd/PR_SUMMARY.md",
+      "ci-cd/README.md",
+      "ci-cd/dev-setup.md",
+      "ci-cd/overview.md",
+      "code-mirror/example-basic.md",
+      "code-mirror/example-bundled.md",
+      "code-mirror/example-config.md",
+      "code-mirror/example-styling.md",
+      "code-mirror/example-tab-handling.md",
+      "code-mirror/extensions-reference.md",
+      "code-mirror/quick-reference.md",
+      "code-mirror/reference-manual-part1.md",
+      "code-mirror/reference-manual-part2.md",
+      "code-mirror/reference-manual-part3.md",
+      "code-mirror/reference-manual-part4.md",
+      "code-mirror/system-guide.md",
+      "db/extensions.md",
+      "debugging/phase-12-editor-summary.md",
+      "debugging/phase-13-rollup-manifest-issue.md",
+      "deployment/data-policy.md",
+      "deployment/vercel-supabase-migration-assessment.md",
+      "deployment/vercel-supabase-strategy.md",
+      "design/UI_DESIGN_SPECIFICATION.md",
+      "design/UI_DESIGN_UPDATE_PLAN.md",
+      "design/refactor-ui-design.md",
+      "design/theme.md",
+      "development/BACKEND_ARCHITECTURE.md",
+      "development/DEVELOPMENT_FRAMEWORK.md",
+      "development/README.md",
+      "development/RUNNING_THE_APP.md",
+      "development/USAGE-GUIDE.md",
+      "development/python/RUFF_AND_PYTHON_UPGRADE_SUMMARY.md",
+      "development/python/RUFF_UPGRADE_PLAN.md",
+      "development/python/RUFF_VERIFICATION_REPORT.md",
+      "development/python/fastapi-boostrap-helper.md",
+      "development/python/fastapi-boostrap-starter.md",
+      "doc-update/doc-organize-plan.md",
+      "editor-upgrade/BULLETPROOF-IMPLEMENTATION-PLAN.md",
+      "editor-upgrade/FINAL-IMPLEMENTATION-WORKFLOW.md",
+      "editor-upgrade/TYPE-SYSTEM-STRATEGY.md",
+      "editor-upgrade/VITEST-MIGRATION-IMPACT.md",
+      "editor-upgrade/VITEST-TESTING-SETUP.md",
+      "editor-upgrade/archive/COMPREHENSIVE-DIFF-REPORT.md",
+      "editor-upgrade/archive/V2-COMPREHENSIVE-DIFF-REPORT.md",
+      "editor-upgrade/archive/editor-upgrade-v2.md",
+      "editor-upgrade/archive/editor-upgrade.md",
+      "editor-upgrade/reference/security-and-corrections.md",
+      "features/user-management/USER_MANAGEMENT.md",
+      "features/user-management/USER_MANAGEMENT_IMPLEMENTATION.md",
+      "features/user-management/USER_MANAGEMENT_STARTER_DIFFS.md",
+      "future-features/jwt-security-hardening.md",
+      "guides/README.md",
+      "guides/act-reference.md",
+      "guides/api-reference.md",
+      "guides/architecture-overview.md",
+      "guides/authentication.md",
+      "guides/ci-cd-workflow.md",
+      "guides/codemirror-integration.md",
+      "guides/commands-quick-reference.md",
+      "guides/data-model.md",
+      "guides/diagramming-approach.md",
+      "guides/docstring-tools-report.md",
+      "guides/documentation-contribution-guide.md",
+      "guides/documentation-metrics.md",
+      "guides/documentation-review-process.md",
+      "guides/documentation-templates.md",
+      "guides/documentation-testing-process.md",
+      "guides/documentation-update-checklist.md",
+      "guides/editor-architecture.md",
+      "guides/gh-cli.md",
+      "guides/infisical-self-hosted.md",
+      "guides/js-api-docs.md",
+      "guides/jsdoc-standards.md",
+      "guides/markdown-linting-guide.md",
+      "guides/python-docstring-standards.md",
+      "guides/request-lifecycle.md",
+      "implementation-summaries/INFISICAL_IMPLEMENTATION_SUMMARY.md",
+      "implementation-summaries/PROJECT-INTEGRATION.md",
+      "implementation-summaries/ROLLOUT-PLAN.md",
+      "implementation-summaries/SECURITY_HARDENING_IMPLEMENTATION.md",
+      "implementation/IMPLEMENTATION_GUIDE.md",
+      "implementation/README.md",
+      "implementation/documentation-specialist-execution-plan.md",
+      "implementation/documentation-specialist-role.md",
+      "implementation/guide/01-overview.md",
+      "implementation/guide/02-setup.md",
+      "implementation/guide/03-workflows.md",
+      "implementation/guide/04-features.md",
+      "implementation/guide/05-ops.md",
+      "implementation/local-act-testing-plan.md",
+      "infrastructure/INFISICAL_ARCHITECTURE.md",
+      "infrastructure/error-handling-logging.md",
+      "infrastructure/hosting-secure.md",
+      "infrastructure/infisical-cli-useage.md",
+      "infrastructure/observability-setup.md",
+      "initial-planning/JSDoc-implementation.md",
+      "initial-planning/agentic-workflow.md",
+      "initial-planning/api-contract-guide.md",
+      "initial-planning/comprehensive-guide-personal.md",
+      "initial-planning/deployment-script-guide.md",
+      "initial-planning/editor-implementation.md",
+      "initial-planning/error-handling.md",
+      "initial-planning/mvp-high-level-implementation-guide.md",
+      "initial-planning/personal-guide/architecture.md",
+      "initial-planning/personal-guide/backend.md",
+      "initial-planning/personal-guide/deployment.md",
+      "initial-planning/personal-guide/frontend.md",
+      "initial-planning/personal-guide/overview.md",
+      "initial-planning/single-config.md",
+      "initial-planning/state-management-guide.md",
+      "initial-planning/structure-update.md",
+      "initial-planning/testing.md",
+      "investigations/DEEP_INVESTIGATION_DIRECTIVE.md",
+      "meta/DEFINITION_OF_DONE.md",
+      "meta/DOCUMENTATION_ARCHITECTURE.md",
+      "meta/DOCUMENTATION_ROADMAP.md",
+      "meta/MIGRATION_CHECKLIST.md",
+      "meta/ORCHESTRATION_WORKFLOW.md",
+      "meta/REORGANIZATION_PLAN.md",
+      "meta/TESTING_STATUS.md",
+      "meta/doc-upgrade.md",
+      "meta/reference-docs-started.md",
+      "meta/reference-docs.md",
+      "migrations/REACT-19-WORKFLOW.md",
+      "migrations/move-to-fastapi.md",
+      "migrations/ruff-progressive-autofixing.md",
+      "migrations/to-typescript.md",
+      "planning/PHASE_5_ENHANCEMENT_PLAN.md",
+      "planning/PHASE_5_MASTER_PLAN.md",
+      "planning/ROADMAP.md",
+      "planning/enhance-journal-app.md",
+      "project-config/AGENTS.md",
+      "project-config/CLAUDE.md",
+      "project-config/CODEX-SETUP.md",
+      "project-config/GEMINI.md",
+      "project-config/documentation-instructions.md",
+      "proposals/ci-cd-documentation-checks.md",
+      "reports/DESIGN_AND_TOOLING_REPORT.md",
+      "reports/LINTING_REPORT.md",
+      "reports/PYTHON_RUFF_ALIGNMENT_REPORT.md",
+      "reports/UI_UX_STRATEGY_REPORT.md",
+      "reports/docs-status.md",
+      "reports/documentation-fix-report.md",
+      "reports/large-docs-plan.md",
+      "security/ADVANCED_AUTH.md",
+      "security/DEPLOYMENT_AWARE_AUTH.md",
+      "security/token-enhancement.md",
+      "status/CHANGELOG.md",
+      "templates/api-reference-template.md",
+      "templates/component-doc-template.md",
+      "templates/concept-guide-template.md",
+      "templates/troubleshooting-template.md",
+      "templates/tutorial-template.md",
+      "testing/PERFORMANCE-BASELINE.md",
+      "typescript-migration/migration-guide.md",
+      "user-guide/README.md",
+      "user-guide/faq.md",
+      "user-guide/troubleshooting.md",
+      "workflows/agent-workflows.md",
+      "workflows/dual-language-setup.md",
+      "workflows/hx-ax-workflows.md"
+    ],
+    "README.md": [
+      "INDEX.md",
+      "guides/commands-quick-reference.md",
+      "guides/documentation-contribution-guide.md",
+      "implementation/IMPLEMENTATION_GUIDE.md",
+      "status/CHANGELOG.md"
+    ],
+    "initial-planning/JSDoc-implementation.md": [
+      "guides/js-api-docs.md",
+      "guides/jsdoc-standards.md"
+    ],
+    "initial-planning/agentic-workflow.md": [],
+    "initial-planning/api-contract-guide.md": [],
+    "initial-planning/comprehensive-guide-personal.md": [
+      "initial-planning/personal-guide/architecture.md",
+      "initial-planning/personal-guide/backend.md",
+      "initial-planning/personal-guide/deployment.md",
+      "initial-planning/personal-guide/frontend.md",
+      "initial-planning/personal-guide/overview.md"
+    ],
+    "initial-planning/deployment-script-guide.md": [],
+    "initial-planning/editor-implementation.md": [],
+    "initial-planning/error-handling.md": [],
+    "initial-planning/mvp-high-level-implementation-guide.md": [],
+    "initial-planning/single-config.md": [],
+    "initial-planning/state-management-guide.md": [],
+    "initial-planning/structure-update.md": [],
+    "initial-planning/testing.md": [],
+    "implementation/documentation-specialist-execution-plan.md": [],
+    "implementation/documentation-specialist-role.md": [],
+    "implementation/local-act-testing-plan.md": [],
+    "implementation/IMPLEMENTATION_GUIDE.md": [
+      "implementation/guide/01-overview.md",
+      "implementation/guide/02-setup.md",
+      "implementation/guide/03-workflows.md",
+      "implementation/guide/04-features.md",
+      "implementation/guide/05-ops.md",
+      "initial-planning/agentic-workflow.md",
+      "initial-planning/comprehensive-guide-personal.md",
+      "initial-planning/deployment-script-guide.md",
+      "initial-planning/editor-implementation.md",
+      "initial-planning/mvp-high-level-implementation-guide.md",
+      "initial-planning/testing.md"
+    ],
+    "implementation/README.md": [
+      "implementation/IMPLEMENTATION_GUIDE.md",
+      "implementation/documentation-specialist-execution-plan.md",
+      "implementation/documentation-specialist-role.md",
+      "implementation/local-act-testing-plan.md"
+    ],
+    "status/CHANGELOG.md": [
+      "audits/documentation-inventory.md",
+      "code-mirror/quick-reference.md",
+      "guides/codemirror-integration.md",
+      "guides/editor-architecture.md",
+      "implementation/IMPLEMENTATION_GUIDE.md"
+    ],
+    "debugging/phase-12-editor-summary.md": [],
+    "debugging/phase-13-rollup-manifest-issue.md": [],
+    "audits/documentation-assessment-report.md": [],
+    "audits/documentation-inventory.md": [],
+    "audits/documentation-validation-report.md": [],
+    "guides/act-reference.md": [],
+    "guides/api-reference.md": [],
+    "guides/architecture-overview.md": [],
+    "guides/authentication.md": [],
+    "guides/ci-cd-workflow.md": [],
+    "guides/codemirror-integration.md": [
+      "code-mirror/example-basic.md",
+      "code-mirror/example-bundled.md",
+      "code-mirror/example-styling.md",
+      "code-mirror/example-tab-handling.md",
+      "code-mirror/extensions-reference.md",
+      "code-mirror/quick-reference.md",
+      "code-mirror/reference-manual-part1.md",
+      "code-mirror/reference-manual-part2.md",
+      "code-mirror/reference-manual-part3.md",
+      "code-mirror/system-guide.md"
+    ],
+    "guides/data-model.md": [],
+    "guides/diagramming-approach.md": [],
+    "guides/docstring-tools-report.md": [],
+    "guides/documentation-metrics.md": [],
+    "guides/documentation-review-process.md": [],
+    "guides/documentation-templates.md": [
+      "templates/api-reference-template.md",
+      "templates/component-doc-template.md",
+      "templates/concept-guide-template.md",
+      "templates/troubleshooting-template.md",
+      "templates/tutorial-template.md"
+    ],
+    "guides/documentation-testing-process.md": [],
+    "guides/documentation-update-checklist.md": [],
+    "guides/editor-architecture.md": [],
+    "guides/gh-cli.md": [],
+    "guides/js-api-docs.md": [
+      "initial-planning/JSDoc-implementation.md"
+    ],
+    "guides/jsdoc-standards.md": [],
+    "guides/markdown-linting-guide.md": [],
+    "guides/python-docstring-standards.md": [],
+    "guides/request-lifecycle.md": [],
+    "guides/infisical-self-hosted.md": [],
+    "guides/README.md": [
+      "guides/act-reference.md",
+      "guides/api-reference.md",
+      "guides/architecture-overview.md",
+      "guides/authentication.md",
+      "guides/ci-cd-workflow.md",
+      "guides/codemirror-integration.md",
+      "guides/data-model.md",
+      "guides/diagramming-approach.md",
+      "guides/docstring-tools-report.md",
+      "guides/documentation-metrics.md",
+      "guides/documentation-review-process.md",
+      "guides/documentation-templates.md",
+      "guides/documentation-testing-process.md",
+      "guides/documentation-update-checklist.md",
+      "guides/editor-architecture.md",
+      "guides/gh-cli.md",
+      "guides/infisical-self-hosted.md",
+      "guides/js-api-docs.md",
+      "guides/jsdoc-standards.md",
+      "guides/markdown-linting-guide.md",
+      "guides/python-docstring-standards.md",
+      "guides/request-lifecycle.md"
+    ],
+    "guides/commands-quick-reference.md": [],
+    "guides/documentation-contribution-guide.md": [],
+    "js-api/README.md": [],
+    "templates/api-reference-template.md": [],
+    "templates/component-doc-template.md": [],
+    "templates/concept-guide-template.md": [],
+    "templates/troubleshooting-template.md": [],
+    "templates/tutorial-template.md": [],
+    "user-guide/README.md": [],
+    "user-guide/faq.md": [],
+    "user-guide/troubleshooting.md": [],
+    "proposals/ci-cd-documentation-checks.md": [],
+    "code-mirror/example-basic.md": [],
+    "code-mirror/example-bundled.md": [],
+    "code-mirror/example-config.md": [],
+    "code-mirror/example-styling.md": [],
+    "code-mirror/example-tab-handling.md": [],
+    "code-mirror/extensions-reference.md": [],
+    "code-mirror/quick-reference.md": [
+      "guides/editor-architecture.md"
+    ],
+    "code-mirror/reference-manual-part1.md": [],
+    "code-mirror/reference-manual-part2.md": [],
+    "code-mirror/reference-manual-part3.md": [],
+    "code-mirror/reference-manual-part4.md": [],
+    "code-mirror/system-guide.md": [],
+    "typescript-migration/migration-guide.md": [],
+    "journal-backend-bootstrap-pgvector-fts-reindex/README.md": [],
+    "editor-upgrade/BULLETPROOF-IMPLEMENTATION-PLAN.md": [],
+    "editor-upgrade/FINAL-IMPLEMENTATION-WORKFLOW.md": [],
+    "editor-upgrade/TYPE-SYSTEM-STRATEGY.md": [],
+    "editor-upgrade/VITEST-MIGRATION-IMPACT.md": [],
+    "editor-upgrade/VITEST-TESTING-SETUP.md": [],
+    "doc-update/doc-organize-plan.md": [],
+    "future-features/jwt-security-hardening.md": [],
+    "adr/adr-0001-python-3.13-ruff-0.13.md": [],
+    "deployment/vercel-supabase-migration-assessment.md": [],
+    "deployment/vercel-supabase-strategy.md": [],
+    "deployment/data-policy.md": [],
+    "deployment/PRE_DEPLOYMENT_CHECKLIST.md": [
+      "deployment/architecture.md",
+      "deployment/database-migration.md",
+      "deployment/environment-variables.md",
+      "deployment/monitoring.md",
+      "deployment/runbook.md"
+    ],
+    "deployment/supabase-configuration.md": [
+      "deployment/data-policy.md",
+      "deployment/environment-variables.md",
+      "deployment/vercel-deployment.md",
+      "deployment/vercel-supabase-strategy.md"
+    ],
+    "deployment/environment-variables.md": [
+      "deployment/supabase-configuration.md",
+      "deployment/vercel-deployment.md",
+      "infrastructure/INFISICAL_ARCHITECTURE.md",
+      "infrastructure/error-handling-logging.md"
+    ],
+    "deployment/vercel-deployment.md": [
+      "deployment/environment-variables.md",
+      "deployment/supabase-configuration.md"
+    ],
+    "deployment/architecture.md": [],
+    "deployment/database-migration.md": [],
+    "deployment/monitoring.md": [],
+    "deployment/runbook.md": [],
+    "db/extensions.md": [],
+    "schemas/README.md": [],
+    "security/ADVANCED_AUTH.md": [],
+    "security/DEPLOYMENT_AWARE_AUTH.md": [],
+    "security/token-enhancement.md": [],
+    "ci-cd/CI_CD_GUIDE.md": [],
+    "ci-cd/overview.md": [],
+    "ci-cd/CI_CHECKLIST.md": [],
+    "ci-cd/CI_INVESTIGATION_REPORT.md": [],
+    "ci-cd/dev-setup.md": [],
+    "ci-cd/CI_FIX_WORKFLOW.md": [],
+    "ci-cd/PR-CHECKLIST.md": [],
+    "ci-cd/MERGE-CHECKLIST.md": [],
+    "ci-cd/PR_SUMMARY.md": [],
+    "ci-cd/README.md": [
+      "ci-cd/CI_CD_GUIDE.md",
+      "ci-cd/CI_CHECKLIST.md",
+      "ci-cd/CI_FIX_WORKFLOW.md",
+      "ci-cd/CI_INVESTIGATION_REPORT.md",
+      "ci-cd/MERGE-CHECKLIST.md",
+      "ci-cd/PR-CHECKLIST.md",
+      "ci-cd/PR_SUMMARY.md",
+      "ci-cd/dev-setup.md",
+      "ci-cd/overview.md"
+    ],
+    "migrations/REACT-19-WORKFLOW.md": [],
+    "migrations/move-to-fastapi.md": [],
+    "migrations/to-typescript.md": [],
+    "migrations/ruff-progressive-autofixing.md": [],
+    "development/DEVELOPMENT_FRAMEWORK.md": [],
+    "development/BACKEND_ARCHITECTURE.md": [],
+    "development/RUNNING_THE_APP.md": [],
+    "development/USAGE-GUIDE.md": [],
+    "development/README.md": [
+      "development/BACKEND_ARCHITECTURE.md",
+      "development/DEVELOPMENT_FRAMEWORK.md",
+      "development/RUNNING_THE_APP.md",
+      "development/USAGE-GUIDE.md"
+    ],
+    "design/UI_DESIGN_SPECIFICATION.md": [],
+    "design/UI_DESIGN_UPDATE_PLAN.md": [],
+    "design/theme.md": [],
+    "design/refactor-ui-design.md": [],
+    "planning/PHASE_5_ENHANCEMENT_PLAN.md": [],
+    "planning/PHASE_5_MASTER_PLAN.md": [],
+    "planning/enhance-journal-app.md": [],
+    "planning/ROADMAP.md": [],
+    "infrastructure/hosting-secure.md": [],
+    "infrastructure/observability-setup.md": [],
+    "infrastructure/error-handling-logging.md": [],
+    "infrastructure/INFISICAL_ARCHITECTURE.md": [],
+    "infrastructure/infisical-cli-useage.md": [],
+    "workflows/agent-workflows.md": [],
+    "workflows/hx-ax-workflows.md": [],
+    "workflows/dual-language-setup.md": [],
+    "meta/DOCUMENTATION_ARCHITECTURE.md": [],
+    "meta/DOCUMENTATION_ROADMAP.md": [],
+    "meta/DEFINITION_OF_DONE.md": [],
+    "meta/MIGRATION_CHECKLIST.md": [],
+    "meta/ORCHESTRATION_WORKFLOW.md": [],
+    "meta/doc-upgrade.md": [],
+    "meta/reference-docs.md": [],
+    "meta/reference-docs-started.md": [],
+    "meta/TESTING_STATUS.md": [],
+    "meta/REORGANIZATION_PLAN.md": [],
+    "project-config/CLAUDE.md": [],
+    "project-config/AGENTS.md": [],
+    "project-config/GEMINI.md": [],
+    "project-config/CODEX-SETUP.md": [],
+    "project-config/documentation-instructions.md": [],
+    "testing/PERFORMANCE-BASELINE.md": [],
+    "reports/DESIGN_AND_TOOLING_REPORT.md": [],
+    "reports/LINTING_REPORT.md": [],
+    "reports/PYTHON_RUFF_ALIGNMENT_REPORT.md": [],
+    "reports/UI_UX_STRATEGY_REPORT.md": [],
+    "reports/documentation-fix-report.md": [],
+    "reports/docs-status.md": [],
+    "reports/large-docs-plan.md": [],
+    "reports/taxonomy-status.md": [],
+    "reports/relationships-status.md": [],
+    "implementation-summaries/INFISICAL_IMPLEMENTATION_SUMMARY.md": [],
+    "implementation-summaries/SECURITY_HARDENING_IMPLEMENTATION.md": [],
+    "implementation-summaries/PROJECT-INTEGRATION.md": [],
+    "implementation-summaries/ROLLOUT-PLAN.md": [
+      "archive/REACT-19-CHANGES.md",
+      "archive/REACT-19-FIXES.md"
+    ],
+    "investigations/DEEP_INVESTIGATION_DIRECTIVE.md": [],
+    "features/user-management/USER_MANAGEMENT_IMPLEMENTATION.md": [],
+    "features/user-management/USER_MANAGEMENT.md": [],
+    "features/user-management/USER_MANAGEMENT_STARTER_DIFFS.md": [],
+    "development/python/RUFF_AND_PYTHON_UPGRADE_SUMMARY.md": [],
+    "development/python/RUFF_UPGRADE_PLAN.md": [],
+    "development/python/RUFF_VERIFICATION_REPORT.md": [],
+    "development/python/fastapi-boostrap-helper.md": [],
+    "development/python/fastapi-boostrap-starter.md": [],
+    "api/v1/entries.md": [],
+    "schemas/v1/README.md": [],
+    "editor-upgrade/reference/security-and-corrections.md": [],
+    "journal-backend-bootstrap-pgvector-fts-reindex/migrations/README.md": [],
+    "journal-backend-bootstrap-pgvector-fts-reindex/app/README.md": [],
+    "journal-backend-bootstrap-pgvector-fts-reindex/tests/README.md": [],
+    "journal-backend-bootstrap-pgvector-fts-reindex/ops/README.md": [],
+    "journal-backend-bootstrap-pgvector-fts-reindex/.ruff_cache/README.md": [],
+    "journal-backend-bootstrap-pgvector-fts-reindex/.ruff_cache/0.12.11/README.md": [],
+    "journal-backend-bootstrap-pgvector-fts-reindex/app/telemetry/README.md": [],
+    "journal-backend-bootstrap-pgvector-fts-reindex/app/infra/README.md": [],
+    "journal-backend-bootstrap-pgvector-fts-reindex/app/domain/README.md": [],
+    "journal-backend-bootstrap-pgvector-fts-reindex/app/services/README.md": [],
+    "journal-backend-bootstrap-pgvector-fts-reindex/app/api/README.md": [],
+    "journal-backend-bootstrap-pgvector-fts-reindex/app/graphql/README.md": [],
+    "journal-backend-bootstrap-pgvector-fts-reindex/app/workers/README.md": [],
+    "journal-backend-bootstrap-pgvector-fts-reindex/app/api/v1/README.md": [],
+    "journal-backend-bootstrap-pgvector-fts-reindex/migrations/versions/README.md": [],
+    "bun/getting-started/installation.md": [],
+    "bun/getting-started/package-manager.md": [],
+    "bun/getting-started/quickstart.md": [],
+    "bun/configuration/bunfig.md": [],
+    "bun/configuration/typescript.md": [],
+    "bun/features/bundler.md": [],
+    "bun/features/modules.md": [],
+    "bun/features/shell.md": [],
+    "bun/api/file-io.md": [],
+    "bun/api/http-server.md": [],
+    "bun/api/sql.md": [],
+    "bun/api/websockets.md": [],
+    "bun/deployment/environment-variables.md": [],
+    "bun/deployment/standalone-executables.md": [],
+    "biome/guides/configure-biome.md": [],
+    "biome/guides/editor-extensions.md": [],
+    "biome/guides/getting-started.md": [],
+    "biome/guides/migrate-eslint-prettier.md": [],
+    "biome/reference/cli.md": [],
+    "biome/reference/configuration.md": [],
+    "biome/reference/formatter.md": [],
+    "biome/reference/linter.md": [],
+    "biome/recipes/ci-setup.md": [],
+    "biome/releases/v2-release.md": [],
+    "biome/internals/architecture.md": [],
+    "biome/internals/changelog.md": [],
+    "js-api/fonts/README.md": [],
+    "js-api/scripts/README.md": [],
+    "js-api/styles/README.md": [],
+    "js-api/scripts/prettify/README.md": [],
+    "implementation/guide/01-overview.md": [],
+    "implementation/guide/02-setup.md": [],
+    "implementation/guide/03-workflows.md": [],
+    "implementation/guide/04-features.md": [],
+    "implementation/guide/05-ops.md": [],
+    "initial-planning/personal-guide/overview.md": [],
+    "initial-planning/personal-guide/architecture.md": [],
+    "initial-planning/personal-guide/backend.md": [],
+    "initial-planning/personal-guide/frontend.md": [],
+    "initial-planning/personal-guide/deployment.md": []
+  },
+  "backlinks": {
+    "archive/implementation-phases/09-phase-nine-editor-refinement.md": [
+      "INDEX.md"
+    ],
+    "guides/docstring-tools-report.md": [
+      "INDEX.md",
+      "guides/README.md"
+    ],
+    "initial-planning/api-contract-guide.md": [
+      "INDEX.md"
+    ],
+    "guides/data-model.md": [
+      "INDEX.md",
+      "guides/README.md"
+    ],
+    "meta/REORGANIZATION_PLAN.md": [
+      "INDEX.md"
+    ],
+    "migrations/ruff-progressive-autofixing.md": [
+      "INDEX.md"
+    ],
+    "implementation/guide/01-overview.md": [
+      "INDEX.md",
+      "implementation/IMPLEMENTATION_GUIDE.md"
+    ],
+    "ci-cd/CI_INVESTIGATION_REPORT.md": [
+      "INDEX.md",
+      "ci-cd/README.md"
+    ],
+    "audits/documentation-assessment-report.md": [
+      "INDEX.md"
+    ],
+    "guides/js-api-docs.md": [
+      "INDEX.md",
+      "guides/README.md",
+      "initial-planning/JSDoc-implementation.md"
+    ],
+    "project-config/GEMINI.md": [
+      "INDEX.md"
+    ],
+    "archive/status-updates/2025-04-08-phase-16-complete.md": [
+      "INDEX.md"
+    ],
+    "development/python/RUFF_UPGRADE_PLAN.md": [
+      "INDEX.md"
+    ],
+    "archive/status-updates/2025-04-07-stabilization-post-phase-8.md": [
+      "INDEX.md"
+    ],
+    "implementation-summaries/PROJECT-INTEGRATION.md": [
+      "INDEX.md"
+    ],
+    "archive/implementation-phases/12-phase-twelve-summary.md": [
+      "INDEX.md"
+    ],
+    "infrastructure/observability-setup.md": [
+      "INDEX.md"
+    ],
+    "planning/enhance-journal-app.md": [
+      "INDEX.md"
+    ],
+    "editor-upgrade/archive/editor-upgrade-v2.md": [
+      "INDEX.md"
+    ],
+    "migrations/to-typescript.md": [
+      "INDEX.md"
+    ],
+    "initial-planning/deployment-script-guide.md": [
+      "INDEX.md",
+      "implementation/IMPLEMENTATION_GUIDE.md"
+    ],
+    "project-config/CLAUDE.md": [
+      "INDEX.md"
+    ],
+    "guides/commands-quick-reference.md": [
+      "INDEX.md",
+      "README.md"
+    ],
+    "ci-cd/CI_CHECKLIST.md": [
+      "INDEX.md",
+      "ci-cd/README.md"
+    ],
+    "archive/implementation-phases/08-phase-eight-summary.md": [
+      "INDEX.md"
+    ],
+    "archive/status-updates/2025-04-08-code-mirror-documentation-integration.md": [
+      "INDEX.md"
+    ],
+    "biome/recipes/ci-setup.md": [
+      "INDEX.md"
+    ],
+    "reports/PYTHON_RUFF_ALIGNMENT_REPORT.md": [
+      "INDEX.md"
+    ],
+    "editor-upgrade/TYPE-SYSTEM-STRATEGY.md": [
+      "INDEX.md"
+    ],
+    "design/refactor-ui-design.md": [
+      "INDEX.md"
+    ],
+    "archive/implementation-phases/17-phase-seventeen-documentation-qa.md": [
+      "INDEX.md"
+    ],
+    "editor-upgrade/VITEST-MIGRATION-IMPACT.md": [
+      "INDEX.md"
+    ],
+    "code-mirror/quick-reference.md": [
+      "INDEX.md",
+      "guides/codemirror-integration.md",
+      "status/CHANGELOG.md"
+    ],
+    "development/USAGE-GUIDE.md": [
+      "INDEX.md",
+      "development/README.md"
+    ],
+    "archive/REACT-19-CHANGES.md": [
+      "INDEX.md",
+      "implementation-summaries/ROLLOUT-PLAN.md"
+    ],
+    "archive/status-updates/2025-04-08-phase-14-complete.md": [
+      "INDEX.md"
+    ],
+    "archive/implementation-phases/02-phase-two-entry-crud.md": [
+      "INDEX.md"
+    ],
+    "reports/docs-status.md": [
+      "INDEX.md"
+    ],
+    "adr/adr-0001-python-3.13-ruff-0.13.md": [
+      "INDEX.md"
+    ],
+    "initial-planning/testing.md": [
+      "INDEX.md",
+      "implementation/IMPLEMENTATION_GUIDE.md"
+    ],
+    "initial-planning/mvp-high-level-implementation-guide.md": [
+      "INDEX.md",
+      "implementation/IMPLEMENTATION_GUIDE.md"
+    ],
+    "archive/status-updates/2025-04-08-phase-16-started.md": [
+      "INDEX.md"
+    ],
+    "archive/REACT-19-FIXES.md": [
+      "INDEX.md",
+      "implementation-summaries/ROLLOUT-PLAN.md"
+    ],
+    "implementation/README.md": [
+      "INDEX.md"
+    ],
+    "ci-cd/MERGE-CHECKLIST.md": [
+      "INDEX.md",
+      "ci-cd/README.md"
+    ],
+    "archive/implementation-phases/06-phase-six-tags.md": [
+      "INDEX.md"
+    ],
+    "code-mirror/reference-manual-part3.md": [
+      "INDEX.md",
+      "guides/codemirror-integration.md"
+    ],
+    "bun/api/http-server.md": [
+      "INDEX.md"
+    ],
+    "archive/implementation-phases/05-phase-five-summary.md": [
+      "INDEX.md"
+    ],
+    "archive/REACT-19-MIGRATION.md": [
+      "INDEX.md"
+    ],
+    "meta/TESTING_STATUS.md": [
+      "INDEX.md"
+    ],
+    "archive/status-updates/2025-04-08-phase-11-complete.md": [
+      "INDEX.md"
+    ],
+    "bun/getting-started/package-manager.md": [
+      "INDEX.md"
+    ],
+    "initial-planning/structure-update.md": [
+      "INDEX.md"
+    ],
+    "guides/authentication.md": [
+      "INDEX.md",
+      "guides/README.md"
+    ],
+    "audits/documentation-inventory.md": [
+      "INDEX.md",
+      "status/CHANGELOG.md"
+    ],
+    "archive/STORYBOOK-9-MIGRATION.md": [
+      "INDEX.md"
+    ],
+    "guides/ci-cd-workflow.md": [
+      "INDEX.md",
+      "guides/README.md"
+    ],
+    "bun/deployment/environment-variables.md": [
+      "INDEX.md"
+    ],
+    "biome/reference/cli.md": [
+      "INDEX.md"
+    ],
+    "archive/USER_MANAGEMENT_ORCHESTRATEV7.md": [
+      "INDEX.md"
+    ],
+    "bun/deployment/standalone-executables.md": [
+      "INDEX.md"
+    ],
+    "initial-planning/editor-implementation.md": [
+      "INDEX.md",
+      "implementation/IMPLEMENTATION_GUIDE.md"
+    ],
+    "archive/status-updates/2025-04-06-phase-5-complete.md": [
+      "INDEX.md"
+    ],
+    "archive/implementation-phases/04-phase-four-deploy-test-setup.md": [
+      "INDEX.md"
+    ],
+    "archive/implementation-phases/14-phase-fourteen-documentation-foundation.md": [
+      "INDEX.md"
+    ],
+    "code-mirror/reference-manual-part4.md": [
+      "INDEX.md"
+    ],
+    "initial-planning/error-handling.md": [
+      "INDEX.md"
+    ],
+    "features/user-management/USER_MANAGEMENT_IMPLEMENTATION.md": [
+      "INDEX.md"
+    ],
+    "workflows/hx-ax-workflows.md": [
+      "INDEX.md"
+    ],
+    "design/UI_DESIGN_UPDATE_PLAN.md": [
+      "INDEX.md"
+    ],
+    "archive/status-updates/2025-04-06-phase-3-complete.md": [
+      "INDEX.md"
+    ],
+    "templates/api-reference-template.md": [
+      "INDEX.md",
+      "guides/documentation-templates.md"
+    ],
+    "ci-cd/PR-CHECKLIST.md": [
+      "INDEX.md",
+      "ci-cd/README.md"
+    ],
+    "templates/tutorial-template.md": [
+      "INDEX.md",
+      "guides/documentation-templates.md"
+    ],
+    "code-mirror/example-config.md": [
+      "INDEX.md"
+    ],
+    "archive/implementation-phases/15-phase-fifteen-core-documentation.md": [
+      "INDEX.md"
+    ],
+    "archive/implementation-phases/09-phase-nine-summary.md": [
+      "INDEX.md"
+    ],
+    "guides/documentation-contribution-guide.md": [
+      "INDEX.md",
+      "README.md"
+    ],
+    "implementation/documentation-specialist-execution-plan.md": [
+      "INDEX.md",
+      "implementation/README.md"
+    ],
+    "future-features/jwt-security-hardening.md": [
+      "INDEX.md"
+    ],
+    "editor-upgrade/archive/COMPREHENSIVE-DIFF-REPORT.md": [
+      "INDEX.md"
+    ],
+    "archive/implementation-phases/03-phase-three-ui-refinements.md": [
+      "INDEX.md"
+    ],
+    "editor-upgrade/archive/V2-COMPREHENSIVE-DIFF-REPORT.md": [
+      "INDEX.md"
+    ],
+    "guides/jsdoc-standards.md": [
+      "INDEX.md",
+      "guides/README.md",
+      "initial-planning/JSDoc-implementation.md"
+    ],
+    "archive/implementation-phases/06-phase-six-summary.md": [
+      "INDEX.md"
+    ],
+    "guides/documentation-update-checklist.md": [
+      "INDEX.md",
+      "guides/README.md"
+    ],
+    "debugging/phase-13-rollup-manifest-issue.md": [
+      "INDEX.md"
+    ],
+    "meta/doc-upgrade.md": [
+      "INDEX.md"
+    ],
+    "archive/status-updates/2025-04-07-phase-6-complete.md": [
+      "INDEX.md"
+    ],
+    "initial-planning/personal-guide/overview.md": [
+      "INDEX.md",
+      "initial-planning/comprehensive-guide-personal.md"
+    ],
+    "archive/REACT-19-MIGRATION-COMPLETE.md": [
+      "INDEX.md"
+    ],
+    "design/theme.md": [
+      "INDEX.md"
+    ],
+    "archive/status-updates/2025-04-08-phase-10-complete.md": [
+      "INDEX.md"
+    ],
+    "workflows/dual-language-setup.md": [
+      "INDEX.md"
+    ],
+    "archive/status-updates/2025-04-08-phase-15-complete.md": [
+      "INDEX.md"
+    ],
+    "security/DEPLOYMENT_AWARE_AUTH.md": [
+      "INDEX.md"
+    ],
+    "investigations/DEEP_INVESTIGATION_DIRECTIVE.md": [
+      "INDEX.md"
+    ],
+    "archive/REACT-19-MIGRATION-ISSUES.md": [
+      "INDEX.md"
+    ],
+    "archive/status-updates/2025-04-06-phase-2-complete.md": [
+      "INDEX.md"
+    ],
+    "archive/status-updates/2025-04-06-phase-1-complete.md": [
+      "INDEX.md"
+    ],
+    "archive/USER_MANAGEMENT_ORCHESTRATEV3.md": [
+      "INDEX.md"
+    ],
+    "guides/README.md": [
+      "INDEX.md"
+    ],
+    "ci-cd/overview.md": [
+      "INDEX.md",
+      "ci-cd/README.md"
+    ],
+    "biome/guides/configure-biome.md": [
+      "INDEX.md"
+    ],
+    "initial-planning/personal-guide/architecture.md": [
+      "INDEX.md",
+      "initial-planning/comprehensive-guide-personal.md"
+    ],
+    "initial-planning/personal-guide/frontend.md": [
+      "INDEX.md",
+      "initial-planning/comprehensive-guide-personal.md"
+    ],
+    "code-mirror/example-basic.md": [
+      "INDEX.md",
+      "guides/codemirror-integration.md"
+    ],
+    "initial-planning/single-config.md": [
+      "INDEX.md"
+    ],
+    "implementation/local-act-testing-plan.md": [
+      "INDEX.md",
+      "implementation/README.md"
+    ],
+    "archive/USER_MANAGEMENT_ORCHESTRATEV5.md": [
+      "INDEX.md"
+    ],
+    "code-mirror/system-guide.md": [
+      "INDEX.md",
+      "guides/codemirror-integration.md"
+    ],
+    "workflows/agent-workflows.md": [
+      "INDEX.md"
+    ],
+    "templates/concept-guide-template.md": [
+      "INDEX.md",
+      "guides/documentation-templates.md"
+    ],
+    "initial-planning/personal-guide/backend.md": [
+      "INDEX.md",
+      "initial-planning/comprehensive-guide-personal.md"
+    ],
+    "initial-planning/JSDoc-implementation.md": [
+      "INDEX.md",
+      "guides/js-api-docs.md"
+    ],
+    "editor-upgrade/archive/editor-upgrade.md": [
+      "INDEX.md"
+    ],
+    "meta/DOCUMENTATION_ARCHITECTURE.md": [
+      "INDEX.md"
+    ],
+    "archive/implementation-phases/12-phase-twelve-editor-bugfix-layout.md": [
+      "INDEX.md"
+    ],
+    "archive/status-updates/USER_MANAGEMENT_STATUS_2025-09-10.md": [
+      "INDEX.md"
+    ],
+    "testing/PERFORMANCE-BASELINE.md": [
+      "INDEX.md"
+    ],
+    "code-mirror/reference-manual-part1.md": [
+      "INDEX.md",
+      "guides/codemirror-integration.md"
+    ],
+    "deployment/vercel-supabase-strategy.md": [
+      "INDEX.md",
+      "deployment/supabase-configuration.md"
+    ],
+    "biome/reference/formatter.md": [
+      "INDEX.md"
+    ],
+    "code-mirror/extensions-reference.md": [
+      "INDEX.md",
+      "guides/codemirror-integration.md"
+    ],
+    "archive/implementation-phases/05-phase-five-testing-scripts.md": [
+      "INDEX.md"
+    ],
+    "archive/implementation-phases/11-phase-eleven-editor-features.md": [
+      "INDEX.md"
+    ],
+    "archive/status-updates/2025-04-06-phase-4-complete.md": [
+      "INDEX.md"
+    ],
+    "archive/USER_MANAGEMENT_ORCHESTRATEV9.md": [
+      "INDEX.md"
+    ],
+    "design/UI_DESIGN_SPECIFICATION.md": [
+      "INDEX.md"
+    ],
+    "archive/implementation-phases/18-phase-eighteen-ci-cd-implementation.md": [
+      "INDEX.md"
+    ],
+    "reports/large-docs-plan.md": [
+      "INDEX.md"
+    ],
+    "archive/status-updates/2025-04-08-phase-18-started.md": [
+      "INDEX.md"
+    ],
+    "typescript-migration/migration-guide.md": [
+      "INDEX.md"
+    ],
+    "project-config/CODEX-SETUP.md": [
+      "INDEX.md"
+    ],
+    "guides/act-reference.md": [
+      "INDEX.md",
+      "guides/README.md"
+    ],
+    "deployment/vercel-supabase-migration-assessment.md": [
+      "INDEX.md"
+    ],
+    "planning/PHASE_5_ENHANCEMENT_PLAN.md": [
+      "INDEX.md"
+    ],
+    "guides/documentation-metrics.md": [
+      "INDEX.md",
+      "guides/README.md"
+    ],
+    "project-config/documentation-instructions.md": [
+      "INDEX.md"
+    ],
+    "archive/status-updates/2025-04-08-phase-12-complete.md": [
+      "INDEX.md"
+    ],
+    "audits/documentation-validation-report.md": [
+      "INDEX.md"
+    ],
+    "initial-planning/comprehensive-guide-personal.md": [
+      "INDEX.md",
+      "implementation/IMPLEMENTATION_GUIDE.md"
+    ],
+    "features/user-management/USER_MANAGEMENT_STARTER_DIFFS.md": [
+      "INDEX.md"
+    ],
+    "meta/DEFINITION_OF_DONE.md": [
+      "INDEX.md"
+    ],
+    "db/extensions.md": [
+      "INDEX.md"
+    ],
+    "archive/status-updates/2025-04-08-phase-17-complete.md": [
+      "INDEX.md"
+    ],
+    "archive/status-updates/2025-04-07-phase-8-complete.md": [
+      "INDEX.md"
+    ],
+    "archive/status-updates/2025-04-08-phase-15-started.md": [
+      "INDEX.md"
+    ],
+    "archive/implementation-phases/13-phase-thirteen-structure-refactor.md": [
+      "INDEX.md"
+    ],
+    "planning/PHASE_5_MASTER_PLAN.md": [
+      "INDEX.md"
+    ],
+    "biome/guides/getting-started.md": [
+      "INDEX.md"
+    ],
+    "bun/api/sql.md": [
+      "INDEX.md"
+    ],
+    "editor-upgrade/FINAL-IMPLEMENTATION-WORKFLOW.md": [
+      "INDEX.md"
+    ],
+    "guides/documentation-templates.md": [
+      "INDEX.md",
+      "guides/README.md"
+    ],
+    "ci-cd/PR_SUMMARY.md": [
+      "INDEX.md",
+      "ci-cd/README.md"
+    ],
+    "guides/gh-cli.md": [
+      "INDEX.md",
+      "guides/README.md"
+    ],
+    "infrastructure/infisical-cli-useage.md": [
+      "INDEX.md"
+    ],
+    "bun/getting-started/installation.md": [
+      "INDEX.md"
+    ],
+    "archive/implementation-phases/11-phase-eleven-summary.md": [
+      "INDEX.md"
+    ],
+    "guides/editor-architecture.md": [
+      "INDEX.md",
+      "code-mirror/quick-reference.md",
+      "guides/README.md",
+      "status/CHANGELOG.md"
+    ],
+    "archive/USER_MANAGEMENT_ORCHESTRATEV8.md": [
+      "INDEX.md"
+    ],
+    "biome/reference/linter.md": [
+      "INDEX.md"
+    ],
+    "guides/api-reference.md": [
+      "INDEX.md",
+      "guides/README.md"
+    ],
+    "development/RUNNING_THE_APP.md": [
+      "INDEX.md",
+      "development/README.md"
+    ],
+    "templates/component-doc-template.md": [
+      "INDEX.md",
+      "guides/documentation-templates.md"
+    ],
+    "archive/implementation-phases/03-phase-three-summary.md": [
+      "INDEX.md"
+    ],
+    "development/python/RUFF_AND_PYTHON_UPGRADE_SUMMARY.md": [
+      "INDEX.md"
+    ],
+    "ci-cd/dev-setup.md": [
+      "INDEX.md",
+      "ci-cd/README.md"
+    ],
+    "bun/configuration/bunfig.md": [
+      "INDEX.md"
+    ],
+    "deployment/data-policy.md": [
+      "INDEX.md",
+      "deployment/supabase-configuration.md"
+    ],
+    "archive/implementation-phases/08-phase-eight-editor-integration.md": [
+      "INDEX.md"
+    ],
+    "development/BACKEND_ARCHITECTURE.md": [
+      "INDEX.md",
+      "development/README.md"
+    ],
+    "archive/status-updates/2025-04-08-phase-18-complete.md": [
+      "INDEX.md"
+    ],
+    "implementation/guide/05-ops.md": [
+      "INDEX.md",
+      "implementation/IMPLEMENTATION_GUIDE.md"
+    ],
+    "guides/request-lifecycle.md": [
+      "INDEX.md",
+      "guides/README.md"
+    ],
+    "editor-upgrade/VITEST-TESTING-SETUP.md": [
+      "INDEX.md"
+    ],
+    "archive/implementation-phases/01-phase-one-setup-auth.md": [
+      "INDEX.md"
+    ],
+    "meta/reference-docs.md": [
+      "INDEX.md"
+    ],
+    "reports/documentation-fix-report.md": [
+      "INDEX.md"
+    ],
+    "api/v1/entries.md": [
+      "INDEX.md"
+    ],
+    "reports/UI_UX_STRATEGY_REPORT.md": [
+      "INDEX.md"
+    ],
+    "implementation/guide/02-setup.md": [
+      "INDEX.md",
+      "implementation/IMPLEMENTATION_GUIDE.md"
+    ],
+    "biome/internals/changelog.md": [
+      "INDEX.md"
+    ],
+    "editor-upgrade/BULLETPROOF-IMPLEMENTATION-PLAN.md": [
+      "INDEX.md"
+    ],
+    "archive/implementation-phases/16-phase-sixteen-documentation-expansion.md": [
+      "INDEX.md"
+    ],
+    "biome/internals/architecture.md": [
+      "INDEX.md"
+    ],
+    "user-guide/troubleshooting.md": [
+      "INDEX.md"
+    ],
+    "code-mirror/example-tab-handling.md": [
+      "INDEX.md",
+      "guides/codemirror-integration.md"
+    ],
+    "infrastructure/error-handling-logging.md": [
+      "INDEX.md",
+      "deployment/environment-variables.md"
+    ],
+    "initial-planning/state-management-guide.md": [
+      "INDEX.md"
+    ],
+    "archive/implementation-phases/04-phase-four-summary.md": [
+      "INDEX.md"
+    ],
+    "archive/status-updates/2025-04-08-phase-14-started.md": [
+      "INDEX.md"
+    ],
+    "ci-cd/CI_CD_GUIDE.md": [
+      "INDEX.md",
+      "ci-cd/README.md"
+    ],
+    "infrastructure/hosting-secure.md": [
+      "INDEX.md"
+    ],
+    "biome/releases/v2-release.md": [
+      "INDEX.md"
+    ],
+    "archive/USER_MANAGEMENT_ORCHESTRATEV6.md": [
+      "INDEX.md"
+    ],
+    "archive/implementation-phases/18-phase-eighteen-documentation-integration.md": [
+      "INDEX.md"
+    ],
+    "user-guide/README.md": [
+      "INDEX.md"
+    ],
+    "code-mirror/example-bundled.md": [
+      "INDEX.md",
+      "guides/codemirror-integration.md"
+    ],
+    "archive/status-updates/2025-04-07-phase-7-complete.md": [
+      "INDEX.md"
+    ],
+    "archive/implementation-phases/10-phase-ten-summary.md": [
+      "INDEX.md"
+    ],
+    "migrations/REACT-19-WORKFLOW.md": [
+      "INDEX.md"
+    ],
+    "guides/markdown-linting-guide.md": [
+      "INDEX.md",
+      "guides/README.md"
+    ],
+    "archive/implementation-phases/07-phase-seven-summary.md": [
+      "INDEX.md"
+    ],
+    "biome/guides/editor-extensions.md": [
+      "INDEX.md"
+    ],
+    "guides/python-docstring-standards.md": [
+      "INDEX.md",
+      "guides/README.md"
+    ],
+    "features/user-management/USER_MANAGEMENT.md": [
+      "INDEX.md"
+    ],
+    "implementation/documentation-specialist-role.md": [
+      "INDEX.md",
+      "implementation/README.md"
+    ],
+    "reports/DESIGN_AND_TOOLING_REPORT.md": [
+      "INDEX.md"
+    ],
+    "guides/architecture-overview.md": [
+      "INDEX.md",
+      "guides/README.md"
+    ],
+    "archive/USER_MANAGEMENT_ORCHESTRATEV2.md": [
+      "INDEX.md"
+    ],
+    "migrations/move-to-fastapi.md": [
+      "INDEX.md"
+    ],
+    "security/ADVANCED_AUTH.md": [
+      "INDEX.md"
+    ],
+    "guides/documentation-testing-process.md": [
+      "INDEX.md",
+      "guides/README.md"
+    ],
+    "implementation/guide/04-features.md": [
+      "INDEX.md",
+      "implementation/IMPLEMENTATION_GUIDE.md"
+    ],
+    "editor-upgrade/reference/security-and-corrections.md": [
+      "INDEX.md"
+    ],
+    "bun/api/file-io.md": [
+      "INDEX.md"
+    ],
+    "biome/guides/migrate-eslint-prettier.md": [
+      "INDEX.md"
+    ],
+    "archive/status-updates/2025-04-08-phase-17-started.md": [
+      "INDEX.md"
+    ],
+    "proposals/ci-cd-documentation-checks.md": [
+      "INDEX.md"
+    ],
+    "archive/status-updates/2025-04-08-documentation-specialist-mode-added.md": [
+      "INDEX.md"
+    ],
+    "bun/getting-started/quickstart.md": [
+      "INDEX.md"
+    ],
+    "meta/reference-docs-started.md": [
+      "INDEX.md"
+    ],
+    "infrastructure/INFISICAL_ARCHITECTURE.md": [
+      "INDEX.md",
+      "deployment/environment-variables.md"
+    ],
+    "archive/implementation-phases/07-phase-seven-ui-ux.md": [
+      "INDEX.md"
+    ],
+    "archive/USER_MANAGEMENT_ORCHESTRATEV1.md": [
+      "INDEX.md"
+    ],
+    "implementation/guide/03-workflows.md": [
+      "INDEX.md",
+      "implementation/IMPLEMENTATION_GUIDE.md"
+    ],
+    "reports/LINTING_REPORT.md": [
+      "INDEX.md"
+    ],
+    "implementation-summaries/ROLLOUT-PLAN.md": [
+      "INDEX.md"
+    ],
+    "code-mirror/reference-manual-part2.md": [
+      "INDEX.md",
+      "guides/codemirror-integration.md"
+    ],
+    "archive/implementation-phases/01-phase-one-summary.md": [
+      "INDEX.md"
+    ],
+    "development/python/RUFF_VERIFICATION_REPORT.md": [
+      "INDEX.md"
+    ],
+    "bun/configuration/typescript.md": [
+      "INDEX.md"
+    ],
+    "development/python/fastapi-boostrap-starter.md": [
+      "INDEX.md"
+    ],
+    "INDEX.md": [
+      "INDEX.md",
+      "README.md"
+    ],
+    "security/token-enhancement.md": [
+      "INDEX.md"
+    ],
+    "project-config/AGENTS.md": [
+      "INDEX.md"
+    ],
+    "implementation-summaries/SECURITY_HARDENING_IMPLEMENTATION.md": [
+      "INDEX.md"
+    ],
+    "development/README.md": [
+      "INDEX.md"
+    ],
+    "user-guide/faq.md": [
+      "INDEX.md"
+    ],
+    "initial-planning/agentic-workflow.md": [
+      "INDEX.md",
+      "implementation/IMPLEMENTATION_GUIDE.md"
+    ],
+    "archive/implementation-phases/02-phase-two-summary.md": [
+      "INDEX.md"
+    ],
+    "archive/status-updates/2025-04-08-phase-18-ci-cd-complete.md": [
+      "INDEX.md"
+    ],
+    "meta/MIGRATION_CHECKLIST.md": [
+      "INDEX.md"
+    ],
+    "biome/reference/configuration.md": [
+      "INDEX.md"
+    ],
+    "development/python/fastapi-boostrap-helper.md": [
+      "INDEX.md"
+    ],
+    "development/DEVELOPMENT_FRAMEWORK.md": [
+      "INDEX.md",
+      "development/README.md"
+    ],
+    "guides/diagramming-approach.md": [
+      "INDEX.md",
+      "guides/README.md"
+    ],
+    "guides/infisical-self-hosted.md": [
+      "INDEX.md",
+      "guides/README.md"
+    ],
+    "README.md": [
+      "INDEX.md"
+    ],
+    "debugging/phase-12-editor-summary.md": [
+      "INDEX.md"
+    ],
+    "implementation/IMPLEMENTATION_GUIDE.md": [
+      "INDEX.md",
+      "README.md",
+      "implementation/README.md",
+      "status/CHANGELOG.md"
+    ],
+    "meta/ORCHESTRATION_WORKFLOW.md": [
+      "INDEX.md"
+    ],
+    "ci-cd/CI_FIX_WORKFLOW.md": [
+      "INDEX.md",
+      "ci-cd/README.md"
+    ],
+    "archive/USER_MANAGEMENT_ORCHESTRATEV4.md": [
+      "INDEX.md"
+    ],
+    "code-mirror/example-styling.md": [
+      "INDEX.md",
+      "guides/codemirror-integration.md"
+    ],
+    "bun/features/shell.md": [
+      "INDEX.md"
+    ],
+    "templates/troubleshooting-template.md": [
+      "INDEX.md",
+      "guides/documentation-templates.md"
+    ],
+    "guides/codemirror-integration.md": [
+      "INDEX.md",
+      "guides/README.md",
+      "status/CHANGELOG.md"
+    ],
+    "planning/ROADMAP.md": [
+      "INDEX.md"
+    ],
+    "ci-cd/README.md": [
+      "INDEX.md"
+    ],
+    "doc-update/doc-organize-plan.md": [
+      "INDEX.md"
+    ],
+    "meta/DOCUMENTATION_ROADMAP.md": [
+      "INDEX.md"
+    ],
+    "status/CHANGELOG.md": [
+      "INDEX.md",
+      "README.md"
+    ],
+    "implementation-summaries/INFISICAL_IMPLEMENTATION_SUMMARY.md": [
+      "INDEX.md"
+    ],
+    "bun/features/bundler.md": [
+      "INDEX.md"
+    ],
+    "archive/status-updates/2025-04-08-phase-9-complete.md": [
+      "INDEX.md"
+    ],
+    "guides/documentation-review-process.md": [
+      "INDEX.md",
+      "guides/README.md"
+    ],
+    "initial-planning/personal-guide/deployment.md": [
+      "INDEX.md",
+      "initial-planning/comprehensive-guide-personal.md"
+    ],
+    "archive/implementation-phases/10-phase-ten-favicon.md": [
+      "INDEX.md"
+    ],
+    "bun/features/modules.md": [
+      "INDEX.md"
+    ],
+    "bun/api/websockets.md": [
+      "INDEX.md"
+    ],
+    "deployment/monitoring.md": [
+      "deployment/PRE_DEPLOYMENT_CHECKLIST.md"
+    ],
+    "deployment/architecture.md": [
+      "deployment/PRE_DEPLOYMENT_CHECKLIST.md"
+    ],
+    "deployment/database-migration.md": [
+      "deployment/PRE_DEPLOYMENT_CHECKLIST.md"
+    ],
+    "deployment/environment-variables.md": [
+      "deployment/PRE_DEPLOYMENT_CHECKLIST.md",
+      "deployment/supabase-configuration.md",
+      "deployment/vercel-deployment.md"
+    ],
+    "deployment/runbook.md": [
+      "deployment/PRE_DEPLOYMENT_CHECKLIST.md"
+    ],
+    "deployment/vercel-deployment.md": [
+      "deployment/environment-variables.md",
+      "deployment/supabase-configuration.md"
+    ],
+    "deployment/supabase-configuration.md": [
+      "deployment/environment-variables.md",
+      "deployment/vercel-deployment.md"
+    ]
+  },
+  "stats": {
+    "nodes": 229,
+    "edges": 374,
+    "with_backlinks": 280
+  }
+}

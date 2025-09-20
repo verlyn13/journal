@@ -1,3 +1,19 @@
+---
+id: documentation-inventory
+title: Documentation Inventory and Assessment
+type: reference
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags: []
+priority: medium
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 ***
 
 title: "Documentation Inventory and Assessment"
@@ -104,7 +120,7 @@ Each document is assessed on the following criteria:
 | Document                                         | Structure | Semantic Chunking | Metadata | Clarity | Overall | Priority | Notes                           |
 | ------------------------------------------------ | --------- | ----------------- | -------- | ------- | ------- | -------- | ------------------------------- |
 | docs/debugging/phase-12-editor-summary.md        | 4         | 3                 | 4        | 4       | 3.8     | Medium   | Editor debugging summary        |
-| docs/debugging/phase-13-rollup-manifest-issue.md | 4         | 3                 | 4        | 4       | 3.8     | Medium   | Rollup manifest issue debugging |
+| docs/debugging/phase-13-Vite-manifest-issue.md | 4         | 3                 | 4        | 4       | 3.8     | Medium   | Vite manifest issue debugging |
 
 ### Tool Documentation (Roo-code)
 

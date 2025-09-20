@@ -1,3 +1,21 @@
+---
+id: bunfig
+title: BUNFIG
+type: reference
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags:
+- typescript
+- react
+priority: medium
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 # BUNFIG
 
 *Source: <https://bun.sh/docs/runtime/bunfig>*
@@ -336,7 +354,7 @@ saveTextLockfile = false
 
 ### [`install.auto`](#install-auto)
 
-To configure Bun's package auto-install behavior. Default `"auto"` — when no `node_modules` folder is found, Bun will automatically install dependencies on the fly during execution.
+To configure Bun's package auto-install behavior. Default `"auto"` — when no `node_modules (managed by Bun)` folder is found, Bun will automatically install dependencies on the fly during execution.
 
 ```
 [install]
@@ -346,7 +364,7 @@ auto = "auto"
 
 Valid values are:
 
-ValueDescription`"auto"`Resolve modules from local `node_modules` if it exists. Otherwise, auto-install dependencies on the fly.`"force"`Always auto-install dependencies, even if `node_modules` exists.`"disable"`Never auto-install dependencies.`"fallback"`Check local `node_modules` first, then auto-install any packages that aren't found. You can enable this from the CLI with `bun -i`.### [`install.frozenLockfile`](#install-frozenlockfile)
+ValueDescription`"auto"`Resolve modules from local `node_modules (managed by Bun)` if it exists. Otherwise, auto-install dependencies on the fly.`"force"`Always auto-install dependencies, even if `node_modules (managed by Bun)` exists.`"disable"`Never auto-install dependencies.`"fallback"`Check local `node_modules (managed by Bun)` first, then auto-install any packages that aren't found. You can enable this from the CLI with `bun -i`.### [`install.frozenLockfile`](#install-frozenlockfile)
 
 When true, `bun install` will not update `bun.lock`. Default `false`. If `package.json` and the existing `bun.lock` are not in agreement, this will error.
 
@@ -410,7 +428,7 @@ registry = "https://username:password@registry.npmjs.org"
 
 To configure how workspace packages are linked, use the `install.linkWorkspacePackages` option.
 
-Whether to link workspace packages from the monorepo root to their respective `node_modules` directories. Default `true`.
+Whether to link workspace packages from the monorepo root to their respective `node_modules (managed by Bun)` directories. Default `true`.
 
 ```
 [install]
@@ -429,7 +447,7 @@ myorg = "https://username:password@registry.myorg.com/"
 
 # registry with username/password
 # you can reference environment variables
-myorg = { username = "myusername", password = "$npm_password", url = "https://registry.myorg.com/" }
+myorg = { username = "myusername", password: "YOUR_PASSWORD_HERE", url = "https://registry.myorg.com/" }
 
 # registry with token
 myorg = { token = "$npm_token", url = "https://registry.myorg.com/" }
@@ -461,7 +479,7 @@ To configure the cache behavior:
 dir = "~/.bun/install/cache"
 
 # when true, don't load from the global cache.
-# Bun may still write to node_modules/.cache
+# Bun may still write to node_modules (managed by Bun)/.cache
 disable = false
 
 # when true, always resolve the latest versions from the registry
@@ -481,11 +499,11 @@ save = true
 
 ```
 
-Whether to generate a non-Bun lockfile alongside `bun.lock`. (A `bun.lock` will always be created.) Currently `"yarn"` is the only supported value.
+Whether to generate a non-Bun lockfile alongside `bun.lock`. (A `bun.lock` will always be created.) Currently `"bun"` is the only supported value.
 
 ```
 [install.lockfile]
-print = "yarn"
+print = "bun"
 
 ```
 
@@ -530,7 +548,7 @@ linker = "hoisted"
 
 Valid values are:
 
-ValueDescription`"hoisted"`Link dependencies in a shared `node_modules` directory.`"isolated"`Link dependencies inside each package installation.## [`bun run`](#bun-run)
+ValueDescription`"hoisted"`Link dependencies in a shared `node_modules (managed by Bun)` directory.`"isolated"`Link dependencies inside each package installation.## [`bun run`](#bun-run)
 
 The `bun run` command can be configured under the `[run]` section. These apply to the `bun run` command and the `bun` command when running a file or executable or script.
 

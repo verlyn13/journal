@@ -46,7 +46,7 @@ jobs:
       has_security_issues: ${{ steps.security.outputs.issues_found }}
     steps:
       - name: Checkout with token
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0  # Full history for security analysis
@@ -101,14 +101,14 @@ jobs:
       type_score: ${{ steps.api-types.outputs.score }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
 
       - name: Setup Python 3.13
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@e797f83bcb11b83ae66e0230d6156d7c80228e7c
         with:
           python-version: '3.13'
       - name: Setup Python with uv
-        uses: astral-sh/setup-uv@v4
+        uses: astral-sh/setup-uv@208b0c0ee42039b2cbf5fd3ca0ec7d6d8a49336f
         with:
           version: "latest"
 
@@ -222,10 +222,10 @@ jobs:
       biome_score: ${{ steps.web-biome.outputs.score }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
 
       - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
+        uses: oven-sh/setup-bun@4bc047ad259df6fc24a6c9b0f9a0cb08cf17fbe5
         with:
           bun-version: "1.2.21"
 
@@ -380,10 +380,10 @@ jobs:
           --health-retries 30
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
 
       - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
+        uses: oven-sh/setup-bun@4bc047ad259df6fc24a6c9b0f9a0cb08cf17fbe5
         with:
           bun-version: "1.2.21"
 
@@ -395,11 +395,11 @@ jobs:
           node scripts/bundle-check.js
 
       - name: Setup Python 3.13
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@e797f83bcb11b83ae66e0230d6156d7c80228e7c
         with:
           python-version: '3.13'
       - name: Setup Python (uv)
-        uses: astral-sh/setup-uv@v4
+        uses: astral-sh/setup-uv@208b0c0ee42039b2cbf5fd3ca0ec7d6d8a49336f
 
       - name: API deps
         working-directory: apps/api

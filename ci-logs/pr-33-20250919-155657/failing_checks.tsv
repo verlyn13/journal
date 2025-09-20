@@ -1,0 +1,9 @@
+workflow	name	detailsUrl
+Docs Status	docs-status	https://github.com/verlyn13/journal/actions/runs/17871985028/job/50827169327
+Docs Status	docs-status	https://github.com/verlyn13/journal/actions/runs/17871984271/job/50827167642
+Documentation Structure Validation	Validate Documentation Structure	https://github.com/verlyn13/journal/actions/runs/17871985013/job/50827169312
+Lint	Python Linting	https://github.com/verlyn13/journal/actions/runs/17871985045/job/50827169485
+Verify Alignment	verify-alignment	https://github.com/verlyn13/journal/actions/runs/17871985015/job/50827169288
+Verify Alignment	verify-alignment	https://github.com/verlyn13/journal/actions/runs/17871984263/job/50827167597
+Web Tests	playwright	https://github.com/verlyn13/journal/actions/runs/17871985056/job/50827169373
+PR Smoke Tests	Phase 1 Gate - Database Probe	https://github.com/verlyn13/journal/actions/runs/17871985044/job/50827174710

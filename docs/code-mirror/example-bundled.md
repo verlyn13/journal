@@ -1,18 +1,35 @@
+---
+id: example-bundled
+title: 'CodeMirror Bundling Guide: Using Vite'
+type: reference
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags:
+- python
+priority: medium
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 ***
 
-title: CodeMirror Bundling Example (Rollup)
-description: "Explains why bundling is necessary for CodeMirror and provides an example of how to bundle it using Rollup, including optimization strategies."
+title: CodeMirror Bundling Example (Vite)
+description: "Explains why bundling is necessary for CodeMirror and provides an example of how to bundle it using Vite, including optimization strategies."
 category: "CodeMirror Examples"
 status: active
-tags: \["codemirror", "example", "bundling", "rollup", "javascript", "optimization"]
+tags: \["codemirror", "example", "bundling", "Vite", "javascript", "optimization"]
 version: "6.0"
 --------------
 
-# CodeMirror Bundling Guide: Using Rollup
+# CodeMirror Bundling Guide: Using Vite
 
 ## Introduction
 
-CodeMirror is distributed as a collection of ES modules that need to be bundled before being used in a browser. This guide explains how to use Rollup to create an optimized bundle for your CodeMirror editor.
+CodeMirror is distributed as a collection of ES modules that need to be bundled before being used in a browser. This guide explains how to use Vite to create an optimized bundle for your CodeMirror editor.
 
 ## Why Bundling Is Necessary
 
@@ -42,39 +59,39 @@ let editor = new EditorView({
 
 ### 2. Install Required Packages
 
-Install CodeMirror and the necessary Rollup packages:
+Install CodeMirror and the necessary Vite packages:
 
 ```bash
 # The CodeMirror packages used in your script
-npm i codemirror @codemirror/lang-javascript
+bun i codemirror @codemirror/lang-javascript
 
-# Rollup and its plugin
-npm i rollup @rollup/plugin-node-resolve
+# Vite and its plugin
+bun i Vite @Vite/plugin-node-resolve
 ```
 
-## Bundling with Rollup
+## Bundling with Vite
 
 ### Method 1: Command Line
 
-Run Rollup directly from the command line:
+Run Vite directly from the command line:
 
 ```bash
-node_modules/.bin/rollup editor.mjs -f iife -o editor.bundle.js \
-        -p @rollup/plugin-node-resolve
+node_modules (managed by Bun)/.bin/Vite editor.mjs -f iife -o editor.bundle.js \
+        -p @Vite/plugin-node-resolve
 ```
 
 Parameters explained:
 
 - `-f iife`: Format output as an "immediately-invoked function expression"
 - `-o editor.bundle.js`: Specify output file
-- `-p @rollup/plugin-node-resolve`: Use the Node.js resolution plugin
+- `-p @Vite/plugin-node-resolve`: Use the Node.js resolution plugin
 
 ### Method 2: Configuration File
 
-For more flexibility, create a configuration file named `rollup.config.mjs`:
+For more flexibility, create a configuration file named `Vite.config.mjs`:
 
 ```javascript
-import {nodeResolve} from "@rollup/plugin-node-resolve"
+import {nodeResolve} from "@Vite/plugin-node-resolve"
 
 export default {
   input: "./editor.mjs",
@@ -89,7 +106,7 @@ export default {
 Then run:
 
 ```bash
-rollup -c
+Vite -c
 ```
 
 ## Using the Bundle
@@ -112,8 +129,8 @@ CodeMirror is a feature-rich editor, which means its bundle size can be signific
 Use Terser or Babel to strip comments, whitespace, and rename variables:
 
 ```bash
-npm i terser
-npx terser editor.bundle.js -o editor.min.js -c -m
+bun i terser
+bunx terser editor.bundle.js -o editor.min.js -c -m
 ```
 
 This can reduce the bundle size by more than 50%.
@@ -152,7 +169,7 @@ async function loadPythonMode() {
 
 ## Advanced Configuration
 
-For more advanced configuration options, refer to the [Rollup documentation](https://rollupjs.org/). You can:
+For more advanced configuration options, refer to the [Vite documentation](https://rollupjs.org/). You can:
 
 - Split your bundle into chunks
 - Set up dynamic imports
@@ -165,4 +182,4 @@ For development, consider using tools like Snowpack or ES Module Serve that prov
 
 ## Conclusion
 
-Bundling CodeMirror with Rollup provides an efficient way to integrate this powerful editor into your web applications. By following the optimization strategies outlined above, you can ensure your editor loads quickly while still providing the features you need.
+Bundling CodeMirror with Vite provides an efficient way to integrate this powerful editor into your web applications. By following the optimization strategies outlined above, you can ensure your editor loads quickly while still providing the features you need.

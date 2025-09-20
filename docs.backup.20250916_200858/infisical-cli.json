@@ -1,0 +1,462 @@
+{
+  "infisical_cli": {
+    "version_requirements": {
+      "cloud_login": ">=0.4.0",
+      "manual_api_url": "<0.4.0"
+    },
+    "commands": {
+      "login": {
+        "syntax": "infisical login",
+        "description": "Authenticate with Infisical",
+        "variants": {
+          "containerized": "infisical login -i",
+          "environments": ["WSL2", "Codespaces"]
+        },
+        "authentication_methods": {
+          "user": {
+            "description": "Login using email and password",
+            "is_default": true,
+            "flags": {},
+            "output": "token_to_keyring"
+          },
+          "universal-auth": {
+            "description": "Login using universal auth client ID and client secret",
+            "syntax": "infisical login --method=universal-auth --client-id=<client-id> --client-secret=<client-secret>",
+            "flags": {
+              "client-id": {
+                "required": true,
+                "type": "string",
+                "env_var": "INFISICAL_UNIVERSAL_AUTH_CLIENT_ID",
+                "description": "Machine identity client ID"
+              },
+              "client-secret": {
+                "required": true,
+                "type": "string",
+                "env_var": "INFISICAL_UNIVERSAL_AUTH_CLIENT_SECRET",
+                "description": "Machine identity client secret"
+              }
+            },
+            "output": "access_token",
+            "example_token_export": "export INFISICAL_TOKEN=$(infisical login --method=universal-auth --client-id=<client-id> --client-secret=<client-secret> --silent --plain)"
+          },
+          "kubernetes": {
+            "description": "Login using Kubernetes native auth",
+            "syntax": "infisical login --method=kubernetes --machine-identity-id=<machine-identity-id>",
+            "flags": {
+              "machine-identity-id": {
+                "required": true,
+                "type": "string",
+                "env_var": "INFISICAL_MACHINE_IDENTITY_ID",
+                "description": "Machine identity ID"
+              },
+              "service-account-token-path": {
+                "required": false,
+                "type": "string",
+                "default": "/var/run/secrets/kubernetes.io/serviceaccount/token",
+                "env_var": "INFISICAL_KUBERNETES_SERVICE_ACCOUNT_TOKEN_PATH",
+                "description": "Path to Kubernetes service account token"
+              }
+            },
+            "output": "access_token"
+          },
+          "azure": {
+            "description": "Login using Azure native auth",
+            "flags": {
+              "machine-identity-id": {
+                "required": true,
+                "type": "string",
+                "env_var": "INFISICAL_MACHINE_IDENTITY_ID"
+              }
+            },
+            "output": "access_token"
+          },
+          "gcp-id-token": {
+            "description": "Login using GCP ID token native auth",
+            "flags": {
+              "machine-identity-id": {
+                "required": true,
+                "type": "string",
+                "env_var": "INFISICAL_MACHINE_IDENTITY_ID"
+              }
+            },
+            "output": "access_token"
+          },
+          "gcp-iam": {
+            "description": "Login using GCP IAM",
+            "flags": {
+              "machine-identity-id": {
+                "required": true,
+                "type": "string",
+                "env_var": "INFISICAL_MACHINE_IDENTITY_ID"
+              },
+              "service-account-key-file-path": {
+                "required": true,
+                "type": "string",
+                "env_var": "INFISICAL_GCP_IAM_SERVICE_ACCOUNT_KEY_FILE_PATH",
+                "description": "Path to GCP service account key file"
+              }
+            },
+            "output": "access_token"
+          },
+          "aws-iam": {
+            "description": "Login using AWS IAM native auth",
+            "flags": {
+              "machine-identity-id": {
+                "required": true,
+                "type": "string",
+                "env_var": "INFISICAL_MACHINE_IDENTITY_ID"
+              }
+            },
+            "output": "access_token"
+          },
+          "oidc-auth": {
+            "description": "Login using OIDC auth",
+            "syntax": "infisical login --method=oidc-auth --machine-identity-id=<machine-identity-id> --oidc-jwt=<oidc-jwt>",
+            "flags": {
+              "machine-identity-id": {
+                "required": true,
+                "type": "string",
+                "env_var": "INFISICAL_MACHINE_IDENTITY_ID",
+                "description": "Machine identity ID"
+              },
+              "oidc-jwt": {
+                "required": true,
+                "type": "string",
+                "env_var": "INFISICAL_OIDC_AUTH_JWT",
+                "description": "JWT provided by identity provider for OIDC authentication",
+                "alternative_flag_name": "jwt"
+              }
+            },
+            "output": "access_token"
+          },
+          "jwt-auth": {
+            "description": "Login using JWT auth",
+            "syntax": "infisical login --method=jwt-auth --jwt=<jwt> --machine-identity-id=<machine-identity-id>",
+            "flags": {
+              "machine-identity-id": {
+                "required": true,
+                "type": "string",
+                "env_var": "INFISICAL_MACHINE_IDENTITY_ID",
+                "description": "Machine identity ID"
+              },
+              "jwt": {
+                "required": true,
+                "type": "string",
+                "description": "JWT token for authentication"
+              }
+            },
+            "output": "access_token"
+          }
+        },
+        "global_flags": {
+          "method": {
+            "syntax": "--method=<auth-method>",
+            "default": "user",
+            "valid_values": ["user", "universal-auth", "kubernetes", "azure", "gcp-id-token", "gcp-iam", "aws-iam", "oidc-auth", "jwt-auth"],
+            "description": "Authentication method to use"
+          },
+          "silent": {
+            "syntax": "--silent",
+            "description": "Suppress all output except token",
+            "use_with": ["plain"]
+          },
+          "plain": {
+            "syntax": "--plain",
+            "description": "Output token in plain text only",
+            "use_with": ["silent"],
+            "use_case": "machine_identity_token_export"
+          }
+        }
+      },
+      "init": {
+        "syntax": "infisical init",
+        "creates": ".infisical.json",
+        "git_safe": true,
+        "description": "Initialize Infisical for project"
+      },
+      "run": {
+        "syntax": "infisical run --env={ENV} --path={PATH} -- {COMMAND}",
+        "parameters": {
+          "env": ["dev", "staging", "prod"],
+          "path": "/apps/{app_name}",
+          "command": "application start command"
+        },
+        "examples": [
+          {
+            "stack": "node_nodemon",
+            "cmd": "infisical run --env=staging --path=/apps/spotify -- nodemon index.js"
+          },
+          {
+            "stack": "flask",
+            "cmd": "infisical run --env=prod --path=/apps/backend -- flask run"
+          },
+          {
+            "stack": "spring_boot_maven",
+            "cmd": "infisical run --env=dev --path=/apps/ -- ./mvnw spring-boot:run --quiet"
+          }
+        ],
+        "flags": {
+          "token": {
+            "syntax": "--token=<access-token>",
+            "description": "Pass token directly instead of using INFISICAL_TOKEN env var"
+          }
+        }
+      },
+      "export": {
+        "syntax": "infisical export",
+        "description": "Export secrets to various formats",
+        "auth": "service_token or machine_identity",
+        "flags": {
+          "token": {
+            "syntax": "--token=<access-token>",
+            "description": "Access token for authentication"
+          },
+          "projectId": {
+            "syntax": "--projectId=<project-id>",
+            "required_when": "using machine identity",
+            "description": "Project ID to export secrets from"
+          },
+          "env": {
+            "syntax": "--env=<environment>",
+            "default": "dev",
+            "description": "Environment to export from"
+          },
+          "path": {
+            "syntax": "--path=<path>",
+            "default": "/",
+            "description": "Project folder path"
+          }
+        },
+        "examples": [
+          "infisical export --token=<service-token>",
+          "infisical export --projectId=<project-id> --env=prod"
+        ]
+      },
+      "secrets": {
+        "syntax": "infisical secrets --projectId={PROJECT_ID} --env={ENV}",
+        "flags": {
+          "projectId": {
+            "required": true,
+            "type": "string",
+            "description": "Project ID to fetch secrets from"
+          },
+          "env": {
+            "required": false,
+            "type": "string",
+            "default": "dev",
+            "description": "Environment to fetch secrets from"
+          },
+          "recursive": {
+            "required": false,
+            "type": "boolean",
+            "description": "Fetch all secrets including subfolders"
+          },
+          "token": {
+            "required": false,
+            "type": "string",
+            "description": "Access token for authentication"
+          }
+        },
+        "examples": [
+          "infisical secrets --projectId=<project-id> --env=dev --recursive",
+          "infisical secrets --token=<service-token>"
+        ]
+      },
+      "user": {
+        "description": "Switch between multiple authenticated users"
+      },
+      "vaults": {
+        "description": "Change where login credentials are stored"
+      }
+    },
+    "environment_variables": {
+      "INFISICAL_API_URL": {
+        "purpose": "Set backend host for self-hosted instances",
+        "default": "https://cloud.infisical.com/api",
+        "eu_cloud": "https://eu.infisical.com",
+        "versions": {
+          "required_before": "0.4.0",
+          "optional_after": "0.4.0"
+        },
+        "set": "export INFISICAL_API_URL=\"https://your-instance.com/api\"",
+        "unset": "unset INFISICAL_API_URL"
+      },
+      "INFISICAL_CUSTOM_HEADERS": {
+        "purpose": "Custom HTTP headers for auth services",
+        "syntax": "headername1=headervalue1 headername2=headervalue2",
+        "example": "Access-Client-Id=your-client-id Access-Client-Secret=your-client-secret",
+        "use_case": "Cloudflare Access"
+      },
+      "INFISICAL_TOKEN": {
+        "purpose": "Service token authentication",
+        "syntax": "export INFISICAL_TOKEN={SERVICE_TOKEN}",
+        "scope": "non-local development",
+        "auto_detected": true,
+        "description": "CLI automatically checks for this env var for authentication"
+      },
+      "INFISICAL_UNIVERSAL_AUTH_CLIENT_ID": {
+        "purpose": "Universal auth client ID",
+        "substitutes": "--client-id flag"
+      },
+      "INFISICAL_UNIVERSAL_AUTH_CLIENT_SECRET": {
+        "purpose": "Universal auth client secret",
+        "substitutes": "--client-secret flag"
+      },
+      "INFISICAL_MACHINE_IDENTITY_ID": {
+        "purpose": "Machine identity ID",
+        "substitutes": "--machine-identity-id flag",
+        "used_by": ["kubernetes", "azure", "gcp-id-token", "gcp-iam", "aws-iam", "oidc-auth", "jwt-auth"]
+      },
+      "INFISICAL_KUBERNETES_SERVICE_ACCOUNT_TOKEN_PATH": {
+        "purpose": "Kubernetes service account token path",
+        "substitutes": "--service-account-token-path flag",
+        "default": "/var/run/secrets/kubernetes.io/serviceaccount/token"
+      },
+      "INFISICAL_GCP_IAM_SERVICE_ACCOUNT_KEY_FILE_PATH": {
+        "purpose": "GCP service account key file path",
+        "substitutes": "--service-account-key-file-path flag"
+      },
+      "INFISICAL_OIDC_AUTH_JWT": {
+        "purpose": "OIDC JWT token",
+        "substitutes": "--oidc-jwt flag"
+      },
+      "HISTIGNORE": {
+        "purpose": "Security - ignore sensitive commands in terminal history",
+        "recommended": "*infisical secrets set*:$DEFAULT_HISTIGNORE",
+        "config_file": "$HOME/.profile"
+      }
+    },
+    "authentication": {
+      "methods": {
+        "interactive": {
+          "command": "infisical login",
+          "use_case": "local_development",
+          "storage": "system_keyring"
+        },
+        "service_token": {
+          "via_flag": "--token={SERVICE_TOKEN}",
+          "via_env": "INFISICAL_TOKEN",
+          "use_case": ["ci_cd", "production", "staging"]
+        },
+        "machine_identity": {
+          "methods": ["universal-auth", "kubernetes", "azure", "gcp-id-token", "gcp-iam", "aws-iam", "oidc-auth", "jwt-auth"],
+          "output": "access_token_to_console",
+          "token_usage": {
+            "env_var": "export INFISICAL_TOKEN=$(infisical login ... --silent --plain)",
+            "flag": "infisical [command] --token=<access-token>"
+          }
+        }
+      },
+      "token_storage": {
+        "user_method": "system_keyring",
+        "machine_methods": "console_output",
+        "recommendation": "Use --silent --plain flags for clean token export"
+      }
+    },
+    "self_hosted": {
+      "connection_methods": [
+        {
+          "method": "cli_prompt",
+          "min_version": "0.4.0",
+          "command": "infisical login",
+          "interactive": true
+        },
+        {
+          "method": "env_variable",
+          "variable": "INFISICAL_API_URL",
+          "example": "export INFISICAL_API_URL=\"https://your-instance.com/api\""
+        },
+        {
+          "method": "command_flag",
+          "flag": "--domain",
+          "example": "infisical {command} --domain=\"https://your-instance.com/api\""
+        }
+      ]
+    },
+    "files": {
+      ".infisical.json": {
+        "created_by": "infisical init",
+        "contains_secrets": false,
+        "git_committable": true,
+        "purpose": "local project settings"
+      }
+    },
+    "security": {
+      "terminal_history": {
+        "unix_linux": {
+          "config": "$HOME/.profile",
+          "command": "export HISTIGNORE=\"*infisical secrets set*:$DEFAULT_HISTIGNORE\""
+        },
+        "windows": {
+          "method": "PowerShell configuration"
+        }
+      }
+    },
+    "workflows": {
+      "local_development": [
+        {
+          "step": 1,
+          "action": "login",
+          "command": "infisical login"
+        },
+        {
+          "step": 2,
+          "action": "initialize",
+          "command": "cd /path/to/project && infisical init",
+          "creates": ".infisical.json"
+        },
+        {
+          "step": 3,
+          "action": "inject_vars",
+          "command": "infisical run --env={ENV} --path={PATH} -- {APP_START_CMD}",
+          "options": {
+            "watch": "Auto-reload on secret changes",
+            "tags": "Filter by tags",
+            "expand": "Enable shell parameter expansion"
+          }
+        }
+      ],
+      "machine_identity_quickstart": [
+        {
+          "step": 1,
+          "action": "obtain_token",
+          "command": "export INFISICAL_TOKEN=$(infisical login --method=universal-auth --client-id=<client-id> --client-secret=<client-secret> --silent --plain)",
+          "note": "silent and plain flags ensure only token is printed"
+        },
+        {
+          "step": 2,
+          "action": "run_with_secrets",
+          "command": "infisical run --projectId=<project-id> --env=dev -- npm run dev",
+          "note": "CLI auto-detects INFISICAL_TOKEN env var"
+        }
+      ],
+      "production_deployment": [
+        {
+          "step": 1,
+          "action": "set_performance_flags",
+          "command": "export INFISICAL_DISABLE_UPDATE_CHECK=true",
+          "benefit": "Faster execution"
+        },
+        {
+          "step": 2,
+          "action": "authenticate",
+          "command": "export INFISICAL_TOKEN=<service-token-or-machine-identity-token>"
+        },
+        {
+          "step": 3,
+          "action": "run_application",
+          "command": "infisical run --projectId=<project-id> --env=prod --path=/apps/{app} -- {start_command}"
+        }
+      ]
+    },
+    "platforms": {
+      "cloud": {
+        "us": "https://cloud.infisical.com",
+        "eu": "https://eu.infisical.com"
+      },
+      "containerized": ["WSL2", "Codespaces", "Kubernetes"],
+      "supported_stacks": ["node", "flask", "spring_boot", "maven"],
+      "auth_providers": ["OIDC", "JWT", "AWS IAM", "GCP IAM", "Azure", "Kubernetes"]
+    }
+  }
+}

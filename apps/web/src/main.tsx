@@ -1,4 +1,5 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import JournalApp from './components/JournalApp';
@@ -44,6 +45,7 @@ function mountReactEditor() {
     <StrictMode>
       <QueryClientProvider client={queryClient}>
         <JournalApp />
+        <SpeedInsights />
       </QueryClientProvider>
     </StrictMode>,
   );

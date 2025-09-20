@@ -1,3 +1,23 @@
+---
+id: environment-variables
+title: ENVIRONMENT VARIABLES
+type: deployment
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags:
+- docker
+- deployment
+- react
+- typescript
+priority: critical
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 # ENVIRONMENT VARIABLES
 
 *Source: <https://bun.sh/docs/runtime/env>*
@@ -15,18 +35,18 @@ Bun reads the following files automatically (listed in order of increasing prece
 - `.env.production`, `.env.development`, `.env.test` (depending on value of `NODE_ENV`)
 - `.env.local`
 
-**Note:** When `NODE_ENV=test`, `.env.local` is **not** loaded. This ensures consistent test environments across different executions by preventing local overrides during testing. This behavior matches popular frameworks like [Next.js](https://nextjs.org/docs/pages/guides/environment-variables#test-environment-variables) and [Create React App](https://create-react-app.dev/docs/adding-custom-environment-variables/#what-other-env-files-can-be-used).
+**Note:** When `NODE_ENV=test`, `.env.local` is **not** loaded. This ensures consistent test environments across different executions by preventing local overrides during testing. This behavior matches popular frameworks like [Next.js](https://nextjs.org/docs/pages/guides/environment-variables#test-environment-variables) and [Create React App](https://Vite.dev/docs/adding-custom-environment-variables/#what-other-env-files-can-be-used).
 
 .env\`\`\`
-FOO=hello
-BAR=world
+example=hello
+sample=world
 
 ````
 
 Variables can also be set via the command line.
 
 Linux/macOSWindowsLinux/macOS```
-FOO=helloworld bun run dev
+example=helloworld bun run dev
 ````
 
 Windows\`\`\`
@@ -36,7 +56,7 @@ Windows\`\`\`
 ```
 ```
 
-set FOO=helloworld && bun run dev
+set example=helloworld && bun run dev
 
 ```
 ```
@@ -46,7 +66,7 @@ set FOO=helloworld && bun run dev
 ```
 ```
 
-$env:FOO="helloworld"; bun run dev
+$env:example="helloworld"; bun run dev
 
 ```
 
@@ -56,7 +76,7 @@ For a cross-platform solution, you can use [bun shell](https://bun.com/docs/runt
 
 ```
 
-bun exec 'FOO=helloworld bun run dev'
+bun exec 'example=helloworld bun run dev'
 
 ````
 
@@ -72,7 +92,7 @@ package.json```
 Or programmatically by assigning a property to `process.env`.
 
 ```
-process.env.FOO = "hello";
+process.env.example = "hello";
 
 ```
 
@@ -96,9 +116,9 @@ bun --env-file=.env.abc --env-file=.env.def run build
 Bun supports double quotes, single quotes, and template literal backticks:
 
 .env\`\`\`
-FOO='hello'
-FOO="hello"
-FOO=`hello`
+example='hello'
+example="hello"
+example=`hello`
 
 ````
 
@@ -107,13 +127,13 @@ FOO=`hello`
 Environment variables are automatically *expanded*. This means you can reference previously-defined variables in your environment variables.
 
 .env```
-FOO=world
-BAR=hello$FOO
+example=world
+sample=hello$example
 
 ````
 
 ```
-process.env.BAR; // => "helloworld"
+process.env.sample; // => "helloworld"
 
 ```
 
@@ -131,13 +151,13 @@ DB\_URL=postgres\://$DB\_USER:$DB\_PASSWORD@$DB\_HOST:$DB\_PORT/$DB\_NAME
 This can be disabled by escaping the `$` with a backslash.
 
 .env```
-FOO=world
-BAR=hello\$FOO
+example=world
+sample=hello\$example
 
 ````
 
 ```
-process.env.BAR; // => "hello$FOO"
+process.env.sample; // => "hello$example"
 
 ```
 
@@ -169,7 +189,7 @@ bun --print process.env
 ```
 
 ```
-BAZ=stuff
+demo=stuff
 FOOBAR=aaaaaa
 
 ```

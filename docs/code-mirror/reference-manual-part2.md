@@ -1,3 +1,21 @@
+---
+id: reference-manual-part2
+title: CodeMirror View Reference
+type: reference
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags:
+- typescript
+- react
+priority: medium
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 ***
 
 title: CodeMirror Reference Manual - Part 2 (View)

@@ -1,3 +1,20 @@
+---
+id: installation
+title: INSTALLATION
+type: reference
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags:
+- docker
+priority: medium
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 # INSTALLATION
 
 *Source: <https://bun.sh/docs/installation>*
@@ -29,7 +46,7 @@ curl -fsSL <https://bun.com/install> | bash -s "bun-v1.2.21"
 ````
 
 npm```
-npm install -g bun # the last `npm` command you'll ever need
+bun install -g bun # the last `npm` command you'll ever need
 ````
 
 Homebrew\`\`\`
@@ -55,7 +72,7 @@ powershell -c "irm bun.sh/install.ps1|iex"
 ````
 
 npm```
-npm install -g bun # the last `npm` command you'll ever need
+bun install -g bun # the last `npm` command you'll ever need
 ````
 
 Scoop\`\`\`
@@ -297,7 +314,7 @@ scoop uninstall bun
 ````
 
 npm```
-npm uninstall -g bun
+bun uninstall -g bun
 ````
 
 Homebrew\`\`\`

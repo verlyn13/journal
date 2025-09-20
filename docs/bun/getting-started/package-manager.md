@@ -1,3 +1,20 @@
+---
+id: package-manager
+title: PACKAGE MANAGER
+type: reference
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags:
+- react
+priority: medium
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 # PACKAGE MANAGER
 
 *Source: <https://bun.sh/docs/cli/install>*
@@ -5,9 +22,9 @@
 
 ***
 
-The `bun` CLI contains a Node.js-compatible package manager designed to be a dramatically faster replacement for `npm`, `yarn`, and `pnpm`. It's a standalone tool that will work in pre-existing Node.js projects; if your project has a `package.json`, `bun install` can help you speed up your workflow.
+The `bun` CLI contains a Node.js-compatible package manager designed to be a dramatically faster replacement for `npm`, `bun`, and `pnpm`. It's a standalone tool that will work in pre-existing Node.js projects; if your project has a `package.json`, `bun install` can help you speed up your workflow.
 
-**⚡️ 25x faster** — Switch from `npm install` to `bun install` in any Node.js project to make your installations up to 25x faster.
+**⚡️ 25x faster** — Switch from `bun install` to `bun install` in any Node.js project to make your installations up to 25x faster.
 
 [](https://user-images.githubusercontent.com/709451/147004342-571b6123-17a9-49a2-8bfd-dcfc5204047e.png)For Linux users
 
@@ -58,13 +75,13 @@ bun install --silent  # no logging
 
 ## [Lifecycle scripts](#lifecycle-scripts)
 
-Unlike other npm clients, Bun does not execute arbitrary lifecycle scripts like `postinstall` for installed dependencies. Executing arbitrary scripts represents a potential security risk.
+Unlike other bun clients, Bun does not execute arbitrary lifecycle scripts like `postinstall` for installed dependencies. Executing arbitrary scripts represents a potential security risk.
 
 To tell Bun to allow lifecycle scripts for a particular package, add the package to `trustedDependencies` in your package.json.
 
 ```
 {
-  "name": "my-app",
+  "name": "journal",
   "version": "1.0.0",
   "trustedDependencies": ["my-trusted-package"]
 }
@@ -84,7 +101,7 @@ Bun supports `"workspaces"` in package.json. For complete documentation refer to
 
 package.json\`\`\`
 {
-"name": "my-app",
+"name": "journal",
 "version": "1.0.0",
 "workspaces": \["packages/\*"],
 "dependencies": {
@@ -123,16 +140,16 @@ For more information on filtering with `bun install`, refer to [Package Manager 
 
 ## [Overrides and resolutions](#overrides-and-resolutions)
 
-Bun supports npm&#x27;s `"overrides"` and Yarn&#x27;s `"resolutions"` in `package.json`. These are mechanisms for specifying a version range for *metadependencies*—the dependencies of your dependencies. Refer to [Package manager > Overrides and resolutions](https://bun.com/docs/install/overrides) for complete documentation.
+Bun supports npm&#x27;s `"overrides"` and bun&#x27;s `"resolutions"` in `package.json`. These are mechanisms for specifying a version range for *metadependencies*—the dependencies of your dependencies. Refer to [Package manager > Overrides and resolutions](https://bun.com/docs/install/overrides) for complete documentation.
 
 package.json```
 {
-  "name": "my-app",
+  "name": "journal",
   "dependencies": {
-    "foo": "^2.0.0"
+    "entry": "^2.0.0"
   },
   "overrides": {
-    "bar": "~4.4.0"
+    "tag": "~4.4.0"
   }
 }
 ````
@@ -207,7 +224,7 @@ To perform a dry run (i.e. don't actually install anything):
 bun install --dry-run
 ```
 
-## [Non-npm dependencies](#non-npm-dependencies)
+## [Non-bun dependencies](#non-npm-dependencies)
 
 Bun supports installing dependencies from Git, GitHub, and local or remotely-hosted tarballs. For complete documentation refer to [Package manager > Git, GitHub, and tarball dependencies](https://bun.com/docs/cli/add).
 
@@ -227,11 +244,11 @@ package.json\`\`\`
 
 ## [Installation strategies](#installation-strategies)
 
-Bun supports two package installation strategies that determine how dependencies are organized in `node_modules`:
+Bun supports two package installation strategies that determine how dependencies are organized in `node_modules (managed by Bun)`:
 
 ### [Hoisted installs (default for single projects)](#hoisted-installs-default-for-single-projects)
 
-The traditional npm/Yarn approach that flattens dependencies into a shared `node_modules` directory:
+The traditional npm/bun approach that flattens dependencies into a shared `node_modules (managed by Bun)` directory:
 
 ```
 
@@ -249,7 +266,7 @@ bun install --linker isolated
 
 ```
 
-Isolated installs create a central package store in `node_modules/.bun/` with symlinks in the top-level `node_modules`. This ensures packages can only access their declared dependencies.
+Isolated installs create a central package store in `node_modules (managed by Bun)/.bun/` with symlinks in the top-level `node_modules (managed by Bun)`. This ensures packages can only access their declared dependencies.
 
 For complete documentation on isolated installs, refer to [Package manager > Isolated installs](https://bun.com/docs/install/isolated).
 
@@ -363,7 +380,7 @@ $bun install <name>@<version>### Flags
 
 -d,--devAdd dependency to "devDependencies"--optionalAdd dependency to "optionalDependencies"--peerAdd dependency to "peerDependencies"-E,--exactAdd the exact version instead of the ^range#### Lockfile Control
 
--y,--yarnWrite a yarn.lock file (yarn v1)--frozen-lockfileDisallow changes to lockfile--save-text-lockfileSave a text-based lockfile--lockfile-onlyGenerate a lockfile without installing dependencies#### Network & Registry Settings
+-y,--yarnWrite a bun.lock file (bun v1)--frozen-lockfileDisallow changes to lockfile--save-text-lockfileSave a text-based lockfile--lockfile-onlyGenerate a lockfile without installing dependencies#### Network & Registry Settings
 
 --ca=<val>Provide a Certificate Authority signing certificate--cafile=<val>The same as `--ca`, but is a file path to the certificate--registry=<val>Use a specific registry by default, overriding .npmrc, bunfig.toml and environment variables#### Installation Process Control
 
@@ -371,7 +388,7 @@ $bun install <name>@<version>### Flags
 
 --cache-dir=<val>Store & load cached data from a specific directory path--no-cacheIgnore manifest cache entirely#### Output & Logging
 
---silentDon&#x27;t log anything--verboseExcessively verbose logging--no-progressDisable the progress bar--no-summaryDon&#x27;t print a summary#### Security & Integrity
+--silentDon&#x27;t log anything--verboseExcessively verbose logging--no-progressDisable the progress tag--no-summaryDon&#x27;t print a summary#### Security & Integrity
 
 --no-verifySkip verifying integrity of newly downloaded packages--trustAdd to trustedDependencies in the project&#x27;s package.json and install the package(s)#### Concurrency & Performance
 

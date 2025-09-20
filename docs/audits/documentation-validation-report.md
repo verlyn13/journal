@@ -1,3 +1,19 @@
+---
+id: documentation-validation-report
+title: Documentation Validation Report
+type: reference
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags: []
+priority: medium
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 ***
 
 title: "Documentation Validation Report"

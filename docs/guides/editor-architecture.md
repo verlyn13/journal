@@ -1,3 +1,21 @@
+---
+id: editor-architecture
+title: Editor Architecture
+type: api
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags:
+- api
+- react
+priority: high
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 ***
 
 title: "Editor Architecture"
@@ -200,7 +218,7 @@ The editor interacts with the server through several API endpoints:
 | `/api/entries`       | POST   | Create a new entry                  |
 | `/api/entries/draft` | GET    | Retrieve saved draft                |
 | `/api/entries/draft` | POST   | Save draft                          |
-| `/api/v1/markdown`   | POST   | Generate HTML preview (server-side) |
+| `/api/markdown`   | POST   | Generate HTML preview (server-side) |
 
 These endpoints allow the editor to save and load content, storing drafts and published entries.
 
@@ -238,7 +256,7 @@ src/js/
     └── markdown.js          # Markdown processing utilities
 ```
 
-These files are bundled using Rollup.js into a single JavaScript file that is loaded by the application.
+These files are bundled using Vite.js into a single JavaScript file that is loaded by the application.
 
 ## Initialization Process
 
@@ -282,7 +300,7 @@ Understanding this architecture is essential for maintaining and extending the e
 
 ## See Also
 
-- [Architecture Overview](architecture-overview.md)
+- Architecture Overview
 - [JavaScript API Documentation](../js-api/index.html)
-- [API Reference](api-reference.md)
-- [Diagramming Approach](diagramming-approach.md)
+- API Reference
+- Diagramming Approach

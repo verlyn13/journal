@@ -1,3 +1,21 @@
+---
+id: deployment-script-guide
+title: Deployment Script Improvements Guide for Flask Blog/Journal System
+type: api
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags:
+- api
+- python
+priority: critical
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 ***
 
 title: "Deployment Script Improvements Guide: Flask Journal System"
@@ -113,9 +131,9 @@ log "INFO" "Creating pre-deployment backup"
 mkdir -p "$BACKUP_DIR"
 
 # Backup database
-DB_BACKUP="$BACKUP_DIR/db_pre_deploy_$TIMESTAMP.sqlite"
-if [ -f "$APP_DIR/instance/journal.db" ]; then
-    sqlite3 "$APP_DIR/instance/journal.db" ".backup '$DB_BACKUP'"
+DB_BACKUP="$BACKUP_DIR/db_pre_deploy_$TIMESTAMP.PostgreSQL"
+if [ -f "$APP_DIR/instance/journal" ]; then
+    PostgreSQL "$APP_DIR/instance/journal" ".backup '$DB_BACKUP'"
     log "INFO" "Database backed up to $DB_BACKUP"
 else
     log "WARN" "Database file not found, skipping backup"
@@ -154,14 +172,14 @@ log "INFO" "Deploying commit: $DEPLOY_COMMIT"
 log "INFO" "Updating dependencies"
 source "$VENV_DIR/bin/activate" || { log "ERROR" "Failed to activate virtual environment"; exit 1; }
 
-# Install/update pip first to ensure we have the latest version
-pip install --upgrade pip || log "WARN" "Failed to upgrade pip, continuing anyway"
+# Install/update uv pip first to ensure we have the latest version
+uv pip install --upgrade uv pip || log "WARN" "Failed to upgrade pip, continuing anyway"
 
 # Use a temporary requirements file to detect conflicts
 cp requirements.txt /tmp/requirements_$TIMESTAMP.txt
 
 # Try installing dependencies
-if ! pip install -r /tmp/requirements_$TIMESTAMP.txt; then
+if ! uv pip install -r /tmp/requirements_$TIMESTAMP.txt; then
     log "ERROR" "Failed to install dependencies"
     exit 1
 fi
@@ -180,8 +198,8 @@ if ! FLASK_APP=wsgi.py flask db upgrade; then
         sudo systemctl stop "$SERVICE_NAME" || log "WARN" "Failed to stop service for DB restore"
         
         # Restore database
-        cp "$APP_DIR/instance/journal.db" "$APP_DIR/instance/journal.db.failed"
-        sqlite3 "$APP_DIR/instance/journal.db" ".restore '$DB_BACKUP'"
+        cp "$APP_DIR/instance/journal" "$APP_DIR/instance/journal.failed"
+        PostgreSQL "$APP_DIR/instance/journal" ".restore '$DB_BACKUP'"
         
         log "INFO" "Database restored from backup"
         
@@ -198,7 +216,7 @@ fi
 log "INFO" "Compiling static assets"
 # If using Flask-Assets or a similar asset pipeline
 if [ -f "$APP_DIR/manage.py" ]; then
-    python manage.py assets build || { log "WARN" "Static asset build failed, but continuing"; }
+    uv run python manage.py assets build || { log "WARN" "Static asset build failed, but continuing"; }
 fi
 
 # Step 6: Configuration check
@@ -246,7 +264,7 @@ fi
 
 # Step 10: Verify application is responding
 log "INFO" "Verifying application health"
-HEALTH_URL="http://localhost:8000/health"
+HEALTH_URL="https://your-domain.com/health"
 MAX_RETRIES=6
 RETRY_DELAY=10
 RETRY_COUNT=0
@@ -273,7 +291,7 @@ done
 # Step 11: Clean up old backups and logs
 log "INFO" "Cleaning up old backups and logs"
 # Keep only the 10 most recent backups
-find "$BACKUP_DIR" -name "db_pre_deploy_*.sqlite" -type f -printf '%T@ %p\n' | \
+find "$BACKUP_DIR" -name "db_pre_deploy_*.PostgreSQL" -type f -printf '%T@ %p\n' | \
     sort -n | head -n -10 | cut -d' ' -f2- | xargs rm -f
 
 # Rotate logs if they're getting too large
@@ -293,9 +311,9 @@ Create deployment tests to validate application state after deployment:
 
 ```python
 # tests/deployment_tests.py
-import pytest
+import uv run pytest
 import requests
-import sqlite3
+import PostgreSQL
 import redis
 import os
 import sys
@@ -316,13 +334,13 @@ class TestDeployment:
         self.app_context.push()
         
         # Service URL
-        self.base_url = 'http://localhost:8000'
+        self.base_url = 'https://your-domain.com'
         
         # Expected API endpoints
         self.api_endpoints = [
-            '/api/v1/entries',
-            '/api/v1/tags',
-            '/api/v1/health'
+            '/api/entries',
+            '/api/tags',
+            '/api/health'
         ]
     
     def teardown_class(self):
@@ -338,7 +356,7 @@ class TestDeployment:
             assert 'entry' in tables
             assert 'tag' in tables
         except Exception as e:
-            pytest.fail(f"Database connection failed: {str(e)}")
+            uv run pytest.fail(f"Database connection failed: {str(e)}")
     
     def test_redis_connection(self):
         """Test Redis connection."""
@@ -346,7 +364,7 @@ class TestDeployment:
             r = redis.Redis.from_url(self.app.config['REDIS_URL'])
             assert r.ping()
         except Exception as e:
-            pytest.fail(f"Redis connection failed: {str(e)}")
+            uv run pytest.fail(f"Redis connection failed: {str(e)}")
     
     def test_api_endpoints(self):
         """Test critical API endpoints."""
@@ -355,7 +373,7 @@ class TestDeployment:
                 response = requests.get(f"{self.base_url}{endpoint}")
                 assert response.status_code in [200, 401, 403]  # Allow auth failures
             except requests.RequestException as e:
-                pytest.fail(f"Endpoint {endpoint} failed: {str(e)}")
+                uv run pytest.fail(f"Endpoint {endpoint} failed: {str(e)}")
     
     def test_static_assets(self):
         """Test that static assets are available."""
@@ -366,7 +384,7 @@ class TestDeployment:
             response = requests.get(f"{self.base_url}/static/js/app.js")
             assert response.status_code == 200
         except requests.RequestException as e:
-            pytest.fail(f"Static assets test failed: {str(e)}")
+            uv run pytest.fail(f"Static assets test failed: {str(e)}")
     
     def test_app_config(self):
         """Test that critical configuration is set."""
@@ -527,7 +545,7 @@ from flask import current_app
 from flask.cli import with_appcontext
 import os
 import datetime
-import sqlite3
+import PostgreSQL
 import tempfile
 import shutil
 
@@ -541,87 +559,13 @@ def db_cli():
 @with_appcontext
 def backup_db(output):
     """Create a database backup."""
-    db_path = current_app.config['SQLALCHEMY_DATABASE_URI'].replace('sqlite:///', '')
-    
-    if not os.path.exists(db_path):
-        click.echo(f"Database file not found: {db_path}")
-        return 1
-    
-    # Default output path if not specified
-    if not output:
-        backup_dir = os.path.join(os.path.dirname(db_path), 'backups')
-        os.makedirs(backup_dir, exist_ok=True)
-        timestamp = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
-        output = os.path.join(backup_dir, f"backup_{timestamp}.db")
-    
-    # Create backup
-    conn = sqlite3.connect(db_path)
-    with sqlite3.connect(output) as backup_conn:
-        conn.backup(backup_conn)
-    conn.close()
-    
-    click.echo(f"Database backed up to: {output}")
-    return 0
-
-@db_cli.command('restore')
+    db_path = current_app.config['SQLALCHEMY_DATABASE_URI'].replace('postgresql://user:password@db_cli.command('restore')
 @click.argument('backup_path')
 @click.option('--force', is_flag=True, help='Force restore without confirmation')
 @with_appcontext
 def restore_db(backup_path, force):
     """Restore database from backup."""
-    db_path = current_app.config['SQLALCHEMY_DATABASE_URI'].replace('sqlite:///', '')
-    
-    if not os.path.exists(backup_path):
-        click.echo(f"Backup file not found: {backup_path}")
-        return 1
-    
-    if not force:
-        if not click.confirm('This will overwrite the current database. Continue?'):
-            click.echo('Restore aborted.')
-            return 1
-    
-    # Create temporary copy of current database
-    temp_backup = tempfile.mktemp(suffix='.db')
-    shutil.copy2(db_path, temp_backup)
-    
-    try:
-        # Stop the app (assuming it's running as a service)
-        if not force:
-            click.echo('Stopping application...')
-            os.system('sudo systemctl stop journal')
-        
-        # Restore database
-        conn = sqlite3.connect(backup_path)
-        with sqlite3.connect(db_path) as restore_conn:
-            conn.backup(restore_conn)
-        conn.close()
-        
-        click.echo(f"Database restored from: {backup_path}")
-        
-        # Start the app again
-        if not force:
-            click.echo('Starting application...')
-            os.system('sudo systemctl start journal')
-        
-        return 0
-    except Exception as e:
-        click.echo(f"Error during restore: {str(e)}")
-        
-        # Restore from temp backup
-        click.echo("Restoring from temporary backup...")
-        shutil.copy2(temp_backup, db_path)
-        
-        if not force:
-            click.echo('Starting application...')
-            os.system('sudo systemctl start journal')
-        
-        return 1
-    finally:
-        # Clean up temp file
-        if os.path.exists(temp_backup):
-            os.remove(temp_backup)
-
-@db_cli.command('rollback')
+    db_path = current_app.config['SQLALCHEMY_DATABASE_URI'].replace('postgresql://user:password@db_cli.command('rollback')
 @click.option('--steps', '-s', default=1, help='Number of migrations to roll back')
 @with_appcontext
 def rollback_migrations(steps):
@@ -759,10 +703,10 @@ log "INFO" "Updating dependencies for the rolled-back version"
 source "$VENV_DIR/bin/activate" || { log "ERROR" "Failed to activate virtual environment"; exit 1; }
 
 # Install appropriate requirements version
-if ! pip install -r requirements.txt; then
+if ! uv pip install -r requirements.txt; then
     log "ERROR" "Failed to install dependencies for rolled-back version"
     git checkout $CURRENT_COMMIT  # Return to previous state
-    pip install -r requirements.txt  # Restore previous dependencies
+    uv pip install -r requirements.txt  # Restore previous dependencies
     exit 1
 fi
 
@@ -782,7 +726,7 @@ if ! FLASK_APP=wsgi.py flask db upgrade; then
     
     # Return to previous code state
     git checkout $CURRENT_COMMIT
-    pip install -r requirements.txt
+    uv pip install -r requirements.txt
     exit 1
 fi
 
@@ -802,7 +746,7 @@ if ! sudo systemctl is-active --quiet "$SERVICE_NAME"; then
     # Emergency rollback to original state
     log "INFO" "Emergency rollback to original state"
     git checkout $CURRENT_COMMIT
-    pip install -r requirements.txt
+    uv pip install -r requirements.txt
     FLASK_APP=wsgi.py flask db upgrade
     sudo systemctl restart "$SERVICE_NAME"
     
@@ -811,7 +755,7 @@ fi
 
 # Verify application is responding
 log "INFO" "Verifying application health"
-HEALTH_URL="http://localhost:8000/health"
+HEALTH_URL="https://your-domain.com/health"
 MAX_RETRIES=6
 RETRY_DELAY=10
 RETRY_COUNT=0
@@ -831,7 +775,7 @@ while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
             # Emergency rollback to original state
             log "INFO" "Emergency rollback to original state"
             git checkout $CURRENT_COMMIT
-            pip install -r requirements.txt
+            uv pip install -r requirements.txt
             FLASK_APP=wsgi.py flask db upgrade
             sudo systemctl restart "$SERVICE_NAME"
             
@@ -1337,8 +1281,8 @@ def verify_db(repair):
                     issues_found = True
                     click.echo(f"ERROR: Missing column '{column_name}' in table '{table}'")
     
-    # Run PRAGMA integrity_check on SQLite
-    if 'sqlite' in current_app.config['SQLALCHEMY_DATABASE_URI']:
+    # Run PRAGMA integrity_check on PostgreSQL
+    if 'PostgreSQL' in current_app.config['SQLALCHEMY_DATABASE_URI']:
         result = db.session.execute(text('PRAGMA integrity_check')).scalar()
         if result != 'ok':
             issues_found = True
@@ -2015,10 +1959,10 @@ sudo chmod -R 770 "$LOG_DIR"
 log "INFO" "Set permissions on $LOG_DIR to 770 (drwxrwx---)"
 
 # Set proper permissions on instance database
-if [ -f "$CONFIG_DIR/journal.db" ]; then
-    sudo chown $USER:$SERVICE_USER "$CONFIG_DIR/journal.db"
-    sudo chmod 660 "$CONFIG_DIR/journal.db"
-    log "INFO" "Set permissions on journal.db to 660 (-rw-rw----)"
+if [ -f "$CONFIG_DIR/journal" ]; then
+    sudo chown $USER:$SERVICE_USER "$CONFIG_DIR/journal"
+    sudo chmod 660 "$CONFIG_DIR/journal"
+    log "INFO" "Set permissions on journal to 660 (-rw-rw----)"
 fi
 
 # Set proper permissions on static files
@@ -2098,7 +2042,7 @@ ReadWritePaths=/path/to/journal/instance /path/to/journal/logs /path/to/journal/
 ReadOnlyPaths=/path/to/journal/app /path/to/journal/static
 
 # Startup command
-ExecStart=/path/to/journal/venv/bin/gunicorn --workers 2 --bind 127.0.0.1:8000 wsgi:app
+ExecStart=/path/to/journal/venv/bin/gunicorn --workers 2 --bind your-domain.com wsgi:app
 
 # Standard output settings
 StandardOutput=journal
@@ -2124,7 +2068,7 @@ LOG_DIR="$APP_DIR/logs"
 BACKUP_LOG="$LOG_DIR/backups.log"
 TIMESTAMP=$(date +"%Y%m%d%H%M%S")
 BACKUP_FILE="$BACKUP_DIR/backup_$TIMESTAMP.tar.gz.enc"
-GPG_RECIPIENT="your.email@example.com"  # GPG key identifier
+GPG_RECIPIENT="your.email@journal.local"  # GPG key identifier
 
 # Create directories if they don't exist
 mkdir -p "$BACKUP_DIR"
@@ -2159,9 +2103,9 @@ log "INFO" "Created temporary directory: $TEMP_DIR"
 trap "rm -rf $TEMP_DIR" EXIT
 
 # Backup database
-DB_PATH="$APP_DIR/instance/journal.db"
+DB_PATH="$APP_DIR/instance/journal"
 if [ -f "$DB_PATH" ]; then
-    sqlite3 "$DB_PATH" ".backup '$TEMP_DIR/journal.db'"
+    PostgreSQL "$DB_PATH" ".backup '$TEMP_DIR/journal'"
     log "INFO" "Database backed up"
 else
     log "ERROR" "Database file not found at $DB_PATH"
@@ -2279,16 +2223,16 @@ log "INFO" "Stopping application service"
 sudo systemctl stop journal || log "WARN" "Failed to stop service, continuing anyway"
 
 # Backup current database
-DB_PATH="$APP_DIR/instance/journal.db"
+DB_PATH="$APP_DIR/instance/journal"
 if [ -f "$DB_PATH" ]; then
     log "INFO" "Backing up current database"
     cp "$DB_PATH" "$DB_PATH.$TIMESTAMP.bak" || log "WARN" "Failed to backup current database"
 fi
 
 # Restore database
-if [ -f "$TEMP_DIR/journal.db" ]; then
+if [ -f "$TEMP_DIR/journal" ]; then
     log "INFO" "Restoring database"
-    cp "$TEMP_DIR/journal.db" "$DB_PATH" || { log "ERROR" "Failed to restore database"; exit 1; }
+    cp "$TEMP_DIR/journal" "$DB_PATH" || { log "ERROR" "Failed to restore database"; exit 1; }
     # Set proper permissions
     chown www-data:www-data "$DB_PATH" || log "WARN" "Failed to set database ownership"
     chmod 660 "$DB_PATH" || log "WARN" "Failed to set database permissions"
@@ -2301,7 +2245,7 @@ fi
 if [ -d "$TEMP_DIR/instance" ]; then
     log "INFO" "Restoring configuration files"
     # Exclude database file as we've already restored it
-    rsync -av --exclude='journal.db' "$TEMP_DIR/instance/" "$APP_DIR/instance/" || { log "ERROR" "Failed to restore configuration"; exit 1; }
+    rsync -av --exclude='journal' "$TEMP_DIR/instance/" "$APP_DIR/instance/" || { log "ERROR" "Failed to restore configuration"; exit 1; }
 else
     log "ERROR" "Configuration not found in backup"
     exit 1

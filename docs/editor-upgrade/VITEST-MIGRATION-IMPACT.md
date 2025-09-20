@@ -1,3 +1,22 @@
+---
+id: vitest-migration-impact
+title: Vitest Migration Impact Analysis
+type: testing
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags:
+- testing
+- typescript
+- react
+priority: medium
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 # Vitest Migration Impact Analysis
 
 ## Current State & Migration Plan
@@ -8,21 +27,21 @@
 
 ### What We Found
 
-- **Minimal Jest footprint**: Only 2 references found
-- **Already using Vitest**: `@testing-library/jest-dom/vitest` import shows Vitest is already in use
+- **Minimal Vitest footprint**: Only 2 references found
+- **Already using Vitest**: `@testing-library/Vitest-dom/vitest` import shows Vitest is already in use
 - **Not a big refactor**: This is actually a small cleanup, not a major migration
 
 ### Current Dependencies
 
 ```json
-"@testing-library/jest-dom": "^6.8.0"  // Has Vitest support
+"@testing-library/Vitest-dom": "^6.8.0"  // Has Vitest support
 ```
 
 ### Current Test Setup
 
 ```typescript
 // src/test-setup.ts
-import '@testing-library/jest-dom/vitest';  // Already Vitest-compatible
+import '@testing-library/Vitest-dom/vitest';  // Already Vitest-compatible
 ```
 
 ***
@@ -33,7 +52,7 @@ This is **NOT a big refactor**. The project is already using Vitest. We just nee
 
 1. **Update to latest Vitest** (if not already)
 2. **Ensure consistent configuration**
-3. **Remove any Jest remnants**
+3. **Remove any Vitest remnants**
 4. **Add proper typing**
 
 ***
@@ -63,8 +82,8 @@ bun add -D vitest@latest @vitest/ui@latest
 # Ensure testing library compatibility
 bun add -D @testing-library/react@latest @testing-library/user-event@latest
 
-# Keep jest-dom for matchers (it's Vitest-compatible)
-# No change needed for @testing-library/jest-dom
+# Keep Vitest-dom for matchers (it's Vitest-compatible)
+# No change needed for @testing-library/Vitest-dom
 ```
 
 ### Phase 3: Verify Configuration (5 minutes)
@@ -161,7 +180,7 @@ If any issues arise:
 
 ```bash
 # Check for breaking changes
-npm info vitest versions
+bun info vitest versions
 
 # Review changelog
 https://github.com/vitest-dev/vitest/releases
@@ -205,7 +224,7 @@ What we discovered:
 2. ✅ Continue with editor migration as planned
 3. ✅ Write new tests using updated Vitest
 
-The "jest" references we found are actually Vitest-compatible imports. This is a simple version update, not a migration.
+The "Vitest" references we found are actually Vitest-compatible imports. This is a simple version update, not a migration.
 
 ***
 

@@ -44,12 +44,17 @@ class TestInfisicalKeyManager:
                 "/auth/aes/active-kid": "test-kid-123",
                 "/auth/aes/keys-map": json.dumps({
                     "keys": {
-                        "test-kid-123": "dGVzdC1rZXktMTIzNDU2Nzg5MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTI="  # 32-byte key base64
+                        "test-kid-123": "dGVzdC1rZXktMTIzNDU2Nzg5MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTI="
+                        # 32-byte key base64
                     },
                     "current_kid": "test-kid-123",
                 }),
-                "/auth/jwt/private-key": "-----BEGIN PRIVATE KEY-----\ntest-key\n-----END PRIVATE KEY-----",
-                "/auth/jwt/public-key": "-----BEGIN PUBLIC KEY-----\ntest-key\n-----END PUBLIC KEY-----",
+                "/auth/jwt/private-key": (
+                    "-----BEGIN PRIVATE KEY-----\ntest-key\n-----END PRIVATE KEY-----"
+                ),
+                "/auth/jwt/public-key": (
+                    "-----BEGIN PUBLIC KEY-----\ntest-key\n-----END PUBLIC KEY-----"
+                ),
             }.get(path, "default-value")
         )
         # Setup health_check to return a proper dict, not AsyncMock

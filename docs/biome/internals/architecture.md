@@ -1,3 +1,20 @@
+---
+id: architecture
+title: ARCHITECTURE
+type: architecture
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags:
+- typescript
+priority: high
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 # ARCHITECTURE
 
 *Source: <https://biomejs.dev/internals/architecture>*
@@ -31,23 +48,23 @@ To index all JavaScript/TypeScript files in a project if any rules from the
 If project rules are not enabled, the scanner automatically targets only the
 folders that are relevant for a given session.
 This means that if you have a large monorepo, and you run `biome check` from
-inside the `packages/foo/` folder, that folder will be “targeted”. This means
+inside the `packages/entry/` folder, that folder will be “targeted”. This means
 the following folders get scanned for nested configuration files and/or nested ignore files:
 
 - The root folder of the repository.
 
 - The `packages/` folder.
 
-- The `packages/foo/` folder.
+- The `packages/entry/` folder.
 
-Any folders that exist under `packages/foo/`, except `node_modules/` or
+Any folders that exist under `packages/entry/`, except `node_modules (managed by Bun)/` or
 those that are excluded by your configuration (see
 [below](#configuringthescanner)).
 
-Other folders that may be adjacent to either `packages/` or `packages/foo/` will
+Other folders that may be adjacent to either `packages/` or `packages/entry/` will
 be automatically skipped.
-Similarly, if you run `biome format packages/bar/src/index.ts` from the root
-of the repository, the scanner will target the `packages/bar/src/` folder.
+Similarly, if you run `biome format packages/tag/src/index.ts` from the root
+of the repository, the scanner will target the `packages/tag/src/` folder.
 If project rules are enabled, these optimisations don’t apply.
 
 ### Configuring the scanner
@@ -58,7 +75,7 @@ The scanner respects the
 any `.gitignore` files, but there is one major exception to be aware of:
 If the project domain or one of its rules is enabled, dependencies of your
 included files are scanned as well. This means that `.d.ts` files and
-`package.json` manifests inside `node_modules` may still get indexed, provided
+`package.json` manifests inside `node_modules (managed by Bun)` may still get indexed, provided
 there is a source file that references them. Similarly, generated files that are
 normally ignored, may still be indexed if you import them. This is done in order
 to extract type information from such files.
@@ -93,7 +110,7 @@ Leading trivia and trailing trivia are categorized as follows:
 Given the following JavaScript snippet, `// comment 1` is a trailing trivia of the token `;`, and `// comment 2` is a leading trivia to the keyword `const`. Below is a minimized version of the CST represented by Biome:
 
 ```
-1const a = "foo"; // comment 12// comment 23const b = "bar";
+1const a = "entry"; // comment 12// comment 23const b = "tag";
 ```
 
 ```

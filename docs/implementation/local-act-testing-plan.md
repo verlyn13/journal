@@ -1,3 +1,21 @@
+---
+id: local-act-testing-plan
+title: 'Plan: Integrating Local GitHub Actions Testing with `act`'
+type: testing
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags:
+- docker
+- testing
+priority: medium
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 ***
 
 title: "Plan: Integrating Local GitHub Actions Testing with `act`"

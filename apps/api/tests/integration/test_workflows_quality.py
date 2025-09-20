@@ -327,7 +327,8 @@ class TestWorkflowsQuality:
             update_response = await client.put(
                 f"/api/v1/entries/{entry['id']}",
                 json={
-                    "markdown_content": f"# Migrated {entry['title']}\n\nNow in **markdown** format!",
+                    "markdown_content": f"# Migrated {entry['title']}\n\nNow in **markdo \
+                        wn** format!",
                     "content_version": 2,
                     "expected_version": curv.json()["version"],
                 },

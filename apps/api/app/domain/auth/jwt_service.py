@@ -256,7 +256,8 @@ class JWTService:
             # Check logical token type claim if specified
             if logical_expected_type and payload.get("type") != logical_expected_type:
                 raise ValueError(
-                    f"Invalid token type: expected {logical_expected_type}, got {payload.get('type')}"
+                    f"Invalid token type: expected {logical_expected_type}, "
+                    f"got {payload.get('type')}"
                 )
 
             # Check scopes

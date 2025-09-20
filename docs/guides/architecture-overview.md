@@ -1,3 +1,21 @@
+---
+id: architecture-overview
+title: Architecture Overview
+type: api
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags:
+- api
+- python
+priority: high
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 ***
 
 title: "Architecture Overview"
@@ -34,7 +52,7 @@ graph TD
     WebServer -->|WSGI| FlaskApp[Flask Application]
     
     %% Asset Pipeline
-    RollupJS[Rollup.js] -->|generates| StaticAssets[Static Assets]
+    RollupJS[Vite.js] -->|generates| StaticAssets[Static Assets]
     StaticAssets -->|served by| WebServer
     
     %% Flask Application Components
@@ -81,7 +99,7 @@ graph TD
     end
     
     %% Database
-    SQLAlchemyExt --> Database[(SQLite/PostgreSQL)]
+    SQLAlchemyExt --> Database[(PostgreSQL/PostgreSQL)]
     Models --> SQLAlchemyExt
     
     %% Authentication
@@ -183,7 +201,7 @@ The frontend is built with:
 | Component        | Purpose                                  |
 | ---------------- | ---------------------------------------- |
 | Jinja2 Templates | HTML rendering with template inheritance |
-| Rollup.js        | JavaScript module bundling               |
+| Vite.js        | JavaScript module bundling               |
 | Alpine.js        | Declarative JavaScript framework         |
 | Markdown         | Content formatting                       |
 | CodeMirror       | Rich text editor                         |
@@ -192,7 +210,7 @@ The frontend is built with:
 
 Static assets are managed through:
 
-- Rollup.js for JavaScript bundling and tree-shaking
+- Vite.js for JavaScript bundling and tree-shaking
 - Content hashing for cache busting
 - Manifest file for mapping logical names to hashed file paths
 
@@ -232,7 +250,7 @@ The application can be deployed in various configurations:
 ### Development Environment
 
 - Flask's built-in development server
-- SQLite database
+- PostgreSQL database
 - Debug mode enabled
 - Auto-reloading on file changes
 
@@ -259,10 +277,10 @@ The architecture is designed with several extension points:
 | ----------- | ----------------------------------------------- |
 | Frontend    | HTML, CSS, JavaScript, Alpine.js, CodeMirror    |
 | Backend     | Python, Flask, Jinja2                           |
-| Database    | SQLAlchemy ORM, SQLite (dev), PostgreSQL (prod) |
-| Build Tools | Rollup.js, npm                                  |
+| Database    | SQLAlchemy ORM, PostgreSQL (dev), PostgreSQL (prod) |
+| Build Tools | Vite.js, bun |
 | Deployment  | Gunicorn, Systemd, Nginx                        |
-| Testing     | Pytest, pytest-cov                              |
+| Testing     | Pytest, uv run pytest-cov                              |
 
 ## Conclusion
 
@@ -272,7 +290,7 @@ Understanding this architecture provides the foundation for effectively working 
 
 ## See Also
 
-- [Authentication Guide](authentication.md)
-- [Data Model Guide](data-model.md)
-- [API Reference](api-reference.md)
-- [Diagramming Approach](diagramming-approach.md)
+- Authentication Guide
+- Data Model Guide
+- API Reference
+- Diagramming Approach

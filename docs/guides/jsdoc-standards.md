@@ -1,3 +1,19 @@
+---
+id: jsdoc-standards
+title: JSDoc Standards Guide
+type: guide
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags: []
+priority: medium
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 ***
 
 title: "JSDoc Standards Guide"
@@ -199,7 +215,7 @@ To ensure that documentation is easily consumable by AI systems:
 Documentation is generated using JSDoc with the following command:
 
 ```bash
-npm run docs
+bun run docs
 ```
 
 This command generates HTML documentation in the `docs/js-api` directory, which can be viewed in any web browser.

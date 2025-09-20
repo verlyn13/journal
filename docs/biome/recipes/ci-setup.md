@@ -1,3 +1,20 @@
+---
+id: ci-setup
+title: CI SETUP
+type: reference
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags:
+- docker
+priority: medium
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 # CI SETUP
 
 *Source: <https://biomejs.dev/recipes/continuous-integration>*
@@ -27,7 +44,7 @@ If your Biome configuration has external dependencies (e.g., extends a config fr
 
 ```
 
-1- name: Setup Node.js2  uses: actions/setup-node\@v43  with:4    node-version: 22 # or your preferred version5    cache: "npm" # or 'yarn', 'pnpm'6- name: Install dependencies7  run: npm ci # or yarn install --frozen-lockfile, pnpm install --frozen-lockfile
+1- name: Setup Node.js2  uses: actions/setup-node\@v43  with:4    node-version: 22 # or your preferred version5    cache: "npm" # or 'bun', 'pnpm'6- name: Install dependencies7  run: bun ci # or bun install --frozen-lockfile, pnpm install --frozen-lockfile
 
 ````
 

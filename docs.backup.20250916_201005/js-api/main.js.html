@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>main.js - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading">Classes</li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="EditorPersistence.html">EditorPersistence</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="EditorPersistence.html#clearDraft">clearDraft</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="EditorPersistence.html#loadDraft">loadDraft</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="EditorPersistence.html#saveDraft">saveDraft</a></span></li><li class="nav-heading">Modules</li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-editor_alpine-component.html">editor/alpine-component</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-editor_alpine-component.html#~init">init</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-editor_setup.html">editor/setup</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-editor_setup.html#.createEditor">createEditor</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-editor_theme.html">editor/theme</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-main.html">main</a></span></li><li class="nav-heading"><a href="global.html">Globals</a></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#createLinePrependingTransaction">createLinePrependingTransaction</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#createWrappingTransaction">createWrappingTransaction</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#debounce">debounce</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#insertMarkdownSyntax">insertMarkdownSyntax</a></span></li>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">main.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @fileoverview Main entry point for the Flask Journal JavaScript application.
+ * Initializes Alpine.js and registers custom components.
+ * @module main
+ * @author Flask Journal Team
+ */
+
+import Alpine from 'alpinejs';
+import editorComponent from './editor/alpine-component';
+
+/**
+ * Make Alpine available globally for debugging and extension.
+ * @type {Object}
+ */
+window.Alpine = Alpine;
+
+/**
+ * Global Alpine error handler to capture and log errors.
+ * Provides detailed information about errors that occur within Alpine components.
+ *
+ * @param {Error} error - The error that was thrown
+ * @param {Object} component - The Alpine component where the error occurred
+ * @param {HTMLElement} el - The DOM element associated with the component
+ * @example
+ * // Example error that would be caught:
+ * // In a component: x-on:click="nonExistentFunction()"
+ */
+Alpine.onerror = (error, component, el) => {
+    console.error('[Alpine Error] Unhandled error occurred:');
+    console.error(' > Error:', error);
+    console.error(' > Component:', component.$data); // Log component's data
+    console.error(' > Element:', el);
+
+    // In a production environment, you might send this error to a logging service
+    // Example: if (process.env.NODE_ENV === 'production') { sendErrorToServer(error, component, el); }
+};
+
+
+/**
+ * Event listener for Alpine's initialization event.
+ * Registers custom components after Alpine has initialized.
+ * 
+ * @listens alpine:init
+ * @example
+ * // This registers the editor component to be used with x-data:
+ * // &lt;div x-data="editor">&lt;/div>
+ */
+document.addEventListener('alpine:init', () => {
+    console.log("Alpine initialized, registering components...");
+    
+    /**
+     * Register the editor component with Alpine.
+     * This makes the editor available as an Alpine component throughout the application.
+     * 
+     * @see module:editor/alpine-component
+     */
+    Alpine.data('editor', editorComponent);
+    console.log("Editor component registered.");
+});
+
+/**
+ * Initialize Alpine.js.
+ * This triggers the 'alpine:init' event and starts the application.
+ */
+Alpine.start();
+
+console.log("Alpine.js initialized and editor component registered.");</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.4</a> on Tue Apr 08 2025 22:29:32 GMT-0800 (Alaska Daylight Time) using the Minami theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>

@@ -1,3 +1,19 @@
+---
+id: readme
+title: Flask Journal User Guide
+type: guide
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags: []
+priority: medium
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 ***
 
 title: "Flask Journal User Guide"
@@ -113,7 +129,7 @@ The editor supports standard Markdown syntax:
 
 - **Bold text**: Surround text with double asterisks (`**bold text**`)
 - *Italic text*: Surround text with single asterisks (`*italic text*`)
-- [Links](https://example.com): Use the format `[link text](URL)`
+- [Links](https://journal.local): Use the format `[link text](URL)`
 - Lists:
   \- Unordered lists use asterisks, plus, or hyphen symbols (`* item`)
   \- Ordered lists use numbers followed by periods (`1. item`)
@@ -155,9 +171,9 @@ To view entries with specific tags:
 
 For more detailed information, please refer to these additional guides:
 
-- [Installation Guide](installation.md) - Setting up Flask Journal locally
-- [Frequently Asked Questions](faq.md) - Common questions and answers
-- [Troubleshooting Guide](troubleshooting.md) - Solutions to common issues
+- Installation Guide - Setting up Flask Journal locally
+- Frequently Asked Questions - Common questions and answers
+- Troubleshooting Guide - Solutions to common issues
 
 ***
 

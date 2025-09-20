@@ -1,3 +1,24 @@
+---
+id: testing
+title: Testing Quick Reference
+description: '**See [TESTING.md](../TESTING.md) for comprehensive testing documentation.**'
+type: api
+created: '2025-09-17'
+updated: '2025-09-17'
+author: Journal Team
+tags:
+- /
+- home
+- verlyn13
+- projects
+- journal
+priority: 2
+status: current
+visibility: public
+schema_version: v1
+version: 1.0.0
+---
+
 # Testing Quick Reference
 
 **See [TESTING.md](../TESTING.md) for comprehensive testing documentation.**

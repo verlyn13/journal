@@ -1,3 +1,21 @@
+---
+id: api-reference
+title: Flask Journal API Reference
+type: api
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags:
+- api
+- python
+priority: high
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 ***
 
 title: "Flask Journal API Reference"
@@ -26,7 +44,7 @@ This document provides a comprehensive reference for all API endpoints available
 All API endpoints are relative to the base URL of your Flask Journal installation. For the development server, this is typically:
 
 ```
-http://localhost:5000
+https://your-domain.com
 ```
 
 ### Authentication
@@ -77,7 +95,7 @@ Renders Markdown text as HTML for preview purposes.
 
 | Attribute         | Value                      |
 | ----------------- | -------------------------- |
-| **URL**           | `/api/v1/markdown/preview` |
+| **URL**           | `/api/markdown/preview` |
 | **Method**        | `POST`                     |
 | **Auth Required** | Yes                        |
 
@@ -122,7 +140,7 @@ Status Code: `500 Internal Server Error`
 ```javascript
 // JavaScript example using fetch
 async function previewMarkdown(markdownText) {
-  const response = await fetch('/api/v1/markdown/preview', {
+  const response = await fetch('/api/markdown/preview', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -330,12 +348,12 @@ Displays all journal entries associated with a specific tag.
 
 The following endpoints are not currently implemented but may be added in future versions:
 
-- `GET /api/v1/entries`: JSON API for retrieving journal entries
-- `POST /api/v1/entries`: JSON API for creating journal entries
-- `GET /api/v1/entries/<entry_id>`: JSON API for retrieving a specific entry
-- `PUT /api/v1/entries/<entry_id>`: JSON API for updating a specific entry
-- `DELETE /api/v1/entries/<entry_id>`: JSON API for deleting a specific entry
-- `GET /api/v1/tags`: JSON API for retrieving all tags
+- `GET /api/entries`: JSON API for retrieving journal entries
+- `POST /api/entries`: JSON API for creating journal entries
+- `GET /api/entries/<entry_id>`: JSON API for retrieving a specific entry
+- `PUT /api/entries/<entry_id>`: JSON API for updating a specific entry
+- `DELETE /api/entries/<entry_id>`: JSON API for deleting a specific entry
+- `GET /api/tags`: JSON API for retrieving all tags
 
 ## Security Considerations
 
@@ -345,5 +363,5 @@ The following endpoints are not currently implemented but may be added in future
 
 ## See Also
 
-- [Authentication Guide](authentication.md)
-- [Data Model Documentation](data-model.md)
+- Authentication Guide
+- Data Model Documentation

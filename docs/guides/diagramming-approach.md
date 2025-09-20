@@ -1,3 +1,20 @@
+---
+id: diagramming-approach
+title: Diagramming Approach for Flask Journal
+type: guide
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags:
+- python
+priority: medium
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 ***
 
 title: "Diagramming Approach for Flask Journal"
@@ -81,7 +98,7 @@ Based on analysis of the project and documentation needs, the following key area
 - Database interactions
 - Authentication system
 - Frontend components
-- Asset pipeline (Rollup)
+- Asset pipeline (Vite)
 
 ### 2. Request Lifecycle
 
@@ -224,6 +241,6 @@ erDiagram
 ## See Also
 
 - [Official Mermaid Documentation](https://mermaid-js.github.io/mermaid/)
-- [JSDoc Standards Guide](jsdoc-standards.md)
-- [Python Docstring Standards Guide](python-docstring-standards.md)
-- [Documentation Templates Guide](documentation-templates.md)
+- JSDoc Standards Guide
+- Python Docstring Standards Guide
+- Documentation Templates Guide

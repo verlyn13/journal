@@ -39,15 +39,15 @@ jobs:
       CI: true
     steps:
       - name: Checkout exact SHA
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           fetch-depth: 0
           ref: ${{ github.sha }}
 
-      - name: Setup Bun 1.2.21
-        uses: oven-sh/setup-bun@v2
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@4bc047ad259df6fc24a6c9b0f9a0cb08cf17fbe5
         with:
-          bun-version: "1.2.21"
+          bun-version: latest
 
       - name: Web: install, typecheck, build
         working-directory: apps/web
@@ -55,10 +55,10 @@ jobs:
           bun install
           bun run quality:types
           bun run build
-          node scripts/bundle-check.js
+          bun scripts/bundle-check.js
 
       - name: Install uv 0.8.x
-        uses: astral-sh/setup-uv@v4
+        uses: astral-sh/setup-uv@208b0c0ee42039b2cbf5fd3ca0ec7d6d8a49336f
 
       - name: API: sync deps
         working-directory: apps/api

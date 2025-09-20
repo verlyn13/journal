@@ -1,3 +1,21 @@
+---
+id: state-management-guide
+title: State Management Guide for Flask Blog/Journal System
+type: guide
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags:
+- python
+- react
+priority: medium
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 ***
 
 title: "State Management Guide: Flask Journal System"
@@ -434,7 +452,7 @@ Manage editor states (edit mode, preview mode, dirty state) using Alpine.js.
     updatePreview() {
         this.isPreviewLoading = true;
         
-        fetch('/api/v1/markdown', {
+        fetch('/api/markdown', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -1190,7 +1208,7 @@ Implement optimistic UI updates with rollback capability for a responsive UX.
         this.pendingDeletes.push(entryId);
         
         // Send delete request
-        fetch(`/api/v1/entries/${entryId}`, {
+        fetch(`/api/entries/${entryId}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',

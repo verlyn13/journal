@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>editor/persistence.js - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading">Classes</li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="EditorPersistence.html">EditorPersistence</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="EditorPersistence.html#clearDraft">clearDraft</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="EditorPersistence.html#loadDraft">loadDraft</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="EditorPersistence.html#saveDraft">saveDraft</a></span></li><li class="nav-heading">Modules</li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-editor_alpine-component.html">editor/alpine-component</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-editor_alpine-component.html#~init">init</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-editor_setup.html">editor/setup</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-editor_setup.html#.createEditor">createEditor</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-editor_theme.html">editor/theme</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-main.html">main</a></span></li><li class="nav-heading"><a href="global.html">Globals</a></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#createLinePrependingTransaction">createLinePrependingTransaction</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#createWrappingTransaction">createWrappingTransaction</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#debounce">debounce</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#insertMarkdownSyntax">insertMarkdownSyntax</a></span></li>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">editor/persistence.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Basic draft persistence using localStorage.
+ */
+export class EditorPersistence {
+    constructor(entryId) {
+        // Use a specific key for existing entries, or a generic one for new entries
+        this.storageKey = entryId ? `journal_draft_${entryId}` : 'journal_draft_new';
+        console.log(`Persistence initialized for key: ${this.storageKey}`);
+    }
+
+    /**
+     * Saves the current editor content as a draft.
+     * @param {string} content - The content to save.
+     */
+    saveDraft(content) {
+        try {
+            localStorage.setItem(this.storageKey, content);
+            console.log(`Draft saved for ${this.storageKey}`);
+        } catch (e) {
+            console.error("Error saving draft to localStorage:", e);
+            // Handle potential storage errors (e.g., quota exceeded)
+        }
+    }
+
+    /**
+     * Loads a saved draft.
+     * @returns {string | null} The saved content, or null if no draft exists or an error occurs.
+     */
+    loadDraft() {
+        try {
+            const draft = localStorage.getItem(this.storageKey);
+            if (draft) {
+                console.log(`Draft loaded for ${this.storageKey}`);
+            } else {
+                console.log(`No draft found for ${this.storageKey}`);
+            }
+            return draft;
+        } catch (e) {
+            console.error("Error loading draft from localStorage:", e);
+            return null;
+        }
+    }
+
+    /**
+     * Clears the saved draft.
+     */
+    clearDraft() {
+        try {
+            localStorage.removeItem(this.storageKey);
+            console.log(`Draft cleared for ${this.storageKey}`);
+        } catch (e) {
+            console.error("Error clearing draft from localStorage:", e);
+        }
+    }
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.4</a> on Tue Apr 08 2025 22:29:32 GMT-0800 (Alaska Daylight Time) using the Minami theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>

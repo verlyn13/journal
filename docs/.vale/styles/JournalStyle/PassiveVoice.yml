@@ -1,0 +1,13 @@
+---
+extends: existence
+message: "Consider using active voice: '%s'."
+level: suggestion
+ignorecase: true
+tokens:
+  - '(was|were) \w+ed'
+  - '(has|have) been \w+ed'
+  - '(will|would) be \w+ed'
+  - '(is|are) being \w+ed'
+  - 'can be \w+ed'
+  - 'should be \w+ed'
+  - 'must be \w+ed'

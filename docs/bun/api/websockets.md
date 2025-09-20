@@ -1,3 +1,21 @@
+---
+id: websockets
+title: WEBSOCKETS
+type: api
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags:
+- api
+- typescript
+priority: high
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 # WEBSOCKETS
 
 *Source: <https://bun.sh/docs/api/websockets>*
@@ -152,7 +170,7 @@ Bun.serve({
 To connect to this server from the browser, create a new `WebSocket`.
 
 browser.js\`\`\`
-const socket = new WebSocket("ws\://localhost:3000/chat");
+const socket = new WebSocket("ws\://your-domain.com/chat");
 
 socket.addEventListener("message", event => {
 console.log(event.data);
@@ -303,7 +321,7 @@ Bun implements the `WebSocket` class. To create a WebSocket client that connects
 
 ```
 
-const socket = new WebSocket("ws\://localhost:3000");
+const socket = new WebSocket("ws\://your-domain.com");
 
 ```
 
@@ -313,7 +331,7 @@ For convenience, Bun lets you setting custom headers directly in the constructor
 
 ```
 
-const socket = new WebSocket("ws\://localhost:3000", {
+const socket = new WebSocket("ws\://your-domain.com", {
 headers: {
 // custom headers
 },

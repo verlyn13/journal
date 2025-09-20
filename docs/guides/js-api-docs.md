@@ -1,3 +1,20 @@
+---
+id: js-api-docs
+title: JavaScript API Documentation
+type: api
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags:
+- api
+priority: high
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 ***
 
 title: "JavaScript API Documentation"
@@ -40,17 +57,17 @@ The documentation provides:
 
 ## Documentation Standards
 
-We follow a consistent JSDoc documentation standard across all JavaScript files. For details on these standards, please refer to the [JSDoc Standards Guide](./jsdoc-standards.md).
+We follow a consistent JSDoc documentation standard across all JavaScript files. For details on these standards, please refer to the JSDoc Standards Guide.
 
 ## Updating Documentation
 
 The JavaScript API documentation is generated from JSDoc comments in the source code. To update the documentation:
 
 1. Add or modify JSDoc comments in JavaScript source files
-2. Run `npm run docs` to regenerate the documentation
+2. Run `bun run docs` to regenerate the documentation
 
 ## References
 
 - [JSDoc Implementation Guide](../initial-planning/JSDoc-implementation.md) - Initial implementation plan for JSDoc
-- [JSDoc Standards Guide](./jsdoc-standards.md) - Standards for writing JSDoc comments
+- JSDoc Standards Guide - Standards for writing JSDoc comments
 - [JSDoc Official Documentation](https://jsdoc.app/) - Official JSDoc reference

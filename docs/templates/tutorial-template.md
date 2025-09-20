@@ -1,3 +1,20 @@
+---
+id: tutorial-template
+title: 'Tutorial: Task Name'
+type: guide
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags:
+- python
+priority: medium
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 ***
 
 title: "Tutorial Title"
@@ -173,12 +190,12 @@ Recap what was learned and accomplished in this tutorial.
 
 Suggest related tutorials or documentation to explore next.
 
-- [Next Tutorial Title](link/to/tutorial.md)
-- [Related Concept Guide](link/to/concept.md)
-- [API Reference](link/to/api.md)
+- Next Tutorial Title
+- Related Concept Guide
+- API Reference
 
 ## See Also
 
-- [Related Documentation 1](link/to/doc1.md)
-- [Related Documentation 2](link/to/doc2.md)
-- [External Resource](https://example.com)
+- Related Documentation 1
+- Related Documentation 2
+- [External Resource](https://journal.local)

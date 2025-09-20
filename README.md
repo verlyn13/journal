@@ -1,286 +1,114 @@
-# Journal Application
+# Journal
 
-A modern web application for journaling with a rich text editor, code highlighting, math rendering, and AI-powered semantic search.
+A personal journaling application built for privacy, speed, and thoughtful reflection.
 
-## 🚀 Quick Start
+## What This Is
 
-### Prerequisites
+Journal is a web-based journaling platform designed around the principle of private, encrypted entries with powerful search and organization capabilities. Each entry is encrypted client-side before storage, ensuring that your thoughts remain yours alone.
 
-- Node.js 20+ and Bun
+## Notable Technical Decisions
+
+### Architecture
+- **Monorepo structure** using Turborepo for coordinated builds between API and web applications
+- **FastAPI backend** (Python 3.13) chosen for its async capabilities and type safety
+- **React 19** with TypeScript for the frontend, embracing the latest concurrent features
+- **PostgreSQL with pgvector** for semantic search capabilities on encrypted metadata
+
+### Development Tools
+- **Ruff 0.13.0** for Python linting and formatting (replacing Black, isort, and flake8)
+- **Biome** for JavaScript/TypeScript linting and formatting
+- **Bun** as the JavaScript runtime and package manager
+- **uv** for Python package management
+
+### Security & Privacy
+- **Client-side encryption** using Web Crypto API before any data leaves the browser
+- **EdDSA JWT tokens** for authentication
+- **Argon2** for password hashing
+- **Content Security Policy** enforcement with strict directives
+
+### Infrastructure
+- **GitHub Actions** for CI/CD with contract-based testing between services
+- **Vercel** for frontend deployment with preview environments
+- **Supabase** for managed PostgreSQL with pgvector extension
+
+## Core Features
+
+- **Encrypted entries**: All journal content encrypted client-side
+- **Rich text editing**: Full markdown support with live preview using CodeMirror
+- **Semantic search**: Find entries by meaning, not just keywords
+- **Tag organization**: Flexible tagging system with nested tag support
+- **Daily prompts**: Optional reflection prompts to inspire writing
+- **Export options**: Download your data in multiple formats
+- **PWA support**: Works offline and installs as a native app
+
+## Stack
+
+### Backend (apps/api)
+- FastAPI 0.115.6
+- SQLAlchemy 2.0 with async support
+- PostgreSQL with pgvector extension
 - Python 3.13
-- Docker & Docker Compose
-- PostgreSQL 16+ (via Docker)
 
-### Setup & Run (One‑Command Dev)
+### Frontend (apps/web)
+- React 19.0
+- TypeScript 5.7
+- Tailwind CSS
+- CodeMirror 6 for the editor
+- Radix UI for accessible components
 
+### Testing
+- Playwright for E2E tests
+- Vitest for unit tests
+- pytest for API tests
+
+## Development
+
+Requirements:
+- Python 3.13
+- Bun 1.1+
+- PostgreSQL 15+ with pgvector
+- Node.js 20+ (for some tooling)
+
+Setup:
 ```bash
-# Using the new dev script
-./scripts/dev.sh
+# Install dependencies
+bun install
+cd apps/api && uv sync
 
-# Or with Make
-make dev-full
+# Set up environment variables
+cp apps/api/.env.example apps/api/.env
+cp apps/web/.env.example apps/web/.env
 
-# Or with Mise
-mise run dev:full
+# Run database migrations
+cd apps/api && uv run alembic upgrade head
 
-# API: http://localhost:5000 (health: /health, metrics: /metrics)
-# Web: http://localhost:5173
+# Start development servers
+bun run dev
 ```
 
-## 🏗 Architecture
+## Project Structure
 
-### Frontend (React + TypeScript)
-
-- **Location**: `apps/web/`
-- **Tech Stack**: React 18, TypeScript, Vite, CodeMirror
-- **Features**:
-  - Markdown editor with live preview (CodeMirror)
-  - Math rendering with KaTeX
-  - Code syntax highlighting (rehype-highlight)
-  - Split-pane view for editing and preview
-  - Hybrid search (keyword + semantic)
-
-### Backend (FastAPI + PostgreSQL)
-
-- **Location**: `apps/api/`
-- **Tech Stack**: FastAPI, SQLModel, PostgreSQL with pgvector
-- **Features**:
-  - JWT authentication with refresh tokens
-  - Vector embeddings for semantic search
-  - Full-text search with hybrid ranking
-  - Event sourcing with NATS
-  - GraphQL endpoint
-
-## 📚 Development
-
-### Frontend Development
-
-```bash
-# Start development server
-bun run web:dev
-
-# Build for production
-bun run web:build
-
-# Run tests
-bun run test
-
-# Type checking
-bun run typecheck
+```
+journal/
+├── apps/
+│   ├── api/         # FastAPI backend
+│   └── web/         # React frontend
+├── packages/        # Shared packages
+│   └── config/      # Shared configuration
+├── docs/            # Documentation
+├── scripts/         # Build and maintenance scripts
+└── .github/         # CI/CD workflows
 ```
 
-### Backend Development
+## Design Philosophy
 
-```bash
-cd apps/api
+This project prioritizes:
+1. **Privacy first**: Your data is encrypted before it leaves your device
+2. **Performance**: Fast load times and responsive interactions
+3. **Simplicity**: Clean interface that doesn't get in the way of writing
+4. **Reliability**: Comprehensive testing and type safety throughout
+5. **Developer experience**: Clear code structure and modern tooling
 
-# Start dev server with hot reload
-make dev
+## License
 
-# Run tests
-make test
-
-# Code quality
-make lint        # Lint and format
-make lint-check  # Check only
-
-# Database operations
-make db-upgrade     # Run migrations
-make db-downgrade   # Rollback one
-
-# Background workers
-make worker      # Start embedding worker
-```
-
-### Full Stack Commands (from root)
-
-```bash
-# Start everything (single command)
-make dev-full
-
-# API management
-make api-setup   # Setup infrastructure
-make api-test    # Run API tests
-make api-worker  # Start workers
-make api-down    # Stop services
-
-# Testing
-make test        # Run all tests
-make e2e         # Playwright E2E tests
-```
-
-## Scripts Reference
-
-Run with Bun from the repo root (use Node/npm if preferred):
-
-- API
-  - `bun run api:setup` — start Postgres (5433), Redis (6380), NATS (4222) and run migrations
-  - `bun run api:dev` — start FastAPI dev server (<http://127.0.0.1:8000>)
-  - `bun run api:test` — run API tests via pytest
-  - `bun run api:lint` — lint/format API code (Ruff 0.13.0)
-  - `bun run api:db:upgrade` — apply DB migrations (alembic via uv)
-  - `bun run api:db:downgrade` — rollback last migration
-  - `M="add feature" bun run api:db:revision` — create a new migration revision
-  - `bun run api:worker` — start embedding consumer worker
-
-- Web
-  - `bun run web:dev` — start frontend dev server (<http://localhost:5173>)
-  - `bun run web:build` — build frontend assets
-  - `bun run web:preview` — preview built frontend
-
-## 🔧 Configuration
-
-### Frontend Environment
-
-Create `apps/web/.env`:
-
-```env
-VITE_API_URL=http://127.0.0.1:5000/api
-VITE_GRAPHQL_URL=http://127.0.0.1:8000/graphql
-```
-
-### Backend Environment
-
-Create `apps/api/.env`:
-
-```env
-JOURNAL_DB_URL=postgresql+asyncpg://journal:journal@localhost:5433/journal
-JOURNAL_REDIS_URL=redis://localhost:6380/0
-JOURNAL_NATS_URL=nats://localhost:4222
-JOURNAL_JWT_SECRET=your-secret-key-change-in-production
-```
-
-## 📖 API Documentation
-
-- **OpenAPI/Swagger**: <http://127.0.0.1:8000/docs>
-- **ReDoc**: <http://127.0.0.1:8000/redoc>
-- **GraphQL Playground**: <http://127.0.0.1:8000/graphql>
-
-## 🧪 Testing
-
-### Frontend Tests
-
-```bash
-# Unit tests
-bun run test
-
-# E2E tests with Playwright
-bun run test:e2e
-
-# Accessibility tests
-bun run test:a11y
-
-# Visual regression tests
-bun run test:visual
-```
-
-### Backend Tests
-
-```bash
-cd apps/api
-
-# Run all tests with coverage
-make test
-
-# Run specific test categories
-uv run pytest -m unit
-uv run pytest -m integration
-```
-
-## 🛠 Tooling
-
-### Frontend
-
-- **Biome**: Formatting and linting
-- **TypeScript**: Type checking
-- **Vite**: Build tooling
-- **Playwright**: E2E testing
-
-### Backend
-
-- **uv**: Python package management
-- **Ruff 0.13.0**: Python linting and formatting
-- **MyPy**: Static type checking
-- **pytest**: Testing framework
-
-### Pre-commit Hooks
-
-```bash
-# Frontend
-cd apps/web
-npm install
-
-# Backend
-cd apps/api
-uv run pre-commit install
-```
-
-## 🚢 Deployment
-
-### Using Docker
-
-```bash
-# Build and run the complete stack
-docker compose up
-
-# Or use the production images
-docker build -t journal-api apps/api/
-docker build -t journal-web apps/web/
-
-docker run -p 8000:8000 journal-api
-docker run -p 3000:3000 journal-web
-```
-
-### Using DevContainers
-
-For VS Code users:
-
-1. Install "Dev Containers" extension
-2. Open project in VS Code
-3. `Cmd/Ctrl + Shift + P` → "Dev Containers: Reopen in Container"
-4. Everything will be configured automatically
-
-## 📋 Features
-
-### Editor Features
-
-- **Markdown Editing**: Native markdown editing with CodeMirror
-- **Live Preview**: Real-time markdown-to-HTML preview
-- **Math Rendering**: LaTeX math with KaTeX (inline: `$x^2$`, block: `$$...$$`)
-- **Code Blocks**: Syntax highlighting with language support
-- **Split-Pane View**: Side-by-side editor and preview
-- **Dark Mode**: Built-in OneDark theme
-
-### Search & Discovery
-
-- **Hybrid Search**: Combines keyword and semantic search
-- **Vector Embeddings**: AI-powered content similarity
-- **Full-text Search**: PostgreSQL FTS with ranking
-- **Smart Suggestions**: Auto-complete and recommendations
-
-### Backend Capabilities
-
-- **Event Sourcing**: Complete audit trail
-- **Background Processing**: Async embedding generation
-- **GraphQL API**: Flexible data queries
-- **JWT Auth**: Secure token-based authentication
-- **Real-time Updates**: WebSocket support (planned)
-
-## 📄 License
-
-MIT License - see [LICENSE](LICENSE) for details.
-
-## 🤝 Contributing
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) for development guidelines.
-
-## 📚 Documentation
-
-- [Backend Architecture](apps/api/README.md)
-- [API Documentation](http://localhost:8000/docs)
-- [Editor Guide](apps/web/EDITOR_GUIDE.md)
-- [Initial Planning](docs/initial-planning/)
-
-### Roadmap
-
-See `docs/ROADMAP.md` for the live roadmap, branching strategy, testing strategy, and CI/CD.
+Private project - not for redistribution

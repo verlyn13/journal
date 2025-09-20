@@ -1,3 +1,20 @@
+---
+id: data-model
+title: Data Model Guide
+type: guide
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags:
+- python
+priority: medium
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 ***
 
 title: "Data Model Guide"
@@ -96,7 +113,7 @@ The `User` model represents registered users of the application and serves as th
 
 ```python
 # Creating a new user
-user = User(username='johndoe', email='john@example.com')
+user = User(username='johndoe', email='john@journal.local')
 user.set_password('secure_password')
 db.session.add(user)
 db.session.commit()
@@ -361,7 +378,7 @@ flask db upgrade
 
 ## See Also
 
-- [API Reference](api-reference.md)
-- [Authentication Guide](authentication.md)
+- API Reference
+- Authentication Guide
 - [SQLAlchemy Documentation](https://docs.sqlalchemy.org/en/14/)
 - [Flask-SQLAlchemy Documentation](https://flask-sqlalchemy.palletsprojects.com/)

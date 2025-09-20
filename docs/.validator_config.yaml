@@ -1,0 +1,13 @@
+duplicate_name_whitelist:
+  # Whitelist by base filename (lowercase, '-' and ' ' normalized to '_')
+  # The validator compares against base_name.md
+  - readme.md
+  - environment_variables.md
+  - changelog.md
+  - architecture.md
+  - overview.md
+
+skip_tokens:
+  - _generated
+  - .backups
+  - archive

@@ -126,7 +126,8 @@ class EmbeddingConsumer:
                     try:
                         await session.execute(
                             text(
-                                "INSERT INTO processed_events(event_id, outcome) VALUES (:e, :o) ON CONFLICT (event_id) DO NOTHING"
+                                "INSERT INTO processed_events(event_id, outcome) VALUES (:e,"
+                                " :o) ON CONFLICT (event_id) DO NOTHING"
                             ),
                             {"e": event_id, "o": event_type},
                         )

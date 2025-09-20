@@ -1,0 +1,283 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Documentation Relationships",
+  "description": "Source of truth for document relationships and dependencies",
+  "last_updated": "2025-09-16",
+  "documents": {
+    "architecture-overview": {
+      "id": "architecture-overview",
+      "path": "docs/architecture/overview.md",
+      "children": [
+        "auth-architecture",
+        "api-architecture",
+        "database-schema",
+        "security-architecture"
+      ],
+      "related": [
+        "deployment-guide",
+        "infisical-architecture"
+      ]
+    },
+    "auth-architecture": {
+      "id": "auth-architecture",
+      "path": "docs/architecture/auth.md",
+      "parent": "architecture-overview",
+      "children": [
+        "jwt-implementation",
+        "webauthn-guide"
+      ],
+      "implements": ["auth-service", "jwt-service"],
+      "related": [
+        "advanced-auth",
+        "deployment-aware-auth"
+      ]
+    },
+    "api-architecture": {
+      "id": "api-architecture",
+      "path": "docs/architecture/api.md",
+      "parent": "architecture-overview",
+      "children": [
+        "api-v1-auth",
+        "api-v1-entries",
+        "api-v1-admin",
+        "api-v1-stats",
+        "api-v1-webauthn"
+      ],
+      "related": [
+        "api-contract-guide",
+        "request-lifecycle"
+      ]
+    },
+    "database-schema": {
+      "id": "database-schema",
+      "path": "docs/architecture/database.md",
+      "parent": "architecture-overview",
+      "children": [
+        "migration-guide",
+        "backup-strategy"
+      ],
+      "related": [
+        "data-model",
+        "alembic-migrations"
+      ]
+    },
+    "deployment-guide": {
+      "id": "deployment-guide",
+      "path": "docs/deployment/guide.md",
+      "prerequisites": [
+        "architecture-overview",
+        "infisical-architecture"
+      ],
+      "children": [
+        "vercel-setup",
+        "supabase-config",
+        "ci-cd-pipeline"
+      ],
+      "related": [
+        "deployment-checklist",
+        "phase-0-summary"
+      ]
+    },
+    "vercel-setup": {
+      "id": "vercel-setup",
+      "path": "docs/deployment/vercel.md",
+      "parent": "deployment-guide",
+      "prerequisites": ["environment-variables"],
+      "related": ["hosting-secure"]
+    },
+    "supabase-config": {
+      "id": "supabase-config",
+      "path": "docs/deployment/supabase.md",
+      "parent": "deployment-guide",
+      "prerequisites": ["database-schema"],
+      "related": ["migration-guide"]
+    },
+    "infisical-architecture": {
+      "id": "infisical-architecture",
+      "path": "docs/INFISICAL_ARCHITECTURE.md",
+      "children": [
+        "infisical-shim",
+        "version-management"
+      ],
+      "related": [
+        "ci-cd-pipeline",
+        "environment-variables"
+      ]
+    },
+    "getting-started": {
+      "id": "getting-started",
+      "path": "docs/guides/getting-started.md",
+      "prerequisites": [],
+      "children": [
+        "development-setup",
+        "first-deployment"
+      ],
+      "related": [
+        "dev-setup",
+        "local-development"
+      ]
+    },
+    "api-v1-auth": {
+      "id": "api-v1-auth",
+      "path": "docs/api/v1/auth.md",
+      "parent": "api-architecture",
+      "prerequisites": ["auth-architecture"],
+      "implements": ["auth-endpoints"],
+      "related": [
+        "jwt-implementation",
+        "webauthn-guide"
+      ]
+    },
+    "api-v1-entries": {
+      "id": "api-v1-entries",
+      "path": "docs/api/v1/entries.md",
+      "parent": "api-architecture",
+      "prerequisites": ["data-model"],
+      "implements": ["entries-crud"],
+      "related": ["phase-two-entry-crud"]
+    },
+    "ci-cd-pipeline": {
+      "id": "ci-cd-pipeline",
+      "path": "docs/deployment/ci-cd.md",
+      "parent": "deployment-guide",
+      "prerequisites": [
+        "infisical-architecture",
+        "github-actions"
+      ],
+      "children": [
+        "ci-checklist",
+        "workflow-vars"
+      ],
+      "related": [
+        "ci-investigation-report",
+        "documentation-validate"
+      ]
+    },
+    "testing-strategy": {
+      "id": "testing-strategy",
+      "path": "docs/testing/strategy.md",
+      "children": [
+        "unit-testing",
+        "integration-testing",
+        "e2e-testing"
+      ],
+      "related": [
+        "vitest-migration",
+        "testing-setup"
+      ]
+    },
+    "editor-architecture": {
+      "id": "editor-architecture",
+      "path": "docs/guides/editor-architecture.md",
+      "children": [
+        "codemirror-integration",
+        "editor-upgrade"
+      ],
+      "related": [
+        "editor-implementation",
+        "phase-eight-editor"
+      ]
+    },
+    "documentation-architecture": {
+      "id": "documentation-architecture",
+      "path": "docs/DOCUMENTATION_ARCHITECTURE.md",
+      "children": [
+        "documentation-roadmap",
+        "doc-upgrade"
+      ],
+      "related": [
+        "documentation-templates",
+        "documentation-review-process"
+      ],
+      "prerequisites": ["architecture-overview"]
+    },
+    "documentation-roadmap": {
+      "id": "documentation-roadmap",
+      "path": "docs/DOCUMENTATION_ROADMAP.md",
+      "parent": "documentation-architecture",
+      "prerequisites": ["documentation-architecture"],
+      "related": [
+        "phase-fourteen-documentation",
+        "documentation-specialist-role"
+      ]
+    },
+    "adr-001-infisical": {
+      "id": "adr-001-infisical",
+      "path": "docs/decisions/adr-001-infisical.md",
+      "type": "decision",
+      "supersedes": [],
+      "implements": ["infisical-architecture"],
+      "related": ["deployment-aware-auth"]
+    },
+    "adr-002-auth-strategy": {
+      "id": "adr-002-auth-strategy",
+      "path": "docs/decisions/adr-002-auth-strategy.md",
+      "type": "decision",
+      "supersedes": [],
+      "implements": ["auth-architecture"],
+      "related": ["advanced-auth"]
+    }
+  },
+  "categories": {
+    "architecture": [
+      "architecture-overview",
+      "auth-architecture",
+      "api-architecture",
+      "database-schema",
+      "security-architecture",
+      "infisical-architecture"
+    ],
+    "api": [
+      "api-v1-auth",
+      "api-v1-entries",
+      "api-v1-admin",
+      "api-v1-stats",
+      "api-v1-webauthn"
+    ],
+    "deployment": [
+      "deployment-guide",
+      "vercel-setup",
+      "supabase-config",
+      "ci-cd-pipeline"
+    ],
+    "guides": [
+      "getting-started",
+      "development-setup",
+      "troubleshooting-guide"
+    ],
+    "testing": [
+      "testing-strategy",
+      "unit-testing",
+      "integration-testing",
+      "e2e-testing"
+    ],
+    "decisions": [
+      "adr-001-infisical",
+      "adr-002-auth-strategy"
+    ],
+    "reference": [
+      "configuration-reference",
+      "cli-reference",
+      "error-reference"
+    ]
+  },
+  "navigation": {
+    "primary": [
+      "getting-started",
+      "architecture-overview",
+      "deployment-guide"
+    ],
+    "secondary": [
+      "api-architecture",
+      "testing-strategy",
+      "documentation-architecture"
+    ]
+  },
+  "validation_rules": {
+    "all_ids_unique": true,
+    "all_paths_exist": false,
+    "no_circular_dependencies": true,
+    "parent_child_bidirectional": true,
+    "prerequisites_exist": true
+  }
+}

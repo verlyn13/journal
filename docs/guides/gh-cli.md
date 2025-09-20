@@ -1,3 +1,20 @@
+---
+id: gh-cli
+title: GitHub CLI Developer Guide
+type: api
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags:
+- api
+priority: high
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 ***
 
 title: "GitHub CLI Developer Guide"
@@ -345,7 +362,7 @@ Manages GitHub Repositories.
 - **`gh repo edit`**: Edits repository settings.
   ```bash
   gh repo edit --description "A repository for testing"
-  gh repo edit --homepage "[https://example.com](https://example.com)"
+  gh repo edit --homepage "[https://journal.local](https://journal.local)"
   gh repo edit --private
   ```
 - **`gh repo delete <repository>`**: Deletes a repository. **Use with caution!**

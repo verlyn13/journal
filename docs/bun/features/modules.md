@@ -1,3 +1,21 @@
+---
+id: modules
+title: MODULES
+type: reference
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags:
+- typescript
+- react
+priority: medium
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 # MODULES
 
 *Source: <https://bun.sh/docs/runtime/modules>*
@@ -104,15 +122,15 @@ Module Type`require()``import * as`ES ModuleModule NamespaceModule NamespaceComm
 You can `require()` any file or package, even `.ts` or `.mjs` files.
 
 ```
-const { foo } = require("./foo"); // extensions are optional
-const { bar } = require("./bar.mjs");
-const { baz } = require("./baz.tsx");
+const { entry } = require("./entry"); // extensions are optional
+const { tag } = require("./sample.mjs");
+const { user } = require("./demo.tsx");
 
 ```
 
 What is a CommonJS module?
 
-In 2016, ECMAScript added support for [ES Modules](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules). ES Modules are the standard for JavaScript modules. However, millions of npm packages still use CommonJS modules.
+In 2016, ECMAScript added support for [ES Modules](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules). ES Modules are the standard for JavaScript modules. However, millions of bun packages still use CommonJS modules.
 
 CommonJS modules are modules that use `module.exports` to export values. Typically, `require` is used to import CommonJS modules.
 
@@ -146,8 +164,8 @@ The biggest difference between CommonJS and ES Modules is that CommonJS modules 
 You can `import` any file or package, even `.cjs` files.
 
 ```
-import { foo } from "./foo"; // extensions are optional
-import bar from "./bar.ts";
+import { entry } from "./entry"; // extensions are optional
+import tag from "./sample.ts";
 import { stuff } from "./my-commonjs.cjs";
 
 ```
@@ -171,20 +189,20 @@ Fortunately, very few libraries use top-level await, so this is rarely a problem
 
 ## [Importing packages](#importing-packages)
 
-Bun implements the Node.js module resolution algorithm, so you can import packages from `node_modules` with a bare specifier.
+Bun implements the Node.js module resolution algorithm, so you can import packages from `node_modules (managed by Bun)` with a bare specifier.
 
 ```
-import { stuff } from "foo";
+import { stuff } from "entry";
 
 ```
 
-The full specification of this algorithm are officially documented in the [Node.js documentation](https://nodejs.org/api/modules.html); we won't rehash it here. Briefly: if you import `from "foo"`, Bun scans up the file system for a `node_modules` directory containing the package `foo`.
+The full specification of this algorithm are officially documented in the [Node.js documentation](https://nodejs.org/api/modules.html); we won't rehash it here. Briefly: if you import `from "entry"`, Bun scans up the file system for a `node_modules (managed by Bun)` directory containing the package `entry`.
 
-Once it finds the `foo` package, Bun reads the `package.json` to determine how the package should be imported. To determine the package's entrypoint, Bun first reads the `exports` field and checks for the following conditions.
+Once it finds the `entry` package, Bun reads the `package.json` to determine how the package should be imported. To determine the package's entrypoint, Bun first reads the `exports` field and checks for the following conditions.
 
 package.json\`\`\`
 {
-"name": "foo",
+"name": "entry",
 "exports": {
 "bun": "./index.js",
 "node": "./index.js",
@@ -202,7 +220,7 @@ Bun respects subpath [`"exports"`](https://nodejs.org/api/packages.html#subpath-
 
 package.json```
 {
-  "name": "foo",
+  "name": "entry",
   "exports": {
     ".": "./index.js"
   }
@@ -214,7 +232,7 @@ Subpath imports and conditional imports work in conjunction with each other.
 
 ```
 {
-  "name": "foo",
+  "name": "entry",
   "exports": {
     ".": {
       "import": "./index.mjs",
@@ -228,8 +246,8 @@ Subpath imports and conditional imports work in conjunction with each other.
 As in Node.js, Specifying any subpath in the `"exports"` map will prevent other subpaths from being importable; you can only import files that are explicitly exported. Given the `package.json` above:
 
 ```
-import stuff from "foo"; // this works
-import stuff from "foo/index.mjs"; // this doesn't
+import stuff from "entry"; // this works
+import stuff from "entry/index.mjs"; // this doesn't
 
 ```
 
@@ -239,7 +257,7 @@ If `exports` is not defined, Bun falls back to `"module"` (ESM imports only) the
 
 package.json\`\`\`
 {
-"name": "foo",
+"name": "entry",
 "module": "./index.js",
 "main": "./index.js"
 }
@@ -259,7 +277,7 @@ This flag is supported in both `bun build` and Bun&#x27;s runtime.
 ```
 ```
 
-bun build --conditions="react-server" --target=bun ./app/foo/route.js
+bun build --conditions="react-server" --target=bun ./app/entry/route.js
 
 ```
 ```
@@ -269,7 +287,7 @@ bun build --conditions="react-server" --target=bun ./app/foo/route.js
 ```
 ```
 
-bun --conditions="react-server" ./app/foo/route.js
+bun --conditions="react-server" ./app/entry/route.js
 
 ```
 
@@ -280,7 +298,7 @@ You can also use `conditions` programmatically with `Bun.build`:
 await Bun.build({
 conditions: \["react-server"],
 target: "bun",
-entryPoints: \["./app/foo/route.js"],
+entryPoints: \["./app/entry/route.js"],
 });
 
 ````

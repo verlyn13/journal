@@ -1,3 +1,20 @@
+---
+id: act-reference
+title: 'Act Reference Guide: Run GitHub Actions Locally'
+type: guide
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags:
+- docker
+priority: medium
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 ***
 
 title: "act Reference Guide: Run GitHub Actions Locally"

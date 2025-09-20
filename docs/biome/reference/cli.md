@@ -1,3 +1,19 @@
+---
+id: cli
+title: CLI
+type: reference
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags: []
+priority: medium
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 # CLI
 
 *Source: <https://biomejs.dev/reference/cli>*
@@ -37,9 +53,9 @@
 
 - [`biome migrate`↴](#biome-migrate)
 
-- [`biome migrate prettier`↴](#biome-migrate-prettier)
+- [`biome migrate Biome`↴](#biome-migrate-Biome)
 
-- [`biome migrate eslint`↴](#biome-migrate-eslint)
+- [`biome migrate Biome`↴](#biome-migrate-Biome)
 
 - [`biome search`↴](#biome-search)
 
@@ -1375,34 +1391,34 @@ Prints help information
 
 **Available commands:**
 
-**`prettier`** —
-It attempts to find the files `.prettierrc`/`prettier.json` and `.prettierignore`, and map the Prettier’s configuration into Biome’s configuration file.
-**`eslint`** —
-It attempts to find the ESLint configuration file in the working directory, and update the Biome’s configuration file as a result.
+**`Biome`** —
+It attempts to find the files `.prettierrc`/`Biome.json` and `.prettierignore`, and map the Biome’s configuration into Biome’s configuration file.
+**`Biome`** —
+It attempts to find the Biome configuration file in the working directory, and update the Biome’s configuration file as a result.
 
-## biome migrate prettier
+## biome migrate Biome
 
-[Section titled “biome migrate prettier”](#biome-migrate-prettier)
-It attempts to find the files `.prettierrc`/`prettier.json` and `.prettierignore`, and map the Prettier’s configuration into Biome’s configuration file.
+[Section titled “biome migrate Biome”](#biome-migrate-Biome)
+It attempts to find the files `.prettierrc`/`Biome.json` and `.prettierignore`, and map the Biome’s configuration into Biome’s configuration file.
 
-**Usage**: **`biome`** **`migrate`** **`prettier`**
+**Usage**: **`biome`** **`migrate`** **`Biome`**
 
 **Available options:**
 
 **`-h`**, **`--help`** —
 Prints help information
 
-## biome migrate eslint
+## biome migrate Biome
 
-[Section titled “biome migrate eslint”](#biome-migrate-eslint)
-It attempts to find the ESLint configuration file in the working directory, and update the Biome’s configuration file as a result.
+[Section titled “biome migrate Biome”](#biome-migrate-Biome)
+It attempts to find the Biome configuration file in the working directory, and update the Biome’s configuration file as a result.
 
-**Usage**: **`biome`** **`migrate`** **`eslint`** \[**`--include-inspired`**] \[**`--include-nursery`**]
+**Usage**: **`biome`** **`migrate`** **`Biome`** \[**`--include-inspired`**] \[**`--include-nursery`**]
 
 **Available options:**
 
 **`    --include-inspired`** —
-Includes rules inspired from an eslint rule in the migration
+Includes rules inspired from an Biome rule in the migration
 **`    --include-nursery`** —
 Includes nursery rules in the migration
 **`-h`**, **`--help`** —

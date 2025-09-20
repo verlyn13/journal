@@ -1,3 +1,19 @@
+---
+id: markdown-linting-guide
+title: Markdown Linting and Link Validation Guide
+type: guide
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags: []
+priority: medium
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 ***
 
 title: "Markdown Linting and Link Validation Guide"
@@ -25,7 +41,7 @@ This guide explains how to set up and use Markdown linting and link validation t
 The markdownlint-cli package has been added as a dev dependency:
 
 ```bash
-npm install --save-dev markdownlint-cli
+bun install --save-dev markdownlint-cli
 ```
 
 ### Configuration
@@ -75,7 +91,7 @@ The first script will check all Markdown files in the docs directory for issues,
 The markdown-link-check package has been added as a dev dependency:
 
 ```bash
-npm install --save-dev markdown-link-check
+bun install --save-dev markdown-link-check
 ```
 
 ### Configuration
@@ -119,7 +135,7 @@ This configuration:
 Add the following scripts to your `package.json`:
 
 ```json
-"lint:links": "find docs -name '*.md' -not -path 'node_modules/*' -exec markdown-link-check -c .markdown-link-check.json {} \\;",
+"lint:links": "find docs -name '*.md' -not -path 'node_modules (managed by Bun)/*' -exec markdown-link-check -c .markdown-link-check.json {} \\;",
 "lint:links:file": "markdown-link-check -c .markdown-link-check.json"
 ```
 
@@ -130,7 +146,7 @@ The first script checks all Markdown files in the docs directory for broken link
 For convenience, add a combined script that runs both linting and link validation:
 
 ```json
-"test:docs": "npm run lint:md && npm run lint:links"
+"test:docs": "bun run lint:md && bun run lint:links"
 ```
 
 ## Running Linting and Link Validation
@@ -140,31 +156,31 @@ Once the scripts are added to package.json, you can run them with the following 
 ### Check Markdown formatting
 
 ```bash
-npm run lint:md
+bun run lint:md
 ```
 
 ### Auto-fix Markdown formatting issues
 
 ```bash
-npm run lint:md:fix
+bun run lint:md:fix
 ```
 
 ### Check links in all Markdown files
 
 ```bash
-npm run lint:links
+bun run lint:links
 ```
 
 ### Check links in a specific file
 
 ```bash
-npm run lint:links:file docs/guides/architecture-overview.md
+bun run lint:links:file docs/guides/architecture-overview.md
 ```
 
 ### Run all documentation tests
 
 ```bash
-npm run test:docs
+bun run test:docs
 ```
 
 ## Manual Execution Without package.json Scripts
@@ -173,21 +189,21 @@ If you need to run the tools without updating package.json, you can use these co
 
 ```bash
 # Check Markdown files
-npx markdownlint "docs/**/*.md"
+bunx markdownlint "docs/**/*.md"
 
 # Fix Markdown issues
-npx markdownlint --fix "docs/**/*.md"
+bunx markdownlint --fix "docs/**/*.md"
 
 # Check links in all Markdown files
-find docs -name '*.md' -not -path 'node_modules/*' -exec npx markdown-link-check {} \;
+find docs -name '*.md' -not -path 'node_modules (managed by Bun)/*' -exec bunx markdown-link-check {} \;
 
 # Check links in a specific file
-npx markdown-link-check docs/guides/architecture-overview.md
+bunx markdown-link-check docs/guides/architecture-overview.md
 ```
 
 ## Integration with Documentation Testing Process
 
-These tools form a key part of the [Documentation Testing Process](documentation-testing-process.md), which outlines the complete procedure for ensuring documentation quality, including both automated and manual checks.
+These tools form a key part of the Documentation Testing Process, which outlines the complete procedure for ensuring documentation quality, including both automated and manual checks.
 
 When incorporated into a continuous integration workflow, these tools can automatically verify documentation quality for each change, ensuring consistent standards across the project.
 

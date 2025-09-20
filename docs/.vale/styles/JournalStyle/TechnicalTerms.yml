@@ -1,0 +1,37 @@
+---
+extends: substitution
+message: "Consider using '%s' instead of '%s' for clarity."
+level: suggestion
+ignorecase: true
+swap:
+  # Consistency in technical terms
+  setup: set up
+  setup process: setup process  # exception when used as noun
+  login: log in
+  logout: log out
+  signin: sign in
+  signout: sign out
+  signup: sign up
+  e-mail: email
+  on-line: online
+  off-line: offline
+  front-end: frontend
+  back-end: backend
+  multi-factor: multifactor
+  re-use: reuse
+  re-run: rerun
+  pre-requisite: prerequisite
+  co-ordinate: coordinate
+  # Database terms
+  "no-sql": NoSQL
+  "nosql": NoSQL
+  "Postgres": PostgreSQL
+  "postgres": PostgreSQL
+  # Common corrections
+  "it's": its  # possessive
+  "can not": cannot
+  "in order to": to
+  "prior to": before
+  "subsequent to": after
+  "utilize": use
+  "utilization": use

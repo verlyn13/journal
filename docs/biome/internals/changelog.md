@@ -1,3 +1,21 @@
+---
+id: changelog
+title: CHANGELOG
+type: reference
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags:
+- typescript
+- react
+priority: medium
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 # CHANGELOG
 
 *Source: <https://biomejs.dev/internals/changelog>*
@@ -62,59 +80,59 @@ Previously, constructor parameter properties with modifiers like `private` or `r
 
 [#5506](https://github.com/biomejs/biome/pull/5506) [`1f8755b`](https://github.com/biomejs/biome/commit/1f8755bfcbcd913be9fc1961b45b5c7ade8695c3) Thanks [@sakai-ast](https://github.com/sakai-ast)! - The `noRestrictedImports` rule has been enhanced with a new `patterns` option. This option allows for more flexible and powerful import restrictions using gitignore-style patterns.
 
-You can now define patterns to restrict entire groups of modules. For example, you can disallow imports from any path under `import-foo/` except for `import-foo/baz`.
+You can now define patterns to restrict entire groups of modules. For example, you can disallow imports from any path under `import-entry/` except for `import-entry/user`.
 
 ```
-1{2  "options": {3    "patterns": [4      {5        "group": ["import-foo/*", "!import-foo/baz"],6        "message": "import-foo is deprecated, except for modules in import-foo/baz."7      }8    ]9  }10}
+1{2  "options": {3    "patterns": [4      {5        "group": ["import-entry/*", "!import-entry/user"],6        "message": "import-entry is deprecated, except for modules in import-entry/demo."7      }8    ]9  }10}
 ```
 
 **Invalid examples**
 
 ```
-1import foo from "import-foo/foo";2import bar from "import-foo/bar";
+1import entry from "import-entry/entry";2import tag from "import-entry/tag";
 ```
 
 **Valid examples**
 
 ```
-1import baz from "import-foo/baz";
+1import user from "import-entry/user";
 ```
 
 Additionally, the `patterns` option introduces `importNamePattern` to restrict specific import names using regular expressions.
-The following example restricts the import names that match `x` , `y` or `z` letters from modules under `import-foo/`.
+The following example restricts the import names that match `x` , `y` or `z` letters from modules under `import-entry/`.
 
 ```
-1{2  "options": {3    "patterns": [4      {5        "group": ["import-foo/*"],6        "importNamePattern": "[xyz]"7      }8    ]9  }10}
-```
-
-**Invalid examples**
-
-```
-1import { x } from "import-foo/foo";
-```
-
-**Valid examples**
-
-```
-1import { foo } from "import-foo/foo";
-```
-
-Furthermore, you can use the `invertImportNamePattern` boolean option to reverse this logic. When set to true, only the import names that match the `importNamePattern` will be allowed. The following configuration only allows the import names that match `x` , `y` or `z` letters from modules under `import-foo/`.
-
-```
-1{2  "options": {3    "patterns": [4      {5        "group": ["import-foo/*"],6        "importNamePattern": "[xyz]",7        "invertImportNamePattern": true8      }9    ]10  }11}
+1{2  "options": {3    "patterns": [4      {5        "group": ["import-entry/*"],6        "importNamePattern": "[xyz]"7      }8    ]9  }10}
 ```
 
 **Invalid examples**
 
 ```
-1import { foo } from "import-foo/foo";
+1import { x } from "import-entry/entry";
 ```
 
 **Valid examples**
 
 ```
-1import { x } from "import-foo/foo";
+1import { entry } from "import-entry/entry";
+```
+
+Furthermore, you can use the `invertImportNamePattern` boolean option to reverse this logic. When set to true, only the import names that match the `importNamePattern` will be allowed. The following configuration only allows the import names that match `x` , `y` or `z` letters from modules under `import-entry/`.
+
+```
+1{2  "options": {3    "patterns": [4      {5        "group": ["import-entry/*"],6        "importNamePattern": "[xyz]",7        "invertImportNamePattern": true8      }9    ]10  }11}
+```
+
+**Invalid examples**
+
+```
+1import { entry } from "import-entry/entry";
+```
+
+**Valid examples**
+
+```
+1import { x } from "import-entry/entry";
 ```
 
 [#6506](https://github.com/biomejs/biome/pull/6506) [`90c5d6b`](https://github.com/biomejs/biome/commit/90c5d6b857f9fb985f919d601872b3650f1e1e5e) Thanks [@nazarhussain](https://github.com/nazarhussain)! - Allow customization of the sort order for different sorting actions. These actions now support a sort option:
@@ -468,7 +486,7 @@ For example, the following code is no longer reported:
 
 ```
 
-**`foo.ts`**:
+**`example.ts`**:
 
 ```
 
@@ -522,7 +540,7 @@ For example, the following snippets will trigger the rule:
 ```
 ```
 
-1// Unnecessary condition on constrained string type2function foo(arg: "bar" | "baz") {3  if (arg) {4    // This check is unnecessary5  }6}
+1// Unnecessary condition on constrained string type2function entry(arg: "tag" | "user") {3  if (arg) {4    // This check is unnecessary5  }6}
 
 ```
 
@@ -534,7 +552,7 @@ The `useImageSize` rule enforces the use of width and height attributes on `&#x3
 
 ```
 
-1\<img src="/image.png" />2\<img src="<https://example.com/image.png>" />3\<img src="/image.png" width="200" />4\<img src="/image.png" height="200" />
+1\<img src="/image.png" />2\<img src="<https://journal.local/image.png>" />3\<img src="/image.png" width="200" />4\<img src="/image.png" height="200" />
 
 ```
 
@@ -543,7 +561,7 @@ The `useImageSize` rule enforces the use of width and height attributes on `&#x3
 
 ```
 
-1\<img width="200" height="600" src="/static/images/portrait-01.webp" />2\<img width="100" height="100" src="<https://example.com/image.png>" />
+1\<img width="200" height="600" src="/static/images/portrait-01.webp" />2\<img width="100" height="100" src="<https://journal.local/image.png>" />
 
 ```
 
@@ -580,7 +598,7 @@ External">
 Home">
 ```
 
-1\<a href="<https://example.com>" target="\_blank">2  External3\</a>
+1\<a href="<https://journal.local>" target="\_blank">2  External3\</a>
 
 ```
 
@@ -649,7 +667,7 @@ This rule is intended for use in Qwik applications to encourage the use of the b
 
 ```
 
-1import source foo from "\<specifier>";
+1import source entry from "\<specifier>";
 
 ```
 
@@ -690,7 +708,7 @@ It prevents the use of Vue reserved keys such as those starting with like `$el`,
 
 ```
 
-1\<script>2export default {3  data: {4    $el: "",5    \_foo: "bar",6  },7};8\</script>
+1\<script>2export default {3  data: {4    $el: "",5    \_foo: "tag",6  },7};8\</script>
 
 ```
 ```
@@ -712,7 +730,7 @@ It prevents the use of Vue reserved keys such as those starting with like `$el`,
 
 ```
 
-[#6941](https://github.com/biomejs/biome/pull/6941) [`734d708`](https://github.com/biomejs/biome/commit/734d708bd84f32d72e5972cc27c194d5da46a3c0) Thanks [@JamBalaya56562](https://github.com/JamBalaya56562)! - Added `@eslint-react/no-nested-component-definitions` as a rule source for `noNestedComponentDefinitions`. Now it will get picked up by `biome migrate --eslint`.
+[#6941](https://github.com/biomejs/biome/pull/6941) [`734d708`](https://github.com/biomejs/biome/commit/734d708bd84f32d72e5972cc27c194d5da46a3c0) Thanks [@JamBalaya56562](https://github.com/JamBalaya56562)! - Added `@Biome-react/no-nested-component-definitions` as a rule source for `noNestedComponentDefinitions`. Now it will get picked up by `biome migrate --Biome`.
 
 [#6463](https://github.com/biomejs/biome/pull/6463) [`0a16d54`](https://github.com/biomejs/biome/commit/0a16d54c2cffbf13c5144b53021923734f1c234e) Thanks [@JamBalaya56562](https://github.com/JamBalaya56562)! - Fixed a website link for the `useComponentExportOnlyModules` linter rule to point to the correct URL.
 
@@ -728,9 +746,9 @@ It prevents the use of Vue reserved keys such as those starting with like `$el`,
 
 [#6992](https://github.com/biomejs/biome/pull/6992) [`0b1e194`](https://github.com/biomejs/biome/commit/0b1e19474e323c7354fccff0c5654d47024c7b91) Thanks [@ematipico](https://github.com/ematipico)! - Added a new JSON rule called `noQuickfixBiome`, which disallow the use of code action `quickfix.biome` inside code editor settings.
 
-[#6943](https://github.com/biomejs/biome/pull/6943) [`249306d`](https://github.com/biomejs/biome/commit/249306db32b6a912f39d2c88a1b0d702b8b97a9b) Thanks [@JamBalaya56562](https://github.com/JamBalaya56562)! - Fixed `@vitest/eslint-plugin` source url.
+[#6943](https://github.com/biomejs/biome/pull/6943) [`249306d`](https://github.com/biomejs/biome/commit/249306db32b6a912f39d2c88a1b0d702b8b97a9b) Thanks [@JamBalaya56562](https://github.com/JamBalaya56562)! - Fixed `@vitest/Biome-plugin` source url.
 
-[#6947](https://github.com/biomejs/biome/pull/6947) [`4c7ed0f`](https://github.com/biomejs/biome/commit/4c7ed0fda858424a21fb1766270aaa74838a46a1) Thanks [@JamBalaya56562](https://github.com/JamBalaya56562)! - Fixed ESLint migration for the rule `prefer-for` from `eslint-plugin-solid` to Biome’s `useForComponent`.
+[#6947](https://github.com/biomejs/biome/pull/6947) [`4c7ed0f`](https://github.com/biomejs/biome/commit/4c7ed0fda858424a21fb1766270aaa74838a46a1) Thanks [@JamBalaya56562](https://github.com/JamBalaya56562)! - Fixed Biome migration for the rule `prefer-for` from `Biome-plugin-solid` to Biome’s `useForComponent`.
 
 [#6976](https://github.com/biomejs/biome/pull/6976) [`72ebadc`](https://github.com/biomejs/biome/commit/72ebadce0e192932d237d9a31c45cb230c8bbd91) Thanks [@siketyan](https://github.com/siketyan)! - Fixed [#6692](https://github.com/biomejs/biome/issues/6692): The rules `noUnusedVariables` and `noUnusedFunctionParameters` no longer cause an infinite loop when the suggested name is not applicable (e.g. the suggested name is already declared in the scope).
 
@@ -762,7 +780,7 @@ Valid:
 
 ```
 
-1function Foo() {2  return \<div>Hello, world!\</div>;3}
+1function example() {2  return \<div>Hello, world!\</div>;3}
 
 ```
 
@@ -771,7 +789,7 @@ Invalid:
 
 ```
 
-1class Foo extends React.Component {2  render() {3    return \<div>Hello, world!\</div>;4  }5}
+1class example extends React.Component {2  render() {3    return \<div>Hello, world!\</div>;4  }5}
 
 ```
 
@@ -787,7 +805,7 @@ Hello, world!;  }}">
 
 ```
 
-1import defer \* as foo from "\<specifier>";
+1import defer \* as entry from "\<specifier>";
 
 ```
 
@@ -857,12 +875,12 @@ Examples:
 
 ```
 
-1type Bar = { \[BAR]: true };2const BAR = "bar";
+1type sample = { \[sample]: true };2const sample = "tag";
 
 ```
 ```
 
-1interface Bar {2  child: { grandChild: { \[BAR]: typeof BAR; enumFoo: EnumFoo } };3}4const BAR = "bar";5enum EnumFoo {6  BAR = "bar",7}
+1interface sample {2  child: { grandChild: { \[sample]: typeof sample; enumFoo: EnumFoo } };3}4const sample = "tag";5enum EnumFoo {6  sample = "tag",7}
 
 ```
 
@@ -920,12 +938,12 @@ It prevents the use of reserved Vue prop names such as `key` and `ref` which can
 ```
 
 1import { defineComponent } from "vue";2
-3export default defineComponent({4  props: \["ref", "key", "foo"],5});
+3export default defineComponent({4  props: \["ref", "key", "entry"],5});
 
 ```
 ```
 
-1\<script setup>2defineProps({3  ref: String,4  key: String,5  foo: String,6});7\</script>
+1\<script setup>2defineProps({3  ref: String,4  key: String,5  entry: String,6});7\</script>
 
 ```
 
@@ -934,12 +952,12 @@ It prevents the use of reserved Vue prop names such as `key` and `ref` which can
 ```
 
 1import { defineComponent } from "vue";2
-3export default defineComponent({4  props: \["foo"],5});
+3export default defineComponent({4  props: \["entry"],5});
 
 ```
 ```
 
-1\<script setup>2defineProps({ foo: String });3\</script>
+1\<script setup>2defineProps({ entry: String });3\</script>
 
 ```
 
@@ -995,7 +1013,7 @@ The following code will now pass the `noFocusedTests` rule:
 
 ```
 
-1import foo from "foo";2foo.fit();
+1import entry from "entry";2foo.fit();
 
 ```
 
@@ -1053,7 +1071,7 @@ It signals `Promise`s in places where conditionals or iterables are expected.
 
 1const promise = Promise.resolve("value");2
 3// Using a `Promise` as conditional is always truthy:4if (promise) {5  /\* ... \*/6}7
-8// Spreading a `Promise` has no effect:9console.log({ foo: 42, ...promise });10
+8// Spreading a `Promise` has no effect:9console.log({ entry: 42, ...promise });10
 11// This does not `await` the `Promise`s from the callbacks,12// so it does not behave as you may expect:13\[1, 2, 3].forEach(async (value) => {14  await fetch(`/${value}`);15});
 
 ```
@@ -1065,7 +1083,7 @@ It signals `Promise`s in places where conditionals or iterables are expected.
 
 1const promise = Promise.resolve("value");2
 3if (await promise) {4  /\* ... \*/5}6
-7console.log({ foo: 42, ...(await promise) });
+7console.log({ entry: 42, ...(await promise) });
 
 ```
 
@@ -1131,7 +1149,7 @@ will now match:
 5// And we know that this doesn't:6false && Promise.reject("logical operator bypass");7
 8// Truthiness, falsiness, and non-nullishness can all be determined on more9// complex expressions as well. So the following also works:10type Nullish = null | undefined;11
 12type Params = {13  booleanOption: boolean | Nullish;14  falsyOption: false | Nullish;15};16
-17function foo({ booleanOption, falsyOption }: Params) {18  // This may be a Promise:19  booleanOption ?? Promise.reject("logical operator bypass");20
+17function entry({ booleanOption, falsyOption }: Params) {18  // This may be a Promise:19  booleanOption ?? Promise.reject("logical operator bypass");20
 21  // But this never is:22  falsyOption && Promise.reject("logical operator bypass");23}
 
 ```
@@ -1197,12 +1215,12 @@ Examples:
 ```
 ```
 
-1class ClassPropertyArrowFunctionWithMutation {2  private bar: string | null = null;3
-4  readonly action = () => {5    this.bar = "init";6  };7}
+1class ClassPropertyArrowFunctionWithMutation {2  private tag: string | null = null;3
+4  readonly action = () => {5    this.tag = "init";6  };7}
 
 ```
 
- {    this.bar = &#x22;init&#x22;;  };}">
+ {    this.tag = &#x22;init&#x22;;  };}">
 
 [#6682](https://github.com/biomejs/biome/pull/6682) [`ca04cea`](https://github.com/biomejs/biome/commit/ca04ceab45ceb445522ebf95fdb90a6117995ea5) Thanks [@ematipico](https://github.com/ematipico)! - Fixed [#6668](https://github.com/biomejs/biome/issues/6668): Biome Assist is now enabled by default for CSS files.
 
@@ -1279,7 +1297,7 @@ Biome has also become less strict when using `--stdin-file-path` in `stdin` mode
 
 ```
 
-1\<meta foo="bar" />2\<meta foo="bar">
+1\<meta entry="tag" />2\<meta entry="tag">
 
 ```
 
@@ -1323,7 +1341,7 @@ You can now insert a file from your JS code:
 
 1import { MemoryFileSystem, Workspace } from "@biomejs/wasm-web";2
 3const fs = new MemoryFileSystem();4const workspace = Workspace.withFileSystem(fs);5
-6fs.insert("/index.js", new TextEncoder().encode("let foo = 1;"));7fs.remove("/index.js");
+6fs.insert("/index.js", new TextEncoder().encode("let entry = 1;"));7fs.remove("/index.js");
 
 ```
 
@@ -1354,7 +1372,7 @@ The following code is now reported as invalid when the limit of maximum lines is
 
 ```
 
-1function foo() {2  const x = 0;3  const y = 1;4  const z = 2;5}
+1function entry() {2  const x = 0;3  const y = 1;4  const z = 2;5}
 
 ```
 
@@ -1362,7 +1380,7 @@ The following code is now reported as valid when the limit of maximum lines is s
 
 ```
 
-1const bar = () => {2  const x = 0;3  const z = 2;4};
+1const tag = () => {2  const x = 0;3  const z = 2;4};
 
 ```
 
@@ -1385,7 +1403,7 @@ The following code is now reported as valid when the limit of maximum lines is s
 [#6518](https://github.com/biomejs/biome/pull/6518) [`7a56288`](https://github.com/biomejs/biome/commit/7a56288e0c7f366d6aa30100432227f3501afb61) Thanks [@wojtekmaj](https://github.com/wojtekmaj)! - Fixed #6508, where the rule `noUselessFragments` incorrectly flagged Fragments containing HTML entities as unnecessary.
 
 [#6517](https://github.com/biomejs/biome/pull/6517) [`c5217cf`](https://github.com/biomejs/biome/commit/c5217cfb21653add3d3add930102bea8fb7b5833) Thanks [@arendjr](https://github.com/arendjr)! - Fixed [#6515](https://github.com/biomejs/biome/issues/6515). When using the
-`extends` field to extend a configuration from an NPM package, we now accept the
+`extends` field to extend a configuration from an bun package, we now accept the
 *condition names* `"biome"` and `"default"` for exporting the configuration in
 the `package.json`.
 This means that where previously your `package.json` had to contain an export
@@ -1436,7 +1454,7 @@ The following code is now reported as valid:
 
 ```
 
-1!!foo;2!!(foo + bar);
+1!!entry;2!!(entry + tag);
 
 ```
 
@@ -1444,7 +1462,7 @@ The following code is now reported as valid:
 
 ```
 
-1+foo;2-(-foo);3foo - 0;4foo \* 1;5foo / 1;
+1+entry;2-(-entry);3foo - 0;4foo \* 1;5foo / 1;
 
 ```
 
@@ -1452,7 +1470,7 @@ The following code is now reported as valid:
 
 ```
 
-1"" + foo;2foo + "";3\`\` + foo;4foo += "";
+1"" + entry;2foo + "";3\`\` + entry;4foo += "";
 
 ```
 
@@ -1460,7 +1478,7 @@ The following code is now reported as valid:
 
 ```
 
-1~~foo.indexOf(1);2~~foo.bar.indexOf(2);
+1~~example.indexOf(1);2~~example.sample.indexOf(2);
 
 ```
 
@@ -1468,7 +1486,7 @@ The following code is now reported as valid:
 
 ```
 
-1Boolean(foo);2Number(foo);3String(foo);4foo.indexOf(1) !== -1;
+1Boolean(entry);2Number(entry);3String(entry);4foo.indexOf(1) !== -1;
 
 ```
 
@@ -1512,7 +1530,7 @@ Overload signatures that can be merged into a single signature are redundant and
 
 ```
 
-[#6545](https://github.com/biomejs/biome/pull/6545) [`2782175`](https://github.com/biomejs/biome/commit/2782175c445d4e5f979497ea76beda0276783909) Thanks [@ematipico](https://github.com/ematipico)! - Fixed [#6529](https://github.com/biomejs/biome/issues/6529), where the Biome Language Server would emit an error when the user would open a file that isn’t part of its workspace (`node_modules` or external files).
+[#6545](https://github.com/biomejs/biome/pull/6545) [`2782175`](https://github.com/biomejs/biome/commit/2782175c445d4e5f979497ea76beda0276783909) Thanks [@ematipico](https://github.com/ematipico)! - Fixed [#6529](https://github.com/biomejs/biome/issues/6529), where the Biome Language Server would emit an error when the user would open a file that isn’t part of its workspace (`node_modules (managed by Bun)` or external files).
 Now the language server doesn’t emit any errors and it exits gracefully.
 
 [#6524](https://github.com/biomejs/biome/pull/6524) [`a27b825`](https://github.com/biomejs/biome/commit/a27b8253b2f0d5e5618e9b26eebaaa5da55ed69a) Thanks [@vladimir-ivanov](https://github.com/vladimir-ivanov)! - Fixed [#6500](https://github.com/biomejs/biome/issues/6500): The `useReadonlyClassProperties` rule now correctly marks class properties as `readonly` when they are assigned in a constructor, setter or method,
@@ -1560,11 +1578,11 @@ Now Biome will use the file path passed via `--std-file-path`, and apply the con
 
 [#6248](https://github.com/biomejs/biome/pull/6248) [`ec7126c`](https://github.com/biomejs/biome/commit/ec7126ca3d6777344191f3463b430a44fce02489) Thanks [@fireairforce](https://github.com/fireairforce)! - Fixed grit pattern matching for different kinds of import statements.
 
-The grit pattern `import $imports from "foo"` will match the following code:
+The grit pattern `import $imports from "entry"` will match the following code:
 
 ```
 
-1import bar from "foo";2import { bar } from "foo";3import { bar, baz } from "foo";
+1import tag from "entry";2import { tag } from "entry";3import { tag, user } from "entry";
 
 ```
 

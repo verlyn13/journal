@@ -1,3 +1,21 @@
+---
+id: configuration
+title: CONFIGURATION
+type: reference
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags:
+- typescript
+- react
+priority: medium
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 # CONFIGURATION
 
 *Source: <https://biomejs.dev/reference/configuration>*
@@ -14,8 +32,7 @@ Allows to pass a path to a JSON schema file.
 
 We publish a JSON schema file for our `biome.json`/`biome.jsonc` files.
 
-You can specify a relative path to the schema inside the `@biomejs/biome` NPM
-package if it is installed in the `node_modules` folder:
+You can specify a relative path to the schema inside the `@biomejs/biome` bun package if it is installed in the `node_modules (managed by Bun)` folder:
 biome.json\`\`\`
 1{2  "$schema": "./node\_modules/@biomejs/biome/configuration\_schema.json"3}
 

@@ -1,3 +1,25 @@
+---
+id: typing-patterns
+title: Type Patterns Cookbook
+description: A collection of common type patterns and their solutions in the Journal
+  API.
+type: api
+created: '2025-09-17'
+updated: '2025-09-17'
+author: Journal Team
+tags:
+- /
+- home
+- verlyn13
+- projects
+- journal
+priority: 2
+status: current
+visibility: public
+schema_version: v1
+version: 1.0.0
+---
+
 # Type Patterns Cookbook
 
 A collection of common type patterns and their solutions in the Journal API.

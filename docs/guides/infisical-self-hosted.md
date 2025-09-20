@@ -1,3 +1,21 @@
+---
+id: infisical-self-hosted
+title: Infisical Self-Host Options
+type: guide
+version: 1.0.0
+created: '2025-09-11'
+updated: '2025-09-11'
+author: Journal Team
+tags:
+- docker
+- react
+priority: medium
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-11'
+---
+
 # Infisical Self-Host Options
 
 This document provides a complete overview of the options, settings, and configurations available when running **Infisical** in a self-hosted environment. It consolidates all available UI actions across secrets, integrations, access control, audit logs, and settings.
@@ -19,7 +37,7 @@ This document provides a complete overview of the options, settings, and configu
 
 ## 2. Secret Syncs
 - **Button**: `+ Add Sync`
-- **Search bar**: `Search secret syncs...`
+- **Search tag**: `Search secret syncs...`
 - **Table Columns**:
   - Name
   - Source
@@ -33,7 +51,7 @@ This document provides a complete overview of the options, settings, and configu
 
 ### Native Integrations
 - **Button**: `+ Add Integration`
-- **Search bar**: `Search integrations...`
+- **Search tag**: `Search integrations...`
 - **Table Columns**:
   - Integration
   - Source Path
@@ -83,7 +101,7 @@ Available infrastructure integration options:
 
 ### Change Requests
 - **Tabs**: Change Requests | Access Requests | Policies
-- **Search bar**: `Search change requests by author, environment or policy path...`
+- **Search tag**: `Search change requests by author, environment or policy path...`
 - **Filters**:
   - Environments
   - Author
@@ -96,7 +114,7 @@ Available infrastructure integration options:
 
 ### Access Requests
 - **Button**: `+ Request Access`
-- **Search bar**: `Search approval requests by requesting user or environment...`
+- **Search tag**: `Search approval requests by requesting user or environment...`
 - **Filters**:
   - Environments
   - Requested By
@@ -109,7 +127,7 @@ Available infrastructure integration options:
 
 ### Policies
 - **Button**: `+ Create Policy`
-- **Search bar**: `Search policies by name, type, environment or secret path...`
+- **Search tag**: `Search policies by name, type, environment or secret path...`
 - **Table Columns**:
   - Name
   - Environment
@@ -132,7 +150,7 @@ Available infrastructure integration options:
 
 ### Users
 - **Button**: `+ Add Member`
-- **Search bar**: `Search members...`
+- **Search tag**: `Search members...`
 - **Table Columns**:
   - Name
   - Email
@@ -144,7 +162,7 @@ Available infrastructure integration options:
 
 ### Groups
 - **Button**: `+ Add Group`
-- **Search bar**: `Search members...`
+- **Search tag**: `Search members...`
 - **Table Columns**:
   - Name
   - Role
@@ -156,7 +174,7 @@ Available infrastructure integration options:
 ### Machine Identities
 - **Button**: `+ Add Identity`
 - **Docs link** available
-- **Search bar**: `Search identities by name...`
+- **Search tag**: `Search identities by name...`
 - **Table Columns**:
   - Name
   - Role
@@ -168,7 +186,7 @@ Available infrastructure integration options:
 ### Service Tokens
 - **Button**: `+ Create Token`
 - **Docs link** available
-- **Search bar**: `Search service tokens by name, environment or secret path...`
+- **Search tag**: `Search service tokens by name, environment or secret path...`
 - **Table Columns**:
   - Name
   - Environment / Secret Path
@@ -179,7 +197,7 @@ Available infrastructure integration options:
 
 ### Project Roles
 - **Button**: `+ Add Role`
-- **Search bar**: `Search project roles...`
+- **Search tag**: `Search project roles...`
 - **Table Columns**:
   - Name
   - Slug
@@ -245,7 +263,7 @@ Available infrastructure integration options:
   - Actions: Move | Edit | Copy | Delete
 - **Secret Tags**
   - Button: `+ Create Tag`
-  - Search bar: `Search tags...`
+  - Search tag: `Search tags...`
 - **Enforce Capitalization** (toggle)
 - **Allow Secret Sharing** (toggle)
 - **Show Secret Snapshots (Legacy)** (toggle)

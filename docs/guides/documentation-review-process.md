@@ -1,3 +1,20 @@
+---
+id: documentation-review-process
+title: Documentation Review Process
+type: api
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags:
+- api
+priority: high
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 ***
 
 title: "Documentation Review Process"
@@ -47,10 +64,10 @@ Documentation updates should be included in the same pull request as code change
 
 ```bash
 # Run Markdown linting to check style and formatting
-npm run lint:md
+bun run lint:md
 
 # Run link checking to verify all links are valid
-npm run lint:links
+bun run lint:links
 ```
 
 ### Pull Request Contents

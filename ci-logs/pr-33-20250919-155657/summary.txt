@@ -1,0 +1,508 @@
+PR #33 failing checks:
+
+- Docs :: Status	docs-status
+- Docs :: Status	docs-status
+- Documentation :: Structure	Validation
+- Lint :: Python	Linting
+- Verify :: Alignment	verify-alignment
+- Verify :: Alignment	verify-alignment
+- Web :: Tests	playwright
+- PR :: Smoke	Tests
+
+--- Logs Preview (first 60 lines per job) ---
+
+===== Docs_Status-docs-status-50827167642.log =====
+docs-status	Set up job	﻿2025-09-19T23:24:38.4365955Z Current runner version: '2.328.0'
+docs-status	Set up job	2025-09-19T23:24:38.4389442Z ##[group]Runner Image Provisioner
+docs-status	Set up job	2025-09-19T23:24:38.4390283Z Hosted Compute Agent
+docs-status	Set up job	2025-09-19T23:24:38.4390886Z Version: 20250829.383
+docs-status	Set up job	2025-09-19T23:24:38.4391517Z Commit: 27cb235aab5b0e52e153a26cd86b4742e89dac5d
+docs-status	Set up job	2025-09-19T23:24:38.4392217Z Build Date: 2025-08-29T13:48:48Z
+docs-status	Set up job	2025-09-19T23:24:38.4392829Z ##[endgroup]
+docs-status	Set up job	2025-09-19T23:24:38.4393412Z ##[group]Operating System
+docs-status	Set up job	2025-09-19T23:24:38.4393939Z Ubuntu
+docs-status	Set up job	2025-09-19T23:24:38.4394466Z 24.04.3
+docs-status	Set up job	2025-09-19T23:24:38.4394978Z LTS
+docs-status	Set up job	2025-09-19T23:24:38.4395462Z ##[endgroup]
+docs-status	Set up job	2025-09-19T23:24:38.4395918Z ##[group]Runner Image
+docs-status	Set up job	2025-09-19T23:24:38.4396849Z Image: ubuntu-24.04
+docs-status	Set up job	2025-09-19T23:24:38.4397428Z Version: 20250907.24.1
+docs-status	Set up job	2025-09-19T23:24:38.4398408Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20250907.24/images/ubuntu/Ubuntu2404-Readme.md
+docs-status	Set up job	2025-09-19T23:24:38.4399867Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20250907.24
+docs-status	Set up job	2025-09-19T23:24:38.4401032Z ##[endgroup]
+docs-status	Set up job	2025-09-19T23:24:38.4402158Z ##[group]GITHUB_TOKEN Permissions
+docs-status	Set up job	2025-09-19T23:24:38.4403900Z Contents: read
+docs-status	Set up job	2025-09-19T23:24:38.4404533Z Metadata: read
+docs-status	Set up job	2025-09-19T23:24:38.4405041Z Packages: read
+docs-status	Set up job	2025-09-19T23:24:38.4405500Z ##[endgroup]
+docs-status	Set up job	2025-09-19T23:24:38.4407741Z Secret source: Actions
+docs-status	Set up job	2025-09-19T23:24:38.4408439Z Prepare workflow directory
+docs-status	Set up job	2025-09-19T23:24:38.4743019Z Prepare all required actions
+docs-status	Set up job	2025-09-19T23:24:38.4798938Z Getting action download info
+docs-status	Set up job	2025-09-19T23:24:38.9438839Z Download action repository 'actions/checkout@v4' (SHA:08eba0b27e820071cde6df949e0beb9ba4906955)
+docs-status	Set up job	2025-09-19T23:24:39.1384057Z Download action repository 'actions/setup-python@v5' (SHA:a26af69be951a213d495a4c3e4e4022e16d87065)
+docs-status	Set up job	2025-09-19T23:24:39.2538539Z Download action repository 'actions/upload-artifact@v4' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+docs-status	Set up job	2025-09-19T23:24:39.4469973Z Complete job name: docs-status
+docs-status	Checkout	﻿2025-09-19T23:24:39.5153973Z ##[group]Run actions/checkout@v4
+docs-status	Checkout	2025-09-19T23:24:39.5154837Z with:
+docs-status	Checkout	2025-09-19T23:24:39.5155292Z   repository: verlyn13/journal
+docs-status	Checkout	2025-09-19T23:24:39.5155951Z   token: ***
+docs-status	Checkout	2025-09-19T23:24:39.5156341Z   ssh-strict: true
+docs-status	Checkout	2025-09-19T23:24:39.5156931Z   ssh-user: git
+docs-status	Checkout	2025-09-19T23:24:39.5157361Z   persist-credentials: true
+docs-status	Checkout	2025-09-19T23:24:39.5157828Z   clean: true
+docs-status	Checkout	2025-09-19T23:24:39.5158245Z   sparse-checkout-cone-mode: true
+docs-status	Checkout	2025-09-19T23:24:39.5158736Z   fetch-depth: 1
+docs-status	Checkout	2025-09-19T23:24:39.5159135Z   fetch-tags: false
+docs-status	Checkout	2025-09-19T23:24:39.5159541Z   show-progress: true
+docs-status	Checkout	2025-09-19T23:24:39.5159956Z   lfs: false
+docs-status	Checkout	2025-09-19T23:24:39.5160342Z   submodules: false
+docs-status	Checkout	2025-09-19T23:24:39.5160770Z   set-safe-directory: true
+docs-status	Checkout	2025-09-19T23:24:39.5161758Z ##[endgroup]
+docs-status	Checkout	2025-09-19T23:24:39.6240665Z Syncing repository: verlyn13/journal
+docs-status	Checkout	2025-09-19T23:24:39.6243421Z ##[group]Getting Git version info
+docs-status	Checkout	2025-09-19T23:24:39.6244548Z Working directory is '/home/runner/work/journal/journal'
+docs-status	Checkout	2025-09-19T23:24:39.6246119Z [command]/usr/bin/git version
+docs-status	Checkout	2025-09-19T23:24:39.6324019Z git version 2.51.0
+docs-status	Checkout	2025-09-19T23:24:39.6350238Z ##[endgroup]
+docs-status	Checkout	2025-09-19T23:24:39.6365705Z Temporarily overriding HOME='/home/runner/work/_temp/05c00256-9c0e-49bf-9409-9f8a5dd411a9' before making global git config changes
+docs-status	Checkout	2025-09-19T23:24:39.6368313Z Adding repository directory to the temporary git global config as a safe directory
+docs-status	Checkout	2025-09-19T23:24:39.6379565Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/journal/journal
+docs-status	Checkout	2025-09-19T23:24:39.6416051Z Deleting the contents of '/home/runner/work/journal/journal'
+docs-status	Checkout	2025-09-19T23:24:39.6420113Z ##[group]Initializing the repository
+docs-status	Checkout	2025-09-19T23:24:39.6424502Z [command]/usr/bin/git init /home/runner/work/journal/journal
+docs-status	Checkout	2025-09-19T23:24:39.6526939Z hint: Using 'master' as the name for the initial branch. This default branch name
+
+===== Docs_Status-docs-status-50827169327.log =====
+docs-status	Set up job	﻿2025-09-19T23:24:40.4715455Z Current runner version: '2.328.0'
+docs-status	Set up job	2025-09-19T23:24:40.4751381Z ##[group]Runner Image Provisioner
+docs-status	Set up job	2025-09-19T23:24:40.4752757Z Hosted Compute Agent
+docs-status	Set up job	2025-09-19T23:24:40.4753571Z Version: 20250829.383
+docs-status	Set up job	2025-09-19T23:24:40.4754768Z Commit: 27cb235aab5b0e52e153a26cd86b4742e89dac5d
+docs-status	Set up job	2025-09-19T23:24:40.4756033Z Build Date: 2025-08-29T13:48:48Z
+docs-status	Set up job	2025-09-19T23:24:40.4756911Z ##[endgroup]
+docs-status	Set up job	2025-09-19T23:24:40.4757718Z ##[group]Operating System
+docs-status	Set up job	2025-09-19T23:24:40.4758688Z Ubuntu
+docs-status	Set up job	2025-09-19T23:24:40.4759488Z 24.04.3
+docs-status	Set up job	2025-09-19T23:24:40.4760147Z LTS
+docs-status	Set up job	2025-09-19T23:24:40.4761008Z ##[endgroup]
+docs-status	Set up job	2025-09-19T23:24:40.4761750Z ##[group]Runner Image
+docs-status	Set up job	2025-09-19T23:24:40.4762613Z Image: ubuntu-24.04
+docs-status	Set up job	2025-09-19T23:24:40.4763562Z Version: 20250907.24.1
+docs-status	Set up job	2025-09-19T23:24:40.4765374Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20250907.24/images/ubuntu/Ubuntu2404-Readme.md
+docs-status	Set up job	2025-09-19T23:24:40.4767803Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20250907.24
+docs-status	Set up job	2025-09-19T23:24:40.4769705Z ##[endgroup]
+docs-status	Set up job	2025-09-19T23:24:40.4771447Z ##[group]GITHUB_TOKEN Permissions
+docs-status	Set up job	2025-09-19T23:24:40.4773886Z Contents: read
+docs-status	Set up job	2025-09-19T23:24:40.4774914Z Metadata: read
+docs-status	Set up job	2025-09-19T23:24:40.4775946Z Packages: read
+docs-status	Set up job	2025-09-19T23:24:40.4776693Z ##[endgroup]
+docs-status	Set up job	2025-09-19T23:24:40.4779652Z Secret source: Actions
+docs-status	Set up job	2025-09-19T23:24:40.4780675Z Prepare workflow directory
+docs-status	Set up job	2025-09-19T23:24:40.5241380Z Prepare all required actions
+docs-status	Set up job	2025-09-19T23:24:40.5298432Z Getting action download info
+docs-status	Set up job	2025-09-19T23:24:40.8056241Z Download action repository 'actions/checkout@v4' (SHA:08eba0b27e820071cde6df949e0beb9ba4906955)
+docs-status	Set up job	2025-09-19T23:24:40.9781112Z Download action repository 'actions/setup-python@v5' (SHA:a26af69be951a213d495a4c3e4e4022e16d87065)
+docs-status	Set up job	2025-09-19T23:24:41.1790762Z Download action repository 'actions/upload-artifact@v4' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+docs-status	Set up job	2025-09-19T23:24:41.5692371Z Complete job name: docs-status
+docs-status	Checkout	﻿2025-09-19T23:24:41.6552830Z ##[group]Run actions/checkout@v4
+docs-status	Checkout	2025-09-19T23:24:41.6554358Z with:
+docs-status	Checkout	2025-09-19T23:24:41.6555146Z   repository: verlyn13/journal
+docs-status	Checkout	2025-09-19T23:24:41.6556404Z   token: ***
+docs-status	Checkout	2025-09-19T23:24:41.6557151Z   ssh-strict: true
+docs-status	Checkout	2025-09-19T23:24:41.6557949Z   ssh-user: git
+docs-status	Checkout	2025-09-19T23:24:41.6558762Z   persist-credentials: true
+docs-status	Checkout	2025-09-19T23:24:41.6559678Z   clean: true
+docs-status	Checkout	2025-09-19T23:24:41.6560503Z   sparse-checkout-cone-mode: true
+docs-status	Checkout	2025-09-19T23:24:41.6561493Z   fetch-depth: 1
+docs-status	Checkout	2025-09-19T23:24:41.6562289Z   fetch-tags: false
+docs-status	Checkout	2025-09-19T23:24:41.6563094Z   show-progress: true
+docs-status	Checkout	2025-09-19T23:24:41.6563924Z   lfs: false
+docs-status	Checkout	2025-09-19T23:24:41.6565023Z   submodules: false
+docs-status	Checkout	2025-09-19T23:24:41.6565880Z   set-safe-directory: true
+docs-status	Checkout	2025-09-19T23:24:41.6567077Z ##[endgroup]
+docs-status	Checkout	2025-09-19T23:24:41.7678807Z Syncing repository: verlyn13/journal
+docs-status	Checkout	2025-09-19T23:24:41.7681552Z ##[group]Getting Git version info
+docs-status	Checkout	2025-09-19T23:24:41.7682899Z Working directory is '/home/runner/work/journal/journal'
+docs-status	Checkout	2025-09-19T23:24:41.7685249Z [command]/usr/bin/git version
+docs-status	Checkout	2025-09-19T23:24:41.7759643Z git version 2.51.0
+docs-status	Checkout	2025-09-19T23:24:41.7786120Z ##[endgroup]
+docs-status	Checkout	2025-09-19T23:24:41.7800802Z Temporarily overriding HOME='/home/runner/work/_temp/21657095-44a9-47aa-bd74-7affc141a601' before making global git config changes
+docs-status	Checkout	2025-09-19T23:24:41.7803609Z Adding repository directory to the temporary git global config as a safe directory
+docs-status	Checkout	2025-09-19T23:24:41.7806501Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/journal/journal
+docs-status	Checkout	2025-09-19T23:24:41.7846113Z Deleting the contents of '/home/runner/work/journal/journal'
+docs-status	Checkout	2025-09-19T23:24:41.7849963Z ##[group]Initializing the repository
+docs-status	Checkout	2025-09-19T23:24:41.7853629Z [command]/usr/bin/git init /home/runner/work/journal/journal
+docs-status	Checkout	2025-09-19T23:24:41.7968053Z hint: Using 'master' as the name for the initial branch. This default branch name
+
+===== Documentation_Structure_Validation-Validate_Documentation_Structure-50827169312.log =====
+Validate Documentation Structure	Set up job	﻿2025-09-19T23:24:43.4789228Z Current runner version: '2.328.0'
+Validate Documentation Structure	Set up job	2025-09-19T23:24:43.4823953Z ##[group]Runner Image Provisioner
+Validate Documentation Structure	Set up job	2025-09-19T23:24:43.4825607Z Hosted Compute Agent
+Validate Documentation Structure	Set up job	2025-09-19T23:24:43.4826499Z Version: 20250829.383
+Validate Documentation Structure	Set up job	2025-09-19T23:24:43.4827505Z Commit: 27cb235aab5b0e52e153a26cd86b4742e89dac5d
+Validate Documentation Structure	Set up job	2025-09-19T23:24:43.4828557Z Build Date: 2025-08-29T13:48:48Z
+Validate Documentation Structure	Set up job	2025-09-19T23:24:43.4829534Z ##[endgroup]
+Validate Documentation Structure	Set up job	2025-09-19T23:24:43.4830426Z ##[group]Operating System
+Validate Documentation Structure	Set up job	2025-09-19T23:24:43.4831382Z Ubuntu
+Validate Documentation Structure	Set up job	2025-09-19T23:24:43.4832343Z 24.04.3
+Validate Documentation Structure	Set up job	2025-09-19T23:24:43.4833211Z LTS
+Validate Documentation Structure	Set up job	2025-09-19T23:24:43.4834010Z ##[endgroup]
+Validate Documentation Structure	Set up job	2025-09-19T23:24:43.4835002Z ##[group]Runner Image
+Validate Documentation Structure	Set up job	2025-09-19T23:24:43.4836216Z Image: ubuntu-24.04
+Validate Documentation Structure	Set up job	2025-09-19T23:24:43.4837178Z Version: 20250907.24.1
+Validate Documentation Structure	Set up job	2025-09-19T23:24:43.4838951Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20250907.24/images/ubuntu/Ubuntu2404-Readme.md
+Validate Documentation Structure	Set up job	2025-09-19T23:24:43.4841489Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20250907.24
+Validate Documentation Structure	Set up job	2025-09-19T23:24:43.4843521Z ##[endgroup]
+Validate Documentation Structure	Set up job	2025-09-19T23:24:43.4845763Z ##[group]GITHUB_TOKEN Permissions
+Validate Documentation Structure	Set up job	2025-09-19T23:24:43.4849087Z Contents: read
+Validate Documentation Structure	Set up job	2025-09-19T23:24:43.4850207Z Metadata: read
+Validate Documentation Structure	Set up job	2025-09-19T23:24:43.4851150Z Packages: read
+Validate Documentation Structure	Set up job	2025-09-19T23:24:43.4852006Z ##[endgroup]
+Validate Documentation Structure	Set up job	2025-09-19T23:24:43.4855462Z Secret source: Actions
+Validate Documentation Structure	Set up job	2025-09-19T23:24:43.4857094Z Prepare workflow directory
+Validate Documentation Structure	Set up job	2025-09-19T23:24:43.5228430Z Prepare all required actions
+Validate Documentation Structure	Set up job	2025-09-19T23:24:43.5284511Z Getting action download info
+Validate Documentation Structure	Set up job	2025-09-19T23:24:43.8957622Z Download action repository 'actions/checkout@v4' (SHA:08eba0b27e820071cde6df949e0beb9ba4906955)
+Validate Documentation Structure	Set up job	2025-09-19T23:24:44.0695440Z Download action repository 'astral-sh/setup-uv@v4' (SHA:38f3f104447c67c051c4a08e39b64a148898af3a)
+Validate Documentation Structure	Set up job	2025-09-19T23:24:44.6143865Z Download action repository 'actions/upload-artifact@v4' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+Validate Documentation Structure	Set up job	2025-09-19T23:24:44.8083512Z Complete job name: Validate Documentation Structure
+Validate Documentation Structure	Run actions/checkout@v4	﻿2025-09-19T23:24:44.8802377Z ##[group]Run actions/checkout@v4
+Validate Documentation Structure	Run actions/checkout@v4	2025-09-19T23:24:44.8803320Z with:
+Validate Documentation Structure	Run actions/checkout@v4	2025-09-19T23:24:44.8803761Z   repository: verlyn13/journal
+Validate Documentation Structure	Run actions/checkout@v4	2025-09-19T23:24:44.8804802Z   token: ***
+Validate Documentation Structure	Run actions/checkout@v4	2025-09-19T23:24:44.8805229Z   ssh-strict: true
+Validate Documentation Structure	Run actions/checkout@v4	2025-09-19T23:24:44.8805644Z   ssh-user: git
+Validate Documentation Structure	Run actions/checkout@v4	2025-09-19T23:24:44.8806068Z   persist-credentials: true
+Validate Documentation Structure	Run actions/checkout@v4	2025-09-19T23:24:44.8806545Z   clean: true
+Validate Documentation Structure	Run actions/checkout@v4	2025-09-19T23:24:44.8806968Z   sparse-checkout-cone-mode: true
+Validate Documentation Structure	Run actions/checkout@v4	2025-09-19T23:24:44.8807482Z   fetch-depth: 1
+Validate Documentation Structure	Run actions/checkout@v4	2025-09-19T23:24:44.8807882Z   fetch-tags: false
+Validate Documentation Structure	Run actions/checkout@v4	2025-09-19T23:24:44.8808316Z   show-progress: true
+Validate Documentation Structure	Run actions/checkout@v4	2025-09-19T23:24:44.8808744Z   lfs: false
+Validate Documentation Structure	Run actions/checkout@v4	2025-09-19T23:24:44.8809124Z   submodules: false
+Validate Documentation Structure	Run actions/checkout@v4	2025-09-19T23:24:44.8809552Z   set-safe-directory: true
+Validate Documentation Structure	Run actions/checkout@v4	2025-09-19T23:24:44.8810308Z ##[endgroup]
+Validate Documentation Structure	Run actions/checkout@v4	2025-09-19T23:24:44.9882883Z Syncing repository: verlyn13/journal
+Validate Documentation Structure	Run actions/checkout@v4	2025-09-19T23:24:44.9884961Z ##[group]Getting Git version info
+Validate Documentation Structure	Run actions/checkout@v4	2025-09-19T23:24:44.9885711Z Working directory is '/home/runner/work/journal/journal'
+Validate Documentation Structure	Run actions/checkout@v4	2025-09-19T23:24:44.9886684Z [command]/usr/bin/git version
+Validate Documentation Structure	Run actions/checkout@v4	2025-09-19T23:24:44.9957930Z git version 2.51.0
+Validate Documentation Structure	Run actions/checkout@v4	2025-09-19T23:24:44.9983210Z ##[endgroup]
+Validate Documentation Structure	Run actions/checkout@v4	2025-09-19T23:24:44.9997173Z Temporarily overriding HOME='/home/runner/work/_temp/28e5d57c-26c3-4c10-b09f-04a069d27b24' before making global git config changes
+Validate Documentation Structure	Run actions/checkout@v4	2025-09-19T23:24:44.9998569Z Adding repository directory to the temporary git global config as a safe directory
+Validate Documentation Structure	Run actions/checkout@v4	2025-09-19T23:24:45.0002132Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/journal/journal
+Validate Documentation Structure	Run actions/checkout@v4	2025-09-19T23:24:45.0037666Z Deleting the contents of '/home/runner/work/journal/journal'
+Validate Documentation Structure	Run actions/checkout@v4	2025-09-19T23:24:45.0042149Z ##[group]Initializing the repository
+Validate Documentation Structure	Run actions/checkout@v4	2025-09-19T23:24:45.0046977Z [command]/usr/bin/git init /home/runner/work/journal/journal
+Validate Documentation Structure	Run actions/checkout@v4	2025-09-19T23:24:45.0142460Z hint: Using 'master' as the name for the initial branch. This default branch name
+
+===== Lint-Python_Linting-50827169485.log =====
+Python Linting	Set up job	﻿2025-09-19T23:24:41.4563435Z Current runner version: '2.328.0'
+Python Linting	Set up job	2025-09-19T23:24:41.4598151Z ##[group]Runner Image Provisioner
+Python Linting	Set up job	2025-09-19T23:24:41.4599571Z Hosted Compute Agent
+Python Linting	Set up job	2025-09-19T23:24:41.4600465Z Version: 20250829.383
+Python Linting	Set up job	2025-09-19T23:24:41.4601486Z Commit: 27cb235aab5b0e52e153a26cd86b4742e89dac5d
+Python Linting	Set up job	2025-09-19T23:24:41.4603023Z Build Date: 2025-08-29T13:48:48Z
+Python Linting	Set up job	2025-09-19T23:24:41.4604061Z ##[endgroup]
+Python Linting	Set up job	2025-09-19T23:24:41.4604919Z ##[group]Operating System
+Python Linting	Set up job	2025-09-19T23:24:41.4606036Z Ubuntu
+Python Linting	Set up job	2025-09-19T23:24:41.4606825Z 24.04.3
+Python Linting	Set up job	2025-09-19T23:24:41.4607601Z LTS
+Python Linting	Set up job	2025-09-19T23:24:41.4608481Z ##[endgroup]
+Python Linting	Set up job	2025-09-19T23:24:41.4609265Z ##[group]Runner Image
+Python Linting	Set up job	2025-09-19T23:24:41.4610251Z Image: ubuntu-24.04
+Python Linting	Set up job	2025-09-19T23:24:41.4611271Z Version: 20250907.24.1
+Python Linting	Set up job	2025-09-19T23:24:41.4613284Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20250907.24/images/ubuntu/Ubuntu2404-Readme.md
+Python Linting	Set up job	2025-09-19T23:24:41.4615806Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20250907.24
+Python Linting	Set up job	2025-09-19T23:24:41.4617976Z ##[endgroup]
+Python Linting	Set up job	2025-09-19T23:24:41.4620010Z ##[group]GITHUB_TOKEN Permissions
+Python Linting	Set up job	2025-09-19T23:24:41.4623024Z Contents: read
+Python Linting	Set up job	2025-09-19T23:24:41.4624094Z Metadata: read
+Python Linting	Set up job	2025-09-19T23:24:41.4624912Z Packages: read
+Python Linting	Set up job	2025-09-19T23:24:41.4625767Z ##[endgroup]
+Python Linting	Set up job	2025-09-19T23:24:41.4629142Z Secret source: Actions
+Python Linting	Set up job	2025-09-19T23:24:41.4630229Z Prepare workflow directory
+Python Linting	Set up job	2025-09-19T23:24:41.5101877Z Prepare all required actions
+Python Linting	Set up job	2025-09-19T23:24:41.5159901Z Getting action download info
+Python Linting	Set up job	2025-09-19T23:24:41.7242406Z Download action repository 'actions/checkout@v4' (SHA:08eba0b27e820071cde6df949e0beb9ba4906955)
+Python Linting	Set up job	2025-09-19T23:24:41.9027084Z Download action repository 'astral-sh/ruff-action@v3' (SHA:57714a7c8a2e59f32539362ba31877a1957dded1)
+Python Linting	Set up job	2025-09-19T23:24:42.1179389Z Download action repository 'actions/upload-artifact@v4' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+Python Linting	Set up job	2025-09-19T23:24:42.3069139Z Complete job name: Python Linting
+Python Linting	Run actions/checkout@v4	﻿2025-09-19T23:24:42.3725287Z ##[group]Run actions/checkout@v4
+Python Linting	Run actions/checkout@v4	2025-09-19T23:24:42.3726138Z with:
+Python Linting	Run actions/checkout@v4	2025-09-19T23:24:42.3726537Z   repository: verlyn13/journal
+Python Linting	Run actions/checkout@v4	2025-09-19T23:24:42.3727149Z   token: ***
+Python Linting	Run actions/checkout@v4	2025-09-19T23:24:42.3727534Z   ssh-strict: true
+Python Linting	Run actions/checkout@v4	2025-09-19T23:24:42.3727929Z   ssh-user: git
+Python Linting	Run actions/checkout@v4	2025-09-19T23:24:42.3728329Z   persist-credentials: true
+Python Linting	Run actions/checkout@v4	2025-09-19T23:24:42.3728780Z   clean: true
+Python Linting	Run actions/checkout@v4	2025-09-19T23:24:42.3729176Z   sparse-checkout-cone-mode: true
+Python Linting	Run actions/checkout@v4	2025-09-19T23:24:42.3729648Z   fetch-depth: 1
+Python Linting	Run actions/checkout@v4	2025-09-19T23:24:42.3730033Z   fetch-tags: false
+Python Linting	Run actions/checkout@v4	2025-09-19T23:24:42.3730430Z   show-progress: true
+Python Linting	Run actions/checkout@v4	2025-09-19T23:24:42.3730843Z   lfs: false
+Python Linting	Run actions/checkout@v4	2025-09-19T23:24:42.3731213Z   submodules: false
+Python Linting	Run actions/checkout@v4	2025-09-19T23:24:42.3731606Z   set-safe-directory: true
+Python Linting	Run actions/checkout@v4	2025-09-19T23:24:42.3732434Z ##[endgroup]
+Python Linting	Run actions/checkout@v4	2025-09-19T23:24:42.4826708Z Syncing repository: verlyn13/journal
+Python Linting	Run actions/checkout@v4	2025-09-19T23:24:42.4832867Z ##[group]Getting Git version info
+Python Linting	Run actions/checkout@v4	2025-09-19T23:24:42.4834059Z Working directory is '/home/runner/work/journal/journal'
+Python Linting	Run actions/checkout@v4	2025-09-19T23:24:42.4835910Z [command]/usr/bin/git version
+Python Linting	Run actions/checkout@v4	2025-09-19T23:24:42.4892783Z git version 2.51.0
+Python Linting	Run actions/checkout@v4	2025-09-19T23:24:42.4923024Z ##[endgroup]
+Python Linting	Run actions/checkout@v4	2025-09-19T23:24:42.4934068Z Temporarily overriding HOME='/home/runner/work/_temp/f9dc4873-f3d5-4568-8d27-50831542cfa6' before making global git config changes
+Python Linting	Run actions/checkout@v4	2025-09-19T23:24:42.4938164Z Adding repository directory to the temporary git global config as a safe directory
+Python Linting	Run actions/checkout@v4	2025-09-19T23:24:42.4940144Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/journal/journal
+Python Linting	Run actions/checkout@v4	2025-09-19T23:24:42.4973390Z Deleting the contents of '/home/runner/work/journal/journal'
+Python Linting	Run actions/checkout@v4	2025-09-19T23:24:42.4976443Z ##[group]Initializing the repository
+Python Linting	Run actions/checkout@v4	2025-09-19T23:24:42.4979952Z [command]/usr/bin/git init /home/runner/work/journal/journal
+Python Linting	Run actions/checkout@v4	2025-09-19T23:24:42.5069623Z hint: Using 'master' as the name for the initial branch. This default branch name
+
+===== PR_Smoke_Tests-Phase_1_Gate_-_Database_Probe-50827174710.log =====
+Phase 1 Gate - Database Probe	Set up job	﻿2025-09-19T23:24:48.6749274Z Current runner version: '2.328.0'
+Phase 1 Gate - Database Probe	Set up job	2025-09-19T23:24:48.6772152Z ##[group]Runner Image Provisioner
+Phase 1 Gate - Database Probe	Set up job	2025-09-19T23:24:48.6772991Z Hosted Compute Agent
+Phase 1 Gate - Database Probe	Set up job	2025-09-19T23:24:48.6773511Z Version: 20250829.383
+Phase 1 Gate - Database Probe	Set up job	2025-09-19T23:24:48.6774213Z Commit: 27cb235aab5b0e52e153a26cd86b4742e89dac5d
+Phase 1 Gate - Database Probe	Set up job	2025-09-19T23:24:48.6774902Z Build Date: 2025-08-29T13:48:48Z
+Phase 1 Gate - Database Probe	Set up job	2025-09-19T23:24:48.6775486Z ##[endgroup]
+Phase 1 Gate - Database Probe	Set up job	2025-09-19T23:24:48.6776191Z ##[group]Operating System
+Phase 1 Gate - Database Probe	Set up job	2025-09-19T23:24:48.6776804Z Ubuntu
+Phase 1 Gate - Database Probe	Set up job	2025-09-19T23:24:48.6777285Z 24.04.3
+Phase 1 Gate - Database Probe	Set up job	2025-09-19T23:24:48.6777754Z LTS
+Phase 1 Gate - Database Probe	Set up job	2025-09-19T23:24:48.6778265Z ##[endgroup]
+Phase 1 Gate - Database Probe	Set up job	2025-09-19T23:24:48.6778730Z ##[group]Runner Image
+Phase 1 Gate - Database Probe	Set up job	2025-09-19T23:24:48.6779310Z Image: ubuntu-24.04
+Phase 1 Gate - Database Probe	Set up job	2025-09-19T23:24:48.6779797Z Version: 20250907.24.1
+Phase 1 Gate - Database Probe	Set up job	2025-09-19T23:24:48.6780790Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20250907.24/images/ubuntu/Ubuntu2404-Readme.md
+Phase 1 Gate - Database Probe	Set up job	2025-09-19T23:24:48.6782070Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20250907.24
+Phase 1 Gate - Database Probe	Set up job	2025-09-19T23:24:48.6783381Z ##[endgroup]
+Phase 1 Gate - Database Probe	Set up job	2025-09-19T23:24:48.6784479Z ##[group]GITHUB_TOKEN Permissions
+Phase 1 Gate - Database Probe	Set up job	2025-09-19T23:24:48.6786391Z Contents: read
+Phase 1 Gate - Database Probe	Set up job	2025-09-19T23:24:48.6786953Z Metadata: read
+Phase 1 Gate - Database Probe	Set up job	2025-09-19T23:24:48.6787568Z Packages: read
+Phase 1 Gate - Database Probe	Set up job	2025-09-19T23:24:48.6788064Z ##[endgroup]
+Phase 1 Gate - Database Probe	Set up job	2025-09-19T23:24:48.6789966Z Secret source: Actions
+Phase 1 Gate - Database Probe	Set up job	2025-09-19T23:24:48.6790756Z Prepare workflow directory
+Phase 1 Gate - Database Probe	Set up job	2025-09-19T23:24:48.7221691Z Prepare all required actions
+Phase 1 Gate - Database Probe	Set up job	2025-09-19T23:24:48.7258493Z Getting action download info
+Phase 1 Gate - Database Probe	Set up job	2025-09-19T23:24:49.1176462Z Download action repository 'actions/checkout@v4' (SHA:08eba0b27e820071cde6df949e0beb9ba4906955)
+Phase 1 Gate - Database Probe	Set up job	2025-09-19T23:24:49.2876275Z Download action repository 'actions/setup-python@v5' (SHA:a26af69be951a213d495a4c3e4e4022e16d87065)
+Phase 1 Gate - Database Probe	Set up job	2025-09-19T23:24:49.4010525Z Download action repository 'astral-sh/setup-uv@v4' (SHA:38f3f104447c67c051c4a08e39b64a148898af3a)
+Phase 1 Gate - Database Probe	Set up job	2025-09-19T23:24:50.1733451Z Complete job name: Phase 1 Gate - Database Probe
+Phase 1 Gate - Database Probe	Initialize containers	﻿2025-09-19T23:24:50.2218306Z ##[group]Checking docker version
+Phase 1 Gate - Database Probe	Initialize containers	2025-09-19T23:24:50.2231354Z ##[command]/usr/bin/docker version --format '{{.Server.APIVersion}}'
+Phase 1 Gate - Database Probe	Initialize containers	2025-09-19T23:24:51.3820938Z '1.48'
+Phase 1 Gate - Database Probe	Initialize containers	2025-09-19T23:24:51.3836366Z Docker daemon API version: '1.48'
+Phase 1 Gate - Database Probe	Initialize containers	2025-09-19T23:24:51.3837590Z ##[command]/usr/bin/docker version --format '{{.Client.APIVersion}}'
+Phase 1 Gate - Database Probe	Initialize containers	2025-09-19T23:24:51.3993852Z '1.48'
+Phase 1 Gate - Database Probe	Initialize containers	2025-09-19T23:24:51.4007609Z Docker client API version: '1.48'
+Phase 1 Gate - Database Probe	Initialize containers	2025-09-19T23:24:51.4012871Z ##[endgroup]
+Phase 1 Gate - Database Probe	Initialize containers	2025-09-19T23:24:51.4015870Z ##[group]Clean up resources from previous jobs
+Phase 1 Gate - Database Probe	Initialize containers	2025-09-19T23:24:51.4022218Z ##[command]/usr/bin/docker ps --all --quiet --no-trunc --filter "label=87f9c1"
+Phase 1 Gate - Database Probe	Initialize containers	2025-09-19T23:24:51.4160312Z ##[command]/usr/bin/docker network prune --force --filter "label=87f9c1"
+Phase 1 Gate - Database Probe	Initialize containers	2025-09-19T23:24:51.4289762Z ##[endgroup]
+Phase 1 Gate - Database Probe	Initialize containers	2025-09-19T23:24:51.4290855Z ##[group]Create local container network
+Phase 1 Gate - Database Probe	Initialize containers	2025-09-19T23:24:51.4301846Z ##[command]/usr/bin/docker network create --label 87f9c1 github_network_fc51cfc9906a41b98c44ae7c79aefb86
+Phase 1 Gate - Database Probe	Initialize containers	2025-09-19T23:24:51.4784696Z 91087f429429edad93d28081dd4a83afd0047a4ce028fe2c475f530b479df311
+Phase 1 Gate - Database Probe	Initialize containers	2025-09-19T23:24:51.4803601Z ##[endgroup]
+Phase 1 Gate - Database Probe	Initialize containers	2025-09-19T23:24:51.4831230Z ##[group]Starting postgres service container
+Phase 1 Gate - Database Probe	Initialize containers	2025-09-19T23:24:51.4853730Z ##[command]/usr/bin/docker pull pgvector/pgvector:pg16@sha256:c3c84b85691a264aa3c5b8fc1d611e67d42b0cca8596e3d3d22dc2424c12c4e2
+Phase 1 Gate - Database Probe	Initialize containers	2025-09-19T23:24:52.0689367Z docker.io/pgvector/pgvector@sha256:c3c84b85691a264aa3c5b8fc1d611e67d42b0cca8596e3d3d22dc2424c12c4e2: Pulling from pgvector/pgvector
+Phase 1 Gate - Database Probe	Initialize containers	2025-09-19T23:24:52.2766900Z b1badc6e5066: Pulling fs layer
+Phase 1 Gate - Database Probe	Initialize containers	2025-09-19T23:24:52.2769165Z c9cbfca11d34: Pulling fs layer
+Phase 1 Gate - Database Probe	Initialize containers	2025-09-19T23:24:52.2769785Z a759c99e5d9c: Pulling fs layer
+Phase 1 Gate - Database Probe	Initialize containers	2025-09-19T23:24:52.2770263Z f40999643f83: Pulling fs layer
+Phase 1 Gate - Database Probe	Initialize containers	2025-09-19T23:24:52.2770743Z 2c9c8f27f94c: Pulling fs layer
+Phase 1 Gate - Database Probe	Initialize containers	2025-09-19T23:24:52.2771218Z 6019da469dd7: Pulling fs layer
+Phase 1 Gate - Database Probe	Initialize containers	2025-09-19T23:24:52.2771714Z 7960bd43e7e7: Pulling fs layer
+Phase 1 Gate - Database Probe	Initialize containers	2025-09-19T23:24:52.2772220Z f035bce43052: Pulling fs layer
+Phase 1 Gate - Database Probe	Initialize containers	2025-09-19T23:24:52.2772706Z b9daad206a85: Pulling fs layer
+Phase 1 Gate - Database Probe	Initialize containers	2025-09-19T23:24:52.2773227Z 84e9830491e9: Pulling fs layer
+
+===== Verify_Alignment-verify-alignment-50827167597.log =====
+verify-alignment	Set up job	﻿2025-09-19T23:24:38.5366600Z Current runner version: '2.328.0'
+verify-alignment	Set up job	2025-09-19T23:24:38.5390456Z ##[group]Runner Image Provisioner
+verify-alignment	Set up job	2025-09-19T23:24:38.5391289Z Hosted Compute Agent
+verify-alignment	Set up job	2025-09-19T23:24:38.5391793Z Version: 20250829.383
+verify-alignment	Set up job	2025-09-19T23:24:38.5392443Z Commit: 27cb235aab5b0e52e153a26cd86b4742e89dac5d
+verify-alignment	Set up job	2025-09-19T23:24:38.5393329Z Build Date: 2025-08-29T13:48:48Z
+verify-alignment	Set up job	2025-09-19T23:24:38.5393889Z ##[endgroup]
+verify-alignment	Set up job	2025-09-19T23:24:38.5394487Z ##[group]Operating System
+verify-alignment	Set up job	2025-09-19T23:24:38.5395031Z Ubuntu
+verify-alignment	Set up job	2025-09-19T23:24:38.5395502Z 24.04.3
+verify-alignment	Set up job	2025-09-19T23:24:38.5395918Z LTS
+verify-alignment	Set up job	2025-09-19T23:24:38.5396441Z ##[endgroup]
+verify-alignment	Set up job	2025-09-19T23:24:38.5396889Z ##[group]Runner Image
+verify-alignment	Set up job	2025-09-19T23:24:38.5397443Z Image: ubuntu-24.04
+verify-alignment	Set up job	2025-09-19T23:24:38.5398010Z Version: 20250907.24.1
+verify-alignment	Set up job	2025-09-19T23:24:38.5398949Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20250907.24/images/ubuntu/Ubuntu2404-Readme.md
+verify-alignment	Set up job	2025-09-19T23:24:38.5400263Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20250907.24
+verify-alignment	Set up job	2025-09-19T23:24:38.5401390Z ##[endgroup]
+verify-alignment	Set up job	2025-09-19T23:24:38.5402539Z ##[group]GITHUB_TOKEN Permissions
+verify-alignment	Set up job	2025-09-19T23:24:38.5404530Z Contents: read
+verify-alignment	Set up job	2025-09-19T23:24:38.5405056Z Metadata: read
+verify-alignment	Set up job	2025-09-19T23:24:38.5405652Z Packages: read
+verify-alignment	Set up job	2025-09-19T23:24:38.5406102Z ##[endgroup]
+verify-alignment	Set up job	2025-09-19T23:24:38.5408061Z Secret source: Actions
+verify-alignment	Set up job	2025-09-19T23:24:38.5408783Z Prepare workflow directory
+verify-alignment	Set up job	2025-09-19T23:24:38.5717872Z Prepare all required actions
+verify-alignment	Set up job	2025-09-19T23:24:38.5767468Z Getting action download info
+verify-alignment	Set up job	2025-09-19T23:24:39.0961627Z Download action repository 'actions/checkout@v4' (SHA:08eba0b27e820071cde6df949e0beb9ba4906955)
+verify-alignment	Set up job	2025-09-19T23:24:39.2947808Z Download action repository 'actions/setup-python@v5' (SHA:a26af69be951a213d495a4c3e4e4022e16d87065)
+verify-alignment	Set up job	2025-09-19T23:24:39.3831368Z Download action repository 'astral-sh/setup-uv@v4' (SHA:38f3f104447c67c051c4a08e39b64a148898af3a)
+verify-alignment	Set up job	2025-09-19T23:24:39.9546521Z Download action repository 'actions/upload-artifact@v4' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+verify-alignment	Set up job	2025-09-19T23:24:40.2118161Z Complete job name: verify-alignment
+verify-alignment	Run actions/checkout@v4	﻿2025-09-19T23:24:40.2799186Z ##[group]Run actions/checkout@v4
+verify-alignment	Run actions/checkout@v4	2025-09-19T23:24:40.2800010Z with:
+verify-alignment	Run actions/checkout@v4	2025-09-19T23:24:40.2800411Z   repository: verlyn13/journal
+verify-alignment	Run actions/checkout@v4	2025-09-19T23:24:40.2801019Z   token: ***
+verify-alignment	Run actions/checkout@v4	2025-09-19T23:24:40.2801397Z   ssh-strict: true
+verify-alignment	Run actions/checkout@v4	2025-09-19T23:24:40.2801779Z   ssh-user: git
+verify-alignment	Run actions/checkout@v4	2025-09-19T23:24:40.2802179Z   persist-credentials: true
+verify-alignment	Run actions/checkout@v4	2025-09-19T23:24:40.2802622Z   clean: true
+verify-alignment	Run actions/checkout@v4	2025-09-19T23:24:40.2803222Z   sparse-checkout-cone-mode: true
+verify-alignment	Run actions/checkout@v4	2025-09-19T23:24:40.2803733Z   fetch-depth: 1
+verify-alignment	Run actions/checkout@v4	2025-09-19T23:24:40.2804107Z   fetch-tags: false
+verify-alignment	Run actions/checkout@v4	2025-09-19T23:24:40.2804501Z   show-progress: true
+verify-alignment	Run actions/checkout@v4	2025-09-19T23:24:40.2804888Z   lfs: false
+verify-alignment	Run actions/checkout@v4	2025-09-19T23:24:40.2805255Z   submodules: false
+verify-alignment	Run actions/checkout@v4	2025-09-19T23:24:40.2805650Z   set-safe-directory: true
+verify-alignment	Run actions/checkout@v4	2025-09-19T23:24:40.2806330Z ##[endgroup]
+verify-alignment	Run actions/checkout@v4	2025-09-19T23:24:40.3890183Z Syncing repository: verlyn13/journal
+verify-alignment	Run actions/checkout@v4	2025-09-19T23:24:40.3892417Z ##[group]Getting Git version info
+verify-alignment	Run actions/checkout@v4	2025-09-19T23:24:40.3893386Z Working directory is '/home/runner/work/journal/journal'
+verify-alignment	Run actions/checkout@v4	2025-09-19T23:24:40.3894338Z [command]/usr/bin/git version
+verify-alignment	Run actions/checkout@v4	2025-09-19T23:24:40.3981132Z git version 2.51.0
+verify-alignment	Run actions/checkout@v4	2025-09-19T23:24:40.4006713Z ##[endgroup]
+verify-alignment	Run actions/checkout@v4	2025-09-19T23:24:40.4020603Z Temporarily overriding HOME='/home/runner/work/_temp/9c89b045-c57f-4a39-ba6c-164c497ed401' before making global git config changes
+verify-alignment	Run actions/checkout@v4	2025-09-19T23:24:40.4022753Z Adding repository directory to the temporary git global config as a safe directory
+verify-alignment	Run actions/checkout@v4	2025-09-19T23:24:40.4032404Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/journal/journal
+verify-alignment	Run actions/checkout@v4	2025-09-19T23:24:40.4067499Z Deleting the contents of '/home/runner/work/journal/journal'
+verify-alignment	Run actions/checkout@v4	2025-09-19T23:24:40.4071003Z ##[group]Initializing the repository
+verify-alignment	Run actions/checkout@v4	2025-09-19T23:24:40.4075009Z [command]/usr/bin/git init /home/runner/work/journal/journal
+
+===== Verify_Alignment-verify-alignment-50827169288.log =====
+verify-alignment	Set up job	﻿2025-09-19T23:24:40.3528711Z Current runner version: '2.328.0'
+verify-alignment	Set up job	2025-09-19T23:24:40.3562493Z ##[group]Runner Image Provisioner
+verify-alignment	Set up job	2025-09-19T23:24:40.3563935Z Hosted Compute Agent
+verify-alignment	Set up job	2025-09-19T23:24:40.3564950Z Version: 20250829.383
+verify-alignment	Set up job	2025-09-19T23:24:40.3565877Z Commit: 27cb235aab5b0e52e153a26cd86b4742e89dac5d
+verify-alignment	Set up job	2025-09-19T23:24:40.3567179Z Build Date: 2025-08-29T13:48:48Z
+verify-alignment	Set up job	2025-09-19T23:24:40.3568151Z ##[endgroup]
+verify-alignment	Set up job	2025-09-19T23:24:40.3569080Z ##[group]Operating System
+verify-alignment	Set up job	2025-09-19T23:24:40.3570221Z Ubuntu
+verify-alignment	Set up job	2025-09-19T23:24:40.3571239Z 24.04.3
+verify-alignment	Set up job	2025-09-19T23:24:40.3572013Z LTS
+verify-alignment	Set up job	2025-09-19T23:24:40.3572808Z ##[endgroup]
+verify-alignment	Set up job	2025-09-19T23:24:40.3573736Z ##[group]Runner Image
+verify-alignment	Set up job	2025-09-19T23:24:40.3574676Z Image: ubuntu-24.04
+verify-alignment	Set up job	2025-09-19T23:24:40.3575553Z Version: 20250907.24.1
+verify-alignment	Set up job	2025-09-19T23:24:40.3577425Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20250907.24/images/ubuntu/Ubuntu2404-Readme.md
+verify-alignment	Set up job	2025-09-19T23:24:40.3580170Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20250907.24
+verify-alignment	Set up job	2025-09-19T23:24:40.3582072Z ##[endgroup]
+verify-alignment	Set up job	2025-09-19T23:24:40.3583886Z ##[group]GITHUB_TOKEN Permissions
+verify-alignment	Set up job	2025-09-19T23:24:40.3586654Z Contents: read
+verify-alignment	Set up job	2025-09-19T23:24:40.3587442Z Metadata: read
+verify-alignment	Set up job	2025-09-19T23:24:40.3588217Z Packages: read
+verify-alignment	Set up job	2025-09-19T23:24:40.3589006Z ##[endgroup]
+verify-alignment	Set up job	2025-09-19T23:24:40.3592407Z Secret source: Actions
+verify-alignment	Set up job	2025-09-19T23:24:40.3593816Z Prepare workflow directory
+verify-alignment	Set up job	2025-09-19T23:24:40.3946006Z Prepare all required actions
+verify-alignment	Set up job	2025-09-19T23:24:40.4003670Z Getting action download info
+verify-alignment	Set up job	2025-09-19T23:24:40.7925791Z Download action repository 'actions/checkout@v4' (SHA:08eba0b27e820071cde6df949e0beb9ba4906955)
+verify-alignment	Set up job	2025-09-19T23:24:40.9875738Z Download action repository 'actions/setup-python@v5' (SHA:a26af69be951a213d495a4c3e4e4022e16d87065)
+verify-alignment	Set up job	2025-09-19T23:24:41.0663350Z Download action repository 'astral-sh/setup-uv@v4' (SHA:38f3f104447c67c051c4a08e39b64a148898af3a)
+verify-alignment	Set up job	2025-09-19T23:24:41.5662085Z Download action repository 'actions/upload-artifact@v4' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+verify-alignment	Set up job	2025-09-19T23:24:41.7594720Z Complete job name: verify-alignment
+verify-alignment	Run actions/checkout@v4	﻿2025-09-19T23:24:41.8307281Z ##[group]Run actions/checkout@v4
+verify-alignment	Run actions/checkout@v4	2025-09-19T23:24:41.8308210Z with:
+verify-alignment	Run actions/checkout@v4	2025-09-19T23:24:41.8308647Z   repository: verlyn13/journal
+verify-alignment	Run actions/checkout@v4	2025-09-19T23:24:41.8309539Z   token: ***
+verify-alignment	Run actions/checkout@v4	2025-09-19T23:24:41.8309977Z   ssh-strict: true
+verify-alignment	Run actions/checkout@v4	2025-09-19T23:24:41.8310417Z   ssh-user: git
+verify-alignment	Run actions/checkout@v4	2025-09-19T23:24:41.8310871Z   persist-credentials: true
+verify-alignment	Run actions/checkout@v4	2025-09-19T23:24:41.8311391Z   clean: true
+verify-alignment	Run actions/checkout@v4	2025-09-19T23:24:41.8311848Z   sparse-checkout-cone-mode: true
+verify-alignment	Run actions/checkout@v4	2025-09-19T23:24:41.8312411Z   fetch-depth: 1
+verify-alignment	Run actions/checkout@v4	2025-09-19T23:24:41.8312863Z   fetch-tags: false
+verify-alignment	Run actions/checkout@v4	2025-09-19T23:24:41.8313312Z   show-progress: true
+verify-alignment	Run actions/checkout@v4	2025-09-19T23:24:41.8313794Z   lfs: false
+verify-alignment	Run actions/checkout@v4	2025-09-19T23:24:41.8314197Z   submodules: false
+verify-alignment	Run actions/checkout@v4	2025-09-19T23:24:41.8314659Z   set-safe-directory: true
+verify-alignment	Run actions/checkout@v4	2025-09-19T23:24:41.8315402Z ##[endgroup]
+verify-alignment	Run actions/checkout@v4	2025-09-19T23:24:41.9408416Z Syncing repository: verlyn13/journal
+verify-alignment	Run actions/checkout@v4	2025-09-19T23:24:41.9410825Z ##[group]Getting Git version info
+verify-alignment	Run actions/checkout@v4	2025-09-19T23:24:41.9412155Z Working directory is '/home/runner/work/journal/journal'
+verify-alignment	Run actions/checkout@v4	2025-09-19T23:24:41.9414188Z [command]/usr/bin/git version
+verify-alignment	Run actions/checkout@v4	2025-09-19T23:24:41.9513678Z git version 2.51.0
+verify-alignment	Run actions/checkout@v4	2025-09-19T23:24:41.9539947Z ##[endgroup]
+verify-alignment	Run actions/checkout@v4	2025-09-19T23:24:41.9555375Z Temporarily overriding HOME='/home/runner/work/_temp/be847814-50e7-48c7-a5e5-84e67000420e' before making global git config changes
+verify-alignment	Run actions/checkout@v4	2025-09-19T23:24:41.9558557Z Adding repository directory to the temporary git global config as a safe directory
+verify-alignment	Run actions/checkout@v4	2025-09-19T23:24:41.9561209Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/journal/journal
+verify-alignment	Run actions/checkout@v4	2025-09-19T23:24:41.9594526Z Deleting the contents of '/home/runner/work/journal/journal'
+verify-alignment	Run actions/checkout@v4	2025-09-19T23:24:41.9597790Z ##[group]Initializing the repository
+verify-alignment	Run actions/checkout@v4	2025-09-19T23:24:41.9601771Z [command]/usr/bin/git init /home/runner/work/journal/journal
+
+===== Web_Tests-playwright-50827169373.log =====
+playwright	Set up job	﻿2025-09-19T23:24:43.2055116Z Current runner version: '2.328.0'
+playwright	Set up job	2025-09-19T23:24:43.2080790Z ##[group]Runner Image Provisioner
+playwright	Set up job	2025-09-19T23:24:43.2081613Z Hosted Compute Agent
+playwright	Set up job	2025-09-19T23:24:43.2082492Z Version: 20250829.383
+playwright	Set up job	2025-09-19T23:24:43.2083083Z Commit: 27cb235aab5b0e52e153a26cd86b4742e89dac5d
+playwright	Set up job	2025-09-19T23:24:43.2083819Z Build Date: 2025-08-29T13:48:48Z
+playwright	Set up job	2025-09-19T23:24:43.2084438Z ##[endgroup]
+playwright	Set up job	2025-09-19T23:24:43.2084990Z ##[group]Operating System
+playwright	Set up job	2025-09-19T23:24:43.2085521Z Ubuntu
+playwright	Set up job	2025-09-19T23:24:43.2086059Z 24.04.3
+playwright	Set up job	2025-09-19T23:24:43.2086552Z LTS
+playwright	Set up job	2025-09-19T23:24:43.2087006Z ##[endgroup]
+playwright	Set up job	2025-09-19T23:24:43.2087558Z ##[group]Runner Image
+playwright	Set up job	2025-09-19T23:24:43.2088115Z Image: ubuntu-24.04
+playwright	Set up job	2025-09-19T23:24:43.2088637Z Version: 20250907.24.1
+playwright	Set up job	2025-09-19T23:24:43.2089580Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20250907.24/images/ubuntu/Ubuntu2404-Readme.md
+playwright	Set up job	2025-09-19T23:24:43.2091035Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20250907.24
+playwright	Set up job	2025-09-19T23:24:43.2092446Z ##[endgroup]
+playwright	Set up job	2025-09-19T23:24:43.2093549Z ##[group]GITHUB_TOKEN Permissions
+playwright	Set up job	2025-09-19T23:24:43.2095439Z Contents: read
+playwright	Set up job	2025-09-19T23:24:43.2096116Z Metadata: read
+playwright	Set up job	2025-09-19T23:24:43.2096664Z Packages: read
+playwright	Set up job	2025-09-19T23:24:43.2097141Z ##[endgroup]
+playwright	Set up job	2025-09-19T23:24:43.2099368Z Secret source: Actions
+playwright	Set up job	2025-09-19T23:24:43.2100117Z Prepare workflow directory
+playwright	Set up job	2025-09-19T23:24:43.2553937Z Prepare all required actions
+playwright	Set up job	2025-09-19T23:24:43.2592685Z Getting action download info
+playwright	Set up job	2025-09-19T23:24:43.6747033Z Download action repository 'actions/checkout@v4' (SHA:08eba0b27e820071cde6df949e0beb9ba4906955)
+playwright	Set up job	2025-09-19T23:24:43.8415864Z Download action repository 'actions/setup-node@v4' (SHA:49933ea5288caeca8642d1e84afbd3f7d6820020)
+playwright	Set up job	2025-09-19T23:24:43.9414698Z Download action repository 'actions/setup-python@v5' (SHA:a26af69be951a213d495a4c3e4e4022e16d87065)
+playwright	Set up job	2025-09-19T23:24:44.0217494Z Download action repository 'actions/upload-artifact@v4' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+playwright	Set up job	2025-09-19T23:24:44.2566268Z Complete job name: playwright
+playwright	Initialize containers	﻿2025-09-19T23:24:44.3121368Z ##[group]Checking docker version
+playwright	Initialize containers	2025-09-19T23:24:44.3135561Z ##[command]/usr/bin/docker version --format '{{.Server.APIVersion}}'
+playwright	Initialize containers	2025-09-19T23:24:45.1431869Z '1.48'
+playwright	Initialize containers	2025-09-19T23:24:45.1446429Z Docker daemon API version: '1.48'
+playwright	Initialize containers	2025-09-19T23:24:45.1447511Z ##[command]/usr/bin/docker version --format '{{.Client.APIVersion}}'
+playwright	Initialize containers	2025-09-19T23:24:45.1645250Z '1.48'
+playwright	Initialize containers	2025-09-19T23:24:45.1659508Z Docker client API version: '1.48'
+playwright	Initialize containers	2025-09-19T23:24:45.1666035Z ##[endgroup]
+playwright	Initialize containers	2025-09-19T23:24:45.1669291Z ##[group]Clean up resources from previous jobs
+playwright	Initialize containers	2025-09-19T23:24:45.1675303Z ##[command]/usr/bin/docker ps --all --quiet --no-trunc --filter "label=0587b0"
+playwright	Initialize containers	2025-09-19T23:24:45.1824221Z ##[command]/usr/bin/docker network prune --force --filter "label=0587b0"
+playwright	Initialize containers	2025-09-19T23:24:45.1972882Z ##[endgroup]
+playwright	Initialize containers	2025-09-19T23:24:45.1973915Z ##[group]Create local container network
+playwright	Initialize containers	2025-09-19T23:24:45.1985938Z ##[command]/usr/bin/docker network create --label 0587b0 github_network_7d4ec157fa644ff592b0bdbbb4c44980
+playwright	Initialize containers	2025-09-19T23:24:45.2484015Z cb0b862c77fff1b8cf771af5f2c699575f66448b1f2f27a7e90848054089987f
+playwright	Initialize containers	2025-09-19T23:24:45.2506873Z ##[endgroup]
+playwright	Initialize containers	2025-09-19T23:24:45.2551094Z ##[group]Starting postgres service container
+playwright	Initialize containers	2025-09-19T23:24:45.2584092Z ##[command]/usr/bin/docker pull pgvector/pgvector:pg16@sha256:c3c84b85691a264aa3c5b8fc1d611e67d42b0cca8596e3d3d22dc2424c12c4e2
+playwright	Initialize containers	2025-09-19T23:24:45.9091560Z docker.io/pgvector/pgvector@sha256:c3c84b85691a264aa3c5b8fc1d611e67d42b0cca8596e3d3d22dc2424c12c4e2: Pulling from pgvector/pgvector
+playwright	Initialize containers	2025-09-19T23:24:46.1127281Z b1badc6e5066: Pulling fs layer
+playwright	Initialize containers	2025-09-19T23:24:46.1127823Z c9cbfca11d34: Pulling fs layer
+playwright	Initialize containers	2025-09-19T23:24:46.1128194Z a759c99e5d9c: Pulling fs layer
+playwright	Initialize containers	2025-09-19T23:24:46.1128577Z f40999643f83: Pulling fs layer
+playwright	Initialize containers	2025-09-19T23:24:46.1129026Z 2c9c8f27f94c: Pulling fs layer
+playwright	Initialize containers	2025-09-19T23:24:46.1129397Z 6019da469dd7: Pulling fs layer
+playwright	Initialize containers	2025-09-19T23:24:46.1129793Z 7960bd43e7e7: Pulling fs layer
+playwright	Initialize containers	2025-09-19T23:24:46.1130152Z f035bce43052: Pulling fs layer
+playwright	Initialize containers	2025-09-19T23:24:46.1131004Z b9daad206a85: Pulling fs layer

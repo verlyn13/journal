@@ -1,26 +1,34 @@
-***
+---
+id: docs-landing
+title: Documentation Landing Page
+type: guide
+created: '2025-09-18'
+updated: '2025-09-18'
+author: documentation-system
+tags: []
+last_verified: '2025-09-18'
+---
 
-title: Project Documentation Index
-description: "Index page for the Flask Journal project documentation, outlining the structure and key directories."
-category: "Overview"
-status: active
-tags: \["documentation", "index", "overview"]
----------------------------------------------
+# Welcome to the Documentation
 
-# Project Documentation
+Start here for the most useful entry points and workflows.
 
-This directory contains all documentation related to the Flask Journal project.
+## Key Entry Points
 
-## Structure
+- Index: [INDEX.md](INDEX.md)
+- Implementation Guide: [implementation/IMPLEMENTATION_GUIDE.md](implementation/IMPLEMENTATION_GUIDE.md)
+- Changelog: [status/CHANGELOG.md](status/CHANGELOG.md)
 
-- **[initial-planning/](./initial-planning/)**: Contains high-level planning documents, architecture overviews, scope definitions, and initial guides created before implementation began.
+## Quick Commands
 
-- **[implementation/](./implementation/)**: Contains detailed, step-by-step implementation plans for specific features or components, breaking down the initial plans into actionable tasks.
+- Commands Quick Reference: [guides/commands-quick-reference.md](guides/commands-quick-reference.md)
+- Contribution Guide: [guides/documentation-contribution-guide.md](guides/documentation-contribution-guide.md)
 
-- **[status/](./status/)**: Tracks the overall progress and status of the project, including reports, checklists, and key decisions.
+## Automation & Status
 
-- **[guides/](./guides/)**: Contains practical guides for developers, covering topics like architecture, specific integrations (CodeMirror), standards (JSDoc, Docstrings), and tools ([GitHub CLI](./guides/gh-cli.md)).
-
-- **[roo-code/](./roo-code/)**: Contains documentation related to the usage of Roo Code for this project, including tool guides, workflow examples, and custom configurations.
-
-Start with the [Comprehensive Guide](./initial-planning/comprehensive-guide-personal.md) for a full overview of the planned system.
+- Generate Status Report: `make docs-status`
+- CI Workflow: `.github/workflows/docs-status.yml`
+- Latest Status Report: `docs/reports/docs-status.md`
+- Taxonomy Report: `docs/reports/taxonomy-status.md` (run `make docs-taxonomy`)
+- Relationships Report: `docs/reports/relationships-status.md` (run `make docs-relationships`)
+- Docs Graph JSON: `docs/_generated/graph.json` (run `make docs-graph`)

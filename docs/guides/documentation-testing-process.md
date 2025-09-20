@@ -1,3 +1,19 @@
+---
+id: documentation-testing-process
+title: Documentation Testing Process
+type: guide
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags: []
+priority: medium
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 ***
 
 title: "Documentation Testing Process"
@@ -54,13 +70,13 @@ This configuration:
 To lint all Markdown files in the project:
 
 ```bash
-npm run lint:md
+bun run lint:md
 ```
 
 To lint a specific directory:
 
 ```bash
-npm run lint:md -- docs/guides
+bun run lint:md -- docs/guides
 ```
 
 ### Link Validation
@@ -72,13 +88,13 @@ We use `markdown-link-check` to validate both internal and external links within
 To check links in all Markdown files:
 
 ```bash
-npm run lint:links
+bun run lint:links
 ```
 
 To check links in a specific file or directory:
 
 ```bash
-npm run lint:links -- docs/guides/architecture-overview.md
+bun run lint:links -- docs/guides/architecture-overview.md
 ```
 
 ## Manual Review Process

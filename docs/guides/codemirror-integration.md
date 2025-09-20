@@ -1,3 +1,20 @@
+---
+id: codemirror-integration
+title: CodeMirror Integration Guide
+type: guide
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags:
+- react
+priority: medium
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 ***
 
 title: "CodeMirror Integration Guide"
@@ -383,12 +400,12 @@ See: [System Guide](../code-mirror/system-guide.md) (DOM Structure section)
 
 This guide maps the Flask Journal's specific implementation of CodeMirror to the official documentation. By understanding these connections, developers can more effectively maintain and extend the editor functionality while leveraging the full capabilities of CodeMirror.
 
-When extending the editor, always refer to both the application-specific [Editor Architecture](editor-architecture.md) document and the relevant CodeMirror documentation to ensure consistency with the existing implementation patterns.
+When extending the editor, always refer to both the application-specific Editor Architecture document and the relevant CodeMirror documentation to ensure consistency with the existing implementation patterns.
 
 ## See Also
 
-- [Editor Architecture](editor-architecture.md)
+- Editor Architecture
 - [JavaScript API Documentation](../js-api/index.html)
-- [CodeMirror Documentation Index](../code-mirror/README.md)
+- CodeMirror Documentation Index
 - [CodeMirror Quick Reference](../code-mirror/quick-reference.md)
-- [API Reference](api-reference.md)
+- API Reference

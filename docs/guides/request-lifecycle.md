@@ -1,3 +1,20 @@
+---
+id: request-lifecycle
+title: Request Lifecycle
+type: api
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags:
+- api
+priority: high
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 ***
 
 title: "Request Lifecycle"
@@ -230,7 +247,7 @@ To debug issues in the request lifecycle:
 
 ## See Also
 
-- [Architecture Overview](architecture-overview.md)
-- [Authentication Guide](authentication.md)
-- [API Reference](api-reference.md)
-- [Diagramming Approach](diagramming-approach.md)
+- Architecture Overview
+- Authentication Guide
+- API Reference
+- Diagramming Approach

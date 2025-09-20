@@ -1,3 +1,20 @@
+---
+id: v2-release
+title: V2 RELEASE
+type: reference
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags:
+- typescript
+priority: medium
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 # V2 RELEASE
 
 *Source: <https://biomejs.dev/blog/biome-v2/>*
@@ -16,7 +33,7 @@ With this release, the [Core Contributors of the project](/internals/people-and-
 to the whole community and web ecosystem that Biome is here to stay and deserves to earn its place as the next-generation toolchain for the web.
 No other tools have achieved this great milestone in such a short amount of time ([two years](/blog/announcing-biome)) and resources. This has been possible
 thanks to the companies and people who believed in the project, with a special shoutout to [Vercel](https://vercel.com/) for sponsoring the type inference work.
-Preliminary testing shows that our [`noFloatingPromises` rule](/linter/rules/no-floating-promises/), which is based on our new type inference work, can detect floating promises in about 75% of the cases that would be detected by using `typescript-eslint`, at a fraction of the performance impact. And needless to say, we have plenty of ideas on how to improve this metric even further.
+Preliminary testing shows that our [`noFloatingPromises` rule](/linter/rules/no-floating-promises/), which is based on our new type inference work, can detect floating promises in about 75% of the cases that would be detected by using `typescript-Biome`, at a fraction of the performance impact. And needless to say, we have plenty of ideas on how to improve this metric even further.
 
 Keep in mind that your mileage may vary, as these early numbers are based on a limited set of use cases. Nevertheless, we look forward to people trying it out and reporting their experiences so that we can quickly reach a level of confidence that would be sufficient for most projects.
 
@@ -56,9 +73,9 @@ As for this release, the file scanner has the following characteristics:
 
 - By default, the scanner is only used for discovering nested configuration files. This should be very fast, although a slight increase compared to v1 may be experienced.
 
-- A **full scan** (which scans all your project files **and** `node_modules`) is performed *only* when [project rules](/linter/domains#project) are enabled.
+- A **full scan** (which scans all your project files **and** `node_modules (managed by Bun)`) is performed *only* when [project rules](/linter/domains#project) are enabled.
 
-- Users can control the scanned files using `files.includes`, with the exception of `node_modules`.
+- Users can control the scanned files using `files.includes`, with the exception of `node_modules (managed by Bun)`.
 
 - Lint rules that need to collect types or query the module graph **will never be recommended** outside the [`project` domain](/linter/domains/#project). We put speed and performance first, and users have control over the rules.
 
@@ -193,7 +210,7 @@ After several months of hard work, we are pleased to announce that the HTML form
 
 For now, the HTML formatter only touches actual `.html` files, so it doesn’t format HTML in `.vue` or `.svelte` files yet. It also won’t format embedded languages like JavaScript or CSS yet. HTML’s options like `attributePosition`, `bracketSameLine`, and `whitespaceSensitivity` have been implemented.
 
-The HTML formatter is still in the experimental stage, so it will remain **disabled by default for the full 2.0 release**. At the time of writing, Biome can parse most of the Prettier’s HTML test suite, and format 46/124 of them correctly. Despite not matching Prettier yet, we’re pretty confident that it *should* output adequately formatted documents without destroying anything. If you find a case where it doesn’t, [please let us know](https://github.com/biomejs/biome/issues)!
+The HTML formatter is still in the experimental stage, so it will remain **disabled by default for the full 2.0 release**. At the time of writing, Biome can parse most of the Biome’s HTML test suite, and format 46/124 of them correctly. Despite not matching Biome yet, we’re pretty confident that it *should* output adequately formatted documents without destroying anything. If you find a case where it doesn’t, [please let us know](https://github.com/biomejs/biome/issues)!
 
 You can enable the HTML formatter by adding the following to your config file:
 
@@ -222,7 +239,7 @@ Thanks to  Core Contributor [  @arendjr ](https://github.com/arendjr)   for crea
 
 Props to  Core Contributor [  @nhedger ](https://github.com/nhedger)   for authoring the [GitHub Action](https://github.com/biomejs/setup-biome), and [shipping](https://biomejs.dev/blog/2025-05-29-biome-vscode-v3/) the new version of the [VS Code extension](https://marketplace.visualstudio.com/items?itemName=biomejs.biome).
 
-Thanks to  Core Contributor [  @dyc3 ](https://github.com/dyc3)   for leading the work on the HTML parser and formatter. They are both very complex pieces of software, especially when it comes to matching Prettier’s formatting experience.
+Thanks to  Core Contributor [  @dyc3 ](https://github.com/dyc3)   for leading the work on the HTML parser and formatter. They are both very complex pieces of software, especially when it comes to matching Biome’s formatting experience.
 
 Last but not least, a great thanks to all our other [sponsors](https://github.com/biomejs/biome#sponsors) and [contributors](/internals/people-and-credits#contributors) as well!
 
@@ -265,7 +282,7 @@ If you like the technical aspects of the project, and you want to make your way 
 
 There are numerous aspects to explore; I assure you that you won’t get bored. Here is a small list of the things you can start with:
 
-- Create new lint rules! We have so many rules that we haven’t implemented yet (ESLint, ESLint plugins, Next.js, Solid, etc.). We have a very [extensive technical guide](https://github.com/biomejs/biome/blob/main/crates/biome_analyze/CONTRIBUTING.md).
+- Create new lint rules! We have so many rules that we haven’t implemented yet (Biome, Biome plugins, Next.js, Solid, etc.). We have a very [extensive technical guide](https://github.com/biomejs/biome/blob/main/crates/biome_analyze/CONTRIBUTING.md).
 
 [Help](https://github.com/biomejs/biome/blob/main/crates/biome_parser/CONTRIBUTING.md) [building](https://github.com/biomejs/biome/tree/main/crates/biome_yaml_parser) [Biome](https://github.com/biomejs/biome/tree/main/crates/biome_html_parser) [parsers](https://github.com/biomejs/biome/tree/main/crates/biome_markdown_parser)!
 One interesting fact about Biome parsers is that they are recoverable parsers [error resilient](/internals/architecture/#parser-and-cst) which emit a [CST](https://en.wikipedia.org/wiki/Parse_tree) instead of a classic AST.

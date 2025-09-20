@@ -1,0 +1,20 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "timezone": "UTC",
+  "schedule": ["before 4am on sunday"],
+  "packageRules": [
+    {
+      "matchManagers": ["pip_requirements", "pip_setup", "pipenv", "poetry", "uv"],
+      "groupName": "python-tools",
+      "matchPackagePatterns": ["ruff", "pytest", "mypy", "pyright", "mkdocs", "jsonschema", "vale"]
+    },
+    {
+      "matchManagers": ["npm", "bun"],
+      "groupName": "frontend-tooling",
+      "matchPackagePatterns": ["vitest", "playwright", "@biomejs/biome"]
+    }
+  ],
+  "dependencyDashboard": true,
+  "automerge": false
+}

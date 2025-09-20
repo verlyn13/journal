@@ -1,3 +1,21 @@
+---
+id: api-contract-guide
+title: API Contract Guide for Flask Blog/Journal System
+type: api
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags:
+- api
+- python
+priority: high
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 ***
 
 title: "API Contract Guide: Flask Journal System"
@@ -59,14 +77,14 @@ This guide establishes standards for the internal API endpoints that support UI 
 Organize endpoints logically with a consistent URL structure:
 
 ```
-/api/v1/{resource}/{id?}/{sub-resource?}
+/api/{resource}/{id?}/{sub-resource?}
 ```
 
 Examples:
 
-- `/api/v1/entries` - List all entries
-- `/api/v1/entries/123` - Get a specific entry
-- `/api/v1/entries/123/tags` - Get tags for a specific entry
+- `/api/entries` - List all entries
+- `/api/entries/123` - Get a specific entry
+- `/api/entries/123/tags` - Get tags for a specific entry
 
 Implementation in Flask:
 
@@ -201,14 +219,14 @@ Define standard query parameters for common operations:
 
 | Parameter   | Purpose                         | Example                                |
 | ----------- | ------------------------------- | -------------------------------------- |
-| `page`      | Pagination page number          | `/api/v1/entries?page=2`               |
-| `per_page`  | Items per page                  | `/api/v1/entries?per_page=20`          |
-| `sort`      | Sort field                      | `/api/v1/entries?sort=created_at`      |
-| `order`     | Sort order (asc/desc)           | `/api/v1/entries?order=desc`           |
-| `q`         | Search query                    | `/api/v1/entries?q=flask`              |
-| `filter[x]` | Filter by field                 | `/api/v1/entries?filter[is_public]=1`  |
-| `include`   | Include related resources       | `/api/v1/entries?include=tags,author`  |
-| `fields`    | Sparse fieldsets for projection | `/api/v1/entries?fields=title,content` |
+| `page`      | Pagination page number          | `/api/entries?page=2`               |
+| `per_page`  | Items per page                  | `/api/entries?per_page=20`          |
+| `sort`      | Sort field                      | `/api/entries?sort=created_at`      |
+| `order`     | Sort order (asc/desc)           | `/api/entries?order=desc`           |
+| `q`         | Search query                    | `/api/entries?q=flask`              |
+| `filter[x]` | Filter by field                 | `/api/entries?filter[is_public]=1`  |
+| `include`   | Include related resources       | `/api/entries?include=tags,author`  |
+| `fields`    | Sparse fieldsets for projection | `/api/entries?fields=title,content` |
 
 Implementation example (Conceptual - requires service layer logic):
 
@@ -452,11 +470,11 @@ Example response `meta` block:
     "total_items": 45
   },
   "links": {
-    "self": "/api/v1/entries?page=2&per_page=10",
-    "first": "/api/v1/entries?page=1&per_page=10",
-    "prev": "/api/v1/entries?page=1&per_page=10",
-    "next": "/api/v1/entries?page=3&per_page=10",
-    "last": "/api/v1/entries?page=5&per_page=10"
+    "self": "/api/entries?page=2&per_page=10",
+    "first": "/api/entries?page=1&per_page=10",
+    "prev": "/api/entries?page=1&per_page=10",
+    "next": "/api/entries?page=3&per_page=10",
+    "last": "/api/entries?page=5&per_page=10"
   }
 }
 ```
@@ -520,7 +538,7 @@ Translate these query parameters into SQLAlchemy query modifications in your ser
 
 Use token-based authentication (e.g., JWT or simple opaque tokens stored securely).
 
-- **Token Generation:** Provide an endpoint (e.g., `/api/v1/auth/token`) where users exchange credentials (username/password) for a token.
+- **Token Generation:** Provide an endpoint (e.g., `/api/auth/token`) where users exchange credentials (username/password) for a token.
 - **Token Storage:** Store tokens securely (e.g., in Redis with an expiry) or use stateless JWTs.
 - **Token Verification:** Verify tokens on each API request.
 
@@ -583,7 +601,7 @@ Use token-based authentication (e.g., JWT or simple opaque tokens stored securel
 # from app.utils.api_helpers import api_success, api_error
 # from .token import generate_token
 
-# auth_bp = Blueprint('auth_api', __name__, url_prefix='/api/v1/auth')
+# auth_bp = Blueprint('auth_api', __name__, url_prefix='/api/auth')
 
 # @auth_bp.route('/token', methods=['POST'])
 # def get_token():
@@ -819,7 +837,7 @@ Include clear examples in documentation (either inline docstrings or separate AP
 ````markdown
 **Example: Create Entry**
 
-*Request:* `POST /api/v1/entries`
+*Request:* `POST /api/entries`
 *Headers:* `Authorization: Bearer <token>`, `Content-Type: application/json`
 *Body:*
 ```json
@@ -873,7 +891,7 @@ These examples illustrate potential request/response cycles based on the princip
 
 ### Get API Token
 
--   **Request:** `POST /api/v1/auth/token`
+-   **Request:** `POST /api/auth/token`
     ```json
     { "username": "testuser", "password": "password123" }
     ```
@@ -889,7 +907,7 @@ These examples illustrate potential request/response cycles based on the princip
 
 ### List Entries
 
--   **Request:** `GET /api/v1/entries?page=1&per_page=5&sort=created_at&order=desc`
+-   **Request:** `GET /api/entries?page=1&per_page=5&sort=created_at&order=desc`
     *Headers:* `Authorization: Bearer <token>`
 -   **Response (200 OK):**
     ```json
@@ -902,7 +920,7 @@ These examples illustrate potential request/response cycles based on the princip
 
 ### Get Single Entry
 
--   **Request:** `GET /api/v1/entries/42`
+-   **Request:** `GET /api/entries/42`
     *Headers:* `Authorization: Bearer <token>`
 -   **Response (200 OK):**
     ```json
@@ -914,7 +932,7 @@ These examples illustrate potential request/response cycles based on the princip
 
 ### Create Entry
 
--   **Request:** `POST /api/v1/entries`
+-   **Request:** `POST /api/entries`
     *Headers:* `Authorization: Bearer <token>`, `Content-Type: application/json`
     *Body:* `{ "title": "...", "content": "..." }`
 -   **Response (201 Created):**
@@ -928,7 +946,7 @@ These examples illustrate potential request/response cycles based on the princip
 
 ### Update Entry
 
--   **Request:** `PATCH /api/v1/entries/42`
+-   **Request:** `PATCH /api/entries/42`
     *Headers:* `Authorization: Bearer <token>`, `Content-Type: application/json`
     *Body:* `{ "title": "Updated Title" }`
 -   **Response (200 OK):**
@@ -941,7 +959,7 @@ These examples illustrate potential request/response cycles based on the princip
 
 ### Delete Entry
 
--   **Request:** `DELETE /api/v1/entries/42`
+-   **Request:** `DELETE /api/entries/42`
     *Headers:* `Authorization: Bearer <token>`
 -   **Response (204 No Content):** (Empty body)
 
@@ -951,7 +969,7 @@ These examples illustrate potential request/response cycles based on the princip
 
 ### Authentication Error
 
--   **Request:** `GET /api/v1/entries` (No or invalid token)
+-   **Request:** `GET /api/entries` (No or invalid token)
 -   **Response (401 Unauthorized):**
     ```json
     {
@@ -965,7 +983,7 @@ These examples illustrate potential request/response cycles based on the princip
 
 ### Validation Error
 
--   **Request:** `POST /api/v1/entries` (Missing required field)
+-   **Request:** `POST /api/entries` (Missing required field)
     *Body:* `{ "content": "..." }`
 -   **Response (422 Unprocessable Entity):**
     ```json
@@ -981,7 +999,7 @@ These examples illustrate potential request/response cycles based on the princip
 
 ### Resource Not Found
 
--   **Request:** `GET /api/v1/entries/9999` (Entry 9999 doesn't exist)
+-   **Request:** `GET /api/entries/9999` (Entry 9999 doesn't exist)
     *Headers:* `Authorization: Bearer <token>`
 -   **Response (404 Not Found):**
     ```json
@@ -996,7 +1014,7 @@ These examples illustrate potential request/response cycles based on the princip
 
 ### Permission Denied
 
--   **Request:** `GET /api/v1/entries/42` (User authenticated but doesn't own entry 42)
+-   **Request:** `GET /api/entries/42` (User authenticated but doesn't own entry 42)
     *Headers:* `Authorization: Bearer <token>`
 -   **Response (403 Forbidden):**
     ```json

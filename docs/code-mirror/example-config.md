@@ -1,3 +1,20 @@
+---
+id: example-config
+title: Example Configuration (Flask Journal)
+type: reference
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags:
+- react
+priority: medium
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 ***
 
 title: "Example Configuration (Flask Journal)"

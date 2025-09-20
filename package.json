@@ -16,15 +16,15 @@
     "lint": "biome lint .",
     "check": "biome ci --reporter=github .",
     "typecheck": "tsc --noEmit",
-    "build": "bun run web:build",
-    "dev": "bun run web:dev",
-    "storybook": "cd apps/web && bun run storybook",
-    "build-storybook": "cd apps/web && bun run build-storybook",
+    "build": "npm run web:build",
+    "dev": "npm run web:dev",
+    "storybook": "cd apps/web && npm run storybook",
+    "build-storybook": "cd apps/web && npm run build-storybook",
     "docs": "jsdoc -c jsdoc.conf.json",
     "lint:md": "npx markdownlint \"docs/**/*.md\"",
     "lint:links": "npx markdown-link-check \"docs/**/*.md\"",
-    "docs:fetch": "bun run fetch-docs.ts",
-    "docs:fetch:enhanced": "bun run fetch-docs-enhanced.ts --force",
+    "docs:fetch": "node fetch-docs.ts",
+    "docs:fetch:enhanced": "node fetch-docs-enhanced.ts --force",
     "docs:update": "./docs.sh update",
     "docs:backup": "./docs.sh backup",
     "docs:restore": "./docs.sh restore",
@@ -42,17 +42,17 @@
     "api:db:revision": "cd apps/api && make db-revision m=\"$M\"",
     "api:migrate": "cd apps/api && make db-upgrade",
     "api:worker": "cd apps/api && make worker",
-    "web:dev": "cd apps/web && bun run dev",
-    "web:build": "cd apps/web && bun run build",
-    "web:preview": "cd apps/web && bun run preview",
-    "lint:all": "bun run lint && bun run api:lint",
-    "format:all": "bun run format",
-    "check:all": "bun run check && bun run api:lint && bun run api:test && bun run test:a11y",
+    "web:dev": "cd apps/web && npm run dev",
+    "web:build": "cd apps/web && npm run build",
+    "web:preview": "cd apps/web && npm run preview",
+    "lint:all": "npm run lint && npm run api:lint",
+    "format:all": "npm run format",
+    "check:all": "npm run check && npm run api:lint && npm run api:test && npm run test:a11y",
     "quality:lint": "npx @biomejs/biome check . --max-diagnostics=100",
     "quality:fix": "npx @biomejs/biome check . --write --unsafe",
-    "quality:types": "bun x tsc -p apps/web --noEmit",
-    "quality:test": "bun x vitest run --silent --root apps/web",
-    "quality:all": "bun run quality:types && bun run quality:lint && bun run quality:test"
+    "quality:types": "npx tsc -p apps/web --noEmit",
+    "quality:test": "npx vitest run --silent --root apps/web",
+    "quality:all": "npm run quality:types && npm run quality:lint && npm run quality:test"
   },
   "repository": {
     "type": "git",
@@ -67,8 +67,7 @@
   },
   "homepage": "https://github.com/verlyn13/journal#readme",
   "engines": {
-    "node": ">=20",
-    "bun": ">=1.2.21"
+    "node": ">=20"
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.2",
@@ -78,7 +77,6 @@
     "@rollup/plugin-terser": "0.4.4",
     "autoprefixer": "10.4.21",
     "axe-playwright": "2.1.0",
-    "bun-types": "1.2.21",
     "cssnano": "7.1.1",
     "jsdoc": "4.0.4",
     "markdown-link-check": "3.13.7",
@@ -115,6 +113,7 @@
     "highlight.js": "^11.11.1",
     "lowlight": "^3.3.0",
     "marked": "16.2.1",
-    "taffydb": "2.7.3"
+    "taffydb": "2.7.3",
+    "vercel": "^48.0.3"
   }
 }

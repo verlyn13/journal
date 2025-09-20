@@ -1,0 +1,255 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://journal.app/schemas/api-reference.schema.json",
+  "title": "API Reference Document Schema",
+  "description": "Schema for API endpoint documentation",
+  "allOf": [
+    {"$ref": "./base-document.schema.json"},
+    {
+      "type": "object",
+      "properties": {
+        "metadata": {
+          "properties": {
+            "type": {
+              "const": "api"
+            }
+          }
+        },
+        "api": {
+          "type": "object",
+          "required": ["base_url", "version", "endpoints"],
+          "properties": {
+            "base_url": {
+              "type": "string",
+              "format": "uri",
+              "description": "API base URL"
+            },
+            "version": {
+              "type": "string",
+              "pattern": "^v\\d+(\\.\\d+)?$",
+              "description": "API version (e.g., v1, v1.2)"
+            },
+            "authentication": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": ["bearer", "api_key", "oauth2", "basic", "none"],
+                  "description": "Authentication method"
+                },
+                "details": {
+                  "type": "object",
+                  "description": "Authentication configuration details"
+                }
+              }
+            },
+            "rate_limiting": {
+              "type": "object",
+              "properties": {
+                "requests_per_minute": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "requests_per_hour": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "burst_limit": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              }
+            },
+            "endpoints": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": ["path", "method", "summary", "request", "response"],
+                "properties": {
+                  "path": {
+                    "type": "string",
+                    "pattern": "^\\/.*",
+                    "description": "Endpoint path"
+                  },
+                  "method": {
+                    "type": "string",
+                    "enum": ["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"],
+                    "description": "HTTP method"
+                  },
+                  "operation_id": {
+                    "type": "string",
+                    "pattern": "^[a-zA-Z][a-zA-Z0-9]*$",
+                    "description": "Unique operation identifier"
+                  },
+                  "summary": {
+                    "type": "string",
+                    "maxLength": 100,
+                    "description": "Brief endpoint description"
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "Detailed endpoint description"
+                  },
+                  "tags": {
+                    "type": "array",
+                    "items": {"type": "string"},
+                    "description": "Endpoint categorization tags"
+                  },
+                  "deprecated": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Deprecation status"
+                  },
+                  "security": {
+                    "type": "array",
+                    "items": {"type": "string"},
+                    "description": "Required security scopes"
+                  },
+                  "parameters": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "required": ["name", "in", "type", "description"],
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "description": "Parameter name"
+                        },
+                        "in": {
+                          "type": "string",
+                          "enum": ["path", "query", "header", "cookie"],
+                          "description": "Parameter location"
+                        },
+                        "type": {
+                          "type": "string",
+                          "enum": ["string", "integer", "number", "boolean", "array", "object"],
+                          "description": "Parameter type"
+                        },
+                        "format": {
+                          "type": "string",
+                          "description": "Parameter format (e.g., date-time, uuid)"
+                        },
+                        "description": {
+                          "type": "string",
+                          "description": "Parameter description"
+                        },
+                        "required": {
+                          "type": "boolean",
+                          "default": false,
+                          "description": "Is parameter required"
+                        },
+                        "default": {
+                          "description": "Default value"
+                        },
+                        "example": {
+                          "description": "Example value"
+                        },
+                        "schema": {
+                          "type": "object",
+                          "description": "JSON schema for complex types"
+                        }
+                      }
+                    }
+                  },
+                  "request": {
+                    "type": "object",
+                    "properties": {
+                      "content_type": {
+                        "type": "string",
+                        "enum": ["application/json", "application/xml", "multipart/form-data", "application/x-www-form-urlencoded"],
+                        "description": "Request content type"
+                      },
+                      "body_schema": {
+                        "type": "object",
+                        "description": "Request body JSON schema"
+                      },
+                      "examples": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "required": ["name", "value"],
+                          "properties": {
+                            "name": {"type": "string"},
+                            "description": {"type": "string"},
+                            "value": {}
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "response": {
+                    "type": "object",
+                    "required": ["status_codes"],
+                    "properties": {
+                      "content_type": {
+                        "type": "string",
+                        "default": "application/json",
+                        "description": "Response content type"
+                      },
+                      "status_codes": {
+                        "type": "array",
+                        "minItems": 1,
+                        "items": {
+                          "type": "object",
+                          "required": ["code", "description"],
+                          "properties": {
+                            "code": {
+                              "type": "integer",
+                              "minimum": 100,
+                              "maximum": 599,
+                              "description": "HTTP status code"
+                            },
+                            "description": {
+                              "type": "string",
+                              "description": "Status code meaning"
+                            },
+                            "schema": {
+                              "type": "object",
+                              "description": "Response body schema"
+                            },
+                            "examples": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "name": {"type": "string"},
+                                  "value": {}
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "required": ["code", "message"],
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Error code"
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Error message"
+                        },
+                        "details": {
+                          "type": "string",
+                          "description": "Additional error details"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

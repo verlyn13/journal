@@ -76,7 +76,8 @@ async def test_user(db_session: AsyncSession) -> User:
         id=uuid4(),
         email="test@example.com",
         name="Test User",
-        password_hash="$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewY/MiLTylUF8pJu",  # testpassword123
+        password_hash="$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewY/MiLTylUF8pJu",
+        # testpassword123
         created_at=datetime.now(UTC),
         updated_at=datetime.now(UTC),
     )

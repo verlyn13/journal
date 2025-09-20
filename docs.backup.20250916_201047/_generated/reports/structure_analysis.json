@@ -1,0 +1,370 @@
+{
+  "structure": {
+    "_files": [
+      "CI_INVESTIGATION_REPORT.md",
+      "INDEX.md",
+      "REACT-19-MIGRATION-ISSUES.md",
+      "REACT-19-MIGRATION.md",
+      "REACT-19-WORKFLOW.md",
+      "README.md",
+      "ROADMAP.md",
+      "UI_DESIGN_SPECIFICATION.md",
+      "UI_DESIGN_UPDATE_PLAN.md",
+      "agent-workflows.md",
+      "dual-language-setup.md",
+      "enhance-journal-app.md",
+      "error-handling-logging.md",
+      "fastapi-boostrap-helper.md",
+      "fastapi-boostrap-starter.md",
+      "hosting-secure.md",
+      "hx-ax-workflows.md",
+      "observability-setup.md",
+      "refactor-ui-design.md",
+      "reference-docs-started.md",
+      "reference-docs.md",
+      "theme.md",
+      "to-typescript.md",
+      "USER_MANAGEMENT_IMPLEMENTATION.md",
+      "USER_MANAGEMENT_ORCHESTRATEV1.md",
+      "USER_MANAGEMENT_ORCHESTRATEV2.md",
+      "USER_MANAGEMENT_ORCHESTRATEV3.md",
+      "USER_MANAGEMENT_ORCHESTRATEV4.md",
+      "USER_MANAGEMENT_ORCHESTRATEV5.md",
+      "USER_MANAGEMENT_ORCHESTRATEV6.md",
+      "USER_MANAGEMENT_ORCHESTRATEV7.md",
+      "USER_MANAGEMENT_ORCHESTRATEV8.md",
+      "USER_MANAGEMENT_STARTER_DIFFS.md",
+      "USER_MANAGEMENT.md",
+      "ADVANCED_AUTH.md",
+      "DEPLOYMENT_AWARE_AUTH.md",
+      "PHASE_5_ENHANCEMENT_PLAN.md",
+      "PHASE_5_MASTER_PLAN.md",
+      "infisical-cli-useage.md",
+      "token-enhancement.md",
+      "CI_CD_GUIDE.md",
+      "CI_CHECKLIST.md",
+      "INFISICAL_ARCHITECTURE.md",
+      "RUFF_AND_PYTHON_UPGRADE_SUMMARY.md",
+      "RUFF_UPGRADE_PLAN.md",
+      "RUFF_VERIFICATION_REPORT.md",
+      "TESTING_STATUS.md",
+      "USER_MANAGEMENT_ORCHESTRATEV9.md",
+      "ci-cd.md",
+      "dev-setup.md",
+      "move-to-fastapi.md",
+      "ruff-progressive-autofixing.md",
+      "doc-upgrade.md",
+      "DOCUMENTATION_ARCHITECTURE.md",
+      "DOCUMENTATION_ROADMAP.md",
+      "DEFINITION_OF_DONE.md",
+      "MIGRATION_CHECKLIST.md",
+      "ORCHESTRATION_WORKFLOW.md"
+    ],
+    "initial-planning": {
+      "_files": [
+        "JSDoc-implementation.md",
+        "README.md",
+        "agentic-workflow.md",
+        "api-contract-guide.md",
+        "comprehensive-guide-personal.md",
+        "deployment-script-guide.md",
+        "editor-implementation.md",
+        "error-handling.md",
+        "mvp-high-level-implementation-guide.md",
+        "single-config.md",
+        "state-management-guide.md",
+        "structure-update.md",
+        "testing.md"
+      ]
+    },
+    "implementation": {
+      "_files": [
+        "01-phase-one-setup-auth.md",
+        "01-phase-one-summary.md",
+        "02-phase-two-entry-crud.md",
+        "02-phase-two-summary.md",
+        "03-phase-three-summary.md",
+        "03-phase-three-ui-refinements.md",
+        "04-phase-four-deploy-test-setup.md",
+        "04-phase-four-summary.md",
+        "05-phase-five-summary.md",
+        "05-phase-five-testing-scripts.md",
+        "06-phase-six-summary.md",
+        "06-phase-six-tags.md",
+        "07-phase-seven-summary.md",
+        "07-phase-seven-ui-ux.md",
+        "08-phase-eight-editor-integration.md",
+        "08-phase-eight-summary.md",
+        "09-phase-nine-editor-refinement.md",
+        "09-phase-nine-summary.md",
+        "10-phase-ten-favicon.md",
+        "10-phase-ten-summary.md",
+        "11-phase-eleven-editor-features.md",
+        "11-phase-eleven-summary.md",
+        "12-phase-twelve-editor-bugfix-layout.md",
+        "12-phase-twelve-summary.md",
+        "13-phase-thirteen-structure-refactor.md",
+        "14-phase-fourteen-documentation-foundation.md",
+        "15-phase-fifteen-core-documentation.md",
+        "16-phase-sixteen-documentation-expansion.md",
+        "17-phase-seventeen-documentation-qa.md",
+        "18-phase-eighteen-ci-cd-implementation.md",
+        "18-phase-eighteen-documentation-integration.md",
+        "README.md",
+        "documentation-specialist-execution-plan.md",
+        "documentation-specialist-role.md",
+        "local-act-testing-plan.md"
+      ]
+    },
+    "status": {
+      "_files": [
+        "2025-04-06-phase-1-complete.md",
+        "2025-04-06-phase-2-complete.md",
+        "2025-04-06-phase-3-complete.md",
+        "2025-04-06-phase-4-complete.md",
+        "2025-04-06-phase-5-complete.md",
+        "2025-04-07-phase-6-complete.md",
+        "2025-04-07-phase-7-complete.md",
+        "2025-04-07-phase-8-complete.md",
+        "2025-04-07-stabilization-post-phase-8.md",
+        "2025-04-08-code-mirror-documentation-integration.md",
+        "2025-04-08-documentation-specialist-mode-added.md",
+        "2025-04-08-phase-10-complete.md",
+        "2025-04-08-phase-11-complete.md",
+        "2025-04-08-phase-12-complete.md",
+        "2025-04-08-phase-14-complete.md",
+        "2025-04-08-phase-14-started.md",
+        "2025-04-08-phase-15-complete.md",
+        "2025-04-08-phase-15-started.md",
+        "2025-04-08-phase-16-complete.md",
+        "2025-04-08-phase-16-started.md",
+        "2025-04-08-phase-17-complete.md",
+        "2025-04-08-phase-17-started.md",
+        "2025-04-08-phase-18-ci-cd-complete.md",
+        "2025-04-08-phase-18-complete.md",
+        "2025-04-08-phase-18-started.md",
+        "2025-04-08-phase-9-complete.md",
+        "README.md",
+        "USER_MANAGEMENT_STATUS_2025-09-10.md"
+      ]
+    },
+    "debugging": {
+      "_files": [
+        "phase-12-editor-summary.md",
+        "phase-13-rollup-manifest-issue.md"
+      ]
+    },
+    "audits": {
+      "_files": [
+        "documentation-assessment-report.md",
+        "documentation-inventory.md",
+        "documentation-validation-report.md"
+      ]
+    },
+    "guides": {
+      "_files": [
+        "act-reference.md",
+        "api-reference.md",
+        "architecture-overview.md",
+        "authentication.md",
+        "ci-cd-workflow.md",
+        "codemirror-integration.md",
+        "data-model.md",
+        "diagramming-approach.md",
+        "docstring-tools-report.md",
+        "documentation-metrics.md",
+        "documentation-review-process.md",
+        "documentation-templates.md",
+        "documentation-testing-process.md",
+        "documentation-update-checklist.md",
+        "editor-architecture.md",
+        "gh-cli.md",
+        "js-api-docs.md",
+        "jsdoc-standards.md",
+        "markdown-linting-guide.md",
+        "python-docstring-standards.md",
+        "request-lifecycle.md",
+        "infisical-self-hosted.md"
+      ]
+    },
+    "templates": {
+      "_files": [
+        "api-reference-template.md",
+        "component-doc-template.md",
+        "concept-guide-template.md",
+        "troubleshooting-template.md",
+        "tutorial-template.md"
+      ]
+    },
+    "user-guide": {
+      "_files": [
+        "README.md",
+        "faq.md",
+        "installation.md",
+        "troubleshooting.md"
+      ]
+    },
+    "proposals": {
+      "_files": [
+        "ci-cd-documentation-checks.md"
+      ]
+    },
+    "code-mirror": {
+      "_files": [
+        "README.md",
+        "example-basic.md",
+        "example-bundled.md",
+        "example-config.md",
+        "example-styling.md",
+        "example-tab-handling.md",
+        "extensions-reference.md",
+        "quick-reference.md",
+        "reference-manual-part1.md",
+        "reference-manual-part2.md",
+        "reference-manual-part3.md",
+        "reference-manual-part4.md",
+        "system-guide.md"
+      ]
+    },
+    "typescript-migration": {
+      "_files": [
+        "migration-guide.md"
+      ]
+    },
+    "journal-backend-bootstrap-pgvector-fts-reindex": {
+      "_files": [
+        "README.md"
+      ]
+    },
+    "editor-upgrade": {
+      "_files": [
+        "BULLETPROOF-IMPLEMENTATION-PLAN.md",
+        "FINAL-IMPLEMENTATION-WORKFLOW.md",
+        "README.md",
+        "TYPE-SYSTEM-STRATEGY.md",
+        "VITEST-MIGRATION-IMPACT.md",
+        "VITEST-TESTING-SETUP.md"
+      ],
+      "archive": {
+        "_files": [
+          "COMPREHENSIVE-DIFF-REPORT.md",
+          "V2-COMPREHENSIVE-DIFF-REPORT.md",
+          "editor-upgrade-v2.md",
+          "editor-upgrade.md"
+        ]
+      },
+      "reference": {
+        "_files": [
+          "security-and-corrections.md"
+        ]
+      }
+    },
+    "doc-update": {
+      "_files": [
+        "doc-organize-plan.md"
+      ]
+    },
+    "_generated": {
+      "_files": [
+        "db_unlock_20250902.md"
+      ]
+    },
+    "future-features": {
+      "_files": [
+        "jwt-security-hardening.md"
+      ]
+    },
+    "adr": {
+      "_files": [
+        "adr-0001-python-3.13-ruff-0.13.md"
+      ]
+    },
+    "deployment": {
+      "_files": [
+        "vercel-supabase-migration-assessment.md",
+        "vercel-supabase-strategy.md",
+        "environment-variables.md",
+        "data-policy.md"
+      ]
+    },
+    "db": {
+      "_files": [
+        "extensions.md"
+      ]
+    },
+    "bun": {
+      "getting-started": {
+        "_files": [
+          "installation.md",
+          "package-manager.md",
+          "quickstart.md"
+        ]
+      },
+      "configuration": {
+        "_files": [
+          "bunfig.md",
+          "typescript.md"
+        ]
+      },
+      "features": {
+        "_files": [
+          "bundler.md",
+          "modules.md",
+          "shell.md",
+          "testing.md"
+        ]
+      },
+      "api": {
+        "_files": [
+          "file-io.md",
+          "http-server.md",
+          "sql.md",
+          "websockets.md"
+        ]
+      },
+      "deployment": {
+        "_files": [
+          "environment-variables.md",
+          "standalone-executables.md"
+        ]
+      }
+    },
+    "biome": {
+      "guides": {
+        "_files": [
+          "configure-biome.md",
+          "editor-extensions.md",
+          "getting-started.md",
+          "migrate-eslint-prettier.md"
+        ]
+      },
+      "reference": {
+        "_files": [
+          "cli.md",
+          "configuration.md",
+          "formatter.md",
+          "linter.md"
+        ]
+      },
+      "recipes": {
+        "_files": [
+          "ci-setup.md"
+        ]
+      },
+      "releases": {
+        "_files": [
+          "changelog.md",
+          "v2-release.md"
+        ]
+      },
+      "internals": {
+        "_files": [
+          "architecture.md",
+          "changelog.md"
+        ]
+      }
+    }
+  },
+  "total_files": 234,
+  "timestamp": "2025-09-16T20:10:29.837231"
+}

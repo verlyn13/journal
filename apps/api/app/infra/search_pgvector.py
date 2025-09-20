@@ -46,7 +46,8 @@ async def hybrid_search(
                ts_rank_cd(e.search_vector, plainto_tsquery('english', :q)) AS fts_rank,
                COALESCE(1 - (ee.embedding <=> CAST(:qvec AS vector(1536))), 0.0) AS vec_sim,
                ((:alpha) * COALESCE(1 - (ee.embedding <=> CAST(:qvec AS vector(1536))), 0.0)
-                 + (1-:alpha) * ts_rank_cd(e.search_vector, plainto_tsquery('english', :q))) AS score
+                 + (1-:alpha) * ts_rank_cd(e.search_vector,
+                   plainto_tsquery('english', :q))) AS score
         FROM entries e
         LEFT JOIN entry_embeddings ee ON ee.entry_id = e.id
         WHERE e.is_deleted = FALSE

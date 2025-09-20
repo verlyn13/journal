@@ -1,0 +1,273 @@
+{
+  "documents": 18,
+  "issues": [
+    {
+      "kind": "reference",
+      "message": "architecture-overview: 'children' target not found: security-architecture"
+    },
+    {
+      "kind": "reference",
+      "message": "auth-architecture: 'children' target not found: jwt-implementation"
+    },
+    {
+      "kind": "reference",
+      "message": "auth-architecture: 'children' target not found: webauthn-guide"
+    },
+    {
+      "kind": "reference",
+      "message": "api-architecture: 'children' target not found: api-v1-admin"
+    },
+    {
+      "kind": "reference",
+      "message": "api-architecture: 'children' target not found: api-v1-stats"
+    },
+    {
+      "kind": "reference",
+      "message": "api-architecture: 'children' target not found: api-v1-webauthn"
+    },
+    {
+      "kind": "reference",
+      "message": "database-schema: 'children' target not found: migration-guide"
+    },
+    {
+      "kind": "reference",
+      "message": "database-schema: 'children' target not found: backup-strategy"
+    },
+    {
+      "kind": "reference",
+      "message": "infisical-architecture: 'children' target not found: infisical-shim"
+    },
+    {
+      "kind": "reference",
+      "message": "infisical-architecture: 'children' target not found: version-management"
+    },
+    {
+      "kind": "reference",
+      "message": "getting-started: 'children' target not found: development-setup"
+    },
+    {
+      "kind": "reference",
+      "message": "getting-started: 'children' target not found: first-deployment"
+    },
+    {
+      "kind": "reference",
+      "message": "ci-cd-pipeline: 'children' target not found: ci-checklist"
+    },
+    {
+      "kind": "reference",
+      "message": "ci-cd-pipeline: 'children' target not found: workflow-vars"
+    },
+    {
+      "kind": "reference",
+      "message": "testing-strategy: 'children' target not found: unit-testing"
+    },
+    {
+      "kind": "reference",
+      "message": "testing-strategy: 'children' target not found: integration-testing"
+    },
+    {
+      "kind": "reference",
+      "message": "testing-strategy: 'children' target not found: e2e-testing"
+    },
+    {
+      "kind": "reference",
+      "message": "editor-architecture: 'children' target not found: codemirror-integration"
+    },
+    {
+      "kind": "reference",
+      "message": "editor-architecture: 'children' target not found: editor-upgrade"
+    },
+    {
+      "kind": "reference",
+      "message": "documentation-architecture: 'children' target not found: doc-upgrade"
+    },
+    {
+      "kind": "reference",
+      "message": "vercel-setup: 'prerequisites' target not found: environment-variables"
+    },
+    {
+      "kind": "reference",
+      "message": "api-v1-entries: 'prerequisites' target not found: data-model"
+    },
+    {
+      "kind": "reference",
+      "message": "ci-cd-pipeline: 'prerequisites' target not found: github-actions"
+    },
+    {
+      "kind": "reference",
+      "message": "auth-architecture: 'related' target not found: advanced-auth"
+    },
+    {
+      "kind": "reference",
+      "message": "auth-architecture: 'related' target not found: deployment-aware-auth"
+    },
+    {
+      "kind": "reference",
+      "message": "api-architecture: 'related' target not found: api-contract-guide"
+    },
+    {
+      "kind": "reference",
+      "message": "api-architecture: 'related' target not found: request-lifecycle"
+    },
+    {
+      "kind": "reference",
+      "message": "database-schema: 'related' target not found: data-model"
+    },
+    {
+      "kind": "reference",
+      "message": "database-schema: 'related' target not found: alembic-migrations"
+    },
+    {
+      "kind": "reference",
+      "message": "deployment-guide: 'related' target not found: deployment-checklist"
+    },
+    {
+      "kind": "reference",
+      "message": "deployment-guide: 'related' target not found: phase-0-summary"
+    },
+    {
+      "kind": "reference",
+      "message": "vercel-setup: 'related' target not found: hosting-secure"
+    },
+    {
+      "kind": "reference",
+      "message": "supabase-config: 'related' target not found: migration-guide"
+    },
+    {
+      "kind": "reference",
+      "message": "infisical-architecture: 'related' target not found: environment-variables"
+    },
+    {
+      "kind": "reference",
+      "message": "getting-started: 'related' target not found: dev-setup"
+    },
+    {
+      "kind": "reference",
+      "message": "getting-started: 'related' target not found: local-development"
+    },
+    {
+      "kind": "reference",
+      "message": "api-v1-auth: 'related' target not found: jwt-implementation"
+    },
+    {
+      "kind": "reference",
+      "message": "api-v1-auth: 'related' target not found: webauthn-guide"
+    },
+    {
+      "kind": "reference",
+      "message": "api-v1-entries: 'related' target not found: phase-two-entry-crud"
+    },
+    {
+      "kind": "reference",
+      "message": "ci-cd-pipeline: 'related' target not found: ci-investigation-report"
+    },
+    {
+      "kind": "reference",
+      "message": "ci-cd-pipeline: 'related' target not found: documentation-validate"
+    },
+    {
+      "kind": "reference",
+      "message": "testing-strategy: 'related' target not found: vitest-migration"
+    },
+    {
+      "kind": "reference",
+      "message": "testing-strategy: 'related' target not found: testing-setup"
+    },
+    {
+      "kind": "reference",
+      "message": "editor-architecture: 'related' target not found: editor-implementation"
+    },
+    {
+      "kind": "reference",
+      "message": "editor-architecture: 'related' target not found: phase-eight-editor"
+    },
+    {
+      "kind": "reference",
+      "message": "documentation-architecture: 'related' target not found: documentation-templates"
+    },
+    {
+      "kind": "reference",
+      "message": "documentation-architecture: 'related' target not found: documentation-review-process"
+    },
+    {
+      "kind": "reference",
+      "message": "documentation-roadmap: 'related' target not found: phase-fourteen-documentation"
+    },
+    {
+      "kind": "reference",
+      "message": "documentation-roadmap: 'related' target not found: documentation-specialist-role"
+    },
+    {
+      "kind": "reference",
+      "message": "adr-001-infisical: 'related' target not found: deployment-aware-auth"
+    },
+    {
+      "kind": "reference",
+      "message": "adr-002-auth-strategy: 'related' target not found: advanced-auth"
+    },
+    {
+      "kind": "reference",
+      "message": "auth-architecture: 'implements' target not found: auth-service"
+    },
+    {
+      "kind": "reference",
+      "message": "auth-architecture: 'implements' target not found: jwt-service"
+    },
+    {
+      "kind": "reference",
+      "message": "api-v1-auth: 'implements' target not found: auth-endpoints"
+    },
+    {
+      "kind": "reference",
+      "message": "api-v1-entries: 'implements' target not found: entries-crud"
+    },
+    {
+      "kind": "category",
+      "message": "Category 'architecture' references unknown id: security-architecture"
+    },
+    {
+      "kind": "category",
+      "message": "Category 'api' references unknown id: api-v1-admin"
+    },
+    {
+      "kind": "category",
+      "message": "Category 'api' references unknown id: api-v1-stats"
+    },
+    {
+      "kind": "category",
+      "message": "Category 'api' references unknown id: api-v1-webauthn"
+    },
+    {
+      "kind": "category",
+      "message": "Category 'guides' references unknown id: development-setup"
+    },
+    {
+      "kind": "category",
+      "message": "Category 'guides' references unknown id: troubleshooting-guide"
+    },
+    {
+      "kind": "category",
+      "message": "Category 'testing' references unknown id: unit-testing"
+    },
+    {
+      "kind": "category",
+      "message": "Category 'testing' references unknown id: integration-testing"
+    },
+    {
+      "kind": "category",
+      "message": "Category 'testing' references unknown id: e2e-testing"
+    },
+    {
+      "kind": "category",
+      "message": "Category 'reference' references unknown id: configuration-reference"
+    },
+    {
+      "kind": "category",
+      "message": "Category 'reference' references unknown id: cli-reference"
+    },
+    {
+      "kind": "category",
+      "message": "Category 'reference' references unknown id: error-reference"
+    }
+  ]
+}

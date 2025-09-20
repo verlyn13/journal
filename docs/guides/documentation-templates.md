@@ -1,3 +1,20 @@
+---
+id: documentation-templates
+title: Documentation Templates Guide
+type: api
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags:
+- api
+priority: high
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 ***
 
 title: "Documentation Templates Guide"
@@ -227,7 +244,7 @@ All documentation should go through a review process:
 
 ## See Also
 
-- [API Reference Guide](api-reference.md)
-- [Authentication Guide](authentication.md)
-- [Data Model Guide](data-model.md)
-- [Documentation Instructions](../../documentation-instructions.md)
+- API Reference Guide
+- Authentication Guide
+- Data Model Guide
+- Documentation Instructions

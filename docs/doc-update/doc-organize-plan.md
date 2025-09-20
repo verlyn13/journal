@@ -1,3 +1,22 @@
+---
+id: doc-organize-plan
+title: Run from your repository root
+type: reference
+version: 1.0.0
+created: '2025-09-16'
+updated: '2025-09-16'
+author: Journal Team
+tags:
+- python
+- docker
+- fastapi
+priority: medium
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-16'
+---
+
 ***
 
 ## Workflow: Implementing a Containerized Repository Scanning System
@@ -37,7 +56,7 @@ This prevents build outputs and scanner results from being copied into any Docke
 .git
 .scanner/
 *.json
-node_modules/
+node_modules (managed by Bun)/
 dist/
 build/
 .venv/
@@ -50,7 +69,7 @@ This tells Semgrep (and helps inform other tools) which paths to skip during sca
 ```
 # .semgrepignore
 # Third-party code
-node_modules/
+node_modules (managed by Bun)/
 vendor/
 
 # Build artifacts and virtual environments
@@ -155,7 +174,7 @@ services:
     image: python:3.13-slim
     profiles: ["scan"]
     working_dir: /repo
-    command: python .scanner/scripts/merge_scans.py
+    command: uv run python .scanner/scripts/merge_scans.py
     volumes:
             - .:/repo # Mount read-write to create the output file
     depends_on:

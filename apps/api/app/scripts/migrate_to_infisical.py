@@ -781,7 +781,11 @@ def status() -> None:
                 infisical_color = "green" if infisical_status.get("status") == "healthy" else "red"
                 table.add_row(
                     "Infisical",
-                    f"[{infisical_color}]{infisical_status.get('status', 'unknown').upper()}[/{infisical_color}]",
+                    (
+                        f"[{infisical_color}]"
+                        f"{infisical_status.get('status', 'unknown').upper()}"
+                        f"[/{infisical_color}]"
+                    ),
                     infisical_status.get("error", f"Connected to {settings.infisical_server_url}"),
                 )
 

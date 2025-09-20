@@ -1,3 +1,24 @@
+---
+id: reflections-type-journey-autobiography
+title: How I Learned to Stop Worrying and Love the Final 3%
+description: Documentation for Journal application
+type: api
+created: '2025-09-17'
+updated: '2025-09-17'
+author: Journal Team
+tags:
+- /
+- home
+- verlyn13
+- projects
+- journal
+priority: 2
+status: current
+visibility: public
+schema_version: v1
+version: 1.0.0
+---
+
 # How I Learned to Stop Worrying and Love the Final 3%
 
 ## An Engineering Autobiography

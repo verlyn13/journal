@@ -1,0 +1,7 @@
+---
+extends: occurrence
+message: "Sentence is too long (over 30 words). Consider breaking it up."
+level: suggestion
+scope: sentence
+max: 30
+token: '\b\w+\b'

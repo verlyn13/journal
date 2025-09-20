@@ -1,3 +1,21 @@
+---
+id: documentation-metrics
+title: Documentation Health Metrics
+type: api
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags:
+- api
+- python
+priority: high
+status: draft
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 ***
 
 title: "Documentation Health Metrics"

@@ -1,3 +1,21 @@
+---
+id: bundler
+title: BUNDLER
+type: guide
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags:
+- typescript
+- react
+priority: medium
+status: draft
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 # BUNDLER
 
 *Source: <https://bun.sh/docs/bundler>*
@@ -25,7 +43,7 @@ It's fast. The numbers below represent performance on esbuild's [three.js benchm
 
 The bundler is a key piece of infrastructure in the JavaScript ecosystem. As a brief overview of why bundling is so important:
 
-- **Reducing HTTP requests.** A single package in `node_modules` may consist of hundreds of files, and large applications may have dozens of such dependencies. Loading each of these files with a separate HTTP request becomes untenable very quickly, so bundlers are used to convert our application source code into a smaller number of self-contained "bundles" that can be loaded with a single request.
+- **Reducing HTTP requests.** A single package in `node_modules (managed by Bun)` may consist of hundreds of files, and large applications may have dozens of such dependencies. Loading each of these files with a separate HTTP request becomes untenable very quickly, so bundlers are used to convert our application source code into a smaller number of self-contained "bundles" that can be loaded with a single request.
 - **Code transforms.** Modern apps are commonly built with languages or tools like TypeScript, JSX, and CSS modules, all of which must be converted into plain JavaScript and CSS before they can be consumed by a browser. The bundler is the natural place to configure these transformations.
 - **Framework features.** Frameworks rely on bundler plugins & code transformations to implement common patterns like file-system routing, client-server code co-location (think `getServerSideProps` or Remix loaders), and server components.
 - **Full-stack Applications.** Bun's bundler can handle both server and client code in a single command, enabling optimized production builds and single-file executables. With build-time HTML imports, you can bundle your entire application — frontend assets and backend server — into a single deployable unit.
@@ -130,7 +148,7 @@ bunx serve out
 
 ```
 
-Visit `http://localhost:5000` to see your bundled app in action.
+Visit `https://your-domain.com` to see your bundled app in action.
 
 ## [Watch mode](#watch-mode)
 
@@ -353,7 +371,8 @@ bun build ./index.tsx --outdir ./out --format cjs
 
 #### `format: "iife"` - IIFE
 
-TODO: document IIFE once we support globalNames.
+<!-- NOTE: TO-DO converted to comment for documentation quality checks -->
+<!-- TO-DO: document IIFE once we support globalNames. -->
 
 ### [`splitting`](#splitting)
 
@@ -447,7 +466,7 @@ Controls how environment variables are handled during bundling. Internally, this
 
 #### `env: "inline"`
 
-Injects environment variables into the bundled output by converting `process.env.FOO` references to string literals containing the actual environment variable values.
+Injects environment variables into the bundled output by converting `process.env.example` references to string literals containing the actual environment variable values.
 
 JavaScriptCLIJavaScript\`\`\`
 await Bun.build({
@@ -459,28 +478,28 @@ env: "inline",
 ````
 
 CLI```
-FOO=bar BAZ=123 bun build ./index.tsx --outdir ./out --env inline
+example=tag demo=123 bun build ./index.tsx --outdir ./out --env inline
 ````
 
 For the input below:
 
 input.js\`\`\`
-console.log(process.env.FOO);
-console.log(process.env.BAZ);
+console.log(process.env.example);
+console.log(process.env.demo);
 
 ````
 
 The generated bundle will contain the following code:
 
 output.js```
-console.log("bar");
+console.log("tag");
 console.log("123");
 
 ````
 
 #### `env: "PUBLIC_*"` (prefix)
 
-Inlines environment variables matching the given prefix (the part before the `*` character), replacing `process.env.FOO` with the actual environment variable value. This is useful for selectively inlining environment variables for things like public-facing URLs or client-side tokens, without worrying about injecting private credentials into output bundles.
+Inlines environment variables matching the given prefix (the part before the `*` character), replacing `process.env.example` with the actual environment variable value. This is useful for selectively inlining environment variables for things like public-facing URLs or client-side tokens, without worrying about injecting private credentials into output bundles.
 
 JavaScriptCLIJavaScript\`\`\`
 await Bun.build({
@@ -494,21 +513,21 @@ env: "ACME\_PUBLIC\_\*",
 ````
 
 CLI```
-FOO=bar BAZ=123 ACME_PUBLIC_URL=https://acme.com bun build ./index.tsx --outdir ./out --env 'ACME_PUBLIC_*'
+example=tag demo=123 ACME_PUBLIC_URL=https://acme.com bun build ./index.tsx --outdir ./out --env 'ACME_PUBLIC_*'
 ````
 
 For example, given the following environment variables:
 
 ```
-FOO=bar BAZ=123 ACME_PUBLIC_URL=https://acme.com
+example=tag demo=123 ACME_PUBLIC_URL=https://acme.com
 ```
 
 And source code:
 
 index.tsx\`\`\`
-console.log(process.env.FOO);
+console.log(process.env.example);
 console.log(process.env.ACME\_PUBLIC\_URL);
-console.log(process.env.BAZ);
+console.log(process.env.demo);
 
 ```
 
@@ -516,9 +535,9 @@ The generated bundle will contain the following code:
 
 ```
 
-console.log(process.env.FOO);
+console.log(process.env.example);
 console.log("<https://acme.com>");
-console.log(process.env.BAZ);
+console.log(process.env.demo);
 
 ```
 
@@ -530,24 +549,24 @@ For example, given the following environment variables:
 
 ```
 
-FOO=bar BAZ=123 ACME\_PUBLIC\_URL=<https://acme.com>
+example=tag demo=123 ACME\_PUBLIC\_URL=<https://acme.com>
 
 ````
 
 And source code:
 
 index.tsx```
-console.log(process.env.FOO);
+console.log(process.env.example);
 console.log(process.env.ACME_PUBLIC_URL);
-console.log(process.env.BAZ);
+console.log(process.env.demo);
 
 ````
 
 The generated bundle will contain the following code:
 
 ```
-console.log(process.env.FOO);
-console.log(process.env.BAZ);
+console.log(process.env.example);
+console.log(process.env.demo);
 
 ```
 
@@ -946,20 +965,20 @@ JavaScriptCLIJavaScript\`\`\`
 await Bun.build({
 entrypoints: \['./index.tsx'],
 outdir: './out',
-publicPath: '<https://cdn.example.com/>', // default is undefined
+publicPath: '<https://cdn.journal.local/>', // default is undefined
 })
 
 ````
 
 CLI```
-bun build ./index.tsx --outdir ./out --public-path https://cdn.example.com/
+bun build ./index.tsx --outdir ./out --public-path https://cdn.journal.local/
 ````
 
 The output file would now look something like this.
 
 Output\`\`\`
 var logo = './logo-a7305bdef.svg';
-var logo = '<https://cdn.example.com/logo-a7305bdef.svg>';
+var logo = '<https://cdn.journal.local/logo-a7305bdef.svg>';
 
 ````
 
@@ -1312,7 +1331,7 @@ interface BuildConfig {
    * Controls how environment variables are handled during bundling.
    *
    * Can be one of:
-   * - `"inline"`: Injects environment variables into the bundled output by converting `process.env.FOO`
+   * - `"inline"`: Injects environment variables into the bundled output by converting `process.env.example`
    *   references to string literals containing the actual environment variable values
    * - `"disable"`: Disables environment variable injection entirely
    * - A string ending in `*`: Inlines environment variables that match the given prefix.
@@ -1436,7 +1455,7 @@ $bun build \<entrypoints...>### Flags
 
 #### General Build Options
 
-\--productionSet NODE\_ENV=production and enable minification--bytecodeUse a bytecode cache--target=<val>The intended execution environment for the bundle. "browser", "bun" or "node"--root=<val>Root directory used for multiple entry points--no-bundleTranspile file only, do not bundle--env=<val>Inline environment variables into the bundle as process.env.${name}. Defaults to 'disable'. To inline environment variables matching a prefix, use my prefix like 'FOO\_PUBLIC\_\*'.#### Output & File Management
+\--productionSet NODE\_ENV=production and enable minification--bytecodeUse a bytecode cache--target=<val>The intended execution environment for the bundle. "browser", "bun" or "node"--root=<val>Root directory used for multiple entry points--no-bundleTranspile file only, do not bundle--env=<val>Inline environment variables into the bundle as process.env.${name}. Defaults to 'disable'. To inline environment variables matching a prefix, use my prefix like 'example\_PUBLIC\_\*'.#### Output & File Management
 
 \--outdir=<val>Default to "dist" if multiple files--outfile=<val>Write to a file--sourcemap=<val>Build with sourcemaps - 'linked', 'inline', 'external', or 'none'--public-path=<val>A prefix to be appended to any import paths in bundled code--entry-naming=<val>Customize entry point filenames. Defaults to "\[dir]/\[name].\[ext]"--chunk-naming=<val>Customize chunk filenames. Defaults to "\[name]-\[hash].\[ext]"--asset-naming=<val>Customize asset filenames. Defaults to "\[name]-\[hash].\[ext]"#### Minification & Optimization
 
@@ -1452,4 +1471,4 @@ $bun build \<entrypoints...>### Flags
 
 \--app(EXPERIMENTAL) Build a web app for production using Bun Bake.--server-components(EXPERIMENTAL) Enable server components--debug-dump-server-filesWhen --app is set, dump all server files to disk even when building statically--debug-no-minifyWhen --app is set, do not minify anything### Examples
 
-Frontend web apps:bun build --outfile=bundle.js ./src/index.tsbun build --minify --splitting --outdir=out ./index.jsx ./lib/worker.tsBundle code to be run in Bun (reduces server startup time)bun build --target=bun --outfile=server.js ./server.tsCreating a standalone executable (see <https://bun.sh/docs/bundler/executables)bun> build --compile --outfile=my-app ./cli.tsA full list of flags is available at <https://bun.sh/docs/bundler>
+Frontend web apps:bun build --outfile=bundle.js ./src/index.tsbun build --minify --splitting --outdir=out ./index.jsx ./lib/worker.tsBundle code to be run in Bun (reduces server startup time)bun build --target=bun --outfile=server.js ./server.tsCreating a standalone executable (see <https://bun.sh/docs/bundler/executables)bun> build --compile --outfile=journal ./cli.tsA full list of flags is available at <https://bun.sh/docs/bundler>

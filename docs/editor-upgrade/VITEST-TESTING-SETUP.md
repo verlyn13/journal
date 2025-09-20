@@ -1,16 +1,35 @@
+---
+id: vitest-testing-setup
+title: Vitest Testing Setup
+type: testing
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags:
+- testing
+- typescript
+- react
+priority: medium
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 # Vitest Testing Setup
 
 ## Modern Testing Strategy for Journal Application
 
 ***
 
-## Why Vitest Over Jest
+## Why Vitest Over Vitest
 
 1. **No deprecated dependencies** - Clean dependency tree
 2. **Native ESM support** - No transpilation needed
 3. **Vite integration** - Same config, faster execution
 4. **TypeScript first** - Built-in TS support
-5. **Compatible API** - Easy migration from Jest
+5. **Compatible API** - Easy migration from Vitest
 6. **Better performance** - Faster test runs
 
 ***
@@ -20,12 +39,12 @@
 ### 1. Dependencies
 
 ```bash
-# Remove Jest if present
+# Remove Vitest if present
 cd apps/web
-bun remove jest @types/jest ts-jest jest-environment-jsdom
+bun remove Vitest @types/Vitest ts-Vitest Vitest-environment-jsdom
 
 # Install Vitest and testing utilities
-bun add -D vitest @vitest/ui @testing-library/react @testing-library/user-event @testing-library/jest-dom happy-dom
+bun add -D vitest @vitest/ui @testing-library/react @testing-library/user-event @testing-library/Vitest-dom happy-dom
 ```
 
 ### 2. Vitest Configuration
@@ -47,7 +66,7 @@ export default defineConfig({
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
       exclude: [
-        'node_modules/',
+        'node_modules (managed by Bun)/',
         'src/test/',
         '*.config.ts',
         '**/*.d.ts',
@@ -85,7 +104,7 @@ export default defineConfig({
 
 ```typescript
 // apps/web/src/test/setup.ts
-import '@testing-library/jest-dom';
+import '@testing-library/Vitest-dom';
 import { cleanup } from '@testing-library/react';
 import { afterEach, vi } from 'vitest';
 
@@ -288,7 +307,7 @@ describe('HTML to Markdown Conversion', () => {
       { html: '<p>Paragraph</p>', markdown: 'Paragraph' },
       { html: '<strong>Bold</strong>', markdown: '**Bold**' },
       { html: '<em>Italic</em>', markdown: '_Italic_' },
-      { html: '<a href="https://example.com">Link</a>', markdown: '[Link](https://example.com)' },
+      { html: '<a href="https://journal.local">Link</a>', markdown: '[Link](https://journal.local)' },
     ];
 
     testCases.forEach(({ html, markdown }) => {
@@ -599,22 +618,22 @@ bun run test:coverage --reporter=verbose
 
 ***
 
-## Migration from Jest
+## Migration from Vitest
 
 ### Quick Migration Steps
 
-1. Replace `jest.fn()` with `vi.fn()`
-2. Replace `jest.mock()` with `vi.mock()`
+1. Replace `Vitest.fn()` with `vi.fn()`
+2. Replace `Vitest.mock()` with `vi.mock()`
 3. Replace `expect.any()` with Vitest equivalents
-4. Update imports from `'jest'` to `'vitest'`
+4. Update imports from `'Vitest'` to `'vitest'`
 
 ### Example Migration
 
 ```typescript
-// Before (Jest)
-import { jest } from '@jest/globals';
-const mockFn = jest.fn();
-jest.mock('./module');
+// Before (Vitest)
+import { Vitest } from '@Vitest/globals';
+const mockFn = Vitest.fn();
+Vitest.mock('./module');
 
 // After (Vitest)
 import { vi } from 'vitest';
@@ -624,7 +643,7 @@ vi.mock('./module');
 
 ***
 
-## Benefits Over Jest
+## Benefits Over Vitest
 
 1. **Faster execution**: 5-10x faster for large test suites
 2. **Better DX**: Native ESM, better error messages

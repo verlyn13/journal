@@ -1,3 +1,22 @@
+---
+id: bulletproof-implementation-plan
+title: Bulletproof Implementation Plan
+type: api
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags:
+- api
+- typescript
+- react
+priority: high
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 # Bulletproof Implementation Plan
 
 ## Correct-by-Construction Approach for Editor Migration
@@ -417,7 +436,7 @@ describe('Sanitization Schema', () => {
     "precommit": "bun run quality:all",
     "quality:all": "bun run quality:types && bun run quality:lint && bun run quality:test && bun run quality:bundle",
     "quality:types": "tsc --noEmit",
-    "quality:lint": "eslint . --ext .ts,.tsx --max-warnings 0",
+    "quality:lint": "Biome . --ext .ts,.tsx --max-warnings 0",
     "quality:test": "vitest run --coverage",
     "quality:bundle": "vite build && node scripts/bundle-check.js"
   }

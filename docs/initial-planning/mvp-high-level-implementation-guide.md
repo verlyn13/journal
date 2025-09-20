@@ -1,3 +1,20 @@
+---
+id: mvp-high-level-implementation-guide
+title: Mvp High Level Implementation Guide
+type: guide
+version: 1.0.0
+created: '2025-09-09'
+updated: '2025-09-09'
+author: Journal Team
+tags:
+- python
+priority: medium
+status: approved
+visibility: internal
+schema_version: v1
+last_verified: '2025-09-09'
+---
+
 ***
 
 title: "Flask Journal MVP Scope Definition"
@@ -31,7 +48,7 @@ The core goal of the MVP is to have a functional, secure, single-user journal sy
 5. Edit existing entries.
 6. Delete entries.
 7. Run the application reliably via systemd.
-8. Have basic data persistence (SQLite).
+8. Have basic data persistence (PostgreSQL).
 9. Have a minimal, clean UI.
 
 **MVP Exclusions (Deferred Features):**
@@ -62,13 +79,13 @@ The core goal of the MVP is to have a functional, secure, single-user journal sy
 - **Detailed Steps:**
   1\.  **Create Project Directory:** `mkdir journal-app && cd journal-app`
   2\.  **Initialize Git:** `git init`
-  3\.  **Create `.gitignore`:** Add common Python/Flask exclusions (`venv/`, `instance/`, `__pycache__/`, `*.pyc`, `.env`, `*.sqlite`, `*.db`, `htmlcov/`, `coverage.xml`).
+  3\.  **Create `.gitignore`:** Add common Python/Flask exclusions (`venv/`, `instance/`, `__pycache__/`, `*.pyc`, `.env`, `*.PostgreSQL`, `*`, `htmlcov/`, `coverage.xml`).
   4\.  **Create Virtual Environment:** `python -m venv venv`
   5\.  **Activate Virtual Environment:** `source venv/bin/activate` (Linux/macOS) or `venv\Scripts\activate` (Windows).
   6\.  **Install Core Dependencies:**
-  \*   `pip install Flask Flask-SQLAlchemy Flask-Migrate Flask-Login Flask-WTF Flask-Session redis python-dotenv Werkzeug gunicorn`
+  \*   `uv pip install Flask Flask-SQLAlchemy Flask-Migrate Flask-Login Flask-WTF Flask-Session redis python-dotenv Werkzeug gunicorn`
   \*   *Note:* `Werkzeug` for password hashing (Argon2 support), `redis` for Flask-Session backend, `gunicorn` for deployment.
-  \*   Create initial `requirements.txt`: `pip freeze > requirements.txt`.
+  \*   Create initial `requirements.txt`: `uv pip freeze > requirements.txt`.
   7\.  **Create Basic Application Structure:**
   \*   `mkdir app app/routes app/models app/services app/templates app/static app/forms instance deployment scripts tests`
   \*   Create `app/__init__.py`, `app/routes/__init__.py`, `app/models/__init__.py`, `app/services/__init__.py`, `app/forms/__init__.py`.
@@ -82,7 +99,7 @@ The core goal of the MVP is to have a functional, secure, single-user journal sy
   \*   Return the `app` instance.
   9\.  **Create Configuration Files (`config.py`, `instance/config.py`):**
   \*   Define `Config`, `DevelopmentConfig`, `TestingConfig`, `ProductionConfig` classes in `config.py`.
-  \*   Include `SECRET_KEY`, `SQLALCHEMY_DATABASE_URI` (pointing to `instance/journal.db`), `SESSION_TYPE='redis'`, `SESSION_REDIS`, `WTF_CSRF_ENABLED=True`.
+  \*   Include `SECRET_KEY`, `SQLALCHEMY_DATABASE_URI` (pointing to `instance/journal`), `SESSION_TYPE='redis'`, `SESSION_REDIS`, `WTF_CSRF_ENABLED=True`.
   \*   Generate a strong `SECRET_KEY` (e.g., `python -c 'import secrets; print(secrets.token_hex())'`) and place it in `instance/config.py` or `.env`.
   10\. **Create WSGI Entry Point (`wsgi.py`):**
   \*   Import `create_app` from `app`.
@@ -114,13 +131,13 @@ The core goal of the MVP is to have a functional, secure, single-user journal sy
   \*   `export FLASK_APP=wsgi.py` (or set environment variable).
   \*   `flask db init` - Creates the `migrations/` directory.
   5\.  **Create Initial Migration:**
-  \*   Ensure the database file path (`instance/journal.db`) directory exists (`mkdir instance` if needed).
+  \*   Ensure the database file path (`instance/journal`) directory exists (`mkdir instance` if needed).
   \*   `flask db migrate -m "Initial migration; create user and entry tables"` - Generates the first migration script.
   6\.  **Apply Initial Migration:**
-  \*   `flask db upgrade` - Creates the `instance/journal.db` file and the tables.
-  7\.  **Verify Database:** Use a tool like DB Browser for SQLite to inspect `instance/journal.db` and confirm tables exist.
+  \*   `flask db upgrade` - Creates the `instance/journal` file and the tables.
+  7\.  **Verify Database:** Use a tool like DB Browser for PostgreSQL to inspect `instance/journal` and confirm tables exist.
   8\.  **Commit Changes:** `git add . && git commit -m "Implement core User and Entry models; set up migrations"`
-  9\.  **Architectural Note (Timestamps):** Due to limitations and potential inconsistencies with timezone handling in SQLite (especially during testing), all timestamp columns (`created_at`, `updated_at`, `timestamp`) in the MVP will store **naive UTC** values (using `datetime.utcnow` as the default). Tests should verify these timestamps using a time delta comparison rather than exact matching to account for minor timing variations.
+  9\.  **Architectural Note (Timestamps):** Due to limitations and potential inconsistencies with timezone handling in PostgreSQL (especially during testing), all timestamp columns (`created_at`, `updated_at`, `timestamp`) in the MVP will store **naive UTC** values (using `datetime.utcnow` as the default). Tests should verify these timestamps using a time delta comparison rather than exact matching to account for minor timing variations.
 
 ***
 
@@ -221,8 +238,8 @@ The core goal of the MVP is to have a functional, secure, single-user journal sy
 - **Goal:** Configure Gunicorn and create a basic systemd service file to run the application reliably on the Fedora laptop.
 - **Detailed Steps:**
   1\.  **Test Gunicorn Manually:**
-  \*   Ensure Gunicorn is installed (`pip install gunicorn`).
-  \*   Run `gunicorn --workers=2 --bind=127.0.0.1:8000 wsgi:app` from the project root. Access `http://127.0.0.1:8000` in the browser to verify it works.
+  \*   Ensure Gunicorn is installed (`uv pip install gunicorn`).
+  \*   Run `gunicorn --workers=2 --bind=your-domain.com wsgi:app` from the project root. Access `http://your-domain.com` in the browser to verify it works.
   2\.  **Create Basic systemd Service File (`deployment/journal.service`):**
   \*   Define `[Unit]` section (Description, After=network.target).
   \*   Define `[Service]` section:
@@ -246,7 +263,7 @@ The core goal of the MVP is to have a functional, secure, single-user journal sy
   7\.  **Check Logs:** `journalctl -u journal -f`. Look for Gunicorn startup messages and any Flask errors.
   8\.  **Configure Basic Logging:**
   \*   Implement basic logging configuration in `app/__init__.py` to log to stdout/stderr (which `journald` captures). Use standard Python `logging`.
-  9\.  **Test Service:** Access the application via `http://127.0.0.1:8000` again. Test login, CRUD operations. Test restarting the laptop to ensure the service starts on boot.
+  9\.  **Test Service:** Access the application via `http://your-domain.com` again. Test login, CRUD operations. Test restarting the laptop to ensure the service starts on boot.
   10\. **Commit Changes:** `git add deployment/journal.service && git commit -m "Configure Gunicorn and basic systemd service for deployment"`
 
 ***
@@ -255,20 +272,20 @@ The core goal of the MVP is to have a functional, secure, single-user journal sy
 
 - **Goal:** Set up the testing framework and write essential unit and integration tests for core functionality. Create basic deployment and backup scripts.
 - **Detailed Steps:**
-  1\.  **Install Testing Dependencies:** `pip install pytest pytest-cov factory-boy` and update `requirements.txt`.
-  2\.  **Configure Pytest (`pytest.ini`, `tests/conftest.py`):**
-  \*   Set up `pytest.ini` (test paths).
+  1\.  **Install Testing Dependencies:** `uv pip install pytest uv run pytest-cov factory-boy` and update `requirements.txt`.
+  2\.  **Configure Pytest (`uv run pytest.ini`, `tests/conftest.py`):**
+  \*   Set up `uv run pytest.ini` (test paths).
   \*   Create `tests/conftest.py` with `app`, `db`, `session`, `client` fixtures using the `testing` configuration.
   3\.  **Write Unit Tests:**
   \*   Models: Test `User` password hashing/checking. Test basic `Entry` creation attributes.
   \*   Services: Test `AuthService` register/authenticate logic. Test `EntryService` basic CRUD methods (mocking DB interactions where appropriate, or using the `session` fixture for simple cases).
   4\.  **Write Integration Tests:**
   \*   Routes: Use the `client` fixture to test basic GET requests for login page, entry list (when logged out - should redirect). Use an authenticated client fixture (`auth_user` similar to one shown before) to test GET/POST for entry list, create, view, edit, delete routes. Verify status codes, redirects, and basic content rendering/flash messages.
-  5\.  **Run Tests:** `pytest`. Set up `pytest-cov` to measure coverage.
+  5\.  **Run Tests:** `uv run pytest`. Set up `uv run pytest-cov` to measure coverage.
   6\.  **Create Basic Deployment Script (`scripts/deploy.sh`):**
-  \*   Simple script: `cd /path/to/app`, `git pull`, `source venv/bin/activate`, `pip install -r requirements.txt`, `flask db upgrade`, `sudo systemctl restart journal`. Add basic logging (`echo`).
+  \*   Simple script: `cd /path/to/app`, `git pull`, `source venv/bin/activate`, `uv pip install -r requirements.txt`, `flask db upgrade`, `sudo systemctl restart journal`. Add basic logging (`echo`).
   7\.  **Create Basic Backup Script (`scripts/backup.sh`):**
-  \*   Simple script: Use `sqlite3 instance/journal.db .backup /path/to/backups/backup-$(date +%Y%m%d%H%M%S).db`. Add cleanup for old backups.
+  \*   Simple script: Use `PostgreSQL instance/journal .backup /path/to/backups/backup-$(date +%Y%m%d%H%M%S)`. Add cleanup for old backups.
   8\.  **Refine & Document:** Add basic README.md explaining setup, running the app, testing, deploying. Clean up code based on test findings.
   9\.  **Commit Changes:** `git add . && git commit -m "Set up testing framework; add basic unit/integration tests; create basic deploy/backup scripts"`
 

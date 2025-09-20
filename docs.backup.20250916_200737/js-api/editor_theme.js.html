@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>editor/theme.js - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading">Classes</li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="EditorPersistence.html">EditorPersistence</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="EditorPersistence.html#clearDraft">clearDraft</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="EditorPersistence.html#loadDraft">loadDraft</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="EditorPersistence.html#saveDraft">saveDraft</a></span></li><li class="nav-heading">Modules</li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-editor_alpine-component.html">editor/alpine-component</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-editor_alpine-component.html#~init">init</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-editor_setup.html">editor/setup</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-editor_setup.html#.createEditor">createEditor</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-editor_theme.html">editor/theme</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-main.html">main</a></span></li><li class="nav-heading"><a href="global.html">Globals</a></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#createLinePrependingTransaction">createLinePrependingTransaction</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#createWrappingTransaction">createWrappingTransaction</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#debounce">debounce</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#insertMarkdownSyntax">insertMarkdownSyntax</a></span></li>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">editor/theme.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @fileoverview Theme configuration for the CodeMirror editor in Flask Journal.
+ * Defines a custom theme with CSS variables to allow for customization.
+ * @module editor/theme
+ * @author Flask Journal Team
+ */
+
+import { EditorView } from "@codemirror/view";
+import { tags as t } from "@lezer/highlight"; // Import tag system for styling
+
+/**
+ * CSS variable definitions for editor styling.
+ * These variables should be defined in the application's CSS.
+ * @type {Object.&lt;string, string>}
+ */
+const colors = {
+    background: "var(--editor-bg, #1e1e1e)",
+    text: "var(--editor-text, #d4d4d4)",
+    selection: "var(--editor-selection-bg, #3a3d41)",
+    cursor: "var(--editor-cursor, #aeafad)",
+    lineHighlight: "var(--editor-line-highlight-bg, #2a2a2a)",
+    comment: "var(--editor-comment, #6a9955)",
+    keyword: "var(--editor-keyword, #569cd6)",
+    string: "var(--editor-string, #ce9178)",
+    number: "var(--editor-number, #b5cea8)",
+    heading: "var(--editor-heading, #4ec9b0)",
+    link: "var(--editor-link, #9cdcfe)",
+    operator: "var(--editor-operator, #d4d4d4)",
+    punctuation: "var(--editor-punctuation, #808080)",
+    // Add more as needed
+};
+
+/**
+ * CodeMirror theme for Flask Journal editor.
+ * Uses CSS variables for styling to allow for customization through the application's CSS.
+ * Includes specialized styling for Markdown syntax elements.
+ * 
+ * @type {Object}
+ * @example
+ * // Use in editor setup:
+ * import { journalEditorTheme } from './theme';
+ * 
+ * // Add to extensions when creating editor
+ * const extensions = [
+ *   basicSetup,
+ *   markdown(),
+ *   journalEditorTheme,
+ *   // other extensions...
+ * ];
+ */
+export const journalEditorTheme = EditorView.theme({
+    "&amp;": {
+        color: colors.text,
+        backgroundColor: colors.background,
+        height: "400px", // Default height, can be overridden
+        border: "1px solid var(--editor-border-color, #333)",
+        borderRadius: "var(--editor-border-radius, 4px)",
+    },
+    ".cm-content": {
+        caretColor: colors.cursor,
+        fontFamily: "var(--editor-font-family, monospace)",
+        fontSize: "var(--editor-font-size, 14px)",
+        lineHeight: "var(--editor-line-height, 1.5)",
+    },
+    "&amp;.cm-focused .cm-cursor": {
+        borderLeftColor: colors.cursor,
+    },
+    "&amp;.cm-focused .cm-selectionBackground, ::selection": {
+        backgroundColor: colors.selection + " !important", // Use !important to override defaults if needed
+    },
+    ".cm-gutters": {
+        backgroundColor: colors.background,
+        color: colors.punctuation, // Use punctuation color for line numbers
+        border: "none",
+    },
+    ".cm-activeLineGutter": {
+        backgroundColor: colors.lineHighlight,
+    },
+    ".cm-activeLine": {
+        backgroundColor: colors.lineHighlight,
+    },
+    // Basic Markdown syntax highlighting using tags
+    [t.heading]: { color: colors.heading, fontWeight: "bold" },
+    [t.strong]: { fontWeight: "bold" },
+    [t.emphasis]: { fontStyle: "italic" },
+    [t.link]: { color: colors.link, textDecoration: "underline" },
+    [t.url]: { color: colors.link },
+    [t.quote]: { color: colors.comment, fontStyle: "italic" }, // Often styled like comments
+    [t.keyword]: { color: colors.keyword }, // e.g., ```python
+    [t.comment]: { color: colors.comment, fontStyle: "italic" }, // Code comments within blocks
+    [t.string]: { color: colors.string },
+    [t.number]: { color: colors.number },
+    [t.operator]: { color: colors.operator },
+    [t.punctuation]: { color: colors.punctuation },
+    [t.monospace]: { fontFamily: "var(--editor-mono-font-family, monospace)" }, // For inline code
+    [t.contentSeparator]: { color: colors.heading, fontWeight: "bold" }, // For --- horizontal rules
+    [t.list]: { color: colors.text }, // Basic list item color
+    [t.meta]: { color: colors.comment }, // e.g., Frontmatter
+}, { dark: true }); // Assuming a dark theme by default</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.4</a> on Tue Apr 08 2025 22:29:32 GMT-0800 (Alaska Daylight Time) using the Minami theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>
