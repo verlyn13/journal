@@ -95,9 +95,10 @@ class WebAuthnCredential(Base):
         cls, session: AsyncSession, credential_id: bytes
     ) -> WebAuthnCredential | None:
         """Find credential by its raw ID."""
-        return await session.scalar(
+        result = await session.scalars(
             select(cls).where(cls.credential_id == credential_id)
-        )  # type: ignore[no-any-return]
+        )
+        return result.first()
 
     @classmethod
     async def find_user_credentials(
