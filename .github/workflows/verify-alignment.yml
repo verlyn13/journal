@@ -43,6 +43,7 @@ jobs:
 
       - name: Stale reference scan
         run: |
+          set +e  # Disable exit on error for git grep commands
           echo "Checking for stale Python versions..."
           git grep -nE "(python|Python)( |:|-)?3\.(11|12)\b" -- . \
             ":!**/site-packages/**" ":!**/node_modules/**" ":!*.lock" \
@@ -69,6 +70,8 @@ jobs:
             echo "❌ Found redundant tool blocks in pyproject.toml"
             exit 1
           } || echo "✅ No redundant tool blocks"
+
+          set -e  # Re-enable exit on error
 
       - name: Lint + Format checks
         working-directory: apps/api
