@@ -77,7 +77,8 @@ async def test_connection():
                     WHERE extname = 'vector'
                 """)
                 print(
-                    f"✅ pgvector enabled (v{vector_info['extversion']}) in schema: {vector_info['schema']}"
+                    f"✅ pgvector enabled (v{vector_info['extversion']}) in"
+                    " schema: {vector_info['schema']}"
                 )
             else:
                 print("⚠️  pgvector not enabled")

@@ -5,7 +5,8 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", env_prefix="JOURNAL_")
 
     env: str = "dev"
-    db_url: str = "postgresql+asyncpg://journal:journal@localhost:5433/journal"  # Legacy, kept for compatibility
+    # Legacy, kept for compatibility
+    db_url: str = "postgresql+asyncpg://journal:journal@localhost:5433/journal"
     db_url_async: str = "postgresql+asyncpg://journal:journal@localhost:5433/journal"
     db_url_sync: str = "postgresql+psycopg://journal:journal@localhost:5433/journal"
     # Alias for tests/fixtures expecting database_url

@@ -186,9 +186,11 @@ class RecoveryService:
             "steps": [
                 "Store these codes in a secure location (password manager, safe, etc.)",
                 "Each code can only be used once",
-                "Use these codes if you lose access to your passkeys or other authentication methods",
+                "Use these codes if you lose access to your passkeys "
+                "or other authentication methods",
                 "You can generate new codes at any time, which will invalidate the old ones",
-                "Keep these codes confidential - anyone with access can use them to access your account",
+                "Keep these codes confidential - anyone with access "
+                "can use them to access your account",
             ],
             "usage": {
                 "when_to_use": "When you cannot access your account through normal means",

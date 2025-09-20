@@ -140,12 +140,28 @@ exclude = [
 # Enable preview rules explicitly (not by prefix)
 explicit-preview-rules = true
 
-# Progressive autofix strategy: start with safe fixes only
-fixable = ["E", "F", "I"]  # Expand after discovery mode review
+# Progressive autofix strategy: maximize safe autofixes
+fixable = [
+    "E", "F", "I",  # Core fixes
+    "UP",           # pyupgrade fixes
+    "SIM",          # simplification fixes
+    "C4",           # comprehension fixes
+    "RUF",          # Ruff-specific fixes
+    "PIE",          # misc fixes
+    "PGH",          # pygrep fixes
+    "PERF",         # performance fixes
+    "FURB",         # modernization fixes
+    "PTH",          # pathlib fixes
+    "RET",          # return statement fixes
+]
 unfixable = []  # Control via fixable list for now
 
 # Safe fixes promoted from unsafe after validation
-extend-safe-fixes = []  # e.g., ["UP032"] after testing
+extend-safe-fixes = [
+    "UP032",  # f-string fixes
+    "SIM108", # ternary simplification
+    "C408",   # dict/list/tuple literal fixes
+]
 
 # Keep type-checking moves gated initially
 extend-unsafe-fixes = ["TCH"]
@@ -196,12 +212,9 @@ select = [
     "PTH",   # use pathlib
 ]
 ignore = [
-    # Line length (handled by formatter)
-    "E501",
-    
     # Complexity limits (will address later)
     "PLR0913", # too-many-arguments
-    "PLR0912", # too-many-branches  
+    "PLR0912", # too-many-branches
     "PLR0915", # too-many-statements
     "PLR2004", # magic-value-comparison (allow in domain logic)
     "C901",    # too-complex

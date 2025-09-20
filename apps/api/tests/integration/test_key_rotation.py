@@ -331,7 +331,8 @@ class TestKeyRotationScenarios:
                 needs_rotation, reason = await key_manager.check_rotation_needed()
 
                 assert needs_rotation == case["should_rotate"], (
-                    f"Key age {case['age']} should {'require' if case['should_rotate'] else 'not require'} rotation"
+                    f"Key age {case['age']} should "
+                    f"{'require' if case['should_rotate'] else 'not require'} rotation"
                 )
 
                 if case["should_rotate"]:
