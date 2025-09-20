@@ -23,7 +23,7 @@ jobs:
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
       - name: Setup uv
-        uses: astral-sh/setup-uv@e779db74266a80753577425b0e4e3b6b2e7f4f6a
+        uses: astral-sh/setup-uv@208b0c0ee42039b2cbf5fd3ca0ec7d6d8a49336f
       - name: Sync deps
         run: uv sync --all-extras --dev
       - name: Ruff

@@ -108,7 +108,7 @@ jobs:
         with:
           python-version: '3.13'
       - name: Setup Python with uv
-        uses: astral-sh/setup-uv@e779db74266a80753577425b0e4e3b6b2e7f4f6a
+        uses: astral-sh/setup-uv@208b0c0ee42039b2cbf5fd3ca0ec7d6d8a49336f
         with:
           version: "latest"
 
@@ -399,7 +399,7 @@ jobs:
         with:
           python-version: '3.13'
       - name: Setup Python (uv)
-        uses: astral-sh/setup-uv@e779db74266a80753577425b0e4e3b6b2e7f4f6a
+        uses: astral-sh/setup-uv@208b0c0ee42039b2cbf5fd3ca0ec7d6d8a49336f
 
       - name: API deps
         working-directory: apps/api

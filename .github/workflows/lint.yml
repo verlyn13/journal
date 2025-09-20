@@ -22,14 +22,14 @@ jobs:
 
       # Option A: Using official Astral Ruff Action (recommended)
       - name: Run Ruff linter
-        uses: astral-sh/ruff-action@3a3a43aee5e6e9b908c774825e4c6e7b0948bf79
+        uses: astral-sh/ruff-action@f18f95d449e31b9540969c84d046a57a861648b4
         with:
           version: "0.13.0"
           args: "check --output-format=github ."
           src: "./apps/api"
 
       - name: Check formatting with Ruff
-        uses: astral-sh/ruff-action@3a3a43aee5e6e9b908c774825e4c6e7b0948bf79
+        uses: astral-sh/ruff-action@f18f95d449e31b9540969c84d046a57a861648b4
         with:
           version: "0.13.0"
           args: "format --check ."
