@@ -15,7 +15,7 @@ Journal is a web-based journaling platform designed around the principle of priv
 - **PostgreSQL with pgvector** for semantic search capabilities on encrypted metadata
 
 ### Development Tools
-- **Ruff** for Python linting and formatting (replacing Black, isort, and flake8)
+- **Ruff 0.13.0** for Python linting and formatting (replacing Black, isort, and flake8)
 - **Biome** for JavaScript/TypeScript linting and formatting
 - **Bun** as the JavaScript runtime and package manager
 - **uv** for Python package management
