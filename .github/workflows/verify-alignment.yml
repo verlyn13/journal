@@ -55,7 +55,7 @@ jobs:
 
           echo "Checking for actual legacy tool usage (not Ruff config)..."
           # Look for actual imports/installs of legacy tools, not Ruff config sections
-          if git grep -nE "(^import (isort|flake8|black)|^from (isort|flake8|black)|pip install.*(isort|flake8|black))" -- \
+          if git grep -nE "(^import (isort|flake8|black)|^from (isort|flake8|black)|pip install.*(isort|flake8|black))" -- . \
             ":!**/site-packages/**" ":!**/vendor/**" ":!**/third_party/**" \
             ":!**/node_modules/**" ":!*.lock" ":!**/RUFF_*.md" ":!**/.pre-commit-config.yaml" \
             ":!.github/workflows/verify-alignment.yml" ":!apps/api/.devcontainer/**" \
