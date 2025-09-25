@@ -33,10 +33,9 @@ jobs:
           lychee --config lychee.toml --no-progress --format detailed docs
           echo "::endgroup::"
 
-      - name: Prose linting with Vale (warnings only)
-        continue-on-error: true
+      - name: Prose linting with Vale (required)
         run: |
           echo "::group::Checking prose quality with Vale"
-          vale --config docs/.vale/config.ini --output line docs || echo "Vale found issues (non-blocking)"
+          vale --config docs/.vale/config.ini --output line docs
           echo "::endgroup::"
 

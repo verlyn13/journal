@@ -5,6 +5,7 @@ import api, { type AuthStatus } from '../services/api';
 import { subscribe } from '../services/authStore';
 import EntryList from './layout/EntryList';
 import Sidebar from './layout/Sidebar';
+import PassphraseLogin from './auth/PassphraseLogin';
 
 const MarkdownSplitPane = React.lazy(() => import('./markdown/MarkdownSplitPane'));
 
@@ -256,12 +257,19 @@ export function JournalApp() {
   // Show authentication required state (flag-aware)
   if (!state.authenticated && FLAGS.USER_MGMT_ENABLED) {
     return (
-      <div className="min-h-screen bg-sanctuary-bg-primary text-sanctuary-text-primary flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">Welcome to Journal</h1>
-          <p className="mb-4">Please authenticate to continue</p>
-        </div>
-      </div>
+      <PassphraseLogin
+        onSuccess={() => {
+          // Reload auth state
+          api.checkAuthStatus().then((authStatus) => {
+            setState((prev) => ({
+              ...prev,
+              authenticated: authStatus.authenticated,
+              user: authStatus.user,
+              loading: false,
+            }));
+          });
+        }}
+      />
     );
   }
 

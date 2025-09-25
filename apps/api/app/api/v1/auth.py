@@ -227,6 +227,49 @@ async def login(
     return {"access_token": access, "refresh_token": refresh, "token_type": "bearer"}
 
 
+@router.post("/passphrase")
+async def passphrase_login(
+    body: dict[str, str],
+    request: Request,
+    response: Response,
+) -> dict[str, Any]:
+    """Authenticate with a passphrase for controlled testing."""
+    from app.domain.auth.passphrase_auth import passphrase_auth
+
+    passphrase = body.get("passphrase", "").strip()
+    if not passphrase:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid passphrase"
+        )
+
+    # Validate passphrase
+    passphrase_user = passphrase_auth.authenticate(passphrase)
+    if not passphrase_user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid passphrase"
+        )
+
+    # For testing, use the passphrase user directly without database
+    user_id = passphrase_user.user_id
+    username = passphrase_user.username
+    email = passphrase_user.email
+    roles = ["admin"] if passphrase_user.is_admin else ["user"]
+
+    # Create tokens directly
+    access = create_access_token(user_id, scopes=roles)
+    refresh_id = str(uuid.uuid4())
+    refresh = create_refresh_token(user_id, refresh_id=refresh_id)
+
+    if settings.auth_cookie_refresh:
+        max_age = settings.refresh_token_days * 24 * 60 * 60
+        set_refresh_cookie(response, refresh, max_age)
+        ensure_csrf_cookie(response, request)
+        return {"access_token": access, "token_type": "bearer", "user": {"username": username, "email": email}}
+    return {"access_token": access, "refresh_token": refresh, "token_type": "bearer", "user": {"username": username, "email": email}}
+
+
 @router.post("/register", status_code=202)
 async def register(
     body: RegisterRequest,
